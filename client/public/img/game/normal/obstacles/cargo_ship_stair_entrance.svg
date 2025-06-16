@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="306.0325"
+   height="344.20074"
+   viewBox="0 0 80.971098 91.06978"
+   version="1.1"
+   id="svg1"
+   inkscape:version="1.3.2 (091e20e, 2023-11-25, custom)"
+   sodipodi:docname="cargo_ship_stair_entrance.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="px"
+     inkscape:zoom="1.4342733"
+     inkscape:cx="73.556415"
+     inkscape:cy="158.61691"
+     inkscape:window-width="1920"
+     inkscape:window-height="1001"
+     inkscape:window-x="-9"
+     inkscape:window-y="-9"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="g21-4-3-9-1-9-2" />
+  <defs
+     id="defs1" />
+  <g
+     inkscape:label="Στρώση 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-161.2297,-104.67661)">
+    <g
+       id="g21-4-3-9-1-9-2"
+       transform="translate(-1069.3117,759.83702)">
+      <g
+         id="g12769-2-1-8-2-2-0-7-5-9-7-9-5-3-1-3-0"
+         transform="matrix(0,1,1,0,279.4155,1035.102)">
+        <path
+           d="m -1614.0924,1020.517 h -13.8613 v -57.76689 h 13.8613 z"
+           fill="#878787"
+           stroke="#4d4d4d"
+           stroke-width="1.66555"
+           stroke-linecap="square"
+           id="path12757-0-06-1-6-6-6-1-6-1-5-3-7-4-6-3-8"
+           style="fill:#525252;fill-opacity:1;stroke:#262626;stroke-width:2.00001;stroke-dasharray:none;stroke-opacity:1" />
+        <path
+           d="m -1627.8272,1020.517 h -13.861 v -57.76679 h 13.861 z"
+           fill="#828282"
+           stroke="#4d4d4d"
+           stroke-width="1.66555"
+           stroke-linecap="square"
+           id="path12759-7-7-4-6-7-8-5-3-6-9-0-4-8-2-5-8"
+           style="fill:#4a4a4a;fill-opacity:1;stroke:#262626;stroke-width:2.00001;stroke-dasharray:none;stroke-opacity:1" />
+        <path
+           d="m -1641.5618,1020.517 h -13.8613 v -57.76619 h 13.8613 z"
+           fill="#7d7d7d"
+           stroke="#4d4d4d"
+           stroke-width="1.66555"
+           stroke-linecap="square"
+           id="path12761-3-7-76-0-4-2-2-4-3-2-5-9-4-5-9-0"
+           style="fill:#424242;fill-opacity:1;stroke:#262626;stroke-width:2.00001;stroke-dasharray:none;stroke-opacity:1" />
+        <path
+           d="m -1655.4839,1020.517 h -13.8616 v -57.76659 h 13.8616 z"
+           fill="#787878"
+           stroke="#4d4d4d"
+           stroke-width="1.66555"
+           stroke-linecap="square"
+           id="path12763-3-5-2-7-6-7-8-6-9-6-2-4-0-1-8-2"
+           style="fill:#3b3b3b;fill-opacity:1;stroke:#262626;stroke-width:2.00001;stroke-dasharray:none;stroke-opacity:1" />
+        <path
+           d="m -1669.407,1020.517 h -13.8613 v -57.76669 h 13.8613 z"
+           fill="#737373"
+           stroke="#4d4d4d"
+           stroke-width="1.66555"
+           stroke-linecap="square"
+           id="path12765-8-1-3-4-2-8-2-3-9-2-3-2-0-1-9-9"
+           style="fill:#333333;fill-opacity:1;stroke:#262626;stroke-width:2.00001;stroke-dasharray:none;stroke-opacity:1" />
+        <path
+           d="m -1600.216,1020.517 h -13.8613 v -57.76689 h 13.8613 z"
+           fill="#878787"
+           stroke="#4d4d4d"
+           stroke-width="1.66555"
+           stroke-linecap="square"
+           id="path12767-5-8-9-3-8-0-5-8-4-9-8-8-5-2-7-5"
+           style="fill:#595959;fill-opacity:1;stroke:#262626;stroke-width:2.00001;stroke-dasharray:none;stroke-opacity:1" />
+      </g>
+      <path
+         id="path12771-8-2-6-2-2-7-4-2-8-6-7-7-7-4-1-8"
+         style="fill:#273140;fill-opacity:1;stroke:#171717;stroke-width:2.3;stroke-linecap:round;stroke-dasharray:none;stroke-opacity:1;stop-color:#000000"
+         d="m 1231.6914,-654.00989 h 1.3725 v -5.2e-4 h 73.6529 v 5.2e-4 h 3.6457 v 88.76926 h -8.3581 v -80.41111 h -61.9549 v 80.41111 h -8.3581 z" />
+    </g>
+  </g>
+</svg>

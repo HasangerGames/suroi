@@ -1,4 +1,5 @@
 @use "../palette.scss";
+@use "../variables.scss";
 
 .btn {
   display: block;
@@ -15,7 +16,13 @@
   border-radius: 10px;
 
   text-decoration: none;
-  text-shadow: 3px 3px 8px #00000064;
+  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.6);
+
+  filter: drop-shadow(1px 1px 3px rgba(0, 0, 0, 0.5));
+
+  @media screen and (max-width: variables.$screen_large) {
+    padding: 0 12px;
+  }
 }
 
 .btn-lg {
@@ -30,23 +37,36 @@
 
 .btn-icon {
   position: absolute;
-  top: calc((45px - 24px) / 2);
-  left: 2px;
-  height: 24px;
-  margin-left: 7px;
-  filter: drop-shadow(3px 3px 8px #00000064);
+  top: 50%;
+  transform: translateY(-50%);
+  left: 0;
+  margin-left: 8px;
+  height: 60%;
+  @include variables.drop-shadow;
+}
+
+#btn-play-duo .btn-icon + span {
+  margin-left: 20px;
+}
+
+#btn-play-squad .btn-icon + span {
+  margin-left: 27px;
 }
 
 .link-darken:hover,
-.link-darken:active,
-.btn-darken:hover,
-.btn-darken:active {
+.link-darken:active {
   color: inherit;
   filter: brightness(80%);
 }
 
+.btn-darken:hover,
+.btn-darken:active {
+  color: inherit;
+  filter: drop-shadow(1px 1px 4px rgba(0, 0, 0, 0.6)) brightness(80%);
+}
+
 .btn-disabled {
-  filter: brightness(80%);
+  filter: brightness(75%) saturate(75%);
   pointer-events: none;
   user-select: none;
 }
@@ -89,6 +109,16 @@
   box-shadow: inset 0 -2px palette.$success;
 }
 
+.btn-kofi {
+  background: palette.$kofi;
+  border-bottom: 2px solid palette.$kofi_bg;
+  box-shadow: inset 0 -2px palette.$kofi_bg;
+
+  img {
+    @include variables.drop-shadow;
+  }
+}
+
 // Socials
 .btn-social {
   display: inline-block;
@@ -96,23 +126,32 @@
   height: 45px;
   width: 45px;
 
-  margin: 4px 0;
-
   font-size: large;
 
   border: none;
   border-radius: 12px;
 
-  background-size: 65%;
+  background-size: 60%;
   background-position: center;
   background-repeat: no-repeat;
   text-align: center;
+
+  @media screen and (max-width: 800px) {
+    background-size: 50%;
+  }
 }
 
-.btn-twitter {
-  background-image: url("/img/socials/twitter.svg");
-  background-color: palette.$twitter;
-  box-shadow: inset 0 -4px palette.$twitter_bg;
+.btn-bsky {
+  background-image: url("/img/socials/bsky.svg");
+  background-color: palette.$bsky;
+  box-shadow: inset 0 -4px palette.$bsky_bg;
+}
+
+.btn-instagram {
+  background-image: url("/img/socials/instagram.svg");
+  background-color: palette.$instagram;
+  background-position-y: calc(50% - 2px);
+  box-shadow: inset 0 -4px palette.$instagram_bg;
 }
 
 .btn-instagram {
@@ -124,6 +163,7 @@
 .btn-reddit {
   background-image: url("/img/socials/reddit.svg");
   background-color: palette.$reddit;
+  background-position-y: calc(50% - 1px);
   box-shadow: inset 0 -4px palette.$reddit_bg;
 }
 
@@ -136,25 +176,31 @@
 .btn-youtube {
   background-image: url("/img/socials/youtube.svg");
   background-color: palette.$youtube;
+  background-position-y: calc(50% - 2px);
   box-shadow: inset 0 -4px palette.$youtube_bg;
 }
 
 .btn-github {
   background-image: url("/img/socials/github.svg");
   background-color: palette.$github;
+  background-position-y: calc(50% - 1px);
   box-shadow: inset 0 -4px palette.$github_bg;
 }
 
 .btn-wiki {
-  background-image: url("/img/socials/wiki.svg");
   background-color: palette.$orange;
   box-shadow: inset 0 -4px palette.$orange_bg;
-  padding: 0;
+}
+
+.btn-kofi, .btn-wiki {
+  height: 45px;
   display: flex;
-  span {
-    color: white;
-    font-weight: 800;
-    margin: auto;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+
+  &:hover {
+    text-decoration: none;
   }
 }
 
@@ -167,18 +213,6 @@
   &.active {
     outline: 5px solid palette.$blue;
   }
-}
-
-.rules-close-btn {
-  position: absolute;
-  transform: translate(150px, 6px);
-  width: 25px;
-  height: 25px;
-  z-index: 10;
-  text-align: center;
-  border-radius: 50%;
-  background-color: palette.$danger;
-  cursor: pointer;
 }
 
 .btn-spectate-kill-leader {

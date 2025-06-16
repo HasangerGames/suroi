@@ -1,60 +1,26 @@
-import { Ammos } from "./definitions/ammos";
-import { HealingItems } from "./definitions/healingItems";
-import { type Mode } from "./definitions/modes";
-import { Scopes } from "./definitions/scopes";
-import { Throwables } from "./definitions/throwables";
-import { freezeDeep } from "./utils/misc";
+import type { WeaponTypes } from "./definitions/loots";
+import { type ModeName } from "./definitions/modes";
+import { PlayerModifiers } from "./typings";
 import { ItemType } from "./utils/objectDefinitions";
 
-export const enum Constants {
-    MAX_POSITION = 1924,
-    MIN_OBJECT_SCALE = 0.15,
-    MAX_OBJECT_SCALE = 3,
-    PLAYER_NAME_MAX_LENGTH = 16
-}
-
-/* eslint-disable @typescript-eslint/prefer-literal-enum-member */
-// the point of "derived" is to have them not be hardcoded
-
-export const enum Derived {
-    OBJECT_SCALE_DIFF = Constants.MAX_OBJECT_SCALE - Constants.MIN_OBJECT_SCALE,
-    DOUBLE_MAX_POS = 2 * Constants.MAX_POSITION
-}
-
-export const DEFAULT_INVENTORY: Record<string, number> = Object.create(null) as Record<string, number>;
-
-for (const item of [...HealingItems, ...Ammos, ...Scopes, ...Throwables]) {
-    let amount = 0;
-
-    switch (true) {
-        case item.itemType === ItemType.Ammo && item.ephemeral: amount = Infinity; break;
-        case item.itemType === ItemType.Scope && item.giveByDefault: amount = 1; break;
-    }
-
-    DEFAULT_INVENTORY[item.idString] = amount;
-}
-
-Object.freeze(DEFAULT_INVENTORY);
-
-export const itemKeys: readonly string[] = Object.keys(DEFAULT_INVENTORY);
-export const itemKeysLength = itemKeys.length;
-
 const inventorySlotTypings = Object.freeze([ItemType.Gun, ItemType.Gun, ItemType.Melee, ItemType.Throwable] as const);
-export const GameConstants = freezeDeep({
-    // !!!!! NOTE: Increase this every time a bit stream change is made between latest release and master
+export const GameConstants = {
+    // !!!!! NOTE: Increase this every time a byte stream change is made between latest release and master
     // or a new item is added to a definition list
-    protocolVersion: 42,
+    protocolVersion: 57,
     gridSize: 32,
-    maxPosition: Constants.MAX_POSITION,
-    modeName: "winter" satisfies Mode as Mode,
+    maxPosition: 1924,
+    objectMinScale: 0.15,
+    objectMaxScale: 3,
+    defaultMode: "normal" satisfies ModeName as ModeName,
     player: {
         radius: 2.25,
-        baseSpeed: 0.02655,
+        baseSpeed: 0.03,
         defaultHealth: 100,
         maxAdrenaline: 100,
         inventorySlotTypings,
         maxWeapons: inventorySlotTypings.length,
-        nameMaxLength: Constants.PLAYER_NAME_MAX_LENGTH,
+        nameMaxLength: 16,
         defaultName: "Player",
         defaultSkin: "hazel_jumpsuit",
         killLeaderMinKills: 3,
@@ -63,33 +29,65 @@ export const GameConstants = freezeDeep({
         maxReviveDist: 5,
         bleedOutDPMs: 0.002, // === 2 dps
         maxPerkCount: 1,
+        buildingVisionSize: 20,
         rateLimitPunishmentTrigger: 10,
         emotePunishmentTime: 5000, // ms
-        rateLimitInterval: 1000
+        rateLimitInterval: 1000,
+        defaultModifiers: (): PlayerModifiers => ({
+            maxHealth: 1,
+            maxAdrenaline: 1,
+            baseSpeed: 1,
+            size: 1,
+            adrenDrain: 1,
+
+            minAdrenaline: 0,
+            hpRegen: 0
+        })
     },
     gas: {
         damageScaleFactor: 0.005, // Extra damage, linear per distance unit into the gas
         unscaledDamageDist: 12 // Don't scale damage for a certain distance into the gas
     },
-    lootSpawnDistance: 0.7,
+    lootSpawnMaxJitter: 0.7,
+    lootRadius: {
+        [ItemType.Gun]: 3.4,
+        [ItemType.Ammo]: 2,
+        [ItemType.Melee]: 3,
+        [ItemType.Throwable]: 3,
+        [ItemType.Healing]: 2.5,
+        [ItemType.Armor]: 3,
+        [ItemType.Backpack]: 3,
+        [ItemType.Scope]: 3,
+        [ItemType.Skin]: 3,
+        [ItemType.Perk]: 3
+    } satisfies Record<ItemType, number>,
+    defaultSpeedModifiers: {
+        [ItemType.Gun]: 0.88,
+        [ItemType.Melee]: 1,
+        [ItemType.Throwable]: 0.92
+    } satisfies Record<WeaponTypes, number>,
     airdrop: {
         fallTime: 8000,
         flyTime: 30000,
         damage: 300
     },
+    projectiles: {
+        maxHeight: 5,
+        gravity: 10,
+        distanceToMouseMultiplier: 1.5,
+        drag: {
+            air: 0.7,
+            ground: 3,
+            water: 5
+        }
+    },
     riverPadding: 64,
-    trailPadding: 384
-});
+    trailPadding: 384,
+    explosionRayDistance: 2
+};
 
 export enum ZIndexes {
     Ground,
-    UnderWaterDeathMarkers,
-    UnderWaterDeadObstacles,
-    UnderWaterObstacles,
-    UnderWaterLoot,
-    UnderwaterGroundedThrowables,
-    UnderwaterDownedPlayers,
-    UnderwaterPlayers,
     BuildingsFloor,
     Decals,
     DeadObstacles,
@@ -124,12 +122,14 @@ export enum ZIndexes {
     Gas
 }
 
-export const enum Layer {
-    Basement1 = -2,
-    ToBasement1 = -1,
+export const Z_INDEX_COUNT = Object.keys(ZIndexes).length / 2; // account for double indexing
+
+export enum Layer {
+    Basement = -2,
+    ToBasement = -1,
     Ground = 0,
-    ToFloor1 = 1,
-    Floor1 = 2
+    ToUpstairs = 1,
+    Upstairs = 2
 }
 
 export const enum Layers {
@@ -153,8 +153,66 @@ export enum ObjectCategory {
     Building,
     Decal,
     Parachute,
-    ThrowableProjectile,
+    Projectile,
     SyncedParticle
+}
+
+/**
+ * An enum indicating the degree to which an obstacle should allow
+ * throwables to sail over it.
+ *
+ * Note that any throwable whose velocity is below 0.03 u/ms won't be able to sail
+ * over any obstacle, even those marked as `Always`. Additionally, if the obstacle
+ * in question has a role that is `ObstacleSpecialRoles.Door`, its preference will only
+ * be honored when the door is opened; if it is closed, it will act as {@link Never}.
+ */
+export enum FlyoverPref {
+    /**
+     * Always allow throwables to fly over the object.
+     */
+    Always,
+
+    /**
+     * Only allow throwables to fly over the object if the throwable's velocity exceeds 0.04 u/ms.
+     * For reference, the maximum throwing speed is around 0.09 u/ms for a 1x scope.
+     */
+    Sometimes,
+
+    /**
+     * Never allow throwables to fly over the object.
+     */
+    Never
+}
+
+export enum MapObjectSpawnMode {
+    Grass,
+    /**
+     * Grass, beach and river banks.
+     */
+    GrassAndSand,
+    River,
+    Beach,
+    Trail
+}
+
+export enum RotationMode {
+    /**
+     * Allows rotation in any direction (within the limits of the bit stream's encoding capabilities)
+     */
+    Full,
+    /**
+     * Allows rotation in the four cardinal directions: up, right, down and left
+     */
+    Limited,
+    /**
+     * Allows rotation in two directions: a "normal" direction and a "flipped" direction; for example,
+     * up and down, or left and right
+     */
+    Binary,
+    /**
+     * Disabled rotation
+     */
+    None
 }
 
 export const enum AnimationType {
@@ -168,13 +226,6 @@ export const enum AnimationType {
     GunClick,
     LastShot,
     Revive
-}
-
-export const enum KillfeedMessageType {
-    DeathOrDown,
-    KillLeaderAssigned,
-    KillLeaderDeadOrDisconnected,
-    KillLeaderUpdated
 }
 
 export const enum GasState {
@@ -224,49 +275,9 @@ export const enum PlayerActions {
     Revive
 }
 
-export enum KillfeedEventType {
-    Suicide,
-    NormalTwoParty,
-    FinishedOff,
-    FinallyKilled,
-    Gas,
-    BleedOut,
-    Airdrop
-}
-
-export const enum KillfeedEventSeverity {
-    Kill,
-    Down
-}
-
 export enum InventoryMessages {
     NotEnoughSpace,
     ItemAlreadyEquipped,
     BetterItemEquipped,
-    CannotUseRadio,
-    RadioOverused
+    CannotUseFlare
 }
-
-// i'm putting this here because placing it in objectDefinitions.ts or
-// in bullets.ts causes circular imports
-export const defaultBulletTemplate = {
-    tracer: {
-        opacity: 1,
-        width: 1,
-        length: 1,
-        image: "base_trail",
-        particle: false,
-        zIndex: ZIndexes.Bullets
-    },
-    allowRangeOverride: false,
-    lastShotFX: false,
-    noCollision: false
-};
-
-export const TentTints = {
-    red: 0xb24c4c,
-    green: 0x90b24c,
-    blue: 0x4c7fb2,
-    orange: 0xc67438,
-    purple: 0x994cb2
-};

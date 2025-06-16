@@ -2,10 +2,12 @@ import { Layer } from "@common/constants";
 // import { equalLayer, isGroundLayer } from "@common/utils/layer";
 import { Numeric } from "@common/utils/math";
 import { Vec, type Vector } from "@common/utils/vector";
-import { type Game } from "../game";
-import { MODE /* , SOUND_FILTER_FOR_LAYERS */ } from "../utils/constants";
+import { Game } from "../game";
 // add a namespace to pixi sound imports because it has annoying generic names like "sound" and "filters" without a namespace
 import * as PixiSound from "@pixi/sound";
+import type { AudioSpritesheetImporter } from "../../../vite/plugins/audio-spritesheet-plugin";
+import { GameConsole } from "../console/gameConsole";
+import type { Tween } from "../utils/tween";
 
 export interface SoundOptions {
     position?: Vector
@@ -20,14 +22,14 @@ export interface SoundOptions {
      */
     dynamic: boolean
     ambient: boolean
+    noMuffledEffect?: boolean
     onEnd?: () => void
 }
 
 PixiSound.sound.disableAutoPause = true;
 
 export class GameSound {
-    readonly manager: SoundManager;
-
+    id: string;
     name: string;
     position?: Vector;
     falloff: number;
@@ -38,18 +40,25 @@ export class GameSound {
 
     readonly dynamic: boolean;
     readonly ambient: boolean;
+    readonly noMuffledEffect: boolean;
 
-    get volume(): number { return this.ambient ? this.manager.ambienceVolume : this.manager.sfxVolume; }
+    get managerVolume(): number { return this.ambient ? SoundManager.ambienceVolume : SoundManager.sfxVolume; }
+
+    // acts as multiplier
+    volume = 1;
+    layerMult = 1;
+
+    layerVolumeTween?: Tween<GameSound>;
 
     instance?: PixiSound.IMediaInstance;
     readonly stereoFilter: PixiSound.filters.StereoFilter;
-    // readonly reverbFilter: PixiSound.filters.ReverbFilter;
+    equalizerFilter?: PixiSound.filters.EqualizerFilter;
 
     ended = false;
 
-    constructor(name: string, options: SoundOptions, manager: SoundManager) {
+    constructor(id: string, name: string, options: SoundOptions) {
+        this.id = id;
         this.name = name;
-        this.manager = manager;
         this.position = options.position;
         this.falloff = options.falloff;
         this.maxRange = options.maxRange;
@@ -57,37 +66,22 @@ export class GameSound {
         this.speed = options.speed ?? 1;
         this.dynamic = options.dynamic;
         this.ambient = options.ambient;
+        this.noMuffledEffect = options.noMuffledEffect ?? false;
         this.onEnd = options.onEnd;
         this.stereoFilter = new PixiSound.filters.StereoFilter(0);
-        // this.reverbFilter = new PixiSound.filters.ReverbFilter(1, 20);
 
-        if (!PixiSound.sound.exists(name)) {
-            console.warn(`Unknown sound with name ${name}`);
+        if (!PixiSound.sound.exists(id)) {
+            console.warn(`Unknown sound with name ${id}`);
             return;
         }
 
-        const filter: PixiSound.Filter = this.stereoFilter;
-
-        // We want reverb inside bunkers (basement layer) or if we are on a different layer with visible objects (layer floor1)
-        /* if (SOUND_FILTER_FOR_LAYERS && this.manager.game.layer) {
-            switch (this.manager.game.layer) {
-                case Layer.Floor1:
-                    filter = !equalLayer(this.layer, this.manager.game.layer ?? Layer.Ground) && isGroundLayer(this.layer) ? this.reverbFilter : this.stereoFilter;
-                    break;
-
-                case Layer.Basement1:
-                    filter = this.reverbFilter;
-                    break;
-            }
-        } */
-
-        const instanceOrPromise = PixiSound.sound.play(name, {
+        const instanceOrPromise = PixiSound.sound.play(id, {
             loaded: (_err, _sound, instance) => {
                 if (instance) this.init(instance);
             },
-            filters: [filter],
+            filters: [this.stereoFilter],
             loop: options.loop,
-            volume: this.volume,
+            volume: this.managerVolume * this.volume,
             speed: this.speed
         });
 
@@ -106,6 +100,7 @@ export class GameSound {
         instance.on("stop", () => {
             this.ended = true;
         });
+        this.updateLayer(true);
         this.update();
     }
 
@@ -113,15 +108,58 @@ export class GameSound {
         if (!this.instance) return;
 
         if (this.position) {
-            const diff = Vec.sub(this.manager.position, this.position);
+            const diff = Vec.sub(SoundManager.position, this.position);
 
             this.instance.volume = (
                 1 - Numeric.clamp(Math.abs(Vec.length(diff) / this.maxRange), 0, 1)
-            ) ** (1 + this.falloff * 2) * this.volume;
+            ) ** (1 + this.falloff * 2) * this.managerVolume * this.volume * this.layerMult;
 
             this.stereoFilter.pan = Numeric.clamp(-diff.x / this.maxRange, -1, 1);
         } else {
-            this.instance.volume = this.volume;
+            this.instance.volume = this.managerVolume * this.volume * this.layerMult;
+        }
+    }
+
+    updateLayer(initial = false): void {
+        if (!this.instance) return;
+
+        let layerMult = 1;
+        const layerDelta = this.ambient // ambient sounds only decrease in volume underground
+            ? this.layer - Game.layer
+            : Math.abs(this.layer - Game.layer);
+        if (layerDelta === 1) {
+            layerMult = 0.5;
+        } else if (layerDelta >= 2) {
+            layerMult = 0.15;
+        }
+
+        if (initial) {
+            this.layerMult = layerMult;
+            this._updateMuffledFilter(layerDelta);
+            return;
+        }
+
+        this.layerVolumeTween?.kill();
+        this.layerVolumeTween = Game.addTween<GameSound>({
+            target: this,
+            to: { layerMult },
+            duration: 500,
+            onComplete: () => {
+                this.layerVolumeTween = undefined;
+                this._updateMuffledFilter(layerDelta);
+            }
+        });
+    }
+
+    private _updateMuffledFilter(layerDelta: number): void {
+        if (this.noMuffledEffect || this.ambient) return;
+
+        if (layerDelta >= 2) {
+            // @ts-expect-error pixi sound doesn't have typings for this for some reason
+            this.instance.filters = [this.stereoFilter, this.equalizerFilter ??= new PixiSound.filters.EqualizerFilter(0, 0, 0, 0, 0, -8, -10, -14, -14, -14)];
+        } else if (this.equalizerFilter) {
+            // @ts-expect-error see above
+            this.instance.filters = [this.stereoFilter];
         }
     }
 
@@ -138,42 +176,57 @@ export class GameSound {
     }
 }
 
-export class SoundManager {
+class SoundManagerClass {
     readonly updatableSounds = new Set<GameSound>();
 
-    sfxVolume: number;
-    ambienceVolume: number;
+    sfxVolume = 0;
+    ambienceVolume = 0;
 
     position = Vec.create(0, 0);
 
-    private static _instantiated = false;
-    constructor(readonly game: Game) {
-        if (SoundManager._instantiated) {
-            throw new Error("Class 'SoundManager' has already been instantiated");
+    private _initialized = false;
+    async init(): Promise<void> {
+        if (this._initialized) {
+            throw new Error("SoundManager has already been initialized");
         }
-        SoundManager._instantiated = true;
+        this._initialized = true;
 
-        this.sfxVolume = game.console.getBuiltInCVar("cv_sfx_volume");
-        this.ambienceVolume = game.console.getBuiltInCVar("cv_ambience_volume");
-        this.loadSounds();
+        this.sfxVolume = GameConsole.getBuiltInCVar("cv_sfx_volume");
+        this.ambienceVolume = GameConsole.getBuiltInCVar("cv_ambience_volume");
+
+        const { importSpritesheet } = await import("virtual:audio-spritesheet-importer") as AudioSpritesheetImporter;
+        const { filename, spritesheet } = await importSpritesheet(Game.modeName);
+        const audio = await (await fetch(filename)).arrayBuffer();
+        let offset = 0;
+        for (const [id, length] of Object.entries(spritesheet)) {
+            this.addSound(id, { source: audio.slice(offset, offset + length) });
+            offset += length;
+        }
+
+        const { noPreloadSounds } = await import("virtual:audio-spritesheet-no-preload") as { noPreloadSounds: string[] };
+        for (const id of noPreloadSounds) {
+            this.addSound(id, { url: `./audio/game/no-preload/${id}.mp3`, preload: false });
+        }
     }
 
-    play(name: string, options?: Partial<SoundOptions>): GameSound {
-        const sound = new GameSound(name, {
-            falloff: 1,
-            maxRange: 256,
-            dynamic: false,
-            ambient: false,
-            layer: this.game.layer ?? Layer.Ground,
-            loop: false,
-            ...options
-        }, this);
+    addSound(id: string, opts: Partial<PixiSound.Options>): void {
+        /**
+         * For some reason, PIXI will call the `loaded` callback twice
+         * when an error occurs…
+         */
+        let called = false;
 
-        if (sound.dynamic || sound.ambient) {
-            this.updatableSounds.add(sound);
-        }
-
-        return sound;
+        PixiSound.sound.add(id, {
+            ...opts,
+            loaded(error: Error | null) {
+                // despite what the pixi typings say, logging `error` shows that it can be null
+                if (error !== null && !called) {
+                    called = true;
+                    console.warn(`Failed to load sound '${id}'\nError object provided below`);
+                    console.error(error);
+                }
+            }
+        });
     }
 
     update(): void {
@@ -186,39 +239,32 @@ export class SoundManager {
         }
     }
 
+    has(name: string): boolean {
+        return PixiSound.sound.exists(name);
+    }
+
+    play(name: string, options?: Partial<SoundOptions>): GameSound {
+        const sound = new GameSound(name, name, {
+            falloff: 1,
+            maxRange: 256,
+            dynamic: false,
+            ambient: false,
+            layer: Game.layer,
+            loop: false,
+            ...options
+        });
+
+        if (sound.dynamic || sound.ambient) {
+            this.updatableSounds.add(sound);
+        }
+
+        return sound;
+    }
+
     stopAll(): void {
         PixiSound.sound.stopAll();
-    }
-
-    loadSounds(): void {
-        for (const path in import.meta.glob(["/public/audio/sfx/**/*.mp3", "/public/audio/ambience/**/*.mp3"])) {
-            /**
-             * For some reason, PIXI will call the `loaded` callback twice
-             * when an error occurs…
-             */
-            let called = false;
-
-            const name = path.slice(path.lastIndexOf("/") + 1, -4); // removes path and extension
-            let url = path.slice(7); // removes the "/public"
-            if (MODE.specialSounds?.includes(name)) {
-                url = url.replace(name, `${name}_${MODE.reskin}`);
-            }
-
-            PixiSound.sound.add(
-                name,
-                {
-                    url,
-                    preload: true,
-                    loaded(error: Error | null) {
-                        // despite what the pixi typings say, logging `error` shows that it can be null
-                        if (error !== null && !called) {
-                            called = true;
-                            console.warn(`Failed to load sound '${name}' (path '${url}')\nError object provided below`);
-                            console.error(error);
-                        }
-                    }
-                }
-            );
-        }
+        this.updatableSounds.clear();
     }
 }
+
+export const SoundManager = new SoundManagerClass();

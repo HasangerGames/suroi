@@ -6,7 +6,7 @@
    viewBox="0 0 48.958997 48.951012"
    id="svg10"
    sodipodi:docname="airdrop_crate_locked.svg"
-   inkscape:version="1.3.2 (091e20e, 2023-11-25, custom)"
+   inkscape:version="1.4 (1:1.4+202410161351+e7c3feb100)"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -35,13 +35,12 @@
        inkscape:isstock="true"
        inkscape:label="Stripes 01 (1:1)">
       <rect
-   style="stroke:none"
-   x="0"
-   y="-0.5"
-   width="1"
-   height="11"
-   id="rect134-1" />
-
+         style="stroke:none;fill:#a68024"
+         x="0"
+         y="-0.5"
+         width="1"
+         height="11"
+         id="rect134-1" />
     </pattern>
     <pattern
        inkscape:collect="always"
@@ -64,13 +63,12 @@
        inkscape:isstock="true"
        inkscape:label="Stripes 01 (1:1)">
       <rect
-   style="stroke:none"
-   x="0"
-   y="-0.5"
-   width="1"
-   height="11"
-   id="rect187-8" />
-
+         style="stroke:none;fill:#d9d9d9"
+         x="0"
+         y="-0.5"
+         width="1"
+         height="11"
+         id="rect187-8" />
     </pattern>
     <pattern
        inkscape:collect="always"
@@ -93,13 +91,12 @@
        inkscape:isstock="true"
        inkscape:label="Stripes 01 (1:1)">
       <rect
-   style="stroke:none"
-   x="0"
-   y="-0.5"
-   width="1"
-   height="11"
-   id="rect187-0-2" />
-
+         style="stroke:none;fill:#d9d9d9"
+         x="0"
+         y="-0.5"
+         width="1"
+         height="11"
+         id="rect187-0-2" />
     </pattern>
   </defs>
   <sodipodi:namedview
@@ -113,12 +110,12 @@
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
      inkscape:zoom="3.3135077"
-     inkscape:cx="106.53363"
+     inkscape:cx="106.68453"
      inkscape:cy="90.085802"
-     inkscape:window-width="1920"
-     inkscape:window-height="1001"
-     inkscape:window-x="-9"
-     inkscape:window-y="-9"
+     inkscape:window-width="2560"
+     inkscape:window-height="1368"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
      inkscape:window-maximized="1"
      inkscape:current-layer="svg10" />
   <g

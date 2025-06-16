@@ -38,7 +38,7 @@
       rel="icon"
       type="image/svg+xml"
       sizes="any"
-      href="./img/logos/suroi_small.svg"
+      href="./img/logos/suroi_favicon.svg"
     />
 
     <link
@@ -63,53 +63,53 @@
     <link rel="manifest" href="./manifest.json" />
     <style>
       body {
-        background-color: #5b8939;
+        background-color: #3d3e48;
+        overflow: hidden;
       }
-      body > :not(.loading-logo) {
+
+      #splash-ui, #game {
         opacity: 0;
       }
 
-      #btn-cancel-finding-game,
-      .loading-logo,
-      #loading-text {
+      .loader {
+        background-image: url('data:image/svg+xml,<svg width="96" height="96" xml:space="preserve" xmlns="http://www.w3.org/2000/svg"><circle style="fill:%23000000;fill-opacity:1;stroke:%23008af0;stroke-width:5.74001;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" cx="48" cy="48" r="45.13"/><circle style="fill:none;fill-opacity:1;stroke:%23ff7500;stroke-width:4.59201;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" cx="48" cy="48" r="43.707"/><path style="fill:%23ff7500;fill-opacity:1;stroke-width:4.41161" d="M45.105 10.499a21.548 21.621 0 0 0-18.674 21.37 21.548 21.621 0 0 0 .318 3.564 21.548 21.621 0 0 0-3.226 1.494 21.548 21.621 0 0 0-9.11 26.92l.672-.389a15.084 15.135 0 0 1 6.692-18.03 15.084 15.135 0 0 1 8.258-2.011 15.084 15.135 0 0 1 11.94 6.956l1.97-1.147a4.31 4.324 0 0 1-.276-1.502 4.31 4.324 0 0 1 3.587-4.255v-2.296a15.084 15.135 0 0 1-14.365-15.07 15.084 15.135 0 0 1 12.214-14.845Zm5.746 0v.76a15.084 15.135 0 0 1 12.215 14.844 15.084 15.135 0 0 1-14.365 15.113v2.253a4.31 4.324 0 0 1 3.587 4.255 4.31 4.324 0 0 1-.275 1.502l1.97 1.147a15.084 15.135 0 0 1 11.939-6.956 15.084 15.135 0 0 1 8.258 2.011 15.084 15.135 0 0 1 6.718 18.047l.688.397a21.548 21.621 0 0 0-9.152-26.945 21.548 21.621 0 0 0-3.226-1.494 21.548 21.621 0 0 0 .318-3.564 21.548 21.621 0 0 0-18.675-21.37Zm-6.184 39.978-1.944 1.13a15.084 15.135 0 0 1-5.867 20.033 15.084 15.135 0 0 1-18.898-3.193l-.671.388a21.548 21.621 0 0 0 27.784 5.541 21.548 21.621 0 0 0 2.925-2.045 21.548 21.621 0 0 0 2.89 2.045 21.548 21.621 0 0 0 27.784-5.54l-.67-.39a15.084 15.135 0 0 1-18.9 3.194 15.084 15.135 0 0 1-5.84-20.015l-1.97-1.14a4.31 4.324 0 0 1-3.312 1.563 4.31 4.324 0 0 1-3.311-1.57z"/><path style="fill:%23008aff;fill-opacity:1;stroke-width:4.41161" d="M47.978 28.27c-4.539 0-8.715 1.59-12.025 4.229a13.647 13.693 0 0 0 3.114 3.918 14.28 14.28 0 0 1 8.911-3.107c3.391 0 6.495 1.17 8.946 3.125a13.647 13.693 0 0 0 3.106-3.919c-3.315-2.65-7.502-4.246-12.052-4.246ZM29.966 44.858a13.647 13.693 0 0 0-1.153.052c-.134.922-.232 1.856-.232 2.814 0 8.199 5.113 15.225 12.292 18.082a13.647 13.693 0 0 0 1.841-4.67 14.365 14.365 0 0 1-9.101-13.412c0-.701.068-1.381.163-2.055a13.647 13.693 0 0 0-3.81-.81zm36.025 0a13.647 13.693 0 0 0-3.81.812c.094.673.163 1.353.163 2.054 0 6.107-3.74 11.295-9.058 13.404a13.647 13.693 0 0 0 1.832 4.67c7.162-2.866 12.258-9.887 12.258-18.074 0-.958-.098-1.892-.233-2.814a13.647 13.693 0 0 0-1.152-.052z"/></svg>');
+        width: 96px;
+        height: 96px;
+        animation: rotate 3s infinite linear;
+      }
+
+      #loader-container, #initial-loader {
         position: absolute;
-      }
-
-      #btn-cancel-finding-game {
-        width: 50% !important;
-        bottom: 20px;
-        z-index: inherit;
-        pointer-events: all !important;
-      }
-
-      .loading-logo,
-      #loading-text {
-        width: 100px;
-        height: 100px;
-        margin-left: auto;
-        margin-right: auto;
-        margin-top: auto;
-        margin-bottom: auto;
-        left: 0;
-        right: 0;
         top: 0;
+        left: 0;
         bottom: 0;
+        right: 0;
+        margin: auto;
         z-index: 1000;
         pointer-events: none;
       }
 
-      #loading-text {
-        top: 215px;
-        width: 100%;
-        font-weight: bold;
-      }
-
-      .loading-logo {
-        animation: fade-out 3s, rotate 3s infinite linear;
+      #loader-container {
+        display: flex;
+        gap: 10px;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
       }
 
       #splash-options.loading #splash-options-wrapper {
         filter: blur(3px);
+      }
+
+      #loader-text {
+        text-align: center;
+        font-size: 20px;
+        font-weight: bold;
+        text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.6);
+      }
+
+      #privacy-policy-link {
+        color: white;
       }
 
       @keyframes rotate {
@@ -124,19 +124,25 @@
   </head>
 
   <body>
-    <img alt="Suroi Loader Logo" class="loading-logo" src="data:image/png;base64,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" />
+    <!-- Loader, appears on initial page load (spinning Suroi logo) -->
+    <div id="initial-loader" class="loader"></div>
+
+    <!-- Console -->
     <div id="console" style="display: none">
-        <div id="console-container">
-          <div id="console-header">
-            <span>Console</span>
-            <button id="console-close"><i class="fa-solid fa-xmark"></i></button>
-          </div>
-          <div id="console-out"></div>
-          <textarea id="console-in" autocapitalize="off" autocomplete="off" ></textarea>
+      <div id="console-container">
+        <div id="console-header">
+          <span>Console</span>
+          <button id="console-close"><i class="fa-solid fa-xmark"></i></button>
         </div>
+        <div id="console-out"></div>
+        <textarea id="console-in" autocapitalize="off" autocomplete="off" ></textarea>
+      </div>
       <div id="console-autocmp" style="display: none"></div>
     </div>
+
+    <!-- Main UI -->
     <div id="splash-ui">
+      <!-- Logo -->
       <div id="splash-logo">
         <img
           src="./img/logos/suroi_beta.svg"
@@ -144,7 +150,17 @@
           draggable="false"
         />
       </div>
+
+      <!-- Hardware acceleration warning -->
+      <div style="display: none;" id="splash-hw-acceleration-warning">
+        <div translation="warning_hw_accel_1">Graphics acceleration has been disabled or is not supported by your browser.</div>
+        <span translation="warning_hw_accel_2">Suroi may not perform well.</span>
+        <a translation="warning_hw_accel_link" target="_blank" href="https://www.computerhope.com/issues/ch002154.htm">Read more</a>
+      </div>
+
+      <!-- Main menu -->
       <div id="splash-modals">
+        <!-- News (left pane) -->
         <div id="splash-news" class="persistent-scrollbar">
           <h2>
             <a href="./news/">
@@ -155,47 +171,54 @@
           </h2>
           <div id="news-posts"></div>
         </div>
+
+        <!-- Center pane -->
         <div id="splash-center">
+          <!-- Error messages from the server -->
           <div id="splash-server-message" style="display: none">
             <span id="splash-server-message-text"></span>
           </div>
+
+          <!-- Displays a message telling the user to rotate their device to landscape if it's in portrait -->
           <div id="splash-rotate-message" style="display: none">
-            <i class="fa-solid fa-rotate"></i> <span translation="msg_rotate">For a better experience, please rotate your device to landscape.</span>
+            <i class="fa-solid fa-rotate"></i> <span translation="msg_rotate"></span>
           </div>
 
+          <!-- Username field, server selector, play buttons, & rules button -->
           <div id="splash-options" class="loading">
-            <img class="loading-logo" src="data:image/png;base64,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" />
-            <span id="loading-text" translation="msg_loading"></span>
-            <!-- <button id="btn-cancel-finding-game" class="btn btn-darken btn-primary btn-danger" translation="action_cancel" style="display: none;"></button> -->
+            <!-- Loading icon (spinning Suroi logo) -->
+            <div id="loader-container">
+              <div class="loader"></div>
+              <span id="loader-text" translation="msg_loading"></span>
+            </div>
+
             <div id="splash-options-wrapper">
+              <!-- Username input -->
               <input
                 type="text"
                 name="username-input"
                 id="username-input"
                 placeholder="Enter a nickname"
+                autocomplete="off"
                 maxlength="16"
               />
+              <!-- Dummy input to make password managers ignore the nickname field -->
+              <input type="password" style="width:0;height:0;background:transparent;border:none;padding:0;margin:0;display:block">
+
+              <!-- Server selector -->
               <div id="server-select" class="dropdown">
                 <button id="btn-server-select">
                   <span id="server-name">-</span>
                   <span style="margin-left: auto">
-                    <img
-                      src="./img/misc/player_icon.svg"
-                      width="16"
-                      height="16"
-                      alt="Player count"
-                    />
+                    <img src="./img/misc/player_icon.svg" width="16" height="16" alt="Player count">
                     <span id="server-player-count">-</span>
                   </span>
-                  <!--<span style="margin-left: 5px">
-                    <img src="./img/misc/ping_icon.svg" width="16" height="16" alt="Ping">
-                    <span id="server-ping">-</span>
-                  </span>-->
                   <i class="fa-solid fa-caret-down"></i>
                 </button>
                 <ul class="dropdown-content" id="server-list"></ul>
               </div>
 
+              <!-- Play buttons -->
               <button class="btn btn-lg btn-darken btn-primary" id="btn-play-solo">
                 <span translation="play_solo"></span>
               </button>
@@ -212,81 +235,101 @@
                 <button class="btn btn-lg btn-darken btn-purple" id="btn-create-team" translation="create_team"></button>
               </div>
 
-              <span id="locked-msg" style="display: none">
-                <i class="fa-solid fa-lock"></i>
-                <span id="locked-time">--:--:--</span>
-                <button id="locked-info">
-                  <i class="fa-solid fa-info-circle"></i>
-                </button>
-                <div id="locked-tooltip" style="display: none" translation="msg_locked_tooltip"></div>
-              </span>
+              <!-- Mode/team switch messages -->
+              <div id="next-switch-messages">
+                <span id="next-team-size-msg" class="next-switch-msg" style="display: none">
+                  <div class="next-switch-icon"></div>
+                  <span class="next-switch-time"></span>
+                </span>
+                <span id="next-mode-msg" class="next-switch-msg" style="display: none">
+                  <div class="next-switch-icon"></div>
+                  <span class="next-switch-time"></span>
+                </span>
+              </div>
 
-              <button class="rules-close-btn btn-darken" id="rules-close-btn" style="display: none">
-                <i class="fa-solid fa-xmark"></i>
-              </button>
+              <!-- Rules & tutorial button -->
               <button class="btn btn-lg btn-darken btn-secondary" id="btn-rules" style="display: none">
                 <div class="pulsating-circle" style="display: none"></div>
                 <span translation="rules_and_tutorial"></span>
+                <button class="btn-darken" id="rules-close-btn" style="display: none">
+                  <i class="fa-solid fa-xmark"></i>
+                </button>
               </button>
             </div>
           </div>
+
+          <!-- Social buttons -->
           <div id="splash-socials">
-            <a
-              href="https://discord.suroi.io"
-              rel="noopener noreferrer"
-              class="btn btn-darken btn-social btn-discord"
-              target="_blank"
-            ></a>
-            <a
-              href="https://reddit.com/r/suroigame"
-              rel="noopener noreferrer"
-              class="btn btn-darken btn-social btn-reddit"
-              target="_blank"
-            ></a>
-            <a
-              href="https://twitter.com/suroigame"
-              rel="noopener noreferrer"
-              class="btn btn-darken btn-social btn-twitter"
-              target="_blank"
-            ></a>
-            <a
-              href="https://www.youtube.com/@suroigame"
-              rel="noopener noreferrer"
-              class="btn btn-darken btn-social btn-youtube"
-              target="_blank"
-            ></a>
-            <a
-              href="https://github.com/HasangerGames/suroi"
-              rel="noopener noreferrer"
-              class="btn btn-darken btn-social btn-github"
-              target="_blank"
-            ></a>
-            <a
-              href="https://wiki.suroi.io"
-              rel="noopener noreferrer"
-              class="btn btn-darken btn-social btn-wiki"
-              target="_blank"
-            ></a>
+            <div>
+              <a class="btn btn-darken btn-wiki" href="https://wiki.suroi.io" target="_blank">
+                <img src="img/socials/wiki.svg" width="32">
+                <span translation="wiki" style="color: white"></span>
+              </a>
+              <a class="btn btn-darken btn-kofi" href="https://ko-fi.com/suroi" target="_blank">
+                <img src="img/socials/kofi.svg" width="32">
+                <span translation="donate" style="color: white"></span>
+              </a>
+            </div>
+            <div>
+              <a
+                href="https://discord.suroi.io"
+                rel="noopener noreferrer"
+                class="btn btn-darken btn-social btn-discord"
+                target="_blank"
+              ></a>
+              <a href="https://reddit.com/r/suroigame" rel="noopener noreferrer" class="btn btn-darken btn-social btn-reddit" target="_blank"></a>
+              <a
+                href="https://bsky.app/profile/suroi.io"
+                rel="noopener noreferrer"
+                class="btn btn-darken btn-social btn-bsky"
+                target="_blank"
+              ></a>
+              <a
+                href="https://instagram.com/suroigame"
+                rel="noopener noreferrer"
+                class="btn btn-darken btn-social btn-instagram"
+                target="_blank"
+              ></a>
+              <a
+                href="https://www.youtube.com/@suroigame"
+                rel="noopener noreferrer"
+                class="btn btn-darken btn-social btn-youtube"
+                target="_blank"
+              ></a>
+              <a
+                href="https://github.com/HasangerGames/suroi"
+                rel="noopener noreferrer"
+                class="btn btn-darken btn-social btn-github"
+                target="_blank"
+              ></a>
+            </div>
           </div>
         </div>
+
+        <!-- Settings & skin options (right pane) -->
         <div id="splash-customize">
+          <!-- Skin preview -->
           <div id="skin-container">
-            <div id="skin-base"><div id="btn-customize">
-              <i class="fa-solid fa-shirt"></i>
-            </div></div>
+            <div id="skin-base"></div>
             <div id="skin-left-fist"></div>
             <div id="skin-right-fist"></div>
           </div>
+
+          <!-- Loadout & settings buttons -->
           <div style="display: flex; flex-direction: row; gap: 15px">
-            <button
-              class="btn btn-lg btn-darken btn-secondary"
-              id="btn-settings"
-            >
+            <button class="btn btn-lg btn-darken btn-primary" id="btn-customize">
+              <i class="fa-solid fa-shirt"></i>
+              <span translation="loadout"></span>
+            </button>
+
+            <button class="btn btn-lg btn-darken btn-secondary" id="btn-settings">
               <i class="fa-solid fa-gear"></i>
               <span translation="settings"></span>
             </button>
           </div>
         </div>
+
+        <!-- Featured Youtubr & Streamr -->
         <div id="splash-featured-people">
           <div class="featured-container">
             <p class="featured-heading" translation="featured_youtubr"></p>
@@ -297,9 +340,11 @@
               target="_blank"
             >
               <img
-                class="featured-logo"
+                id="featured-youtube-logo"
                 src="./img/misc/youtube-icon.svg"
                 alt="YouTube icon"
+                width="36"
+                height="25"
               />
               <span class="featured-name" id="youtube-featured-name"></span>
             </a>
@@ -313,14 +358,18 @@
               href=""
             >
               <img
-                class="featured-logo"
+                id="featured-twitch-logo"
                 src="./img/misc/twitch-icon.svg"
                 alt="Twitch icon"
+                width="26.333"
+                height="30"
               />
               <span class="featured-name" id="twitch-featured-name"></span>
             </a>
           </div>
         </div>
+
+        <!-- More dropdown (currently unused) -->
         <!--<div id="splash-more" class="dropdown">
           <button class="btn btn-darken btn-primary btn-dropdown" id="btn-dropdown-more">
             More
@@ -346,8 +395,8 @@
           </div>
         </div>-->
       </div>
-      <div>
-      <!-- Language stuff -->
+
+      <!-- Language selector -->
       <div id="language-dropdown" class="dropdown">
         <button class="btn btn-darken btn-secondary" id="btn-language">
           <specialI class="fa-solid fa-globe"></specialI>
@@ -355,32 +404,27 @@
           <i class="fa-solid fa-caret-down"></i></button>
         <div id="languages-selector" class="dropdown-content persistent-scrollbar"></div>
       </div>
-        <div id="splash-backlinks">
-          <a href="./changelog/" target="_blank" rel="noopener noreferrer"
-            >v%VITE_APP_VERSION%</a
-          >
-        </div>
-        <div id="splash-settings">
-          <button class="btn btn-primary btn-donate" style="width: auto; height:auto;" onclick="window.open('https://ko-fi.com/suroi')">
-            <i class="fa-solid fa-heart"></i>&nbsp;
-            <span translation="donate"></span>
-          </button>
-          <button
-            style="display: none"
-            class="btn btn-darken btn-secondary"
-            id="btn-volume"
-          >
-            <i class="fa-solid fa-volume-high"></i>
-          </button>
-        </div>
+
+      <!-- Bottom left & right links -->
+      <div id="splash-version">
+        <a href="./changelog/" target="_blank" rel="noopener noreferrer">v%VITE_APP_VERSION%</a>
+      </div>
+      <div id="splash-partners">
+        <a id="partners-link" href="#" translation="partners"></a>
+        <!-- <a id="privacy-policy-link" href="./privacy/" target="_blank" rel="noopener noreferrer" translation="privacy"></a> -->
       </div>
     </div>
+
+    <!-- Game UI -->
     <div id="game">
       <div id="game-ui">
+        <!-- Mobile joysticks containers -->
         <div id="joysticks-containers">
           <div id="left-joystick-container"></div>
           <div id="right-joystick-container"></div>
         </div>
+
+        <!-- Button to close minimap -->
         <button
           class="btn btn-lg btn-primary"
           id="btn-close-minimap"
@@ -388,28 +432,33 @@
         >
           <i class="fa-solid fa-close"></i>
         </button>
-      <div id="top-left-container">
-        <div id="game-misc-stats">
+
+        <!-- Minimap, gas timer, mobile options, coordinate display, & spectating controls -->
+        <div id="top-left-container">
+          <!-- Minimap border -->
           <div id="minimap-border"></div>
-            <div id="mobile-options" style="display: none">
-              <button id="btn-game-menu" class="btn btn-lg btn-primary fa-solid fa-bars"></button>
-              <button id="btn-emotes" class="btn btn-lg btn-primary">
-                <img src="./img/misc/emotes_icon.svg"/>
-              </button>
-              <button id="btn-toggle-ping" class="btn btn-lg btn-primary fa-solid fa-tower-broadcast"></button>
-            </div>
+
+          <!-- Mobile options menu -->
+          <div id="mobile-options" style="display: none">
+            <button id="btn-game-menu" class="btn btn-lg btn-primary fa-solid fa-bars"></button>
+            <button id="btn-emotes" class="btn btn-lg btn-primary">
+              <img src="./img/misc/emotes_icon.svg"/>
+            </button>
+            <button id="btn-toggle-ping" class="btn btn-lg btn-primary fa-solid fa-tower-broadcast"></button>
+          </div>
+
+          <!-- Gas timer & coordinate display -->
           <div id="gas-and-debug">
             <div id="gas-timer">
               <img id="gas-timer-image" src="./img/misc/gas-waiting-icon.svg" />
               <span id="gas-timer-text">0:00</span>
             </div>
             <div id="debug-hud">
-              <div id="fps-counter"></div>
-              <div id="ping-counter"></div>
-              <!-- The placeholder text is needed -->
               <div id="coordinates-hud">X: -- Y: -- Z: --</div>
             </div>
           </div>
+
+          <!-- Spectating controls -->
           <div id="spectating-container">
             <button id="btn-spectate-previous" class="btn btn-lg btn-primary">
               <i class="fa-solid fa-arrow-left"></i>
@@ -419,19 +468,18 @@
             <button id="btn-spectate-next" class="btn btn-lg btn-primary">
               <i class="fa-solid fa-arrow-right"></i>
             </button>
-            <button id="btn-spectate-kill-leader" class="btn btn-lg btn-secondary" translation="btn_spectate_kill_leader">
-            </button>
-            <button id="btn-spectate-replay" class="btn btn-lg btn-primary" translation="btn_play_again">
-            </button>
-            <button id="btn-spectate-menu" class="btn btn-lg btn-secondary" translation="btn_menu">
-            </button>
+            <button id="btn-spectate-kill-leader" class="btn btn-lg btn-secondary" translation="btn_spectate_kill_leader"></button>
+            <button id="btn-spectate-replay" class="btn btn-lg btn-primary" translation="btn_play_again"></button>
+            <button id="btn-spectate-menu" class="btn btn-lg btn-secondary" translation="btn_menu"></button>
           </div>
         </div>
-      </div>
 
+        <!-- Teammate indicators -->
         <div id="team-container"></div>
 
+        <!-- Alive & kill counters, kill leader & killfeed -->
         <div class="ui-leaderboard">
+          <!-- Kill leader -->
           <div id="ui-kill-leader">
             <div id="kill-leader-leader-container">
               <span id="kill-leader-leader" translation="msg_waiting_for_leader"></span>
@@ -442,6 +490,8 @@
               <span id="kill-leader-kills-counter">0</span>
             </div>
           </div>
+
+          <!-- Alive & kill counters -->
           <div id="counter-holder">
             <div class="counter" id="kill-counter">
               <img src="./img/misc/skull_icon.svg" />
@@ -452,8 +502,11 @@
               <div class="counter-text" id="ui-players-alive">1</div>
             </div>
           </div>
+
           <div id="kill-feed"></div>
         </div>
+
+        <!-- Action timer -->
         <div id="action-container" style="display: none">
           <div id="action-timer">
             <h2 id="action-time">0.0</h2>
@@ -476,12 +529,19 @@
           </div>
           <div id="action-name"></div>
         </div>
+
+        <!-- Interact message -->
         <div id="interact-message" style="display: none">
           <kbd id="interact-key"></kbd>
           <span id="interact-text"></span>
         </div>
+
+        <!-- Inventory messages, active weapon ammo counters, health & adrenaline bar, & killstreak display -->
         <div id="center-bottom-container">
+          <!-- Inventory messages -->
           <span id="inventory-message"></span>
+
+          <!-- Active weapon ammo counters -->
           <div id="weapon-ammo-container" style="display: none">
             <div id="weapon-clip-ammo">
               <span id="weapon-clip-ammo-count"></span>
@@ -489,51 +549,79 @@
             </div>
             <div id="weapon-inventory-ammo"></div>
           </div>
+
+          <!-- Adrenaline bar -->
           <div id="adrenaline-bar-container">
             <div id="adrenaline-bar"></div>
+            <div id="adrenaline-bar-min-wrapper">
+              <div id="adrenaline-bar-min"></div>
+            </div>
             <span id="adrenaline-bar-amount"></span>
             <span id="adrenaline-bar-min-max"></span>
           </div>
+
+          <!-- Health bar -->
           <div id="health-bar-container">
             <div id="health-bar-animation"></div>
             <div id="health-bar"></div>
             <span id="health-bar-amount"></span>
             <span id="health-bar-max"></span>
           </div>
+
+          <!-- Killstreak display -->
           <div id="killstreak-indicator-container" style="display: none">
             <span id="killstreak-indicator-counter">Streak: 0</span>
           </div>
         </div>
 
+        <!-- Scopes, name of spectating player, spectate controls toggle, gas messages, screen recording indicator -->
         <div id="center-top-container">
+          <!-- Scopes -->
           <div class="inventory-container" id="scopes-container"></div>
+
+          <!-- Name of player being spectated & spectate controls toggle -->
           <div id="spectating-msg">
-            <spec translation="msg_spectating"></spec> <span id="spectating-msg-player"></span>
+            <span translation="msg_spectating"></span> <span id="spectating-msg-player"></span>
             <button id="btn-spectate-options" class="btn btn-lg btn-primary">
               <i id="btn-spectate-options-icon" class="fa-solid fa-eye-slash"></i>
             </button>
           </div>
+
+          <!-- Gas messages -->
           <div id="gas-msg" style="display: none">
             <div id="gas-msg-info"></div>
           </div>
+
+          <!-- Screen recording indicator -->
+          <div id="recording-pill" style="display: none">
+            <i class="fa-solid fa-video" style="margin-top: -2px"></i>
+            <span translation="recording"></span>
+            <span id="recording-time">0:00</span>
+            <button id="stop-recording-button"><i class="fa-solid fa-stop"></i></button>
+          </div>
         </div>
 
+        <!-- Kill modal -->
         <div id="kill-msg" style="display: none">
           <div id="kill-msg-kills"></div>
           <div id="kill-msg-cont"></div>
         </div>
 
+        <!-- Healing items -->
         <div class="inventory-container items-container" id="healing-items-container"></div>
+
+        <!-- Ammo -->
         <div id="ammos-container">
           <div class="inventory-container items-container" id="special-ammo-container"></div>
           <div class="inventory-container items-container" id="ammo-container"></div>
         </div>
 
         <div id="c4-detonate-btn">
-          <img class="item-image" src="./img/game/shared/explosions/c4-explode.svg" draggable="false">
+          <img class="item-image" src="./img/misc/c4-explode.svg" draggable="false">
           <div id="detonate-key"></div>
         </div>
 
+        <!-- Equipment -->
         <div class="inventory-container" id="equipment-container">
           <div class="inventory-slot has-item" id="helmet-slot">
             <img class="item-image" draggable="false" />
@@ -551,6 +639,8 @@
             <div class="item-tooltip"></div>
           </div>
         </div>
+
+        <!-- Perks -->
         <div class="inventory-container" id="perk-container">
           <!-- Slot 0 is intentionally in center -->
           <div class="inventory-slot has-item" id="perk-slot-1">
@@ -566,8 +656,11 @@
             <div class="item-tooltip"></div>
           </div>
         </div>
-        <div class="inventory-container" id="weapons-container">
-        </div>
+
+        <!-- Weapons -->
+        <div class="inventory-container" id="weapons-container"></div>
+
+        <!-- Emote wheel -->
         <div id="emote-wheel" style="display: none">
           <div class="emote-top"></div>
           <div class="emote-right"></div>
@@ -575,580 +668,727 @@
           <div class="emote-left"></div>
           <div class="button-center"></div>
         </div>
+
+        <!-- Game over screen -->
         <div id="game-over-overlay" style="display: none">
+          <!-- Win/death message -->
           <div id="game-over-top-screen">
-            <img id="chicken-dinner" src="./img/game/shared/emotes/chicken_dinner.svg" />
+            <img id="chicken-dinner" src="./img/game/shared/emotes/chicken_dinner.svg">
             <h1 id="game-over-text" class="modal-item" translation="msg_you_died"></h1>
-            <div id="game-over-rank-container">
-              <span translation="msg_your_rank"></span>
-              <span id="game-over-rank" class="modal-item"></span>
+            <div id="game-over-rank-and-team-kills-holder">
+              <div id="game-over-rank-container">
+                <span translation="msg_your_rank"></span>
+                <span id="game-over-rank" class="modal-item"></span>
+              </div>
+              <div id="game-over-team-kills-container">
+                <span id="game-over-team-kills" translation="msg_kills"></span>
+              </div>
             </div>
           </div>
-          <div id="game-over-screen">
-            <h1 id="game-over-player-name" class="modal-item">Player</h1>
-            <div class="modal-item" id="game-over-stats">
-              <div class="stat">
-                <span class="stat-name" translation="go_kills">Kills:</span>
-                <span class="stat-value" id="game-over-kills"></span>
-              </div>
-              <div class="stat">
-                <span class="stat-name" translation="go_damage_done">Damage done:</span>
-                <span class="stat-value" id="game-over-damage-done"></span>
-              </div>
-              <div class="stat">
-                <span class="stat-name" translation="go_damage_taken">Damage taken:</span>
-                <span class="stat-value" id="game-over-damage-taken"></span>
-              </div>
-              <div class="stat">
-                <span class="stat-name" translation="go_time_alive">Time alive:</span>
-                <span class="stat-value" id="game-over-time"></span>
-              </div>
-            </div>
-            <div class="modal-item">
-              <button
-                class="btn btn-lg btn-darken btn-primary"
-                id="btn-play-again"
-                translation="btn_play_again"
-              >
-              </button>
-              <div style="display: flex; gap: 8px">
-                <button
-                  class="btn btn-lg btn-darken btn-primary"
-                  id="btn-spectate"
-                  translation="btn_spectate"
-                >
-                </button>
-                <button
-                  class="btn btn-lg btn-darken btn-secondary"
-                  id="btn-menu"
-                  translation="btn_menu"
-                >
-                </button>
-              </div>
+
+          <!-- Stats -->
+          <div id="player-game-over-cards"></div>
+
+          <!-- Buttons -->
+          <div class="modal-item" id="game-over-buttons-holder">
+            <button class="btn btn-lg btn-darken btn-primary" id="btn-play-again" translation="btn_play_again"></button>
+            <div style="display: flex; gap: 8px">
+              <button class="btn btn-lg btn-darken btn-primary" id="btn-spectate" translation="btn_spectate"></button>
+              <button class="btn btn-lg btn-darken btn-secondary" id="btn-menu" translation="btn_menu"></button>
             </div>
           </div>
         </div>
       </div>
+
+      <!-- Game canvas, where the rendering happens -->
       <canvas id="game-canvas"></canvas>
     </div>
 
-  <div class="modal" id="game-menu" style="display: none">
-    <div class="modal-item">
-      <button class="btn btn-lg btn-darken btn-secondary" id="btn-settings-game"><i class="fa-solid fa-gear"></i>
-        <span translation="settings"></span>
-      </button>
-    </div>
-    <div class="modal-item">
-      <button class="btn btn-lg btn-darken btn-secondary" id="btn-fullscreen"><i class="fa-solid fa-expand"></i>
-        <span translation="fullscreen"></span>
-      </button>
-    </div>
-    <div class="modal-item">
-      <button class="btn btn-lg btn-darken btn-primary" id="btn-resume-game"><i class="fa-solid fa-play"></i>
-        <span translation="resume"></span>
-      </button>
-    </div>
-    <div class="modal-item">
-      <button class="btn btn-lg btn-darken btn-danger" id="btn-quit-game"><i
-          class="fa-solid fa-arrow-right-from-bracket"></i>
-        <span translation="quit"></span>
-      </button>
-    </div>
-  </div>
-  <div class="modal dialog" id="report-modal" style="display: none">
-    <div class="dialog-header">
-      <h3><span style="font-weight: 600" translation="report_reporting"></span><span id="reporting-name"></span></h3>
-      <span class="dialog-close-btn fa-solid fa-xmark" id="close-report"></span>
-    </div>
-    <div id="report-modal-content">
-      <div id="report-id-container">
-        <span translation="report_id"></span>
-        <span id="report-id"></span>
-      </div>
-      <span translation="report_instructions" use-html></span>
-    </div>
-  </div>
-  <div class="modal dialog" id="warning-modal" style="display: none">
-    <div id="warning-modal-content">
-      <h1 id="warning-modal-title"></h1>
-      <p id="warning-modal-text"></p>
-      <div id="warning-modal-agree-options" style="display: none">
-        <br><br>
-        <input type="checkbox" class="regular-checkbox" id="warning-modal-agree-checkbox">
-        <label for="warning-modal-agree-checkbox" translation="msg_punishment_warn_agreement"></label>
-        <br><br>
-        <button class="btn btn-lg btn-darken btn-primary btn-disabled" id="warning-btn-play-solo" style="width: 100%"><strong>Continue</strong></button>
-      </div>
-    </div>
-  </div>
-  <div class="modal dialog" id="settings-menu" style="display: none">
-    <div class="dialog-header">
-      <h3 translation="settings"></h3>
-      <span class="dialog-close-btn fa-solid fa-xmark" id="close-settings"></span>
-    </div>
-    <div id="settings-tabs-container">
-      <div class="tab-bar" id="settings-tab-bar">
-        <button class="tab active" id="tab-volume"><i class="fa-solid fa-volume-high"></i><span translation="settings_volume"></span></button>
-        <button class="tab" id="tab-keybinds"><i class="fa-solid fa-keyboard"></i><span translation="settings_keybinds"></span></button>
-        <button class="tab" id="tab-graphics"><i class="fa-solid fa-display"></i><span translation="settings_graphics"></span></button>
-        <button class="tab" id="tab-interface"><i class="fa-solid fa-list"></i><span translation="settings_interface" use-html></span></button>
-        <button class="tab" id="tab-import-export"><i class="fa-solid fa-file-export"></i><span translation="settings_save_load"></span></button>
-        <button class="tab" id="tab-mobile"><i class="fa-solid fa-mobile"></i><span translation="settings_mobile"></span></button>
-      </div>
-      <div id="settings-tabs" class="persistent-scrollbar">
-        <div class="tab-content active" id="tab-volume-content">
-          <div class="modal-item">
-            <label>
-              <span class="setting-title" translation="settings_master_volume"></span>
-              <span class="range-input-value"></span>
-              <input type="range" max="1" min="0" id="slider-master-volume" step="0.1" value="1">
-            </label>
-          </div>
-          <div class="modal-item">
-            <label>
-              <span class="setting-title" translation="settings_sfx_volume"></span>
-              <span class="range-input-value"></span>
-              <input type="range" max="1" min="0" id="slider-sfx-volume" step="0.1" value="1">
-            </label>
-          </div>
-          <div class="modal-item">
-            <label>
-              <span class="setting-title" translation="settings_ambience_volume"></span>
-              <span class="range-input-value"></span>
-              <input type="range" max="1" min="0" id="slider-ambience-volume" step="0.1" value="1">
-            </label>
-          </div>
-          <div class="modal-item">
-            <label>
-              <span class="setting-title" translation="settings_music_volume"></span>
-              <span class="range-input-value"></span>
-              <input type="range" max="1" min="0" id="slider-music-volume" step="0.1" value="1">
-            </label>
-          </div>
-          <div class="modal-item checkbox-setting">
-            <label>
-              <span class="setting-title"><span translation="settings_old_menu_music"></span><i>*</i></span>
-              <input type="checkbox" id="toggle-old-music">
-            </label>
-          </div>
-          <p style="color: red"><i translation="settings_require_reload"></i></p>
-        </div>
-        <div class="tab-content" id="tab-keybinds-content" style="display: none">
-        </div>
-        <div class="tab-content" id="tab-graphics-content" style="display: none">
-          <div class="modal-item select-setting">
-            <label>
-              <span class="setting-title"><span translation="settings_render_mode"></span><i>*</i></span>
-              <select id="render-mode-select">
-                <option value="webgl1">WebGL 1</option>
-                <option value="webgl2">WebGL 2</option>
-                <option value="webgpu" id="webgpu-option">WebGPU</option>
-              </select>
-            </label>
-          </div>
-          <div class="modal-item select-setting">
-            <label>
-              <span class="setting-title"><span translation="settings_render_resolution"></span><i>*</i></span>
-              <select id="render-res-select">
-                <option value="auto" translation="settings_render_resolution_auto">auto</option>
-                <option value="0.5">0.5</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-              </select>
-            </label>
-          </div>
-          <div class="modal-item checkbox-setting">
-            <label>
-              <span class="setting-title"><span translation="settings_hires_textures"></span><i>*</i></span>
-              <input type="checkbox" id="toggle-high-res">
-            </label>
-          </div>
-          <div class="modal-item checkbox-setting">
-            <label>
-              <span class="setting-title" translation="settings_cooler_graphics"></span>
-              <input type="checkbox" id="toggle-cooler-graphics">
-            </label>
-          </div>
-          <div class="modal-item checkbox-setting">
-            <label>
-              <span class="setting-title" translation="settings_ambient_particles"></span>
-              <input type="checkbox" id="toggle-ambient-particles">
-            </label>
-          </div>
-          <div class="modal-item checkbox-setting">
-            <label>
-              <span class="setting-title"><span translation="settings_antialias"></span><i>*</i></span>
-              <input type="checkbox" id="toggle-antialias">
-            </label>
-          </div>
-          <div class="modal-item checkbox-setting">
-            <label>
-              <span class="setting-title" translation="settings_movement_smoothing">Movement smoothing</span>
-              <input type="checkbox" id="toggle-movement-smoothing">
-            </label>
-          </div>
-          <div class="modal-item checkbox-setting">
-            <label>
-              <span class="setting-title" translation="settings_responsive_rotation">Responsive rotation</span>
-              <input type="checkbox" id="toggle-responsive-rotation">
-            </label>
-          </div>
-          <div class="modal-item checkbox-setting">
-            <label>
-              <span class="setting-title" translation="settings_camera_shake"></span>
-              <input type="checkbox" id="toggle-camera-shake">
-            </label>
-          </div>
-          <p style="color: red"><i translation="settings_require_reload"></i></p>
-        </div>
-        <div class="tab-content" id="tab-interface-content" style="display: none">
-          <div class="modal-item" id="ui-scale-container">
-            <label>
-              <span class="setting-title" translation="settings_interface_scale">Interface scale</span>
-              <span class="range-input-value"></span>
-              <input type="range" max="2" min="0.1" id="slider-ui-scale" step="0.05">
-            </label>
-          </div>
-          <div class="modal-item">
-            <label>
-              <span class="setting-title" translation="settings_minimap_opacity">Minimap opacity</span>
-              <span class="range-input-value"></span>
-              <input type="range" max="1" min="0.1" id="slider-minimap-transparency" step="0.1">
-            </label>
-          </div>
-          <div class="modal-item">
-            <label>
-              <span class="setting-title" translation="settings_fs_map_opacity">Fullscreen map opacity</span>
-              <span class="range-input-value"></span>
-              <input type="range" max="1" min="0.1" id="slider-big-map-transparency" step="0.1">
-            </label>
-          </div>
-          <div class="modal-item checkbox-setting">
-            <label>
-              <span class="setting-title" translation="settings_hide_minimap">Hide minimap</span>
-              <input type="checkbox" id="toggle-hide-minimap">
-            </label>
-          </div>
-          <div class="modal-item checkbox-setting">
-            <label>
-              <span class="setting-title" translation="settings_blur_splash">Blur splash screen</span>
-              <input type="checkbox" id="toggle-blur-splash">
-            </label>
-          </div>
-          <div class="modal-item checkbox-setting">
-            <label>
-              <span class="setting-title" translation="settings_hide_rules">Hide rules button</span>
-              <input type="checkbox" id="toggle-hide-rules">
-            </label>
-          </div>
-          <div class="modal-item checkbox-setting">
-            <label>
-              <span class="setting-title" translation="settings_warn_before_leaving">Warn before leaving</span>
-              <input type="checkbox" id="toggle-leave-warning">
-            </label>
-          </div>
-          <div class="modal-item checkbox-setting">
-            <label>
-              <span class="setting-title" translation="settings_show_fps">Show FPS</span>
-              <input type="checkbox" id="toggle-fps">
-            </label>
-          </div>
-          <div class="modal-item checkbox-setting">
-            <label>
-              <span class="setting-title" translation="settings_show_ping">Show ping</span>
-              <input type="checkbox" id="toggle-ping">
-            </label>
-          </div>
-          <div class="modal-item checkbox-setting">
-            <label>
-              <span class="setting-title" translation="settings_show_coordinates">Show coordinates</span>
-              <input type="checkbox" id="toggle-pos">
-            </label>
-          </div>
-          <div class="modal-item checkbox-setting">
-            <label>
-              <span class="setting-title" translation="settings_anon_names">Anonymous player names</span>
-              <input type="checkbox" id="toggle-anonymous-player">
-            </label>
-          </div>
-          <div class="modal-item checkbox-setting">
-            <label>
-              <span class="setting-title" translation="settings_hide_emotes">Hide emotes</span>
-              <input type="checkbox" id="toggle-hide-emote">
-            </label>
-          </div>
-          <div class="modal-item checkbox-setting" id="toggle-text-kill-feed-option">
-            <label>
-              <span class="setting-title" translation="settings_text_killfeed">Text-based killfeed</span>
-              <input type="checkbox" id="toggle-text-kill-feed">
-            </label>
-          </div>
-          <div class="modal-item checkbox-setting">
-            <label>
-              <span class="setting-title" translation="settings_colored_weapon_slots">Colored weapon slots</span>
-              <input type="checkbox" id="toggle-colored-slots">
-            </label>
-          </div>
-          <div class="modal-item checkbox-setting">
-            <label>
-              <span class="setting-title" translation="settings_scope_looping">Loop scope selection</span>
-              <input type="checkbox" id="toggle-scope-looping">
-            </label>
-          </div>
-          <div class="modal-item checkbox-setting">
-            <label>
-              <span class="setting-title" translation="settings_draw_hud">Draw HUD</span>
-              <input type="checkbox" id="toggle-draw-hud">
-            </label>
-          </div>
-          <div class="modal-item checkbox-setting">
-            <label>
-              <span class="setting-title" translation="settings_autopickup">Enable Autopickup</span>
-              <input type="checkbox" id="toggle-autopickup">
-            </label>
-          </div>
-          <div class="modal-item checkbox-setting">
-            <label>
-              <span class="setting-title" translation="settings_autopickup_dual_guns">Autopickup Dual Guns</span>
-              <input type="checkbox" id="toggle-autopickup-dual-guns">
-            </label>
-          </div>
-        </div>
-        <div class="tab-content" id="tab-import-export-content" style="display: none">
-          <div class="modal-item">
-            <button class="btn btn-darken btn-lg btn-secondary" id="import-settings-btn">
-              <i class="fa-solid fa-file-import"></i>
-              <span translation="settings_load_settings"></span>
-            </button>
-          </div>
-          <div class="modal-item">
-            <button class="btn btn-darken btn-lg btn-secondary" id="export-settings-btn">
-              <i class="fa-solid fa-file-export"></i>
-              <span translation="settings_copy_settings"></span>
-            </button>
-          </div>
-          <div class="modal-item">
-            <button class="btn btn-darken btn-lg btn-danger" id="reset-settings-btn">
-              <i class="fa-solid fa-trash"></i>
-              <span translation="settings_reset_settings"></span>
-            </button>
-          </div>
-        </div>
-        <div class="tab-content" id="tab-mobile-content" style="display: none">
-          <i translation="settings_require_reload"></i>
-          <div class="modal-item">
-            <button style="margin-bottom: 10px;" class="btn btn-lg btn-darken btn-secondary"
-              onclick="location.reload()"><i class="fa-solid fa-rotate-right"></i><span translation="settings_reload"></span></button>
-          </div>
-          <div class="modal-item checkbox-setting">
-            <label>
-              <span class="setting-title" translation="settings_mobile_controls"></span>
-              <input type="checkbox" id="toggle-mobile-controls">
-            </label>
-          </div>
-          <div class="modal-item">
-            <label>
-              <span class="setting-title" translation="settings_joystick_size"></span>
-              <span class="range-input-value"></span>
-              <input type="range" max="400" min="25" id="slider-joystick-size" step="25">
-            </label>
-          </div>
-          <div class="modal-item">
-            <label>
-              <span class="setting-title" translation="settings_joystick_opacity"></span>
-              <span class="range-input-value"></span>
-              <input type="range" max="1" min="0.1" id="slider-joystick-transparency" step="0.1">
-            </label>
-          </div>
-          <div class="modal-item checkbox-setting">
-            <label>
-              <span class="setting-title" translation="settings_autopickup"></span>
-              <input type="checkbox" id="toggle-auto-pickup">
-            </label>
-          </div>
-          <div class="modal-item checkbox-setting">
-            <label>
-              <span class="setting-title"><span translation="settings_hires_textures"></span><i>*</i></span>
-              <input type="checkbox" id="toggle-high-res-mobile">
-            </label>
-          </div>
-          <p style="color: red"><i translation="settings_performance_warning"></i></p>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="modal dialog persistent-scrollbar" id="customize-menu" style="display: none">
-    <div class="dialog-header">
-      <h3 translation="loadout"></h3>
-      <span class="dialog-close-btn fa-solid fa-xmark" id="close-customize"></span>
-    </div>
-    <div id="customize-tabs-container">
-      <div class="tab-bar" id="customize-tab-bar">
-        <button class="tab active" id="tab-skins"><i class="fa-solid fa-shirt"></i><span translation="loadout_skins"></span></button>
-        <button class="tab" id="tab-emotes"><img src="./img/misc/emotes_icon.svg"><span translation="loadout_emotes"></span></button>
-        <button class="tab" id="tab-crosshairs"><img src="./img/misc/crosshair_icon.svg"><span translation="loadout_crosshairs"></span></button>
-        <button class="tab" id="tab-badges" style="display: none"><i class="fa-solid fa-certificate"></i><span translation="loadout_badges"></span></button>
-        <button class="tab" id="tab-special" style="display: none"><i class="fa-solid fa-code"></i><span translation="loadout_special"></span></button>
-      </div>
-      <div id="customize-tabs">
-        <div class="tab-content active" id="tab-skins-content">
-          <div id="skins-list"></div>
-        </div>
-        <div class="tab-content" id="tab-emotes-content" style="display: none">
-          <div id="emote-wheel-container">
-            <div id="emote-customize-wheel">
-              <div class="emote-top"></div>
-              <div class="emote-right"></div>
-              <div class="emote-bottom"></div>
-              <div class="emote-left"></div>
-            </div>
-            <div id="emote-wheel-bottom">
-              <div class="emote-win">
-                <i class="fa-solid fa-crown"></i>
-                <i class="remove-emote-btn fa-solid fa-trash" title="Remove emote"></i>
-              </div>
-              <div class="emote-death">
-                <img src="./img/misc/skull_icon.svg" />
-                <i class="remove-emote-btn fa-solid fa-trash" title="Remove emote"></i>
-              </div>
-            </div>
-          </div>
-          <div id="emotes-list"></div>
-        </div>
-        <div class="tab-content" id="tab-crosshairs-content" style="display: none;">
-          <div id="crosshair-customize">
-            <div id="crosshair-preview">
-              <div id="crosshair-image"></div>
-            </div>
-            <div id="crosshair-controls">
-              <span id="crosshair-controls-disabled" style="display: none" translation="loadout_crosshairs_default"></span>
-              <div class="modal-item">
-                <label>
-                  <span class="setting-title" translation="loadout_crosshairs_size"></span>
-                  <span class="range-input-value"></span>
-                  <input type="range" max="5" min="0.5" id="slider-crosshair-size" step="0.1">
-                </label>
-              </div>
-              <div class="modal-item">
-                <label>
-                  <span class="setting-title" translation="loadout_crosshairs_color"></span>
-                  <input type="color" id="crosshair-color-picker" value="#000000">
-                </label>
-              </div>
-              <div class="modal-item">
-                <label>
-                  <span class="setting-title" translation="loadout_crosshairs_stroke_size"></span>
-                  <span class="range-input-value"></span>
-                  <input type="range" max="0.2" min="0" id="slider-crosshair-stroke-size" step="0.005">
-                </label>
-              </div>
-              <div class="modal-item">
-                <label>
-                  <span class="setting-title" translation="loadout_crosshairs_stroke_color"></span>
-                  <input type="color" id="crosshair-stroke-picker" value="#000000">
-                </label>
-              </div>
-            </div>
-          </div>
-          <div id="crosshairs-list"></div>
-        </div>
-        <div class="tab-content" id="tab-badges-content" style="display: none">
-          <div id="badges-list"></div>
-        </div>
-        <div class="tab-content" id="tab-special-content" style="display: none;">
-          <div class="modal-item">
-            Note that the role you are inputting may not exist on the game server configuration.
-          </div>
-          <div class="modal-item">
-            <label>
-              <span class="setting-title">Role Name:</span>
-              <input type="text" class="text-field" id="role-name">
-            </label>
-          </div>
-          <div class="modal-item">
-            <label>
-              <span class="setting-title">Role Password:</span>
-              <input type="password" class="text-field" id="role-password">
-            </label>
-          </div>
-          <div class="modal-item">
-            <button class="btn btn-primary btn-lg" onclick="window.location.reload(false)">Login</button>
-          </div>
-          <div class="modal-item">
-            Note that some of these settings may not be avaliable depending on game server configuration.
-          </div>
-          <div class="modal-item">
-            <label>
-              <span class="setting-title">Name Color:</span>
-              <input type="color" id="namecolor-color-picker" value="#000000">
-            </label>
-          </div>
-          <div class="modal-item checkbox-setting">
-            <label>
-              <span class="setting-title">Developer Cheats</span>
-              <input type="checkbox" id="toggle-lobbyclearing">
-            </label>
-          </div>
-          <div class="modal-item">
-            <label>
-              <span class="setting-title">Weapon Preset:</span>
-              <input type="text" class="text-field" id="weapon-preset" placeholder="USAGE: Gun1 Gun2 Melee" title="NOTE: Please use valid weapon ids from Guns.ts">
-            </label>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="modal dialog persistent-scrollbar" id="create-team-menu" style="display: none">
-    <div class="dialog-header">
-      <h3 translation="create_team"></h3>
-      <span class="dialog-close-btn fa-solid fa-xmark" id="close-create-team"></span>
-    </div>
-    <div id="create-team-container">
-      <div id="create-team-players"></div>
-      <div id="create-team-url">
-        <button class="btn btn-lg btn-danger btn-darken" id="btn-hide-team-url">
-          <i class="fa-solid fa-eye-slash"></i>
-        </button>
-        <input
-          type="text"
-          readonly
-          id="create-team-url-field"
-        />
-        <button class="btn btn-lg btn-darken btn-secondary" id="btn-copy-team-url">
-          <i class="fa-solid fa-clipboard"></i>
-          <span translation="copy"></span>
+    <!-- "Pause" menu -->
+    <div class="modal" id="game-menu" style="display: none">
+      <div class="modal-item">
+        <button class="btn btn-lg btn-darken btn-secondary" id="btn-settings-game"><i class="fa-solid fa-gear"></i>
+          <span translation="settings"></span>
         </button>
       </div>
-      <div id="create-team-options">
-        <div id="create-team-toggles">
-          <label>
-            <span class="setting-title" translation="create_team_autofill"></span>
-            <input type="checkbox" id="create-team-toggle-auto-fill">
-          </label>
-          <label>
-            <span class="setting-title" translation="create_team_lock"></span>
-            <input type="checkbox" id="create-team-toggle-lock">
-          </label>
-        </div>
-        <button class="btn btn-lg btn-darken btn-primary" id="btn-start-game">
-          <span translation="create_team_play"></span>
+      <div class="modal-item">
+        <button class="btn btn-lg btn-darken btn-secondary" id="btn-fullscreen"><i class="fa-solid fa-expand"></i>
+          <span translation="fullscreen"></span>
+        </button>
+      </div>
+      <div class="modal-item">
+        <button class="btn btn-lg btn-darken btn-primary" id="btn-resume-game"><i class="fa-solid fa-play"></i>
+          <span translation="resume"></span>
+        </button>
+      </div>
+      <div class="modal-item">
+        <button class="btn btn-lg btn-darken btn-danger" id="btn-quit-game"><i
+            class="fa-solid fa-arrow-right-from-bracket"></i>
+          <span translation="quit"></span>
         </button>
       </div>
     </div>
-  </div>
-  <div class="modal dialog" id="select-language-menu" style="display: none">
-    <div class="dialog-header">
-      <h3 translation="languages"></h3>
-      <span class="dialog-close-btn fa-solid fa-xmark" id="close-select-language"></span>
-    </div>
-    <div id="select-language-container" class="persistent-scrollbar">
-      <fieldset>
-      </fieldset>
-    </div>
-  </div>
-  <script src="./src/index.ts" type="module"></script>
-</body>
 
+    <!-- Report modal -->
+    <div class="modal dialog" id="report-modal" style="display: none">
+      <div class="dialog-header">
+        <h3><span style="font-weight: 600" translation="report_reporting"></span><span id="reporting-name"></span></h3>
+        <span class="dialog-close-btn fa-solid fa-xmark" id="close-report"></span>
+      </div>
+      <div id="report-modal-content">
+        <div id="report-id-container">
+          <span translation="report_id"></span>
+          <span id="report-id"></span>
+        </div>
+        <span translation="report_instructions" use-html></span>
+      </div>
+    </div>
+
+    <!-- Game warn/ban message -->
+    <div class="modal dialog" id="warning-modal" style="display: none">
+      <div id="warning-modal-content">
+        <h1 id="warning-modal-title"></h1>
+        <p id="warning-modal-text"></p>
+        <div id="warning-modal-agree-options" style="display: none">
+          <br><br>
+          <input type="checkbox" class="regular-checkbox" id="warning-modal-agree-checkbox">
+          <label for="warning-modal-agree-checkbox" translation="msg_punishment_warn_agreement"></label>
+          <br><br>
+          <button class="btn btn-lg btn-darken btn-primary btn-disabled" id="warning-continue-btn" style="width: 100%"><strong>Continue</strong></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Settings menu -->
+    <div class="modal dialog" id="settings-menu" style="display: none">
+      <!-- Header -->
+      <div class="dialog-header">
+        <h3 translation="settings"></h3>
+        <span class="dialog-close-btn fa-solid fa-xmark" id="close-settings"></span>
+      </div>
+
+      <!-- Content -->
+      <div id="settings-tabs-container">
+        <!-- Tab buttons -->
+        <div class="tab-bar" id="settings-tab-bar">
+          <button class="tab active" id="tab-volume"><i class="fa-solid fa-volume-high"></i><span translation="settings_volume"></span></button>
+          <button class="tab" id="tab-keybinds"><i class="fa-solid fa-keyboard"></i><span translation="settings_keybinds"></span></button>
+          <button class="tab" id="tab-graphics"><i class="fa-solid fa-display"></i><span translation="settings_graphics"></span></button>
+          <button class="tab" id="tab-interface"><i class="fa-solid fa-list"></i><span translation="settings_interface" use-html></span></button>
+          <button class="tab" id="tab-import-export"><i class="fa-solid fa-file-export"></i><span translation="settings_save_load"></span></button>
+          <button class="tab" id="tab-mobile" style="display: none"><i class="fa-solid fa-mobile"></i><span translation="settings_mobile"></span></button>
+        </div>
+
+        <!-- Tabs -->
+        <div id="settings-tabs" class="persistent-scrollbar">
+          <!-- Volume tab -->
+          <div class="tab-content active" id="tab-volume-content">
+            <div class="modal-item">
+              <label>
+                <span class="setting-title" translation="settings_master_volume"></span>
+                <span class="range-input-value"></span>
+                <input type="range" max="1" min="0" id="slider-master-volume" step="0.1" value="1">
+              </label>
+            </div>
+            <div class="modal-item">
+              <label>
+                <span class="setting-title" translation="settings_sfx_volume"></span>
+                <span class="range-input-value"></span>
+                <input type="range" max="1" min="0" id="slider-sfx-volume" step="0.1" value="1">
+              </label>
+            </div>
+            <div class="modal-item">
+              <label>
+                <span class="setting-title" translation="settings_ambience_volume"></span>
+                <span class="range-input-value"></span>
+                <input type="range" max="1" min="0" id="slider-ambience-volume" step="0.1" value="1">
+              </label>
+            </div>
+            <div class="modal-item">
+              <label>
+                <span class="setting-title" translation="settings_music_volume"></span>
+                <span class="range-input-value"></span>
+                <input type="range" max="1" min="0" id="slider-music-volume" step="0.1" value="1">
+              </label>
+            </div>
+            <div class="modal-item checkbox-setting">
+              <label>
+                <span class="setting-title"><span translation="settings_old_menu_music"></span><i>*</i></span>
+                <input type="checkbox" id="toggle-old-music">
+              </label>
+            </div>
+            <p style="color: red"><i translation="settings_require_reload"></i></p>
+          </div>
+
+          <!-- Keybinds tab -->
+          <div class="tab-content" id="tab-keybinds-content" style="display: none"></div>
+
+          <!-- Graphics tab -->
+          <div class="tab-content" id="tab-graphics-content" style="display: none">
+            <div class="modal-item select-setting">
+              <label>
+                <span class="setting-title"><span translation="settings_render_mode"></span><i>*</i></span>
+                <select id="render-mode-select">
+                  <option value="webgl1">WebGL 1</option>
+                  <option value="webgl2">WebGL 2</option>
+                  <option value="webgpu" id="webgpu-option">WebGPU</option>
+                </select>
+              </label>
+            </div>
+            <div class="modal-item select-setting">
+              <label>
+                <span class="setting-title"><span translation="settings_render_resolution"></span><i>*</i></span>
+                <select id="render-res-select">
+                  <option value="auto" translation="settings_render_resolution_auto">auto</option>
+                  <option value="0.5">0.5</option>
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                </select>
+              </label>
+            </div>
+            <div class="modal-item checkbox-setting">
+              <label>
+                <span class="setting-title"><span translation="settings_hires_textures"></span><i>*</i></span>
+                <input type="checkbox" id="toggle-high-res">
+              </label>
+            </div>
+            <div id="alt-texture-loading-item" class="modal-item checkbox-setting">
+              <label>
+                <span class="setting-title"><span translation="settings_alt_texture_loading"></span><i>*</i></span>
+                <input type="checkbox" id="toggle-alt-texture-loading">
+              </label>
+            </div>
+            <div class="modal-item checkbox-setting">
+              <label>
+                <span class="setting-title" translation="settings_cooler_graphics"></span>
+                <input type="checkbox" id="toggle-cooler-graphics">
+              </label>
+            </div>
+            <div class="modal-item checkbox-setting">
+              <label>
+                <span class="setting-title" translation="settings_ambient_particles"></span>
+                <input type="checkbox" id="toggle-ambient-particles">
+              </label>
+            </div>
+            <div class="modal-item checkbox-setting">
+              <label>
+                <span class="setting-title"><span translation="settings_antialias"></span><i>*</i></span>
+                <input type="checkbox" id="toggle-antialias">
+              </label>
+            </div>
+            <div class="modal-item checkbox-setting">
+              <label>
+                <span class="setting-title" translation="settings_movement_smoothing">Movement smoothing</span>
+                <input type="checkbox" id="toggle-movement-smoothing">
+              </label>
+            </div>
+            <div class="modal-item checkbox-setting">
+              <label>
+                <span class="setting-title" translation="settings_responsive_rotation">Responsive rotation</span>
+                <input type="checkbox" id="toggle-responsive-rotation">
+              </label>
+            </div>
+            <div class="modal-item checkbox-setting">
+              <label>
+                <span class="setting-title" translation="settings_camera_shake"></span>
+                <input type="checkbox" id="toggle-camera-shake">
+              </label>
+            </div>
+            <div class="modal-item select-setting">
+              <label>
+                <span class="setting-title" translation="settings_record_res"></span>
+                <select id="record-res-select">
+                  <option value="480p">480p</option>
+                  <option value="720p">720p</option>
+                  <option value="1080p">1080p</option>
+                  <option value="maximum">Maximum</option>
+                </select>
+              </label>
+            </div>
+            <p style="color: red"><i translation="settings_require_reload"></i></p>
+          </div>
+
+          <!-- Interface tab -->
+          <div class="tab-content" id="tab-interface-content" style="display: none">
+            <div class="modal-item" id="ui-scale-container">
+              <label>
+                <span class="setting-title" translation="settings_interface_scale">Interface scale</span>
+                <span class="range-input-value"></span>
+                <input type="range" max="2" min="0.1" id="slider-ui-scale" step="0.05">
+              </label>
+            </div>
+            <div class="modal-item">
+              <label>
+                <span class="setting-title" translation="settings_minimap_opacity">Minimap opacity</span>
+                <span class="range-input-value"></span>
+                <input type="range" max="1" min="0.1" id="slider-minimap-transparency" step="0.1">
+              </label>
+            </div>
+            <div class="modal-item">
+              <label>
+                <span class="setting-title" translation="settings_fs_map_opacity">Fullscreen map opacity</span>
+                <span class="range-input-value"></span>
+                <input type="range" max="1" min="0.1" id="slider-big-map-transparency" step="0.1">
+              </label>
+            </div>
+            <div class="modal-item checkbox-setting">
+              <label>
+                <span class="setting-title" translation="settings_hide_minimap">Hide minimap</span>
+                <input type="checkbox" id="toggle-hide-minimap">
+              </label>
+            </div>
+            <div class="modal-item checkbox-setting">
+              <label>
+                <span class="setting-title" translation="settings_blur_splash">Blur splash screen</span>
+                <input type="checkbox" id="toggle-blur-splash">
+              </label>
+            </div>
+            <div class="modal-item checkbox-setting">
+              <label>
+                <span class="setting-title" translation="settings_hide_rules">Hide rules button</span>
+                <input type="checkbox" id="toggle-hide-rules">
+              </label>
+            </div>
+            <div class="modal-item checkbox-setting">
+              <label>
+                <span class="setting-title" translation="settings_warn_before_leaving">Warn before leaving</span>
+                <input type="checkbox" id="toggle-leave-warning">
+              </label>
+            </div>
+            <div class="modal-item checkbox-setting">
+              <label>
+                <span class="setting-title" translation="settings_show_fps">Show FPS</span>
+                <input type="checkbox" id="toggle-fps">
+              </label>
+            </div>
+            <div class="modal-item checkbox-setting">
+              <label>
+                <span class="setting-title" translation="settings_show_ping">Show ping</span>
+                <input type="checkbox" id="toggle-ping">
+              </label>
+            </div>
+            <div class="modal-item checkbox-setting">
+              <label>
+                <span class="setting-title" translation="settings_show_inout">Show network stats</span>
+                <input type="checkbox" id="toggle-inout">
+              </label>
+            </div>
+            <div class="modal-item checkbox-setting">
+              <label>
+                <span class="setting-title" translation="settings_show_coordinates">Show coordinates</span>
+                <input type="checkbox" id="toggle-pos">
+              </label>
+            </div>
+            <div class="modal-item checkbox-setting">
+              <label>
+                <span class="setting-title" translation="settings_anon_names">Anonymous player names</span>
+                <input type="checkbox" id="toggle-anonymous-player">
+              </label>
+            </div>
+            <div class="modal-item checkbox-setting">
+              <label>
+                <span class="setting-title" translation="settings_hide_emotes">Hide emotes</span>
+                <input type="checkbox" id="toggle-hide-emote">
+              </label>
+            </div>
+            <div class="modal-item checkbox-setting" id="toggle-text-kill-feed-option">
+              <label>
+                <span class="setting-title" translation="settings_text_killfeed">Text-based killfeed</span>
+                <input type="checkbox" id="toggle-text-kill-feed">
+              </label>
+            </div>
+            <div class="modal-item checkbox-setting">
+              <label>
+                <span class="setting-title" translation="settings_colored_weapon_slots">Colored weapon slots</span>
+                <input type="checkbox" id="toggle-colored-slots">
+              </label>
+            </div>
+            <div class="modal-item checkbox-setting">
+              <label>
+                <span class="setting-title" translation="settings_scope_looping">Loop scope selection</span>
+                <input type="checkbox" id="toggle-scope-looping">
+              </label>
+            </div>
+            <div class="modal-item checkbox-setting">
+              <label>
+                <span class="setting-title" translation="settings_draw_hud">Draw HUD</span>
+                <input type="checkbox" id="toggle-draw-hud">
+              </label>
+            </div>
+            <div class="modal-item checkbox-setting">
+              <label>
+                <span class="setting-title" translation="settings_autopickup">Enable Autopickup</span>
+                <input type="checkbox" id="toggle-autopickup">
+              </label>
+            </div>
+            <div class="modal-item checkbox-setting">
+              <label>
+                <span class="setting-title" translation="settings_autopickup_dual_guns">Autopickup Dual Guns</span>
+                <input type="checkbox" id="toggle-autopickup-dual-guns">
+              </label>
+            </div>
+          </div>
+
+          <!-- Import/Export tab -->
+          <div class="tab-content" id="tab-import-export-content" style="display: none">
+            <div class="modal-item">
+              <button class="btn btn-darken btn-lg btn-secondary" id="import-settings-btn">
+                <i class="fa-solid fa-file-import"></i>
+                <span translation="settings_load_settings"></span>
+              </button>
+            </div>
+            <div class="modal-item">
+              <button class="btn btn-darken btn-lg btn-secondary" id="export-settings-btn">
+                <i class="fa-solid fa-file-export"></i>
+                <span translation="settings_copy_settings"></span>
+              </button>
+            </div>
+            <div class="modal-item">
+              <button class="btn btn-darken btn-lg btn-danger" id="reset-settings-btn">
+                <i class="fa-solid fa-trash"></i>
+                <span translation="settings_reset_settings"></span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Mobile tab -->
+          <div class="tab-content" id="tab-mobile-content" style="display: none">
+            <i translation="settings_require_reload"></i>
+            <div class="modal-item">
+              <button style="margin-bottom: 10px;" class="btn btn-lg btn-darken btn-secondary"
+                onclick="location.reload()"><i class="fa-solid fa-rotate-right"></i><span translation="settings_reload"></span></button>
+            </div>
+            <div class="modal-item checkbox-setting">
+              <label>
+                <span class="setting-title" translation="settings_mobile_controls"></span>
+                <input type="checkbox" id="toggle-mobile-controls">
+              </label>
+            </div>
+            <div class="modal-item">
+              <label>
+                <span class="setting-title" translation="settings_joystick_size"></span>
+                <span class="range-input-value"></span>
+                <input type="range" max="400" min="25" id="slider-joystick-size" step="25">
+              </label>
+            </div>
+            <div class="modal-item">
+              <label>
+                <span class="setting-title" translation="settings_joystick_opacity"></span>
+                <span class="range-input-value"></span>
+                <input type="range" max="1" min="0.1" id="slider-joystick-transparency" step="0.1">
+              </label>
+            </div>
+            <div class="modal-item">
+              <label>
+                <span class="setting-title" translation="settings_left_joystick_color"></span>
+                <input type="color" style="margin-right: 135px" id="left-joystick-color-picker">
+              </label>
+            </div>
+            <div style="margin-top: 25px" class="modal-item">
+              <label>
+                <span class="setting-title" translation="settings_right_joystick_color"></span>
+                <input type="color" style="margin-right: 135px" id="right-joystick-color-picker">
+              </label>
+            </div>
+            <div class="modal-item checkbox-setting" style="margin-top: 25px">
+              <label>
+                <span class="setting-title" translation="settings_gyro_angle"></span>
+                <span class="range-input-value"></span>
+                <input type="range" max="45" min="0" id="slider-gyro-angle" step="1">
+              </label>
+            </div>
+            <div class="modal-item checkbox-setting">
+              <label>
+                <span class="setting-title" translation="settings_switch_joysticks"></span>
+                <input type="checkbox" id="toggle-mobile-joysticks">
+              </label>
+            </div>
+            <p style="color: red; font-size: 15px"><i id="mb-joystick-info"></i></p>
+            <div class="modal-item checkbox-setting">
+              <label>
+                <span class="setting-title" translation="settings_autopickup"></span>
+                <input type="checkbox" id="toggle-auto-pickup">
+              </label>
+            </div>
+            <div class="modal-item checkbox-setting">
+              <label>
+                <span class="setting-title" translation="settings_lock_joysticks"></span>
+                <input type="checkbox" id="toggle-mobile-joystick-lock">
+              </label>
+            </div>
+            <div class="modal-item checkbox-setting">
+              <label>
+                <span class="setting-title" translation="settings_haptics"></span>
+                <input type="checkbox" id="toggle-haptics">
+              </label>
+            </div>
+            <div class="modal-item checkbox-setting">
+              <label>
+                <span class="setting-title"><span translation="settings_hires_textures"></span><i>*</i></span>
+                <input type="checkbox" id="toggle-high-res-mobile">
+              </label>
+            </div>
+            <div class="modal-item checkbox-setting">
+              <label>
+                <span class="setting-title"><span translation="settings_antialias"></span><i>*</i></span>
+                <input type="checkbox" id="toggle-antialias-mobile">
+              </label>
+            </div>
+            <p style="color: red"><i translation="settings_performance_warning"></i></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Loadout menu -->
+    <div class="modal dialog persistent-scrollbar" id="customize-menu" style="display: none">
+      <!-- Header -->
+      <div class="dialog-header">
+        <h3 translation="loadout"></h3>
+        <span class="dialog-close-btn fa-solid fa-xmark" id="close-customize"></span>
+      </div>
+
+      <!-- Content -->
+      <div id="customize-tabs-container">
+        <!-- Tab buttons -->
+        <div class="tab-bar" id="customize-tab-bar">
+          <button class="tab active" id="tab-skins"><i class="fa-solid fa-shirt"></i><span translation="loadout_skins"></span></button>
+          <button class="tab" id="tab-emotes"><img src="./img/misc/emotes_icon.svg"><span translation="loadout_emotes"></span></button>
+          <button class="tab" id="tab-crosshairs"><img src="./img/misc/crosshair_icon.svg"><span translation="loadout_crosshairs"></span></button>
+          <button class="tab" id="tab-badges" style="display: none"><i class="fa-solid fa-certificate"></i><span translation="loadout_badges"></span></button>
+          <button class="tab" id="tab-special" style="display: none"><i class="fa-solid fa-code"></i><span translation="loadout_special"></span></button>
+        </div>
+
+        <!-- Tabs -->
+        <div id="customize-tabs">
+          <!-- Skins tab -->
+          <div class="tab-content active" id="tab-skins-content">
+            <div id="skins-list"></div>
+          </div>
+
+          <!-- Emotes tab -->
+          <div class="tab-content" id="tab-emotes-content" style="display: none">
+            <div id="emote-wheel-container">
+              <div id="emote-customize-wheel">
+                <div class="emote-top"></div>
+                <div class="emote-right"></div>
+                <div class="emote-bottom"></div>
+                <div class="emote-left"></div>
+              </div>
+              <div id="emote-wheel-bottom">
+                <div class="emote-win">
+                  <i class="fa-solid fa-crown"></i>
+                  <i class="remove-emote-btn fa-solid fa-trash" title="Remove emote"></i>
+                </div>
+                <div class="emote-death">
+                  <img src="./img/misc/skull_icon.svg" />
+                  <i class="remove-emote-btn fa-solid fa-trash" title="Remove emote"></i>
+                </div>
+              </div>
+            </div>
+            <div id="emotes-list"></div>
+          </div>
+
+          <!-- Crosshairs tab -->
+          <div class="tab-content" id="tab-crosshairs-content" style="display: none;">
+            <div id="crosshair-customize">
+              <div id="crosshair-preview">
+                <div id="crosshair-image"></div>
+              </div>
+              <div id="crosshair-controls">
+                <span id="crosshair-controls-disabled" style="display: none" translation="loadout_crosshairs_default"></span>
+                <div class="modal-item">
+                  <label>
+                    <span class="setting-title" translation="loadout_crosshairs_size"></span>
+                    <span class="range-input-value"></span>
+                    <input type="range" max="5" min="0.5" id="slider-crosshair-size" step="0.1">
+                  </label>
+                </div>
+                <div class="modal-item">
+                  <label>
+                    <span class="setting-title" translation="loadout_crosshairs_color"></span>
+                    <input type="color" id="crosshair-color-picker" value="#000000">
+                  </label>
+                </div>
+                <div class="modal-item">
+                  <label>
+                    <span class="setting-title" translation="loadout_crosshairs_stroke_size"></span>
+                    <span class="range-input-value"></span>
+                    <input type="range" max="0.2" min="0" id="slider-crosshair-stroke-size" step="0.005">
+                  </label>
+                </div>
+                <div class="modal-item">
+                  <label>
+                    <span class="setting-title" translation="loadout_crosshairs_stroke_color"></span>
+                    <input type="color" id="crosshair-stroke-picker" value="#000000">
+                  </label>
+                </div>
+              </div>
+            </div>
+            <div id="crosshairs-list"></div>
+          </div>
+
+          <!-- Badges tab -->
+          <div class="tab-content" id="tab-badges-content" style="display: none">
+            <div id="badges-list"></div>
+          </div>
+
+          <!-- Developer tab -->
+          <div class="tab-content" id="tab-special-content" style="display: none;">
+            <div class="modal-item">
+              Note that the role you are inputting may not exist on the game server configuration.
+            </div>
+            <div class="modal-item">
+              <label>
+                <span class="setting-title">Role Name:</span>
+                <input type="text" class="text-field" id="role-name">
+              </label>
+            </div>
+            <div class="modal-item">
+              <label>
+                <span class="setting-title">Role Password:</span>
+                <input type="password" class="text-field" id="role-password">
+              </label>
+            </div>
+            <div class="modal-item">
+              <button class="btn btn-primary btn-lg" onclick="window.location.reload(false)">Login</button>
+            </div>
+            <div class="modal-item">
+              Note that some of these settings may not be avaliable depending on game server configuration.
+            </div>
+            <div class="modal-item">
+              <label>
+                <span class="setting-title">Name Color:</span>
+                <input type="color" id="namecolor-color-picker" value="#000000">
+              </label>
+            </div>
+            <div class="modal-item checkbox-setting">
+              <label>
+                <span class="setting-title">Developer Cheats</span>
+                <input type="checkbox" id="toggle-lobbyclearing">
+              </label>
+            </div>
+            <div class="modal-item">
+              <label>
+                <span class="setting-title">Weapon Preset:</span>
+                <input type="text" class="text-field" id="weapon-preset" placeholder="USAGE: Gun1 Gun2 Melee" title="NOTE: Please use valid weapon ids from Guns.ts">
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Team menu -->
+    <div class="modal dialog persistent-scrollbar" id="create-team-menu" style="display: none">
+      <div class="dialog-header">
+        <h3 translation="create_team"></h3>
+        <span class="dialog-close-btn fa-solid fa-xmark" id="close-create-team"></span>
+      </div>
+      <div id="create-team-container">
+        <div id="create-team-players"></div>
+        <div id="create-team-url">
+          <button class="btn btn-lg btn-danger btn-darken" id="btn-hide-team-url">
+            <i class="fa-solid fa-eye-slash"></i>
+          </button>
+          <input
+            type="text"
+            readonly
+            id="create-team-url-field"
+          />
+          <button class="btn btn-lg btn-darken btn-secondary" id="btn-copy-team-url">
+            <i class="fa-solid fa-clipboard"></i>
+            <span translation="copy"></span>
+          </button>
+        </div>
+        <div id="create-team-options">
+          <div id="create-team-toggles">
+            <label>
+              <span class="setting-title" translation="create_team_autofill"></span>
+              <input type="checkbox" id="create-team-toggle-auto-fill">
+            </label>
+            <label>
+              <span class="setting-title" translation="create_team_lock"></span>
+              <input type="checkbox" id="create-team-toggle-lock">
+            </label>
+            <label>
+              <span class="setting-title" translation="create_team_force_start"></span>
+              <input type="checkbox" id="create-team-toggle-force-start">
+            </label>
+          </div>
+          <button class="btn btn-lg btn-darken btn-primary" id="btn-start-game">
+            <span translation="create_team_play"></span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Partners modal -->
+    <div class="modal dialog" id="partners-modal" style="display: none">
+      <div class="dialog-header">
+        <h3 translation="partners"></h3>
+        <span class="dialog-close-btn fa-solid fa-xmark" id="close-partners"></span>
+      </div>
+      <div id="partners-list" class="persistent-scrollbar">
+        <a href="https://iogamesonl.com" target="_blank">iogamesonl.com</a>
+        <a href="https://iogameslist.org" target="_blank">iogameslist.org</a>
+        <a href="https://www.addictinggames.com" target="_blank">Addicting Games</a>
+        <a href="https://www.agame.fun" target="_blank">Agame.fun</a>
+        <a href="https://www.atmegame.com" target="_blank">Atmegame.com</a>
+        <a href="https://azgames.io" target="_blank">Az Games</a>
+        <a href="https://best-io-games.com" target="_blank">best-io-games.com</a>
+        <a href="https://www.bestgames.com" target="_blank">BestGames.com</a>
+        <a href="https://www.brightestgames.com" target="_blank">Brightest Games</a>
+        <a href="https://www.brightygames.com" target="_blank">BrightyGames.com</a>
+        <a href="https://www.bubbleshooter.net" target="_blank">Bubble Shooter</a>
+        <a href="https://www.cargames.com" target="_blank">CarGames.com</a>
+        <a href="https://cellgames.com" target="_blank">Cell Games</a>
+        <a href="https://fuzigames.com" target="_blank">Fuzi Games</a>
+        <a href="https://www.gameflare.com" target="_blank">Gameflare.com</a>
+        <a href="https://iowebgames.weebly.com" target="_blank">gamesio.tk</a>
+        <a href="https://www.gameszap.com" target="_blank">GamesZap</a>
+        <a href="https://www.gazpo.com/contact-us" target="_blank">Gazpo</a>
+        <a href="https://iogames.games" target="_blank">iogames.games</a>
+        <a href="https://io-games.onl" target="_blank">io-games.onl</a>
+        <a href="https://iogamelist.com" target="_blank">iogamelist.com</a>
+        <a href="https://iogameslist.co" target="_blank">iogameslist.co</a>
+        <a href="https://io-game.com/en" target="_blank">io-game.com</a>
+        <a href="https://iogame.games" target="_blank">iogame.games</a>
+        <a href="https://iogame.io" target="_blank">iogame.io</a>
+        <a href="https://iogame.me/en" target="_blank">iogame.me</a>
+        <a href="https://iogamesio.com" target="_blank">IoGamesio.com</a>
+        <a href="https://www.iogames-io.io" target="_blank">iogames-io.io</a>
+        <a href="https://iogames.fun" target="_blank">iogames.fun</a>
+        <a href="https://iogames.onl" target="_blank">iogames.onl</a>
+        <a href="https://ioground.net" target="_blank">ioGround.net</a>
+        <a href="https://www.jopi.com" target="_blank">Jopi</a>
+        <a href="https://kevin.games" target="_blank">Kevin Games</a>
+        <a href="https://gameforge.com/en-US/littlegames/" target="_blank">LittleGames</a>
+        <a href="https://www.miniplay.com" target="_blank">Miniplay</a>
+        <a href="https://onlinegames.io" target="_blank">OnlineGames.io</a>
+        <a href="https://en.onlygames.io" target="_blank">onlygames.io</a>
+        <a href="https://play-games.com" target="_blank">Play-Games.com</a>
+        <a href="https://playhop.com" target="_blank">Playhop.com</a>
+        <a href="https://poki.com" target="_blank">Poki</a>
+        <a href="https://www.silvergames.com/en" target="_blank">Silvergames.com</a>
+        <a href="https://slithere.com/io-games" target="_blank">Slither.io Game Guide</a>
+        <a href="https://www.snokido.com" target="_blank">Snokido</a>
+        <a href="https://titotu.io" target="_blank">Titotu.io</a>
+        <a href="https://www.topgames.com" target="_blank">TopGames.Com</a>
+        <a href="https://unblockedgames-76.com" target="_blank">Unblocked Games 76</a>
+        <a href="https://unblocked-games76-x.github.io" target="_blank">Unblocked Games 76X</a>
+        <a href="https://www.vitalitygames.com" target="_blank">Vitalitygames.com</a>
+        <a href="https://wackagames.com" target="_blank">WackaGames</a>
+        <a href="https://webgames.io" target="_blank">WebGames.io</a>
+        <a href="https://www.weblfg.com/games" target="_blank">WebLFG</a>
+        <a href="https://wellgames.com" target="_blank">Wellgames</a>
+        <a href="https://igroutka.ru" target="_blank">ИгроУтка</a>
+        <a href="https://multoigri.ru" target="_blank">Мультоигры.ру</a>
+      </div>
+    </div>
+
+    <!-- JS -->
+    <script src="./src/index.ts" type="module"></script>
+  </body>
 </html>

@@ -10,6 +10,11 @@
     max-width: 500px;
 }
 
+#partners-modal {
+    background-color: palette.$bg;
+    max-width: 900px;
+}
+
 #warning-modal {
     text-align: center;
     border: 2.5px solid rgba(0, 0, 0, 0.3);
@@ -58,7 +63,7 @@
 
 #report-id {
     font-size: 50px;
-    font-family: monospace;
+    font-family: "JetBrains Mono", monospace;
 }
 
 #customize-menu {
@@ -99,12 +104,16 @@
                 justify-content: center;
                 align-items: center;
 
-                // leader indicator
-                .fa-crown {
+                // leader indicator/kick button
+                .fa-crown, .fa-xmark {
                     position: absolute;
                     font-size: 24px;
                     top: 5px;
-                    left: 5px;
+                    right: 5px;
+                }
+
+                .fa-xmark {
+                    cursor: pointer;
                 }
 
                 // ready indicator
@@ -113,7 +122,7 @@
                     font-size: 24px;
                     color: limegreen;
                     top: 5px;
-                    right: 5px;
+                    left: 5px;
                 }
 
                 .create-team-player-name-container {
@@ -122,7 +131,7 @@
                     margin: 10px 5px 0 5px;
 
                     .create-team-player-name {
-                        font-size: 18px;
+                        font-size: 20px;
                         font-weight: bold;
                         @include variables.text-shadow;
                     }
@@ -130,8 +139,7 @@
                     .create-team-player-badge {
                         display: inline-block;
                         height: 24px;
-                        margin-left: 2.5px;
-                        vertical-align: middle;
+                        margin-left: 5px;
                     }
                 }
             }
@@ -143,10 +151,11 @@
             justify-content: center;
 
             #create-team-url-field {
+                font-family: "JetBrains Mono", monospace;
                 color: black;
                 user-select: all;
                 font-size: 18px;
-                width: 350px;
+                flex-grow: 1;
                 padding: 4px 8px;
                 outline: none;
                 border: none;
@@ -168,13 +177,12 @@
 
         #create-team-options {
             display: flex;
-            gap: 20px;
-            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
             padding-top: 12px;
 
             #create-team-toggles {
                 display: flex;
-                flex-direction: column;
                 justify-content: center;
                 gap: 12px;
 
@@ -185,6 +193,11 @@
 
                 label {
                     display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    background-color: #555;
+                    padding: 5px 8px;
+                    border-radius: 10px;
 
                     span {
                         margin-right: 10px;
@@ -192,12 +205,10 @@
 
                     input {
                         margin-left: auto;
-                        font-family: monospace;
+                        font-family: "JetBrains Mono", monospace;
+                        bottom: -5px;
                     }
                 }
-            }
-            #btn-start-game {
-                margin-left: auto;
             }
         }
     }
@@ -205,8 +216,8 @@
 
 #language-dropdown {
     position: absolute;
-    right: 20px;
-    top: 1rem;
+    right: 16px;
+    top: 16px;
 
     img {
         vertical-align: middle;
@@ -246,9 +257,9 @@
     // For mobile
     @media screen and (max-width: variables.$screen_large) {
 
-        transform: scale(55%);
-        top: 0;
-        right: -20px;
+        transform: scale(75%);
+        top: 5px;
+        right: -15px !important;
 
         .dropdown-content {
             height: 300px;
@@ -259,6 +270,22 @@
         }
     }
 }
+
+#partners-list {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    gap: 5px;
+    column-gap: 15px;
+    padding: 0.25rem 1rem 1rem 1rem;
+    max-height: 365px;
+    overflow-x: scroll;
+
+    a {
+        color: white;
+    }
+}
+
 // TODO Refactor this, make classes
 .dialog {
     user-select: none;
@@ -287,6 +314,12 @@
             width: $headerHeight;
             height: $headerHeight;
             cursor: pointer;
+
+            transition: color 0.25s;
+
+            &:hover {
+                color: red;
+            }
         }
     }
 
@@ -319,8 +352,6 @@
             width: 90px;
             height: 90px;
             transform: rotate(90deg);
-            background-size: 90px;
-            background-repeat: no-repeat;
         }
 
         .skin-left-fist,
@@ -330,8 +361,6 @@
             width: 34px;
             height: 34px;
             transform: rotate(90deg);
-            background-size: 34px;
-            background-repeat: no-repeat;
         }
 
         .skin-right-fist {
@@ -473,7 +502,6 @@
         }
 
         .emotes-list-item {
-            margin-top: auto;
             width: 84px;
             height: 84px;
             flex-shrink: 0;

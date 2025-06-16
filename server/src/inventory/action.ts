@@ -1,12 +1,13 @@
 import { AnimationType, GameConstants, PlayerActions } from "@common/constants";
-import { HealType, type HealingItemDefinition } from "@common/definitions/healingItems";
+import { HealType, type HealingItemDefinition } from "@common/definitions/items/healingItems";
 import { Loots } from "@common/definitions/loots";
-import { PerkIds } from "@common/definitions/perks";
+import { PerkIds, Perks } from "@common/definitions/items/perks";
 import { Numeric } from "@common/utils/math";
 import { type Timeout } from "@common/utils/misc";
 import { type ReifiableDef } from "@common/utils/objectDefinitions";
 import { type Player } from "../objects/player";
 import { type GunItem } from "./gunItem";
+import { randomRotation } from "@common/utils/random";
 
 export abstract class Action {
     readonly player: Player;
@@ -75,7 +76,7 @@ export class ReloadAction extends Action {
         const fullReload = item.definition.reloadFullOnEmpty && item.ammo <= 0;
         super(
             player,
-            fullReload ? item.definition.fullReloadTime : item.definition.reloadTime
+            (fullReload ? item.definition.fullReloadTime : item.definition.reloadTime) / (player.mapPerkOrDefault(PerkIds.CombatExpert, ({ reloadMod }) => reloadMod, 1))
         );
         this.fullReload = !!fullReload;
     }
@@ -141,7 +142,6 @@ export class HealingAction extends Action {
         super.execute();
 
         this.player.inventory.items.decrementItem(this.item.idString);
-
         switch (this.item.healType) {
             case HealType.Health:
                 this.player.health += this.item.restoreAmount;
@@ -149,7 +149,26 @@ export class HealingAction extends Action {
             case HealType.Adrenaline:
                 this.player.adrenaline += this.item.restoreAmount;
                 break;
+            case HealType.Special:
+                if (this.item.effect?.restoreAmounts !== undefined) {
+                    this.item.effect.restoreAmounts.forEach(heals => {
+                        switch (heals.healType) {
+                            case HealType.Health:
+                                this.player.health += heals.restoreAmount;
+                                break;
+                            case HealType.Adrenaline:
+                                this.player.adrenaline += heals.restoreAmount;
+                                break;
+                        }
+                    });
+                }
+                if (this.item.effect?.removePerk !== undefined) {
+                    this.player.perks.removeItem(Perks.fromString(this.item.effect.removePerk));
+                }
+                break;
         }
+
+        this.player.game.addDecal(`${this.item.idString}_residue`, this.player.position, randomRotation(), this.player.layer);
         this.player.dirty.items = true;
     }
 }

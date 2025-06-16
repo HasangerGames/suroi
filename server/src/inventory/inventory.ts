@@ -1,41 +1,45 @@
-import { DEFAULT_INVENTORY, GameConstants } from "@common/constants";
-import { Ammos, type AmmoDefinition } from "@common/definitions/ammos";
-import { ArmorType, type ArmorDefinition } from "@common/definitions/armors";
-import { type BackpackDefinition } from "@common/definitions/backpacks";
-import { type DualGunNarrowing, type GunDefinition } from "@common/definitions/guns";
-import { HealType, HealingItems, type HealingItemDefinition } from "@common/definitions/healingItems";
-import { Loots, type LootDefForType, type LootDefinition, type WeaponDefinition } from "@common/definitions/loots";
-import { DEFAULT_SCOPE, Scopes, type ScopeDefinition } from "@common/definitions/scopes";
-import { Throwables, type ThrowableDefinition } from "@common/definitions/throwables";
+import { GameConstants } from "@common/constants";
+import { Ammos, type AmmoDefinition } from "@common/definitions/items/ammos";
+import { ArmorType, type ArmorDefinition } from "@common/definitions/items/armors";
+import { type BackpackDefinition } from "@common/definitions/items/backpacks";
+import { type DualGunNarrowing, type GunDefinition } from "@common/definitions/items/guns";
+import { HealType, HealingItems, type HealingItemDefinition } from "@common/definitions/items/healingItems";
+import { Loots, type LootDefForType, type LootDefinition, type WeaponDefinition, type WeaponTypes } from "@common/definitions/loots";
+import { DEFAULT_SCOPE, Scopes, type ScopeDefinition } from "@common/definitions/items/scopes";
+import { Throwables, type ThrowableDefinition } from "@common/definitions/items/throwables";
 import { Numeric } from "@common/utils/math";
-import { ExtendedMap, type AbstractConstructor, type Timeout } from "@common/utils/misc";
+import { ExtendedMap, type AbstractConstructor, type GetEnumMemberName, type PredicateFor, type Timeout } from "@common/utils/misc";
 import { ItemType, type ReferenceTo, type ReifiableDef } from "@common/utils/objectDefinitions";
 import { type ItemData } from "../objects/loot";
 import { type Player } from "../objects/player";
 import { HealingAction } from "./action";
 import { GunItem } from "./gunItem";
-import { InventoryItem } from "./inventoryItem";
+import { InventoryItemBase } from "./inventoryItem";
 import { MeleeItem } from "./meleeItem";
 import { ThrowableItem } from "./throwableItem";
+import { DEFAULT_INVENTORY } from "@common/defaultInventory";
 
-type ReifiableItem =
-    GunItem |
-    MeleeItem |
-    ThrowableItem |
-    ReifiableDef<WeaponDefinition>;
+export type ReifiableItem = InventoryItem | ReifiableDef<InventoryItem["definition"]>;
 
-type WeaponTypes = WeaponDefinition["itemType"];
+export type ReifiableItemOfType<Type extends WeaponTypes> =
+    InventoryItemMapping[Type] | ReifiableDef<LootDefForType<Type>>;
 
-type ReifiableItemOfType<Type extends WeaponTypes> =
-    InstanceType<(typeof InventoryItemMapping)[Type]> |
-    ReifiableDef<LootDefForType<Type>>;
+export type WeaponItemTypeMap = { [K in GetEnumMemberName<typeof ItemType, WeaponTypes>]: (typeof ItemType)[K] };
 
-export const InventoryItemMapping = {
+export type InventoryItem = InventoryItemMapping[WeaponTypes];
+
+export interface InventoryItemMapping {
+    [ItemType.Gun]: GunItem
+    [ItemType.Melee]: MeleeItem
+    [ItemType.Throwable]: ThrowableItem
+}
+
+export const InventoryItemCtorMapping = {
     [ItemType.Gun]: GunItem,
     [ItemType.Melee]: MeleeItem,
     [ItemType.Throwable]: ThrowableItem
 } satisfies {
-    [K in ItemType]?: AbstractConstructor<InventoryItem, [def: ReifiableDef<LootDefForType<K>>, owner: Player, data?: ItemData<LootDefForType<K>>]>
+    [K in WeaponTypes]: AbstractConstructor<InventoryItem & PredicateFor<WeaponItemTypeMap, K>, [def: ReifiableDef<LootDefForType<K>>, owner: Player, data?: ItemData<LootDefForType<K>>]>
 };
 
 /**
@@ -189,8 +193,8 @@ export class Inventory {
         const owner = this.owner;
 
         this._reloadTimeout?.kill();
-        if (this.activeWeapon.category === ItemType.Gun) {
-            (this.activeWeapon as GunItem).cancelAllTimers();
+        if (this.activeWeapon.isGun) {
+            this.activeWeapon.cancelAllTimers();
         }
         owner.bufferedAttack?.kill();
 
@@ -213,7 +217,7 @@ export class Inventory {
         owner.effectiveSwitchDelay = effectiveSwitchDelay;
         item.switchDate = now;
 
-        if (item instanceof GunItem && item.ammo <= 0) {
+        if (item.isGun && item.ammo <= 0) {
             this._reloadTimeout = this.owner.game.addTimeout(
                 item.reload.bind(item),
                 owner.effectiveSwitchDelay
@@ -225,7 +229,8 @@ export class Inventory {
         owner.dirty.weapons = true;
         this.owner.setDirty();
 
-        // owner.updateAndApplyModifiers();
+        owner.updateAndApplyModifiers();
+        owner.updateBackEquippedMelee();
 
         return true;
     }
@@ -288,13 +293,13 @@ export class Inventory {
     private _reifyItem<Type extends WeaponTypes>(
         item: ReifiableItemOfType<Type>,
         data?: ItemData<LootDefForType<Type>>
-    ): InstanceType<(typeof InventoryItemMapping)[Type]> {
-        if (item instanceof InventoryItem) return item;
-        type Item = InstanceType<(typeof InventoryItemMapping)[Type]>;
+    ): InventoryItemMapping[Type] {
+        type Item = InventoryItemMapping[Type];
+        if (item instanceof InventoryItemBase) return item as Item;
         const definition = Loots.reify<LootDefForType<Type>>(item);
 
         return new (
-            InventoryItemMapping[definition.itemType] as new (def: ReifiableDef<LootDefForType<Type>>, owner: Player, data?: ItemData<LootDefForType<Type>>) => Item
+            InventoryItemCtorMapping[definition.itemType] as new (def: ReifiableDef<LootDefForType<Type>>, owner: Player, data?: ItemData<LootDefForType<Type>>) => Item
         )(definition, this.owner, data);
     }
 
@@ -354,7 +359,7 @@ export class Inventory {
         slot: number,
         item: ReifiableItemOfType<Type>,
         data?: ItemData<LootDefForType<Type>>
-    ): InstanceType<(typeof InventoryItemMapping)[Type]> | undefined | null {
+    ): InstanceType<(typeof InventoryItemCtorMapping)[Type]> | undefined | null {
         if (!Inventory.isValidWeaponSlot(slot)) throw new RangeError(`Attempted to set item in invalid slot '${slot}'`);
         if (slot === this.activeWeaponIndex) this.owner.setDirty();
         if (this.isLocked(slot)) return null;
@@ -377,7 +382,7 @@ export class Inventory {
         }
 
         // Drop old item into the game world and set the new item
-        const old = this.dropWeapon(slot) as InstanceType<(typeof InventoryItemMapping)[Type]>;
+        const old = this.dropWeapon(slot) as InstanceType<(typeof InventoryItemCtorMapping)[Type]>;
         this._setWeapon(slot, this._reifyItem(item, data));
 
         if (index !== undefined) {
@@ -478,13 +483,15 @@ export class Inventory {
 
         const item = this.weapons[slot];
 
+        if (item && !force && item.category === ItemType.Throwable && item.cooking) return;
+
         if (item === undefined || item.definition.noDrop) return;
         const definition = item.definition;
 
         if (GameConstants.player.inventorySlotTypings[slot] === ItemType.Throwable) {
             this.removeThrowable(definition as ThrowableDefinition, true);
         } else {
-            if (item instanceof GunItem && (definition as GunDefinition).isDual) {
+            if (item.isGun && (definition as GunDefinition).isDual) {
                 this._dropItem((definition as DualGunNarrowing).singleVariant);
                 this._dropItem((definition as DualGunNarrowing).singleVariant);
             } else {
@@ -493,7 +500,7 @@ export class Inventory {
 
             this._setWeapon(slot, undefined);
 
-            if (item instanceof GunItem && item.ammo > 0) {
+            if (item.isGun && item.ammo > 0) {
                 // Put the ammo in the gun back in the inventory
                 this.giveItem((definition as GunDefinition).ammoType, item.ammo);
                 item.ammo = 0;
@@ -577,7 +584,10 @@ export class Inventory {
             case ItemType.Healing:
             case ItemType.Ammo: {
                 const itemAmount = this.items.getItem(idString);
-                const removalAmount = Numeric.min(itemAmount, Math.ceil(itemAmount / 2));
+                const dropAmount = itemType === ItemType.Ammo
+                    ? Numeric.max(Math.ceil(itemAmount / 2), definition.minDropAmount)
+                    : Math.ceil(itemAmount / 2);
+                const removalAmount = Numeric.min(itemAmount, dropAmount);
 
                 this._dropItem(definition, { count: removalAmount });
                 this.items.decrementItem(idString, removalAmount);
@@ -668,11 +678,17 @@ export class Inventory {
         return this.weapons[index];
     }
 
+    /**
+     * Attempts to promote a weapon held in a slot to its dual variant
+     * @param slot The slot whose gun is to be promoted
+     * @returns `true` if the operation succeeded (in other words, if the weapon was upgraded to a dual variant successfully) and `false` otherwise.
+     * @throws {RangeError} If the slot is out-of-bounds
+     */
     upgradeToDual(slot: number): boolean {
         if (!Inventory.isValidWeaponSlot(slot)) throw new RangeError(`Attempted to upgrade to dual weapon in invalid slot '${slot}'`);
         if (
             !this.hasWeapon(slot)
-            || !(this.weapons[slot] instanceof GunItem)
+            || !this.weapons[slot]?.isGun
             || this.isLocked(slot)
         ) return false;
 
@@ -747,6 +763,7 @@ export class Inventory {
 
         item?.refreshModifiers();
         this.owner.updateAndApplyModifiers();
+        this.owner.updateBackEquippedMelee();
 
         return old;
     }
@@ -776,6 +793,10 @@ export class Inventory {
                     ) || (
                         definition.healType === HealType.Adrenaline
                         && this.owner.adrenaline >= this.owner.maxAdrenaline
+                    ) || (
+                        definition.healType === HealType.Special
+                        && definition.effect?.removePerk !== undefined
+                        && !this.owner.perks.hasItem(definition.effect?.removePerk)
                     )
                 ) return;
 
@@ -793,11 +814,9 @@ export class Inventory {
                 if (this.activeWeapon.category === ItemType.Throwable) {
                     this.activeWeapon.stopUse();
                 }
-
                 this.owner.setDirty();
                 this.owner.dirty.weapons = true;
                 const slot = this.slotsByItemType[ItemType.Throwable]?.[0];
-
                 // Let's hope there's only one throwable slot…
                 if (slot !== undefined) {
                     const old = this.weapons[slot];
@@ -830,7 +849,7 @@ export class ItemCollection<ItemDef extends LootDefinition> {
     private _recordCache?: Record<ReferenceTo<ItemDef>, number>;
 
     asRecord(): Record<ReferenceTo<ItemDef>, number> {
-        return this._recordCache ??= [...this._internal.entries()]
+        return this._recordCache ??= Array.from(this._internal.entries())
             .reduce(
                 (acc, [item, count]) => {
                     acc[item] = count;

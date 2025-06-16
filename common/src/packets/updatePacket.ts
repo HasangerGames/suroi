@@ -1,35 +1,24 @@
-import { Constants, DEFAULT_INVENTORY, Derived, itemKeys, itemKeysLength, Layer, ObjectCategory, type GasState } from "../constants";
+import { GameConstants, Layer, ObjectCategory, type GasState } from "../constants";
+import { itemKeys, itemKeysLength, type DEFAULT_INVENTORY } from "../defaultInventory";
 import { Badges, type BadgeDefinition } from "../definitions/badges";
+import { EmoteDefinition, Emotes } from "../definitions/emotes";
 import { Explosions, type ExplosionDefinition } from "../definitions/explosions";
+import { Perks, type PerkDefinition } from "../definitions/items/perks";
+import { Scopes, type ScopeDefinition } from "../definitions/items/scopes";
 import { Loots, type WeaponDefinition } from "../definitions/loots";
 import { MapPings, type MapPing, type PlayerPing } from "../definitions/mapPings";
-import { Perks, type PerkDefinition } from "../definitions/perks";
-import { Scopes, type ScopeDefinition } from "../definitions/scopes";
 import { BaseBullet, type BulletOptions } from "../utils/baseBullet";
-import { GlobalRegistrar } from "../utils/definitionRegistry";
-import { type Mutable, type SDeepMutable } from "../utils/misc";
+import { type SDeepMutable } from "../utils/misc";
 import { ObjectSerializations, type FullData, type ObjectsNetData } from "../utils/objectsSerializations";
 import type { PerkCollection } from "../utils/perkManager";
 import { type SuroiByteStream } from "../utils/suroiByteStream";
 import { Vec, type Vector } from "../utils/vector";
-import type { AllowedEmoteSources } from "./inputPacket";
-import { createPacket } from "./packet";
-
-interface ObjectFullData {
-    readonly id: number
-    readonly type: ObjectCategory
-    readonly data: FullData<ObjectFullData["type"]>
-}
-
-interface ObjectPartialData {
-    readonly id: number
-    readonly type: ObjectCategory
-    readonly data: ObjectsNetData[ObjectCategory]
-}
+import { DataSplitTypes, getSplitTypeForCategory, Packet, PacketType } from "./packet";
 
 function serializePlayerData(
     strm: SuroiByteStream,
     {
+        pingSeq,
         minMax,
         health,
         adrenaline,
@@ -42,7 +31,8 @@ function serializePlayerData(
         items,
         activeC4s,
         perks,
-        teamID
+        teamID,
+        blockEmoting
     }: PlayerData
 ): void {
     /* eslint-disable @stylistic/no-multi-spaces */
@@ -74,8 +64,11 @@ function serializePlayerData(
         hasItems,
         hasActiveC4s,
         hasPerks,
-        hasTeamID
+        hasTeamID,
+        blockEmoting
     );
+
+    strm.writeUint8(pingSeq);
 
     if (hasMinMax) {
         const { maxHealth, minAdrenaline, maxAdrenaline } = minMax;
@@ -276,10 +269,14 @@ function deserializePlayerData(strm: SuroiByteStream): PlayerData {
         hasItems,
         hasActiveC4s,
         hasPerks,
-        hasTeamID
+        hasTeamID,
+        blockEmoting
     ] = strm.readBooleanGroup2();
 
-    const data: SDeepMutable<PlayerData> = {};
+    const data: SDeepMutable<PlayerData> = {
+        pingSeq: strm.readUint8(),
+        blockEmoting
+    };
 
     if (hasMinMax) {
         data.minMax = {
@@ -425,7 +422,7 @@ function deserializePlayerData(strm: SuroiByteStream): PlayerData {
         let list: PerkDefinition[] | undefined;
         data.perks = {
             asBitfield: () => bitfield,
-            asList: () => [...(list ??= Perks.definitions.filter((_, i) => (bitfield & (1 << i)) !== 0))]
+            asList: () => Array.from(list ??= Perks.definitions.filter((_, i) => (bitfield & (1 << i)) !== 0))
         };
     }
 
@@ -436,7 +433,7 @@ function deserializePlayerData(strm: SuroiByteStream): PlayerData {
     return data;
 }
 
-const enum UpdateFlags {
+export const enum UpdateFlags {
     PlayerData = 1 << 0,
     DeletedObjects = 1 << 1,
     FullObjects = 1 << 2,
@@ -450,34 +447,48 @@ const enum UpdateFlags {
     DeletedPlayers = 1 << 10,
     AliveCount = 1 << 11,
     Planes = 1 << 12,
-    MapPings = 1 << 13
+    MapPings = 1 << 13,
+    KillLeader = 1 << 14
 }
 
-export type MapPingSerialization = {
+export interface MapPingSerialization {
     readonly position: Vector
     readonly definition: MapPing
-};
+}
 
-export type PlayerPingSerialization = {
+export interface PlayerPingSerialization {
     readonly position: Vector
     readonly definition: PlayerPing
     readonly playerId: number
-};
+}
 
 export type PingSerialization = MapPingSerialization | PlayerPingSerialization;
 
-export type ExplosionSerialization = {
+export interface ExplosionSerialization {
     readonly definition: ExplosionDefinition
     readonly position: Vector
     readonly layer: Layer
-};
+}
 
-export type EmoteSerialization = {
-    readonly definition: AllowedEmoteSources
+export interface EmoteSerialization {
+    readonly definition: EmoteDefinition
     readonly playerID: number
-};
+}
 
-export type PlayerData = {
+interface ObjectFullData {
+    readonly id: number
+    readonly type: ObjectCategory
+    readonly data: FullData<ObjectFullData["type"]>
+}
+
+interface ObjectPartialData {
+    readonly id: number
+    readonly type: ObjectCategory
+    readonly data: ObjectsNetData[ObjectCategory]
+}
+
+export interface PlayerData {
+    readonly pingSeq: number
     readonly minMax?: {
         readonly maxHealth: number
         readonly minAdrenaline: number
@@ -491,7 +502,7 @@ export type PlayerData = {
         readonly id: number
         readonly spectating: boolean
     }
-    readonly teammates?: ReadonlyArray<{
+    readonly teammates?: Array<{
         readonly id: number
         readonly position: Vector
         readonly normalizedHealth: number
@@ -501,7 +512,7 @@ export type PlayerData = {
     }>
     readonly inventory?: {
         readonly activeWeaponIndex: number
-        readonly weapons?: ReadonlyArray<undefined | {
+        readonly weapons?: Array<undefined | {
             readonly definition: WeaponDefinition
             readonly count?: number
             readonly stats?: {
@@ -517,12 +528,14 @@ export type PlayerData = {
     readonly activeC4s?: boolean
     readonly perks?: PerkCollection
     readonly teamID?: number
-};
+    readonly blockEmoting: boolean
+}
 
-export type UpdatePacketDataCommon = {
+export interface UpdateDataCommon {
+    readonly type: PacketType.Update
     readonly flags: number
     readonly playerData?: PlayerData
-    readonly deletedObjects?: readonly number[]
+    readonly deletedObjects?: number[]
     readonly explosions?: readonly ExplosionSerialization[]
     readonly emotes?: readonly EmoteSerialization[]
     readonly gas?: {
@@ -532,6 +545,7 @@ export type UpdatePacketDataCommon = {
         readonly newPosition: Vector
         readonly oldRadius: number
         readonly newRadius: number
+        readonly finalStage?: boolean
     }
     readonly gasProgress?: number
     readonly newPlayers?: ReadonlyArray<{
@@ -552,36 +566,43 @@ export type UpdatePacketDataCommon = {
         readonly direction: number
     }>
     readonly mapPings?: readonly PingSerialization[]
-};
+    readonly killLeader?: {
+        id: number
+        kills: number
+    }
+}
 
-export type ServerOnly = {
+export interface ServerOnly {
     readonly bullets?: readonly BaseBullet[]
     readonly fullObjectsCache: ReadonlyArray<{
         get partialStream(): SuroiByteStream
         get fullStream(): SuroiByteStream
     }>
 
-    readonly partialObjectsCache: ReadonlyArray<{
+    readonly partialObjectsCache: Array<{
         get partialStream(): SuroiByteStream
     }>
-};
+}
 
-export type ClientOnly = {
+export interface ClientOnly {
     readonly deserializedBullets?: readonly BulletOptions[]
     readonly fullDirtyObjects?: readonly ObjectFullData[]
     readonly partialDirtyObjects?: readonly ObjectPartialData[]
-};
+}
 
 /**
  * For server use
  */
-export type UpdatePacketDataIn = UpdatePacketDataCommon & ServerOnly;
+export type UpdateDataIn = UpdateDataCommon & ServerOnly;
 /**
  * For client use
  */
-export type UpdatePacketDataOut = UpdatePacketDataCommon & ClientOnly;
+export type UpdateDataOut = UpdateDataCommon & ClientOnly;
 
-export const UpdatePacket = createPacket("UpdatePacket")<UpdatePacketDataIn, UpdatePacketDataOut>({
+const planeMinPos = -GameConstants.maxPosition;
+const planeMaxPos = GameConstants.maxPosition * 2;
+
+export const UpdatePacket = new Packet<UpdateDataIn, UpdateDataOut>(PacketType.Update, {
     serialize(strm, data) {
         let flags = 0;
         // save the current index to write flags later
@@ -655,7 +676,7 @@ export const UpdatePacket = createPacket("UpdatePacket")<UpdatePacketDataIn, Upd
             strm.writeArray(
                 data.emotes,
                 emote => {
-                    GlobalRegistrar.writeToStream(strm, emote.definition);
+                    Emotes.writeToStream(strm, emote.definition);
                     strm.writeObjectId(emote.playerID);
                 },
                 1
@@ -670,7 +691,8 @@ export const UpdatePacket = createPacket("UpdatePacket")<UpdatePacketDataIn, Upd
                 .writePosition(gas.oldPosition)
                 .writePosition(gas.newPosition)
                 .writeFloat(gas.oldRadius, 0, 2048, 2)
-                .writeFloat(gas.newRadius, 0, 2048, 2);
+                .writeFloat(gas.newRadius, 0, 2048, 2)
+                .writeBooleanGroup(gas.finalStage ?? false);
             flags |= UpdateFlags.Gas;
         }
 
@@ -724,10 +746,10 @@ export const UpdatePacket = createPacket("UpdatePacket")<UpdatePacketDataIn, Upd
                 plane => {
                     strm.writeVector(
                         plane.position,
-                        -Constants.MAX_POSITION,
-                        -Constants.MAX_POSITION,
-                        Derived.DOUBLE_MAX_POS,
-                        Derived.DOUBLE_MAX_POS,
+                        planeMinPos,
+                        planeMinPos,
+                        planeMaxPos,
+                        planeMaxPos,
                         3
                     );
                     strm.writeRotation2(plane.direction);
@@ -752,6 +774,12 @@ export const UpdatePacket = createPacket("UpdatePacket")<UpdatePacketDataIn, Upd
             flags |= UpdateFlags.MapPings;
         }
 
+        if (data.killLeader) {
+            strm.writeObjectId(data.killLeader.id)
+                .writeUint8(data.killLeader.kills);
+            flags |= UpdateFlags.KillLeader;
+        }
+
         const idx = strm.index;
         strm.index = flagsIdx;
         strm.writeUint16(flags);
@@ -759,26 +787,29 @@ export const UpdatePacket = createPacket("UpdatePacket")<UpdatePacketDataIn, Upd
         strm.index = idx;
     },
 
-    deserialize(stream) {
-        const data = {} as Mutable<UpdatePacketDataOut>;
-
+    deserialize(stream, data, saveIndex, recordTo) {
         const flags = stream.readUint16();
 
-        if (flags & UpdateFlags.PlayerData) {
+        if ((flags & UpdateFlags.PlayerData) !== 0) {
+            saveIndex();
             data.playerData = deserializePlayerData(stream);
+            recordTo(DataSplitTypes.PlayerData);
         }
 
-        if (flags & UpdateFlags.DeletedObjects) {
+        if ((flags & UpdateFlags.DeletedObjects) !== 0) {
+            saveIndex();
             data.deletedObjects = stream.readArray(() => stream.readObjectId(), 2);
+            recordTo(DataSplitTypes.GameObjects);
         }
 
-        if (flags & UpdateFlags.FullObjects) {
+        if ((flags & UpdateFlags.FullObjects) !== 0) {
             data.fullDirtyObjects = stream.readArray(() => {
+                saveIndex();
                 const id = stream.readObjectId();
                 const type = stream.readObjectType();
 
                 const serializers = ObjectSerializations[type];
-                return {
+                const obj = {
                     id,
                     type,
                     data: {
@@ -786,26 +817,36 @@ export const UpdatePacket = createPacket("UpdatePacket")<UpdatePacketDataIn, Upd
                         full: serializers.deserializeFull(stream)
                     } as ObjectsNetData[typeof type]
                 };
+
+                recordTo(getSplitTypeForCategory(type));
+
+                return obj;
             }, 2);
         }
 
-        if (flags & UpdateFlags.PartialObjects) {
+        if ((flags & UpdateFlags.PartialObjects) !== 0) {
             data.partialDirtyObjects = stream.readArray(() => {
+                saveIndex();
                 const id = stream.readObjectId();
                 const type = stream.readObjectType();
-                return {
+                const obj = {
                     id,
                     type,
                     data: ObjectSerializations[type].deserializePartial(stream)
                 };
+
+                recordTo(getSplitTypeForCategory(type));
+
+                return obj;
             }, 2);
         }
 
-        if (flags & UpdateFlags.Bullets) {
+        saveIndex();
+        if ((flags & UpdateFlags.Bullets) !== 0) {
             data.deserializedBullets = stream.readArray(() => BaseBullet.deserialize(stream), 1);
         }
 
-        if (flags & UpdateFlags.Explosions) {
+        if ((flags & UpdateFlags.Explosions) !== 0) {
             data.explosions = stream.readArray(() => ({
                 definition: Explosions.readFromStream(stream),
                 position: stream.readPosition(),
@@ -813,29 +854,32 @@ export const UpdatePacket = createPacket("UpdatePacket")<UpdatePacketDataIn, Upd
             }), 1);
         }
 
-        if (flags & UpdateFlags.Emotes) {
+        if ((flags & UpdateFlags.Emotes) !== 0) {
             data.emotes = stream.readArray(() => ({
-                definition: GlobalRegistrar.readFromStream(stream),
+                definition: Emotes.readFromStream(stream),
                 playerID: stream.readObjectId()
             }), 1);
         }
+        recordTo(DataSplitTypes.GameObjects);
 
-        if (flags & UpdateFlags.Gas) {
+        if ((flags & UpdateFlags.Gas) !== 0) {
             data.gas = {
                 state: stream.readUint8(),
                 currentDuration: stream.readUint8(),
                 oldPosition: stream.readPosition(),
                 newPosition: stream.readPosition(),
                 oldRadius: stream.readFloat(0, 2048, 2),
-                newRadius: stream.readFloat(0, 2048, 2)
+                newRadius: stream.readFloat(0, 2048, 2),
+                finalStage: stream.readBooleanGroup()[0]
             };
         }
 
-        if (flags & UpdateFlags.GasPercentage) {
+        if ((flags & UpdateFlags.GasPercentage) !== 0) {
             data.gasProgress = stream.readFloat(0, 1, 2);
         }
 
-        if (flags & UpdateFlags.NewPlayers) {
+        saveIndex();
+        if ((flags & UpdateFlags.NewPlayers) !== 0) {
             data.newPlayers = stream.readArray(() => {
                 const id = stream.readObjectId();
                 const name = stream.readPlayerName();
@@ -848,32 +892,33 @@ export const UpdatePacket = createPacket("UpdatePacket")<UpdatePacketDataIn, Upd
                     hasColor,
                     nameColor: hasColor ? stream.readUint24() : undefined,
                     badge: (decorations & 1) !== 0 ? Badges.readFromStream(stream) : undefined
-                } as (UpdatePacketDataCommon["newPlayers"] & object)[number];
+                } as (UpdateDataCommon["newPlayers"] & object)[number];
             }, 1);
         }
 
-        if (flags & UpdateFlags.DeletedPlayers) {
+        if ((flags & UpdateFlags.DeletedPlayers) !== 0) {
             data.deletedPlayers = stream.readArray(() => stream.readObjectId(), 1);
         }
+        recordTo(DataSplitTypes.GameObjects);
 
-        if (flags & UpdateFlags.AliveCount) {
+        if ((flags & UpdateFlags.AliveCount) !== 0) {
             data.aliveCount = stream.readUint8();
         }
 
-        if (flags & UpdateFlags.Planes) {
+        if ((flags & UpdateFlags.Planes) !== 0) {
             data.planes = stream.readArray(() => ({
                 position: stream.readVector(
-                    -Constants.MAX_POSITION,
-                    -Constants.MAX_POSITION,
-                    Derived.DOUBLE_MAX_POS,
-                    Derived.DOUBLE_MAX_POS,
+                    planeMinPos,
+                    planeMinPos,
+                    planeMaxPos,
+                    planeMaxPos,
                     3
                 ),
                 direction: stream.readRotation2()
             }), 1);
         }
 
-        if (flags & UpdateFlags.MapPings) {
+        if ((flags & UpdateFlags.MapPings) !== 0) {
             data.mapPings = stream.readArray(() => {
                 const definition = MapPings.readFromStream(stream);
 
@@ -885,6 +930,11 @@ export const UpdatePacket = createPacket("UpdatePacket")<UpdatePacketDataIn, Upd
             }, 1);
         }
 
-        return data as UpdatePacketDataOut;
+        if ((flags & UpdateFlags.KillLeader) !== 0) {
+            data.killLeader = {
+                id: stream.readObjectId(),
+                kills: stream.readUint8()
+            };
+        }
     }
 });

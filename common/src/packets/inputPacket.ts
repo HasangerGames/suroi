@@ -1,18 +1,17 @@
 import { GameConstants, InputActions } from "../constants";
-import { type AmmoDefinition } from "../definitions/ammos";
-import { type ArmorDefinition } from "../definitions/armors";
-import { type BackpackDefinition } from "../definitions/backpacks";
-import { type EmoteDefinition } from "../definitions/emotes";
-import { type HealingItemDefinition } from "../definitions/healingItems";
-import { Loots, type WeaponDefinition } from "../definitions/loots";
-import { type MapPingDefinition, MapPings, type PlayerPing } from "../definitions/mapPings";
-import { type PerkDefinition } from "../definitions/perks";
-import { type ScopeDefinition } from "../definitions/scopes";
-import { type ThrowableDefinition } from "../definitions/throwables";
-import { GlobalRegistrar } from "../utils/definitionRegistry";
-import { type DeepMutable, type SDeepMutable } from "../utils/misc";
+import { Emotes, type EmoteDefinition } from "../definitions/emotes";
+import { type AmmoDefinition } from "../definitions/items/ammos";
+import { type ArmorDefinition } from "../definitions/items/armors";
+import { type BackpackDefinition } from "../definitions/items/backpacks";
+import { type HealingItemDefinition } from "../definitions/items/healingItems";
+import { type PerkDefinition } from "../definitions/items/perks";
+import { type ScopeDefinition } from "../definitions/items/scopes";
+import { type ThrowableDefinition } from "../definitions/items/throwables";
+import { Loots } from "../definitions/loots";
+import { MapPings, type MapPingDefinition, type PlayerPing } from "../definitions/mapPings";
+import { type DeepMutable } from "../utils/misc";
 import { type Vector } from "../utils/vector";
-import { createPacket, type InputPacket } from "./packet";
+import { Packet, PacketType } from "./packet";
 
 /**
  * {@linkcode InputAction}s requiring no additional parameter
@@ -30,8 +29,6 @@ export type SimpleInputActions = Exclude<
     | InputActions.ToggleSlotLock
 >;
 
-export type AllowedEmoteSources = EmoteDefinition | AmmoDefinition | HealingItemDefinition | WeaponDefinition;
-
 export type InputAction =
     | {
         readonly type: InputActions.UseItem
@@ -47,7 +44,7 @@ export type InputAction =
     }
     | {
         readonly type: InputActions.Emote
-        readonly emote: AllowedEmoteSources
+        readonly emote: EmoteDefinition
     }
     | {
         readonly type: InputActions.MapPing
@@ -81,7 +78,8 @@ type TurningMixin = {
     readonly distanceToMouse?: undefined
 }));
 
-export type PlayerInputData = {
+export type InputData = {
+    readonly type: PacketType.Input
     readonly movement: {
         readonly up: boolean
         readonly down: boolean
@@ -90,14 +88,18 @@ export type PlayerInputData = {
     }
     readonly attacking: boolean
     readonly actions: readonly InputAction[]
+    readonly pingSeq: number
 } & MobileMixin & TurningMixin;
 
-export type WithMobile = PlayerInputData & { readonly isMobile: true };
-export type NoMobile = PlayerInputData & { readonly isMobile: false };
+export type WithMobile = InputData & { readonly isMobile: true };
+export type NoMobile = InputData & { readonly isMobile: false };
 
-export const PlayerInputPacket = createPacket("PlayerInputPacket")<PlayerInputData>({
+export const InputPacket = new Packet<InputData>(PacketType.Input, {
     serialize(stream, data) {
         const { movement, isMobile, turning } = data;
+
+        stream.writeUint8(data.pingSeq);
+        if ((data.pingSeq & 128) !== 0) return;
 
         stream.writeBooleanGroup(
             movement.up,
@@ -147,7 +149,7 @@ export const PlayerInputPacket = createPacket("PlayerInputPacket")<PlayerInputDa
                     Loots.writeToStream(stream, action.item);
                     break;
                 case InputActions.Emote:
-                    GlobalRegistrar.writeToStream(stream, action.emote);
+                    Emotes.writeToStream(stream, action.emote);
                     break;
                 case InputActions.MapPing:
                     MapPings.writeToStream(stream, action.ping);
@@ -156,7 +158,12 @@ export const PlayerInputPacket = createPacket("PlayerInputPacket")<PlayerInputDa
             }
         }, 1);
     },
-    deserialize(stream) {
+
+    deserialize(stream, data) {
+        const pingSeq = stream.readUint8();
+        if ((pingSeq & 128) !== 0) return;
+        data.pingSeq = pingSeq & 127;
+
         const [
             up,
             down,
@@ -168,20 +175,13 @@ export const PlayerInputPacket = createPacket("PlayerInputPacket")<PlayerInputDa
             attacking
         ] = stream.readBooleanGroup();
 
-        const data = {
-            movement: {
-                up,
-                down,
-                left,
-                right
-            },
-            isMobile,
-            attacking,
-            turning
-        } as SDeepMutable<PlayerInputData>;
+        data.movement = { up, down, left, right };
+        data.isMobile = isMobile;
+        data.turning = turning;
+        data.attacking = attacking;
 
         if (isMobile) {
-            (data as DeepMutable<WithMobile>).mobile = {
+            data.mobile = {
                 moving,
                 angle: stream.readRotation2()
             };
@@ -200,11 +200,11 @@ export const PlayerInputPacket = createPacket("PlayerInputPacket")<PlayerInputDa
         data.actions = stream.readArray(() => {
             const data = stream.readUint8();
             // hiMask = 2 msb, type = 4 lsb
-            const [hiMask, type] = [data & 0b1100_0000, (data & 15) as InputActions];
+            const [hiMask, type] = [data & 0b1100_0000, (data & 0b0000_1111) as InputActions];
 
             let slot: number | undefined;
             let item: HealingItemDefinition | ScopeDefinition | ArmorDefinition | AmmoDefinition | BackpackDefinition | PerkDefinition | undefined;
-            let emote: AllowedEmoteSources | undefined;
+            let emote: EmoteDefinition | undefined;
             let position: Vector | undefined;
             let ping: MapPingDefinition | undefined;
 
@@ -230,7 +230,7 @@ export const PlayerInputPacket = createPacket("PlayerInputPacket")<PlayerInputDa
                     item = Loots.readFromStream<HealingItemDefinition | ScopeDefinition>(stream);
                     break;
                 case InputActions.Emote:
-                    emote = GlobalRegistrar.readFromStream<AllowedEmoteSources>(stream);
+                    emote = Emotes.readFromStream(stream);
                     break;
                 case InputActions.MapPing:
                     ping = MapPings.readFromStream(stream);
@@ -239,9 +239,7 @@ export const PlayerInputPacket = createPacket("PlayerInputPacket")<PlayerInputDa
             }
 
             return { type, item, slot, emote, ping, position } as InputAction;
-        }, 1);
-
-        return data;
+        });
     }
 });
 
@@ -250,32 +248,25 @@ export const PlayerInputPacket = createPacket("PlayerInputPacket")<PlayerInputDa
 * @param newPacket The new packet to potentially sent
 * @param oldPacket The old packet (usually the last sent one) to compare against
 */
-export function areDifferent(
-    newPacket: InputPacket<PlayerInputData> | PlayerInputData,
-    oldPacket: InputPacket<PlayerInputData> | PlayerInputData
-): boolean {
-    const newData = newPacket instanceof PlayerInputPacket ? newPacket.input : newPacket as PlayerInputData;
-    const oldData = oldPacket instanceof PlayerInputPacket ? oldPacket.input : oldPacket as PlayerInputData;
+export function areDifferent(newPacket: InputData, oldPacket: InputData): boolean {
+    if (newPacket.actions.length > 0) return true;
 
-    if (newData.actions.length > 0) return true;
-
-    for (const k in newData.movement) {
-        const key = k as keyof PlayerInputData["movement"];
-        if (oldData.movement[key] !== newData.movement[key]) return true;
+    for (const k in newPacket.movement) {
+        const key = k as keyof InputData["movement"];
+        if (oldPacket.movement[key] !== newPacket.movement[key]) return true;
     }
 
-    if (newData.isMobile !== oldData.isMobile) return true;
+    if (newPacket.isMobile !== oldPacket.isMobile) return true;
 
-    if (newData.isMobile) {
-        for (const k in newData.mobile) {
+    if (newPacket.isMobile) {
+        for (const k in newPacket.mobile) {
             const key = k as keyof WithMobile["mobile"];
-            if ((oldData as WithMobile).mobile[key] !== newData.mobile[key]) return true;
+            if ((oldPacket as WithMobile).mobile[key] !== newPacket.mobile[key]) return true;
         }
     }
 
-    // allow arbitrary unsafe indexing
-    for (const key of ["attacking", "turning", "rotation", "distanceToMouse"] as ReadonlyArray<keyof PlayerInputData>) {
-        if (oldData[key] !== newData[key]) return true;
+    for (const key of ["attacking", "turning", "rotation", "distanceToMouse"] as ReadonlyArray<keyof InputData>) {
+        if (oldPacket[key] !== newPacket[key]) return true;
     }
 
     return false;

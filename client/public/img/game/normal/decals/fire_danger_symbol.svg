@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="90.362816"
+   height="90.362747"
+   viewBox="0 0 23.908494 23.908477"
+   version="1.1"
+   id="svg1"
+   inkscape:version="1.3.2 (091e20e, 2023-11-25, custom)"
+   sodipodi:docname="fire_danger_symbol.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     inkscape:zoom="5.7370931"
+     inkscape:cx="90.289627"
+     inkscape:cy="29.19597"
+     inkscape:window-width="1920"
+     inkscape:window-height="1001"
+     inkscape:window-x="-9"
+     inkscape:window-y="-9"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs1" />
+  <g
+     inkscape:label="Στρώση 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-93.219688,-136.6114)">
+    <g
+       id="g1"
+       transform="rotate(44.959216,105.17393,148.56564)">
+      <rect
+         style="fill:#f1af01;fill-opacity:1;stroke:#260b08;stroke-width:3;stroke-linecap:square;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1;stop-color:#000000"
+         id="rect19017-4-8-7-1-2-9-9-7-2-0-4-4-5-4-5-9-9-4-1-9-1-6"
+         width="20.89361"
+         height="20.893629"
+         x="168.97417"
+         y="20.235746"
+         transform="rotate(45.000002)" />
+      <path
+         style="fill:#1d1f1d;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1.02794;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
+         d="m 104.0192,154.99948 c -4.9165,0.50752 -3.7369,-5.78056 -3.8326,-6.4079 0.2275,0.30226 0.4717,0.58698 0.8036,0.76058 0.4068,-1.23299 0.194,-2.40736 0.2944,-3.61102 0.6356,0.37792 1.106,0.822 1.0943,1.459 0.6805,-0.99009 0.9337,-2.13343 0.5992,-3.48807 0.3793,0.38232 0.8434,0.54433 0.9143,0.98027 0.5613,-0.77977 0.5363,-1.92981 0.912,-2.58971 0.097,1.2204 1.562,1.96833 1.6593,3.23728 l 0.6022,-1.45 c 1.209,1.46754 1.2917,2.21435 1.477,3.52907 0.5122,-0.0524 0.6323,-0.69321 0.7661,-1.3131 1.1201,1.48418 0.5604,3.22288 0.1272,4.94235 0.3355,-0.0157 0.5379,-0.49505 0.7841,-0.82069 -0.033,4.78437 -3.2648,4.8285 -4.9787,4.59585 1.101,-0.95855 2.5526,-1.18952 2.8049,-3.49115 l -1.1151,0.69007 c 0.2108,-0.54473 0.7598,-1.71702 0.461,-2.26178 -0.3386,0.669 -0.7357,1.41484 -1.3064,1.64559 0.097,-0.6647 0.4453,-1.4102 -0.3556,-1.97515 -0.1573,0.95565 -0.2275,1.35492 -0.8508,1.92339 -0.3011,-0.55283 -0.6727,-1.07241 -1.024,-1.601 -0.3466,1.03686 -0.1004,1.01629 -0.034,2.03003 -0.6166,-0.70287 -0.9143,-0.54074 -1.0628,-1.68548 l -0.1138,1.90589 c -0.2977,-0.39161 -0.9304,-0.55757 -0.9304,-0.55757 0,0 0.4045,2.53923 1.7454,3.31343"
+         id="path1-41-2-0-7-3-4-9-0-0-0-7-0-9-1-6-4-7-6"
+         sodipodi:nodetypes="ccccccccccccccccccccccccccc" />
+    </g>
+  </g>
+</svg>

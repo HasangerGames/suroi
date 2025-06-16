@@ -1,17 +1,16 @@
-import { ObjectCategory } from "@common/constants";
-import { Obstacles, RotationMode, type ObstacleDefinition } from "@common/definitions/obstacles";
-import { PerkIds } from "@common/definitions/perks";
+import { FlyoverPref, ObjectCategory, RotationMode } from "@common/constants";
+import { PerkIds, Perks } from "@common/definitions/items/perks";
+import { Obstacles, type ObstacleDefinition } from "@common/definitions/obstacles";
 import { type Orientation, type Variation } from "@common/typings";
 import { CircleHitbox, RectangleHitbox, type Hitbox } from "@common/utils/hitbox";
-import { equalLayer } from "@common/utils/layer";
 import { Angle, calculateDoorHitboxes, resolveStairInteraction } from "@common/utils/math";
-import { ItemType, NullString, ObstacleSpecialRoles, type ReferenceTo, type ReifiableDef } from "@common/utils/objectDefinitions";
+import { ItemType, NullString, type ReifiableDef } from "@common/utils/objectDefinitions";
 import { type FullData } from "@common/utils/objectsSerializations";
 import { Vec, type Vector } from "@common/utils/vector";
-import { getLootFromTable, LootItem } from "../data/lootTables";
 import { type Game } from "../game";
-import { InventoryItem } from "../inventory/inventoryItem";
-import { getRandomIDString } from "../utils/misc";
+import { InventoryItemBase } from "../inventory/inventoryItem";
+import { getLootFromTable, LootItem } from "../utils/lootHelpers";
+import { getRandomIDString, runOrWait } from "../utils/misc";
 import { type Building } from "./building";
 import { type Bullet } from "./bullet";
 import { BaseGameObject, DamageParams, type GameObject } from "./gameObject";
@@ -30,6 +29,10 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
 
     playMaterialDestroyedSound = true;
 
+    waterOverlay = false;
+
+    powered = false;
+
     readonly variation: Variation;
 
     spawnHitbox: Hitbox;
@@ -41,13 +44,14 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
 
     readonly isDoor: boolean;
     door?: {
-        operationStyle: NonNullable<(ObstacleDefinition & { readonly role: ObstacleSpecialRoles.Door })["operationStyle"]>
+        operationStyle: NonNullable<(ObstacleDefinition & { readonly isDoor: true })["operationStyle"]>
         isOpen: boolean
         locked: boolean
         closedHitbox: Hitbox
         openHitbox: Hitbox
         openAltHitbox?: Hitbox
         offset: number
+        powered: boolean
     };
 
     activated?: boolean;
@@ -60,7 +64,18 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
 
     puzzlePiece?: string | boolean;
 
-    detectedMetal?: boolean;
+    // TODO: remove flyover pref when henry finishes refactoring definitions
+    get height(): number {
+        if (this.door && !this.door.isOpen) return Infinity;
+
+        switch (this.definition.allowFlyover) {
+            case FlyoverPref.Always:
+                return 0.2;
+            case FlyoverPref.Sometimes:
+                return 0.5;
+        }
+        return Infinity;
+    }
 
     constructor(
         game: Game,
@@ -74,7 +89,8 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
         parentBuilding?: Building,
         puzzlePiece?: string | boolean,
         locked?: boolean,
-        activated?: boolean
+        activated?: boolean,
+        waterOverlay?: boolean
     ) {
         super(game, position);
 
@@ -92,6 +108,8 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
 
         const definition = this.definition = Obstacles.reify(type);
 
+        this.waterOverlay = waterOverlay ?? definition.spawnWithWaterOverlay ?? false;
+
         this.health = this.maxHealth = this.definition.health;
 
         const hitboxRotation = this.definition.rotationMode === RotationMode.Limited ? rotation as Orientation : 0;
@@ -102,11 +120,11 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
         this.collidable = !definition.noCollisions;
 
         if (definition.hasLoot) {
-            this.loot = getLootFromTable(definition.lootTable ?? definition.idString);
+            this.loot = getLootFromTable(this.game.modeName, definition.lootTable ?? definition.idString);
         }
 
         if (definition.spawnWithLoot) {
-            for (const item of getLootFromTable(definition.lootTable ?? definition.idString)) {
+            for (const item of getLootFromTable(this.game.modeName, definition.lootTable ?? definition.idString)) {
                 this.game.addLoot(
                     item.idString,
                     this.position,
@@ -127,7 +145,8 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
                 closedHitbox: this.hitbox.clone(),
                 openHitbox: hitboxes.openHitbox,
                 openAltHitbox: (hitboxes as typeof hitboxes & { readonly openAltHitbox?: RectangleHitbox }).openAltHitbox,
-                offset: 0
+                offset: 0,
+                powered: false
             };
         }
 
@@ -135,8 +154,6 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
         if (puzzlePiece) {
             this.parentBuilding?.puzzlePieces.push(this);
         }
-
-        if (this.definition.detector) game.detectors.push(this);
     }
 
     damage(params: DamageParams & { position?: Vector }): void {
@@ -144,7 +161,7 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
         const { amount, source, weaponUsed, position } = params;
         if (this.health === 0 || definition.indestructible) return;
 
-        const weaponIsItem = weaponUsed instanceof InventoryItem;
+        const weaponIsItem = weaponUsed instanceof InventoryItemBase;
         const weaponDef = weaponIsItem ? weaponUsed.definition : undefined;
         if (
             (
@@ -169,8 +186,9 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
         this.health -= amount;
         this.setPartialDirty();
 
-        const notDead = this.health > 0 && !this.dead;
-        if (notDead) {
+        const dead = this.health <= 0 || this.dead;
+
+        if (!dead) {
             const oldScale = this.scale;
 
             // Calculate new scale & scale hitbox
@@ -184,11 +202,11 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
             ...params
         });
 
-        if (!notDead) {
+        if (dead) {
             this.health = 0;
             this.dead = true;
             if (definition.weaponSwap && source instanceof BaseGameObject && source.isPlayer) {
-                source.swapWeaponRandomly(weaponIsItem ? weaponUsed : weaponUsed?.weapon, true);
+                source.swapWeaponRandomly(weaponIsItem ? weaponUsed : weaponUsed?.weapon, true, definition.weaponSwap.modeRestricted, definition.weaponSwap.weighted);
             }
 
             if (
@@ -210,15 +228,28 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
                 this.game.addExplosion(definition.explosion, this.position, source, source.layer, weaponIsItem ? weaponUsed : weaponUsed?.weapon);
             }
 
-            // Pumpkin Bombs
-            if (
-                source instanceof BaseGameObject
-                && source.isPlayer
-                && source.perks.hasItem(PerkIds.PlumpkinBomb)
-                && definition.material === "pumpkin"
-            ) {
-                this.playMaterialDestroyedSound = false;
-                this.game.addExplosion("pumpkin_explosion", this.position, source, source.layer);
+            if (source instanceof BaseGameObject && source.isPlayer) {
+                // Plumpkin Bomb
+                if (
+                    source.perks.hasItem(PerkIds.PlumpkinBomb)
+                    && definition.material === "pumpkin"
+                ) {
+                    this.playMaterialDestroyedSound = false;
+                    this.game.addExplosion("pumpkin_explosion", this.position, source, source.layer);
+                }
+
+                // Infected perk
+                if (
+                    definition.applyPerkOnDestroy
+                    && definition.applyPerkOnDestroy.mode === this.game.modeName
+                    && definition.applyPerkOnDestroy.chance > Math.random()
+                    && !(definition.applyPerkOnDestroy.perk === PerkIds.Infected && source.perks.hasItem(PerkIds.Immunity)) // evil
+                ) {
+                    source.perks.addItem(Perks.fromString(definition.applyPerkOnDestroy.perk));
+                    if (definition.applyPerkOnDestroy.perk === PerkIds.Infected) { // evil
+                        source.setDirty();
+                    }
+                }
             }
 
             if (definition.particlesOnDestroy !== undefined) {
@@ -242,7 +273,7 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
                 );
             }
 
-            if (this.definition.isWall) {
+            if (definition.isWall) {
                 this.parentBuilding?.damageCeiling();
 
                 for (const object of this.game.grid.intersectsHitbox(this.hitbox)) {
@@ -271,6 +302,18 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
                 }
             }
 
+            if (definition.regenerateAfterDestroyed) {
+                this.game.addTimeout(() => {
+                    this.dead = false;
+                    this.health = this.maxHealth;
+                    this.scale = this.maxScale;
+                    const hitboxRotation = this.definition.rotationMode === RotationMode.Limited ? this.rotation as Orientation : 0;
+                    this.hitbox = definition.hitbox.transform(this.position, this.scale, hitboxRotation);
+                    this.collidable = !definition.noCollisions;
+                    this.setPartialDirty();
+                }, definition.regenerateAfterDestroyed);
+            }
+
             this.game.pluginManager.emit("obstacle_did_destroy", {
                 obstacle: this,
                 source,
@@ -281,19 +324,25 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
     }
 
     canInteract(player?: Player): boolean {
-        return !this.dead && (
-            (
-                this.isDoor
-                && ( // Either the door must not be locked or automatic, or there must not be a player triggering it
-                    (!this.door?.locked && !(this.definition as { automatic?: boolean }).automatic)
-                    || player === undefined
-                )
-            ) || (
-                this.definition.isActivatable === true
-                && (this.definition.requiredItem === undefined || player?.activeItemDefinition.idString === this.definition.requiredItem)
-                && !this.activated
+        return !this.dead
+            && (
+                player === undefined
+                || this.definition.interactOnlyFromSide === undefined
+                || this.definition.interactOnlyFromSide === (this.hitbox as RectangleHitbox).getSide(player.position)
             )
-        );
+            && (
+                (
+                    this.isDoor
+                    && ( // Either the door must not be locked or automatic, or there must not be a player triggering it
+                        (!this.door?.locked && !(this.definition as { automatic?: boolean }).automatic)
+                        || player === undefined
+                    )
+                ) || (
+                    this.definition.isActivatable === true
+                    && (this.definition.requiredItem === undefined || player?.activeItemDefinition.idString === this.definition.requiredItem)
+                    && !this.activated
+                )
+            );
     }
 
     /**
@@ -326,44 +375,40 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
 
         const definition = this.definition;
 
-        switch (definition.role) {
-            case ObstacleSpecialRoles.Door: {
-                // optional chaining not required but makes both eslint and tsc happy
-                if (!(this.door?.isOpen && definition.openOnce)) {
-                    this.toggleDoor(player);
-                }
-                break;
+        if (definition.isDoor) {
+            // optional chaining not required but makes both eslint and tsc happy
+            if (!(this.door?.isOpen && definition.openOnce)) {
+                this.toggleDoor(player);
             }
-            case ObstacleSpecialRoles.Activatable: {
+
+            if (definition.isActivatable) {
                 this.activated = true;
+            }
+        } else if (definition.isActivatable) {
+            this.activated = true;
 
-                if (this.parentBuilding && this.puzzlePiece) {
-                    this.parentBuilding.togglePuzzlePiece(this);
-                }
+            if (this.parentBuilding && this.puzzlePiece) {
+                this.parentBuilding.togglePuzzlePiece(this);
+            }
 
-                const replaceWith = definition.replaceWith;
-                if (replaceWith !== undefined) {
-                    this.game.addTimeout(() => {
-                        this.dead = true;
-                        this.collidable = false;
-                        this.setDirty();
+            const replaceWith = definition.replaceWith;
+            if (replaceWith !== undefined) {
+                this.game.addTimeout(() => {
+                    this.dead = true;
+                    this.collidable = false;
+                    this.setDirty();
 
-                        const idString = getRandomIDString<
-                            ObstacleDefinition,
-                            ReferenceTo<ObstacleDefinition> | typeof NullString
-                        >(replaceWith.idString);
-                        if (idString === NullString) {
-                            return;
-                        }
+                    const idString = getRandomIDString<ObstacleDefinition>(replaceWith.idString);
+                    if (idString === NullString) {
+                        return;
+                    }
 
-                        this.game.map.generateObstacle(
-                            idString,
-                            this.position,
-                            { rotation: this.rotation, layer: this.layer }
-                        );
-                    }, replaceWith.delay);
-                }
-                break;
+                    this.game.map.generateObstacle(
+                        idString,
+                        this.position,
+                        { rotation: this.rotation, layer: this.layer }
+                    );
+                }, replaceWith.delay);
             }
         }
 
@@ -379,6 +424,8 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
         if (!(this.hitbox instanceof RectangleHitbox)) {
             throw new Error("Door with non-rectangular hitbox");
         }
+
+        let hitbox: Hitbox = this.hitbox;
 
         this.door.isOpen = !this.door.isOpen;
         if (this.door.isOpen) {
@@ -406,19 +453,23 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
 
                             // swivel door => alt hitbox
                             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                            this.hitbox = this.door.openAltHitbox!.clone();
+                            hitbox = this.door.openAltHitbox!.clone();
                         } else {
                             this.door.offset = 1;
-                            this.hitbox = this.door.openHitbox.clone();
+                            if (this.definition.requiresPower && !this.door.locked) {
+                                this.door.offset = 3;
+                                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                                hitbox = this.door.openAltHitbox!.clone();
+                            } else hitbox = this.door.openHitbox.clone();
                         }
                     } else {
                         this.door.offset = 1;
-                        this.hitbox = this.door.openHitbox.clone();
+                        hitbox = this.door.openHitbox.clone();
                     }
                     break;
                 }
                 case "slide": {
-                    this.hitbox = this.door.openHitbox.clone();
+                    hitbox = this.door.openHitbox.clone();
                     this.door.offset = 1;
                     /*
                         changing the value of offset is really just for interop
@@ -430,22 +481,28 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
             }
         } else {
             this.door.offset = 0;
-            this.hitbox = this.door.closedHitbox.clone();
+            hitbox = this.door.closedHitbox.clone();
         }
-        this.spawnHitbox = this.hitbox;
-        this.game.grid.updateObject(this);
-    }
 
-    updateDetector(): void {
-        for (const object of this.game.grid.intersectsHitbox(this.spawnHitbox)) {
-            if (object.isPlayer) {
-                const player = object;
-
-                this.detectedMetal = this.hitbox.collidesWith(player.hitbox) && equalLayer(this.layer, player.layer);
-
-                this.setDirty();
-            }
+        if (this.definition.interactionDelay) {
+            this.door.powered = false;
+            this.door.locked = true;
+            this.setDirty();
         }
+        runOrWait(
+            this.game,
+            () => {
+                if (this.door) {
+                    this.door.powered = true;
+                    this.door.locked = false;
+                    this.setDirty();
+                }
+                this.hitbox = hitbox;
+                this.spawnHitbox = hitbox;
+                this.game.grid.updateObject(this);
+            },
+            this.definition.interactionDelay ?? 0
+        );
     }
 
     override get data(): FullData<ObjectCategory.Obstacle> {
@@ -453,6 +510,8 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
             scale: this.scale,
             dead: this.dead,
             playMaterialDestroyedSound: this.playMaterialDestroyedSound,
+            waterOverlay: this.waterOverlay,
+            powered: this.powered,
             full: {
                 activated: this.activated,
                 definition: this.definition,
@@ -463,8 +522,7 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
                 rotation: {
                     rotation: this.rotation,
                     orientation: this.rotation as Orientation
-                },
-                detectedMetal: this.detectedMetal
+                }
             }
         };
     }

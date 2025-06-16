@@ -7,6 +7,7 @@
     "build": "tsc --project tsconfig.json && tsc-alias -p tsconfig.json",
     "mathUnitTests": "tsc --project tsconfig.json && tsc-alias -p tsconfig.json && cd dist/tests/src && jest",
     "validateDefinitions": "node dist/tests/src/validateDefinitions.js -print-top -print-bottom",
+    "validateSvgs": "node -r ts-node/register -r tsconfig-paths/register ./src/validateSvgs.ts",
     "stressTest:start": "tsc --project tsconfig.json && tsc-alias -p tsconfig.json && node --enable-source-maps dist/server/src/stressTest.js",
     "stressTest": "nodemon -r ts-node/register -r tsconfig-paths/register --watch ./src --watch ../common src/stressTest.ts"
   },
@@ -14,18 +15,20 @@
   "license": "GPL-3.0",
   "devDependencies": {
     "@jest/globals": "^29.7.0",
-    "@swc/core": "^1.10.1",
-    "@swc/helpers": "^0.5.15",
-    "@types/node": "^22.10.2",
-    "@types/ws": "^8.5.13",
-    "nodemon": "^3.1.9",
-    "ts-jest": "^29.2.5",
-    "tsc-alias": "^1.8.10",
+    "@swc/core": "^1.11.31",
+    "@swc/helpers": "^0.5.17",
+    "@types/node": "^22.15.30",
+    "@types/svg-parser": "^2.0.6",
+    "@types/ws": "^8.18.1",
+    "nodemon": "^3.1.10",
+    "ts-jest": "^29.3.4",
+    "tsc-alias": "^1.8.16",
     "tsconfig-paths": "^4.2.0",
-    "typescript": "^5.7.2"
+    "typescript": "^5.8.3"
   },
   "dependencies": {
+    "svg-parser": "^2.0.4",
     "ts-node": "^10.9.2",
-    "ws": "^8.18.0"
+    "ws": "^8.18.2"
   }
 }

@@ -1,13 +1,12 @@
-import { GunDefinition, Guns } from "@common/definitions/guns";
-import { MeleeDefinition, Melees } from "@common/definitions/melees";
-import { ThrowableDefinition, Throwables } from "@common/definitions/throwables";
+import { GunDefinition, Guns } from "@common/definitions/items/guns";
+import { MeleeDefinition, Melees } from "@common/definitions/items/melees";
+import { ThrowableDefinition, Throwables } from "@common/definitions/items/throwables";
 import { ItemType } from "@common/utils/objectDefinitions";
 import { pickRandomInArray } from "@common/utils/random";
 
-import { GunItem } from "../inventory/gunItem";
+import { Numeric } from "../../../common/src/utils/math";
 import { Player } from "../objects/player";
 import { GamePlugin } from "../pluginManager";
-import { Numeric } from "../../../common/src/utils/math";
 
 const selectableGuns = Guns.definitions.filter(g => !g.killstreak && !g.wearerAttributes);
 const selectableMelees = Melees.definitions.filter(g => !g.killstreak && !g.wearerAttributes);
@@ -53,7 +52,7 @@ export class WeaponSwapPlugin extends GamePlugin {
 
             inventory.replaceWeapon(index, item);
 
-            if (source.activeItem instanceof GunItem) {
+            if (source.activeItem.isGun) {
                 source.activeItem.ammo = source.activeItem.definition.capacity;
             }
         });

@@ -6,7 +6,7 @@
    viewBox="0 0 32.788298 32.7883"
    id="svg30"
    sodipodi:docname="airdrop_particle_1.svg"
-   inkscape:version="1.3.2 (091e20e, 2023-11-25, custom)"
+   inkscape:version="1.4 (1:1.4+202410161351+e7c3feb100)"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -35,13 +35,12 @@
        inkscape:isstock="true"
        inkscape:label="Stripes 01 (1:1)">
       <rect
-   style="stroke:none"
-   x="0"
-   y="-0.5"
-   width="1"
-   height="11"
-   id="rect134-7" />
-
+         style="stroke:none;fill:#a68024"
+         x="0"
+         y="-0.5"
+         width="1"
+         height="11"
+         id="rect134-7" />
     </pattern>
   </defs>
   <sodipodi:namedview
@@ -55,12 +54,12 @@
      inkscape:document-units="px"
      showgrid="false"
      inkscape:zoom="4.7080999"
-     inkscape:cx="92.818761"
+     inkscape:cx="92.712561"
      inkscape:cy="80.605766"
-     inkscape:window-width="1920"
-     inkscape:window-height="1001"
-     inkscape:window-x="-9"
-     inkscape:window-y="-9"
+     inkscape:window-width="2560"
+     inkscape:window-height="1368"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
      inkscape:window-maximized="1"
      inkscape:current-layer="svg30"
      units="px"

@@ -1,13 +1,13 @@
 import { GameConstants, InventoryMessages, ObjectCategory, PlayerActions } from "@common/constants";
-import { ArmorType } from "@common/definitions/armors";
-import { type GunDefinition } from "@common/definitions/guns";
+import { ArmorType } from "@common/definitions/items/armors";
+import { type GunDefinition } from "@common/definitions/items/guns";
 import { Loots, type LootDefinition } from "@common/definitions/loots";
-import { PerkCategories, type PerkDefinition } from "@common/definitions/perks";
+import { PerkCategories, type PerkDefinition } from "@common/definitions/items/perks";
 import { PickupPacket } from "@common/packets/pickupPacket";
 import { CircleHitbox } from "@common/utils/hitbox";
 import { adjacentOrEqualLayer } from "@common/utils/layer";
 import { Collision, Geometry, Numeric } from "@common/utils/math";
-import { ItemType, LootRadius, type ReifiableDef } from "@common/utils/objectDefinitions";
+import { ItemType, type ReifiableDef } from "@common/utils/objectDefinitions";
 import { type FullData } from "@common/utils/objectsSerializations";
 import { randomRotation } from "@common/utils/random";
 import { FloorNames } from "@common/utils/terrain";
@@ -71,7 +71,7 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
         this.definition = Loots.reify(basis);
         this.itemData = data;
 
-        this.hitbox = new CircleHitbox(LootRadius[this.definition.itemType], Vec.clone(position));
+        this.hitbox = new CircleHitbox(GameConstants.lootRadius[this.definition.itemType], Vec.clone(position));
         this.layer = layer;
 
         if ((this._count = count ?? 1) <= 0) {
@@ -189,20 +189,28 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
 
         switch (definition.itemType) {
             case ItemType.Gun: {
+                let i = 0;
                 for (const weapon of inventory.weapons) {
                     if (
-                        weapon instanceof GunItem
+                        weapon?.isGun === true
                         && !weapon.definition.isDual
                         && weapon.definition.dualVariant
                         && weapon.definition === definition
+                        && !inventory.isLocked(i)
                     ) {
                         return true;
                     }
+                    ++i;
                 }
 
-                return (!inventory.hasWeapon(0) && !inventory.isLocked(0))
-                    || (!inventory.hasWeapon(1) && !inventory.isLocked(1))
-                    || (inventory.activeWeaponIndex < 2 && definition !== inventory.activeWeapon.definition && !inventory.isLocked(inventory.activeWeaponIndex));
+                const activeWeaponIndex = inventory.activeWeaponIndex;
+                return (!inventory.hasWeapon(0) && !inventory.isLocked(0)) // slot 0 available and not locked
+                    || (!inventory.hasWeapon(1) && !inventory.isLocked(1)) // slot 1 available and not locked
+                    || ( // active slot is a gun slot with a gun different from this loot's
+                        GameConstants.player.inventorySlotTypings[activeWeaponIndex] === ItemType.Gun
+                        && definition !== inventory.activeWeapon.definition
+                        && !inventory.isLocked(activeWeaponIndex)
+                    );
             }
             case ItemType.Healing:
             case ItemType.Ammo:
@@ -323,7 +331,7 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
                     const weapon = inventory.weapons[i];
 
                     if (
-                        weapon instanceof GunItem
+                        weapon?.isGun
                         && weapon.definition.dualVariant
                         && weapon.definition === definition
                     ) {
@@ -335,7 +343,9 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
                         const wasReloading = action?.type === PlayerActions.Reload;
                         if (wasReloading) action.cancel();
 
-                        player.inventory.upgradeToDual(i);
+                        if (!player.inventory.upgradeToDual(i)) {
+                            continue;
+                        }
 
                         if (wasReloading) {
                             (player.activeItem as GunItem).reload(true);
@@ -354,7 +364,7 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
                         From here, the only way for the gun to make it into the inventory is for it to replace the active
                         weapon, which must be a different gun (dual weapons are already handled when we get here, so we ignore them)
                     */
-                    if (inventory.activeWeapon instanceof GunItem && definition !== inventory.activeWeapon.definition) {
+                    if (inventory.activeWeapon.isGun && definition !== inventory.activeWeapon.definition) {
                         if (player.action?.type === PlayerActions.Reload) {
                             player.action.cancel();
                         }
@@ -488,7 +498,6 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
 
                 // Add the new perk
                 player.perks.addItem(definition);
-                player.updateAndApplyModifiers();
                 break;
             }
 
@@ -533,7 +542,7 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
         // Reload active gun if the player picks up the correct ammo
         const activeWeapon = player.inventory.activeWeapon;
         if (
-            activeWeapon instanceof GunItem
+            activeWeapon.isGun
             && activeWeapon.ammo === 0
             && idString === activeWeapon.definition.ammoType
         ) {

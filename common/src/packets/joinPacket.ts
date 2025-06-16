@@ -1,11 +1,12 @@
 import { GameConstants } from "../constants";
 import { Badges, type BadgeDefinition } from "../definitions/badges";
 import { Emotes, type EmoteDefinition } from "../definitions/emotes";
+import { type SkinDefinition } from "../definitions/items/skins";
 import { Loots } from "../definitions/loots";
-import { type SkinDefinition } from "../definitions/skins";
-import { createPacket } from "./packet";
+import { Packet, PacketType } from "./packet";
 
-export type JoinPacketData = {
+export interface JoinData {
+    readonly type: PacketType.Join
     readonly protocolVersion: number
     readonly name: string
     readonly isMobile: boolean
@@ -14,13 +15,13 @@ export type JoinPacketData = {
     readonly badge?: BadgeDefinition
 
     readonly emotes: ReadonlyArray<EmoteDefinition | undefined>
-};
+}
 
 // protocol version is automatically set; use this type when
 // creating an object for use by a JoinPacket
-export type JoinPacketCreation = Omit<JoinPacketData, "protocolVersion">;
+export type JoinPacketCreation = Omit<JoinData, "protocolVersion">;
 
-export const JoinPacket = createPacket("JoinPacket")<JoinPacketCreation, JoinPacketData>({
+export const JoinPacket = new Packet<JoinPacketCreation, JoinData>(PacketType.Join, {
     serialize(stream, data) {
         const emotes = data.emotes;
         const hasBadge = data.badge !== undefined;
@@ -52,22 +53,26 @@ export const JoinPacket = createPacket("JoinPacket")<JoinPacketCreation, JoinPac
         }
     },
 
-    deserialize(stream) {
+    deserialize(stream, data) {
         const [
             isMobile,
             hasBadge,
             ...emotes
         ] = stream.readBooleanGroup();
+        data.isMobile = isMobile;
 
-        return {
-            protocolVersion: stream.readUint16(),
-            name: stream.readPlayerName().replaceAll(/<[^>]+>/g, "").trim(), // Regex strips out HTML
-            isMobile,
+        data.protocolVersion = stream.readUint16();
+        data.name = stream.readPlayerName().replaceAll(/<[^>]+>/g, "").trim(); // Regex strips out HTML
 
-            skin: Loots.readFromStream(stream),
-            badge: hasBadge ? Badges.readFromStream(stream) : undefined,
+        data.skin = Loots.readFromStream(stream);
 
-            emotes: Array.from({ length: 6 }, (_, i) => emotes[i] ? Emotes.readFromStream(stream) : undefined)
-        };
+        if (hasBadge) {
+            data.badge = Badges.readFromStream(stream);
+        }
+
+        data.emotes = new Array(6);
+        for (let i = 0; i < 6; i++) {
+            if (emotes[i]) data.emotes[i] = Emotes.readFromStream(stream);
+        }
     }
 });

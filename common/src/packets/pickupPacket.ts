@@ -1,14 +1,14 @@
 import { InventoryMessages } from "../constants";
 import { Loots, type LootDefinition } from "../definitions/loots";
-import type { SDeepMutable } from "../utils/misc";
-import { createPacket } from "./packet";
+import { DataSplitTypes, Packet, PacketType } from "./packet";
 
-export type PickupPacketData = {
+export interface PickupData {
+    readonly type: PacketType.Pickup
     readonly message?: InventoryMessages
     readonly item?: LootDefinition
 };
 
-export const PickupPacket = createPacket("PickupPacket")<PickupPacketData>({
+export const PickupPacket = new Packet<PickupData>(PacketType.Pickup, {
     serialize(stream, data) {
         const { message, item } = data;
 
@@ -29,20 +29,20 @@ export const PickupPacket = createPacket("PickupPacket")<PickupPacketData>({
         }
     },
 
-    deserialize(stream) {
+    deserialize(stream, data, saveIndex, recordTo) {
+        saveIndex();
+
         const pickupData = stream.readUint8();
 
         const hasItem = (pickupData & 128) !== 0;
         const hasMessage = (pickupData & 64) !== 0;
 
-        const obj: SDeepMutable<PickupPacketData> = {};
-
         if (hasItem) {
-            obj.item = Loots.readFromStream(stream);
+            data.item = Loots.readFromStream(stream);
         } else if (hasMessage) {
-            obj.message = (pickupData & 0b111) as InventoryMessages;
+            data.message = (pickupData & 0b111) as InventoryMessages;
         }
 
-        return obj;
+        recordTo(DataSplitTypes.GameObjects);
     }
 });

@@ -1,36 +1,32 @@
-import { ObjectCategory, ZIndexes } from "@common/constants";
-import { ArmorType } from "@common/definitions/armors";
+import { GameConstants, ObjectCategory, ZIndexes } from "@common/constants";
+import { ArmorType } from "@common/definitions/items/armors";
+import { PerkIds } from "@common/definitions/items/perks";
 import { type LootDefinition } from "@common/definitions/loots";
-import { PerkIds } from "@common/definitions/perks";
 import { CircleHitbox } from "@common/utils/hitbox";
-import { getEffectiveZIndex } from "@common/utils/layer";
 import { EaseFunctions } from "@common/utils/math";
-import { ItemType, LootRadius } from "@common/utils/objectDefinitions";
+import { ItemType } from "@common/utils/objectDefinitions";
 import { type ObjectsNetData } from "@common/utils/objectsSerializations";
 import { type Vector } from "@common/utils/vector";
-import { type Game } from "../game";
-import { COLORS, DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS, HITBOX_DEBUG_MODE } from "../utils/constants";
-import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
+import { GameConsole } from "../console/gameConsole";
+import { Game } from "../game";
+import { ClientPerkManager } from "../managers/perkManager";
+import { UIManager } from "../managers/uiManager";
+import { DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS } from "../utils/constants";
+import { DebugRenderer } from "../utils/debugRenderer";
+import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { type Tween } from "../utils/tween";
 import { GameObject } from "./gameObject";
-import { Player } from "./player";
-import { setupSkinLayer } from "../utils/pixi";
-import { Container } from "pixi.js";
+import { type Player } from "./player";
 
 export class Loot extends GameObject.derive(ObjectCategory.Loot) {
     definition!: LootDefinition;
 
     readonly images: {
         readonly background: SuroiSprite
-    } & ({
-        readonly type: "item"
         readonly item: SuroiSprite
-    } | {
-        readonly type: "skin"
-        readonly skinBase: Container
-        readonly skinFistLeft: Container
-        readonly skinFistRight: Container
-    });
+        readonly skinFistLeft: SuroiSprite
+        readonly skinFistRight: SuroiSprite
+    };
 
     private _count = 0;
     get count(): number { return this._count; }
@@ -39,26 +35,17 @@ export class Loot extends GameObject.derive(ObjectCategory.Loot) {
 
     animation?: Tween<Vector>;
 
-    constructor(game: Game, id: number, data: ObjectsNetData[ObjectCategory.Loot]) {
-        super(game, id);
+    constructor(id: number, data: ObjectsNetData[ObjectCategory.Loot]) {
+        super(id);
 
-        if (data.full && data.full.definition.itemType === ItemType.Skin) {
-            this.images = {
-                type: "skin",
-                background: new SuroiSprite(),
-                skinBase: new Container(),
-                skinFistLeft: new Container(),
-                skinFistRight: new Container()
-            };
-        } else {
-            this.images = {
-                type: "item",
-                background: new SuroiSprite(),
-                item: new SuroiSprite()
-            };
-        }
+        this.container.zIndex = ZIndexes.Loot;
 
-        this.layer = data.layer;
+        this.images = {
+            background: new SuroiSprite(),
+            item: new SuroiSprite(),
+            skinFistLeft: new SuroiSprite(),
+            skinFistRight: new SuroiSprite()
+        };
 
         this.updateFromData(data, true);
     }
@@ -66,99 +53,71 @@ export class Loot extends GameObject.derive(ObjectCategory.Loot) {
     override updateFromData(data: ObjectsNetData[ObjectCategory.Loot], isNew = false): void {
         if (data.full) {
             const definition = this.definition = data.full.definition;
+            const idString = definition.idString;
             const itemType = definition.itemType;
 
-            this.container.addChild(this.images.background);
+            this.container.addChild(this.images.background, this.images.item);
 
-            if (itemType === ItemType.Skin && this.images.type === "skin") {
-                const { skinBase, skinFistRight, skinFistLeft } = this.images;
-                const grassTint = definition.grassTint ? COLORS.grass : undefined;
+            if (itemType === ItemType.Skin) {
+                this.images.item
+                    .setFrame(definition.baseImage ?? `${idString}_base`)
+                    .setPos(0, -3)
+                    .setScale(0.65)
+                    .setAngle(90)
+                    .setTint(definition.baseTint ?? 0xffffff);
 
-                setupSkinLayer(skinBase, definition.baseLayers, grassTint);
-                skinBase.position.set(0, -3);
+                const skinFist = definition.fistImage ?? `${idString}_fist`;
+                this.images.skinFistLeft
+                    .setFrame(skinFist)
+                    .setPos(22, 20)
+                    .setScale(0.65)
+                    .setAngle(90)
+                    .setTint(definition.fistTint ?? 0xffffff);
+                this.images.skinFistRight
+                    .setFrame(skinFist)
+                    .setPos(-22, 20)
+                    .setScale(0.65)
+                    .setAngle(90)
+                    .setTint(definition.fistTint ?? 0xffffff);
 
-                setupSkinLayer(skinFistLeft, definition.fistLayers, grassTint);
-                setupSkinLayer(skinFistRight, definition.fistLayers, grassTint);
-                skinFistLeft.position.set(22, 20);
-                skinFistRight.position.set(-22, 20);
-
-                skinBase.scale.set(0.65);
-                skinFistLeft.scale.set(0.65);
-                skinFistRight.scale.set(0.65);
-
-                // Degrees skill issue
-                skinBase.angle = 90;
-                skinFistLeft.angle = 90;
-                skinFistRight.angle = 90;
-
-                this.container.addChild(this.images.skinBase, this.images.skinFistLeft, this.images.skinFistRight);
-            } else if (this.images.type === "item") {
-                this.images.item.setFrame(definition.idString);
-                this.container.addChild(this.images.item);
-            }
-
-            // Set the loot texture based on the type
-            let backgroundTexture: string | undefined;
-            switch (itemType) {
-                case ItemType.Gun: {
-                    backgroundTexture = `loot_background_gun_${definition.ammoType}`;
-                    if (this.images.type === "item") this.images.item.scale.set(0.85);
-                    break;
+                if (definition.grassTint) {
+                    const ghillieTint = Game.colors.ghillie;
+                    this.images.item.setTint(ghillieTint);
+                    this.images.skinFistLeft.setTint(ghillieTint);
+                    this.images.skinFistRight.setTint(ghillieTint);
                 }
-                //
-                // No background for ammo
-                //
-                case ItemType.Melee: {
-                    backgroundTexture = "loot_background_melee";
-                    const imageScale = definition.image?.lootScale;
-                    if (this.images.type === "item" && imageScale !== undefined) this.images.item.scale.set(imageScale);
-                    break;
-                }
-                case ItemType.Healing: {
-                    backgroundTexture = "loot_background_healing";
-                    break;
-                }
-                case ItemType.Armor:
-                case ItemType.Backpack:
-                case ItemType.Scope:
-                case ItemType.Skin: {
-                    backgroundTexture = "loot_background_equipment";
-                    break;
-                }
-                case ItemType.Throwable: {
-                    backgroundTexture = "loot_background_throwable";
-                    break;
-                }
-                case ItemType.Perk: {
-                    // FIXME bad
-                    backgroundTexture = definition.idString === PerkIds.PlumpkinGamble
-                        ? "loot_background_plumpkin_gamble"
-                        : "loot_background_perk";
-                    break;
+
+                this.container.addChild(this.images.skinFistLeft, this.images.skinFistRight);
+            } else {
+                this.images.item.setFrame(idString);
+                if (itemType === ItemType.Gun) {
+                    this.images.item.setAngle(-15);
                 }
             }
 
-            if (backgroundTexture !== undefined) {
+            const { backgroundTexture, scale } = Loot.getBackgroundAndScale(definition);
+            if (backgroundTexture) {
                 this.images.background.setFrame(backgroundTexture);
             } else {
                 this.images.background.setVisible(false);
             }
+            if (scale) this.images.item.setScale(scale);
 
-            this.hitbox = new CircleHitbox(LootRadius[itemType]);
+            this.hitbox = new CircleHitbox(GameConstants.lootRadius[itemType]);
 
             /*
-              Infinity is serialized as 0 in the bit stream
-              0 isn't a valid count value on the server
-              thus
-              If we receive 0 here, it must mean the count on
-              the server is Infinity (or NaN lol) (or a decimal number, lmao)
+                Infinity is serialized as 0 in the bit stream
+                0 isn't a valid count value on the server
+                thus
+                If we receive 0 here, it must mean the count on
+                the server is Infinity (or NaN lol) (or a decimal number, lmao)
             */
             this._count = data.full.count || Infinity;
 
             // Play an animation if this is new loot
             if (data.full.isNew && isNew) {
                 this.container.scale.set(0);
-                this.animation = this.game.addTween({
+                this.animation = Game.addTween({
                     target: this.container.scale,
                     to: { x: 1, y: 1 },
                     duration: 1000,
@@ -171,59 +130,88 @@ export class Loot extends GameObject.derive(ObjectCategory.Loot) {
         }
 
         this.position = data.position;
-        this.layer = data.layer;
+        if (this.layer !== data.layer) {
+            this.layer = data.layer;
+            this.updateLayer();
+        }
         this.hitbox.position = this.position;
 
-        this.updateZIndex();
-
-        if (!this.game.console.getBuiltInCVar("cv_movement_smoothing") || isNew) {
+        if (!GameConsole.getBuiltInCVar("cv_movement_smoothing") || isNew) {
             this.container.position = toPixiCoords(this.position);
         }
-
-        this.updateDebugGraphics();
     }
 
-    override updateZIndex(): void {
-        this.container.zIndex = getEffectiveZIndex(this.doOverlay() ? ZIndexes.UnderWaterLoot : ZIndexes.Loot, this.layer, this.game.layer);
+    static getBackgroundAndScale(definition?: LootDefinition): { backgroundTexture?: string, scale?: number } {
+        switch (definition?.itemType) {
+            case ItemType.Gun:
+                return {
+                    backgroundTexture: `loot_background_gun_${definition.ammoType}`,
+                    scale: 0.85
+                };
+
+            case ItemType.Melee:
+                return {
+                    backgroundTexture: "loot_background_melee",
+                    scale: definition.image?.lootScale
+                };
+
+            case ItemType.Healing:
+                return { backgroundTexture: "loot_background_healing" };
+
+            case ItemType.Armor:
+            case ItemType.Backpack:
+            case ItemType.Scope:
+            case ItemType.Skin:
+                return { backgroundTexture: "loot_background_equipment" };
+
+            case ItemType.Throwable:
+                return { backgroundTexture: "loot_background_throwable" };
+
+            case ItemType.Perk:
+                return {
+                    backgroundTexture: definition.idString === PerkIds.PlumpkinGamble // FIXME bad
+                        ? "loot_background_plumpkin_gamble"
+                        : "loot_background_perk"
+                };
+
+            case ItemType.Ammo:
+            default:
+                return {};
+        }
     }
 
     override updateDebugGraphics(): void {
-        if (!HITBOX_DEBUG_MODE) return;
+        if (!DEBUG_CLIENT) return;
 
-        this.debugGraphics.clear();
-        drawHitbox(
+        DebugRenderer.addHitbox(
             this.hitbox,
             HITBOX_COLORS.loot,
-            this.debugGraphics,
-            this.layer === this.game.activePlayer?.layer as number | undefined ? 1 : DIFF_LAYER_HITBOX_OPACITY
+            this.layer === Game.layer ? 1 : DIFF_LAYER_HITBOX_OPACITY
         );
+    }
+
+    override update(): void { /* bleh */ }
+    override updateInterpolation(): void {
+        this.updateContainerPosition();
     }
 
     destroy(): void {
         super.destroy();
         this.images.background.destroy();
-        switch (this.images.type) {
-            case "item":
-                this.images.item.destroy();
-                break;
-            case "skin":
-                this.images.skinBase.destroy();
-                this.images.skinFistLeft.destroy();
-                this.images.skinFistRight.destroy();
-                break;
-        }
+        this.images.item.destroy();
         this.animation?.kill();
     }
 
     canInteract(player: Player): boolean {
         if (player.dead || player.downed) return false;
 
-        const inventory = this.game.uiManager.inventory;
+        const inventory = UIManager.inventory;
         const { weapons, lockedSlots } = inventory;
         const definition = this.definition;
 
         switch (definition.itemType) {
             case ItemType.Gun: {
+                let i = 0;
                 for (const weapon of weapons) {
                     if (
                         weapon?.definition.itemType === ItemType.Gun
@@ -234,15 +222,21 @@ export class Loot extends GameObject.derive(ObjectCategory.Loot) {
                                 && weapon.definition.dualVariant
                             )
                         )
+                        && !(lockedSlots & (1 << i))
                     ) {
                         return true;
                     }
+                    ++i;
                 }
 
                 const activeWeaponIndex = inventory.activeWeaponIndex;
                 return (!weapons[0] && !(lockedSlots & 0b01))
                     || (!weapons[1] && !(lockedSlots & 0b10))
-                    || (activeWeaponIndex < 2 && definition !== weapons[activeWeaponIndex]?.definition && !(lockedSlots & (1 << activeWeaponIndex)));
+                    || (
+                        GameConstants.player.inventorySlotTypings[activeWeaponIndex] === ItemType.Gun
+                        && definition !== weapons[activeWeaponIndex]?.definition
+                        && !(lockedSlots & (1 << activeWeaponIndex))
+                    );
             }
             case ItemType.Melee: {
                 return definition !== weapons[2]?.definition && !(lockedSlots & 0b100);
@@ -271,8 +265,7 @@ export class Loot extends GameObject.derive(ObjectCategory.Loot) {
                 return true;
             }
             case ItemType.Perk: {
-                const perks = this.game.uiManager.perks;
-                return !perks.asList()[0]?.noSwap && !perks.hasItem(definition);
+                return !ClientPerkManager.asList()[0]?.noSwap && !ClientPerkManager.hasItem(definition);
             }
         }
     }

@@ -1,9 +1,9 @@
-import { Bullets } from "@common/definitions/bullets";
-import { type SingleGunNarrowing } from "@common/definitions/guns";
-import { Loots } from "@common/definitions/loots";
+import { Bullets, type BulletDefinition } from "@common/definitions/bullets";
+import { PerkIds } from "@common/definitions/items/perks";
 import { BaseBullet, type BulletOptions } from "@common/utils/baseBullet";
 import { RectangleHitbox } from "@common/utils/hitbox";
 import { Angle } from "@common/utils/math";
+import { DefinitionType, type ReferenceTo } from "@common/utils/objectDefinitions";
 import { randomFloat } from "@common/utils/random";
 import { Vec, type Vector } from "@common/utils/vector";
 import { type Game } from "../game";
@@ -25,6 +25,7 @@ export interface DamageRecord {
 }
 
 export interface ServerBulletOptions {
+    readonly idString: ReferenceTo<BulletDefinition>
     readonly position: Vector
     readonly rotation: number
     readonly layer: number
@@ -54,10 +55,7 @@ export class Bullet extends BaseBullet {
         shooter: GameObject,
         options: ServerBulletOptions
     ) {
-        const reference = source instanceof GunItem && source.definition.isDual
-            ? Loots.fromString<SingleGunNarrowing>(source.definition.singleVariant)
-            : source.definition;
-        const definition = Bullets.fromString(`${reference.idString}_bullet`);
+        const definition = Bullets.fromString(options.idString);
         const variance = definition.rangeVariance;
 
         super({
@@ -104,7 +102,7 @@ export class Bullet extends BaseBullet {
         const damageMod = (this.modifiers?.damage ?? 1) / (this.reflectionCount + 1);
         for (const collision of this.updateAndGetCollisions(dt, objects)) {
             const object = collision.object as DamageRecord["object"];
-            const { isObstacle, isBuilding } = object;
+            const { isObstacle } = object;
 
             if (isObstacle && object.definition.isStair) {
                 object.handleStairInteraction(this);
@@ -112,27 +110,17 @@ export class Bullet extends BaseBullet {
             }
 
             const { point, normal } = collision.intersection;
-
-            records.push({
-                object,
-                damage: damageMod * definition.damage * (isObstacle ? (this.modifiers?.dtc ?? 1) * definition.obstacleMultiplier : 1),
-                weapon: this.sourceGun,
-                source: this.shooter,
-                position: point
-            });
-
-            this.damagedIDs.add(object.id);
-            this.position = point;
-
-            if (isObstacle && object.definition.noCollisions) continue;
-
-            if (
-                (isObstacle || isBuilding)
-                && object.definition.reflectBullets
+            const reflected = (
+                collision.reflected
                 && this.reflectionCount < 3
-            ) {
+                && !definition.noReflect
+                && (definition.onHitExplosion === undefined || !definition.explodeOnImpact)
+            );
+
+            let rotation: number | undefined;
+            if (reflected || definition.onHitExplosion || definition.onHitProjectile) {
                 /*
-                    no matter what, nudge the bullet
+                    nudge the bullet
 
                     if the bullet reflects, we do this to ensure that it doesn't re-collide
                     with the same obstacle instantly
@@ -140,13 +128,54 @@ export class Bullet extends BaseBullet {
                     if it doesn't, then we do this to avoid having the obstacle eat the
                     explosion, thereby shielding others from its effects
                 */
-                const rotation = 2 * Math.atan2(normal.y, normal.x) - this.rotation;
-                this.position = Vec.add(this.position, Vec.create(Math.sin(rotation), -Math.cos(rotation)));
+                rotation = 2 * Math.atan2(normal.y, normal.x) - this.rotation;
+                this.position = Vec.add(point, Vec.create(Math.sin(rotation), -Math.cos(rotation)));
+            } else {
+                // atan2 is expensive so we avoid the above calculation if possible
+                this.position = point;
+            }
 
-                if (definition.onHitExplosion === undefined || !definition.explodeOnImpact) {
-                    this.reflect(rotation);
-                    this.reflected = true;
+            if (collision.dealDamage) {
+                const damageAmount = (
+                    definition.teammateHeal
+                    && this.game.teamMode
+                    && this.shooter.isPlayer
+                    && object.isPlayer
+                    && object.teamID === this.shooter.teamID
+                    && object.id !== this.shooter.id
+                )
+                    ? -definition.teammateHeal
+                    : definition.damage;
+                records.push({
+                    object,
+                    damage: damageMod * damageAmount * (isObstacle ? (this.modifiers?.dtc ?? 1) * definition.obstacleMultiplier : 1),
+                    weapon: this.sourceGun,
+                    source: this.shooter,
+                    position: this.position
+                });
+
+                if (
+                    this.sourceGun.definition.defType === DefinitionType.Gun
+                    && this.shooter.isPlayer
+                    && this.shooter.hasPerk(PerkIds.PrecisionRecycling)
+                ) {
+                    if (object.isPlayer) {
+                        this.shooter.tryRefund(this.sourceGun as GunItem);
+                    } else {
+                        this.shooter.bulletTargetHitCount = 0;
+                        this.shooter.targetHitCountExpiration?.kill();
+                        this.shooter.targetHitCountExpiration = undefined;
+                    }
                 }
+            }
+
+            this.collidedIDs.add(object.id);
+
+            if (isObstacle && object.definition.noCollisions) continue;
+
+            if (reflected) {
+                this.reflect(rotation ?? 0);
+                this.reflected = true;
             }
 
             this.dead = true;
@@ -155,7 +184,7 @@ export class Bullet extends BaseBullet {
 
         for (const object of objects) {
             if (
-                object.isThrowableProjectile
+                object.isProjectile
                 && object.definition.health
                 && lineRect.collidesWith(object.hitbox)
             ) {
@@ -171,6 +200,7 @@ export class Bullet extends BaseBullet {
             this.sourceGun,
             this.shooter,
             {
+                idString: this.definition.idString,
                 position: Vec.clone(this.position),
                 rotation: direction,
                 layer: this.layer,

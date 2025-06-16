@@ -6,17 +6,23 @@
         GroupHitbox,
         type HitboxJSON,
         HitboxType,
-        RectangleHitbox
+        RectangleHitbox,
+
+        type ShapeHitbox
+
     } from "../../../common/src/utils/hitbox";
     import { Numeric } from "../../../common/src/utils/math";
     import { Vec } from "../../../common/src/utils/vector";
     import { PIXI_SCALE } from "../../src/scripts/utils/constants";
     import Hitbox from "./lib/hitbox.svelte";
+  import { removeFrom } from "@common/utils/misc";
 
     let hitboxes: HitboxJSON[] = [
         ...new GroupHitbox(
-    RectangleHitbox.fromRect(1, 1)
-).toJSON().hitboxes
+    RectangleHitbox.fromRect(2.01, 12.65, Vec.create(4.74, 0)),
+    RectangleHitbox.fromRect(2.01, 12.65, Vec.create(-4.74, 0)),
+    RectangleHitbox.fromRect(10.68, 0.68, Vec.create(-0.01, -5.98))
+).transform(Vec.create(-9.81, 44.9)).toJSON().hitboxes
     ];
 
     let selected = hitboxes[0];
@@ -123,6 +129,10 @@
         }
     }
 
+    function contextMenu_(event) {
+        event.preventDefault();
+    }
+
     function mouseWheel(e: WheelEvent) {
         const oldScale = scale;
         const { x: rectX, y: rectY } = hitboxesContainer.getBoundingClientRect();
@@ -177,8 +187,8 @@
     }
     convertHitboxes();
 
-    function createHitbox(hitbox) {
-        hitbox = hitbox.toJSON();
+    function createHitbox(hitbox: ShapeHitbox) {
+        hitbox = hitbox.toJSON() as ShapeHitbox;
         hitboxes.push(hitbox);
         selected = hitbox;
         updateSelected();
@@ -191,7 +201,13 @@
         hitboxes.push(JSON.parse(JSON.stringify(selected)));
     }
 
-    const bgImage = loadImage("/img/game/fall/obstacles/outhouse_door.svg");
+    function deleteSelected() {
+        removeFrom(hitboxes, selected);
+        hitboxes = hitboxes;
+        selected = hitboxes[0];
+    }
+
+    const bgImage = loadImage("/img/game/normal/buildings/fulcrum_bunker_floor.svg");
 </script>
 
 <main>
@@ -200,6 +216,7 @@
             <button on:click={addRectangle}>Add Rectangle Hitbox</button>
             <button on:click={addCircle}>Add Circle Hitbox</button>
             <button on:click={duplicateSelected}>Duplicate Selected</button>
+            <button on:click={deleteSelected}>Delete Selected</button>
         </div>
         {#if selected.type === HitboxType.Circle}
             <div>
@@ -276,14 +293,14 @@
         on:pointerup={pointerUp}
         on:pointermove={pointermove}
         on:wheel={mouseWheel}
-        on:contextmenu={() => false}
+        on:contextmenu={contextMenu_}
     >
         <svg>
             <g transform="translate({x} {y}) scale({scale})">
                 <!-- svelte-ignore empty-block -->
                 {#await bgImage}
                 {:then img}
-                    <image x="{-(img.width / 2)}" y="{-(img.height / 2)}" href="{img.src}" on:mousedown={() => { return false; }}></image>
+                    <image class="nopointer" x={-(img.width / 2)} y={-(img.height / 2)} href={img.src}></image>
                 {/await}
                 {#each hitboxes as hitbox (hitbox)}
                     <Hitbox
@@ -301,7 +318,7 @@
 </main>
 
 <style lang="scss">
-    @import "../../src/scss/palette.scss";
+    @use "../../src/scss/palette.scss";
 
     main {
         display: flex;
@@ -313,7 +330,7 @@
         height: 100vh;
         width: 20vw;
         padding: 10px;
-        background-color: $transparent_bg;
+        background-color: palette.$transparent_bg;
         display: flex;
         flex-direction: column;
 
@@ -342,5 +359,9 @@
     svg {
         width: 100%;
         height: 100%;
+    }
+
+    .nopointer {
+        pointer-events: none;
     }
 </style>

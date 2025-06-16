@@ -7,109 +7,138 @@ export interface GasStage {
     readonly newRadius: number
     readonly dps: number
     readonly summonAirdrop?: boolean
+    readonly scaleDamageFactor?: number
+    readonly finalStage?: boolean // only affects client side text
 }
+
+/**
+ * Number of seconds after which players are prevented from joining a game
+ */
+export const GAME_SPAWN_WINDOW = 84;
+
+const gasStageRadii: number[] = [
+    0.76, // 0
+    0.55, // 1
+    0.43, // 2
+    0.32, // 3
+    0.2,  // 4
+    0.09, // 5
+    0     // 6
+];
 
 export const GasStages: GasStage[] = [
     {
         state: GasState.Inactive,
         duration: 0,
-        oldRadius: 0.762,
-        newRadius: 0.762,
-        dps: 0,
-        summonAirdrop: true
+        oldRadius: gasStageRadii[0],
+        newRadius: gasStageRadii[0],
+        dps: 0
     },
     {
         state: GasState.Waiting,
-        duration: 90,
-        oldRadius: 0.762,
-        newRadius: 0.381,
-        dps: 0,
-        summonAirdrop: true
-    },
-    {
-        state: GasState.Advancing,
-        duration: 30,
-        oldRadius: 0.762,
-        newRadius: 0.381,
-        dps: 1
-    },
-    {
-        state: GasState.Waiting,
-        duration: 60,
-        oldRadius: 0.381,
-        newRadius: 0.238,
-        dps: 1
+        duration: 75,
+        oldRadius: gasStageRadii[0],
+        newRadius: gasStageRadii[1],
+        dps: 0
     },
     {
         state: GasState.Advancing,
         duration: 20,
-        oldRadius: 0.381,
-        newRadius: 0.238,
-        dps: 2
+        oldRadius: gasStageRadii[0],
+        newRadius: gasStageRadii[1],
+        dps: 1
     },
+    // Zone 1 closed, 1 min 5 seconds
     {
         state: GasState.Waiting,
         duration: 45,
-        oldRadius: 0.238,
-        newRadius: 0.095,
-        dps: 2,
+        oldRadius: gasStageRadii[1],
+        newRadius: gasStageRadii[2],
+        dps: 1,
         summonAirdrop: true
     },
     {
         state: GasState.Advancing,
-        duration: 10,
-        oldRadius: 0.238,
-        newRadius: 0.095,
-        dps: 3
+        duration: 20,
+        oldRadius: gasStageRadii[1],
+        newRadius: gasStageRadii[2],
+        dps: 1
     },
+    // Zone 2 closed, 2 min 10 seconds
     {
         state: GasState.Waiting,
-        duration: 30,
-        oldRadius: 0.095,
-        newRadius: 0.048,
-        dps: 3.5
+        duration: 40,
+        oldRadius: gasStageRadii[2],
+        newRadius: gasStageRadii[3],
+        dps: 2
     },
     {
         state: GasState.Advancing,
-        duration: 5,
-        oldRadius: 0.095,
-        newRadius: 0.048,
-        dps: 4
+        duration: 15,
+        oldRadius: gasStageRadii[2],
+        newRadius: gasStageRadii[3],
+        dps: 2
     },
+    // Zone 3 closed, 3 min 10 seconds
     {
         state: GasState.Waiting,
-        duration: 20,
-        oldRadius: 0.048,
-        newRadius: 0.024,
+        duration: 35,
+        oldRadius: gasStageRadii[3],
+        newRadius: gasStageRadii[4],
+        dps: 3,
+        summonAirdrop: true
+    },
+    {
+        state: GasState.Advancing,
+        duration: 15,
+        oldRadius: gasStageRadii[3],
+        newRadius: gasStageRadii[4],
+        dps: 3
+    },
+    // Zone 4 closed, 4 min 10 seconds
+    {
+        state: GasState.Waiting,
+        duration: 30,
+        oldRadius: gasStageRadii[4],
+        newRadius: gasStageRadii[5],
         dps: 5
     },
     {
         state: GasState.Advancing,
-        duration: 5,
-        oldRadius: 0.048,
-        newRadius: 0.024,
-        dps: 6.5
+        duration: 15,
+        oldRadius: gasStageRadii[4],
+        newRadius: gasStageRadii[5],
+        dps: 5
     },
+    // Zone 5 closed, 5 min 10 seconds
     {
         state: GasState.Waiting,
-        duration: 10,
-        oldRadius: 0.024,
-        newRadius: 0,
-        dps: 7.5
+        duration: 20,
+        oldRadius: gasStageRadii[5],
+        newRadius: gasStageRadii[6],
+        dps: 10,
+        summonAirdrop: true,
+        scaleDamageFactor: 1,
+        finalStage: true
     },
     {
         state: GasState.Advancing,
-        duration: 5,
-        oldRadius: 0.024,
-        newRadius: 0,
-        dps: 9
+        duration: 60,
+        oldRadius: gasStageRadii[5],
+        newRadius: gasStageRadii[6],
+        dps: 10,
+        scaleDamageFactor: 1,
+        finalStage: true
     },
+    // Final Zone Closed, 6 min 30 seconds
     {
         state: GasState.Waiting,
         duration: 0,
-        oldRadius: 0,
-        newRadius: 0,
-        dps: 12
+        oldRadius: gasStageRadii[6],
+        newRadius: gasStageRadii[6],
+        dps: 10,
+        scaleDamageFactor: 1,
+        finalStage: true
     }
 ];
 

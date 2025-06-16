@@ -1,36 +1,40 @@
 import { type ReferenceTo } from "../utils/objectDefinitions";
-import { type ScopeDefinition } from "./scopes";
+import { type ScopeDefinition } from "./items/scopes";
 
 export type ColorKeys = "grass" | "water" | "border" | "beach" | "riverBank" | "trail" | "gas" | "void";
 
+export type ModeName = "normal" | "fall" | "halloween" | "infection" | "birthday" | "winter";
+
+export type SpritesheetNames = ModeName | "shared";
+
 export interface ModeDefinition {
-    readonly idString: string
     readonly colors: Record<ColorKeys, string>
-    readonly inheritTexturesFrom?: Mode
-    readonly specialMenuMusic?: boolean
-    readonly ambience?: string
-    readonly specialSounds?: string[]
+    readonly spriteSheets: readonly SpritesheetNames[]
+    readonly sounds: {
+        readonly ambience?: string
+        readonly replaceMenuMusic?: boolean
+        // sound folders that will be preloaded at game start
+        readonly foldersToLoad: readonly string[]
+    }
     readonly defaultScope?: ReferenceTo<ScopeDefinition>
-    readonly reskin?: string
+    readonly obstacleVariants?: boolean
     readonly darkShaders?: boolean
     // will be multiplied by the bullet trail color
     readonly bulletTrailAdjust?: string
     readonly particleEffects?: {
-        readonly frames: string | string[]
+        readonly frames: string | readonly string[]
         readonly delay: number
         readonly tint?: number
         readonly gravity?: boolean
     }
     readonly specialLogo?: boolean
-    readonly specialPlayButtons?: boolean
-    readonly modeLogoImage?: string
+    readonly playButtonImage?: string
+    readonly weaponSwap?: boolean
+    readonly plumpkinGrenades?: boolean
 }
 
-export type Mode = "normal" | "fall" | "halloween" | "winter";
-
-export const Modes: Record<Mode, ModeDefinition> = {
+export const Modes: Record<ModeName, ModeDefinition> = {
     normal: {
-        idString: "normal",
         colors: {
             grass: "hsl(95, 41%, 38%)",
             water: "hsl(211, 63%, 42%)",
@@ -41,10 +45,13 @@ export const Modes: Record<Mode, ModeDefinition> = {
             gas: "hsla(17, 100%, 50%, 0.55)",
             void: "hsl(25, 80%, 6%)"
         },
-        reskin: "normal"
+        sounds: {
+            ambience: "wind_ambience",
+            foldersToLoad: ["shared", "normal"]
+        },
+        spriteSheets: ["shared", "normal"]
     },
     fall: {
-        idString: "fall",
         colors: {
             grass: "hsl(62, 42%, 32%)",
             water: "hsl(211, 63%, 42%)",
@@ -55,18 +62,19 @@ export const Modes: Record<Mode, ModeDefinition> = {
             gas: "hsla(17, 100%, 50%, 0.55)",
             void: "hsl(25, 80%, 6%)"
         },
-        ambience: "wind_ambience",
+        sounds: {
+            foldersToLoad: ["shared", "fall"],
+            ambience: "wind_ambience"
+        },
         defaultScope: "2x_scope",
-        reskin: "fall",
         particleEffects: {
             frames: ["leaf_particle_1", "leaf_particle_2", "leaf_particle_3"],
             delay: 1000
         },
-        specialPlayButtons: true,
-        modeLogoImage: "./img/game/fall/obstacles/baby_plumpkin.svg"
+        spriteSheets: ["shared", "fall"],
+        playButtonImage: "./img/game/fall/obstacles/pumpkin.svg"
     },
     halloween: {
-        idString: "halloween",
         colors: {
             grass: "hsl(65, 100%, 12%)",
             water: "hsl(4, 100%, 14%)",
@@ -77,17 +85,50 @@ export const Modes: Record<Mode, ModeDefinition> = {
             gas: "hsla(17, 100%, 50%, 0.55)",
             void: "hsl(25, 80%, 6%)"
         },
-        inheritTexturesFrom: "fall",
         defaultScope: "2x_scope",
-        specialMenuMusic: true,
+        sounds: {
+            foldersToLoad: ["shared", "fall"]
+        },
         darkShaders: true,
-        reskin: "fall",
+        spriteSheets: ["shared", "fall", "halloween"],
         specialLogo: true,
-        specialPlayButtons: true,
-        modeLogoImage: "./img/game/halloween/obstacles/jack_o_lantern.svg"
+        playButtonImage: "./img/game/halloween/obstacles/jack_o_lantern.svg"
+    },
+    infection: {
+        colors: {
+            grass: "hsl(300, 15%, 35%)",
+            water: "hsl(223, 35%, 44%)",
+            border: "hsl(229, 30%, 36%)",
+            beach: "hsl(25, 28%, 53%)",
+            riverBank: "hsl(16, 28%, 38%)",
+            trail: "hsl(35, 50%, 40%)",
+            gas: "hsla(17, 100%, 50%, 0.55)",
+            void: "hsl(25, 80%, 6%)"
+        },
+        sounds: {
+            foldersToLoad: ["shared", "normal", "infection"]
+        },
+        spriteSheets: ["shared", "normal", "infection"],
+        playButtonImage: "./img/game/shared/perks/infected.svg",
+        weaponSwap: true
+    },
+    birthday: { // copy of normal
+        colors: {
+            grass: "hsl(95, 41%, 38%)",
+            water: "hsl(211, 63%, 42%)",
+            border: "hsl(211, 63%, 30%)",
+            beach: "hsl(40, 39%, 55%)",
+            riverBank: "hsl(34, 41%, 32%)",
+            trail: "hsl(35, 50%, 40%)",
+            gas: "hsla(17, 100%, 50%, 0.55)",
+            void: "hsl(25, 80%, 6%)"
+        },
+        sounds: {
+            foldersToLoad: ["shared", "normal"]
+        },
+        spriteSheets: ["shared", "normal", "birthday"]
     },
     winter: {
-        idString: "winter",
         colors: {
             grass: "hsl(210, 18%, 82%)",
             water: "hsl(211, 63%, 42%)",
@@ -98,24 +139,20 @@ export const Modes: Record<Mode, ModeDefinition> = {
             gas: "hsla(17, 100%, 50%, 0.55)",
             void: "hsl(25, 80%, 6%)"
         },
-        specialMenuMusic: true,
-        specialSounds: [
-            "airdrop_plane"
-        ],
-        reskin: "winter",
-        ambience: "snowstorm",
-        inheritTexturesFrom: "normal",
+        spriteSheets: ["shared", "normal", "winter"],
+        sounds: {
+            foldersToLoad: ["shared", "normal", "winter"],
+            ambience: "snowstorm_ambience",
+            replaceMenuMusic: true
+        },
         bulletTrailAdjust: "hsl(0, 50%, 80%)",
         particleEffects: {
-            frames: ["snow_particle"],
+            frames: "snow_particle",
             delay: 800,
             gravity: true
         },
+        obstacleVariants: true,
         specialLogo: true,
-        specialPlayButtons: true,
-        modeLogoImage: "./img/game/winter/obstacles/red_gift.svg"
+        playButtonImage: "./img/game/winter/obstacles/red_gift.svg"
     }
-};
-export const ObstacleModeVariations: Partial<Record<Mode, string>> = {
-    winter: "_winter"
 };

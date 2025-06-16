@@ -3,25 +3,19 @@ import { makeGameObjectTemplate } from "@common/utils/gameObject";
 import { Angle, Numeric } from "@common/utils/math";
 import { type Timeout } from "@common/utils/misc";
 import { type ObjectsNetData } from "@common/utils/objectsSerializations";
-import { FloorTypes } from "@common/utils/terrain";
 import { Vec, type Vector } from "@common/utils/vector";
-import { Container, Graphics } from "pixi.js";
-import { type Game } from "../game";
-import { type GameSound, type SoundOptions } from "../managers/soundManager";
-import { HITBOX_DEBUG_MODE } from "../utils/constants";
+import { Container } from "pixi.js";
+import { Game } from "../game";
+import { SoundManager, type GameSound, type SoundOptions } from "../managers/soundManager";
 import { toPixiCoords } from "../utils/pixi";
+import { CameraManager } from "../managers/cameraManager";
+import { getLayerContainer } from "@common/utils/layer";
 
 export abstract class GameObject<Cat extends ObjectCategory = ObjectCategory> extends makeGameObjectTemplate() {
-    id: number;
-
-    readonly game: Game;
-
     damageable = false;
     destroyed = false;
 
-    layer: Layer = Layer.Ground;
-
-    debugGraphics!: Graphics;
+    layer!: Layer;
 
     private _oldPosition?: Vector;
     private _lastPositionChange?: number;
@@ -50,7 +44,7 @@ export abstract class GameObject<Cat extends ObjectCategory = ObjectCategory> ex
                 this._oldPosition,
                 this.position,
                 Numeric.min(
-                    (Date.now() - this._lastPositionChange) / this.game.serverDt,
+                    (Date.now() - this._lastPositionChange) / Game.serverDt,
                     1
                 )
             )
@@ -82,7 +76,7 @@ export abstract class GameObject<Cat extends ObjectCategory = ObjectCategory> ex
             this._oldRotation,
             this._oldRotation + Angle.minimize(this._oldRotation, this._rotation),
             Numeric.min(
-                (Date.now() - this._lastRotationChange) / this.game.serverDt,
+                (Date.now() - this._lastRotationChange) / Game.serverDt,
                 1
             )
         );
@@ -90,38 +84,22 @@ export abstract class GameObject<Cat extends ObjectCategory = ObjectCategory> ex
 
     dead = false;
 
-    readonly container: Container;
+    readonly container = new Container();
 
     readonly timeouts = new Set<Timeout>();
 
     addTimeout(callback: () => void, delay?: number): Timeout {
-        const timeout = this.game.addTimeout(callback, delay);
+        const timeout = Game.addTimeout(callback, delay);
         this.timeouts.add(timeout);
         return timeout;
     }
 
-    constructor(game: Game, id: number) {
+    constructor(readonly id: number) {
         super();
-
-        this.game = game;
-        this.id = id;
-
-        this.container = new Container();
-
-        this.game.camera.addObject(this.container);
-
-        if (HITBOX_DEBUG_MODE) {
-            this.debugGraphics = new Graphics();
-            this.debugGraphics.zIndex = 999;
-            this.game.camera.addObject(this.debugGraphics);
-        }
     }
 
     destroy(): void {
         this.destroyed = true;
-        if (HITBOX_DEBUG_MODE) {
-            this.debugGraphics.destroy();
-        }
         for (const timeout of this.timeouts) {
             timeout.kill();
         }
@@ -129,23 +107,34 @@ export abstract class GameObject<Cat extends ObjectCategory = ObjectCategory> ex
     }
 
     playSound(name: string, options?: Partial<Omit<SoundOptions, "position">>): GameSound {
-        return this.game.soundManager.play(name, {
+        return SoundManager.play(name, {
             position: this.position,
             layer: this.layer,
             ...options
         });
     }
 
-    doOverlay(): boolean {
-        return FloorTypes[this.game.map.terrain.getFloor(this.position, this.layer)]?.overlay ?? false;
-    }
-
     abstract updateFromData(data: ObjectsNetData[Cat], isNew: boolean): void;
 
-    abstract updateZIndex(): void;
+    layerContainer?: Container;
+    layerContainerIndex?: number;
+    readonly containers: Container[] = [this.container];
+    updateLayer(forceUpdate = false): void {
+        const oldContainer = this.layerContainer;
+        const newContainer = CameraManager.getContainer(this.layer, this.layerContainerIndex);
+        if (oldContainer === newContainer && !forceUpdate) return;
 
-    /**
-     * subclasses are free to override this method to draw debug graphics if they wish
-     */
-    updateDebugGraphics(): void { /* no-op */ }
+        this.layerContainer = newContainer;
+        this.layerContainerIndex = getLayerContainer(this.layer, Game.layer);
+
+        for (const container of this.containers) {
+            oldContainer?.removeChild(container);
+            newContainer.addChild(container);
+        }
+    }
+
+    abstract update(): void;
+    abstract updateInterpolation(): void;
+
+    abstract updateDebugGraphics(): void;
 }

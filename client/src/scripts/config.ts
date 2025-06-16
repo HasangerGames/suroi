@@ -1,34 +1,46 @@
 import { type TeamSize } from "@common/constants";
+import type { ModeName } from "@common/definitions/modes";
 
 export const Config = {
     regions: {
         dev: {
             name: "Local Server",
             mainAddress: "http://127.0.0.1:8000",
-            gameAddress: "ws://127.0.0.1:800<ID>"
-        },
+            gameAddress: "ws://127.0.0.1:<gameID>",
+            offset: 8001
+        }/* ,
         na: {
             name: "North America",
             mainAddress: "https://na.suroi.io",
-            gameAddress: "wss://<ID>.na.suroi.io"
+            gameAddress: "wss://na.suroi.io/game/<gameID>",
+            offset: 1
         },
         eu: {
             name: "Europe",
             mainAddress: "https://eu.suroi.io",
-            gameAddress: "wss://<ID>.eu.suroi.io"
+            gameAddress: "wss://eu.suroi.io/game/<gameID>",
+            offset: 1
         },
         sa: {
             name: "South America",
             mainAddress: "https://sa.suroi.io",
-            gameAddress: "wss://<ID>.sa.suroi.io"
+            gameAddress: "wss://sa.suroi.io/game/<gameID>",
+            offset: 1
         },
         as: {
             name: "Asia",
             mainAddress: "https://as.suroi.io",
-            gameAddress: "wss://<ID>.as.suroi.io"
-        }
+            gameAddress: "wss://as.suroi.io/game/<gameID>",
+            offset: 1
+        },
+        oc: {
+            name: "Oceania",
+            mainAddress: "https://oc.suroi.io",
+            gameAddress: "wss://oc.suroi.io/game/<gameID>",
+            offset: 1
+        } */
     },
-    defaultRegion: "na"
+    defaultRegion: "dev"
 } satisfies ConfigType as ConfigType;
 
 export interface ConfigType {
@@ -49,15 +61,22 @@ export interface Region {
 
     /**
      * Pattern used to determine the address of the region's game servers.
-     * The string <ID> is replaced by the gameID given by the /getGame API, plus one.
-     * For example, if gameID is 0, and gameAddress is "ws://127.0.0.1:800<ID>", the resulting address will be ws://127.0.0.1:8001.
+     * The string `<gameID>` is replaced by the `gameID` given by the /getGame API, plus {@linkcode offset}.
+     * For example, if `gameID` is 0, `gameAddress` is `"wss://na.suroi.io/game/<gameID>"`, and `offset` is 1, the resulting address will be wss://na.suroi.io/game/1.
      */
     readonly gameAddress: string
+
+    /**
+     * Number to increment `gameID` by when determining the game address. See {@linkcode gameAddress} for more info.
+     */
+    readonly offset: number
 }
 
 export interface ServerInfo {
     readonly protocolVersion: number
     readonly playerCount: number
-    readonly maxTeamSize: TeamSize
-    readonly nextSwitchTime: number
-};
+    readonly teamSize: TeamSize
+    readonly teamSizeSwitchTime: number
+    readonly mode: ModeName
+    readonly modeSwitchTime: number
+}

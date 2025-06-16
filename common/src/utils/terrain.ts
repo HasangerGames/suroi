@@ -1,7 +1,7 @@
-import { GameConstants, Layer } from "../constants";
+import { Layer } from "../constants";
 import { PolygonHitbox, RectangleHitbox, type Hitbox } from "./hitbox";
-import { Collision, Numeric } from "./math";
-import { SeededRandom } from "./random";
+import { Collision, Geometry, Numeric } from "./math";
+import { randomBoolean, randomFloat, SeededRandom } from "./random";
 import { Vec, type Vector } from "./vector";
 
 export interface FloorDefinition {
@@ -43,7 +43,7 @@ export const FloorTypes: Record<FloorNames, FloorDefinition> = {
     },
     water: {
         debugColor: 0x00ddff,
-        speedMultiplier: 0.7,
+        speedMultiplier: 0.72,
         overlay: true,
         particles: true
     },
@@ -154,6 +154,15 @@ export class Terrain {
         this.beachHitbox = new PolygonHitbox(jaggedRectangle(beachRect, spacing, Numeric.min(8, 2 * oceanSize), random));
         this.grassHitbox = new PolygonHitbox(jaggedRectangle(grassRect, spacing, Numeric.min(8, 2 * beachSize), random));
 
+        const point = Vec.create(0, 0);
+        Geometry.distanceSquared(
+            point,
+            Vec.create(
+                Math.max(-point.x, 0, point.x - width),
+                Math.max(-point.y, 0, point.y - height)
+            )
+        );
+
         this.rivers = rivers;
 
         // add rivers
@@ -201,18 +210,18 @@ export class Terrain {
 
         const isInsideMap = this.beachHitbox.isPointInside(position);
         if (isInsideMap) {
-            if (layer) { // Keeping this commented out until a solution is found
+            if (layer) {
                 /*
                     grass and sand only exist on layer 0; on other
                     layers, it's the void
                 */
                 floor = FloorNames.Void;
             } else {
-                floor = FloorNames.Sand;
-
                 if (this.grassHitbox.isPointInside(position)) {
-                    // adding a property wont work for some reason in the mode def
-                    floor = GameConstants.modeName === "winter" ? FloorNames.Sand : FloorNames.Grass;
+                    // TODO Detect mode somehow
+                    floor = FloorNames.Grass; // this.game.modeName === "winter" ? FloorNames.Sand : FloorNames.Grass;
+                } else {
+                    floor = FloorNames.Sand;
                 }
             }
         }
@@ -257,7 +266,7 @@ export class Terrain {
     /**
      * Get rivers near a hitbox
      */
-    getRiversInHitbox(hitbox: Hitbox): River[] {
+    getRiversInHitbox(hitbox: Hitbox, ignoreTrails = false): River[] {
         const rivers = new Set<River>();
 
         const rect = hitbox.toRectangle();
@@ -267,11 +276,12 @@ export class Terrain {
         for (let x = min.x; x <= max.x; x++) {
             for (let y = min.y; y <= max.y; y++) {
                 for (const river of this._grid[x][y].rivers) {
+                    if (ignoreTrails && river.isTrail) continue;
                     rivers.add(river);
                 }
             }
         }
-        return [...rivers];
+        return Array.from(rivers);
     }
 
     private _roundToCells(vector: Vector): Vector {
@@ -310,9 +320,12 @@ export class River {
 
     readonly isTrail: boolean;
 
+    readonly waterWidths: number[] = [];
+    readonly bankWidths: number[] = [];
+
     constructor(
         readonly width: number,
-        readonly points: readonly Vector[],
+        readonly points: Vector[],
         otherRivers: readonly River[],
         bounds: RectangleHitbox,
         isTrail: boolean
@@ -377,9 +390,11 @@ export class River {
             };
 
             if (isRiver) {
+                this.waterWidths.push(width);
                 calculatePoints(width, collidingRiver?.waterHitbox, waterPoints);
             }
 
+            this.bankWidths.push(width + bankWidth);
             calculatePoints(width + bankWidth, collidingRiver?.bankHitbox, bankPoints);
         }
 
@@ -482,5 +497,20 @@ export class River {
         }
 
         return nearestT;
+    }
+
+    /**
+     * @param onBank If the position can also be inside a river bank not just water
+     * @param margin A margin to subtract from the river width, useful when you dont want a cirlce to spawn inside it
+     */
+    getRandomPosition(onBank?: boolean, margin = 0): Vector {
+        const t = Math.random();
+        // river width is not consistent so map t to a point indexing the width at that point
+        const pointIdx = Numeric.clamp(Math.floor(t * this.points.length), 0, this.points.length);
+        const waterWidth = this[onBank ? "bankWidths" : "waterWidths"][pointIdx] - margin;
+        const dist = randomFloat(0, waterWidth) * (randomBoolean() ? 1 : -1);
+        // add a random offset that's between river center and river border on either directions
+        const normal = this.getNormal(t);
+        return Vec.add(this.getPosition(t), Vec.scale(normal, dist));
     }
 }

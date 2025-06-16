@@ -1,11 +1,14 @@
-import { ObjectCategory, ZIndexes } from "@common/constants";
+import { Layer, ObjectCategory, ZIndexes } from "@common/constants";
 import { Numeric } from "@common/utils/math";
 import { type ObjectsNetData } from "@common/utils/objectsSerializations";
 import { randomFloat, randomPointInsideCircle } from "@common/utils/random";
 import { FloorNames, FloorTypes } from "@common/utils/terrain";
 import { Vec, type Vector } from "@common/utils/vector";
-import { type Game } from "../game";
+import { Game } from "../game";
+import { MapManager } from "../managers/mapManager";
+import { ParticleManager } from "../managers/particleManager";
 import { type GameSound } from "../managers/soundManager";
+import { DebugRenderer } from "../utils/debugRenderer";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { type Tween } from "../utils/tween";
 import { GameObject } from "./gameObject";
@@ -17,13 +20,18 @@ export class Parachute extends GameObject.derive(ObjectCategory.Parachute) {
 
     private fallSound?: GameSound;
 
-    constructor(game: Game, id: number, data: ObjectsNetData[ObjectCategory.Parachute]) {
-        super(game, id);
+    height = 0;
+
+    constructor(id: number, data: ObjectsNetData[ObjectCategory.Parachute]) {
+        super(id);
 
         this.container.addChild(this.image);
-        this.updateZIndex();
+        this.container.zIndex = 994; // gas is 996 ig
 
         this.updateFromData(data, true);
+
+        this.layer = Layer.Ground;
+        this.updateLayer();
     }
 
     override updateFromData(data: ObjectsNetData[ObjectCategory.Parachute], isNew = false): void {
@@ -39,19 +47,19 @@ export class Parachute extends GameObject.derive(ObjectCategory.Parachute) {
                 }
             );
         }
-
+        this.height = data.height;
         const scale = Numeric.lerp(0.5, 1, data.height);
         if (isNew) {
             this.container.scale.set(scale);
         } else {
             this.scaleAnim?.kill();
-            this.scaleAnim = this.game.addTween({
+            this.scaleAnim = Game.addTween({
                 target: this.container.scale,
                 to: {
                     x: scale,
                     y: scale
                 },
-                duration: this.game.serverDt,
+                duration: Game.serverDt,
                 onComplete: () => {
                     this.scaleAnim = undefined;
                 }
@@ -59,12 +67,12 @@ export class Parachute extends GameObject.derive(ObjectCategory.Parachute) {
         }
 
         if (data.height === 0) {
-            const floor = this.game.map.terrain.getFloor(this.position, 0);
+            const floor = MapManager.terrain.getFloor(this.position, 0);
 
             this.playSound(floor === FloorNames.Water ? "airdrop_land_water" : "airdrop_land");
 
             if (FloorTypes[floor].particles) {
-                this.game.particleManager.spawnParticles(6, () => ({
+                ParticleManager.spawnParticles(6, () => ({
                     frames: "ripple_particle",
                     zIndex: ZIndexes.Ground,
                     position: randomPointInsideCircle(this.position, 6),
@@ -83,8 +91,14 @@ export class Parachute extends GameObject.derive(ObjectCategory.Parachute) {
         }
     }
 
-    override updateZIndex(): void {
-        this.container.zIndex = 994; // gas is 996 ig
+    override update(): void { /* bleh */ }
+
+    override updateInterpolation(): void { /* bleh */ }
+
+    override updateDebugGraphics(): void {
+        if (!DEBUG_CLIENT) return;
+
+        DebugRenderer.addCircle(this.height, this.position);
     }
 
     destroy(): void {

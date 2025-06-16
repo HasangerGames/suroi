@@ -1,38 +1,40 @@
-import { GameConstants, InputActions, InventoryMessages, Layer, ObjectCategory, TeamSize } from "@common/constants";
-import { ArmorType } from "@common/definitions/armors";
+import { InputActions, InventoryMessages, Layer, ObjectCategory, TeamSize, ZIndexes } from "@common/constants";
 import { Badges, type BadgeDefinition } from "@common/definitions/badges";
 import { Emotes } from "@common/definitions/emotes";
-import { type DualGunNarrowing } from "@common/definitions/guns";
-import { Loots } from "@common/definitions/loots";
-import { Scopes } from "@common/definitions/scopes";
-import { DisconnectPacket } from "@common/packets/disconnectPacket";
-import { GameOverPacket } from "@common/packets/gameOverPacket";
-import { JoinedPacket, type JoinedPacketData } from "@common/packets/joinedPacket";
-import { JoinPacket, type JoinPacketCreation } from "@common/packets/joinPacket";
-import { KillFeedPacket } from "@common/packets/killFeedPacket";
-import { MapPacket } from "@common/packets/mapPacket";
-import { type InputPacket, type OutputPacket } from "@common/packets/packet";
+import { ArmorType } from "@common/definitions/items/armors";
+import { type DualGunNarrowing } from "@common/definitions/items/guns";
+import { Skins } from "@common/definitions/items/skins";
+import type { ColorKeys, ModeDefinition, ModeName } from "@common/definitions/modes";
+import { Modes } from "@common/definitions/modes";
+import type { JoinedData } from "@common/packets/joinedPacket";
+import { JoinPacket } from "@common/packets/joinPacket";
+import { PacketType, type DataSplit, type PacketDataIn, type PacketDataOut } from "@common/packets/packet";
 import { PacketStream } from "@common/packets/packetStream";
-import { PickupPacket } from "@common/packets/pickupPacket";
-import { PingPacket } from "@common/packets/pingPacket";
-import { ReportPacket } from "@common/packets/reportPacket";
-import { UpdatePacket, type UpdatePacketDataOut } from "@common/packets/updatePacket";
+import { type UpdateDataOut } from "@common/packets/updatePacket";
 import { CircleHitbox } from "@common/utils/hitbox";
-import { adjacentOrEqualLayer } from "@common/utils/layer";
-import { EaseFunctions, Geometry } from "@common/utils/math";
+import { adjacentOrEqualLayer, equalLayer } from "@common/utils/layer";
+import { EaseFunctions, Geometry, Numeric } from "@common/utils/math";
 import { Timeout } from "@common/utils/misc";
-import { ItemType, ObstacleSpecialRoles } from "@common/utils/objectDefinitions";
+import { ItemType } from "@common/utils/objectDefinitions";
 import { ObjectPool } from "@common/utils/objectPool";
 import { type ObjectsNetData } from "@common/utils/objectsSerializations";
-import { randomFloat, randomVector } from "@common/utils/random";
+import { random, randomFloat, randomRotation, randomVector } from "@common/utils/random";
 import { Vec, type Vector } from "@common/utils/vector";
 import { sound, type Sound } from "@pixi/sound";
+import FontFaceObserver from "fontfaceobserver";
 import $ from "jquery";
-import { Application, Color } from "pixi.js";
+import { Application, Color, Container, loadTextures } from "pixi.js";
 import "pixi.js/prepare";
-import { getTranslatedString, initTranslation } from "../translations";
-import { type TranslationKeys } from "../typings/translations";
+import { setUpCommands } from "./console/commands";
+import { GameConsole } from "./console/gameConsole";
+import { defaultClientCVars } from "./console/variables";
+import { CameraManager } from "./managers/cameraManager";
+import { EmoteWheelManager, PlayerPingWheelManager } from "./managers/emoteWheelManager";
+import { GasManager, GasRender } from "./managers/gasManager";
 import { InputManager } from "./managers/inputManager";
+import { MapManager } from "./managers/mapManager";
+import { ParticleManager } from "./managers/particleManager";
+import { ScreenRecordManager } from "./managers/screenRecordManager";
 import { GameSound, SoundManager } from "./managers/soundManager";
 import { UIManager } from "./managers/uiManager";
 import { Building } from "./objects/building";
@@ -44,22 +46,18 @@ import { type GameObject } from "./objects/gameObject";
 import { Loot } from "./objects/loot";
 import { Obstacle } from "./objects/obstacle";
 import { Parachute } from "./objects/parachute";
-import { ParticleManager } from "./objects/particles";
 import { Plane } from "./objects/plane";
 import { Player } from "./objects/player";
+import { Projectile } from "./objects/projectile";
 import { SyncedParticle } from "./objects/syncedParticle";
-import { ThrowableProjectile } from "./objects/throwableProj";
-import { Camera } from "./rendering/camera";
-import { Gas, GasRender } from "./rendering/gas";
-import { Minimap } from "./rendering/minimap";
-import { autoPickup, resetPlayButtons, setUpUI, teamSocket, unlockPlayButtons, updateDisconnectTime } from "./ui";
-import { setUpCommands } from "./utils/console/commands";
-import { defaultClientCVars } from "./utils/console/defaultClientCVars";
-import { GameConsole } from "./utils/console/gameConsole";
-import { COLORS, EMOTE_SLOTS, LAYER_TRANSITION_DELAY, MODE, PIXI_SCALE, UI_DEBUG_MODE } from "./utils/constants";
-import { loadTextures, SuroiSprite } from "./utils/pixi";
-import { Tween } from "./utils/tween";
-import { EmoteWheelManager, PlayerPingWheelManager } from "./managers/emoteWheelManager";
+import { autoPickup, fetchServerData, finalizeUI, resetPlayButtons, setUpUI, teamSocket, unlockPlayButtons, updateDisconnectTime } from "./ui";
+import { EMOTE_SLOTS, LAYER_TRANSITION_DELAY, PIXI_SCALE, UI_DEBUG_MODE } from "./utils/constants";
+import { DebugRenderer } from "./utils/debugRenderer";
+import { setUpNetGraph } from "./utils/graph/netGraph";
+import { loadSpritesheets, SuroiSprite } from "./utils/pixi";
+import { getTranslatedString, initTranslation } from "./utils/translations/translations";
+import { type TranslationKeys } from "./utils/translations/typings";
+import { Tween, type TweenOptions } from "./utils/tween";
 
 /* eslint-disable @stylistic/indent */
 
@@ -71,13 +69,11 @@ type ObjectClassMapping = {
     readonly [ObjectCategory.Building]: typeof Building
     readonly [ObjectCategory.Decal]: typeof Decal
     readonly [ObjectCategory.Parachute]: typeof Parachute
-    readonly [ObjectCategory.ThrowableProjectile]: typeof ThrowableProjectile
+    readonly [ObjectCategory.Projectile]: typeof Projectile
     readonly [ObjectCategory.SyncedParticle]: typeof SyncedParticle
 };
 
-const ObjectClassMapping: ObjectClassMapping = Object.freeze<{
-    readonly [K in ObjectCategory]: new (game: Game, id: number, data: ObjectsNetData[K]) => InstanceType<ObjectClassMapping[K]>
-}>({
+const ObjectClassMapping: ObjectClassMapping = Object.freeze({
     [ObjectCategory.Player]: Player,
     [ObjectCategory.Obstacle]: Obstacle,
     [ObjectCategory.DeathMarker]: DeathMarker,
@@ -85,22 +81,32 @@ const ObjectClassMapping: ObjectClassMapping = Object.freeze<{
     [ObjectCategory.Building]: Building,
     [ObjectCategory.Decal]: Decal,
     [ObjectCategory.Parachute]: Parachute,
-    [ObjectCategory.ThrowableProjectile]: ThrowableProjectile,
+    [ObjectCategory.Projectile]: Projectile,
     [ObjectCategory.SyncedParticle]: SyncedParticle
+} satisfies {
+    readonly [K in ObjectCategory]: new (id: number, data: ObjectsNetData[K]) => InstanceType<ObjectClassMapping[K]>
 });
 
 type ObjectMapping = {
     readonly [Cat in keyof ObjectClassMapping]: InstanceType<ObjectClassMapping[Cat]>
 };
 
-export class Game {
+type Colors = Record<ColorKeys | "ghillie", Color>;
+
+export const Game = new (class Game {
     private _socket?: WebSocket;
+
+    socketCloseCallback?: (value: unknown) => void;
 
     readonly objects = new ObjectPool<ObjectMapping>();
     readonly bullets = new Set<Bullet>();
     readonly planes = new Set<Plane>();
 
     ambience?: GameSound;
+    riverAmbience!: GameSound;
+    oceanAmbience!: GameSound;
+
+    layerTween?: Tween<Container>;
 
     readonly spinningImages = new Map<SuroiSprite, number>();
 
@@ -116,43 +122,72 @@ export class Game {
 
     teamMode = false;
 
+    _modeName: ModeName | undefined;
+    get modeName(): ModeName {
+        if (this._modeName === undefined) throw new Error("modeName accessed before initialization");
+        return this._modeName;
+    }
+
+    set modeName(modeName: ModeName) {
+        this._modeName = modeName;
+        this._mode = Modes[this.modeName];
+
+        // Converts the strings in the mode definition to Color objects
+        this._colors = (Object.entries(this.mode.colors) as Array<[ColorKeys, string]>).reduce(
+            (result, [key, color]) => {
+                result[key] = new Color(color);
+                return result;
+            },
+            {} as Colors
+        );
+
+        this._colors.ghillie = new Color(this._colors.grass).multiply("hsl(0, 0%, 99%)");
+    }
+
+    _mode: ModeDefinition | undefined;
+    get mode(): ModeDefinition {
+        if (!this._mode) throw new Error("mode accessed before initialization");
+        return this._mode;
+    }
+
+    private _colors: Colors | undefined;
+    get colors(): Colors {
+        if (!this._colors) throw new Error("colors accessed before initialization");
+        return this._colors;
+    }
+
     /**
      * proxy for `activePlayer`'s layer
      */
-    get layer(): Layer | undefined {
-        return this.activePlayer?.layer;
+    get layer(): Layer {
+        return this.activePlayer?.layer ?? Layer.Ground;
     }
 
     get activePlayer(): Player | undefined {
         return this.objects.get(this.activePlayerID) as Player;
     }
 
+    connecting = false;
     gameStarted = false;
     gameOver = false;
     spectating = false;
     error = false;
 
-    lastPingDate = 0;
+    hideSecondFloor = false;
 
-    disconnectReason = "";
-
-    readonly uiManager = new UIManager(this);
     readonly pixi = new Application();
-    readonly particleManager = new ParticleManager(this);
-    readonly map = new Minimap(this);
-    readonly camera = new Camera(this);
-    readonly console = new GameConsole(this);
-    readonly inputManager = new InputManager(this);
-    readonly soundManager = new SoundManager(this);
     readonly emoteManager = new EmoteWheelManager(this);
     readonly pingManager = new PlayerPingWheelManager(this);
 
-    readonly gasRender = new GasRender(PIXI_SCALE);
-    readonly gas = new Gas(this);
+    gasRender!: GasRender;
+
+    readonly netGraph = setUpNetGraph();
+
+    readonly fontObserver = new FontFaceObserver("Inter", { weight: 600 }).load();
 
     music!: Sound;
 
-    readonly tweens = new Set<Tween<unknown>>();
+    readonly tweens = new Set<Tween<object>>();
 
     private readonly _timeouts = new Set<Timeout>();
 
@@ -162,33 +197,41 @@ export class Game {
         return timeout;
     }
 
-    private static _instantiated = false;
-
-    static async init(): Promise<Game> {
-        if (Game._instantiated) {
-            throw new Error("Class 'Game' has already been instantiated.");
+    private _initialized = false;
+    async init(): Promise<void> {
+        if (this._initialized) {
+            throw new Error("'Game' has already been initialized.");
         }
-        Game._instantiated = true;
+        this._initialized = true;
 
-        const game = new Game();
-
-        game.console.readFromLocalStorage();
-        await initTranslation(game);
-        game.inputManager.setupInputs();
+        GameConsole.init();
+        setUpCommands();
+        await initTranslation();
+        InputManager.init();
+        await setUpUI();
+        await fetchServerData();
+        this.gasRender = new GasRender(PIXI_SCALE);
+        MapManager.init();
+        CameraManager.init();
+        GasManager.init();
 
         const initPixi = async(): Promise<void> => {
-            const renderMode = game.console.getBuiltInCVar("cv_renderer");
-            const renderRes = game.console.getBuiltInCVar("cv_renderer_res");
+            const renderMode = GameConsole.getBuiltInCVar("cv_renderer");
+            const renderRes = GameConsole.getBuiltInCVar("cv_renderer_res");
 
-            await game.pixi.init({
+            const pixi = this.pixi;
+            await pixi.init({
                 resizeTo: window,
-                background: COLORS.grass,
-                antialias: game.console.getBuiltInCVar("cv_antialias"),
+                background: this.colors.grass,
+                antialias: InputManager.isMobile
+                    ? GameConsole.getBuiltInCVar("mb_antialias")
+                    : GameConsole.getBuiltInCVar("cv_antialias"),
                 autoDensity: true,
                 preferWebGLVersion: renderMode === "webgl1" ? 1 : 2,
                 preference: renderMode === "webgpu" ? "webgpu" : "webgl",
                 resolution: renderRes === "auto" ? (window.devicePixelRatio || 1) : parseFloat(renderRes),
                 hello: true,
+                autoStart: false,
                 canvas: document.getElementById("game-canvas") as HTMLCanvasElement,
                 // we only use pixi click events (to spectate players on click)
                 // so other events can be disabled for performance
@@ -200,17 +243,22 @@ export class Game {
                 }
             });
 
-            const pixi = game.pixi;
-            await loadTextures(
+            // Setting preferCreateImageBitmap to false reduces RAM usage in most browsers
+            if (!GameConsole.getBuiltInCVar("cv_alt_texture_loading") && loadTextures.config) {
+                loadTextures.config.preferCreateImageBitmap = false;
+            }
+
+            void loadSpritesheets(
+                this.modeName,
                 pixi.renderer,
-                game.inputManager.isMobile
-                    ? game.console.getBuiltInCVar("mb_high_res_textures")
-                    : game.console.getBuiltInCVar("cv_high_res_textures")
+                InputManager.isMobile
+                    ? GameConsole.getBuiltInCVar("mb_high_res_textures")
+                    : GameConsole.getBuiltInCVar("cv_high_res_textures")
             );
 
             // HACK: the game ui covers the canvas
             // so send pointer events manually to make clicking to spectate players work
-            game.uiManager.ui.gameUi[0].addEventListener("pointerdown", e => {
+            UIManager.ui.gameUi[0].addEventListener("pointerdown", e => {
                 pixi.canvas.dispatchEvent(new PointerEvent("pointerdown", {
                     pointerId: e.pointerId,
                     button: e.button,
@@ -221,55 +269,84 @@ export class Game {
                 }));
             });
 
-            pixi.ticker.add(game.render.bind(game));
+            pixi.ticker.add(this.render.bind(this));
+
             pixi.stage.addChild(
-                game.camera.container,
-                game.map.container,
-                game.map.mask,
-                game.emoteManager.container,
-                game.pingManager.container
+                CameraManager.container,
+                DebugRenderer.graphics,
+                MapManager.container,
+                MapManager.mask,
+                ...Object.values(this.netGraph).map(g => g.container)
             );
 
-            game.emoteManager.init();
-            game.pingManager.init();
-            game.emoteManager.setupSlots();
+            MapManager.visible = !GameConsole.getBuiltInCVar("cv_minimap_minimized");
+            MapManager.expanded = GameConsole.getBuiltInCVar("cv_map_expanded");
+            UIManager.ui.gameUi.toggle(GameConsole.getBuiltInCVar("cv_draw_hud"));
 
-            game.map.visible = !game.console.getBuiltInCVar("cv_minimap_minimized");
-            game.map.expanded = game.console.getBuiltInCVar("cv_map_expanded");
-            game.uiManager.ui.gameUi.toggle(game.console.getBuiltInCVar("cv_draw_hud"));
+            this.emoteManager.init();
+            this.pingManager.init();
+            this.emoteManager.setupSlots();
 
-            pixi.renderer.on("resize", () => game.resize());
-            game.resize();
-
-            setInterval(() => {
-                if (game.console.getBuiltInCVar("pf_show_fps")) {
-                    game.uiManager.debugReadouts.fps.text(`${Math.round(game.pixi.ticker.FPS)} fps`);
-                }
-            }, 500);
+            pixi.renderer.on("resize", () => this.resize());
+            this.resize();
         };
 
-        await initPixi();
-        await setUpUI(game);
-
- unlockPlayButtons();
-        resetPlayButtons();
-
-        setUpCommands(game);
-        game.inputManager.generateBindsConfigScreen();
-
-        game.music = sound.add("menu_music", {
-            url: `./audio/music/menu_music${game.console.getBuiltInCVar("cv_use_old_menu_music") ? "_old" : MODE.specialMenuMusic ? `_${GameConstants.modeName}` : ""}.mp3`,
+        let menuMusicSuffix: string;
+        if (GameConsole.getBuiltInCVar("cv_use_old_menu_music")) {
+            menuMusicSuffix = "_old";
+        } else if (this.mode.sounds?.replaceMenuMusic) {
+            menuMusicSuffix = `_${this.modeName}`;
+        } else {
+            menuMusicSuffix = "";
+        }
+        this.music = sound.add("menu_music", {
+            url: `./audio/music/menu_music${menuMusicSuffix}.mp3`,
             singleInstance: true,
             preload: true,
             autoPlay: true,
-            volume: game.console.getBuiltInCVar("cv_music_volume")
+            loop: true,
+            volume: GameConsole.getBuiltInCVar("cv_music_volume")
         });
-        return game;
+
+        void Promise.all([
+            initPixi(),
+            SoundManager.init(),
+            finalizeUI()
+        ]).then(() => {
+            unlockPlayButtons();
+            resetPlayButtons();
+        });
     }
 
     resize(): void {
-        this.map.resize();
-        this.camera.resize(true);
+        MapManager.resize();
+        CameraManager.resize(true);
+    }
+
+    updateAmbience(): void {
+        if (!this.activePlayer) return;
+
+        const position = this.activePlayer.position;
+
+        // TODO Optimize this function to use the distance from the edge of the map
+        // rather than the beach hitbox
+        const oceanDistance = MapManager.distanceToShoreSquared(position);
+        this.oceanAmbience.volume = Numeric.delerp(oceanDistance, 4225, 0);
+
+        let riverWeight = 0;
+        const rivers = MapManager.terrain.rivers;
+        for (let i = 0, len = rivers.length; i < len; i++) { // hasanger mwah optimization
+            const river = rivers[i];
+            if (river.isTrail) continue;
+
+            const closestPoint = river.getPosition(river.getClosestT(position)),
+                  distanceToRiver = Geometry.distanceSquared(position, closestPoint),
+                  riverWidth = river.waterWidths[i] + 2,
+                  normalizedDistance = Numeric.delerp(distanceToRiver, (30 + riverWidth) ** 2, riverWidth ** 2),
+                  riverStrength = Numeric.clamp(river.waterWidths[i] / 8, 0.25, 1);
+            riverWeight = Numeric.max(normalizedDistance * riverStrength, riverWeight);
+        }
+        this.riverAmbience.volume = riverWeight;
     }
 
     connect(address: string): void {
@@ -281,17 +358,18 @@ export class Game {
         this._socket.binaryType = "arraybuffer";
 
         this._socket.onopen = (): void => {
-            if (this.music) {
-                this.music.stop();
-            }
+            this.pixi.start();
+            this.music?.stop();
+            this.connecting = false;
             this.gameStarted = true;
             this.gameOver = false;
             this.spectating = false;
-            this.disconnectReason = "";
+
+            for (const graph of Object.values(this.netGraph)) graph.clear();
 
             if (!UI_DEBUG_MODE) {
-                clearTimeout(this.uiManager.gameOverScreenTimeout);
-                const ui = this.uiManager.ui;
+                clearTimeout(UIManager.gameOverScreenTimeout);
+                const ui = UIManager.ui;
 
                 ui.gameOverOverlay.hide();
                 ui.killMsgModal.hide();
@@ -299,70 +377,68 @@ export class Game {
                 ui.killFeed.html("");
                 ui.spectatingContainer.hide();
                 ui.joystickContainer.show();
+
+                InputManager.emoteWheelActive = false;
+                InputManager.pingWheelMinimap = false;
+                UIManager.ui.emoteWheel.hide();
             }
 
-            this.sendPacket(PingPacket.create());
-            this.lastPingDate = Date.now();
-
             let skin: typeof defaultClientCVars["cv_loadout_skin"];
-            const joinPacket: JoinPacketCreation = {
-                isMobile: this.inputManager.isMobile,
-                name: this.console.getBuiltInCVar("cv_player_name"),
-                skin: Loots.fromStringSafe(
-                    this.console.getBuiltInCVar("cv_loadout_skin")
-                ) ?? Loots.fromString(
+            this.sendPacket(JoinPacket.create({
+                isMobile: InputManager.isMobile,
+                name: GameConsole.getBuiltInCVar("cv_player_name"),
+                skin: Skins.fromStringSafe(
+                    GameConsole.getBuiltInCVar("cv_loadout_skin")
+                ) ?? Skins.fromString(
                     typeof (skin = defaultClientCVars.cv_loadout_skin) === "object"
                         ? skin.value
                         : skin
                 ),
-                badge: Badges.fromStringSafe(this.console.getBuiltInCVar("cv_loadout_badge")),
+                badge: Badges.fromStringSafe(GameConsole.getBuiltInCVar("cv_loadout_badge")),
                 emotes: EMOTE_SLOTS.map(
-                    slot => Emotes.fromStringSafe(this.console.getBuiltInCVar(`cv_loadout_${slot}_emote`))
+                    slot => Emotes.fromStringSafe(GameConsole.getBuiltInCVar(`cv_loadout_${slot}_emote`))
                 )
-            };
+            }));
 
-            this.sendPacket(JoinPacket.create(joinPacket));
+            this.gasRender.graphics.zIndex = 1000;
+            CameraManager.addObject(this.gasRender.graphics);
+            MapManager.indicator.setFrame("player_indicator");
 
-            this.camera.addObject(this.gasRender.graphics);
-            this.map.indicator.setFrame("player_indicator");
-
-            const particleEffects = MODE.particleEffects;
+            const particleEffects = this.mode.particleEffects;
 
             if (particleEffects !== undefined) {
                 const This = this;
                 const gravityOn = particleEffects.gravity;
-                this.particleManager.addEmitter(
-                    {
-                        delay: particleEffects.delay,
-                        active: this.console.getBuiltInCVar("cv_ambient_particles"),
-                        spawnOptions: () => ({
-                            frames: particleEffects.frames,
-                            get position(): Vector {
-                                const width = This.camera.width / PIXI_SCALE;
-                                const height = This.camera.height / PIXI_SCALE;
-                                const player = This.activePlayer;
-                                if (!player) return Vec.create(0, 0);
-                                const { x, y } = player.position;
-                                return randomVector(x - width, x + width, y - height, y + height);
-                            },
-                            speed: randomVector(-10, 10, gravityOn ? 10 : -10, 10),
-                            lifetime: randomFloat(12000, 50000),
-                            zIndex: Number.MAX_SAFE_INTEGER - 5,
-                            alpha: {
-                                start: this.layer === Layer.Ground ? 0.7 : 0,
-                                end: 0
-                            },
-                            rotation: {
-                                start: randomFloat(0, 36),
-                                end: randomFloat(40, 80)
-                            },
-                            scale: {
-                                start: randomFloat(0.8, 1.1),
-                                end: randomFloat(0.7, 0.8)
-                            }
-                        })
-                    }
-                );
+                ParticleManager.addEmitter({
+                    delay: particleEffects.delay,
+                    active: GameConsole.getBuiltInCVar("cv_ambient_particles"),
+                    spawnOptions: () => ({
+                        frames: particleEffects.frames,
+                        get position(): Vector {
+                            const width = CameraManager.width / PIXI_SCALE;
+                            const height = CameraManager.height / PIXI_SCALE;
+                            const player = This.activePlayer;
+                            if (!player) return Vec.create(0, 0);
+                            const { x, y } = player.position;
+                            return randomVector(x - width, x + width, y - height, y + height);
+                        },
+                        speed: randomVector(-10, 10, gravityOn ? 10 : -10, 10),
+                        lifetime: randomFloat(12000, 50000),
+                        zIndex: Number.MAX_SAFE_INTEGER - 5,
+                        alpha: {
+                            start: this.layer === Layer.Ground ? 0.7 : 0,
+                            end: 0
+                        },
+                        rotation: {
+                            start: randomFloat(0, 36),
+                            end: randomFloat(40, 80)
+                        },
+                        scale: {
+                            start: randomFloat(0.8, 1.1),
+                            end: randomFloat(0.7, 0.8)
+                        }
+                    })
+                });
             }
         };
 
@@ -370,93 +446,86 @@ export class Game {
         this._socket.onmessage = (message: MessageEvent<ArrayBuffer>): void => {
             const stream = new PacketStream(message.data);
             let iterationCount = 0;
+            const splits = [0, 0, 0, 0, 0, 0, 0] satisfies DataSplit;
             while (true) {
                 if (++iterationCount === 1e3) {
                     console.warn("1000 iterations of packet reading; possible infinite loop");
                 }
-                const packet = stream.deserializeServerPacket();
+                const packet = stream.deserialize(splits);
                 if (packet === undefined) break;
                 this.onPacket(packet);
             }
+
+            const msgLength = message.data.byteLength;
+            this.netGraph.receiving.addEntry(msgLength, splits);
         };
 
-        const ui = this.uiManager.ui;
+        const ui = UIManager.ui;
 
         this._socket.onerror = (): void => {
+            this.pixi.stop();
             this.error = true;
+            this.connecting = false;
             ui.splashMsgText.html(getTranslatedString("msg_err_joining"));
             ui.splashMsg.show();
             resetPlayButtons();
         };
 
-        this._socket.onclose = (): void => {
+        this._socket.onclose = (e: CloseEvent): void => {
+            this.pixi.stop();
+            this.connecting = false;
+            this.socketCloseCallback?.(undefined);
             resetPlayButtons();
 
-            const reason = this.disconnectReason || "Connection lost";
-
-            if (!this.gameOver) {
-                if (this.gameStarted) {
-                    ui.splashUi.fadeIn(400);
-                    ui.splashMsgText.html(this.disconnectReason || "Connection lost.");
-                    ui.splashMsg.show();
-                }
-                this.uiManager.ui.btnSpectate.addClass("btn-disabled");
-                if (!this.error) void this.endGame();
-            }
+            const reason = e.reason || "Connection lost";
 
             if (reason.startsWith("Invalid game version")) {
                 alert(reason);
                 // reload the page with a time stamp to try clearing cache
                 location.search = `t=${Date.now()}`;
             }
+
+            if (!this.gameOver) {
+                if (this.gameStarted) {
+                    ui.splashUi.fadeIn(400);
+                    ui.splashMsgText.html(reason);
+                    ui.splashMsg.show();
+                }
+                ui.btnSpectate.addClass("btn-disabled");
+                if (!this.error) void this.endGame();
+            }
         };
     }
 
     inventoryMsgTimeout: number | undefined;
 
-    onPacket(packet: OutputPacket): void {
-        switch (true) {
-            case packet instanceof JoinedPacket:
-                this.startGame(packet.output);
+    onPacket(packet: PacketDataOut): void {
+        switch (packet.type) {
+            case PacketType.Joined:
+                this.startGame(packet);
                 break;
-            case packet instanceof MapPacket:
-                this.map.updateFromPacket(packet.output);
+            case PacketType.Map:
+                MapManager.updateFromPacket(packet);
                 break;
-            case packet instanceof UpdatePacket:
-                this.processUpdate(packet.output);
+            case PacketType.Update:
+                this.processUpdate(packet);
                 break;
-            case packet instanceof GameOverPacket:
-                this.uiManager.showGameOverScreen(packet.output);
+            case PacketType.GameOver:
+                UIManager.showGameOverScreen(packet);
                 break;
-            case packet instanceof KillFeedPacket:
-                this.uiManager.processKillFeedPacket(packet.output);
+            case PacketType.Kill:
+                UIManager.processKillPacket(packet);
                 break;
-            case packet instanceof PingPacket: {
-                this.uiManager.debugReadouts.ping.text(`${Date.now() - this.lastPingDate} ms`);
-                setTimeout((): void => {
-                    this.sendPacket(PingPacket.create());
-                    this.lastPingDate = Date.now();
-                }, 5000);
+            case PacketType.Report: {
+                UIManager.processReportPacket(packet);
                 break;
             }
-            case packet instanceof ReportPacket: {
-                const ui = this.uiManager.ui;
-                const { output } = packet;
-                ui.reportingName.text(output.playerName);
-                ui.reportingId.text(output.reportID);
-                ui.reportingModal.fadeIn(250);
-                break;
-            }
-            case packet instanceof PickupPacket: {
-                const { output: { message, item } } = packet;
+            case PacketType.Pickup: {
+                const { message, item } = packet;
 
                 if (message !== undefined) {
-                    const inventoryMsg = this.uiManager.ui.inventoryMsg;
-
+                    const inventoryMsg = UIManager.ui.inventoryMsg;
                     inventoryMsg.text(getTranslatedString(this._inventoryMessageMap[message])).fadeIn(250);
-                    if (message === InventoryMessages.RadioOverused) {
-                        this.soundManager.play("metal_light_destroyed");
-                    }
 
                     clearTimeout(this.inventoryMsgTimeout);
                     this.inventoryMsgTimeout = window.setTimeout(() => inventoryMsg.fadeOut(250), 2500);
@@ -480,7 +549,7 @@ export class Game {
                             soundID = "backpack_pickup";
                             break;
                         case ItemType.Throwable:
-                            soundID = "throwable_pickup";
+                            soundID = "throwable_switch";
                             break;
                         case ItemType.Perk:
                             soundID = "pickup";
@@ -490,15 +559,12 @@ export class Game {
                             break;
                     }
 
-                    this.soundManager.play(soundID);
+                    SoundManager.play(soundID);
                 } else {
                     console.warn("Unexpected PickupPacket with neither message nor item");
                 }
                 break;
             }
-            case packet instanceof DisconnectPacket:
-                this.disconnectReason = packet.output.reason;
-                break;
         }
     }
 
@@ -506,85 +572,86 @@ export class Game {
         [InventoryMessages.NotEnoughSpace]: "msg_not_enough_space",
         [InventoryMessages.ItemAlreadyEquipped]: "msg_item_already_equipped",
         [InventoryMessages.BetterItemEquipped]: "msg_better_item_equipped",
-        [InventoryMessages.CannotUseRadio]: "msg_cannot_use_radio",
-        [InventoryMessages.RadioOverused]: "msg_radio_overused"
+        [InventoryMessages.CannotUseFlare]: "msg_cannot_use_flare"
     };
 
-    startGame(packet: JoinedPacketData): void {
+    startGame(packet: JoinedData): void {
         // Sound which notifies the player that the
         // game started if page is out of focus.
-        if (!document.hasFocus()) this.soundManager.play("join_notification");
+        if (!document.hasFocus()) SoundManager.play("join_notification");
 
-        if (MODE.ambience) {
-            this.ambience = this.soundManager.play(MODE.ambience, { loop: true, ambient: true });
+        const ambience = this.mode.sounds?.ambience;
+        if (ambience) {
+            this.ambience = SoundManager.play(ambience, { loop: true, ambient: true });
         }
 
-        this.uiManager.emotes = packet.emotes;
-        this.uiManager.updateEmoteWheel();
+        this.riverAmbience = SoundManager.play("river_ambience", { loop: true, ambient: true });
+        this.riverAmbience.volume = 0;
 
-        const ui = this.uiManager.ui;
+        this.oceanAmbience = SoundManager.play("ocean_ambience", { loop: true, ambient: true });
+        this.oceanAmbience.volume = 0;
 
-        if (this.teamMode = packet.maxTeamSize !== TeamSize.Solo) {
+        UIManager.emotes = packet.emotes;
+        UIManager.updateEmoteWheel();
+
+        const ui = UIManager.ui;
+
+        if (this.teamMode = packet.teamSize !== TeamSize.Solo) {
             this.teamID = packet.teamID;
         }
 
         ui.canvas.addClass("active");
-        ui.splashUi.fadeOut(400, resetPlayButtons);
+        ui.splashUi.fadeOut(400, () => resetPlayButtons());
 
         ui.killLeaderLeader.html(getTranslatedString("msg_waiting_for_leader"));
         ui.killLeaderCount.text("0");
         ui.spectateKillLeader.addClass("btn-disabled");
 
-        ui.teamContainer.toggle(this.teamMode);
+        if (!UI_DEBUG_MODE) ui.teamContainer.toggle(this.teamMode);
     }
 
     async endGame(): Promise<void> {
-        const ui = this.uiManager.ui;
-
         return await new Promise(resolve => {
+            const ui = UIManager.ui;
+
+            ui.gameMenu.fadeOut(250);
             ui.splashOptions.addClass("loading");
+            ui.loaderText.text("");
 
-            this.soundManager.stopAll();
+            SoundManager.stopAll();
+            this.gameOver = true;
+            this._socket?.close();
 
-            ui.splashUi.fadeIn(400, () => {
-                if (this.music) {
-                    void this.music.play();
-                }
-                ui.teamContainer.html("");
-                ui.actionContainer.hide();
-                ui.gameMenu.hide();
-                ui.gameOverOverlay.hide();
-                ui.canvas.removeClass("active");
-                ui.killLeaderLeader.text(getTranslatedString("msg_waiting_for_leader"));
-                ui.killLeaderCount.text("0");
+            // eslint-disable-next-line @typescript-eslint/no-misused-promises
+            ui.splashUi.fadeIn(400, async() => {
+                this.pixi.stop();
+                void this.music?.play();
 
-                this.gameStarted = false;
-                this._socket?.close();
-
-                // reset stuff
                 for (const object of this.objects) object.destroy();
                 for (const plane of this.planes) plane.destroy();
                 this.objects.clear();
                 this.bullets.clear();
                 this.planes.clear();
-                this.camera.container.removeChildren();
-                this.particleManager.clear();
-                this.uiManager.clearTeammateCache();
-
-                const map = this.map;
-                map.safeZone.clear();
-                map.pingGraphics.clear();
-                map.pings.clear();
-                map.pingsContainer.removeChildren();
-                map.teammateIndicators.clear();
-                map.teammateIndicatorContainer.removeChildren();
-
                 this.playerNames.clear();
                 this._timeouts.clear();
 
-                this.camera.zoom = Scopes.definitions[0].zoomLevel;
+                CameraManager.reset();
+                GasManager.reset();
+                MapManager.reset();
+                ParticleManager.reset();
+                ScreenRecordManager.reset();
+                UIManager.reset();
+
+                // Wait for the socket to close if it hasn't already
+                if (this._socket?.readyState !== WebSocket.CLOSED) {
+                    await new Promise(resolve => this.socketCloseCallback = resolve);
+                }
+
                 updateDisconnectTime();
                 resetPlayButtons();
+
+                this.gameStarted = false;
+
                 if (teamSocket) ui.createTeamMenu.fadeIn(250, resolve);
                 else resolve();
             });
@@ -592,14 +659,15 @@ export class Game {
     }
 
     private readonly _packetStream = new PacketStream(new ArrayBuffer(1024));
-    sendPacket(packet: InputPacket): void {
+    sendPacket(packet: PacketDataIn): void {
         this._packetStream.stream.index = 0;
-        this._packetStream.serializeClientPacket(packet);
+        this._packetStream.serialize(packet);
         this.sendData(this._packetStream.getBuffer());
     }
 
     sendData(buffer: ArrayBuffer): void {
         if (this._socket?.readyState === WebSocket.OPEN) {
+            this.netGraph.sending.addEntry(buffer.byteLength);
             try {
                 this._socket.send(buffer);
             } catch (e) {
@@ -625,37 +693,21 @@ export class Game {
             }
         }
 
-        let players: Set<Player> | undefined;
-        if (this.console.getBuiltInCVar("cv_movement_smoothing")) {
-            for (const player of players = this.objects.getCategory(ObjectCategory.Player)) {
-                player.updateContainerPosition();
-                if (!player.isActivePlayer || !this.console.getBuiltInCVar("cv_responsive_rotation") || this.spectating) {
-                    player.updateContainerRotation();
-                }
-            }
+        const hasMovementSmoothing = GameConsole.getBuiltInCVar("cv_movement_smoothing");
 
-            if (this.activePlayer) {
-                this.camera.position = this.activePlayer.container.position;
-            }
+        const showHitboxes = GameConsole.getBuiltInCVar("db_show_hitboxes");
 
-            for (const loot of this.objects.getCategory(ObjectCategory.Loot)) {
-                loot.updateContainerPosition();
-            }
+        for (const object of this.objects) {
+            object.update();
+            if (hasMovementSmoothing) object.updateInterpolation();
 
-            for (const projectile of this.objects.getCategory(ObjectCategory.ThrowableProjectile)) {
-                projectile.updateContainerPosition();
-                projectile.updateContainerRotation();
-            }
-
-            for (const syncedParticle of this.objects.getCategory(ObjectCategory.SyncedParticle)) {
-                syncedParticle.updateContainerPosition();
-                syncedParticle.updateContainerRotation();
-                syncedParticle.updateContainerScale();
+            if (DEBUG_CLIENT) {
+                if (showHitboxes) object.updateDebugGraphics();
             }
         }
 
-        for (const player of players ?? this.objects.getCategory(ObjectCategory.Player)) {
-            player.updateGrenadePreview();
+        if (hasMovementSmoothing && this.activePlayer) {
+            CameraManager.position = this.activePlayer.container.position;
         }
 
         for (const [image, spinSpeed] of this.spinningImages.entries()) {
@@ -666,17 +718,24 @@ export class Game {
 
         for (const bullet of this.bullets) bullet.update(delta);
 
-        this.particleManager.update(delta);
+        ParticleManager.update(delta);
 
-        this.map.update();
-        this.gasRender.update(this.gas);
+        MapManager.update();
+        this.gasRender.update();
 
         for (const plane of this.planes) plane.update();
 
-        this.camera.update();
-
+        CameraManager.update();
         this.emoteManager.update();
         this.pingManager.update();
+        DebugRenderer.graphics.position = CameraManager.container.position;
+        DebugRenderer.graphics.scale = CameraManager.container.scale;
+        DebugRenderer.render();
+
+        if (GameConsole.getBuiltInCVar("pf_show_fps")) {
+            const fps = Math.round(this.pixi.ticker.FPS);
+            this.netGraph.fps.addEntry(fps);
+        }
     }
 
     private _lastUpdateTime = 0;
@@ -691,7 +750,18 @@ export class Game {
      */
     get serverDt(): number { return this._serverDt; }
 
-    processUpdate(updateData: UpdatePacketDataOut): void {
+    private _pingSeq = -1;
+
+    private readonly _seqsSent: Array<number | undefined> = [];
+    get seqsSent(): Array<number | undefined> { return this._seqsSent; }
+
+    takePingSeq(): number {
+        const n = this._pingSeq = (this._pingSeq + 1) % 128;
+        this._seqsSent[n] = Date.now();
+        return n;
+    }
+
+    processUpdate(updateData: UpdateDataOut): void {
         const now = Date.now();
         this._serverDt = now - this._lastUpdateTime;
         this._lastUpdateTime = now;
@@ -707,8 +777,8 @@ export class Game {
 
         const playerData = updateData.playerData;
         if (playerData) {
-            this.uiManager.updateUI(playerData);
-            this.uiManager.updateWeaponSlots(); // to load reskins
+            UIManager.updateUI(playerData);
+            UIManager.updateWeaponSlots(); // to load reskins
 
             if (this.spectating && playerData.teamID !== undefined && playerData.id !== undefined) {
                 this.teamID = playerData.teamID;
@@ -726,28 +796,9 @@ export class Game {
                 type K = typeof type;
 
                 const _object = new (
-                    ObjectClassMapping[type] as new (game: Game, id: number, data: ObjectsNetData[K]) => InstanceType<ObjectClassMapping[K]>
-                )(this, id, data);
+                    ObjectClassMapping[type] as new (id: number, data: ObjectsNetData[K]) => InstanceType<ObjectClassMapping[K]>
+                )(id, data);
                 this.objects.add(_object);
-
-                // Layer Transition: We pray that this works lmao
-                if (_object.layer !== (this.layer ?? Layer.Ground)) {
-                    _object.container.alpha = 0;
-
-                    // Yes, we need to do this specifically for building ceilings as well.
-                    if (_object.isBuilding) {
-                        _object.ceilingVisible = false;
-                        _object.ceilingContainer.alpha = 0;
-                        _object.toggleCeiling(LAYER_TRANSITION_DELAY);
-                    }
-
-                    this.addTween({
-                        target: _object.container,
-                        to: { alpha: 1 },
-                        duration: LAYER_TRANSITION_DELAY,
-                        ease: EaseFunctions.sineIn
-                    });
-                }
             } else {
                 object.updateFromData(data, false);
             }
@@ -770,47 +821,24 @@ export class Game {
                 continue;
             }
 
-            // Layer Transition: We pray that this works lmao
-            if (object.layer !== (this.layer ?? Layer.Ground)) {
-                object.container.alpha = 1;
-
-                // Yes, we need to do this specifically for building ceilings as well.
-                if (object.isBuilding && object.ceilingVisible) {
-                    object.ceilingContainer.alpha = 1;
-                    this.addTween({
-                        target: object.ceilingContainer,
-                        to: { alpha: 0 },
-                        duration: LAYER_TRANSITION_DELAY,
-                        ease: EaseFunctions.sineOut
-                    });
-                }
-
-                this.addTween({
-                    target: object.container,
-                    to: { alpha: 0 },
-                    duration: LAYER_TRANSITION_DELAY,
-                    ease: EaseFunctions.sineOut,
-                    onComplete: () => {
-                        object.destroy();
-                        this.objects.delete(object);
-                    }
-                });
-            } else {
-                object.destroy();
-                this.objects.delete(object);
-            }
+            object.destroy();
+            this.objects.delete(object);
         }
 
         for (const bullet of updateData.deserializedBullets ?? []) {
-            this.bullets.add(new Bullet(this, bullet));
+            this.bullets.add(new Bullet(bullet));
         }
 
         for (const explosionData of updateData.explosions ?? []) {
-            explosion(this, explosionData.definition, explosionData.position, explosionData.layer);
+            explosion(explosionData.definition, explosionData.position, explosionData.layer);
         }
 
         for (const emote of updateData.emotes ?? []) {
-            if (this.console.getBuiltInCVar("cv_hide_emotes")) break;
+            if (
+                GameConsole.getBuiltInCVar("cv_hide_emotes")
+                && !("itemType" in emote.definition) // Never hide team emotes (ammo & healing items)
+            ) break;
+
             const player = this.objects.get(emote.playerID);
             if (player?.isPlayer) {
                 player.showEmote(emote.definition);
@@ -820,60 +848,76 @@ export class Game {
             }
         }
 
-        this.gas.updateFrom(updateData);
+        GasManager.updateFrom(updateData);
 
         if (updateData.aliveCount !== undefined) {
-            const ui = this.uiManager.ui;
-            ui.playerAlive.text(updateData.aliveCount);
-            ui.btnSpectate.toggle(updateData.aliveCount > 1);
+            const { playerAlive, btnSpectate } = UIManager.ui;
+            playerAlive.text(updateData.aliveCount);
+            btnSpectate.toggle(updateData.aliveCount > 1);
         }
 
         for (const plane of updateData.planes ?? []) {
-            this.planes.add(new Plane(this, plane.position, plane.direction));
+            this.planes.add(new Plane(plane.position, plane.direction));
         }
 
         for (const ping of updateData.mapPings ?? []) {
-            this.map.addMapPing(ping);
+            MapManager.addMapPing(ping);
+        }
+
+        if (updateData.killLeader) {
+            UIManager.updateKillLeader(updateData.killLeader);
         }
 
         this.tick();
     }
 
-    addTween<T>(config: ConstructorParameters<typeof Tween<T>>[1]): Tween<T> {
-        const tween = new Tween(this, config);
-
+    addTween<T extends object>(config: TweenOptions<T>): Tween<T> {
+        const tween = new Tween(config);
         this.tweens.add(tween);
         return tween;
     }
 
-    removeTween(tween: Tween<unknown>): void {
+    removeTween(tween: Tween<object>): void {
         this.tweens.delete(tween);
     }
 
-    backgroundTween?: Tween<unknown>;
+    backgroundTween?: Tween<{ readonly r: number, readonly g: number, readonly b: number }>;
+    volumeTween?: Tween<GameSound>;
 
-    changeLayer(layer: Layer): void {
-        for (const object of this.objects) {
-            object.updateZIndex();
+    updateLayer(newLayer: Layer, initial = false, oldLayer?: Layer): void {
+        CameraManager.updateLayer(newLayer, initial, oldLayer);
+
+        for (const sound of SoundManager.updatableSounds) {
+            sound.updateLayer();
+            sound.update();
         }
+        // slight hack
+        // if we don't do this then ambience will play at the wrong volume for a tick
+        this.riverAmbience?.layerVolumeTween?.kill();
+        this.oceanAmbience?.layerVolumeTween?.kill();
+        this.updateAmbience();
 
-        const basement = layer === Layer.Basement1;
-        this.map.terrainGraphics.visible = !basement;
-        const { red, green, blue } = this.pixi.renderer.background.color;
-        const color = { r: red * 255, g: green * 255, b: blue * 255 };
-        const targetColor = basement ? COLORS.void : COLORS.grass;
+        const basement = newLayer === Layer.Basement;
+        MapManager.terrainGraphics.visible = !basement;
 
-        this.backgroundTween?.kill();
-        this.backgroundTween = this.addTween({
-            target: color,
-            to: { r: targetColor.red * 255, g: targetColor.green * 255, b: targetColor.blue * 255 },
-            onUpdate: () => {
-                this.pixi.renderer.background.color = new Color(color);
-            },
-            duration: LAYER_TRANSITION_DELAY
-        });
+        const currentColor = this.pixi.renderer.background.color;
+        const targetColor = basement ? this.colors.void : this.colors.grass;
 
-        this.ambience?.setPaused(layer < Layer.Ground);
+        if (currentColor.toNumber() !== targetColor.toNumber()) {
+            const { red, green, blue } = currentColor;
+            const color = { r: red * 255, g: green * 255, b: blue * 255 };
+
+            this.backgroundTween?.kill();
+            this.backgroundTween = this.addTween({
+                target: color,
+                to: { r: targetColor.red * 255, g: targetColor.green * 255, b: targetColor.blue * 255 },
+                onUpdate: () => {
+                    this.pixi.renderer.background.color = new Color(color);
+                },
+                duration: LAYER_TRANSITION_DELAY,
+                onComplete: () => { this.backgroundTween = undefined; }
+            });
+        }
     }
 
     // yes this might seem evil. but the two local variables really only need to
@@ -917,19 +961,22 @@ export class Game {
         let detonateBindIcon: JQuery<HTMLImageElement> | undefined;
 
         return () => {
-            if (!this.gameStarted || (this.gameOver && !this.spectating)) return;
-            this.inputManager.update();
-            this.soundManager.update();
+            if (!this.gameStarted || (this.gameOver && !this.spectating)) {
+                SoundManager.update();
+                return;
+            }
+            InputManager.update();
+            SoundManager.update();
+            ScreenRecordManager?.update();
 
             const player = this.activePlayer;
             if (!player) return;
 
-            const isAction = this.uiManager.action.active;
-            const showCancel = isAction && !this.uiManager.action.fake;
-            let canInteract = true;
+            const isAction = UIManager.action.active;
+            const showCancel = isAction && !UIManager.action.fake;
 
             if (isAction) {
-                this.uiManager.updateAction();
+                UIManager.updateAction();
             }
 
             interface CloseObject {
@@ -946,6 +993,8 @@ export class Game {
                 dist: Number.MAX_VALUE
             };
             const detectionHitbox = new CircleHitbox(3 * player.sizeMod, player.position);
+
+            let hideSecondFloor = false;
 
             for (const object of this.objects) {
                 const { isLoot, isObstacle, isPlayer, isBuilding } = object;
@@ -968,14 +1017,117 @@ export class Game {
                     }
                 } else if (isBuilding) {
                     object.toggleCeiling();
+                    if (
+                        object.ceilingHitbox !== undefined
+                        && !object.ceilingVisible
+                        && object.definition.hasSecondFloor
+                    ) {
+                        hideSecondFloor = true;
+                    }
+
+                // tree leaves
+                } else if (isObstacle && object.definition.isTree && object.leavesSprite && !object.dead) {
+                    const {
+                        minDist = 32,
+                        maxDist = 729,
+                        trunkMinAlpha = 0.8,
+                        leavesMinAlpha = 0.35
+                    } = object.definition.tree ?? {};
+                    const dist = Geometry.distanceSquared(object.position, player.position);
+                    object.image.alpha = Numeric.remap(dist, minDist, maxDist, trunkMinAlpha, 1);
+                    object.leavesSprite.alpha = Numeric.remap(dist, minDist, maxDist, leavesMinAlpha, 1);
+
+                // metal detectors
+                } else if (isObstacle && object.definition.detector && object.notOnCoolDown) {
+                    for (const player of this.objects.getCategory(ObjectCategory.Player)) {
+                        if (
+                            !object.hitbox.collidesWith(player.hitbox)
+                            || !equalLayer(object.layer, player.layer)
+                            || player.dead
+                        ) continue;
+
+                        SoundManager.play("detection", {
+                            falloff: 0.25,
+                            position: Vec.create(object.position.x + 20, object.position.y - 20),
+                            maxRange: 200
+                        });
+
+                        object.notOnCoolDown = false;
+                        setTimeout(() => object.notOnCoolDown = true, 1000);
+                    }
+
+                // bush particles
+                } else if (isObstacle && object.definition.material === "bush" && object.definition.noCollisions) {
+                    for (const player of this.objects.getCategory(ObjectCategory.Player)) {
+                        const inBush = equalLayer(object.layer, player.layer) && object.hitbox.isPointInside(player.position);
+
+                        if (
+                            (player.bushID === undefined && !inBush) // not in this bush
+                            || (player.bushID !== undefined && player.bushID !== object.id) // in a different bush
+                            || player.dead
+                        ) continue;
+
+                        if (object.dead) {
+                            player.bushID = undefined;
+                            continue;
+                        }
+
+                        let bushSound: string | undefined;
+                        if (player.bushID === undefined) {
+                            // bush
+                            player.bushID = object.id;
+                            bushSound = "bush_rustle_1";
+                        } else if (!inBush) {
+                            // in this case we exit bushh lol
+                            player.bushID = undefined;
+                            bushSound = "bush_rustle_2";
+                        }
+                        if (!bushSound) continue;
+
+                        let particle = object.definition.frames?.particle ?? `${object.definition.idString}_particle`;
+                        if (object.definition.particleVariations) {
+                            particle += `_${random(1, object.definition.particleVariations)}`;
+                        }
+
+                        ParticleManager.spawnParticles(2, () => ({
+                            frames: particle,
+                            position: object.hitbox.randomPoint(),
+                            zIndex: Numeric.max((object.definition.zIndex ?? ZIndexes.Players) + 1, 4),
+                            lifetime: 500,
+                            scale: {
+                                start: randomFloat(0.85, 0.95),
+                                end: 0,
+                                ease: EaseFunctions.quarticIn
+                            },
+                            alpha: {
+                                start: 1,
+                                end: 0,
+                                ease: EaseFunctions.sexticIn
+                            },
+                            rotation: { start: randomRotation(), end: randomRotation() },
+                            speed: Vec.fromPolar(randomRotation(), randomFloat(6, 9))
+                        }));
+
+                        object.playSound(bushSound, {
+                            falloff: 0.25,
+                            maxRange: 200
+                        });
+                    }
                 }
+            }
+
+            this.updateAmbience();
+
+            if (this.hideSecondFloor !== hideSecondFloor) {
+                this.hideSecondFloor = hideSecondFloor;
+                CameraManager.updateLayer(this.layer);
             }
 
             const object = interactable.object ?? uninteractable.object;
             const offset = object?.isObstacle ? object.door?.offset : undefined;
-            canInteract = interactable.object !== undefined;
+            const canInteract = interactable.object !== undefined;
 
-            const bind: string | undefined = this.inputManager.binds.getInputsBoundToAction(object === undefined ? "cancel_action" : "interact")[0];
+            const bind: string | undefined = InputManager.binds.getInputsBoundToAction(object === undefined ? "cancel_action" : "interact")[0];
 
             const differences = {
                 object: cache.object?.id !== object?.id,
@@ -1005,7 +1157,7 @@ export class Game {
                     interactKey,
                     interactMsg,
                     interactText
-                } = this.uiManager.ui;
+                } = UIManager.ui;
                 const type = object?.isLoot ? object.definition.itemType : undefined;
 
                 // Update interact message
@@ -1015,15 +1167,12 @@ export class Game {
                         let text;
                         switch (true) {
                             case object?.isObstacle: {
-                                switch (object.definition.role) {
-                                    case ObstacleSpecialRoles.Door:
-                                        text = object.door?.offset === 0
-                                            ? getTranslatedString("action_open_door")
-                                            : getTranslatedString("action_close_door");
-                                        break;
-                                    case ObstacleSpecialRoles.Activatable:
-                                        text = getTranslatedString(`interact_${object.definition.idString}` as TranslationKeys);
-                                        break;
+                                if (object.definition.isActivatable || object.definition.customInteractMessage) {
+                                    text = getTranslatedString(`interact_${object.definition.idString}` as TranslationKeys);
+                                } else if (object.definition.isDoor) {
+                                    text = object.door?.offset === 0
+                                        ? getTranslatedString("action_open_door")
+                                        : getTranslatedString("action_close_door");
                                 }
                                 break;
                             }
@@ -1040,7 +1189,7 @@ export class Game {
                                 break;
                             }
                             case object?.isPlayer: {
-                                text = getTranslatedString("action_revive", { player: this.uiManager.getRawPlayerName(object.id) });
+                                text = getTranslatedString("action_revive", { player: UIManager.getRawPlayerName(object.id) });
                                 break;
                             }
                             case isAction: {
@@ -1052,7 +1201,7 @@ export class Game {
                         if (text) interactText.text(text);
                     }
 
-                    if (!this.inputManager.isMobile && (!bindChangeAcknowledged || (object === undefined && isAction))) {
+                    if (!InputManager.isMobile && (!bindChangeAcknowledged || (object === undefined && isAction))) {
                         bindChangeAcknowledged = true;
 
                         const icon = bind === undefined ? undefined : InputManager.getIconFromInputName(bind);
@@ -1083,16 +1232,16 @@ export class Game {
                         if (player.downed && (object?.isLoot || (object?.isObstacle && object.definition.noInteractMessage))) interactMsg.hide();
                     }
                 } else {
-                    interactMsg.hide();
+                   if (!UI_DEBUG_MODE) interactMsg.hide();
                 }
 
                 // Mobile stuff
-                if (this.inputManager.isMobile && canInteract) {
-                    const weapons = this.uiManager.inventory.weapons;
+                if (InputManager.isMobile && canInteract) {
+                    const weapons = UIManager.inventory.weapons;
 
                     // Auto pickup (top 10 conditionals)
                     if (
-                        this.console.getBuiltInCVar("cv_autopickup")
+                        GameConsole.getBuiltInCVar("cv_autopickup")
                         && object?.isLoot
                         && autoPickup
                         && (
@@ -1141,22 +1290,22 @@ export class Game {
                             )
                         )
                     ) {
-                        this.inputManager.addAction(InputActions.Loot);
+                        InputManager.addAction(InputActions.Loot);
                     } else if ( // Auto open doors
                         object?.isObstacle
                         && object.canInteract(player)
                         && object.definition.isDoor
                         && object.door?.offset === 0
                     ) {
-                        this.inputManager.addAction(InputActions.Interact);
+                        InputManager.addAction(InputActions.Interact);
                     }
                 }
             }
 
             // funny detonate button stuff
-            const detonateKey = this.uiManager.ui.detonateKey;
-            if (!this.inputManager.isMobile) {
-                const boomBind: string | undefined = this.inputManager.binds.getInputsBoundToAction("explode_c4")[0];
+            const detonateKey = UIManager.ui.detonateKey;
+            if (!InputManager.isMobile) {
+                const boomBind: string | undefined = InputManager.binds.getInputsBoundToAction("explode_c4")[0];
 
                 if (funnyDetonateButtonCache.bind !== boomBind) {
                     funnyDetonateButtonCache.bind = bind;
@@ -1190,4 +1339,4 @@ export class Game {
             }
         };
     })();
-}
+})();

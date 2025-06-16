@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <svg
-   width="35"
-   height="25"
-   viewBox="0 0 27 17"
+   width="29.328617"
+   height="15.999987"
+   viewBox="0 0 22.624933 10.879991"
    fill="none"
    version="1.1"
    id="svg1"
    sodipodi:docname="falchion_killfeed.svg"
-   inkscape:version="1.3.2 (091e20e, 2023-11-25, custom)"
+   inkscape:version="1.4 (e7c3feb1, 2024-10-09)"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
@@ -23,24 +23,24 @@
      inkscape:pageopacity="0.0"
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
-     inkscape:zoom="16.1"
-     inkscape:cx="23.354037"
-     inkscape:cy="17.360248"
-     inkscape:window-width="1920"
-     inkscape:window-height="1001"
-     inkscape:window-x="-9"
-     inkscape:window-y="-9"
+     inkscape:zoom="8.3716599"
+     inkscape:cx="17.917594"
+     inkscape:cy="17.141164"
+     inkscape:window-width="1472"
+     inkscape:window-height="812"
+     inkscape:window-x="0"
+     inkscape:window-y="37"
      inkscape:window-maximized="1"
      inkscape:current-layer="svg1" />
   <path
-     d="M 23.647498,4.9682679 25.814862,1.9262094 22.986018,3.0584409 22.517749,0.28148967 20.644105,5.2732093 c 0.867346,0.3368064 1.357622,1.680532 0.544793,2.4723723 l 3.921566,2.4043104 -1.739842,-3.1513115 3.305466,-1.3085024 z"
+     d="m 19.936096,3.4295801 1.924226,-2.70079555 -2.5115,1.00521605 -0.415738,-2.46542844 -1.663456,4.43174054 c 0.770046,0.2990229 1.205322,1.4920072 0.483678,2.1950176 L 21.234944,8.0299214 19.69028,5.232129 22.624934,4.0704165 Z"
      fill="#d9d9d9"
      id="path1"
      sodipodi:nodetypes="cccccccccc"
-     style="stroke-width:0.801201" />
+     style="stroke-width:0.711321" />
   <g
      id="g147"
-     transform="matrix(-0.11086296,-0.43570953,-0.44358521,0.0868616,-81.139567,380.59792)"
+     transform="matrix(-0.09842618,-0.38683094,-0.39382311,0.07711733,-73.095789,336.92049)"
      style="fill:#d9d9d9;fill-opacity:1;stroke:none">
     <g
        id="g150"

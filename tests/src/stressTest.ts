@@ -1,15 +1,11 @@
+import { PacketDataIn, PacketDataOut, PacketType } from "@common/packets/packet";
 import { WebSocket, type MessageEvent } from "ws";
 import { GameConstants, InputActions, ObjectCategory } from "../../common/src/constants";
-import { Emotes, type EmoteDefinition } from "../../common/src/definitions/emotes";
-import { Loots } from "../../common/src/definitions/loots";
-import { Skins, type SkinDefinition } from "../../common/src/definitions/skins";
-import { GameOverPacket } from "../../common/src/packets/gameOverPacket";
-import { areDifferent, PlayerInputPacket, type InputAction, type PlayerInputData } from "../../common/src/packets/inputPacket";
+import { EmoteCategory, Emotes, type EmoteDefinition } from "../../common/src/definitions/emotes";
+import { Skins, type SkinDefinition } from "../../common/src/definitions/items/skins";
+import { InputPacket, areDifferent, type InputAction, type InputData } from "../../common/src/packets/inputPacket";
 import { JoinPacket } from "../../common/src/packets/joinPacket";
-import { type InputPacket, type OutputPacket } from "../../common/src/packets/packet";
 import { PacketStream } from "../../common/src/packets/packetStream";
-import { UpdatePacket } from "../../common/src/packets/updatePacket";
-import { type GetGameResponse } from "../../common/src/typings";
 import { Geometry, π, τ } from "../../common/src/utils/math";
 import { ItemType, type ReferenceTo } from "../../common/src/utils/objectDefinitions";
 import { type FullData } from "../../common/src/utils/objectsSerializations";
@@ -20,9 +16,10 @@ console.log("start");
 
 const config = {
     mainAddress: "http://127.0.0.1:8000",
-    gameAddress: "ws://127.0.0.1:800<ID>",
-    botCount: 79,
-    joinDelay: 100,
+    gameAddress: "ws://127.0.0.1:<gameID>",
+    offset: 8001,
+    botCount: 70,
+    joinDelay: 10,
     rejoinOnDeath: false
 };
 
@@ -31,7 +28,7 @@ const skins: ReadonlyArray<ReferenceTo<SkinDefinition>> = Skins.definitions
     .map(({ idString }) => idString);
 
 const emotes: EmoteDefinition[] = Emotes.definitions
-    .filter(({ isTeamEmote, isWeaponEmote }) => !isTeamEmote && !isWeaponEmote);
+    .filter(({ category }) => category !== EmoteCategory.Team);
 
 const bots: Bot[] = [];
 const objects = new Map<number, Bot | undefined>();
@@ -80,12 +77,11 @@ class Bot {
 
     private readonly _ws: WebSocket;
 
-    private _lastInputPacket?: InputPacket<PlayerInputData>;
+    private _lastInputPacket?: InputData;
 
     constructor(readonly id: number, gameID: number) {
         this.gameID = gameID;
-        this._ws = new WebSocket(`${config.gameAddress.replace("<ID>", (gameID + 1).toString())}/play`);
-
+        this._ws = new WebSocket(`${config.gameAddress.replace("<gameID>", (gameID + config.offset).toString())}/play`);
         this._ws.addEventListener("error", console.error);
 
         this._ws.addEventListener("open", this.join.bind(this));
@@ -103,7 +99,7 @@ class Bot {
             const stream = new PacketStream(message.data as ArrayBuffer);
             while (true) {
                 try {
-                    const packet = stream.deserializeServerPacket();
+                    const packet = stream.deserialize();
                     if (packet === undefined) break;
                     this.onPacket(packet);
                 } catch (e) { console.error(e); continue; }
@@ -111,7 +107,7 @@ class Bot {
         };
     }
 
-    onPacket(packet: OutputPacket): void {
+    onPacket(packet: PacketDataOut): void {
         const updatePosition = (data: FullData<ObjectCategory>, object: Bot, id: number): void => {
             const { position } = data as FullData<ObjectCategory.Player>;
 
@@ -126,26 +122,25 @@ class Bot {
             }
         };
 
-        switch (true) {
-            case packet instanceof GameOverPacket: {
-                const { output } = packet;
-                console.log(`Bot ${this.id} ${output.won ? "won" : "died"} | kills: ${output.kills} | rank: ${output.rank}`);
+        switch (packet.type) {
+            case PacketType.GameOver: {
+                // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+                const kills = packet.teammates.find(teammate => { teammate.playerID === this.id; })?.kills;
+                console.log(`Bot ${this.id} ${packet.rank === 1 ? "won" : "died"} | kills: ${kills} | rank: ${packet.rank}`);
                 this._disconnected = true;
                 this._connected = false;
                 this._ws.close();
                 break;
             }
-            case packet instanceof UpdatePacket: {
-                const { output } = packet;
+            case PacketType.Update: {
+                this._serverId ??= packet.playerData?.id?.id;
+                this._slot = packet.playerData?.inventory?.activeWeaponIndex ?? this._slot;
 
-                this._serverId ??= output.playerData?.id?.id;
-                this._slot = output.playerData?.inventory?.activeWeaponIndex ?? this._slot;
-
-                for (const { id } of output.newPlayers ?? []) {
+                for (const { id } of packet.newPlayers ?? []) {
                     objects.set(id, bots.find(({ _serverId }) => _serverId === id));
                 }
 
-                for (const { id, type, data } of output.fullDirtyObjects ?? []) {
+                for (const { id, type, data } of packet.fullDirtyObjects ?? []) {
                     if (type !== ObjectCategory.Player) continue;
 
                     const object: Bot | undefined = objects.get(id);
@@ -157,18 +152,18 @@ class Bot {
                     }
                 }
 
-                for (const { id, data } of output.partialDirtyObjects ?? []) {
+                for (const { id, data } of packet.partialDirtyObjects ?? []) {
                     const object = objects.get(id);
                     if (object === undefined) continue;
 
                     updatePosition(data, object, id);
                 }
 
-                for (const id of output.deletedObjects ?? []) {
+                for (const id of packet.deletedObjects ?? []) {
                     objects.delete(id);
                 }
 
-                for (const id of output.deletedPlayers ?? []) {
+                for (const id of packet.deletedPlayers ?? []) {
                     objects.delete(id);
                 }
 
@@ -189,15 +184,15 @@ class Bot {
             JoinPacket.create({
                 name,
                 isMobile: false,
-                skin: Loots.reify(pickRandomInArray(skins)),
+                skin: Skins.reify(pickRandomInArray(skins)),
                 emotes: this._emotes
             })
         );
     }
 
-    sendPacket(packet: InputPacket): void {
+    sendPacket(packet: PacketDataIn): void {
         this._stream.stream.index = 0;
-        this._stream.serializeClientPacket(packet);
+        this._stream.serialize(packet);
 
         this._ws.send(this._stream.getBuffer());
     }
@@ -213,7 +208,7 @@ class Bot {
         if (
             this["admin he doing it sideways"]
             && (
-                target = [...objects.entries()]
+                target = Array.from(objects.entries())
                     .filter((([id, bot]) => id !== this._serverId && bot !== undefined && !bot._disconnected && bot._connected) as (entry: [number, Bot | undefined]) => entry is [number, Bot])
                     .sort(
                         ([, a], [, b]) => Geometry.distanceSquared(this.position, a.position) - Geometry.distanceSquared(this.position, b.position)
@@ -257,13 +252,14 @@ class Bot {
             actions.push({ type: InputActions.EquipItem, slot: random(0, 1) });
         }
 
-        const inputPacket = PlayerInputPacket.create({
+        const inputPacket = InputPacket.create({
             movement: { ...this._moving },
             attacking: (this._shootStart || aimhax) && !this._grenadeSuicidePrevention,
             isMobile: false,
             turning: true,
             rotation: this._angle,
             distanceToMouse: this._distanceToMouse,
+            pingSeq: 0,
             actions: actions
         });
 
@@ -323,7 +319,9 @@ class Bot {
 }
 
 const createBot = async(id: number): Promise<Bot> => {
-    const gameData = await (await fetch(`${config.mainAddress}/api/getGame`)).json() as GetGameResponse;
+    const gameData = await (
+        await fetch(`${config.mainAddress}/api/getGame`)
+    ).json() as { success: true, gameID: number } | { success: false };
 
     if (!gameData.success) {
         throw new Error("Error finding game.");
@@ -337,12 +335,10 @@ void (async() => {
     console.log("scheduling joins");
 
     for (let i = 1; i <= botCount; i++) {
-        // eslint-disable-next-line @typescript-eslint/no-misused-promises
-        setTimeout(async() => {
-            bots.push(await createBot(i));
-            if (i === botCount) allBotsJoined = true;
-            if (i === 1) console.log("here we go");
-        }, i * joinDelay);
+        bots.push(await createBot(i));
+        if (i === botCount) allBotsJoined = true;
+        if (i === 1) console.log("here we go");
+        await new Promise(resolve => setTimeout(resolve, joinDelay));
     }
 })();
 

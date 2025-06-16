@@ -1,6 +1,7 @@
-import { type ObjectDefinition, ObjectDefinitions } from "../utils/objectDefinitions";
+import { DefinitionType, type ObjectDefinition, ObjectDefinitions } from "../utils/objectDefinitions";
 
 export interface MapPingDefinition extends ObjectDefinition {
+    readonly defType: DefinitionType.MapPing
     /**
      * Color to tint the ping sprite and color the map pulse effect
      */
@@ -28,38 +29,34 @@ export interface MapPingDefinition extends ObjectDefinition {
 export type PlayerPing = MapPingDefinition & { readonly isPlayerPing: true };
 export type MapPing = MapPingDefinition & { readonly isPlayerPing?: false };
 
-export const MapPings = ObjectDefinitions.withDefault<MapPingDefinition>()(
-    "MapPings",
-    {
-        ignoreExpiration: false
-    },
-    ([derive]) => {
-        const gamePingFactory = derive((idString: string, color: number) => ({
-            idString,
-            color,
-            name: idString,
-            showInGame: false,
-            lifetime: 20,
-            isPlayerPing: false,
-            sound: idString
-        }));
+const gamePing = (idString: string, color: number, ignoreExpiration = false): MapPing => ({
+    idString,
+    name: idString,
+    defType: DefinitionType.MapPing,
+    showInGame: false,
+    ignoreExpiration,
+    lifetime: 20,
+    isPlayerPing: false,
+    color,
+    sound: idString
+});
 
-        const playerPingFactory = derive((idString: string) => ({
-            idString,
-            name: idString,
-            showInGame: true,
-            lifetime: 120,
-            isPlayerPing: true,
-            color: 0xffffff,
-            sound: idString
-        }));
+const playerPing = (idString: string, ignoreExpiration = false): PlayerPing => ({
+    idString,
+    name: idString,
+    defType: DefinitionType.MapPing,
+    showInGame: true,
+    ignoreExpiration,
+    lifetime: 120,
+    isPlayerPing: true,
+    color: 0xffffff,
+    sound: idString
+});
 
-        return [
-            gamePingFactory(["airdrop_ping", 0x00ffff], { ignoreExpiration: true }),
-            playerPingFactory(["arrow_ping"], { ignoreExpiration: true }),
-            playerPingFactory(["gift_ping"]),
-            playerPingFactory(["heal_ping"]),
-            playerPingFactory(["warning_ping"])
-        ];
-    }
-);
+export const MapPings = new ObjectDefinitions<MapPingDefinition>([
+    gamePing("airdrop_ping", 0x00ffff, true),
+    playerPing("warning_ping"),
+    playerPing("arrow_ping", true),
+    playerPing("gift_ping"),
+    playerPing("heal_ping")
+]);

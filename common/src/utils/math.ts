@@ -1,7 +1,6 @@
 import { type ObstacleDefinition } from "../definitions/obstacles";
 import { type Orientation } from "../typings";
 import { RectangleHitbox } from "./hitbox";
-import { ObstacleSpecialRoles } from "./objectDefinitions";
 import { Vec, type Vector } from "./vector";
 
 export const π = Math.PI;
@@ -16,16 +15,16 @@ export const TAU = 2 * π;
 
 export const Angle = Object.freeze({
     /**
-     * Draws a line between two points and returns that line's angle
-     * @param a The first point, used as the head of the vector
-     * @param b The second point, used as the tail of the vector
-     * @returns The angle, in radians, of the line going from b to a
+     * Draws a line between two points and returns that line's angle with respect to the horizontal axis
+     * @param a The first point, used as the tail of the vector
+     * @param b The second point, used as the head of the vector
+     * @returns The angle, in radians, of the line going from `a` to `b`
      */
     betweenPoints(a: Vector, b: Vector): number {
         return Math.atan2(a.y - b.y, a.x - b.x);
     },
     /**
-     * Normalize an angle to a value between -π and π
+     * Normalize an angle to a value between `-π` and `π`
      * @param radians The angle, in radians
      */
     normalize(radians: number): number {
@@ -36,6 +35,7 @@ export const Angle = Object.freeze({
      * (the difference between 10º and 350º can be either -340º or 20º—chances are, you're looking for the latter)
      * @param start The initial angle, in radians
      * @param end The final angle, in radians
+     * @returns The smallest difference between the two angles
      */
     minimize(start: number, end: number): number {
         return Numeric.absMod(end - start + π, τ) - π;
@@ -58,13 +58,27 @@ export const Angle = Object.freeze({
     },
     orientationToRotation(orientation: number): number {
         return -this.normalize(orientation * halfπ);
+    },
+    /**
+     * Find if an angle is present between a start and end angle, normalized in radians
+     * @param angle The target angle
+     * @param start The start angle of the range
+     * @param end The end angle of the range
+     * @return Whether or not the target angle is present in the range
+     */
+    isAngleInside(angle: number, start: number, end: number): boolean {
+        const nAngle = this.normalize(angle);
+        const nStart = this.normalize(start);
+        const nEnd = this.normalize(end);
+        if (nStart <= nEnd) return nAngle >= nStart && nAngle <= nEnd;
+        else return nAngle >= nStart || nAngle <= nEnd;
     }
 });
 
 export const Numeric = Object.freeze({
     /**
-     * Works like regular modulo, but negative numbers cycle back around: hence,
-     * `-1 % 4` gives `3` and not `-1`
+     * Works like regular modulo, but negative numbers cycle back around:
+     * `absMod(-1, 4)` gives `3` and `-1 % 4` gives `-1`
      * @param a The dividend
      * @param n The divisor
      */
@@ -74,7 +88,7 @@ export const Numeric = Object.freeze({
             : (a % n + n) % n;
     },
     /**
-     * Interpolate between two values
+     * Interpolates between two values
      * @param start The start value
      * @param end The end value
      * @param interpFactor The interpolation factor
@@ -83,13 +97,17 @@ export const Numeric = Object.freeze({
     lerp(start: number, end: number, interpFactor: number): number {
         return start * (1 - interpFactor) + end * interpFactor;
     },
+    delerp(t: number, a: number, b: number) {
+        return Numeric.clamp((t - a) / (b - a), 0.0, 1.0);
+    },
     /**
      * Conform a number to specified bounds
      * @param value The number to conform
      * @param min The minimum value the number can be
      * @param max The maximum value the number can be
+     * @returns The value, clamped to the interval `[min, max]`
      */
-    clamp(value: number, min: number, max: number): number {
+    clamp<N extends number | bigint>(value: N, min: N, max: N): N {
         return value < max ? value > min ? value : min : max;
     },
     /**
@@ -103,6 +121,11 @@ export const Numeric = Object.freeze({
     },
     /**
      * Remaps a value from a range to another
+     * @param value The value to remap
+     * @param min0 The minimum of the range the value currently belongs to
+     * @param max0 The maximum of the range the value currently belongs to
+     * @param min1 The minimum of the range the value should be remapped to
+     * @param max1 The maximum of the range the value should be remapped to
      */
     remap(value: number, min0: number, max0: number, min1: number, max1: number) {
         return Numeric.lerp(min1, max1, Numeric.clamp((value - min0) / (max0 - min0), 0, 1));
@@ -124,6 +147,16 @@ export const Numeric = Object.freeze({
      */
     max<N extends number | bigint>(a: N, b: N): N {
         return a > b ? a : b;
+    },
+    /**
+     * Tests whether two numbers are equal, within a certain tolerance
+     * @param a The first number
+     * @param b The second number
+     * @param epsilon The largest difference between the numbers that will be accepted as being "equal"
+     * @returns Whether or not the two numbers are considered equal with the given epsilon
+     */
+    equals(a: number, b: number, epsilon = 0.001): boolean {
+        return Math.abs(a - b) <= epsilon;
     }
 });
 
@@ -137,7 +170,7 @@ export const Geometry = Object.freeze({
         return Math.sqrt(this.distanceSquared(a, b));
     },
     /**
-     * Get the distance between two points squared
+     * Get the squared distance between two points
      * @param a The first point
      * @param b The second point
      */
@@ -145,13 +178,13 @@ export const Geometry = Object.freeze({
         return (b.x - a.x) ** 2 + (b.y - a.y) ** 2;
     },
     /**
-     * Returns the area of a triangle whose vertices are the three vectors passed in
+     * Returns the area of a parallelogram whose vertices are the three vectors passed in
      * @param a The first vertex
      * @param b The second vertex
      * @param c The third vertex
-     * @returns The area of the triangle formed by the three provided vectors
+     * @returns The area of the parallelogram formed by the three provided vertices
      */
-    signedAreaTri(a: Vector, b: Vector, c: Vector): number {
+    signedArea(a: Vector, b: Vector, c: Vector): number {
         return (a.x - c.x) * (b.y - c.y) - (a.y - c.y) * (b.x - c.x);
     },
     /**
@@ -204,9 +237,9 @@ export const Statistics = Object.freeze({
     },
     median(values: readonly number[]): number {
         if (values.length % 2) {
-            return [...values].sort((a, b) => a - b)[values.length >> 1];
+            return Array.from(values).sort((a, b) => a - b)[values.length >> 1];
         }
-        const sorted = [...values].sort((a, b) => a - b); // mfw no toSorted cuz lib < es2023
+        const sorted = Array.from(values).sort((a, b) => a - b); // mfw no toSorted cuz lib < es2023
 
         const halfLength = values.length / 2;
         return (sorted[halfLength] + sorted[halfLength - 1]) / 2;
@@ -319,11 +352,11 @@ export const Collision = Object.freeze({
      * @return The intersection position and null if no such intersection exists
      */
     lineIntersectsLine(startA: Vector, endA: Vector, startB: Vector, endB: Vector): Vector | null {
-        const x1 = Geometry.signedAreaTri(startA, endA, endB);
-        const x2 = Geometry.signedAreaTri(startA, endA, startB);
+        const x1 = Geometry.signedArea(startA, endA, endB);
+        const x2 = Geometry.signedArea(startA, endA, startB);
 
         if (x1 !== 0 && x2 !== 0 && x1 * x2 < 0) {
-            const x3 = Geometry.signedAreaTri(startB, endB, startA);
+            const x3 = Geometry.signedArea(startB, endB, startA);
             const x4 = x3 + x2 - x1;
 
             if (x3 * x4 < 0) {
@@ -672,6 +705,28 @@ export const Collision = Object.freeze({
             )
         );
     },
+    distToSegmentSq(p: Vector, a: Vector, b: Vector) {
+        const ab = Vec.sub(b, a);
+        const c = Vec.dotProduct(Vec.sub(p, a), ab) / Vec.dotProduct(ab, ab);
+        const d = Vec.add(a, Vec.scale(ab, Numeric.clamp(c, 0.0, 1.0)));
+        const e = Vec.sub(d, p);
+        return Vec.dotProduct(e, e);
+    },
+    distToPolygonSq(p: Vector, poly: Vector[]) {
+        let closestDistSq = Number.MAX_VALUE;
+        for (let i = 0; i < poly.length; i++) {
+            const a = poly[i];
+            const b = i === poly.length - 1 ? poly[0] : poly[i + 1];
+            const distSq = Collision.distToSegmentSq(p, a, b);
+            if (distSq < closestDistSq) {
+                closestDistSq = distSq;
+            }
+        }
+        return closestDistSq;
+    },
+    distToPolygon(p: Vector, poly: Vector[]) {
+        return Math.sqrt(Collision.distToPolygonSq(p, poly));
+    },
     /**
      * Source
      * @link http://ahamnett.blogspot.com/2012/06/raypolygon-intersections.html
@@ -751,15 +806,15 @@ export type CollisionResponse = {
 } | null;
 
 export function calculateDoorHitboxes<
-    U extends (ObstacleDefinition & { readonly role: ObstacleSpecialRoles.Door })["operationStyle"]
+    U extends (ObstacleDefinition & { readonly isDoor: true })["operationStyle"]
 >(
-    definition: ObstacleDefinition & { readonly role: ObstacleSpecialRoles.Door, readonly operationStyle?: U },
+    definition: ObstacleDefinition & { readonly isDoor: true, readonly operationStyle?: U },
     position: Vector,
     rotation: Orientation
 ): U extends "slide"
         ? { readonly openHitbox: RectangleHitbox }
         : { readonly openHitbox: RectangleHitbox, readonly openAltHitbox: RectangleHitbox } {
-    if (!(definition.hitbox instanceof RectangleHitbox) || definition.role !== ObstacleSpecialRoles.Door) {
+    if (!(definition.hitbox instanceof RectangleHitbox) || !definition.isDoor) {
         throw new Error("Unable to calculate hitboxes for door: Not a door or hitbox is non-rectangular");
     }
 

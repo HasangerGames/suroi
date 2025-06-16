@@ -1,6 +1,6 @@
 {
   "name": "suroi",
-  "version": "0.22.1",
+  "version": "0.27.1",
   "description": "An open-source 2D battle royale game inspired by surviv.io",
   "private": true,
   "scripts": {
@@ -8,7 +8,6 @@
     "build:client": "cd client && pnpm build",
     "build:server": "cd server && pnpm build",
     "start": "node --enable-source-maps server/dist/server/src/server.js",
-    "moderation": "node --enable-source-maps server/dist/server/src/moderation.js",
     "warn": "pnpm moderation warn",
     "ban": "pnpm moderation ban",
     "unban": "pnpm moderation unban",
@@ -16,13 +15,16 @@
     "dev:client": "cd client && pnpm dev",
     "dev:server": "cd server && pnpm dev",
     "dev:test": "cd tests && pnpm stressTest",
+    "watch:server": "cd server && tsc --noEmit --watch",
     "typecheck": "tsc -v --noEmit",
     "lint": "eslint . --fix",
     "lint:check": "eslint .",
     "lint:ci": "eslint . --max-warnings 0",
     "validateDefinitions": "cd tests && pnpm run build && pnpm validateDefinitions",
+    "validateSvgs": "cd tests && pnpm validateSvgs",
     "sanity-check": "pnpm lint:check && pnpm typecheck && pnpm validateDefinitions",
-    "full-reinstall": "rm -r node_modules pnpm-lock.yaml client/node_modules server/node_modules common/node_modules tests/node_modules translations/node_modules && pnpm install"
+    "full-reinstall": "rm -r node_modules pnpm-lock.yaml client/node_modules server/node_modules common/node_modules tests/node_modules && pnpm install",
+    "full-reinstall-win": "del /f /s /q node_modules\\* pnpm-lock.yaml client\\node_modules\\* server\\node_modules\\* common\\node_modules\\* tests\\node_modules\\* & pnpm install"
   },
   "engines": {
     "node": ">=20.0.0",
@@ -34,13 +36,12 @@
   ],
   "license": "GPL-3.0",
   "devDependencies": {
-    "@eslint/js": "^9.17.0",
-    "@stylistic/eslint-plugin": "^2.12.1",
-    "@types/eslint__js": "^8.42.3",
-    "@types/node": "^22.10.2",
-    "eslint": "^9.17.0",
-    "typescript": "^5.7.2",
-    "typescript-eslint": "^8.18.2"
+    "@eslint/js": "^9.28.0",
+    "@stylistic/eslint-plugin": "^4.4.1",
+    "@types/node": "^22.15.30",
+    "eslint": "^9.28.0",
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.34.0"
   },
-  "packageManager": "pnpm@9.5.0+sha512.140036830124618d624a2187b50d04289d5a087f326c9edfc0ccd733d76c4f52c3a313d4fc148794a2a9d81553016004e6742e8cf850670268a7387fc220c903"
+  "packageManager": "pnpm@10.11.0+sha512.6540583f41cc5f628eb3d9773ecee802f4f9ef9923cc45b69890fb47991d4b092964694ec3a4f738a420c918a333062c8b925d312f42e4f0c263eb603551f977"
 }

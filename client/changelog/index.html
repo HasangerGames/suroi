@@ -28,21 +28,312 @@
 <body>
   <pre>
 # Changelog
+v0.27.1 - [5/24/2025]
+- **New bunker!** Added the **Fulcrum Bunker**, a medium-sized bunker which is partially flooded.
+- **New gun!** Added the **SVU-A**, a high-powered battle rifle chambered in 7.62mm. It's found only in the new Fulcrum Bunker.
+- Replaced the Radio with the **Flare**, an improved way of calling airdrops.
+- Infection has been temporarily removed from the mode rotation. It will return in the future with some improvements.
+- Added another variant of the vault in the cargo ship.
+- Fixed an issue where C4 couldn't be destroyed in certain cases.
+- Fixed infinite grenade glitch.
+- Temporarily disabled a filter which was causing audio issues. It will be re-enabled in the future with some improvements.
+- Increased ShAK-12 ammo spawn amount from 30 to 50.
+- Fixed duplicate crate in port warehouse.
+- Fixed lighthouse ceiling being hidden incorrectly when standing in a certain spot.
+- Replaced planted bushes residue in infection mode.
+- Updated some translations.
 
-[VERSION] - [RELEASE_DATE]
-- Optimized skins. They are now drawn by the game, giving more free space to the spritesheets.
-- Fixed a bug where glass automatic doors would still trigger their sounds once destroyed.
-- Fixed a bug where loot collisions wouldn't check for layers.
+v0.27.0 - [5/10/2025]
+- **Overhauled port!** The **Port** has been completely redesigned, with a brand new ship and a greatly improved layout.
+- **New building!** Added the **Lighthouse**, which replaces the sea traffic control.
+- **New gun!** Added the **ShAK-12**, a powerful battle rifle chambered in .50 Cal. It can be found in the briefcase and in airdrops.
+- **New obstacle!** Added the **Buoy**, which spawns in the ocean and can be used as indestructible cover.
+- **Ambience!** Added ambient river, ocean, and wind (in normal mode) sounds.
+- Fixed an issue where game objects would become invisible after quitting or dying inside of a bunker.
+- Fixed an issue where explosions wouldn't have sound with cooler graphics enabled.
+- Fixed issues and inconsistencies with melee collisions.
+- Baby plumpkins in harvest mode have been reverted to their pre-infection mode behavior.
+- Fixed map pings not showing in bunkers.
+- Tweaked melee and emote animations.
+- Removed echo from CZ-600 reload and MP5k fire sounds.
+== Technical Changelog ==
+- Removed oil tanker ship.
+- Ship Carrier skin now spawns on the control room of the new cargo ship.
+- Completely reworked the port complex.
+- Added new obstacles: buoy, small sandbags, lamp, powered vault door, silo, mutated forklift (yellow thing that lifts containers).
+- Added new buildings: control center office (port), large truck, small truck, truck container(s), cargo ship, AEGIS warehouse (port).
+- Added new container variants: damaged, military, gas can.
+- Added new weapon: ShAK-12, a 50 caliber auto.
+- Pallets now have spawn variations. There are 6 different layouts.
+- Added water overlay functionality for obstacles. Currently applies to crates, sandbags, control panels, barrels and the buoy.
+- Added a new functionality for building ceilings.
+- Added a new ambient sound for the cargo ship.
+- Added new skins: cargo wave, military camo.
+- Added river and ocean ambience.
+
+v0.26.0 - [5/5/2025]
+- **New structures!** Added 2 structures exclusive to harvest mode.
+  - **Campsite:** An outdoor getaway with a fire pit, tents, pumpkin patches, and more.
+  - **Breached Dam:** While it no longer serves its original purpose, this dam remains a useful bridge across larger rivers.
+- **New perks!** Added 2 new perks, also exclusive to harvest mode.
+  - **Combat Expert:** Decreased reload time.
+  - **Precision Recycling:** Hitting an enemy with two bullets in a row refunds two bullets back into the magazine. Does not apply to shotguns.
+- **New gun!** Added the **MP-153**, a powerful slug shotgun also exclusive to harvest. Found at the Campsite and in golden airdrops.
+- **New consumable!** Added the **Vaccine Syringe** to infection mode. It cures infection, grants temporary immunity, and restores 50 adrenaline.
+- **Layer overhaul!**
+  - You can now hear sounds on all layers. Sounds below/above you are muffled.
+  - Transitions between layers are smoother.
+  - Stairs are less buggy.
+- New emote! Added Hot Face emote.
+- Improved building ceiling logic.
+  - Fixed an issue where ceilings were hidden when they shouldn't be in certain cases.
+  - You can now see inside buildings from slightly further away.
+- The Sickle is now an automatic melee.
+- Added translations for perks.
+
+v0.25.1 - [4/11/2025]
+- Switched back to normal mode. The new schedule is as follows: 1 week normal, 1 week harvest, 1 week normal, 1 week infection.
+- **UI improvements!** The menu now scales much better on smaller screens. We have a full UI overhaul planned for the accounts update.
+- **Client optimizations!** Several optimizations have been made to reduce the game's resource usage.
+  - Audio is now loaded from a single file, improving loading times and reducing RAM usage by ~100 MB.
+  - All audio in the game has been reprocessed, reducing file sizes and loading times, and RAM by another ~40 MB for a total of ~140 MB savings this update.
+  - Spritesheet metadata is now loaded only for the active mode, not for every mode, which should also help loading times.
+- Added 2 emotes: Whale, Sun and Moon.
+- Added backlinks to a number of .io game websites. Promotion by these sites will help boost player counts.
+- Fixed an issue with guns being able to shoot through walls. This fix should also improve server performance.
+- Adjusted the health of various obstacles.
+  - Desks: 120 -> 100 (6 hits with fists -> 5)
+  - Filing cabinet: 125 -> 100 (6 hits -> 5)
+  - RSh-12 case: 80 -> 150 (4 hits -> 8)
+- Adjusted desks loot table.
+- Improved M1895 fire sound.
+- Made Vaccinator more common from airdrops.
+- Fixed explosive weapons not swapping when killing players/destroying plumpkins with the explosion.
+- Fixed weapons not swapping when a downed player bleeds out.
+- Certain explosion decals now fade after 30 seconds.
+
+v0.25.0 - [4/1/2025]
+- Infection mode! Added a brand new gamemode.
+  - A deadly virus has taken over the normal map, turning it purple.
+  - Baby plumpkins, with 2 new variants, cover the map. They now regenerate every 30 seconds.
+- New perks!
+  - Infected: Increases speed by 25% and damage by 20%, but health is decreased by 25% and drops over time. Adrenaline decays 10x faster. Every second, there's a 5% chance of infecting players within 20 map units.
+  - Immunity: Cures infection and makes you immune to it for 15 seconds. Granted by the Vaccinator (see below).
+- New guns!
+  - Seedshot: Shoots explosive seeds that stick to players and obstacles. Infinite ammo. Found in the blue house basement.
+  - Vaccinator: Shoots needles which grant Immunity (see above), heal teammates, and slow down enemies. Infinite ammo. Found in the headquarters and airdrops.
+- Added 4 new emotes: Plumpkin, Satisfied Face, Lag, Logged.
+- Added a new skin: Celestial.
+- Added Dutch language.
+- Added default switch sound for weapons.
+- Updated Lewis gun reload sound.
+- Edited the generator sound to be quieter and loop more cleanly.
+- Removed the big oak tree from normal (and infection) mode.
+- UI performance optimizations.
+- Changed loading screen background color.
+- Changed the way textures are loaded to prevent potential issues and lag when initially joining.
+- Fixed an issue with the airdrop plane sound continuing to play at a constant volume after the game ends.
+- Fixed an issue where attempting to pick up a 2nd dual wieldable gun while the slot was locked would delete the 2nd gun.
+- Fixed an issue where destroying a bush while inside of it would break bush particles.
+
+v0.24.2 - [3/22/2025]
+- Grenade overhaul!
+  - Grenades now have visible height.
+  - C4 is now a proper throwable. Nerfed explosion damage from 150 to 130.
+- Team improvements!
+  - Leaders now get a Ready button like everyone else.
+  - Games only start when everyone is ready.
+  - Added a "Force Start" toggle allowing leaders to start the game even if everyone isn't ready.
+  - Leaders can now kick players.
+  - Removed capital letters from team codes to avoid confusion.
+  - The team URL is now displayed in a monospace font.
+- New gun sounds!
+  - Trimmed all weapon sounds, and converted from stereo to mono.
+  - Adjusted gun reload sound durations to more closely match reload time.
+  - Replaced the following sounds:
+    - ACR: reload, switch
+    - CZ-75A: reload, dual reload, switch
+    - HP18: switch
+    - L115A1: reload
+    - MG36: reload, switch
+    - Mk-18 Mjölnir: reload, switch
+    - Mosin-Nagant: switch
+    - Negev SF: reload
+    - PP-19: reload, switch
+    - SAF-200: reload, switch
+    - Tango 51: switch
+- Fixed issues with some settings not loading correctly.
+- Fixed badges not working in the team menu.
+- Fixed an issue with smoke position over/underflowing at the edges of the map.
+- Reverted baseball bat animation.
+- Reverted fridge texture.
+
+v0.24.1 - [3/16/2025]
+- Added 3 new emotes: side eye face, man face, zombie face.
+- Rewrote the killfeed code.
+- Rewrote server to use uWebSockets.js.
+- Various client performance improvements.
+- Added particles and sound effects when entering/exiting bushes.
+- Updated AUG world and killfeed images.
+- New washing machine, cooler, and refrigerator textures.
+- Added an option for an alternate texture loading method, which can help with high RAM usage in Chromium based browsers.
+- Fixed dead players not being ignored in the spawning algorithm checks.
+- Updated some translations.
+
+v0.24.0 - [2/25/2025]
+- Added the memorial.
+- Added 2 new guns: MP5k, PK-61.
+- Added an experimental screen recording feature.
+- Added more customization options for mobile joysticks.
+- Added leek and emoji_50 emotes.
+- Rebalanced the gas. Games are now 6 and a half minutes long, up from 5 and a half, and the gas is less aggressive with a more exciting final circle.
+- Player movement speed has been increased.
+- Adrenaline is now more effective at lower levels, and slightly less effective at higher levels.
+- Players now naturally regenerate health at a rate of 1/second.
+- Gauze now heals 20 health, up from 15.
+- The time to use tablets has been reduced to 4 seconds, down from 5.
+- 2x is now the default scope across all modes.
+- All snipers except the CZ-600 now spawn with a scope.
+  - Mosin-Nagant, RG Scout, Mk-18 Mjölnir: 4x
+  - Tango 51, VKS Vykhlop: 8x
+  - L115A1: 16x
+- Made the pan smaller.
+- Buffed M590M, BLR 556, SAF-200, and Negev.
+- Nerfed Vector range.
+- The HP-18 is now twice as effective against obstacles (obstacle multiplier 0.5 -> 1).
+- Reduced the health of several obstacles, including the box, trash bag, dumpster, trash can, and large refinery barrel.
+- Increased obstacle damage multiplier to 2x for most explosions.
+- Tweaked dumpster loot table.
+
+- Redesigned scope sprites.
+- The 15x scope has been renamed to 16x.
+- Updated world sprites for 14 guns.
+- Reduced the bullet opacity of suppressed guns.
+- Rewrote code for the news page, and added pagination.
+- Added Model 37 and SKS gun mounts to the green house.
+- Decreased the chance for the pan stove to spawn from 5% to 3%.
+- Increased the chance for the Stoner 63 to spawn in the refinery from 1% to 5%.
+- Player names in team modes now match the color of the player indicator.
+- Optimized smoke grenade performance.
+- Added new melee weapon animations. They will be further improved in the next update.
+- Added cracks to the breakable wall in the bombed armory to make it more obvious.
+- Removed casing sounds from SAF-200 and VSS firing sounds.
+- Mobile UI tweaks.
+- Updated DEagle loot image.
+- Updated Negev killfeed image.
+- New K-bar switch sound.
+- Removed background noise from Stoner 63 reload sound.
+- In team modes, the death screen now shows "You died." instead of "Your team was eliminated." unless everyone on your team is dead.
+- The "your did it" badge is now only shown when winning with 0 kills and 0 damage.
+- Updated various translations.
+- Refactored server code, allowing for easier scalability and making the game easier to deploy for server hosters.
+
+- Fixed players spawning too close to each other.
+- Fixed the news and rules pages not being scrollable.
+- Fixed perks not showing when movement smoothing is disabled.
+- Fixed perks not updating when spectating.
+- Fixed some issues with river obstacle generation.
+- Fixed missing game over stats translations.
+- Fixed a pan collision bug.
+- Fixed the barn spawn hitbox not including the adjacent hay shed.
+- Fixed the action timer being hidden when switching between players when spectating.
+- Fixed switch sound not playing for dual guns.
+- Fixed some issues with reporting.
+- Fixed a bug with cooler graphics gun gas particles.
+- Fixed the plumpkin bunker mixers spinning too slowly.
+- Fixed the Rules & Tutorial close button being too wide on mobile.
+
+v0.23.1 - [1/27/2025]
+- Added the pan and the pan stove.
+- Added 10 new emotes.
+- The gas now shrinks more gradually.
+- Increased movement speed slightly.
+- Redesigned equipment loot and world images.
+- Bridges are now more common, thanks to improvements and fixes in generation code.
+- Optimized sounds and improved sound loading, reducing RAM usage by about 150 MB.
+- Various under-the-hood optimizations.
+- Improved mobile UI.
+- Improved performance on main menu.
+- Added a scope to the Mosin-Nagant to help differentiate it from other guns.
+- Limited radios to 3 uses to prevent abuse.
+- Slowed down scope animation.
+- Added the ghillie suit as a possible drop from the washing machine, and increased the chance of the basic outfit dropping.
+- Downed players no longer play bleeding noises after the game has ended.
+- New floor patterns in armory and refinery.
+- Decreased box texture outline thickness.
+- Updated some translations.
+- Fixed the page reloading after winning the game in some cases.
+- Fixed the game switching to spectating immediately on death.
+- Fixed teammate names not updating when spectating.
+- Fixed the font for teammate names not loading.
+- Fixed issues with several textures:
+  - Plumpkin bunker floor
+  - Airdrop crate
+  - Speaker
+  - Fire hatchet case
+  - Container ceiling
+  - Port warehouse door
+  - Refinery explosion debris
+  - Sound Designr badge
+  - Donatr badge
+- Fixed the color of the ghillie suit exactly matching the color of grass (it's supposed to be slightly darker).
+- Fixed objects visibly disappearing when switching from a higher to a lower scope.
+- Fixed the "Hide Emotes" option making it impossible to use map pings, and hiding team emotes (i.e. requesting healing items and ammo).
+- Fixed menu music not looping.
+- Fixed some server crash exploits and improved error handling.
+
+v0.23.0 - [1/15/2025]
+- Added mode switching.
+- Added a variation of the blue house with a basement.
+- Added the river hut.
+- Stats are now shown for everyone on your team on the game over screen.
+- Added an improved debug readout, accessible by binding the "Adjust Network Graph Style" keybind.
+- Added back most of the emotes removed in the previous update, tweaked some emotes, and added 1 new emote.
+- Better textures for healing items.
+- Improved textures for grenade, melee, AEGIS, Flint, and ammo crates, and boxes.
+- Changed the way textures are loaded, improving loading times.
+- Improved socials on main menu.
+- Improved barn layout.
+- Nerfed USAS-12 and M590M.
+- Rebalanced Negev.
+- Removed RSh-12 from the headquarters, as it's now found in the blue house basement.
+- Removed SR-25 from airdrops in Harvest mode.
+- Dual M1895 now spawns with 42 rounds of 7.62mm instead of 28.
+- The briefcase in Harvest mode now has a chance to contain the M1 Garand.
+- New CZ-600 and MP40 sounds.
+- Adjusted Micro Uzi and MP40 sounds.
+- Adjusted Lewis Gun and USAS-12 killfeed images.
+- Adjusted Lewis Gun, USAS-12, and M1895 loot images.
+- Renamed RGS to RG Scout, Negev to Negev SF, and MG-36 to MG36.
+- Adjusted container colors.
+- Improved textures for the bunk bed and life preserver.
+- Ambient sounds now fade in/out when entering or exiting bunkers instead of pausing abruptly.
+- Obstacles that are normally hidden on the minimap (e.g. Flint crates) that generate as part of a building are now shown on the minimap.
+- Keybinds are now more permissive and will autocorrect invalid keybinds.
+- Updated various translations.
+- Fixed bugs with explosions.
+- Fixed "JoinPacket not received after 5 seconds" error.
+- Fixed page reloading when the game switches between solos/duos/squads.
+- Fixed 2x scope dropping from players in Harvest mode.
+- Fixed poor distribution of obstacles in rivers.
+- Fixed being able to throw grenades over the vault door in the Plumpkin bunker.
+- Fixed an issue with fonts occasionally not loading in game.
+- Fixed translation/language percentages going higher than 100%.
+
+v0.22.2 - [1/1/2025]
+- Replaced world images for all guns, and renamed some guns.
+- Switched the game back to Harvest mode.
+- Removed spread penalty from dual pistols.
+- New CZ-600 sounds.
+- Buffed G19 and CZ-75A.
+- Increased SKS ammo spawn count (30 -> 60).
+- Buffed Sickle.
+- Removed 8 rarely used emotes.
+- Fixed glass automatic doors continuing to play sounds after destroyed.
+- Fixed loot collisions not checking for layers.
 - Mobile improvements.
 - Updated languages (and added a new one).
 - Tweaked gun casings.
-
-(please merge these branches :3)
-- The emote wheel has been redesigned (for desktop only).
-- Added additional teammate stats in the game over screen for team modes. Along with this change, medals are here!
-    - Kills: Get 10 or more kills and the most in your team.
-    - Shield: TODO
-    - Skull: Deal more than 1000 damage, and the most, on your team.
 
 v0.22.1 - [12/22/2024]
 - Switched to Harvest mode. The game will switch back to normal mode Dec 23 at 8 PM EST, then back to Harvest on Dec 31, 8 PM EST.

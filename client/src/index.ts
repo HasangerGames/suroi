@@ -4,6 +4,4 @@ import "../node_modules/@fortawesome/fontawesome-free/css/solid.css";
 import { Game } from "./scripts/game";
 import "./scss/pages/client.scss";
 
-void (async() => {
-    void Game.init();
-})();
+void Game.init();

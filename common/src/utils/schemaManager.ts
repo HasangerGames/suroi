@@ -28,7 +28,7 @@ export interface SchemaManager<Def extends ObjectDefinition, SizeT extends numbe
     /**
      * Adds an item to this collection
      * @param item The item to add
-     * @returns Whether the item was already present (and thus nothing has changed)
+     * @returns Whether the item was absent (and was thus added, as opposed to not being added due to being already present)
      */
     addItem(item: ReifiableDef<Def>): boolean
 
@@ -137,7 +137,7 @@ export function makeSchemaManager<
     SizeT extends number | bigint
 >(schema: ObjectDefinitions<Def>, name = "", dummy: DisallowUnion<SizeT>): typeof BitfieldBasedSchemaManager<Def, SizeT> {
     if (typeof dummy === "number" && schema.definitions.length >= 30) {
-        throw new TypeError(`Desired SizeT type (number) is not precise enough for a schema of 30 or more elements. (schema name: ${schema.name}, size: ${schema.definitions.length})`);
+        throw new TypeError(`Desired SizeT type (number) is not precise enough for a schema of 30 or more elements. (size: ${schema.definitions.length})`);
     }
 
     const size_t = (typeof dummy === "number" ? Number : BigInt) as unknown as (value: unknown) => SizeT;

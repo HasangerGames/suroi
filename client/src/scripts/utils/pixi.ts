@@ -1,17 +1,22 @@
-import { Obstacles } from "@common/definitions/obstacles";
-import { HitboxType, RectangleHitbox, type Hitbox } from "@common/utils/hitbox";
+import { type ModeName } from "@common/definitions/modes";
+import { HitboxType, type Hitbox } from "@common/utils/hitbox";
 import { Vec, type Vector } from "@common/utils/vector";
-import $ from "jquery";
-import { Assets, Color, Container, Graphics, RendererType, RenderTexture, Sprite, Spritesheet, Texture, type ColorSource, type Renderer, type SpritesheetData, type WebGLRenderer } from "pixi.js";
-import { getTranslatedString } from "../../translations";
-import { COLORS, PIXI_SCALE, WALL_STROKE_WIDTH } from "./constants";
-import { type ImageLayer, type SkinDefinition } from "@common/definitions/skins";
+import { Assets, Graphics, RendererType, Sprite, Spritesheet, Texture, type ColorSource, type Renderer, type WebGLRenderer } from "pixi.js";
+import type { ImageSpritesheetImporter } from "../../../vite/plugins/image-spritesheet-plugin";
+import { UIManager } from "../managers/uiManager";
+import { PIXI_SCALE } from "./constants";
+import { getTranslatedString } from "./translations/translations";
 
-const textures: Record<string, Texture> = {};
+let spritesheetsLoaded = false;
 
-const loadingText = $("#loading-text");
+const spritesheetCallbacks: Array<() => void> = [];
 
-export async function loadTextures(renderer: Renderer, highResolution: boolean): Promise<void> {
+export async function spritesheetLoadPromise(): Promise<void> {
+    if (spritesheetsLoaded) return;
+    return new Promise(resolve => spritesheetCallbacks.push(resolve));
+}
+
+export async function loadSpritesheets(modeName: ModeName, renderer: Renderer, highResolution: boolean): Promise<void> {
     // If device doesn't support 4096x4096 textures, force low resolution textures since they are 2048x2048
     if (renderer.type as RendererType === RendererType.WEBGL) {
         const gl = (renderer as WebGLRenderer).gl;
@@ -20,184 +25,58 @@ export async function loadTextures(renderer: Renderer, highResolution: boolean):
         }
     }
 
-    // we pray
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const spritesheets: SpritesheetData[] = highResolution
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        ? (await import("virtual:spritesheets-jsons-high-res")).atlases
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        : (await import("virtual:spritesheets-jsons-low-res")).atlases;
+    const { importSpritesheet } = (
+        highResolution
+            ? await import("virtual:image-spritesheets-importer-high-res")
+            : await import("virtual:image-spritesheets-importer-low-res")
+    ) as ImageSpritesheetImporter;
+    const { spritesheets } = await importSpritesheet(modeName);
 
     let resolved = 0;
     const count = spritesheets.length;
 
-    await Promise.all([
-        ...spritesheets.map(async spritesheet => {
-            /**
-             * this is defined via vite-spritesheet-plugin, so it is never nullish
-             * @link `client/vite/vite-spritesheet-plugin/utils/spritesheet.ts:197`
-             */
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            const image = spritesheet.meta.image!;
+    await Promise.all(spritesheets.map(async spritesheet => {
+        // this is defined via vite-spritesheet-plugin, so it is never nullish
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        const image = spritesheet.meta.image!;
 
-            console.log(`Loading spritesheet ${location.origin}/${image}`);
+        console.log(`Loading spritesheet ${location.origin}/${image}`);
 
-            try {
-                const texture = await Assets.load<Texture>(image);
-                await renderer.prepare.upload(texture);
-                Object.assign(textures, await new Spritesheet(texture, spritesheet).parse());
-
-                const resolvedCount = ++resolved;
-                const progress = `(${resolvedCount} / ${count})`;
-
-                console.log(`Atlas ${image} loaded ${progress}`);
-                loadingText.text(getTranslatedString("loading_spritesheets", {
-                    progress
-                }));
-            } catch (e) {
-                ++resolved;
-                console.error(`Atlas ${image} failed to load. Details:`, e);
+        try {
+            const sheetTexture = await Assets.load<Texture>(image);
+            await renderer.prepare.upload(sheetTexture);
+            const textures = await new Spritesheet(sheetTexture, spritesheet).parse();
+            for (const [key, texture] of Object.entries(textures)) {
+                Assets.cache.set(key, texture);
             }
-        }),
-        ...Obstacles.definitions
-            .filter(obj => obj.wall)
-            .map(def => new Promise<void>(resolve => {
-                if (def.wall) {
-                    const { color, borderColor, rounded } = def.wall;
-                    const dimensions = (def.hitbox as RectangleHitbox).clone();
-                    dimensions.scale(PIXI_SCALE);
-                    const { x, y } = dimensions.min;
-                    const [w, h] = [dimensions.max.x - x, dimensions.max.y - y];
-                    const s = WALL_STROKE_WIDTH;
 
-                    const wallTexture = RenderTexture.create({ width: w, height: h, antialias: true });
-                    renderer.render({
-                        target: wallTexture,
-                        container: new Graphics()
-                            .rect(0, 0, w, h)
-                            .fill({ color: borderColor })[rounded ? "roundRect" : "rect"](s, s, w - s * 2, h - s * 2, s)
-                            .fill({ color })
-                    });
+            const resolvedCount = ++resolved;
+            const progress = `(${resolvedCount} / ${count})`;
+            UIManager.ui.loaderText.text(getTranslatedString("loading_spritesheets", { progress }));
+            console.log(`Atlas ${image} loaded ${progress}`);
 
-                    textures[def.idString] = wallTexture;
-                }
-                resolve();
-            })),
-        new Promise<void>(resolve => {
-            const vestTexture = RenderTexture.create({ width: 102, height: 102, antialias: true });
-            renderer.render({
-                target: vestTexture,
-                container: new Graphics()
-                    .arc(51, 51, 51, 0, Math.PI * 2)
-                    .fill({ color: 0xffffff })
-            });
-            textures.vest_world = vestTexture;
-            resolve();
-        }),
-        ...Obstacles.definitions
-            .filter(obj => obj.gunMount)
-            .map(def => new Promise<void>(resolve => {
-                if (def.gunMount === undefined) return;
-
-                const spriteWidth = def.gunMount.type === "melee" ? 153.394 : 166.75;
-                const spriteHeight = def.gunMount.type === "melee" ? 81.035 : 74.5;
-
-                const mountTexture = RenderTexture.create({ width: spriteWidth, height: spriteHeight, antialias: true });
-
-                const MOUNT_BORDER_COLOR = 0x302412;
-                const MOUNT_FILL_COLOR = 0x785a2e;
-
-                const mountBorderRadius = 5;
-
-                const container = new Container();
-
-                switch (def.gunMount.type) {
-                    case "gun": {
-                        const mainRect = new Graphics()
-                            .roundRect(7.5, 4.2, 150, 11, (mountBorderRadius - 1))
-                            .fill({ color: MOUNT_FILL_COLOR });
-
-                        const mainBorderRect = new Graphics()
-                            .roundRect(0, 0, 166, 20, mountBorderRadius)
-                            .fill({ color: MOUNT_BORDER_COLOR });
-
-                        container.addChild(mainBorderRect, mainRect);
-
-                        for (let i = 0; i < 3; i++) {
-                            const xPosConstant = [1, 63, 126][i];
-
-                            const borderRect = new Graphics()
-                                .roundRect(14 + xPosConstant, 16, 13, 60, (mountBorderRadius * 1.25))
-                                .fill({ color: MOUNT_BORDER_COLOR });
-
-                            container.addChild(borderRect);
-
-                            for (let j = 0; j < 2; j++) {
-                                const yPos = [24, 54][j];
-                                const rect = new Graphics()
-                                    .roundRect(16.5 + xPosConstant, yPos, 8, 16, (mountBorderRadius - 3))
-                                    .fill({ color: MOUNT_FILL_COLOR });
-
-                                container.addChild(rect);
-                            }
-                        }
-                        break;
-                    }
-
-                    case "melee": {
-                        const mainRect = new Graphics()
-                            .roundRect(31, 9.2, 92, 11, (mountBorderRadius - 1))
-                            .fill({ color: MOUNT_FILL_COLOR });
-
-                        const mainBorderRect = new Graphics()
-                            .roundRect(24.3, 5, 104, 20, mountBorderRadius)
-                            .fill({ color: MOUNT_BORDER_COLOR });
-
-                        for (let i = 0; i < 2; i++) {
-                            const xPosConstant = [25.25, 87][i];
-
-                            const borderRect = new Graphics()
-                                .roundRect(14 + xPosConstant, 18, 13, 60, mountBorderRadius * 1.1)
-                                .fill({ color: MOUNT_BORDER_COLOR });
-
-                            container.addChild(borderRect);
-
-                            for (let j = 0; j < 2; j++) {
-                                const yPos = [28, 60][j];
-                                const rect = new Graphics()
-                                    .roundRect(16.5 + xPosConstant, yPos, 8, 14, (mountBorderRadius - 3))
-                                    .fill({ color: MOUNT_FILL_COLOR });
-
-                                container.addChild(rect);
-                            }
-                        }
-                        container.addChild(mainBorderRect, mainRect);
-                        break;
-                    }
-                }
-
-                renderer.render({
-                    target: mountTexture,
-                    container: container
-                });
-                textures[def.idString] = mountTexture;
-                resolve();
-            }))
-    ]);
+            if (resolvedCount === count) {
+                spritesheetsLoaded = true;
+                for (const resolve of spritesheetCallbacks) resolve();
+            }
+        } catch (e) {
+            ++resolved;
+            console.error(`Atlas ${image} failed to load. Details:`, e);
+        }
+    }));
 }
 
 export class SuroiSprite extends Sprite {
     static getTexture(frame: string): Texture {
-        if (!(frame in textures)) {
+        if (!Assets.cache.has(frame)) {
             console.warn(`Texture not found: "${frame}"`);
-            return textures._missing_texture;
+            frame = "_missing_texture";
         }
-        return textures[frame];
+        return Texture.from(frame);
     }
 
     constructor(frame?: string) {
         super(frame ? SuroiSprite.getTexture(frame) : undefined);
-
         this.anchor.set(0.5);
         this.setPos(0, 0);
     }
@@ -209,6 +88,11 @@ export class SuroiSprite extends Sprite {
 
     setAnchor(anchor: Vector): this {
         this.anchor.copyFrom(anchor);
+        return this;
+    }
+
+    setPivot(pivot: Vector): this {
+        this.pivot.copyFrom(pivot);
         return this;
     }
 
@@ -237,8 +121,8 @@ export class SuroiSprite extends Sprite {
         return this;
     }
 
-    setScale(scale?: number): this {
-        this.scale = Vec.create(scale ?? 1, scale ?? 1);
+    setScale(scaleX?: number, scaleY?: number): this {
+        this.scale = Vec.create(scaleX ?? 1, scaleY ?? scaleX ?? 1);
         return this;
     }
 
@@ -289,22 +173,13 @@ export function drawGroundGraphics(hitbox: Hitbox, graphics: Graphics, scale = P
             break;
         case HitboxType.Group:
             for (const hitBox of hitbox.hitboxes) {
-                drawGroundGraphics(hitBox, graphics);
+                drawGroundGraphics(hitBox, graphics, scale);
             }
             break;
     }
 };
 
-export function drawHitbox<T extends Graphics>(hitbox: Hitbox, color: ColorSource, graphics: T, alpha = 1): T {
-    if (alpha === 0) return graphics;
-
-    graphics.setStrokeStyle({
-        color,
-        width: 2,
-        alpha
-    });
-    graphics.beginPath();
-
+export function traceHitbox<T extends Graphics>(hitbox: Hitbox, graphics: T): T {
     switch (hitbox.type) {
         case HitboxType.Rect: {
             const min = toPixiCoords(hitbox.min);
@@ -322,70 +197,33 @@ export function drawHitbox<T extends Graphics>(hitbox: Hitbox, color: ColorSourc
             graphics.arc(pos.x, pos.y, hitbox.radius * PIXI_SCALE, 0, Math.PI * 2);
             break;
         }
-        case HitboxType.Group:
-            for (const h of hitbox.hitboxes) drawHitbox(h, color, graphics, alpha);
-            break;
         case HitboxType.Polygon:
             graphics.poly(hitbox.points.map(point => toPixiCoords(point)));
             break;
+    }
+    return graphics;
+}
+
+export function drawHitbox<T extends Graphics>(hitbox: Hitbox, color: ColorSource, graphics: T, alpha = 1): T {
+    if (alpha === 0) return graphics;
+
+    graphics.setStrokeStyle({
+        color,
+        width: 2,
+        alpha
+    });
+    graphics.beginPath();
+
+    if (hitbox.type === HitboxType.Group) {
+        for (const h of hitbox.hitboxes) {
+            drawHitbox(h, color, graphics, alpha);
+        }
+    } else {
+        traceHitbox(hitbox, graphics);
     }
 
     graphics.closePath();
     graphics.stroke();
 
     return graphics;
-}
-
-export function setupSkinLayer(container: Container, layers: ImageLayer[], tint?: Color): void {
-    container
-        .removeChildren()
-        .forEach(child => child.destroy());
-
-    for (const layer of layers) {
-        const sprite = new SuroiSprite(layer.frame)
-            .setTint(layer.tint ?? 0xffffff)
-            .setVPos(layer.position ?? Vec.create(0, 0))
-            .setRotation(layer.rotation ?? 0)
-            .setAlpha(layer.alpha ?? 1);
-
-        if (layer.scale) sprite.scale.set(layer.scale.x, layer.scale.y);
-
-        if (tint) {
-            const layerColor = new Color(sprite.tint);
-            const tintedColor = layerColor.multiply(tint);
-            sprite.setTint(tintedColor);
-        }
-
-        container.addChild(sprite);
-    }
-}
-
-export async function renderSkin(renderer: Renderer, skin: SkinDefinition): Promise<{ base: string, fist: string }> {
-    const base = new Container();
-    const fist = new Container();
-
-    const SKIN_SIZE = 90;
-    const FIST_SIZE = 34;
-
-    const baseMask = new Graphics()
-        .rect(-SKIN_SIZE / 2, -SKIN_SIZE / 2, SKIN_SIZE, SKIN_SIZE)
-        .fill({ color: 0xffffff });
-
-    const fistMask = new Graphics()
-        .rect(-FIST_SIZE / 2, -FIST_SIZE / 2, FIST_SIZE, FIST_SIZE)
-        .fill({ color: 0xffffff });
-
-    setupSkinLayer(base, skin.baseLayers, skin.grassTint ? COLORS.grass : undefined);
-    setupSkinLayer(fist, skin.fistLayers, skin.grassTint ? COLORS.grass : undefined);
-
-    base.mask = baseMask;
-    fist.mask = fistMask;
-
-    base.addChild(baseMask);
-    fist.addChild(fistMask);
-
-    return {
-        base: await renderer.extract.base64(base),
-        fist: await renderer.extract.base64(fist)
-    };
 }

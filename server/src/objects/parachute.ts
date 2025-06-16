@@ -1,10 +1,11 @@
-import { GameConstants, KillfeedEventType, ObjectCategory } from "@common/constants";
+import { GameConstants, ObjectCategory } from "@common/constants";
 import { CircleHitbox } from "@common/utils/hitbox";
 import { Angle, Numeric } from "@common/utils/math";
 import { type FullData } from "@common/utils/objectsSerializations";
 import { type Vector } from "@common/utils/vector";
 import { type Airdrop, type Game } from "../game";
 import { BaseGameObject } from "./gameObject";
+import { DamageSources } from "@common/packets/killPacket";
 
 export class Parachute extends BaseGameObject.derive(ObjectCategory.Parachute) {
     override readonly fullAllocBytes = 8;
@@ -37,18 +38,7 @@ export class Parachute extends BaseGameObject.derive(ObjectCategory.Parachute) {
             this.game.pluginManager.emit("airdrop_landed", this._airdrop);
 
             // Spawn smoke
-            this.game.addSyncedParticles({
-                type: "airdrop_smoke_particle",
-                count: 5,
-                deployAnimation: {
-                    duration: 2000,
-                    staggering: {
-                        delay: 100,
-                        initialAmount: 2
-                    }
-                },
-                spawnRadius: 10
-            }, crate.position, crate.layer);
+            this.game.addSyncedParticles("airdrop_smoke_particle", crate.position, crate.layer);
 
             // Crush damage
             for (const object of this.game.grid.intersectsHitbox(crate.hitbox, crate.layer)) {
@@ -57,7 +47,7 @@ export class Parachute extends BaseGameObject.derive(ObjectCategory.Parachute) {
                         case object.isPlayer: {
                             object.piercingDamage({
                                 amount: GameConstants.airdrop.damage,
-                                source: KillfeedEventType.Airdrop
+                                source: DamageSources.Airdrop
                             });
                             break;
                         }

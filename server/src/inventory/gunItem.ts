@@ -1,7 +1,6 @@
-import { AnimationType, FireMode, InventoryMessages } from "@common/constants";
-import { type GunDefinition } from "@common/definitions/guns";
-import { PerkData, PerkIds } from "@common/definitions/perks";
-import { PickupPacket } from "@common/packets/pickupPacket";
+import { AnimationType, FireMode } from "@common/constants";
+import { type GunDefinition } from "@common/definitions/items/guns";
+import { PerkData, PerkIds } from "@common/definitions/items/perks";
 import { Orientation } from "@common/typings";
 import { type BulletOptions } from "@common/utils/baseBullet";
 import { CircleHitbox, RectangleHitbox } from "@common/utils/hitbox";
@@ -15,14 +14,12 @@ import { type ItemData } from "../objects/loot";
 import { type Player } from "../objects/player";
 import { getPatterningShape } from "../utils/misc";
 import { ReloadAction } from "./action";
-import { InventoryItem } from "./inventoryItem";
+import { InventoryItemBase } from "./inventoryItem";
 
 /**
  * A class representing a firearm
  */
-export class GunItem extends InventoryItem<GunDefinition> {
-    declare readonly category: ItemType.Gun;
-
+export class GunItem extends InventoryItemBase.derive(ItemType.Gun) {
     ammo = 0;
 
     private _consecutiveShots = 0;
@@ -86,18 +83,17 @@ export class GunItem extends InventoryItem<GunDefinition> {
             return;
         }
 
-        if (definition.summonAirdrop && owner.isInsideBuilding) {
-            owner.sendPacket(PickupPacket.create({ message: InventoryMessages.CannotUseRadio }));
-            this._consecutiveShots = 0;
-            return;
-        }
-
         if (this.ammo <= 0) {
             if (!owner.inventory.items.hasItem(definition.ammoType)) {
                 owner.animation = AnimationType.GunClick;
                 owner.setPartialDirty();
             }
 
+            this._consecutiveShots = 0;
+            return;
+        }
+
+        if (this.owner.game.pluginManager.emit("inv_item_use", this) !== undefined) {
             this._consecutiveShots = 0;
             return;
         }
@@ -120,26 +116,29 @@ export class GunItem extends InventoryItem<GunDefinition> {
 
         const { moveSpread, shotSpread, fsaReset } = definition;
 
-        let spread = owner.game.now - this._lastUse >= (fsaReset ?? Infinity)
+        let spread = owner.game.now - this.lastUse >= (fsaReset ?? Infinity)
             ? 0
             : Angle.degreesToRadians((owner.isMoving ? moveSpread : shotSpread) / 2);
 
-        this._lastUse = owner.game.now;
-        const jitter = definition.jitterRadius;
+        this.lastUse = owner.game.now;
+        const jitter = definition.jitterRadius ?? 0;
         // when are we gonna have a perk that takes this mechanic and chucks it in the fucking trash where it belongs
 
         const offset = definition.isDual
-            ? ((this._altFire = !this._altFire) ? 1 : -1) * definition.leftRightOffset
+            ? (this._altFire ? -1 : 1) * definition.leftRightOffset
             : (definition.bulletOffset ?? 0);
 
-        const startPosition = Vec.rotate(Vec.create(0, offset), owner.rotation);
-
         const ownerPos = owner.position;
+        const startPosition = offset !== 0
+            ? Vec.add(ownerPos, Vec.rotate(Vec.create(0, offset), owner.rotation))
+            : ownerPos;
+
         let position = Vec.add(
             ownerPos,
             Vec.scale(Vec.rotate(Vec.create(definition.length, offset), owner.rotation), owner.sizeMod)
         );
 
+        let distToPos = Geometry.distanceSquared(startPosition, position);
         for (const object of owner.game.grid.intersectsHitbox(RectangleHitbox.fromLine(startPosition, position))) {
             if (
                 object.dead
@@ -150,16 +149,17 @@ export class GunItem extends InventoryItem<GunDefinition> {
                 || (object.isObstacle && object.definition.isStair)
             ) continue;
 
-            const intersection = object.hitbox.intersectsLine(ownerPos, position);
+            const intersection = object.hitbox.intersectsLine(startPosition, position);
             if (intersection === null) continue;
 
-            if (Geometry.distanceSquared(ownerPos, position) > Geometry.distanceSquared(ownerPos, intersection.point)) {
+            if (distToPos > Geometry.distanceSquared(startPosition, intersection.point)) {
                 position = Vec.sub(intersection.point, Vec.rotate(Vec.create(0.2 + jitter, 0), owner.rotation));
+                distToPos = Geometry.distanceSquared(startPosition, position);
             }
         }
 
         const rangeOverride = owner.distanceToMouse - this.definition.length;
-        const projCount = definition.bulletCount;
+        const projCount = definition.bulletCount ?? 1;
 
         const modifiers: DeepMutable<DeepRequired<BulletOptions["modifiers"]>> = {
             damage: 1,
@@ -241,6 +241,11 @@ export class GunItem extends InventoryItem<GunDefinition> {
                     }
                     break;
                 }
+                case PerkIds.Infected: {
+                    modifiers.damage *= perk.damageMod;
+                    modifyForDamageMod(perk.damageMod);
+                    break;
+                }
             }
         }
         // ! evil ends here
@@ -316,22 +321,6 @@ export class GunItem extends InventoryItem<GunDefinition> {
         owner.recoil.time = owner.game.now + definition.recoilDuration;
         owner.recoil.multiplier = definition.recoilMultiplier;
 
-        if (definition.summonAirdrop) {
-            owner.game.summonAirdrop(owner.position);
-
-            if (
-                this.owner.mapPerkOrDefault(
-                    PerkIds.InfiniteAmmo,
-                    ({ airdropCallerLimit }) => this._shots >= airdropCallerLimit,
-                    false
-                )
-            ) {
-                owner.sendPacket(PickupPacket.create({ message: InventoryMessages.RadioOverused }));
-                this.owner.inventory.destroyWeapon(this.owner.inventory.activeWeaponIndex);
-                return;
-            }
-        }
-
         if (!definition.infiniteAmmo) {
             --this.ammo;
         }
@@ -345,13 +334,21 @@ export class GunItem extends InventoryItem<GunDefinition> {
             return;
         }
 
-        if (definition.fireMode === FireMode.Burst && this._consecutiveShots >= definition.burstProperties.shotsPerBurst) {
-            this._consecutiveShots = 0;
-            this._burstTimeout = setTimeout(
-                this._useItemNoDelayCheck.bind(this, false),
-                definition.burstProperties.burstCooldown
-            );
-            return;
+        if (definition.fireMode === FireMode.Burst) {
+            if (this._consecutiveShots >= definition.burstProperties.shotsPerBurst) {
+                this._consecutiveShots = 0;
+                this._burstTimeout = setTimeout(
+                    this._useItemNoDelayCheck.bind(this, false),
+                    definition.burstProperties.burstCooldown
+                );
+
+                if (definition.isDual) {
+                    this._altFire = !this._altFire;
+                }
+                return;
+            }
+        } else if (definition.isDual) {
+            this._altFire = !this._altFire;
         }
 
         if (
@@ -385,6 +382,14 @@ export class GunItem extends InventoryItem<GunDefinition> {
         );
     }
 
+    stopUse(): void {
+        // if (this.owner.game.pluginManager.emit("inv_item_stop_use", this) !== undefined) return;
+        // there's no logic in this method, so just emit the event and exit. if there ever comes
+        // the need to put logic here, uncomment the line above and remove the current one
+
+        this.owner.game.pluginManager.emit("inv_item_stop_use", this);
+    }
+
     reload(skipFireDelayCheck = false): void {
         const { owner, definition } = this;
 
@@ -394,7 +399,7 @@ export class GunItem extends InventoryItem<GunDefinition> {
             || (!owner.inventory.items.hasItem(definition.ammoType) && !this.owner.hasPerk(PerkIds.InfiniteAmmo))
             || owner.action !== undefined
             || owner.activeItem !== this
-            || (!skipFireDelayCheck && owner.game.now - this._lastUse < definition.fireDelay)
+            || (!skipFireDelayCheck && owner.game.now - this.lastUse < definition.fireDelay)
             || owner.downed
         ) return;
 

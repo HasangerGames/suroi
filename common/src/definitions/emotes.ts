@@ -1,4 +1,9 @@
-import { createTemplate, ObjectDefinitions, type ObjectDefinition } from "../utils/objectDefinitions";
+import { DefinitionType, ObjectDefinitions, type ObjectDefinition } from "../utils/objectDefinitions";
+import { Ammos } from "./items/ammos";
+import { Guns } from "./items/guns";
+import { HealingItems } from "./items/healingItems";
+import { Melees } from "./items/melees";
+import { Throwables } from "./items/throwables";
 
 export enum EmoteCategory {
     People,
@@ -6,109 +11,158 @@ export enum EmoteCategory {
     Memes,
     Icons,
     Misc,
-    TeamEmote
+    Team,
+    Weapon
 }
 
 export interface EmoteDefinition extends ObjectDefinition {
+    readonly defType: DefinitionType.Emote
     readonly category: EmoteCategory
-    readonly isTeamEmote?: boolean
-    readonly isWeaponEmote?: boolean
+    readonly hideInLoadout?: boolean
 }
 
-const emote = createTemplate<EmoteDefinition>()((name: string, category: EmoteCategory) => ({
-    idString: name.toLowerCase().replace(/ /g, "_"),
-    name,
-    category
-}));
-
-export const Emotes = ObjectDefinitions.create<EmoteDefinition>("Emotes", [
+export const Emotes = new ObjectDefinitions<EmoteDefinition>([
+    ...Object.entries({
+        [EmoteCategory.People]: [
+            "Happy Face",
+            "Sad Face",
+            "Thumbs Up",
+            "Thumbs Down",
+            "Wave",
+            "Disappointed Face",
+            "Sobbing Face",
+            "Angry Face",
+            "Heart Face",
+            "Flushed Face",
+            "Joyful Face",
+            "Cool Face",
+            "Upside Down Face",
+            "Picasso Face",
+            "Alien",
+            "Headshot",
+            "Panned",
+            "Dab",
+            "Devil Face",
+            "Bandaged Face",
+            "Cold Face",
+            "Thinking Face",
+            "Nervous Face",
+            "Sweating Face",
+            "Greedy Face",
+            "Creepy Clown",
+            "Lying Face",
+            "Nerd Face",
+            "Side Eye Face",
+            "Man Face",
+            "Satisfied Face",
+            "Hot Face",
+            "Blind Walking",
+            "Melting Face",
+            "Grimacing Face",
+            "Vomiting Face",
+            "Screaming Face",
+            "Pleading Face",
+            "Sad Smiling Face",
+            "Triumphant Face",
+            "Questioning Face",
+            "Shrugging Face",
+            "Facepalm",
+            "Smirking Face",
+            "Blushing Face",
+            "Saluting Face",
+            "Neutral Face",
+            "Relieved Face",
+            "Monocle Face",
+            "Partying Face",
+            "Shushing Face",
+            "Sighing Face",
+            "Yawning Face",
+            "Frustrated Face",
+            "Weary Face",
+            "Pensive Face",
+            "Zipper Mouth Face",
+            "Zombie Face"
+        ],
+        [EmoteCategory.Icons]: [
+            "Suroi Logo",
+            "AEGIS Logo",
+            "Flint Logo",
+            "NSD Logo",
+            "Skull",
+            "Duel",
+            "Chicken Dinner",
+            "Trophy"
+        ],
+        [EmoteCategory.Memes]: [
+            "Troll Face",
+            "Clueless",
+            "Pog",
+            "Froog",
+            "Bleh",
+            "Muller",
+            "Suroi General Chat",
+            "RIP",
+            "Leosmug",
+            "awhhmahgawd",
+            "emoji_50",
+            "Boykisser",
+            "Grr",
+            "are you sure"
+        ],
+        [EmoteCategory.Text]: [
+            "Question Mark",
+            "Team = Ban",
+            "Hack = Ban",
+            "gg",
+            "ez",
+            "Hi5",
+            "oof",
+            "real",
+            "fake",
+            "Colon Three",
+            "Lag"
+        ],
+        [EmoteCategory.Misc]: [
+            "Fire",
+            "Penguin",
+            "Squid",
+            "Eagle",
+            "Whale",
+            "Carrot",
+            "Egg",
+            "Plumpkin",
+            "Leek",
+            "Tomato",
+            "Logged",
+            "Sun and Moon"
+        ]
+    }).flatMap(([category, names]) =>
+        names.map(name => ({
+            idString: name.toLowerCase().replaceAll(" ", "_"),
+            name,
+            defType: DefinitionType.Emote as const,
+            category: parseInt(category)
+        })
+        )),
     ...[
-        "Happy Face",
-        "Sad Face",
-        "Thumbs Up",
-        "Thumbs Down",
-        "Wave",
-        "Disappointed Face",
-        "Sobbing Face",
-        "Angry Face",
-        "Heart Face",
-        "Joyful Face",
-        "Cool Face",
-        "Upside Down Face",
-        "Picasso Face",
-        "Alien",
-        "Headshot",
-        "Dab",
-        "Devil Face",
-        "Bandaged Face",
-        "Cold Face",
-        "Thinking Face",
-        "Nervous Face",
-        "Sweating Face",
-        "Greedy Face",
-        "Creepy Clown",
-        "Lying Face",
-        "Skull",
-        "Melting Face",
-        "Grimacing Face",
-        "Vomiting Face",
-        "Screaming Face",
-        "Pleading Face",
-        "Sad Smiling Face",
-        "Triumphant Face",
-        "Questioning Face",
-        "Smirking Face",
-        "Blushing Face",
-        "Saluting Face",
-        "Neutral Face",
-        "Relieved Face",
-        "Monocle Face",
-        "Partying Face",
-        "Shushing Face",
-        "Zipper Mouth Face",
-        "Sighing Face",
-        "Frustrated Face"
-    ].map(name => emote([name, EmoteCategory.People])),
+        ...Ammos,
+        ...HealingItems
+    ].map(({ idString, name }) => ({
+        idString,
+        name,
+        defType: DefinitionType.Emote as const,
+        category: EmoteCategory.Team,
+        hideInLoadout: true
+    })),
     ...[
-        "Suroi Logo",
-        "AEGIS Logo",
-        "Flint Logo",
-        "Duel",
-        "Chicken Dinner",
-        "Trophy"
-    ].map(name => emote([name, EmoteCategory.Icons])),
-    ...[
-        "Troll Face",
-        "Clueless",
-        "Pog",
-        "Froog",
-        "Bleh",
-        "Muller",
-        "Suroi General Chat",
-        "Fire",
-        "RIP",
-        "Leosmug",
-        "awhhmahgawd",
-        "Boykisser"
-    ].map(name => emote([name, EmoteCategory.Memes])),
-    ...[
-        "Question Mark",
-        "Team = Ban",
-        "Hack = Ban",
-        "gg",
-        "ez",
-        "Hi5",
-        "oof",
-        "real",
-        "fake",
-        "Colon Three"
-    ].map(name => emote([name, EmoteCategory.Text])),
-    ...[
-        "Monkey",
-        "Carrot",
-        "Tomato",
-        "Egg",
-        "Squid",
-        "Penguin"
-    ].map(name => emote([name, EmoteCategory.Misc]))
+        ...Guns,
+        ...Melees,
+        ...Throwables
+    ].map(({ idString, name }) => ({
+        idString,
+        name,
+        defType: DefinitionType.Emote as const,
+        category: EmoteCategory.Weapon,
+        hideInLoadout: true
+    }))
 ]);

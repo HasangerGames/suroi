@@ -1,0 +1,2523 @@
+# Translation File Reports
+
+This file is a report of all errors and missing keys in the translation files of this game.
+
+## 🇦🇱 Shqip (63% Complete) - ab.hjson
+
+### Invalid Keys
+
+- Key `create_team_waiting` is not a valid key
+
+### Undefined Keys
+
+- Key `msg_error_kicked_team` is not defined
+- Key `msg_punishment_vpn` is not defined
+- Key `msg_punishment_vpn_reason` is not defined
+- Key `msg_punishment_warn_agreement` is not defined
+- Key `warning_hw_accel_1` is not defined
+- Key `warning_hw_accel_2` is not defined
+- Key `warning_hw_accel_link` is not defined
+- Key `privacy` is not defined
+- Key `donate` is not defined
+- Key `wiki` is not defined
+- Key `bindings_fullscreen` is not defined
+- Key `recording` is not defined
+- Key `settings_record_res` is not defined
+- Key `settings_alt_texture_loading` is not defined
+- Key `settings_show_inout` is not defined
+- Key `settings_gyro_angle` is not defined
+- Key `settings_lock_joysticks` is not defined
+- Key `settings_switch_joysticks` is not defined
+- Key `settings_left_joystick_color` is not defined
+- Key `settings_right_joystick_color` is not defined
+- Key `settings_normal_joystick_info` is not defined
+- Key `settings_switched_joystick_info` is not defined
+- Key `settings_haptics` is not defined
+- Key `msg_your_team_eliminated` is not defined
+- Key `msg_the_team_eliminated` is not defined
+- Key `msg_not_enough_space` is not defined
+- Key `msg_item_already_equipped` is not defined
+- Key `msg_better_item_equipped` is not defined
+- Key `msg_cannot_use_flare` is not defined
+- Key `final_gas_waiting` is not defined
+- Key `final_gas_advancing` is not defined
+- Key `action_vaccine_syringe_use` is not defined
+- Key `interact_speaker` is not defined
+- Key `interact_monument` is not defined
+- Key `loading_fetching_data_failed` is not defined
+- Key `retry` is not defined
+- Key `bindings_explode_c4` is not defined
+- Key `bindings_screen_record` is not defined
+- Key `bindings_toggle pf_net_graph 0 1 2` is not defined
+- Key `kf_suicide_finished_off` is not defined
+- Key `kf_impact_of` is not defined
+- Key `finally` is not defined
+- Key `with` is not defined
+- Key `you` is not defined
+- Key `yourself` is not defined
+- Key `km_killed` is not defined
+- Key `km_knocked` is not defined
+- Key `km_message` is not defined
+- Key `kf_killed` is not defined
+- Key `kf_knocked` is not defined
+- Key `kf_finished_off` is not defined
+- Key `km_finally_ended_yourself` is not defined
+- Key `km_finally_killed` is not defined
+- Key `km_gas_kill_you` is not defined
+- Key `km_gas_down_you` is not defined
+- Key `km_airdrop_kill_you` is not defined
+- Key `km_airdrop_down_you` is not defined
+- Key `km_knocked_you` is not defined
+- Key `km_finished_off_you` is not defined
+- Key `km_killed_you` is not defined
+- Key `km_suicide_down` is not defined
+- Key `km_suicide_finished_off` is not defined
+- Key `themselves` is not defined
+- Key `kf_message` is not defined
+- Key `tt_desc` is not defined
+- Key `create_team_force_start` is not defined
+- Key `create_team_ready` is not defined
+- Key `create_team_not_ready` is not defined
+- Key `m16a4` is not defined
+- Key `region_oc` is not defined
+- Key `vaccine_syringe` is not defined
+- Key `vaccine_syringe_desc` is not defined
+- Key `second_wind` is not defined
+- Key `second_wind_desc` is not defined
+- Key `flechettes` is not defined
+- Key `flechettes_desc` is not defined
+- Key `sabot_rounds` is not defined
+- Key `sabot_rounds_desc` is not defined
+- Key `extended_mags` is not defined
+- Key `extended_mags_desc` is not defined
+- Key `demo_expert` is not defined
+- Key `demo_expert_desc` is not defined
+- Key `advanced_athletics` is not defined
+- Key `advanced_athletics_desc` is not defined
+- Key `toploaded` is not defined
+- Key `toploaded_desc` is not defined
+- Key `infinite_ammo` is not defined
+- Key `infinite_ammo_desc` is not defined
+- Key `field_medic` is not defined
+- Key `field_medic_desc` is not defined
+- Key `berserker` is not defined
+- Key `berserker_desc` is not defined
+- Key `close_quarters_combat` is not defined
+- Key `close_quarters_combat_desc` is not defined
+- Key `low_profile` is not defined
+- Key `low_profile_desc` is not defined
+- Key `combat_expert` is not defined
+- Key `combat_expert_desc` is not defined
+- Key `precision_recycling` is not defined
+- Key `precision_recycling_desc` is not defined
+- Key `plumpkin_gamble` is not defined
+- Key `plumpkin_gamble_desc` is not defined
+- Key `lycanthropy` is not defined
+- Key `lycanthropy_desc` is not defined
+- Key `bloodthirst` is not defined
+- Key `bloodthirst_desc` is not defined
+- Key `plumpkin_bomb` is not defined
+- Key `plumpkin_bomb_desc` is not defined
+- Key `shrouded` is not defined
+- Key `shrouded_desc` is not defined
+- Key `experimental_treatment` is not defined
+- Key `experimental_treatment_desc` is not defined
+- Key `engorged` is not defined
+- Key `engorged_desc` is not defined
+- Key `baby_plumpkin_pie` is not defined
+- Key `costumed` is not defined
+- Key `costumed_desc` is not defined
+- Key `torn_pockets` is not defined
+- Key `torn_pockets_desc` is not defined
+- Key `claustrophobic` is not defined
+- Key `claustrophobic_desc` is not defined
+- Key `laced_stimulants` is not defined
+- Key `laced_stimulants_desc` is not defined
+- Key `rotten_plumpkin` is not defined
+- Key `rotten_plumpkin_desc` is not defined
+- Key `infected` is not defined
+- Key `infected_desc` is not defined
+- Key `immunity` is not defined
+- Key `immunity_desc` is not defined
+- Key `partners` is not defined
+- Key `username_placeholder` is not defined
+
+## 🇧🇷 Português (Brasil) (96% Complete) - br.hjson
+
+### Invalid Keys
+
+- Key `create_team_waiting` is not a valid key
+- Key `baby_plumpkin_pie_desc` is not a valid key
+
+### Undefined Keys
+
+- Key `bindings_fullscreen` is not defined
+- Key `recording` is not defined
+- Key `settings_record_res` is not defined
+- Key `settings_lock_joysticks` is not defined
+- Key `settings_switch_joysticks` is not defined
+- Key `settings_left_joystick_color` is not defined
+- Key `settings_right_joystick_color` is not defined
+- Key `settings_normal_joystick_info` is not defined
+- Key `settings_switched_joystick_info` is not defined
+- Key `action_vaccine_syringe_use` is not defined
+- Key `interact_monument` is not defined
+- Key `bindings_screen_record` is not defined
+- Key `tt_desc` is not defined
+- Key `region_oc` is not defined
+- Key `vaccine_syringe` is not defined
+- Key `vaccine_syringe_desc` is not defined
+
+## 🇨🇿 Čeština (66% Complete) - cz.hjson
+
+### Invalid Keys
+
+- Key `create_team_waiting` is not a valid key
+
+### Undefined Keys
+
+- Key `msg_error_kicked_team` is not defined
+- Key `msg_punishment_vpn` is not defined
+- Key `msg_punishment_vpn_reason` is not defined
+- Key `msg_punishment_warn_agreement` is not defined
+- Key `warning_hw_accel_1` is not defined
+- Key `warning_hw_accel_2` is not defined
+- Key `warning_hw_accel_link` is not defined
+- Key `privacy` is not defined
+- Key `donate` is not defined
+- Key `wiki` is not defined
+- Key `bindings_fullscreen` is not defined
+- Key `recording` is not defined
+- Key `settings_ambience_volume` is not defined
+- Key `settings_ambient_particles` is not defined
+- Key `settings_record_res` is not defined
+- Key `settings_alt_texture_loading` is not defined
+- Key `settings_show_inout` is not defined
+- Key `settings_gyro_angle` is not defined
+- Key `settings_lock_joysticks` is not defined
+- Key `settings_switch_joysticks` is not defined
+- Key `settings_left_joystick_color` is not defined
+- Key `settings_right_joystick_color` is not defined
+- Key `settings_normal_joystick_info` is not defined
+- Key `settings_switched_joystick_info` is not defined
+- Key `settings_haptics` is not defined
+- Key `msg_your_team_eliminated` is not defined
+- Key `msg_the_team_eliminated` is not defined
+- Key `msg_not_enough_space` is not defined
+- Key `msg_item_already_equipped` is not defined
+- Key `msg_better_item_equipped` is not defined
+- Key `msg_cannot_use_flare` is not defined
+- Key `final_gas_waiting` is not defined
+- Key `final_gas_advancing` is not defined
+- Key `action_vaccine_syringe_use` is not defined
+- Key `interact_speaker` is not defined
+- Key `interact_monument` is not defined
+- Key `loading_fetching_data_failed` is not defined
+- Key `retry` is not defined
+- Key `bindings_explode_c4` is not defined
+- Key `bindings_screen_record` is not defined
+- Key `bindings_toggle pf_net_graph 0 1 2` is not defined
+- Key `kf_suicide_finished_off` is not defined
+- Key `kf_impact_of` is not defined
+- Key `km_finally_ended_yourself` is not defined
+- Key `km_finally_killed` is not defined
+- Key `km_gas_kill_you` is not defined
+- Key `km_gas_down_you` is not defined
+- Key `km_airdrop_kill_you` is not defined
+- Key `km_airdrop_down_you` is not defined
+- Key `km_knocked_you` is not defined
+- Key `km_finished_off_you` is not defined
+- Key `km_killed_you` is not defined
+- Key `km_suicide_down` is not defined
+- Key `km_suicide_finished_off` is not defined
+- Key `tt_desc` is not defined
+- Key `create_team_force_start` is not defined
+- Key `create_team_ready` is not defined
+- Key `create_team_not_ready` is not defined
+- Key `region_oc` is not defined
+- Key `vaccine_syringe` is not defined
+- Key `vaccine_syringe_desc` is not defined
+- Key `second_wind` is not defined
+- Key `second_wind_desc` is not defined
+- Key `flechettes` is not defined
+- Key `flechettes_desc` is not defined
+- Key `sabot_rounds` is not defined
+- Key `sabot_rounds_desc` is not defined
+- Key `extended_mags` is not defined
+- Key `extended_mags_desc` is not defined
+- Key `demo_expert` is not defined
+- Key `demo_expert_desc` is not defined
+- Key `advanced_athletics` is not defined
+- Key `advanced_athletics_desc` is not defined
+- Key `toploaded` is not defined
+- Key `toploaded_desc` is not defined
+- Key `infinite_ammo` is not defined
+- Key `infinite_ammo_desc` is not defined
+- Key `field_medic` is not defined
+- Key `field_medic_desc` is not defined
+- Key `berserker` is not defined
+- Key `berserker_desc` is not defined
+- Key `close_quarters_combat` is not defined
+- Key `close_quarters_combat_desc` is not defined
+- Key `low_profile` is not defined
+- Key `low_profile_desc` is not defined
+- Key `combat_expert` is not defined
+- Key `combat_expert_desc` is not defined
+- Key `precision_recycling` is not defined
+- Key `precision_recycling_desc` is not defined
+- Key `plumpkin_gamble` is not defined
+- Key `plumpkin_gamble_desc` is not defined
+- Key `lycanthropy` is not defined
+- Key `lycanthropy_desc` is not defined
+- Key `bloodthirst` is not defined
+- Key `bloodthirst_desc` is not defined
+- Key `plumpkin_bomb` is not defined
+- Key `plumpkin_bomb_desc` is not defined
+- Key `shrouded` is not defined
+- Key `shrouded_desc` is not defined
+- Key `experimental_treatment` is not defined
+- Key `experimental_treatment_desc` is not defined
+- Key `engorged` is not defined
+- Key `engorged_desc` is not defined
+- Key `baby_plumpkin_pie` is not defined
+- Key `costumed` is not defined
+- Key `costumed_desc` is not defined
+- Key `torn_pockets` is not defined
+- Key `torn_pockets_desc` is not defined
+- Key `claustrophobic` is not defined
+- Key `claustrophobic_desc` is not defined
+- Key `laced_stimulants` is not defined
+- Key `laced_stimulants_desc` is not defined
+- Key `rotten_plumpkin` is not defined
+- Key `rotten_plumpkin_desc` is not defined
+- Key `infected` is not defined
+- Key `infected_desc` is not defined
+- Key `immunity` is not defined
+- Key `immunity_desc` is not defined
+- Key `partners` is not defined
+- Key `username_placeholder` is not defined
+
+## 🇩🇪 Deutsch (75% Complete) - de.hjson
+
+### Invalid Keys
+
+- Key `create_team_waiting` is not a valid key
+
+### Undefined Keys
+
+- Key `warning_hw_accel_1` is not defined
+- Key `warning_hw_accel_2` is not defined
+- Key `warning_hw_accel_link` is not defined
+- Key `privacy` is not defined
+- Key `wiki` is not defined
+- Key `bindings_fullscreen` is not defined
+- Key `recording` is not defined
+- Key `settings_record_res` is not defined
+- Key `settings_show_inout` is not defined
+- Key `settings_gyro_angle` is not defined
+- Key `settings_lock_joysticks` is not defined
+- Key `settings_switch_joysticks` is not defined
+- Key `settings_left_joystick_color` is not defined
+- Key `settings_right_joystick_color` is not defined
+- Key `settings_normal_joystick_info` is not defined
+- Key `settings_switched_joystick_info` is not defined
+- Key `settings_haptics` is not defined
+- Key `msg_cannot_use_flare` is not defined
+- Key `final_gas_waiting` is not defined
+- Key `final_gas_advancing` is not defined
+- Key `action_vaccine_syringe_use` is not defined
+- Key `interact_monument` is not defined
+- Key `loading_fetching_data_failed` is not defined
+- Key `retry` is not defined
+- Key `bindings_screen_record` is not defined
+- Key `bindings_toggle pf_net_graph 0 1 2` is not defined
+- Key `tt_desc` is not defined
+- Key `region_oc` is not defined
+- Key `vaccine_syringe` is not defined
+- Key `vaccine_syringe_desc` is not defined
+- Key `second_wind` is not defined
+- Key `second_wind_desc` is not defined
+- Key `flechettes` is not defined
+- Key `flechettes_desc` is not defined
+- Key `sabot_rounds` is not defined
+- Key `sabot_rounds_desc` is not defined
+- Key `extended_mags` is not defined
+- Key `extended_mags_desc` is not defined
+- Key `demo_expert` is not defined
+- Key `demo_expert_desc` is not defined
+- Key `advanced_athletics` is not defined
+- Key `advanced_athletics_desc` is not defined
+- Key `toploaded` is not defined
+- Key `toploaded_desc` is not defined
+- Key `infinite_ammo` is not defined
+- Key `infinite_ammo_desc` is not defined
+- Key `field_medic` is not defined
+- Key `field_medic_desc` is not defined
+- Key `berserker` is not defined
+- Key `berserker_desc` is not defined
+- Key `close_quarters_combat` is not defined
+- Key `close_quarters_combat_desc` is not defined
+- Key `low_profile` is not defined
+- Key `low_profile_desc` is not defined
+- Key `combat_expert` is not defined
+- Key `combat_expert_desc` is not defined
+- Key `precision_recycling` is not defined
+- Key `precision_recycling_desc` is not defined
+- Key `plumpkin_gamble` is not defined
+- Key `plumpkin_gamble_desc` is not defined
+- Key `lycanthropy` is not defined
+- Key `lycanthropy_desc` is not defined
+- Key `bloodthirst` is not defined
+- Key `bloodthirst_desc` is not defined
+- Key `plumpkin_bomb` is not defined
+- Key `plumpkin_bomb_desc` is not defined
+- Key `shrouded` is not defined
+- Key `shrouded_desc` is not defined
+- Key `experimental_treatment` is not defined
+- Key `experimental_treatment_desc` is not defined
+- Key `engorged` is not defined
+- Key `engorged_desc` is not defined
+- Key `baby_plumpkin_pie` is not defined
+- Key `costumed` is not defined
+- Key `costumed_desc` is not defined
+- Key `torn_pockets` is not defined
+- Key `torn_pockets_desc` is not defined
+- Key `claustrophobic` is not defined
+- Key `claustrophobic_desc` is not defined
+- Key `laced_stimulants` is not defined
+- Key `laced_stimulants_desc` is not defined
+- Key `rotten_plumpkin` is not defined
+- Key `rotten_plumpkin_desc` is not defined
+- Key `infected` is not defined
+- Key `infected_desc` is not defined
+- Key `immunity` is not defined
+- Key `immunity_desc` is not defined
+- Key `partners` is not defined
+- Key `username_placeholder` is not defined
+
+## 🇬🇧 English (100% Complete) - en.hjson
+
+### (No Invalid Keys)
+
+### (No Undefined Keys)
+
+## 🇪🇸 Español (71% Complete) - es.hjson
+
+### Invalid Keys
+
+- Key `create_team_waiting` is not a valid key
+
+### Undefined Keys
+
+- Key `msg_error_kicked_team` is not defined
+- Key `warning_hw_accel_1` is not defined
+- Key `warning_hw_accel_2` is not defined
+- Key `warning_hw_accel_link` is not defined
+- Key `privacy` is not defined
+- Key `wiki` is not defined
+- Key `bindings_fullscreen` is not defined
+- Key `recording` is not defined
+- Key `settings_record_res` is not defined
+- Key `settings_alt_texture_loading` is not defined
+- Key `settings_show_inout` is not defined
+- Key `settings_lock_joysticks` is not defined
+- Key `settings_switch_joysticks` is not defined
+- Key `settings_left_joystick_color` is not defined
+- Key `settings_right_joystick_color` is not defined
+- Key `settings_normal_joystick_info` is not defined
+- Key `settings_switched_joystick_info` is not defined
+- Key `msg_cannot_use_flare` is not defined
+- Key `final_gas_waiting` is not defined
+- Key `final_gas_advancing` is not defined
+- Key `action_vaccine_syringe_use` is not defined
+- Key `interact_monument` is not defined
+- Key `loading_fetching_data_failed` is not defined
+- Key `retry` is not defined
+- Key `bindings_screen_record` is not defined
+- Key `bindings_toggle pf_net_graph 0 1 2` is not defined
+- Key `kf_suicide_finished_off` is not defined
+- Key `kf_impact_of` is not defined
+- Key `km_finally_ended_yourself` is not defined
+- Key `km_finally_killed` is not defined
+- Key `km_gas_kill_you` is not defined
+- Key `km_gas_down_you` is not defined
+- Key `km_airdrop_kill_you` is not defined
+- Key `km_airdrop_down_you` is not defined
+- Key `km_knocked_you` is not defined
+- Key `km_finished_off_you` is not defined
+- Key `km_killed_you` is not defined
+- Key `km_suicide_down` is not defined
+- Key `km_suicide_finished_off` is not defined
+- Key `tt_desc` is not defined
+- Key `create_team_force_start` is not defined
+- Key `create_team_not_ready` is not defined
+- Key `region_oc` is not defined
+- Key `vaccine_syringe` is not defined
+- Key `vaccine_syringe_desc` is not defined
+- Key `second_wind` is not defined
+- Key `second_wind_desc` is not defined
+- Key `flechettes` is not defined
+- Key `flechettes_desc` is not defined
+- Key `sabot_rounds` is not defined
+- Key `sabot_rounds_desc` is not defined
+- Key `extended_mags` is not defined
+- Key `extended_mags_desc` is not defined
+- Key `demo_expert` is not defined
+- Key `demo_expert_desc` is not defined
+- Key `advanced_athletics` is not defined
+- Key `advanced_athletics_desc` is not defined
+- Key `toploaded` is not defined
+- Key `toploaded_desc` is not defined
+- Key `infinite_ammo` is not defined
+- Key `infinite_ammo_desc` is not defined
+- Key `field_medic` is not defined
+- Key `field_medic_desc` is not defined
+- Key `berserker` is not defined
+- Key `berserker_desc` is not defined
+- Key `close_quarters_combat` is not defined
+- Key `close_quarters_combat_desc` is not defined
+- Key `low_profile` is not defined
+- Key `low_profile_desc` is not defined
+- Key `combat_expert` is not defined
+- Key `combat_expert_desc` is not defined
+- Key `precision_recycling` is not defined
+- Key `precision_recycling_desc` is not defined
+- Key `plumpkin_gamble` is not defined
+- Key `plumpkin_gamble_desc` is not defined
+- Key `lycanthropy` is not defined
+- Key `lycanthropy_desc` is not defined
+- Key `bloodthirst` is not defined
+- Key `bloodthirst_desc` is not defined
+- Key `plumpkin_bomb` is not defined
+- Key `plumpkin_bomb_desc` is not defined
+- Key `shrouded` is not defined
+- Key `shrouded_desc` is not defined
+- Key `experimental_treatment` is not defined
+- Key `experimental_treatment_desc` is not defined
+- Key `engorged` is not defined
+- Key `engorged_desc` is not defined
+- Key `baby_plumpkin_pie` is not defined
+- Key `costumed` is not defined
+- Key `costumed_desc` is not defined
+- Key `torn_pockets` is not defined
+- Key `torn_pockets_desc` is not defined
+- Key `claustrophobic` is not defined
+- Key `claustrophobic_desc` is not defined
+- Key `laced_stimulants` is not defined
+- Key `laced_stimulants_desc` is not defined
+- Key `rotten_plumpkin` is not defined
+- Key `rotten_plumpkin_desc` is not defined
+- Key `infected` is not defined
+- Key `infected_desc` is not defined
+- Key `immunity` is not defined
+- Key `immunity_desc` is not defined
+- Key `partners` is not defined
+- Key `username_placeholder` is not defined
+
+## 🇪🇪 eesti (71% Complete) - et.hjson
+
+### Invalid Keys
+
+- Key `kf_message_grammar` is not a valid key
+- Key `create_team_waiting` is not a valid key
+
+### Undefined Keys
+
+- Key `msg_error_kicked_team` is not defined
+- Key `warning_hw_accel_1` is not defined
+- Key `warning_hw_accel_2` is not defined
+- Key `warning_hw_accel_link` is not defined
+- Key `privacy` is not defined
+- Key `wiki` is not defined
+- Key `bindings_fullscreen` is not defined
+- Key `recording` is not defined
+- Key `settings_record_res` is not defined
+- Key `settings_alt_texture_loading` is not defined
+- Key `settings_show_inout` is not defined
+- Key `settings_lock_joysticks` is not defined
+- Key `settings_switch_joysticks` is not defined
+- Key `settings_left_joystick_color` is not defined
+- Key `settings_right_joystick_color` is not defined
+- Key `settings_normal_joystick_info` is not defined
+- Key `settings_switched_joystick_info` is not defined
+- Key `msg_cannot_use_flare` is not defined
+- Key `final_gas_waiting` is not defined
+- Key `final_gas_advancing` is not defined
+- Key `action_vaccine_syringe_use` is not defined
+- Key `interact_monument` is not defined
+- Key `loading_fetching_data_failed` is not defined
+- Key `retry` is not defined
+- Key `bindings_screen_record` is not defined
+- Key `bindings_toggle pf_net_graph 0 1 2` is not defined
+- Key `kf_suicide_finished_off` is not defined
+- Key `kf_impact_of` is not defined
+- Key `km_finally_ended_yourself` is not defined
+- Key `km_finally_killed` is not defined
+- Key `km_gas_kill_you` is not defined
+- Key `km_gas_down_you` is not defined
+- Key `km_airdrop_kill_you` is not defined
+- Key `km_airdrop_down_you` is not defined
+- Key `km_knocked_you` is not defined
+- Key `km_finished_off_you` is not defined
+- Key `km_killed_you` is not defined
+- Key `km_suicide_down` is not defined
+- Key `km_suicide_finished_off` is not defined
+- Key `tt_desc` is not defined
+- Key `create_team_force_start` is not defined
+- Key `create_team_not_ready` is not defined
+- Key `region_oc` is not defined
+- Key `vaccine_syringe` is not defined
+- Key `vaccine_syringe_desc` is not defined
+- Key `second_wind` is not defined
+- Key `second_wind_desc` is not defined
+- Key `flechettes` is not defined
+- Key `flechettes_desc` is not defined
+- Key `sabot_rounds` is not defined
+- Key `sabot_rounds_desc` is not defined
+- Key `extended_mags` is not defined
+- Key `extended_mags_desc` is not defined
+- Key `demo_expert` is not defined
+- Key `demo_expert_desc` is not defined
+- Key `advanced_athletics` is not defined
+- Key `advanced_athletics_desc` is not defined
+- Key `toploaded` is not defined
+- Key `toploaded_desc` is not defined
+- Key `infinite_ammo` is not defined
+- Key `infinite_ammo_desc` is not defined
+- Key `field_medic` is not defined
+- Key `field_medic_desc` is not defined
+- Key `berserker` is not defined
+- Key `berserker_desc` is not defined
+- Key `close_quarters_combat` is not defined
+- Key `close_quarters_combat_desc` is not defined
+- Key `low_profile` is not defined
+- Key `low_profile_desc` is not defined
+- Key `combat_expert` is not defined
+- Key `combat_expert_desc` is not defined
+- Key `precision_recycling` is not defined
+- Key `precision_recycling_desc` is not defined
+- Key `plumpkin_gamble` is not defined
+- Key `plumpkin_gamble_desc` is not defined
+- Key `lycanthropy` is not defined
+- Key `lycanthropy_desc` is not defined
+- Key `bloodthirst` is not defined
+- Key `bloodthirst_desc` is not defined
+- Key `plumpkin_bomb` is not defined
+- Key `plumpkin_bomb_desc` is not defined
+- Key `shrouded` is not defined
+- Key `shrouded_desc` is not defined
+- Key `experimental_treatment` is not defined
+- Key `experimental_treatment_desc` is not defined
+- Key `engorged` is not defined
+- Key `engorged_desc` is not defined
+- Key `baby_plumpkin_pie` is not defined
+- Key `costumed` is not defined
+- Key `costumed_desc` is not defined
+- Key `torn_pockets` is not defined
+- Key `torn_pockets_desc` is not defined
+- Key `claustrophobic` is not defined
+- Key `claustrophobic_desc` is not defined
+- Key `laced_stimulants` is not defined
+- Key `laced_stimulants_desc` is not defined
+- Key `rotten_plumpkin` is not defined
+- Key `rotten_plumpkin_desc` is not defined
+- Key `infected` is not defined
+- Key `infected_desc` is not defined
+- Key `immunity` is not defined
+- Key `immunity_desc` is not defined
+- Key `partners` is not defined
+- Key `username_placeholder` is not defined
+
+## 🇫🇮 suomi (69% Complete) - fi.hjson
+
+### Invalid Keys
+
+- Key `create_team_waiting` is not a valid key
+
+### Undefined Keys
+
+- Key `msg_error_kicked_team` is not defined
+- Key `msg_punishment_warn_agreement` is not defined
+- Key `warning_hw_accel_1` is not defined
+- Key `warning_hw_accel_2` is not defined
+- Key `warning_hw_accel_link` is not defined
+- Key `privacy` is not defined
+- Key `wiki` is not defined
+- Key `bindings_fullscreen` is not defined
+- Key `recording` is not defined
+- Key `settings_record_res` is not defined
+- Key `settings_alt_texture_loading` is not defined
+- Key `settings_show_inout` is not defined
+- Key `settings_gyro_angle` is not defined
+- Key `settings_lock_joysticks` is not defined
+- Key `settings_switch_joysticks` is not defined
+- Key `settings_left_joystick_color` is not defined
+- Key `settings_right_joystick_color` is not defined
+- Key `settings_normal_joystick_info` is not defined
+- Key `settings_switched_joystick_info` is not defined
+- Key `settings_haptics` is not defined
+- Key `msg_your_team_eliminated` is not defined
+- Key `msg_the_team_eliminated` is not defined
+- Key `msg_cannot_use_flare` is not defined
+- Key `final_gas_waiting` is not defined
+- Key `final_gas_advancing` is not defined
+- Key `action_vaccine_syringe_use` is not defined
+- Key `interact_monument` is not defined
+- Key `loading_fetching_data_failed` is not defined
+- Key `retry` is not defined
+- Key `bindings_screen_record` is not defined
+- Key `bindings_toggle pf_net_graph 0 1 2` is not defined
+- Key `kf_suicide_finished_off` is not defined
+- Key `kf_impact_of` is not defined
+- Key `km_finally_ended_yourself` is not defined
+- Key `km_finally_killed` is not defined
+- Key `km_gas_kill_you` is not defined
+- Key `km_gas_down_you` is not defined
+- Key `km_airdrop_kill_you` is not defined
+- Key `km_airdrop_down_you` is not defined
+- Key `km_knocked_you` is not defined
+- Key `km_finished_off_you` is not defined
+- Key `km_killed_you` is not defined
+- Key `km_suicide_down` is not defined
+- Key `km_suicide_finished_off` is not defined
+- Key `tt_desc` is not defined
+- Key `create_team_force_start` is not defined
+- Key `create_team_not_ready` is not defined
+- Key `region_oc` is not defined
+- Key `vaccine_syringe` is not defined
+- Key `vaccine_syringe_desc` is not defined
+- Key `second_wind` is not defined
+- Key `second_wind_desc` is not defined
+- Key `flechettes` is not defined
+- Key `flechettes_desc` is not defined
+- Key `sabot_rounds` is not defined
+- Key `sabot_rounds_desc` is not defined
+- Key `extended_mags` is not defined
+- Key `extended_mags_desc` is not defined
+- Key `demo_expert` is not defined
+- Key `demo_expert_desc` is not defined
+- Key `advanced_athletics` is not defined
+- Key `advanced_athletics_desc` is not defined
+- Key `toploaded` is not defined
+- Key `toploaded_desc` is not defined
+- Key `infinite_ammo` is not defined
+- Key `infinite_ammo_desc` is not defined
+- Key `field_medic` is not defined
+- Key `field_medic_desc` is not defined
+- Key `berserker` is not defined
+- Key `berserker_desc` is not defined
+- Key `close_quarters_combat` is not defined
+- Key `close_quarters_combat_desc` is not defined
+- Key `low_profile` is not defined
+- Key `low_profile_desc` is not defined
+- Key `combat_expert` is not defined
+- Key `combat_expert_desc` is not defined
+- Key `precision_recycling` is not defined
+- Key `precision_recycling_desc` is not defined
+- Key `plumpkin_gamble` is not defined
+- Key `plumpkin_gamble_desc` is not defined
+- Key `lycanthropy` is not defined
+- Key `lycanthropy_desc` is not defined
+- Key `bloodthirst` is not defined
+- Key `bloodthirst_desc` is not defined
+- Key `plumpkin_bomb` is not defined
+- Key `plumpkin_bomb_desc` is not defined
+- Key `shrouded` is not defined
+- Key `shrouded_desc` is not defined
+- Key `experimental_treatment` is not defined
+- Key `experimental_treatment_desc` is not defined
+- Key `engorged` is not defined
+- Key `engorged_desc` is not defined
+- Key `baby_plumpkin_pie` is not defined
+- Key `costumed` is not defined
+- Key `costumed_desc` is not defined
+- Key `torn_pockets` is not defined
+- Key `torn_pockets_desc` is not defined
+- Key `claustrophobic` is not defined
+- Key `claustrophobic_desc` is not defined
+- Key `laced_stimulants` is not defined
+- Key `laced_stimulants_desc` is not defined
+- Key `rotten_plumpkin` is not defined
+- Key `rotten_plumpkin_desc` is not defined
+- Key `infected` is not defined
+- Key `infected_desc` is not defined
+- Key `immunity` is not defined
+- Key `immunity_desc` is not defined
+- Key `partners` is not defined
+- Key `username_placeholder` is not defined
+
+## 🇫🇷 Français (89% Complete) - fr.hjson
+
+### Invalid Keys
+
+- Key `create_team_waiting` is not a valid key
+- Key `create_team_share` is not a valid key
+
+### Undefined Keys
+
+- Key `msg_error_kicked_team` is not defined
+- Key `warning_hw_accel_1` is not defined
+- Key `warning_hw_accel_2` is not defined
+- Key `warning_hw_accel_link` is not defined
+- Key `privacy` is not defined
+- Key `bindings_fullscreen` is not defined
+- Key `recording` is not defined
+- Key `settings_record_res` is not defined
+- Key `settings_alt_texture_loading` is not defined
+- Key `settings_lock_joysticks` is not defined
+- Key `settings_switch_joysticks` is not defined
+- Key `settings_left_joystick_color` is not defined
+- Key `settings_right_joystick_color` is not defined
+- Key `settings_normal_joystick_info` is not defined
+- Key `settings_switched_joystick_info` is not defined
+- Key `final_gas_waiting` is not defined
+- Key `final_gas_advancing` is not defined
+- Key `action_vaccine_syringe_use` is not defined
+- Key `interact_monument` is not defined
+- Key `loading_fetching_data_failed` is not defined
+- Key `retry` is not defined
+- Key `bindings_screen_record` is not defined
+- Key `kf_suicide_finished_off` is not defined
+- Key `kf_impact_of` is not defined
+- Key `km_finally_ended_yourself` is not defined
+- Key `km_finally_killed` is not defined
+- Key `km_gas_kill_you` is not defined
+- Key `km_gas_down_you` is not defined
+- Key `km_airdrop_kill_you` is not defined
+- Key `km_airdrop_down_you` is not defined
+- Key `km_knocked_you` is not defined
+- Key `km_finished_off_you` is not defined
+- Key `km_killed_you` is not defined
+- Key `km_suicide_down` is not defined
+- Key `km_suicide_finished_off` is not defined
+- Key `tt_desc` is not defined
+- Key `create_team_force_start` is not defined
+- Key `create_team_not_ready` is not defined
+- Key `region_oc` is not defined
+- Key `vaccine_syringe` is not defined
+- Key `vaccine_syringe_desc` is not defined
+
+## 🇬🇷 Ελληνικά (76% Complete) - gr.hjson
+
+### Invalid Keys
+
+- Key `create_team_waiting` is not a valid key
+
+### Undefined Keys
+
+- Key `msg_error_kicked_team` is not defined
+- Key `warning_hw_accel_1` is not defined
+- Key `warning_hw_accel_2` is not defined
+- Key `warning_hw_accel_link` is not defined
+- Key `privacy` is not defined
+- Key `bindings_fullscreen` is not defined
+- Key `recording` is not defined
+- Key `settings_record_res` is not defined
+- Key `settings_lock_joysticks` is not defined
+- Key `settings_switch_joysticks` is not defined
+- Key `settings_left_joystick_color` is not defined
+- Key `settings_right_joystick_color` is not defined
+- Key `settings_normal_joystick_info` is not defined
+- Key `settings_switched_joystick_info` is not defined
+- Key `msg_cannot_use_flare` is not defined
+- Key `final_gas_waiting` is not defined
+- Key `final_gas_advancing` is not defined
+- Key `action_vaccine_syringe_use` is not defined
+- Key `interact_monument` is not defined
+- Key `bindings_screen_record` is not defined
+- Key `tt_desc` is not defined
+- Key `create_team_force_start` is not defined
+- Key `create_team_not_ready` is not defined
+- Key `region_oc` is not defined
+- Key `vaccine_syringe` is not defined
+- Key `vaccine_syringe_desc` is not defined
+- Key `second_wind` is not defined
+- Key `second_wind_desc` is not defined
+- Key `flechettes` is not defined
+- Key `flechettes_desc` is not defined
+- Key `sabot_rounds` is not defined
+- Key `sabot_rounds_desc` is not defined
+- Key `extended_mags` is not defined
+- Key `extended_mags_desc` is not defined
+- Key `demo_expert` is not defined
+- Key `demo_expert_desc` is not defined
+- Key `advanced_athletics` is not defined
+- Key `advanced_athletics_desc` is not defined
+- Key `toploaded` is not defined
+- Key `toploaded_desc` is not defined
+- Key `infinite_ammo` is not defined
+- Key `infinite_ammo_desc` is not defined
+- Key `field_medic` is not defined
+- Key `field_medic_desc` is not defined
+- Key `berserker` is not defined
+- Key `berserker_desc` is not defined
+- Key `close_quarters_combat` is not defined
+- Key `close_quarters_combat_desc` is not defined
+- Key `low_profile` is not defined
+- Key `low_profile_desc` is not defined
+- Key `combat_expert` is not defined
+- Key `combat_expert_desc` is not defined
+- Key `precision_recycling` is not defined
+- Key `precision_recycling_desc` is not defined
+- Key `plumpkin_gamble` is not defined
+- Key `plumpkin_gamble_desc` is not defined
+- Key `lycanthropy` is not defined
+- Key `lycanthropy_desc` is not defined
+- Key `bloodthirst` is not defined
+- Key `bloodthirst_desc` is not defined
+- Key `plumpkin_bomb` is not defined
+- Key `plumpkin_bomb_desc` is not defined
+- Key `shrouded` is not defined
+- Key `shrouded_desc` is not defined
+- Key `experimental_treatment` is not defined
+- Key `experimental_treatment_desc` is not defined
+- Key `engorged` is not defined
+- Key `engorged_desc` is not defined
+- Key `baby_plumpkin_pie` is not defined
+- Key `costumed` is not defined
+- Key `costumed_desc` is not defined
+- Key `torn_pockets` is not defined
+- Key `torn_pockets_desc` is not defined
+- Key `claustrophobic` is not defined
+- Key `claustrophobic_desc` is not defined
+- Key `laced_stimulants` is not defined
+- Key `laced_stimulants_desc` is not defined
+- Key `rotten_plumpkin` is not defined
+- Key `rotten_plumpkin_desc` is not defined
+- Key `infected` is not defined
+- Key `infected_desc` is not defined
+- Key `immunity` is not defined
+- Key `immunity_desc` is not defined
+- Key `partners` is not defined
+- Key `username_placeholder` is not defined
+
+## 🇭🇰 🇲🇴 廣東話(香港/澳門) (65% Complete) - hk_mo.hjson
+
+### Invalid Keys
+
+- Key `create_team_waiting` is not a valid key
+
+### Undefined Keys
+
+- Key `msg_error_joining_team` is not defined
+- Key `msg_error_kicked_team` is not defined
+- Key `msg_punishment_vpn` is not defined
+- Key `msg_punishment_vpn_reason` is not defined
+- Key `msg_punishment_warn_agreement` is not defined
+- Key `warning_hw_accel_1` is not defined
+- Key `warning_hw_accel_2` is not defined
+- Key `warning_hw_accel_link` is not defined
+- Key `privacy` is not defined
+- Key `donate` is not defined
+- Key `wiki` is not defined
+- Key `bindings_fullscreen` is not defined
+- Key `recording` is not defined
+- Key `copied` is not defined
+- Key `settings_ambience_volume` is not defined
+- Key `settings_ambient_particles` is not defined
+- Key `settings_record_res` is not defined
+- Key `settings_alt_texture_loading` is not defined
+- Key `settings_show_inout` is not defined
+- Key `settings_gyro_angle` is not defined
+- Key `settings_lock_joysticks` is not defined
+- Key `settings_switch_joysticks` is not defined
+- Key `settings_left_joystick_color` is not defined
+- Key `settings_right_joystick_color` is not defined
+- Key `settings_normal_joystick_info` is not defined
+- Key `settings_switched_joystick_info` is not defined
+- Key `settings_haptics` is not defined
+- Key `msg_your_team_eliminated` is not defined
+- Key `msg_the_team_eliminated` is not defined
+- Key `msg_not_enough_space` is not defined
+- Key `msg_item_already_equipped` is not defined
+- Key `msg_better_item_equipped` is not defined
+- Key `msg_cannot_use_flare` is not defined
+- Key `final_gas_waiting` is not defined
+- Key `final_gas_advancing` is not defined
+- Key `action_vaccine_syringe_use` is not defined
+- Key `interact_speaker` is not defined
+- Key `interact_monument` is not defined
+- Key `loading_fetching_data_failed` is not defined
+- Key `retry` is not defined
+- Key `bindings_explode_c4` is not defined
+- Key `bindings_screen_record` is not defined
+- Key `bindings_toggle pf_net_graph 0 1 2` is not defined
+- Key `kf_suicide_finished_off` is not defined
+- Key `kf_finished_off_kill` is not defined
+- Key `kf_finished_off_down` is not defined
+- Key `kf_impact_of` is not defined
+- Key `km_finally_ended_yourself` is not defined
+- Key `km_finally_killed` is not defined
+- Key `km_gas_kill_you` is not defined
+- Key `km_gas_down_you` is not defined
+- Key `km_airdrop_kill_you` is not defined
+- Key `km_airdrop_down_you` is not defined
+- Key `km_knocked_you` is not defined
+- Key `km_finished_off_you` is not defined
+- Key `km_killed_you` is not defined
+- Key `km_suicide_down` is not defined
+- Key `km_suicide_finished_off` is not defined
+- Key `tt_desc` is not defined
+- Key `create_team_force_start` is not defined
+- Key `create_team_ready` is not defined
+- Key `create_team_not_ready` is not defined
+- Key `region_oc` is not defined
+- Key `vaccine_syringe` is not defined
+- Key `vaccine_syringe_desc` is not defined
+- Key `second_wind` is not defined
+- Key `second_wind_desc` is not defined
+- Key `flechettes` is not defined
+- Key `flechettes_desc` is not defined
+- Key `sabot_rounds` is not defined
+- Key `sabot_rounds_desc` is not defined
+- Key `extended_mags` is not defined
+- Key `extended_mags_desc` is not defined
+- Key `demo_expert` is not defined
+- Key `demo_expert_desc` is not defined
+- Key `advanced_athletics` is not defined
+- Key `advanced_athletics_desc` is not defined
+- Key `toploaded` is not defined
+- Key `toploaded_desc` is not defined
+- Key `infinite_ammo` is not defined
+- Key `infinite_ammo_desc` is not defined
+- Key `field_medic` is not defined
+- Key `field_medic_desc` is not defined
+- Key `berserker` is not defined
+- Key `berserker_desc` is not defined
+- Key `close_quarters_combat` is not defined
+- Key `close_quarters_combat_desc` is not defined
+- Key `low_profile` is not defined
+- Key `low_profile_desc` is not defined
+- Key `combat_expert` is not defined
+- Key `combat_expert_desc` is not defined
+- Key `precision_recycling` is not defined
+- Key `precision_recycling_desc` is not defined
+- Key `plumpkin_gamble` is not defined
+- Key `plumpkin_gamble_desc` is not defined
+- Key `lycanthropy` is not defined
+- Key `lycanthropy_desc` is not defined
+- Key `bloodthirst` is not defined
+- Key `bloodthirst_desc` is not defined
+- Key `plumpkin_bomb` is not defined
+- Key `plumpkin_bomb_desc` is not defined
+- Key `shrouded` is not defined
+- Key `shrouded_desc` is not defined
+- Key `experimental_treatment` is not defined
+- Key `experimental_treatment_desc` is not defined
+- Key `engorged` is not defined
+- Key `engorged_desc` is not defined
+- Key `baby_plumpkin_pie` is not defined
+- Key `costumed` is not defined
+- Key `costumed_desc` is not defined
+- Key `torn_pockets` is not defined
+- Key `torn_pockets_desc` is not defined
+- Key `claustrophobic` is not defined
+- Key `claustrophobic_desc` is not defined
+- Key `laced_stimulants` is not defined
+- Key `laced_stimulants_desc` is not defined
+- Key `rotten_plumpkin` is not defined
+- Key `rotten_plumpkin_desc` is not defined
+- Key `infected` is not defined
+- Key `infected_desc` is not defined
+- Key `immunity` is not defined
+- Key `immunity_desc` is not defined
+- Key `partners` is not defined
+- Key `username_placeholder` is not defined
+
+## 🇭🇺 Magyar (99% Complete) - hu.hjson
+
+### (No Invalid Keys)
+
+### Undefined Keys
+
+- Key `msg_cannot_use_flare` is not defined
+- Key `partners` is not defined
+- Key `username_placeholder` is not defined
+
+## 🇮🇹 Italiano (64% Complete) - it.hjson
+
+### Invalid Keys
+
+- Key `msg_warning` is not a valid key
+- Key `msg_warning_msg` is not a valid key
+- Key `msg_temp_ban` is not a valid key
+- Key `msg_temp_ban_msg` is not a valid key
+- Key `msg_perma_ban` is not a valid key
+- Key `msg_perma_ban_msg` is not a valid key
+- Key `create_team_waiting` is not a valid key
+- Key `saf_200` is not a valid key
+- Key `desstroyer_of_worlds` is not a valid key
+- Key `s_g17` is not a valid key
+
+### Undefined Keys
+
+- Key `msg_error_kicked_team` is not defined
+- Key `msg_punishment_warn` is not defined
+- Key `msg_punishment_warn_reason` is not defined
+- Key `msg_punishment_temp` is not defined
+- Key `msg_punishment_temp_reason` is not defined
+- Key `msg_punishment_perma` is not defined
+- Key `msg_punishment_perma_reason` is not defined
+- Key `msg_punishment_vpn` is not defined
+- Key `msg_punishment_vpn_reason` is not defined
+- Key `msg_punishment_warn_agreement` is not defined
+- Key `warning_hw_accel_1` is not defined
+- Key `warning_hw_accel_2` is not defined
+- Key `warning_hw_accel_link` is not defined
+- Key `privacy` is not defined
+- Key `donate` is not defined
+- Key `wiki` is not defined
+- Key `bindings_fullscreen` is not defined
+- Key `recording` is not defined
+- Key `settings_ambience_volume` is not defined
+- Key `settings_ambient_particles` is not defined
+- Key `settings_record_res` is not defined
+- Key `settings_alt_texture_loading` is not defined
+- Key `settings_show_inout` is not defined
+- Key `settings_gyro_angle` is not defined
+- Key `settings_lock_joysticks` is not defined
+- Key `settings_switch_joysticks` is not defined
+- Key `settings_left_joystick_color` is not defined
+- Key `settings_right_joystick_color` is not defined
+- Key `settings_normal_joystick_info` is not defined
+- Key `settings_switched_joystick_info` is not defined
+- Key `settings_haptics` is not defined
+- Key `msg_your_team_eliminated` is not defined
+- Key `msg_the_team_eliminated` is not defined
+- Key `msg_not_enough_space` is not defined
+- Key `msg_item_already_equipped` is not defined
+- Key `msg_better_item_equipped` is not defined
+- Key `msg_cannot_use_flare` is not defined
+- Key `final_gas_waiting` is not defined
+- Key `final_gas_advancing` is not defined
+- Key `action_vaccine_syringe_use` is not defined
+- Key `interact_headquarters_security_desk` is not defined
+- Key `interact_speaker` is not defined
+- Key `interact_monument` is not defined
+- Key `loading_fetching_data_failed` is not defined
+- Key `retry` is not defined
+- Key `bindings_explode_c4` is not defined
+- Key `bindings_screen_record` is not defined
+- Key `bindings_toggle pf_net_graph 0 1 2` is not defined
+- Key `kf_suicide_finished_off` is not defined
+- Key `kf_finished_off_kill` is not defined
+- Key `kf_finished_off_down` is not defined
+- Key `kf_impact_of` is not defined
+- Key `km_finally_ended_yourself` is not defined
+- Key `km_finally_killed` is not defined
+- Key `km_gas_kill_you` is not defined
+- Key `km_gas_down_you` is not defined
+- Key `km_airdrop_kill_you` is not defined
+- Key `km_airdrop_down_you` is not defined
+- Key `km_knocked_you` is not defined
+- Key `km_finished_off_you` is not defined
+- Key `km_killed_you` is not defined
+- Key `km_suicide_down` is not defined
+- Key `km_suicide_finished_off` is not defined
+- Key `tt_desc` is not defined
+- Key `create_team_force_start` is not defined
+- Key `create_team_ready` is not defined
+- Key `create_team_not_ready` is not defined
+- Key `m16a4` is not defined
+- Key `region_oc` is not defined
+- Key `vaccine_syringe` is not defined
+- Key `vaccine_syringe_desc` is not defined
+- Key `second_wind` is not defined
+- Key `second_wind_desc` is not defined
+- Key `flechettes` is not defined
+- Key `flechettes_desc` is not defined
+- Key `sabot_rounds` is not defined
+- Key `sabot_rounds_desc` is not defined
+- Key `extended_mags` is not defined
+- Key `extended_mags_desc` is not defined
+- Key `demo_expert` is not defined
+- Key `demo_expert_desc` is not defined
+- Key `advanced_athletics` is not defined
+- Key `advanced_athletics_desc` is not defined
+- Key `toploaded` is not defined
+- Key `toploaded_desc` is not defined
+- Key `infinite_ammo` is not defined
+- Key `infinite_ammo_desc` is not defined
+- Key `field_medic` is not defined
+- Key `field_medic_desc` is not defined
+- Key `berserker` is not defined
+- Key `berserker_desc` is not defined
+- Key `close_quarters_combat` is not defined
+- Key `close_quarters_combat_desc` is not defined
+- Key `low_profile` is not defined
+- Key `low_profile_desc` is not defined
+- Key `combat_expert` is not defined
+- Key `combat_expert_desc` is not defined
+- Key `precision_recycling` is not defined
+- Key `precision_recycling_desc` is not defined
+- Key `plumpkin_gamble` is not defined
+- Key `plumpkin_gamble_desc` is not defined
+- Key `lycanthropy` is not defined
+- Key `lycanthropy_desc` is not defined
+- Key `bloodthirst` is not defined
+- Key `bloodthirst_desc` is not defined
+- Key `plumpkin_bomb` is not defined
+- Key `plumpkin_bomb_desc` is not defined
+- Key `shrouded` is not defined
+- Key `shrouded_desc` is not defined
+- Key `experimental_treatment` is not defined
+- Key `experimental_treatment_desc` is not defined
+- Key `engorged` is not defined
+- Key `engorged_desc` is not defined
+- Key `baby_plumpkin_pie` is not defined
+- Key `costumed` is not defined
+- Key `costumed_desc` is not defined
+- Key `torn_pockets` is not defined
+- Key `torn_pockets_desc` is not defined
+- Key `claustrophobic` is not defined
+- Key `claustrophobic_desc` is not defined
+- Key `laced_stimulants` is not defined
+- Key `laced_stimulants_desc` is not defined
+- Key `rotten_plumpkin` is not defined
+- Key `rotten_plumpkin_desc` is not defined
+- Key `infected` is not defined
+- Key `infected_desc` is not defined
+- Key `immunity` is not defined
+- Key `immunity_desc` is not defined
+- Key `partners` is not defined
+- Key `username_placeholder` is not defined
+
+## 🇯🇵 日本語 (100% Complete) - jp.hjson
+
+### Invalid Keys
+
+- Key `flues` is not a valid key
+- Key `mp40` is not a valid key
+- Key `12g` is not a valid key
+- Key `556mm` is not a valid key
+- Key `762mm` is not a valid key
+- Key `9mm` is not a valid key
+- Key `50cal` is not a valid key
+- Key `338lap` is not a valid key
+- Key `firework_rocket` is not a valid key
+- Key `power_cell` is not a valid key
+- Key `bb` is not a valid key
+- Key `seed` is not a valid key
+- Key `needle` is not a valid key
+- Key `plumpkin_ammo` is not a valid key
+- Key `barrel_explosion` is not a valid key
+- Key `stove_explosion` is not a valid key
+- Key `fireplace_explosion` is not a valid key
+- Key `control_panel_explosion` is not a valid key
+- Key `super_barrel_explosion` is not a valid key
+- Key `small_refinery_barrel_explosion` is not a valid key
+- Key `large_refinery_barrel_explosion` is not a valid key
+- Key `firework_launcher_explosion` is not a valid key
+- Key `confetti_grenade_explosion` is not a valid key
+- Key `frag_grenade_explosion` is not a valid key
+- Key `pumpkin_explosion` is not a valid key
+- Key `seed_explosion` is not a valid key
+- Key `bdg_developr` is not a valid key
+- Key `bdg_dev_managr` is not a valid key
+- Key `bdg_designr` is not a valid key
+- Key `bdg_lead_designr` is not a valid key
+- Key `bdg_vip_designr` is not a valid key
+- Key `bdg_composr` is not a valid key
+- Key `bdg_lead_composr` is not a valid key
+- Key `bdg_moderatr` is not a valid key
+- Key `bdg_administratr` is not a valid key
+- Key `bdg_youtubr` is not a valid key
+- Key `bdg_boostr` is not a valid key
+- Key `bdg_ownr` is not a valid key
+- Key `bdg_bleh` is not a valid key
+- Key `bdg_froog` is not a valid key
+- Key `bdg_aegis_logo` is not a valid key
+- Key `bdg_flint_logo` is not a valid key
+- Key `bdg_duel` is not a valid key
+- Key `bdg_suroi_logo` is not a valid key
+- Key `bdg_fire` is not a valid key
+- Key `bdg_colon_three` is not a valid key
+- Key `bdg_suroi_general_chat` is not a valid key
+- Key `emote_happy_face` is not a valid key
+- Key `emote_sad_face` is not a valid key
+- Key `emote_thumbs_up` is not a valid key
+- Key `emote_thumbs_down` is not a valid key
+- Key `emote_wave` is not a valid key
+- Key `emote_disappointed_face` is not a valid key
+- Key `emote_sobbing_face` is not a valid key
+- Key `emote_angry_face` is not a valid key
+- Key `emote_heart_face` is not a valid key
+- Key `emote_flushed_face` is not a valid key
+- Key `emote_joyful_face` is not a valid key
+- Key `emote_cool_face` is not a valid key
+- Key `emote_upside_down_face` is not a valid key
+- Key `emote_picasso_face` is not a valid key
+- Key `emote_alien` is not a valid key
+- Key `emote_headshot` is not a valid key
+- Key `emote_panned` is not a valid key
+- Key `emote_dab` is not a valid key
+- Key `emote_devil_face` is not a valid key
+- Key `emote_bandaged_face` is not a valid key
+- Key `emote_cold_face` is not a valid key
+- Key `emote_thinking_face` is not a valid key
+- Key `emote_nervous_face` is not a valid key
+- Key `emote_sweating_face` is not a valid key
+- Key `emote_greedy_face` is not a valid key
+- Key `emote_creepy_clown` is not a valid key
+- Key `emote_lying_face` is not a valid key
+- Key `emote_nerd_face` is not a valid key
+- Key `emote_side_eye_face` is not a valid key
+- Key `emote_man_face` is not a valid key
+- Key `emote_satisfied_face` is not a valid key
+- Key `emote_hot_face` is not a valid key
+- Key `emote_blind_walking` is not a valid key
+- Key `emote_melting_face` is not a valid key
+- Key `emote_grimacing_face` is not a valid key
+- Key `emote_vomiting_face` is not a valid key
+- Key `emote_screaming_face` is not a valid key
+- Key `emote_pleading_face` is not a valid key
+- Key `emote_sad_smiling_face` is not a valid key
+- Key `emote_triumphant_face` is not a valid key
+- Key `emote_questioning_face` is not a valid key
+- Key `emote_shrugging_face` is not a valid key
+- Key `emote_facepalm` is not a valid key
+- Key `emote_smirking_face` is not a valid key
+- Key `emote_blushing_face` is not a valid key
+- Key `emote_saluting_face` is not a valid key
+- Key `emote_neutral_face` is not a valid key
+- Key `emote_relieved_face` is not a valid key
+- Key `emote_monocle_face` is not a valid key
+- Key `emote_partying_face` is not a valid key
+- Key `emote_shushing_face` is not a valid key
+- Key `emote_sighing_face` is not a valid key
+- Key `emote_yawning_face` is not a valid key
+- Key `emote_frustrated_face` is not a valid key
+- Key `emote_weary_face` is not a valid key
+- Key `emote_pensive_face` is not a valid key
+- Key `emote_zipper_mouth_face` is not a valid key
+- Key `emote_zombie_face` is not a valid key
+- Key `emote_question_mark` is not a valid key
+- Key `emote_team_=_ban` is not a valid key
+- Key `emote_hack_=_ban` is not a valid key
+- Key `emote_gg` is not a valid key
+- Key `emote_ez` is not a valid key
+- Key `emote_hi5` is not a valid key
+- Key `emote_oof` is not a valid key
+- Key `emote_real` is not a valid key
+- Key `emote_fake` is not a valid key
+- Key `emote_colon_three` is not a valid key
+- Key `emote_lag` is not a valid key
+- Key `emote_troll_face` is not a valid key
+- Key `emote_clueless` is not a valid key
+- Key `emote_pog` is not a valid key
+- Key `emote_froog` is not a valid key
+- Key `emote_bleh` is not a valid key
+- Key `emote_muller` is not a valid key
+- Key `emote_suroi_general_chat` is not a valid key
+- Key `emote_rip` is not a valid key
+- Key `emote_leosmug` is not a valid key
+- Key `emote_socks` is not a valid key
+- Key `emote_archimedes` is not a valid key
+- Key `emote_awhhmahgawd` is not a valid key
+- Key `emote_boykisser` is not a valid key
+- Key `emote_grr` is not a valid key
+- Key `emote_are_you_sure` is not a valid key
+- Key `emote_suroi_logo` is not a valid key
+- Key `emote_aegis_logo` is not a valid key
+- Key `emote_flint_logo` is not a valid key
+- Key `emote_nsd_logo` is not a valid key
+- Key `emote_duel` is not a valid key
+- Key `emote_skull` is not a valid key
+- Key `emote_chicken_dinner` is not a valid key
+- Key `emote_trophy` is not a valid key
+- Key `emote_fire` is not a valid key
+- Key `emote_penguin` is not a valid key
+- Key `emote_squid` is not a valid key
+- Key `emote_eagle` is not a valid key
+- Key `emote_whale` is not a valid key
+- Key `emote_carrot` is not a valid key
+- Key `emote_egg` is not a valid key
+- Key `emote_plumpkin` is not a valid key
+- Key `emote_leek` is not a valid key
+- Key `emote_tomato` is not a valid key
+- Key `emote_logged` is not a valid key
+- Key `emote_sun_and_moon` is not a valid key
+- Key `1st_birthday` is not a valid key
+- Key `algae` is not a valid key
+- Key `ancestral_garb` is not a valid key
+- Key `aquatic` is not a valid key
+- Key `arctic_camo` is not a valid key
+- Key `armadillo` is not a valid key
+- Key `ashfall` is not a valid key
+- Key `aurora` is not a valid key
+- Key `basic_outfit` is not a valid key
+- Key `beacon` is not a valid key
+- Key `bee` is not a valid key
+- Key `bloodlust` is not a valid key
+- Key `blue_blood` is not a valid key
+- Key `bubblegum` is not a valid key
+- Key `candy_cane` is not a valid key
+- Key `cargo_wave` is not a valid key
+- Key `celestial` is not a valid key
+- Key `coal` is not a valid key
+- Key `deep_sea` is not a valid key
+- Key `deer_season` is not a valid key
+- Key `desert_camo` is not a valid key
+- Key `designr_swag` is not a valid key
+- Key `developr_swag` is not a valid key
+- Key `diseased` is not a valid key
+- Key `distant_shores` is not a valid key
+- Key `flamingo` is not a valid key
+- Key `floral` is not a valid key
+- Key `forest_camo` is not a valid key
+- Key `frosty` is not a valid key
+- Key `full_moon` is not a valid key
+- Key `ghillie_suit` is not a valid key
+- Key `gingerbread` is not a valid key
+- Key `gold_tie_event` is not a valid key
+- Key `greenhorn` is not a valid key
+- Key `gunmetal` is not a valid key
+- Key `hazel_jumpsuit` is not a valid key
+- Key `henrys_little_helper` is not a valid key
+- Key `holiday_tree` is not a valid key
+- Key `lemon` is not a valid key
+- Key `light_choco` is not a valid key
+- Key `lumberjack` is not a valid key
+- Key `mango` is not a valid key
+- Key `military_camo` is not a valid key
+- Key `nebula` is not a valid key
+- Key `no_kil_pls` is not a valid key
+- Key `nsd_uniform` is not a valid key
+- Key `one_at_nsd` is not a valid key
+- Key `peachy_breeze` is not a valid key
+- Key `peppermint` is not a valid key
+- Key `pot_o_gold` is not a valid key
+- Key `printer` is not a valid key
+- Key `pumpkified` is not a valid key
+- Key `red_tomato` is not a valid key
+- Key `ship_carrier` is not a valid key
+- Key `silver_lining` is not a valid key
+- Key `sky` is not a valid key
+- Key `snow_cone` is not a valid key
+- Key `solar_flare` is not a valid key
+- Key `sound_designr_swag` is not a valid key
+- Key `spearmint` is not a valid key
+- Key `stardust` is not a valid key
+- Key `stratosphere` is not a valid key
+- Key `sunny` is not a valid key
+- Key `sunrise` is not a valid key
+- Key `sunset` is not a valid key
+- Key `swiss_cheese` is not a valid key
+- Key `target_practice` is not a valid key
+- Key `the_amateur` is not a valid key
+- Key `the_pro` is not a valid key
+- Key `tiger` is not a valid key
+- Key `timeless` is not a valid key
+- Key `toadstool` is not a valid key
+- Key `twilight_zone` is not a valid key
+- Key `verified` is not a valid key
+- Key `volcanic` is not a valid key
+- Key `wave_jumpsuit` is not a valid key
+- Key `werewolf` is not a valid key
+- Key `zebra` is not a valid key
+
+### (No Undefined Keys)
+
+## 🇱🇹 Lietuvių (66% Complete) - lt.hjson
+
+### Invalid Keys
+
+- Key `create_team_waiting` is not a valid key
+
+### Undefined Keys
+
+- Key `msg_error_kicked_team` is not defined
+- Key `msg_punishment_vpn` is not defined
+- Key `msg_punishment_vpn_reason` is not defined
+- Key `msg_punishment_warn_agreement` is not defined
+- Key `warning_hw_accel_1` is not defined
+- Key `warning_hw_accel_2` is not defined
+- Key `warning_hw_accel_link` is not defined
+- Key `privacy` is not defined
+- Key `donate` is not defined
+- Key `wiki` is not defined
+- Key `bindings_fullscreen` is not defined
+- Key `recording` is not defined
+- Key `settings_ambience_volume` is not defined
+- Key `settings_ambient_particles` is not defined
+- Key `settings_record_res` is not defined
+- Key `settings_alt_texture_loading` is not defined
+- Key `settings_show_inout` is not defined
+- Key `settings_gyro_angle` is not defined
+- Key `settings_lock_joysticks` is not defined
+- Key `settings_switch_joysticks` is not defined
+- Key `settings_left_joystick_color` is not defined
+- Key `settings_right_joystick_color` is not defined
+- Key `settings_normal_joystick_info` is not defined
+- Key `settings_switched_joystick_info` is not defined
+- Key `settings_haptics` is not defined
+- Key `msg_your_team_eliminated` is not defined
+- Key `msg_the_team_eliminated` is not defined
+- Key `msg_not_enough_space` is not defined
+- Key `msg_item_already_equipped` is not defined
+- Key `msg_better_item_equipped` is not defined
+- Key `msg_cannot_use_flare` is not defined
+- Key `final_gas_waiting` is not defined
+- Key `final_gas_advancing` is not defined
+- Key `action_vaccine_syringe_use` is not defined
+- Key `interact_speaker` is not defined
+- Key `interact_monument` is not defined
+- Key `loading_fetching_data_failed` is not defined
+- Key `retry` is not defined
+- Key `bindings_explode_c4` is not defined
+- Key `bindings_screen_record` is not defined
+- Key `bindings_toggle pf_net_graph 0 1 2` is not defined
+- Key `kf_suicide_finished_off` is not defined
+- Key `kf_impact_of` is not defined
+- Key `km_finally_ended_yourself` is not defined
+- Key `km_finally_killed` is not defined
+- Key `km_gas_kill_you` is not defined
+- Key `km_gas_down_you` is not defined
+- Key `km_airdrop_kill_you` is not defined
+- Key `km_airdrop_down_you` is not defined
+- Key `km_knocked_you` is not defined
+- Key `km_finished_off_you` is not defined
+- Key `km_killed_you` is not defined
+- Key `km_suicide_down` is not defined
+- Key `km_suicide_finished_off` is not defined
+- Key `tt_desc` is not defined
+- Key `create_team_force_start` is not defined
+- Key `create_team_ready` is not defined
+- Key `create_team_not_ready` is not defined
+- Key `region_oc` is not defined
+- Key `vaccine_syringe` is not defined
+- Key `vaccine_syringe_desc` is not defined
+- Key `second_wind` is not defined
+- Key `second_wind_desc` is not defined
+- Key `flechettes` is not defined
+- Key `flechettes_desc` is not defined
+- Key `sabot_rounds` is not defined
+- Key `sabot_rounds_desc` is not defined
+- Key `extended_mags` is not defined
+- Key `extended_mags_desc` is not defined
+- Key `demo_expert` is not defined
+- Key `demo_expert_desc` is not defined
+- Key `advanced_athletics` is not defined
+- Key `advanced_athletics_desc` is not defined
+- Key `toploaded` is not defined
+- Key `toploaded_desc` is not defined
+- Key `infinite_ammo` is not defined
+- Key `infinite_ammo_desc` is not defined
+- Key `field_medic` is not defined
+- Key `field_medic_desc` is not defined
+- Key `berserker` is not defined
+- Key `berserker_desc` is not defined
+- Key `close_quarters_combat` is not defined
+- Key `close_quarters_combat_desc` is not defined
+- Key `low_profile` is not defined
+- Key `low_profile_desc` is not defined
+- Key `combat_expert` is not defined
+- Key `combat_expert_desc` is not defined
+- Key `precision_recycling` is not defined
+- Key `precision_recycling_desc` is not defined
+- Key `plumpkin_gamble` is not defined
+- Key `plumpkin_gamble_desc` is not defined
+- Key `lycanthropy` is not defined
+- Key `lycanthropy_desc` is not defined
+- Key `bloodthirst` is not defined
+- Key `bloodthirst_desc` is not defined
+- Key `plumpkin_bomb` is not defined
+- Key `plumpkin_bomb_desc` is not defined
+- Key `shrouded` is not defined
+- Key `shrouded_desc` is not defined
+- Key `experimental_treatment` is not defined
+- Key `experimental_treatment_desc` is not defined
+- Key `engorged` is not defined
+- Key `engorged_desc` is not defined
+- Key `baby_plumpkin_pie` is not defined
+- Key `costumed` is not defined
+- Key `costumed_desc` is not defined
+- Key `torn_pockets` is not defined
+- Key `torn_pockets_desc` is not defined
+- Key `claustrophobic` is not defined
+- Key `claustrophobic_desc` is not defined
+- Key `laced_stimulants` is not defined
+- Key `laced_stimulants_desc` is not defined
+- Key `rotten_plumpkin` is not defined
+- Key `rotten_plumpkin_desc` is not defined
+- Key `infected` is not defined
+- Key `infected_desc` is not defined
+- Key `immunity` is not defined
+- Key `immunity_desc` is not defined
+- Key `partners` is not defined
+- Key `username_placeholder` is not defined
+
+## 🇱🇻 Latviešu (66% Complete) - lv.hjson
+
+### Invalid Keys
+
+- Key `create_team_waiting` is not a valid key
+
+### Undefined Keys
+
+- Key `msg_error_kicked_team` is not defined
+- Key `msg_punishment_vpn` is not defined
+- Key `msg_punishment_vpn_reason` is not defined
+- Key `msg_punishment_warn_agreement` is not defined
+- Key `warning_hw_accel_1` is not defined
+- Key `warning_hw_accel_2` is not defined
+- Key `warning_hw_accel_link` is not defined
+- Key `privacy` is not defined
+- Key `donate` is not defined
+- Key `wiki` is not defined
+- Key `bindings_fullscreen` is not defined
+- Key `recording` is not defined
+- Key `settings_ambience_volume` is not defined
+- Key `settings_ambient_particles` is not defined
+- Key `settings_record_res` is not defined
+- Key `settings_alt_texture_loading` is not defined
+- Key `settings_show_inout` is not defined
+- Key `settings_gyro_angle` is not defined
+- Key `settings_lock_joysticks` is not defined
+- Key `settings_switch_joysticks` is not defined
+- Key `settings_left_joystick_color` is not defined
+- Key `settings_right_joystick_color` is not defined
+- Key `settings_normal_joystick_info` is not defined
+- Key `settings_switched_joystick_info` is not defined
+- Key `settings_haptics` is not defined
+- Key `msg_your_team_eliminated` is not defined
+- Key `msg_the_team_eliminated` is not defined
+- Key `msg_not_enough_space` is not defined
+- Key `msg_item_already_equipped` is not defined
+- Key `msg_better_item_equipped` is not defined
+- Key `msg_cannot_use_flare` is not defined
+- Key `final_gas_waiting` is not defined
+- Key `final_gas_advancing` is not defined
+- Key `action_vaccine_syringe_use` is not defined
+- Key `interact_speaker` is not defined
+- Key `interact_monument` is not defined
+- Key `loading_fetching_data_failed` is not defined
+- Key `retry` is not defined
+- Key `bindings_explode_c4` is not defined
+- Key `bindings_screen_record` is not defined
+- Key `bindings_toggle pf_net_graph 0 1 2` is not defined
+- Key `kf_suicide_finished_off` is not defined
+- Key `kf_impact_of` is not defined
+- Key `km_finally_ended_yourself` is not defined
+- Key `km_finally_killed` is not defined
+- Key `km_gas_kill_you` is not defined
+- Key `km_gas_down_you` is not defined
+- Key `km_airdrop_kill_you` is not defined
+- Key `km_airdrop_down_you` is not defined
+- Key `km_knocked_you` is not defined
+- Key `km_finished_off_you` is not defined
+- Key `km_killed_you` is not defined
+- Key `km_suicide_down` is not defined
+- Key `km_suicide_finished_off` is not defined
+- Key `tt_desc` is not defined
+- Key `create_team_force_start` is not defined
+- Key `create_team_ready` is not defined
+- Key `create_team_not_ready` is not defined
+- Key `region_oc` is not defined
+- Key `vaccine_syringe` is not defined
+- Key `vaccine_syringe_desc` is not defined
+- Key `second_wind` is not defined
+- Key `second_wind_desc` is not defined
+- Key `flechettes` is not defined
+- Key `flechettes_desc` is not defined
+- Key `sabot_rounds` is not defined
+- Key `sabot_rounds_desc` is not defined
+- Key `extended_mags` is not defined
+- Key `extended_mags_desc` is not defined
+- Key `demo_expert` is not defined
+- Key `demo_expert_desc` is not defined
+- Key `advanced_athletics` is not defined
+- Key `advanced_athletics_desc` is not defined
+- Key `toploaded` is not defined
+- Key `toploaded_desc` is not defined
+- Key `infinite_ammo` is not defined
+- Key `infinite_ammo_desc` is not defined
+- Key `field_medic` is not defined
+- Key `field_medic_desc` is not defined
+- Key `berserker` is not defined
+- Key `berserker_desc` is not defined
+- Key `close_quarters_combat` is not defined
+- Key `close_quarters_combat_desc` is not defined
+- Key `low_profile` is not defined
+- Key `low_profile_desc` is not defined
+- Key `combat_expert` is not defined
+- Key `combat_expert_desc` is not defined
+- Key `precision_recycling` is not defined
+- Key `precision_recycling_desc` is not defined
+- Key `plumpkin_gamble` is not defined
+- Key `plumpkin_gamble_desc` is not defined
+- Key `lycanthropy` is not defined
+- Key `lycanthropy_desc` is not defined
+- Key `bloodthirst` is not defined
+- Key `bloodthirst_desc` is not defined
+- Key `plumpkin_bomb` is not defined
+- Key `plumpkin_bomb_desc` is not defined
+- Key `shrouded` is not defined
+- Key `shrouded_desc` is not defined
+- Key `experimental_treatment` is not defined
+- Key `experimental_treatment_desc` is not defined
+- Key `engorged` is not defined
+- Key `engorged_desc` is not defined
+- Key `baby_plumpkin_pie` is not defined
+- Key `costumed` is not defined
+- Key `costumed_desc` is not defined
+- Key `torn_pockets` is not defined
+- Key `torn_pockets_desc` is not defined
+- Key `claustrophobic` is not defined
+- Key `claustrophobic_desc` is not defined
+- Key `laced_stimulants` is not defined
+- Key `laced_stimulants_desc` is not defined
+- Key `rotten_plumpkin` is not defined
+- Key `rotten_plumpkin_desc` is not defined
+- Key `infected` is not defined
+- Key `infected_desc` is not defined
+- Key `immunity` is not defined
+- Key `immunity_desc` is not defined
+- Key `partners` is not defined
+- Key `username_placeholder` is not defined
+
+## 🇳🇱 Nederlands (99% Complete) - nl.hjson
+
+### (No Invalid Keys)
+
+### Undefined Keys
+
+- Key `action_vaccine_syringe_use` is not defined
+- Key `tt_desc` is not defined
+- Key `vaccine_syringe` is not defined
+- Key `vaccine_syringe_desc` is not defined
+
+## 🇵🇱 Polski (69% Complete) - pl.hjson
+
+### Invalid Keys
+
+- Key `create_team_waiting` is not a valid key
+
+### Undefined Keys
+
+- Key `msg_error_kicked_team` is not defined
+- Key `msg_punishment_warn_agreement` is not defined
+- Key `warning_hw_accel_1` is not defined
+- Key `warning_hw_accel_2` is not defined
+- Key `warning_hw_accel_link` is not defined
+- Key `privacy` is not defined
+- Key `wiki` is not defined
+- Key `bindings_fullscreen` is not defined
+- Key `recording` is not defined
+- Key `settings_record_res` is not defined
+- Key `settings_alt_texture_loading` is not defined
+- Key `settings_show_inout` is not defined
+- Key `settings_gyro_angle` is not defined
+- Key `settings_lock_joysticks` is not defined
+- Key `settings_switch_joysticks` is not defined
+- Key `settings_left_joystick_color` is not defined
+- Key `settings_right_joystick_color` is not defined
+- Key `settings_normal_joystick_info` is not defined
+- Key `settings_switched_joystick_info` is not defined
+- Key `settings_haptics` is not defined
+- Key `msg_your_team_eliminated` is not defined
+- Key `msg_the_team_eliminated` is not defined
+- Key `msg_cannot_use_flare` is not defined
+- Key `final_gas_waiting` is not defined
+- Key `final_gas_advancing` is not defined
+- Key `action_vaccine_syringe_use` is not defined
+- Key `interact_monument` is not defined
+- Key `loading_fetching_data_failed` is not defined
+- Key `retry` is not defined
+- Key `bindings_screen_record` is not defined
+- Key `bindings_toggle pf_net_graph 0 1 2` is not defined
+- Key `kf_suicide_finished_off` is not defined
+- Key `kf_impact_of` is not defined
+- Key `km_finally_ended_yourself` is not defined
+- Key `km_finally_killed` is not defined
+- Key `km_gas_kill_you` is not defined
+- Key `km_gas_down_you` is not defined
+- Key `km_airdrop_kill_you` is not defined
+- Key `km_airdrop_down_you` is not defined
+- Key `km_knocked_you` is not defined
+- Key `km_finished_off_you` is not defined
+- Key `km_killed_you` is not defined
+- Key `km_suicide_down` is not defined
+- Key `km_suicide_finished_off` is not defined
+- Key `tt_desc` is not defined
+- Key `create_team_force_start` is not defined
+- Key `create_team_not_ready` is not defined
+- Key `region_oc` is not defined
+- Key `vaccine_syringe` is not defined
+- Key `vaccine_syringe_desc` is not defined
+- Key `second_wind` is not defined
+- Key `second_wind_desc` is not defined
+- Key `flechettes` is not defined
+- Key `flechettes_desc` is not defined
+- Key `sabot_rounds` is not defined
+- Key `sabot_rounds_desc` is not defined
+- Key `extended_mags` is not defined
+- Key `extended_mags_desc` is not defined
+- Key `demo_expert` is not defined
+- Key `demo_expert_desc` is not defined
+- Key `advanced_athletics` is not defined
+- Key `advanced_athletics_desc` is not defined
+- Key `toploaded` is not defined
+- Key `toploaded_desc` is not defined
+- Key `infinite_ammo` is not defined
+- Key `infinite_ammo_desc` is not defined
+- Key `field_medic` is not defined
+- Key `field_medic_desc` is not defined
+- Key `berserker` is not defined
+- Key `berserker_desc` is not defined
+- Key `close_quarters_combat` is not defined
+- Key `close_quarters_combat_desc` is not defined
+- Key `low_profile` is not defined
+- Key `low_profile_desc` is not defined
+- Key `combat_expert` is not defined
+- Key `combat_expert_desc` is not defined
+- Key `precision_recycling` is not defined
+- Key `precision_recycling_desc` is not defined
+- Key `plumpkin_gamble` is not defined
+- Key `plumpkin_gamble_desc` is not defined
+- Key `lycanthropy` is not defined
+- Key `lycanthropy_desc` is not defined
+- Key `bloodthirst` is not defined
+- Key `bloodthirst_desc` is not defined
+- Key `plumpkin_bomb` is not defined
+- Key `plumpkin_bomb_desc` is not defined
+- Key `shrouded` is not defined
+- Key `shrouded_desc` is not defined
+- Key `experimental_treatment` is not defined
+- Key `experimental_treatment_desc` is not defined
+- Key `engorged` is not defined
+- Key `engorged_desc` is not defined
+- Key `baby_plumpkin_pie` is not defined
+- Key `costumed` is not defined
+- Key `costumed_desc` is not defined
+- Key `torn_pockets` is not defined
+- Key `torn_pockets_desc` is not defined
+- Key `claustrophobic` is not defined
+- Key `claustrophobic_desc` is not defined
+- Key `laced_stimulants` is not defined
+- Key `laced_stimulants_desc` is not defined
+- Key `rotten_plumpkin` is not defined
+- Key `rotten_plumpkin_desc` is not defined
+- Key `infected` is not defined
+- Key `infected_desc` is not defined
+- Key `immunity` is not defined
+- Key `immunity_desc` is not defined
+- Key `partners` is not defined
+- Key `username_placeholder` is not defined
+
+## 🎀 Cute Engwish (74% Complete) - qen.hjson
+
+### Invalid Keys
+
+- Key `create_team_waiting` is not a valid key
+
+### Undefined Keys
+
+- Key `msg_error_kicked_team` is not defined
+- Key `bindings_fullscreen` is not defined
+- Key `recording` is not defined
+- Key `settings_record_res` is not defined
+- Key `settings_alt_texture_loading` is not defined
+- Key `settings_lock_joysticks` is not defined
+- Key `settings_switch_joysticks` is not defined
+- Key `settings_left_joystick_color` is not defined
+- Key `settings_right_joystick_color` is not defined
+- Key `settings_normal_joystick_info` is not defined
+- Key `settings_switched_joystick_info` is not defined
+- Key `msg_cannot_use_flare` is not defined
+- Key `action_vaccine_syringe_use` is not defined
+- Key `interact_monument` is not defined
+- Key `bindings_explode_c4` is not defined
+- Key `bindings_screen_record` is not defined
+- Key `kf_suicide_finished_off` is not defined
+- Key `kf_impact_of` is not defined
+- Key `km_finally_ended_yourself` is not defined
+- Key `km_finally_killed` is not defined
+- Key `km_gas_kill_you` is not defined
+- Key `km_gas_down_you` is not defined
+- Key `km_airdrop_kill_you` is not defined
+- Key `km_airdrop_down_you` is not defined
+- Key `km_knocked_you` is not defined
+- Key `km_finished_off_you` is not defined
+- Key `km_killed_you` is not defined
+- Key `km_suicide_down` is not defined
+- Key `km_suicide_finished_off` is not defined
+- Key `tt_desc` is not defined
+- Key `create_team_force_start` is not defined
+- Key `create_team_not_ready` is not defined
+- Key `region_oc` is not defined
+- Key `vaccine_syringe` is not defined
+- Key `vaccine_syringe_desc` is not defined
+- Key `second_wind` is not defined
+- Key `second_wind_desc` is not defined
+- Key `flechettes` is not defined
+- Key `flechettes_desc` is not defined
+- Key `sabot_rounds` is not defined
+- Key `sabot_rounds_desc` is not defined
+- Key `extended_mags` is not defined
+- Key `extended_mags_desc` is not defined
+- Key `demo_expert` is not defined
+- Key `demo_expert_desc` is not defined
+- Key `advanced_athletics` is not defined
+- Key `advanced_athletics_desc` is not defined
+- Key `toploaded` is not defined
+- Key `toploaded_desc` is not defined
+- Key `infinite_ammo` is not defined
+- Key `infinite_ammo_desc` is not defined
+- Key `field_medic` is not defined
+- Key `field_medic_desc` is not defined
+- Key `berserker` is not defined
+- Key `berserker_desc` is not defined
+- Key `close_quarters_combat` is not defined
+- Key `close_quarters_combat_desc` is not defined
+- Key `low_profile` is not defined
+- Key `low_profile_desc` is not defined
+- Key `combat_expert` is not defined
+- Key `combat_expert_desc` is not defined
+- Key `precision_recycling` is not defined
+- Key `precision_recycling_desc` is not defined
+- Key `plumpkin_gamble` is not defined
+- Key `plumpkin_gamble_desc` is not defined
+- Key `lycanthropy` is not defined
+- Key `lycanthropy_desc` is not defined
+- Key `bloodthirst` is not defined
+- Key `bloodthirst_desc` is not defined
+- Key `plumpkin_bomb` is not defined
+- Key `plumpkin_bomb_desc` is not defined
+- Key `shrouded` is not defined
+- Key `shrouded_desc` is not defined
+- Key `experimental_treatment` is not defined
+- Key `experimental_treatment_desc` is not defined
+- Key `engorged` is not defined
+- Key `engorged_desc` is not defined
+- Key `baby_plumpkin_pie` is not defined
+- Key `costumed` is not defined
+- Key `costumed_desc` is not defined
+- Key `torn_pockets` is not defined
+- Key `torn_pockets_desc` is not defined
+- Key `claustrophobic` is not defined
+- Key `claustrophobic_desc` is not defined
+- Key `laced_stimulants` is not defined
+- Key `laced_stimulants_desc` is not defined
+- Key `rotten_plumpkin` is not defined
+- Key `rotten_plumpkin_desc` is not defined
+- Key `infected` is not defined
+- Key `infected_desc` is not defined
+- Key `immunity` is not defined
+- Key `immunity_desc` is not defined
+- Key `partners` is not defined
+- Key `username_placeholder` is not defined
+
+## 🇷🇴 Română (99% Complete) - ro.hjson
+
+### Invalid Keys
+
+- Key `create_team_waiting` is not a valid key
+
+### Undefined Keys
+
+- Key `action_vaccine_syringe_use` is not defined
+- Key `tt_desc` is not defined
+- Key `vaccine_syringe` is not defined
+- Key `vaccine_syringe_desc` is not defined
+
+## 🇷🇺 Русский (98% Complete) - ru.hjson
+
+### Invalid Keys
+
+- Key `create_team_waiting` is not a valid key
+
+### Undefined Keys
+
+- Key `settings_show_inout` is not defined
+- Key `action_vaccine_syringe_use` is not defined
+- Key `tt_desc` is not defined
+- Key `m16a4` is not defined
+- Key `vaccine_syringe` is not defined
+- Key `vaccine_syringe_desc` is not defined
+
+## 🇮🇳 தமிழ் (77% Complete) - ta.hjson
+
+### Invalid Keys
+
+- Key `create_team_waiting` is not a valid key
+
+### Undefined Keys
+
+- Key `msg_error_kicked_team` is not defined
+- Key `settings_alt_texture_loading` is not defined
+- Key `msg_cannot_use_flare` is not defined
+- Key `action_vaccine_syringe_use` is not defined
+- Key `kf_suicide_finished_off` is not defined
+- Key `kf_impact_of` is not defined
+- Key `km_finally_ended_yourself` is not defined
+- Key `km_finally_killed` is not defined
+- Key `km_gas_kill_you` is not defined
+- Key `km_gas_down_you` is not defined
+- Key `km_airdrop_kill_you` is not defined
+- Key `km_airdrop_down_you` is not defined
+- Key `km_knocked_you` is not defined
+- Key `km_finished_off_you` is not defined
+- Key `km_killed_you` is not defined
+- Key `km_suicide_down` is not defined
+- Key `km_suicide_finished_off` is not defined
+- Key `tt_desc` is not defined
+- Key `create_team_force_start` is not defined
+- Key `create_team_not_ready` is not defined
+- Key `vaccine_syringe` is not defined
+- Key `vaccine_syringe_desc` is not defined
+- Key `second_wind` is not defined
+- Key `second_wind_desc` is not defined
+- Key `flechettes` is not defined
+- Key `flechettes_desc` is not defined
+- Key `sabot_rounds` is not defined
+- Key `sabot_rounds_desc` is not defined
+- Key `extended_mags` is not defined
+- Key `extended_mags_desc` is not defined
+- Key `demo_expert` is not defined
+- Key `demo_expert_desc` is not defined
+- Key `advanced_athletics` is not defined
+- Key `advanced_athletics_desc` is not defined
+- Key `toploaded` is not defined
+- Key `toploaded_desc` is not defined
+- Key `infinite_ammo` is not defined
+- Key `infinite_ammo_desc` is not defined
+- Key `field_medic` is not defined
+- Key `field_medic_desc` is not defined
+- Key `berserker` is not defined
+- Key `berserker_desc` is not defined
+- Key `close_quarters_combat` is not defined
+- Key `close_quarters_combat_desc` is not defined
+- Key `low_profile` is not defined
+- Key `low_profile_desc` is not defined
+- Key `combat_expert` is not defined
+- Key `combat_expert_desc` is not defined
+- Key `precision_recycling` is not defined
+- Key `precision_recycling_desc` is not defined
+- Key `plumpkin_gamble` is not defined
+- Key `plumpkin_gamble_desc` is not defined
+- Key `lycanthropy` is not defined
+- Key `lycanthropy_desc` is not defined
+- Key `bloodthirst` is not defined
+- Key `bloodthirst_desc` is not defined
+- Key `plumpkin_bomb` is not defined
+- Key `plumpkin_bomb_desc` is not defined
+- Key `shrouded` is not defined
+- Key `shrouded_desc` is not defined
+- Key `experimental_treatment` is not defined
+- Key `experimental_treatment_desc` is not defined
+- Key `engorged` is not defined
+- Key `engorged_desc` is not defined
+- Key `baby_plumpkin_pie` is not defined
+- Key `costumed` is not defined
+- Key `costumed_desc` is not defined
+- Key `torn_pockets` is not defined
+- Key `torn_pockets_desc` is not defined
+- Key `claustrophobic` is not defined
+- Key `claustrophobic_desc` is not defined
+- Key `laced_stimulants` is not defined
+- Key `laced_stimulants_desc` is not defined
+- Key `rotten_plumpkin` is not defined
+- Key `rotten_plumpkin_desc` is not defined
+- Key `infected` is not defined
+- Key `infected_desc` is not defined
+- Key `immunity` is not defined
+- Key `immunity_desc` is not defined
+- Key `partners` is not defined
+- Key `username_placeholder` is not defined
+
+## 🇹🇷 Turkısh (81% Complete) - tr.hjson
+
+### Invalid Keys
+
+- Key `kf_message_grammar` is not a valid key
+- Key `create_team_waiting` is not a valid key
+
+### Undefined Keys
+
+- Key `msg_error_kicked_team` is not defined
+- Key `msg_cannot_use_flare` is not defined
+- Key `action_vaccine_syringe_use` is not defined
+- Key `tt_desc` is not defined
+- Key `create_team_force_start` is not defined
+- Key `create_team_not_ready` is not defined
+- Key `vaccine_syringe` is not defined
+- Key `vaccine_syringe_desc` is not defined
+- Key `second_wind` is not defined
+- Key `second_wind_desc` is not defined
+- Key `flechettes` is not defined
+- Key `flechettes_desc` is not defined
+- Key `sabot_rounds` is not defined
+- Key `sabot_rounds_desc` is not defined
+- Key `extended_mags` is not defined
+- Key `extended_mags_desc` is not defined
+- Key `demo_expert` is not defined
+- Key `demo_expert_desc` is not defined
+- Key `advanced_athletics` is not defined
+- Key `advanced_athletics_desc` is not defined
+- Key `toploaded` is not defined
+- Key `toploaded_desc` is not defined
+- Key `infinite_ammo` is not defined
+- Key `infinite_ammo_desc` is not defined
+- Key `field_medic` is not defined
+- Key `field_medic_desc` is not defined
+- Key `berserker` is not defined
+- Key `berserker_desc` is not defined
+- Key `close_quarters_combat` is not defined
+- Key `close_quarters_combat_desc` is not defined
+- Key `low_profile` is not defined
+- Key `low_profile_desc` is not defined
+- Key `combat_expert` is not defined
+- Key `combat_expert_desc` is not defined
+- Key `precision_recycling` is not defined
+- Key `precision_recycling_desc` is not defined
+- Key `plumpkin_gamble` is not defined
+- Key `plumpkin_gamble_desc` is not defined
+- Key `lycanthropy` is not defined
+- Key `lycanthropy_desc` is not defined
+- Key `bloodthirst` is not defined
+- Key `bloodthirst_desc` is not defined
+- Key `plumpkin_bomb` is not defined
+- Key `plumpkin_bomb_desc` is not defined
+- Key `shrouded` is not defined
+- Key `shrouded_desc` is not defined
+- Key `experimental_treatment` is not defined
+- Key `experimental_treatment_desc` is not defined
+- Key `engorged` is not defined
+- Key `engorged_desc` is not defined
+- Key `baby_plumpkin_pie` is not defined
+- Key `costumed` is not defined
+- Key `costumed_desc` is not defined
+- Key `torn_pockets` is not defined
+- Key `torn_pockets_desc` is not defined
+- Key `claustrophobic` is not defined
+- Key `claustrophobic_desc` is not defined
+- Key `laced_stimulants` is not defined
+- Key `laced_stimulants_desc` is not defined
+- Key `rotten_plumpkin` is not defined
+- Key `rotten_plumpkin_desc` is not defined
+- Key `infected` is not defined
+- Key `infected_desc` is not defined
+- Key `immunity` is not defined
+- Key `immunity_desc` is not defined
+- Key `partners` is not defined
+- Key `username_placeholder` is not defined
+
+## 🇹🇼 中文（繁體） (77% Complete) - tw.hjson
+
+### Invalid Keys
+
+- Key `create_team_waiting` is not a valid key
+
+### Undefined Keys
+
+- Key `msg_error_kicked_team` is not defined
+- Key `settings_alt_texture_loading` is not defined
+- Key `msg_cannot_use_flare` is not defined
+- Key `action_vaccine_syringe_use` is not defined
+- Key `kf_suicide_finished_off` is not defined
+- Key `kf_impact_of` is not defined
+- Key `km_finally_ended_yourself` is not defined
+- Key `km_finally_killed` is not defined
+- Key `km_gas_kill_you` is not defined
+- Key `km_gas_down_you` is not defined
+- Key `km_airdrop_kill_you` is not defined
+- Key `km_airdrop_down_you` is not defined
+- Key `km_knocked_you` is not defined
+- Key `km_finished_off_you` is not defined
+- Key `km_killed_you` is not defined
+- Key `km_suicide_down` is not defined
+- Key `km_suicide_finished_off` is not defined
+- Key `tt_desc` is not defined
+- Key `create_team_force_start` is not defined
+- Key `create_team_not_ready` is not defined
+- Key `vaccine_syringe` is not defined
+- Key `vaccine_syringe_desc` is not defined
+- Key `second_wind` is not defined
+- Key `second_wind_desc` is not defined
+- Key `flechettes` is not defined
+- Key `flechettes_desc` is not defined
+- Key `sabot_rounds` is not defined
+- Key `sabot_rounds_desc` is not defined
+- Key `extended_mags` is not defined
+- Key `extended_mags_desc` is not defined
+- Key `demo_expert` is not defined
+- Key `demo_expert_desc` is not defined
+- Key `advanced_athletics` is not defined
+- Key `advanced_athletics_desc` is not defined
+- Key `toploaded` is not defined
+- Key `toploaded_desc` is not defined
+- Key `infinite_ammo` is not defined
+- Key `infinite_ammo_desc` is not defined
+- Key `field_medic` is not defined
+- Key `field_medic_desc` is not defined
+- Key `berserker` is not defined
+- Key `berserker_desc` is not defined
+- Key `close_quarters_combat` is not defined
+- Key `close_quarters_combat_desc` is not defined
+- Key `low_profile` is not defined
+- Key `low_profile_desc` is not defined
+- Key `combat_expert` is not defined
+- Key `combat_expert_desc` is not defined
+- Key `precision_recycling` is not defined
+- Key `precision_recycling_desc` is not defined
+- Key `plumpkin_gamble` is not defined
+- Key `plumpkin_gamble_desc` is not defined
+- Key `lycanthropy` is not defined
+- Key `lycanthropy_desc` is not defined
+- Key `bloodthirst` is not defined
+- Key `bloodthirst_desc` is not defined
+- Key `plumpkin_bomb` is not defined
+- Key `plumpkin_bomb_desc` is not defined
+- Key `shrouded` is not defined
+- Key `shrouded_desc` is not defined
+- Key `experimental_treatment` is not defined
+- Key `experimental_treatment_desc` is not defined
+- Key `engorged` is not defined
+- Key `engorged_desc` is not defined
+- Key `baby_plumpkin_pie` is not defined
+- Key `costumed` is not defined
+- Key `costumed_desc` is not defined
+- Key `torn_pockets` is not defined
+- Key `torn_pockets_desc` is not defined
+- Key `claustrophobic` is not defined
+- Key `claustrophobic_desc` is not defined
+- Key `laced_stimulants` is not defined
+- Key `laced_stimulants_desc` is not defined
+- Key `rotten_plumpkin` is not defined
+- Key `rotten_plumpkin_desc` is not defined
+- Key `infected` is not defined
+- Key `infected_desc` is not defined
+- Key `immunity` is not defined
+- Key `immunity_desc` is not defined
+- Key `partners` is not defined
+- Key `username_placeholder` is not defined
+
+## 🇻🇳 Tiếng Việt (82% Complete) - vi.hjson
+
+### Invalid Keys
+
+- Key `create_team_waiting` is not a valid key
+
+### Undefined Keys
+
+- Key `msg_cannot_use_flare` is not defined
+- Key `action_vaccine_syringe_use` is not defined
+- Key `tt_desc` is not defined
+- Key `vaccine_syringe` is not defined
+- Key `vaccine_syringe_desc` is not defined
+- Key `second_wind` is not defined
+- Key `second_wind_desc` is not defined
+- Key `flechettes` is not defined
+- Key `flechettes_desc` is not defined
+- Key `sabot_rounds` is not defined
+- Key `sabot_rounds_desc` is not defined
+- Key `extended_mags` is not defined
+- Key `extended_mags_desc` is not defined
+- Key `demo_expert` is not defined
+- Key `demo_expert_desc` is not defined
+- Key `advanced_athletics` is not defined
+- Key `advanced_athletics_desc` is not defined
+- Key `toploaded` is not defined
+- Key `toploaded_desc` is not defined
+- Key `infinite_ammo` is not defined
+- Key `infinite_ammo_desc` is not defined
+- Key `field_medic` is not defined
+- Key `field_medic_desc` is not defined
+- Key `berserker` is not defined
+- Key `berserker_desc` is not defined
+- Key `close_quarters_combat` is not defined
+- Key `close_quarters_combat_desc` is not defined
+- Key `low_profile` is not defined
+- Key `low_profile_desc` is not defined
+- Key `combat_expert` is not defined
+- Key `combat_expert_desc` is not defined
+- Key `precision_recycling` is not defined
+- Key `precision_recycling_desc` is not defined
+- Key `plumpkin_gamble` is not defined
+- Key `plumpkin_gamble_desc` is not defined
+- Key `lycanthropy` is not defined
+- Key `lycanthropy_desc` is not defined
+- Key `bloodthirst` is not defined
+- Key `bloodthirst_desc` is not defined
+- Key `plumpkin_bomb` is not defined
+- Key `plumpkin_bomb_desc` is not defined
+- Key `shrouded` is not defined
+- Key `shrouded_desc` is not defined
+- Key `experimental_treatment` is not defined
+- Key `experimental_treatment_desc` is not defined
+- Key `engorged` is not defined
+- Key `engorged_desc` is not defined
+- Key `baby_plumpkin_pie` is not defined
+- Key `costumed` is not defined
+- Key `costumed_desc` is not defined
+- Key `torn_pockets` is not defined
+- Key `torn_pockets_desc` is not defined
+- Key `claustrophobic` is not defined
+- Key `claustrophobic_desc` is not defined
+- Key `laced_stimulants` is not defined
+- Key `laced_stimulants_desc` is not defined
+- Key `rotten_plumpkin` is not defined
+- Key `rotten_plumpkin_desc` is not defined
+- Key `infected` is not defined
+- Key `infected_desc` is not defined
+- Key `immunity` is not defined
+- Key `immunity_desc` is not defined
+- Key `partners` is not defined
+- Key `username_placeholder` is not defined
+
+## 🇨🇳 中文（简体） (100% Complete) - zh.hjson
+
+### Invalid Keys
+
+- Key `msg_lost_connection` is not a valid key
+- Key `create_team_waiting` is not a valid key
+- Key `developr_vest` is not a valid key
+- Key `destroyer_of_worlds` is not a valid key
+- Key `deathray` is not a valid key
+- Key `12g` is not a valid key
+- Key `556mm` is not a valid key
+- Key `762mm` is not a valid key
+- Key `9mm` is not a valid key
+- Key `50cal` is not a valid key
+- Key `338lap` is not a valid key
+- Key `firework_rocket` is not a valid key
+- Key `power_cell` is not a valid key
+- Key `bb` is not a valid key
+- Key `needle` is not a valid key
+- Key `plumpkin_ammo` is not a valid key
+- Key `bdg_developr` is not a valid key
+- Key `bdg_dev_managr` is not a valid key
+- Key `bdg_designr` is not a valid key
+- Key `bdg_vip_designr` is not a valid key
+- Key `bdg_sound_designr` is not a valid key
+- Key `bdg_moderatr` is not a valid key
+- Key `bdg_administratr` is not a valid key
+- Key `bdg_content_creatr` is not a valid key
+- Key `bdg_donatr` is not a valid key
+- Key `bdg_ownr` is not a valid key
+- Key `bdg_bleh` is not a valid key
+- Key `bdg_froog` is not a valid key
+- Key `bdg_aegis_logo` is not a valid key
+- Key `bdg_flint_logo` is not a valid key
+- Key `bdg_duel` is not a valid key
+- Key `bdg_suroi_logo` is not a valid key
+- Key `bdg_fire` is not a valid key
+- Key `bdg_colon_three` is not a valid key
+- Key `bdg_suroi_general_chat` is not a valid key
+- Key `emote_happy_face` is not a valid key
+- Key `emote_sad_face` is not a valid key
+- Key `emote_thumbs_up` is not a valid key
+- Key `emote_thumbs_down` is not a valid key
+- Key `emote_wave` is not a valid key
+- Key `emote_disappointed_face` is not a valid key
+- Key `emote_sobbing_face` is not a valid key
+- Key `emote_angry_face` is not a valid key
+- Key `emote_heart_face` is not a valid key
+- Key `emote_flushed_face` is not a valid key
+- Key `emote_joyful_face` is not a valid key
+- Key `emote_cool_face` is not a valid key
+- Key `emote_upside_down_face` is not a valid key
+- Key `emote_picasso_face` is not a valid key
+- Key `emote_alien` is not a valid key
+- Key `emote_headshot` is not a valid key
+- Key `emote_panned` is not a valid key
+- Key `emote_dab` is not a valid key
+- Key `emote_devil_face` is not a valid key
+- Key `emote_bandaged_face` is not a valid key
+- Key `emote_cold_face` is not a valid key
+- Key `emote_thinking_face` is not a valid key
+- Key `emote_nervous_face` is not a valid key
+- Key `emote_sweating_face` is not a valid key
+- Key `emote_greedy_face` is not a valid key
+- Key `emote_creepy_clown` is not a valid key
+- Key `emote_lying_face` is not a valid key
+- Key `emote_nerd_face` is not a valid key
+- Key `emote_side_eye_face` is not a valid key
+- Key `emote_man_face` is not a valid key
+- Key `emote_satisfied_face` is not a valid key
+- Key `emote_hot_face` is not a valid key
+- Key `emote_blind_walking` is not a valid key
+- Key `emote_melting_face` is not a valid key
+- Key `emote_grimacing_face` is not a valid key
+- Key `emote_vomiting_face` is not a valid key
+- Key `emote_screaming_face` is not a valid key
+- Key `emote_pleading_face` is not a valid key
+- Key `emote_sad_smiling_face` is not a valid key
+- Key `emote_triumphant_face` is not a valid key
+- Key `emote_questioning_face` is not a valid key
+- Key `emote_shrugging_face` is not a valid key
+- Key `emote_facepalm` is not a valid key
+- Key `emote_smirking_face` is not a valid key
+- Key `emote_blushing_face` is not a valid key
+- Key `emote_saluting_face` is not a valid key
+- Key `emote_neutral_face` is not a valid key
+- Key `emote_relieved_face` is not a valid key
+- Key `emote_monocle_face` is not a valid key
+- Key `emote_partying_face` is not a valid key
+- Key `emote_shushing_face` is not a valid key
+- Key `emote_sighing_face` is not a valid key
+- Key `emote_yawning_face` is not a valid key
+- Key `emote_frustrated_face` is not a valid key
+- Key `emote_weary_face` is not a valid key
+- Key `emote_pensive_face` is not a valid key
+- Key `emote_zipper_mouth_face` is not a valid key
+- Key `emote_zombie_face` is not a valid key
+- Key `emote_question_mark` is not a valid key
+- Key `emote_team_=_ban` is not a valid key
+- Key `emote_hack_=_ban` is not a valid key
+- Key `emote_gg` is not a valid key
+- Key `emote_ez` is not a valid key
+- Key `emote_hi5` is not a valid key
+- Key `emote_oof` is not a valid key
+- Key `emote_real` is not a valid key
+- Key `emote_fake` is not a valid key
+- Key `emote_colon_three` is not a valid key
+- Key `emote_lag` is not a valid key
+- Key `emote_troll_face` is not a valid key
+- Key `emote_clueless` is not a valid key
+- Key `emote_pog` is not a valid key
+- Key `emote_froog` is not a valid key
+- Key `emote_bleh` is not a valid key
+- Key `emote_muller` is not a valid key
+- Key `emote_suroi_general_chat` is not a valid key
+- Key `emote_rip` is not a valid key
+- Key `emote_leosmug` is not a valid key
+- Key `emote_socks` is not a valid key
+- Key `emote_archimedes` is not a valid key
+- Key `emote_awhhmahgawd` is not a valid key
+- Key `emote_boykisser` is not a valid key
+- Key `emote_grr` is not a valid key
+- Key `emote_are_you_sure` is not a valid key
+- Key `emote_suroi_logo` is not a valid key
+- Key `emote_aegis_logo` is not a valid key
+- Key `emote_flint_logo` is not a valid key
+- Key `emote_nsd_logo` is not a valid key
+- Key `emote_duel` is not a valid key
+- Key `emote_skull` is not a valid key
+- Key `emote_chicken_dinner` is not a valid key
+- Key `emote_trophy` is not a valid key
+- Key `emote_fire` is not a valid key
+- Key `emote_penguin` is not a valid key
+- Key `emote_squid` is not a valid key
+- Key `emote_eagle` is not a valid key
+- Key `emote_whale` is not a valid key
+- Key `emote_carrot` is not a valid key
+- Key `emote_egg` is not a valid key
+- Key `emote_plumpkin` is not a valid key
+- Key `emote_leek` is not a valid key
+- Key `emote_tomato` is not a valid key
+- Key `emote_logged` is not a valid key
+- Key `emote_sun_and_moon` is not a valid key
+- Key `barrel_explosion` is not a valid key
+- Key `confetti_grenade_explosion` is not a valid key
+- Key `control_panel_explosion` is not a valid key
+- Key `fireplace_explosion` is not a valid key
+- Key `firework_launcher_explosion` is not a valid key
+- Key `frag_grenade_explosion` is not a valid key
+- Key `large_refinery_barrel_explosion` is not a valid key
+- Key `propane_tank_explosion` is not a valid key
+- Key `silo_explosion` is not a valid key
+- Key `pumpkin_explosion` is not a valid key
+- Key `seed_explosion` is not a valid key
+- Key `small_refinery_barrel_explosion` is not a valid key
+- Key `stove_explosion` is not a valid key
+- Key `super_barrel_explosion` is not a valid key
+- Key `1st_birthday` is not a valid key
+- Key `algae` is not a valid key
+- Key `ancestral_garb` is not a valid key
+- Key `aquatic` is not a valid key
+- Key `arctic_camo` is not a valid key
+- Key `armadillo` is not a valid key
+- Key `ashfall` is not a valid key
+- Key `aurora` is not a valid key
+- Key `basic_outfit` is not a valid key
+- Key `beacon` is not a valid key
+- Key `bee` is not a valid key
+- Key `bloodlust` is not a valid key
+- Key `blue_blood` is not a valid key
+- Key `bubblegum` is not a valid key
+- Key `candy_cane` is not a valid key
+- Key `cargo_wave` is not a valid key
+- Key `celestial` is not a valid key
+- Key `coal` is not a valid key
+- Key `deep_sea` is not a valid key
+- Key `deer_season` is not a valid key
+- Key `desert_camo` is not a valid key
+- Key `designr_swag` is not a valid key
+- Key `developr_swag` is not a valid key
+- Key `diseased` is not a valid key
+- Key `distant_shores` is not a valid key
+- Key `flamingo` is not a valid key
+- Key `floral` is not a valid key
+- Key `forest_camo` is not a valid key
+- Key `frosty` is not a valid key
+- Key `full_moon` is not a valid key
+- Key `ghillie_suit` is not a valid key
+- Key `gingerbread` is not a valid key
+- Key `gold_tie_event` is not a valid key
+- Key `greenhorn` is not a valid key
+- Key `gunmetal` is not a valid key
+- Key `hazel_jumpsuit` is not a valid key
+- Key `henrys_little_helper` is not a valid key
+- Key `holiday_tree` is not a valid key
+- Key `lemon` is not a valid key
+- Key `light_choco` is not a valid key
+- Key `lumberjack` is not a valid key
+- Key `mango` is not a valid key
+- Key `military_camo` is not a valid key
+- Key `nebula` is not a valid key
+- Key `no_kil_pls` is not a valid key
+- Key `nsd_uniform` is not a valid key
+- Key `one_at_nsd` is not a valid key
+- Key `peachy_breeze` is not a valid key
+- Key `peppermint` is not a valid key
+- Key `pot_o_gold` is not a valid key
+- Key `printer` is not a valid key
+- Key `pumpkified` is not a valid key
+- Key `red_tomato` is not a valid key
+- Key `ship_carrier` is not a valid key
+- Key `silver_lining` is not a valid key
+- Key `sky` is not a valid key
+- Key `snow_cone` is not a valid key
+- Key `solar_flare` is not a valid key
+- Key `sound_designr_swag` is not a valid key
+- Key `spearmint` is not a valid key
+- Key `stardust` is not a valid key
+- Key `stratosphere` is not a valid key
+- Key `sunny` is not a valid key
+- Key `sunrise` is not a valid key
+- Key `sunset` is not a valid key
+- Key `swiss_cheese` is not a valid key
+- Key `target_practice` is not a valid key
+- Key `the_amateur` is not a valid key
+- Key `the_pro` is not a valid key
+- Key `tiger` is not a valid key
+- Key `timeless` is not a valid key
+- Key `toadstool` is not a valid key
+- Key `twilight_zone` is not a valid key
+- Key `verified` is not a valid key
+- Key `volcanic` is not a valid key
+- Key `wave_jumpsuit` is not a valid key
+- Key `werewolf` is not a valid key
+- Key `zebra` is not a valid key
+- Key `fps` is not a valid key
+- Key `ping` is not a valid key
+- Key `special_developer_cheats` is not a valid key
+- Key `special_login` is not a valid key
+- Key `special_name_color` is not a valid key
+- Key `special_note_1` is not a valid key
+- Key `special_note_2` is not a valid key
+- Key `special_role_name` is not a valid key
+- Key `special_role_password` is not a valid key
+- Key `special_weapon_preset` is not a valid key
+- Key `special_weapon_preset_placeholder` is not a valid key
+- Key `special_weapon_preset_title` is not a valid key
+- Key `time_minute` is not a valid key
+- Key `time_second` is not a valid key
+- Key `baby_plumpkin_pie_desc` is not a valid key
+
+### Undefined Keys
+
+- Key `m16a4` is not defined
+

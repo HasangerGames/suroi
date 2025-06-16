@@ -19,9 +19,8 @@ Guns:
 
   ARX-160 - ARX160 Rifle by oneshotofficial: https://gamebanana.com/sounds/57736
 
-  Flues fire - "080902_Shotgun" from Pixabay: https://pixabay.com/sound-effects/080902-shotgun-39753/
-  Flues switch - eiπ
-  Flues reload - eiπ, Katloo
+  Badlander switch - eiπ
+  Badlander reload - eiπ, Katloo
 
   M1895 reload - "Clean Revolver Reload" from Pixabay: https://pixabay.com/sound-effects/clean-revolver-reload-6889/
 
@@ -44,7 +43,28 @@ Guns:
   MG36 reload - Siberian Black League & hasanger (based on Surviv.io Custom Sounds & Textures Resource Pack)
   MG36 switch - hasanger (based on Surviv.io Custom Sounds & Textures Resource Pack)
 
-  All other gun sound effects - Surviv.io Custom Sounds & Textures Resource Pack: https://github.com/humphreygaming/survivcustomsoundsandtextures
+  Seedshot fire:
+    - "AssaultRifle2" from Pixabay: https://pixabay.com/sound-effects/assaultrifle2-47258/
+    - "Tomato squish;wet" from Pixabay: https://pixabay.com/sound-effects/tomato-squishwet-103934/
+    - "Bottle Pop" from Pixabay: https://pixabay.com/sound-effects/bottle-pop-45531/
+  Seedshot reload:
+    - "m4 rifle reload" from Pixabay: https://pixabay.com/sound-effects/m4-rifle-reload-103528/
+    - "RiceGrains2" from Pixabay: https://pixabay.com/sound-effects/ricegrains2-68273/
+    - "Berretta 9mm Cocking Slower" from Pixabay: https://pixabay.com/sound-effects/berretta-9mm-cocking-slower-105410/
+  Seedshot switch - "Berretta 9mm Cocking Slower" from Pixabay: https://pixabay.com/sound-effects/berretta-9mm-cocking-slower-105410/
+  Seedshot explosion:
+    - "081895_impact_.wav" from Pixabay: https://pixabay.com/sound-effects/081895-impact-wav-43951/
+    - "Gross Slimy Goo Foley 7" from Pixabay: https://pixabay.com/sound-effects/gross-slimy-goo-foley-7-164295/
+
+  Vaccinator fire - "Simple Gunshot Reverb Test" from Pixabay: https://pixabay.com/sound-effects/simple-gunshot-reverb-test-101094/
+
+  SVU-A reload & switch - "M14" from Pixabay: https://pixabay.com/sound-effects/m14-168859/
+
+  Other gun sound effects - Surviv.io Custom Sounds & Textures Resource Pack: https://github.com/humphreygaming/survivcustomsoundsandtextures
+
+Melees:
+  Kukri pickup - "Metal Blade Slice 46" from Pixabay: https://pixabay.com/sound-effects/metal-blade-slice-46-195333/
+  K-bar pickup - "Dagger Draw Fast" from Medieval sound effects - Weapon Textures: https://opengameart.org/content/medieval-sound-effects-weapon-textures
 
 Obstacles:
   Window punch: https://freesound.org/people/peter1984/sounds/414444/
@@ -67,6 +87,8 @@ Obstacles:
 
   Pumpkin destroyed - https://pixabay.com/sound-effects/splat2ogg-14668/
 
+  Piano hit - Blus
+
   Fence hit & destroyed - Katloo
 
 Ceiling breaking - https://freesound.org/people/InspectorJ/sounds/352513/
@@ -76,7 +98,7 @@ Cola:
   "Opening a can of soda" from Pixabay: https://pixabay.com/sound-effects/opening-a-can-of-soda-80185/
   "Soda Can Plus Pour and Fizz MUS 152" from Pixabay: https://pixabay.com/sound-effects/soda-can-plus-pour-and-fizz-mus-152-25167/
   "Gulping Noises | Drinking Noises" from Pixabay: https://pixabay.com/sound-effects/gulping-noises-drinking-noises-37758/
-  Picking up: 123OP
+  Pickup - 123OP
 
 Medikit:
   "Opening a small cardboard box" by Aiwha: https://freesound.org/people/Aiwha/sounds/415488/
@@ -92,14 +114,12 @@ Tablets:
   Use - hasanger
   Pickup - hasanger and 1092384
 
-Helmet pickup - "subircasco" from Pixabay: https://pixabay.com/sound-effects/subircasco-44661/
+Helmet pickup - Katloo
 Vest pickup - "Cloth Flapping On A Clothesline Thickly" from Pixabay: https://pixabay.com/sound-effects/cloth-flapping-on-a-clothesline-thickly-6025/
 Backpack pickup - "backpack" from Pixabay: https://pixabay.com/sound-effects/backpack-34942/
 
 Airdrops:
-  Radio:
-    "Fire" - "088524_Walkie Talkie" from Pixabay: https://pixabay.com/sound-effects/088524-walkie-talkie-83500/
-    Reload & switch - eiπ
+  Flare - "FLARE_IGNITE_WITH_WATER_SIZZLES_01.wav" from "Fire, Sizzles, and Ignites...Oh my!" by TS Sound: https://sonniss.com/sound-effects/fire-sizzles-ignites-oh-my/ (dead link)
   Ping - "Notification Sound" from Pixabay: https://pixabay.com/sound-effects/notification-sound-7062/
   Plane - "Prop Plane" from Pixabay: https://pixabay.com/sound-effects/prop-plane-14513/
   Fall:
@@ -118,4 +138,14 @@ Footsteps:
   Sand - "foley_footsteps_desert_boots_sand" from Pixabay: https://pixabay.com/sound-effects/foley-footsteps-desert-boots-sand-6900/
   Water - "Footsteps in Water - Nature Sounds" from Pixabay: https://pixabay.com/sound-effects/footsteps-in-water-nature-sounds-8185/
 
-All other sound effects - Katloo
+Memorial open:
+  "Tomb_door" from Pixabay: https://pixabay.com/sound-effects/tomb-door-95246/
+  "impact riser 01" from Pixabay: https://pixabay.com/sound-effects/impact-riser-01-6908/
+  "Atomic Impact" from Pixabay: https://pixabay.com/sound-effects/atomic-impact-216308/
+
+Ambience:
+  Wind (normal mode) - "Wind - Oak - Calm - Close - Inside Canopy - XY - MKH8060.wav" from "Wind in Trees" by Pole Position: https://sonniss.com/sound-effects/wind-in-trees/
+  River - "63 River_near field_LOOP 11.WAV" from "Mountain rivers and streams" by Ivo Vicic: https://sonniss.com/sound-effects/mountain-rivers-streams/
+
+Default switch sound - "Jump Landing" from Pixabay: https://pixabay.com/sound-effects/jump-landing-30946/
+Generic pickup sound - Katloo

@@ -1,11 +1,9 @@
-import { GameConstants, Layer } from "@common/constants";
-import { Modes, type ColorKeys } from "@common/definitions/modes";
+import { Layer } from "@common/constants";
 import { Color } from "pixi.js";
 
 export const FORCE_MOBILE = false;
 export const UI_DEBUG_MODE = false;
-export const HITBOX_DEBUG_MODE = false;
-export const DIFF_LAYER_HITBOX_OPACITY = 0;
+export const DIFF_LAYER_HITBOX_OPACITY = 0.25;
 export const FOOTSTEP_HITBOX_LAYER = Layer.Ground;
 
 export const LAYER_TRANSITION_DELAY = 200;
@@ -16,27 +14,19 @@ export const HITBOX_COLORS = {
     obstacleNoCollision: new Color("yellow"),
     stair: new Color("white"),
     spawnHitbox: new Color("orange"),
+    bunkerSpawnHitbox: new Color("greenyellow"),
     buildingZoomCeiling: new Color("purple"),
     buildingScopeCeiling: new Color("cyan"),
     buildingVisOverride: new Color("teal"),
-    bulletMask: new Color("fuchsia"),
+    buildingCeilingRaycast: new Color("darkslateblue"),
+    bulletMask: new Color("fuchsia"), // me when this is the same as magenta
     landHitbox: new Color("orangered"),
     loot: new Color("magenta"),
     player: new Color("blue"),
-    playerWeapon: new Color("lime")
+    playerWeapon: new Color("lime"),
+    projectiles: new Color("#ba31ff"),
+    pivot: new Color("#271b3d")
 };
-
-export const MODE = Modes[GameConstants.modeName];
-
-// Converts the strings in the mode definition to Color objects
-export const COLORS = (Object.keys(MODE.colors) as ColorKeys[])
-    .reduce(
-        (result, key) => {
-            result[key] = new Color(MODE.colors[key]);
-            return result;
-        },
-        {} as Record<ColorKeys, Color>
-    );
 
 export const TEAMMATE_COLORS = [
     new Color("#00ffff"),
