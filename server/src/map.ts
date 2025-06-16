@@ -338,19 +338,6 @@ export class GameMap {
         return true;
     }
 
-    // TODO Move this to a utility class and use it in gas.ts as well
-    getQuadrant(x: number, y: number, width: number, height: number): 1 | 2 | 3 | 4 {
-        if (x < width / 2 && y < height / 2) {
-            return 1;
-        } else if (x >= width / 2 && y < height / 2) {
-            return 2;
-        } else if (x < width / 2 && y >= height / 2) {
-            return 3;
-        } else {
-            return 4;
-        }
-    }
-
     private _generateRiverObstacles(riverDef: RiverDefinition, onTrails: boolean): void {
         for (const river of this.terrain.rivers) {
             if (onTrails !== river.isTrail) continue;
@@ -434,25 +421,28 @@ export class GameMap {
                 idString,
                 rotationMode,
                 spawnHitbox,
+                bunkerSpawnHitbox: bunkerHitbox,
                 spawnMode = MapObjectSpawnMode.Grass,
                 spawnOrientation,
                 spawnOffset
             } = buildingDef;
+            const { width, height } = this;
             const { majorBuildings = [], quadBuildingLimit = {} } = this.mapDef;
 
-            let attempts = 0;
             for (let i = 0; i < count; i++) {
                 let position: Vector | undefined;
                 let orientation: Orientation | undefined;
-                let validPositionFound = false;
+                let foundPosition = false;
+                let attempts = 0;
 
-                while (!validPositionFound && attempts < 100) {
+                while (!foundPosition && attempts < 100) {
                     orientation = GameMap.getRandomBuildingOrientation(rotationMode);
 
                     position = this.getRandomPosition(spawnHitbox, {
                         orientation,
                         spawnMode,
                         spawnOffset,
+                        bunkerHitbox,
                         orientationConsumer: (newOrientation: Orientation) => {
                             orientation = spawnOrientation ? Numeric.addOrientations(newOrientation, spawnOrientation) : newOrientation;
                         },
@@ -460,12 +450,21 @@ export class GameMap {
                     });
 
                     if (position === undefined) {
-                        this.game.warn(`Failed to find valid position for building ${idString}`);
                         attempts++;
                         continue;
                     }
 
-                    const quad = this.getQuadrant(position.x, position.y, this.width, this.height);
+                    const { x, y } = position;
+                    let quad: 1 | 2 | 3 | 4;
+                    if (x < width / 2 && y < height / 2) {
+                        quad = 1;
+                    } else if (x >= width / 2 && y < height / 2) {
+                        quad = 2;
+                    } else if (x < width / 2 && y >= height / 2) {
+                        quad = 3;
+                    } else {
+                        quad = 4;
+                    }
 
                     if (majorBuildings.includes(idString)) {
                         if (
@@ -489,16 +488,14 @@ export class GameMap {
                         }
                     }
 
-                    validPositionFound = true;
+                    foundPosition = true;
                 }
 
-                if (!validPositionFound && position === undefined) {
+                if (position !== undefined && foundPosition) {
+                    this.generateBuilding(buildingDef, position, orientation);
+                } else {
                     this.game.warn(`Failed to place building ${idString} after ${attempts} attempts`);
                 }
-
-                if (position !== undefined) this.generateBuilding(buildingDef, position, orientation);
-
-                attempts = 0; // Reset attempts counter for the next building
             }
         } else {
             const { bridgeHitbox, bridgeMinRiverWidth, spawnHitbox } = buildingDef;
@@ -860,8 +857,8 @@ export class GameMap {
             collidableObjects?: Partial<Record<ObjectCategory, boolean>>
             spawnMode?: MapObjectSpawnMode
             spawnOffset?: Vector
+            bunkerHitbox?: Hitbox
             scale?: number
-            layer?: Layer
             orientation?: Orientation
             maxAttempts?: number
             // used for beach spawn mode
@@ -971,26 +968,33 @@ export class GameMap {
                 continue;
             }
 
+            const checkHitbox = (hitbox: Hitbox, layer: Layer): void => {
+                for (const object of this.game.grid.intersectsHitbox(hitbox)) {
+                    let objectHitbox: Hitbox;
+                    if ("spawnHitbox" in object) {
+                        objectHitbox = object.spawnHitbox;
+                    } else if (object.hitbox) {
+                        objectHitbox = object.hitbox;
+                    } else {
+                        continue;
+                    }
+
+                    if (
+                        collidableObjects[object.type]
+                        && equalLayer(object.layer, layer)
+                        && hitbox.collidesWith(objectHitbox)
+                    ) {
+                        collided = true;
+                        break;
+                    }
+                }
+            };
+
             const hitbox = initialHitbox.transform(position, scale, orientation);
+            checkHitbox(hitbox, Layer.Ground);
 
-            const objects = this.game.grid.intersectsHitbox(hitbox);
-            for (const object of objects) {
-                let objectHitbox: Hitbox | undefined;
-                if ("spawnHitbox" in object) {
-                    objectHitbox = object.spawnHitbox;
-                } else if (object.hitbox) {
-                    objectHitbox = object.hitbox;
-                }
-                if (objectHitbox === undefined) continue;
-
-                if (
-                    collidableObjects[object.type]
-                    && equalLayer(object.layer, params?.layer ?? Layer.Ground)
-                    && hitbox.collidesWith(objectHitbox)) {
-                    collided = true;
-                    break;
-                }
-            }
+            const bunkerHitbox = params?.bunkerHitbox?.transform(position, scale, orientation);
+            if (bunkerHitbox) checkHitbox(bunkerHitbox, Layer.Basement);
 
             if (collided) continue;
 

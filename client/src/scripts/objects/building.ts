@@ -375,6 +375,14 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
             );
         }
 
+        if (definition.bunkerSpawnHitbox) {
+            DebugRenderer.addHitbox(
+                definition.bunkerSpawnHitbox.transform(this.position, 1, this.orientation),
+                HITBOX_COLORS.bunkerSpawnHitbox,
+                Game.layer === Layer.Basement ? 1 : DIFF_LAYER_HITBOX_OPACITY
+            );
+        }
+
         for (const { collider, layer } of definition.visibilityOverrides ?? []) {
             DebugRenderer.addHitbox(
                 collider.transform(this.position, 1, this.orientation),

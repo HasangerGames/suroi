@@ -79,6 +79,7 @@ export interface BuildingDefinition extends ObjectDefinition {
 
     readonly hitbox?: Hitbox
     readonly spawnHitbox: Hitbox
+    readonly bunkerSpawnHitbox?: Hitbox
     readonly ceilingHitbox?: Hitbox
     /**
      * @default {FlyoverPref.Never}
@@ -1338,6 +1339,7 @@ const blueHouse = (idString: string, subBuildings: BuildingDefinition["subBuildi
     material: "stone",
     particle: "wall_particle",
     spawnHitbox: RectangleHitbox.fromRect(90, 90),
+    bunkerSpawnHitbox: idString === "blue_house_special" ? RectangleHitbox.fromRect(75, 70, Vec.create(1.5, 4.25)) : undefined, // evil
     ceilingHitbox: new GroupHitbox(
         RectangleHitbox.fromRect(68, 53, Vec.create(0, -3.5)),
         RectangleHitbox.fromRect(11, 10, Vec.create(-28, 27))
@@ -6407,11 +6409,6 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             table: "hq_skin"
         }]
     },
-    // -----------------------------------------------------------------------------------------------
-
-    // --------------------------------------------------------------------------------------------------
-    // Small HAZEL Bunker (To tease the next update)
-    // --------------------------------------------------------------------------------------------------
     {
         idString: "small_bunker_entrance",
         name: "Small Bunker Entrance",
@@ -6513,6 +6510,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             scale: Vec.create(2.35, 2.1)
         }],
         spawnHitbox: RectangleHitbox.fromRect(53, 53, Vec.create(0, 20)),
+        bunkerSpawnHitbox: RectangleHitbox.fromRect(55, 55),
         ceilingHitbox: RectangleHitbox.fromRect(10, 15, Vec.create(0, 20)),
         obstacles: [
             { idString: randomTree, position: Vec.create(7.5, 9.8) },
@@ -7743,6 +7741,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             new CircleHitbox(5, Vec.create(-62.39, 247.93)),
             new CircleHitbox(5, Vec.create(112.61, 281.56))
         ),
+        bunkerSpawnHitbox: RectangleHitbox.fromRect(350, 290),
         ceilingHitbox: new GroupHitbox(
             RectangleHitbox.fromRect(45, 54, Vec.create(13.43, 101.53)),
             RectangleHitbox.fromRect(14, 17, Vec.create(146.55, -32.85)),
@@ -8549,6 +8548,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         name: "Memorial",
         defType: DefinitionType.Building,
         spawnHitbox: RectangleHitbox.fromRect(50, 50, Vec.create(0, -10)),
+        bunkerSpawnHitbox: RectangleHitbox.fromRect(30, 40, Vec.create(0, -8.5)),
         rotationMode: RotationMode.None,
         spawnMode: MapObjectSpawnMode.Grass,
         hideOnMap: true,
@@ -10118,13 +10118,14 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     },
     {
         idString: "fulcrum_bunker",
-        name: "Flooded Bunker",
+        name: "Fulcrum Bunker",
         defType: DefinitionType.Building,
         spawnHitbox: new GroupHitbox(
             RectangleHitbox.fromRect(14, 20.5, Vec.create(-9.81, 47.65)),
             RectangleHitbox.fromRect(14, 20.5, Vec.create(-30.2, -40.75)),
             RectangleHitbox.fromRect(27, 37, Vec.create(-0.8, 0))
         ),
+        bunkerSpawnHitbox: RectangleHitbox.fromRect(150, 110),
         hitbox: new GroupHitbox(
             RectangleHitbox.fromRect(2.01, 12.65, Vec.create(-34.94, -38)),
             RectangleHitbox.fromRect(2.01, 12.65, Vec.create(-25.46, -38)),
@@ -10169,7 +10170,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     },
     {
         idString: "fulcrum_bunker_main",
-        name: "Flooded Bunker",
+        name: "Fulcrum Bunker",
         defType: DefinitionType.Building,
         spawnHitbox: RectangleHitbox.fromRect(150, 110),
         hitbox: new GroupHitbox(
@@ -10333,7 +10334,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     },
     {
         idString: "fulcrum_bunker_vault",
-        name: "Flooded Bunker Vault",
+        name: "Fulcrum Bunker Vault",
         defType: DefinitionType.Building,
         spawnHitbox: RectangleHitbox.fromRect(26.4, 19.97),
         ceilingHitbox: RectangleHitbox.fromRect(26.4, 19.97),

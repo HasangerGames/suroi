@@ -14,6 +14,7 @@ export const HITBOX_COLORS = {
     obstacleNoCollision: new Color("yellow"),
     stair: new Color("white"),
     spawnHitbox: new Color("orange"),
+    bunkerSpawnHitbox: new Color("greenyellow"),
     buildingZoomCeiling: new Color("purple"),
     buildingScopeCeiling: new Color("cyan"),
     buildingVisOverride: new Color("teal"),

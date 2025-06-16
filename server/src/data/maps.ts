@@ -1200,6 +1200,16 @@ const maps = {
             });
         }
     },
+    bunkerSpawnTest: {
+        width: 1024,
+        height: 1024,
+        spawn: { mode: SpawnMode.Center },
+        beachSize: 32,
+        oceanSize: 32,
+        buildings: {
+            small_bunker: 150
+        }
+    },
     river: {
         width: 1344,
         height: 1344,
