@@ -7,19 +7,10 @@
    width="550.47101"
    height="560.71826"
    viewBox="0 0 550.471 560.71827"
-   sodipodi:docname="birch_tree_leaves_1.svg"
-   inkscape:version="1.4.2 (1:1.4.2+202505120737+ebf0e940d0)"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg">
   <defs
      id="defs1">
-    <inkscape:path-effect
-       effect="spiro"
-       id="path-effect19494"
-       is_visible="true"
-       lpeversion="1" />
     <clipPath
        clipPathUnits="userSpaceOnUse"
        id="clipPath335">
@@ -412,11 +403,6 @@
          transform="matrix(1.3333333,0,0,-1.3333333,0,1366.1067)"
          id="path588" />
     </clipPath>
-    <inkscape:path-effect
-       effect="spiro"
-       id="path-effect19494-3-2-4"
-       is_visible="true"
-       lpeversion="1" />
     <clipPath
        clipPathUnits="userSpaceOnUse"
        id="clipPath375-9-4-0">
@@ -514,30 +500,8 @@
          id="path378-1-4-9" />
     </clipPath>
   </defs>
-  <sodipodi:namedview
-     id="namedview1"
-     pagecolor="#505050"
-     bordercolor="#999999"
-     borderopacity="1"
-     inkscape:showpageshadow="0"
-     inkscape:pageopacity="0"
-     inkscape:pagecheckerboard="true"
-     inkscape:deskcolor="#d1d1d1"
-     showgrid="false"
-     inkscape:pageshadow="0"
-     inkscape:zoom="1.3995495"
-     inkscape:cx="113.60799"
-     inkscape:cy="237.57645"
-     inkscape:window-width="2560"
-     inkscape:window-height="1368"
-     inkscape:window-x="0"
-     inkscape:window-y="0"
-     inkscape:window-maximized="1"
-     inkscape:current-layer="g5" />
   <g
      id="layer-MC2"
-     inkscape:groupmode="layer"
-     inkscape:label="Layer 2"
      transform="translate(-707.17468,-147.47802)">
     <g
        id="g5"

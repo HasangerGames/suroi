@@ -5,10 +5,6 @@
    viewBox="0 0 66.145833 22.489582"
    version="1.1"
    id="svg22844"
-   inkscape:version="1.3 (0e150ed, 2023-07-21)"
-   sodipodi:docname="bookshelf_2.svg"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg"
@@ -18,7 +14,6 @@
   <defs
      id="defs22838">
     <radialGradient
-       inkscape:collect="always"
        xlink:href="#linearGradient3"
        id="radialGradient4"
        cx="95.772705"
@@ -29,8 +24,7 @@
        gradientUnits="userSpaceOnUse"
        gradientTransform="translate(9.9619067,16.502886)" />
     <linearGradient
-       id="linearGradient3"
-       inkscape:collect="always">
+       id="linearGradient3">
       <stop
          style="stop-color:#ffad23;stop-opacity:0.61077845;"
          offset="0"
@@ -41,34 +35,6 @@
          id="stop4" />
     </linearGradient>
   </defs>
-  <sodipodi:namedview
-     id="base"
-     pagecolor="#505050"
-     bordercolor="#666666"
-     borderopacity="1.0"
-     inkscape:pageopacity="0"
-     inkscape:pageshadow="2"
-     inkscape:zoom="3.2809755"
-     inkscape:cx="119.93384"
-     inkscape:cy="13.867827"
-     inkscape:document-units="px"
-     inkscape:current-layer="layer1"
-     inkscape:document-rotation="0"
-     showgrid="false"
-     inkscape:window-width="1440"
-     inkscape:window-height="900"
-     inkscape:window-x="0"
-     inkscape:window-y="0"
-     inkscape:window-maximized="0"
-     fit-margin-top="0"
-     fit-margin-left="0"
-     fit-margin-right="0"
-     fit-margin-bottom="0"
-     inkscape:pagecheckerboard="1"
-     units="px"
-     height="85px"
-     inkscape:showpageshadow="2"
-     inkscape:deskcolor="#d1d1d1" />
   <metadata
      id="metadata22841">
     <rdf:RDF>
@@ -81,8 +47,6 @@
     </rdf:RDF>
   </metadata>
   <g
-     inkscape:label="Layer 1"
-     inkscape:groupmode="layer"
      id="layer1"
      transform="translate(-72.661755,-93.410835)">
     <g

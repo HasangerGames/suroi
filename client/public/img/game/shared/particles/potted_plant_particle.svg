@@ -7,12 +7,8 @@
    stroke-linecap="square"
    stroke-miterlimit="10"
    id="svg54"
-   sodipodi:docname="potted_plant_particle.svg"
    width="36.41597"
    height="30.705851"
-   inkscape:version="1.3 (0e150ed, 2023-07-21)"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg">
   <defs
@@ -774,32 +770,12 @@
       </g>
     </clipPath>
   </defs>
-  <sodipodi:namedview
-     id="namedview54"
-     pagecolor="#505050"
-     bordercolor="#ffffff"
-     borderopacity="1"
-     inkscape:showpageshadow="0"
-     inkscape:pageopacity="0"
-     inkscape:pagecheckerboard="1"
-     inkscape:deskcolor="#505050"
-     inkscape:zoom="14.429013"
-     inkscape:cx="18.57369"
-     inkscape:cy="16.56385"
-     inkscape:window-width="1424"
-     inkscape:window-height="743"
-     inkscape:window-x="0"
-     inkscape:window-y="25"
-     inkscape:window-maximized="0"
-     inkscape:current-layer="svg54" />
   <path
      style="fill:#5c2f19;fill-opacity:1;stroke:#2e1a0f;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
      d="m 16.570512,1.47607 c -5.16759,4.271561 -13.0003872,8.842784 -14.254119,11.270979 2.7984956,3.415078 8.670692,4.583699 10.643607,8.529528 0.548657,1.097314 0.155265,3.412592 1.039572,4.296899 1.741109,1.741108 4.170784,2.519093 6.253127,3.67361 2.519487,-2.048322 5.217822,-4.185748 7.261312,-6.930936 2.333763,-3.135137 3.782687,-4.90636 5.267165,-7.692834 1.418741,-2.66308 1.649058,-4.0899 2.200624,-6.291799 C 28.547182,6.4158718 22.536726,3.8108928 16.570512,1.47607 Z"
-     id="path6"
-     sodipodi:nodetypes="ccsscsscc" />
+     id="path6" />
   <path
      style="fill:none;stroke:#2e1a0f;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
      d="M 14.562574,25.779534 C 20.506368,20.58035 25.841139,13.746656 28.629081,6.7473595"
-     id="path7"
-     sodipodi:nodetypes="cc" />
+     id="path7" />
 </svg>

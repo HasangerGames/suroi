@@ -6,35 +6,10 @@
    fill="none"
    version="1.1"
    id="svg52"
-   sodipodi:docname="big_oak_tree_trunk_4.svg"
-   inkscape:version="1.4.2 (1:1.4.2+202505120737+ebf0e940d0)"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg">
   <defs
      id="defs56" />
-  <sodipodi:namedview
-     id="namedview54"
-     pagecolor="#505050"
-     bordercolor="#ffffff"
-     borderopacity="1"
-     inkscape:pageshadow="0"
-     inkscape:pageopacity="0"
-     inkscape:pagecheckerboard="1"
-     showgrid="false"
-     inkscape:zoom="0.67"
-     inkscape:cx="217.91045"
-     inkscape:cy="200.74627"
-     inkscape:window-width="2560"
-     inkscape:window-height="1368"
-     inkscape:window-x="0"
-     inkscape:window-y="0"
-     inkscape:window-maximized="1"
-     inkscape:current-layer="svg52"
-     height="609.877px"
-     inkscape:showpageshadow="2"
-     inkscape:deskcolor="#505050" />
   <path
      d="m 300.79916,165.25318 -102.56882,52.77604 -47.01581,-72.67159 -10.87559,-88.719339 -27.08636,73.595149 20.65663,122.97165 45.44655,27.49486 53.69915,71.81363 -13.7023,114.94798 68.064,75.86634 -30.90255,-73.97087 41.51584,-106.98142 -30.82091,-68.34111 40.26595,6.11164 72.01021,43.69762 16.51351,57.74355 9.58412,-63.14461 -25.50122,-47.87305 -118.12649,-54.44213 52.28523,-36.06644 64.34532,-23.00126 z"
      fill="#5b3e24"
@@ -48,6 +23,5 @@
      stroke-miterlimit="16"
      stroke-linejoin="round"
      id="path4-88-0-7"
-     style="stroke:#372516;stroke-width:9;stroke-miterlimit:16;stroke-dasharray:none;stroke-opacity:1"
-     sodipodi:nodetypes="cccccccccccccccccccccccccccccc" />
+     style="stroke:#372516;stroke-width:9;stroke-miterlimit:16;stroke-dasharray:none;stroke-opacity:1" />
 </svg>

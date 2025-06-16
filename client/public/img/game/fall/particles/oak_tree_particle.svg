@@ -6,10 +6,6 @@
    fill="none"
    version="1.1"
    id="svg52"
-   sodipodi:docname="oak_tree_particle.svg"
-   inkscape:version="1.4 (1:1.4+202410161351+e7c3feb100)"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
@@ -17,27 +13,6 @@
    xmlns:dc="http://purl.org/dc/elements/1.1/">
   <defs
      id="defs56" />
-  <sodipodi:namedview
-     id="namedview54"
-     pagecolor="#505050"
-     bordercolor="#ffffff"
-     borderopacity="1"
-     inkscape:pageshadow="0"
-     inkscape:pageopacity="0"
-     inkscape:pagecheckerboard="1"
-     showgrid="false"
-     inkscape:zoom="8.6745072"
-     inkscape:cx="34.411177"
-     inkscape:cy="52.567828"
-     inkscape:window-width="2560"
-     inkscape:window-height="1368"
-     inkscape:window-x="0"
-     inkscape:window-y="0"
-     inkscape:window-maximized="1"
-     inkscape:current-layer="svg52"
-     height="609.877px"
-     inkscape:showpageshadow="2"
-     inkscape:deskcolor="#505050" />
   <path
      d="M 26.26145,60.058943 22.965301,32.102348 43.067702,2.9155199 38.611819,43.849085 49.766674,90.034083 40.518229,110.70233 Z"
      fill="#6d4a2c"
@@ -46,8 +21,7 @@
      stroke-miterlimit="16"
      stroke-linejoin="round"
      id="path4"
-     style="stroke:#312114;stroke-opacity:1"
-     sodipodi:nodetypes="ccccccc" />
+     style="stroke:#312114;stroke-opacity:1" />
   <path
      d="m 68.997824,61.928489 c -5.051432,-7.36848 -21.324339,-18.049461 -24.917353,-6.67405 -2.575895,11.647942 16.856727,10.53503 24.916215,6.679748 L 69,61.935324 c 0,-0.0022 -0.0022,-0.0058 -0.0022,-0.0068 z"
      fill="#5f926a"

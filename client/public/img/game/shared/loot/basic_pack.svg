@@ -5,36 +5,9 @@
    height="64"
    viewBox="0 0 46.323397 64"
    id="svg71"
-   sodipodi:docname="basic_pack.svg"
-   inkscape:version="1.4 (1:1.4+202410161351+e7c3feb100)"
-   inkscape:export-filename="..\OneDrive\Desktop\Suroi SVG's\basic_pack(simplified).svg"
-   inkscape:export-xdpi="96"
-   inkscape:export-ydpi="96"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg">
-  <sodipodi:namedview
-     id="namedview73"
-     pagecolor="#505050"
-     bordercolor="#ffffff"
-     borderopacity="1"
-     inkscape:pageshadow="0"
-     inkscape:pageopacity="0"
-     inkscape:pagecheckerboard="1"
-     showgrid="false"
-     inkscape:zoom="9.2249095"
-     inkscape:cx="2.7642548"
-     inkscape:cy="33.984073"
-     inkscape:window-width="2560"
-     inkscape:window-height="1368"
-     inkscape:window-x="0"
-     inkscape:window-y="0"
-     inkscape:window-maximized="1"
-     inkscape:current-layer="g9"
-     inkscape:showpageshadow="2"
-     inkscape:deskcolor="#d1d1d1" />
   <defs
      id="defs27">
     <linearGradient
@@ -57,8 +30,7 @@
          style="stop-color:#9a9a9a;stop-opacity:1;" />
     </linearGradient>
     <linearGradient
-       id="linearGradient6"
-       inkscape:collect="always">
+       id="linearGradient6">
       <stop
          style="stop-color:#727272;stop-opacity:1;"
          offset="0"
@@ -107,7 +79,6 @@
          style="stop-color:#999999;stop-opacity:1;" />
     </linearGradient>
     <linearGradient
-       inkscape:collect="always"
        xlink:href="#linearGradient3"
        id="linearGradient3991"
        gradientUnits="userSpaceOnUse"
@@ -117,7 +88,6 @@
        x2="212.38313"
        y2="201.44952" />
     <linearGradient
-       inkscape:collect="always"
        xlink:href="#linearGradient6"
        id="linearGradient8"
        x1="32.595005"
@@ -127,7 +97,6 @@
        gradientUnits="userSpaceOnUse"
        gradientTransform="matrix(0.92464836,0,0,0.92641494,0.6256196,4.567919)" />
     <linearGradient
-       inkscape:collect="always"
        xlink:href="#color-2"
        id="linearGradient9"
        gradientUnits="userSpaceOnUse"
@@ -143,8 +112,7 @@
     <path
        style="fill:#8d8d8d;fill-opacity:1;stroke:#242424;stroke-width:1.5;stroke-linejoin:round;stroke-miterlimit:29;stroke-dasharray:none;stroke-opacity:1"
        d="m 11.753159,12.450191 c 0,0 2.085639,-11.78731968 18.106228,-11.78731968 16.020589,0 18.404699,11.95997068 18.404699,11.95997068 h -3.411812 c 0,0 -3.971429,-8.6513657 -14.956032,-8.6513657 -10.984602,0 -15.034189,8.6965757 -15.034189,8.6965757 z"
-       id="path1"
-       sodipodi:nodetypes="csccscc" />
+       id="path1" />
     <path
        d="m 8.3026684,55.739759 c 0,-6.799153 0,-31.815054 0,-40.627752 0,-1.942013 1.0917448,-3.097185 2.3639186,-3.097185 4.404019,0 29.856671,0 38.550042,0 1.823345,0 2.909438,0.939894 2.909438,2.550621 0,8.378871 0,34.910449 0,41.720875 0,3.08154 -2.637497,6.376553 -6.546234,6.376553 -9.413766,0 -26.201179,0 -31.276448,0 -2.860928,0 -6.0007135,-3.621467 -6.0007135,-6.923112 z"
        fill="#4f4f4f"
@@ -190,8 +158,7 @@
        stroke-width="1.72076"
        stroke-linecap="butt"
        id="path2984"
-       style="mix-blend-mode:normal;fill:#979797;fill-opacity:1;fill-rule:nonzero;stroke:#232323;stroke-width:1.5;stroke-linejoin:miter;stroke-miterlimit:10;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-       sodipodi:nodetypes="csssssscccscc" />
+       style="mix-blend-mode:normal;fill:#979797;fill-opacity:1;fill-rule:nonzero;stroke:#232323;stroke-width:1.5;stroke-linejoin:miter;stroke-miterlimit:10;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
     <path
        d="m 20.25179,34.638517 c 0,-0.440209 0.356181,-0.797069 0.79555,-0.797069 0.439368,0 0.795549,0.35686 0.795549,0.797069 0,0.440207 -0.356181,0.797069 -0.795549,0.797069 -0.439369,0 -0.79555,-0.356862 -0.79555,-0.797069 z"
        fill="#9d9d9d"
@@ -207,8 +174,7 @@
        stroke-width="1.72076"
        stroke-linecap="butt"
        id="path2984-6"
-       style="mix-blend-mode:normal;fill:#979797;fill-opacity:1;fill-rule:nonzero;stroke:#242424;stroke-width:1.5;stroke-linejoin:miter;stroke-miterlimit:10;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-       sodipodi:nodetypes="cssssssccsscc" />
+       style="mix-blend-mode:normal;fill:#979797;fill-opacity:1;fill-rule:nonzero;stroke:#242424;stroke-width:1.5;stroke-linejoin:miter;stroke-miterlimit:10;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
     <rect
        style="fill:#242424;fill-opacity:1;stroke-width:8;stroke-linecap:round"
        id="rect2"

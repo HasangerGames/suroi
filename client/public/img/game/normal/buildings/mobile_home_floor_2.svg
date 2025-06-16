@@ -7,46 +7,20 @@
    viewBox="0 0 120.81379 139.53221"
    version="1.1"
    id="svg1"
-   inkscape:version="1.3.2 (091e20e, 2023-11-25, custom)"
-   sodipodi:docname="mobile_home_floor_2.svg"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg">
-  <sodipodi:namedview
-     id="namedview1"
-     pagecolor="#ffffff"
-     bordercolor="#000000"
-     borderopacity="0.25"
-     inkscape:showpageshadow="2"
-     inkscape:pageopacity="0.0"
-     inkscape:pagecheckerboard="0"
-     inkscape:deskcolor="#d1d1d1"
-     inkscape:document-units="mm"
-     inkscape:zoom="1.0141844"
-     inkscape:cx="385.53147"
-     inkscape:cy="240.58741"
-     inkscape:window-width="1920"
-     inkscape:window-height="1001"
-     inkscape:window-x="-9"
-     inkscape:window-y="-9"
-     inkscape:window-maximized="1"
-     inkscape:current-layer="layer1" />
   <defs
      id="defs1">
     <pattern
-       inkscape:collect="always"
        xlink:href="#pattern8711"
        id="pattern1632"
        patternTransform="matrix(0.27360766,0,0,0.26208709,252.1296,698.52331)" />
     <pattern
-       inkscape:collect="always"
        xlink:href="#pattern69"
        id="pattern8711"
        patternTransform="matrix(0.26374109,0,0,0.2622271,-538.92154,1378.213)" />
     <pattern
-       inkscape:collect="always"
        xlink:href="#pattern30-5"
        preserveAspectRatio="xMidYMid"
        id="pattern69"
@@ -59,13 +33,11 @@
        height="182.91212"
        patternTransform="translate(244.99999,643.99997)"
        preserveAspectRatio="xMidYMid"
-       id="pattern30-5"
-       inkscape:label="pattern30">
+       id="pattern30-5">
       <path
          id="rect75879-2"
          style="fill:#543d2b;fill-opacity:1;stroke-width:5.1292;paint-order:markers stroke fill"
-         d="M 0,0 V 182.91212 H 338.12698 V 0 Z"
-         sodipodi:nodetypes="ccccc" />
+         d="M 0,0 V 182.91212 H 338.12698 V 0 Z" />
       <rect
          style="fill:#644c33;fill-opacity:1;stroke-width:1.54049;paint-order:markers stroke fill"
          id="rect18-1-9"
@@ -142,17 +114,14 @@
          d="m 301.7539,96.738292 c -1.99547,0 -3.60155,1.606073 -3.60155,3.601548 v 32.41213 c 0,1.99548 1.60608,3.60352 3.60155,3.60352 h 36.37308 V 96.738292 Z" />
     </pattern>
     <pattern
-       inkscape:collect="always"
        xlink:href="#pattern8713"
        id="pattern1630"
        patternTransform="matrix(0.2554709,0,0,0.24118102,-112.05722,178.86075)" />
     <pattern
-       inkscape:collect="always"
        xlink:href="#pattern61"
        id="pattern8713"
        patternTransform="matrix(0.2554709,0,0,0.24118102,-791.41277,-611.48111)" />
     <pattern
-       inkscape:collect="always"
        xlink:href="#pattern60"
        preserveAspectRatio="xMidYMid"
        id="pattern61"
@@ -181,23 +150,19 @@
          transform="matrix(0,1,1,0,0,0)" />
     </pattern>
     <pattern
-       inkscape:collect="always"
        xlink:href="#pattern8715"
        id="pattern1628"
        patternTransform="matrix(0.24270863,0,0,0.22970134,-66.4289,-75.90586)" />
     <pattern
-       inkscape:collect="always"
        xlink:href="#pattern93"
        id="pattern8715"
        patternTransform="matrix(0.23388252,0,0,0.20795092,-864.41247,735.89452)" />
     <pattern
-       inkscape:collect="always"
        xlink:href="#pattern47"
        preserveAspectRatio="xMidYMid"
        id="pattern93"
        patternTransform="matrix(0.23388252,0,0,0.20795092,-82.104597,160.3943)" />
     <pattern
-       inkscape:collect="always"
        xlink:href="#pattern46"
        preserveAspectRatio="xMidYMid"
        id="pattern47"
@@ -230,8 +195,6 @@
     </pattern>
   </defs>
   <g
-     inkscape:label="Στρώση 1"
-     inkscape:groupmode="layer"
      id="layer1"
      transform="translate(4.285954,-60.090336)">
     <g

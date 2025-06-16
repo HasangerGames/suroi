@@ -7,36 +7,12 @@
    viewBox="0 0 535.54866 356.27231"
    version="1.1"
    id="svg1"
-   inkscape:version="1.4 (1:1.4+202410161351+e7c3feb100)"
-   sodipodi:docname="lodge_floor_bottom.svg"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg">
-  <sodipodi:namedview
-     id="namedview1"
-     pagecolor="#505050"
-     bordercolor="#ffffff"
-     borderopacity="1"
-     inkscape:showpageshadow="0"
-     inkscape:pageopacity="0"
-     inkscape:pagecheckerboard="1"
-     inkscape:deskcolor="#505050"
-     inkscape:document-units="px"
-     inkscape:zoom="1.4752918"
-     inkscape:cx="1126.2179"
-     inkscape:cy="1130.9627"
-     inkscape:window-width="2560"
-     inkscape:window-height="1368"
-     inkscape:window-x="0"
-     inkscape:window-y="0"
-     inkscape:window-maximized="1"
-     inkscape:current-layer="layer1" />
   <defs
      id="defs1">
     <pattern
-       inkscape:collect="always"
        xlink:href="#pattern1"
        preserveAspectRatio="xMidYMid"
        id="pattern2"
@@ -90,13 +66,11 @@
          id="feGaussianBlur1-3" />
     </filter>
     <pattern
-       inkscape:collect="always"
        xlink:href="#pattern3"
        preserveAspectRatio="xMidYMid"
        id="pattern4640"
        patternTransform="matrix(0,0.26512096,-0.26458354,0,220.13951,-439.04511)" />
     <pattern
-       inkscape:collect="always"
        xlink:href="#pattern2-2"
        preserveAspectRatio="xMidYMid"
        id="pattern3"
@@ -150,7 +124,6 @@
          id="feGaussianBlur1-11" />
     </filter>
     <pattern
-       inkscape:collect="always"
        xlink:href="#pattern242"
        preserveAspectRatio="xMidYMid"
        id="pattern243"
@@ -164,8 +137,7 @@
        patternTransform="translate(793.70079,1355.53)"
        preserveAspectRatio="xMidYMid"
        id="pattern242"
-       style="fill:#000000"
-       inkscape:label="pattern242">
+       style="fill:#000000">
       <g
          id="g242"
          transform="matrix(3.7795276,0,0,3.7795276,-793.70079,-1355.53)">
@@ -199,7 +171,6 @@
        id="T"
        clipPathUnits="userSpaceOnUse" />
     <pattern
-       inkscape:collect="always"
        xlink:href="#pattern2-1"
        preserveAspectRatio="xMidYMid"
        id="pattern3-1"
@@ -253,8 +224,6 @@
     </pattern>
   </defs>
   <g
-     inkscape:label="Layer 1"
-     inkscape:groupmode="layer"
      id="layer1">
     <g
        id="g2"

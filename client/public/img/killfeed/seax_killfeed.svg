@@ -6,32 +6,10 @@
    fill="none"
    version="1.1"
    id="svg2"
-   sodipodi:docname="seax_killfeed.svg"
-   inkscape:version="1.4 (e7c3feb1, 2024-10-09)"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg">
   <defs
      id="defs2" />
-  <sodipodi:namedview
-     id="namedview2"
-     pagecolor="#ffffff"
-     bordercolor="#000000"
-     borderopacity="0.25"
-     inkscape:showpageshadow="2"
-     inkscape:pageopacity="0.0"
-     inkscape:pagecheckerboard="0"
-     inkscape:deskcolor="#d1d1d1"
-     inkscape:zoom="2.8235294"
-     inkscape:cx="20.541667"
-     inkscape:cy="7.2604167"
-     inkscape:window-width="1472"
-     inkscape:window-height="812"
-     inkscape:window-x="0"
-     inkscape:window-y="37"
-     inkscape:window-maximized="1"
-     inkscape:current-layer="svg2" />
   <path
      d="m 25.250244,9.32605 c 1.9282,-1.53066 2.3459,-2.73586 1.5094,-5.71424 L 38.349844,0 l -5.3908,4.09699 8.1435,2.67917 -8.609,0.53806 4.8426,3.92013 -7.0716,-0.7687 0.9231,5.5343 z"
      fill="#d9d9d9"

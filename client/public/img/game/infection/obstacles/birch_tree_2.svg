@@ -7,43 +7,17 @@
    viewBox="0 0 135.46666 140.67897"
    version="1.1"
    id="svg1"
-   inkscape:version="1.4 (1:1.4+202410161351+e7c3feb100)"
-   sodipodi:docname="birch_tree_2.svg"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg">
-  <sodipodi:namedview
-     id="namedview1"
-     pagecolor="#505050"
-     bordercolor="#ffffff"
-     borderopacity="1"
-     inkscape:showpageshadow="0"
-     inkscape:pageopacity="0"
-     inkscape:pagecheckerboard="1"
-     inkscape:deskcolor="#505050"
-     inkscape:document-units="px"
-     inkscape:zoom="1.078823"
-     inkscape:cx="241.0034"
-     inkscape:cy="209.95104"
-     inkscape:window-width="2560"
-     inkscape:window-height="1368"
-     inkscape:window-x="0"
-     inkscape:window-y="0"
-     inkscape:window-maximized="1"
-     inkscape:current-layer="layer1" />
   <defs
      id="defs1" />
   <g
-     inkscape:label="Layer 1"
-     inkscape:groupmode="layer"
      id="layer1"
      transform="translate(-41.275,-92.86875)">
     <path
        id="path51"
        class="st2"
        d="m 106.30958,168.48667 1.19063,-5.87375 -4.86834,-17.85938 23.86542,-13.78479 -29.633332,8.28146 -0.978959,23.41562 -7.46125,20.61104 -22.145624,5.60917 8.09625,4.78896 16.536458,-1.87854 7.011458,-14.23459 8.413749,-9.0752 z"
-       sodipodi:nodetypes="cccccccccccc"
        style="fill:#a574a2;stroke:#231823;stroke-width:2.38125px;stroke-linejoin:round" />
     <g
        id="g2"
@@ -62,7 +36,6 @@
          id="path352-8-6-3"
          class="st8"
          d="m 147,375.3 4.7,3.2 c 0.8,0.5 1.7,0.8 2.4,0.7 l 7.8,-0.9 c 0.4,0 0.8,-0.2 1,-0.5 l 3.7,-3.9 v 0 c 0.8,-0.8 0.6,-2.4 -0.5,-3.9 l -13.8,-13.2 c -1.2,-1.8 -8,-8.6 -9.2,-8 -4.1,1.9 -3.4,10.4 -4.5,11.7 -0.1,0.2 -0.2,0.3 -0.3,0.5 l -0.3,0.9 c -0.3,1 0,2.3 1,3.5 l 6.6,8.6 c 0.4,0.5 0.9,1 1.5,1.4"
-         sodipodi:nodetypes="ccccccsccccccccc"
          style="fill:#4d194f" />
       <path
          id="path17492-2-8-6"
@@ -74,7 +47,6 @@
        id="path51-1"
        class="st1"
        d="m 106.30958,168.48667 1.19063,-5.87375 -4.86834,-17.85938 23.86542,-13.78479 -29.633332,8.28146 -0.978959,23.41562 -7.46125,20.61104 -22.145624,5.60917 8.09625,4.78896 16.536458,-1.87854 7.011458,-14.23459 8.413749,-9.0752 z"
-       sodipodi:nodetypes="cccccccccccc"
        style="fill:none;stroke:#262626;stroke-width:2.38125px;stroke-linejoin:round" />
     <path
        id="path384-4-8-9"
@@ -113,7 +85,6 @@
          id="path19492-7-8-6"
          class="st8"
          d="m 304.1,339.2 c 0.9,-2.7 3.1,-4.9 5.7,-6 2.6,-1.1 5.6,-1.2 8.4,-0.5 2.8,0.7 5.3,2.2 7.4,4.1 2.1,1.9 3.9,4.2 5.4,6.6 2.6,4.3 4.5,9.3 4.2,14.4 -0.3,5.1 -0.9,5 -2.2,7.2 -1.3,2.2 -3.3,4 -5.6,5 -1.8,0.8 -3.9,1.1 -5.9,0.9 -4.5,-5.2 -8.8,-10.7 -12.8,-16.3 -1.6,-2.3 -3.2,-4.6 -4.2,-7.2 -1,-2.6 -1.3,-5.5 -0.5,-8.1 v 0 z"
-         sodipodi:nodetypes="sssccs"
          style="fill:#4d194f" />
       <path
          id="path334-3-2-6"
@@ -220,22 +191,16 @@
        id="path34-0-1-5-5-1"
        class="st0"
        d="m 141.605,186.13437 v 0 c 3.09562,-2.19604 7.46125,-9.2075 2.61937,-10.63625 -4.97416,-0.97895 -4.3127,7.24959 -2.61937,10.63625 z"
-       inkscape:transform-center-x="7.4483562"
-       inkscape:transform-center-y="6.8538471"
        style="fill:#8e477f;fill-opacity:0.9;stroke-width:0.264583" />
     <path
        id="path36-4-4-2-8-2"
        class="st3"
        d="m 151.60625,187.69542 v 0 c 0.82021,-4.86834 -1.5875,-15.34584 -7.38188,-12.1973 -5.50333,3.67771 2.6723,10.63625 7.38188,12.1973 z"
-       inkscape:transform-center-x="3.7484529"
-       inkscape:transform-center-y="7.3755785"
        style="fill:#a55394;fill-opacity:0.9;stroke-width:0.264583" />
     <path
        id="path38-9-9-1-5-0"
        class="st0"
        d="m 152.84979,177.95875 v 0 c -1.40229,-2.77813 -6.48229,-7.09083 -8.17562,-3.20146 -1.37584,4.02167 5.2652,4.28625 8.17562,3.20146 z"
-       inkscape:transform-center-x="2.1597494"
-       inkscape:transform-center-y="1.9351755"
        style="fill:#8e477f;fill-opacity:0.9;stroke-width:0.264583" />
     <path
        id="path24-50-0-6"

@@ -7,40 +7,11 @@
    viewBox="0 0 22.225001 22.225001"
    version="1.1"
    id="svg21119"
-   inkscape:version="1.4 (1:1.4+202410161351+e7c3feb100)"
-   sodipodi:docname="plumpkin.svg"
-   inkscape:export-filename="Plumpkin-emote.png"
-   inkscape:export-xdpi="150"
-   inkscape:export-ydpi="150"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg">
-  <sodipodi:namedview
-     id="namedview21121"
-     pagecolor="#ffffff"
-     bordercolor="#666666"
-     borderopacity="1.0"
-     inkscape:showpageshadow="2"
-     inkscape:pageopacity="0.0"
-     inkscape:pagecheckerboard="0"
-     inkscape:deskcolor="#d1d1d1"
-     inkscape:document-units="px"
-     showgrid="false"
-     inkscape:zoom="4.7572176"
-     inkscape:cx="41.305657"
-     inkscape:cy="60.8549"
-     inkscape:window-width="2560"
-     inkscape:window-height="1368"
-     inkscape:window-x="0"
-     inkscape:window-y="0"
-     inkscape:window-maximized="1"
-     inkscape:current-layer="layer1" />
   <defs
      id="defs21116" />
   <g
-     inkscape:label="Layer 1"
-     inkscape:groupmode="layer"
      id="layer1">
     <g
        id="g50096"
@@ -172,8 +143,7 @@
       <path
          style="fill:#8b7f50;fill-opacity:1;stroke:#262316;stroke-width:3.49999;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1;paint-order:fill markers stroke"
          d="m 45.163723,27.574793 c 2.46448,-2.54604 1.76359,-3.86219 7.28385,-7.39011 L 62.272846,3.8666394 c 10.318442,-13.0514667 6.793115,-3.20258443 6.4516,1.33482 L 60.456453,20.852093 c 5.60936,2.95646 3.73105,5.28805 7.82366,6.79539 -10.05889,4.64936 -14.47062,3.90063 -23.11639,-0.0727 z"
-         id="path41919"
-         sodipodi:nodetypes="cccccccc" />
+         id="path41919" />
     </g>
   </g>
 </svg>

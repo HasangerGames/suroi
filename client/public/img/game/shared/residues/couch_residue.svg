@@ -5,10 +5,6 @@
    viewBox="0 0 39.20333 83.838913"
    version="1.1"
    id="svg76803"
-   inkscape:version="1.3 (0e150ed, 2023-07-21)"
-   sodipodi:docname="couch_residue.svg"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
@@ -16,33 +12,6 @@
    xmlns:dc="http://purl.org/dc/elements/1.1/">
   <defs
      id="defs76797" />
-  <sodipodi:namedview
-     id="base"
-     pagecolor="#505050"
-     bordercolor="#666666"
-     borderopacity="1.0"
-     inkscape:pageopacity="0"
-     inkscape:pageshadow="2"
-     inkscape:zoom="1.5165594"
-     inkscape:cx="157.59356"
-     inkscape:cy="126.93205"
-     inkscape:document-units="px"
-     inkscape:current-layer="layer1"
-     inkscape:document-rotation="0"
-     showgrid="false"
-     fit-margin-top="0"
-     fit-margin-left="0"
-     fit-margin-right="0"
-     fit-margin-bottom="0"
-     inkscape:window-width="1440"
-     inkscape:window-height="900"
-     inkscape:window-x="0"
-     inkscape:window-y="0"
-     inkscape:window-maximized="0"
-     inkscape:pagecheckerboard="1"
-     units="px"
-     inkscape:showpageshadow="0"
-     inkscape:deskcolor="#505050" />
   <metadata
      id="metadata76800">
     <rdf:RDF>
@@ -55,12 +24,9 @@
     </rdf:RDF>
   </metadata>
   <g
-     inkscape:label="Layer 1"
-     inkscape:groupmode="layer"
      id="layer1"
      transform="translate(-150.71068,-105.28558)">
     <g
-       inkscape:label="Layer 1"
        id="layer1-87"
        transform="translate(0.05483389)">
       <path
@@ -110,18 +76,15 @@
       <path
          id="rect3218-7"
          style="fill:#813627;fill-opacity:1;stroke:#341610;stroke-width:0.926042;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-         d="m 163.55721,136.25347 c -0.30634,1.1433 -1.14894,2.59677 -0.4209,3.85775 0.72804,1.26098 2.07797,2.56946 3.6984,2.13527 1.62043,-0.43419 3.08308,-3.60877 2.89749,-5.01861 -0.18559,-1.40984 -1.06307,-1.26613 -1.93532,-1.93545 -0.87225,-0.66932 -2.29689,-2.21007 -3.34262,-1.92986 -1.04573,0.28021 -0.59071,1.74759 -0.89705,2.8909 z"
-         sodipodi:nodetypes="zzzzzzz" />
+         d="m 163.55721,136.25347 c -0.30634,1.1433 -1.14894,2.59677 -0.4209,3.85775 0.72804,1.26098 2.07797,2.56946 3.6984,2.13527 1.62043,-0.43419 3.08308,-3.60877 2.89749,-5.01861 -0.18559,-1.40984 -1.06307,-1.26613 -1.93532,-1.93545 -0.87225,-0.66932 -2.29689,-2.21007 -3.34262,-1.92986 -1.04573,0.28021 -0.59071,1.74759 -0.89705,2.8909 z" />
       <path
          id="rect3220-3"
          style="fill:#813627;fill-opacity:1;stroke:#341610;stroke-width:0.926042;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-         d="m 167.95894,161.05536 c -1.11577,1.11577 1.73599,1.20005 2.77812,3.7176 1.04214,2.51756 2.24798,4.15803 3.98111,3.39696 1.73313,-0.76107 0.3245,-2.30804 0.50854,-3.37525 0.18404,-1.06722 0.28227,-2.8528 -1.25315,-3.73931 -1.53542,-0.88651 -4.89885,-1.11577 -6.01462,0 z"
-         sodipodi:nodetypes="zzzzzz" />
+         d="m 167.95894,161.05536 c -1.11577,1.11577 1.73599,1.20005 2.77812,3.7176 1.04214,2.51756 2.24798,4.15803 3.98111,3.39696 1.73313,-0.76107 0.3245,-2.30804 0.50854,-3.37525 0.18404,-1.06722 0.28227,-2.8528 -1.25315,-3.73931 -1.53542,-0.88651 -4.89885,-1.11577 -6.01462,0 z" />
       <path
          id="rect3222-7"
          style="fill:#813627;fill-opacity:1;stroke:#341610;stroke-width:0.926042;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-         d="m 182.5806,122.71066 c -1.012,-0.13318 -2.54052,-1.08092 -3.35022,-0.45955 -0.8097,0.62136 -1.88872,2.37125 -1.17111,3.09792 0.7176,0.72668 2.71328,2.13055 4.33288,1.69658 1.6196,-0.43397 2.83515,-3.16179 2.51509,-4.35627 -0.32006,-1.19448 -1.31464,0.1545 -2.32664,0.0213 z"
-         sodipodi:nodetypes="zzzzzz" />
+         d="m 182.5806,122.71066 c -1.012,-0.13318 -2.54052,-1.08092 -3.35022,-0.45955 -0.8097,0.62136 -1.88872,2.37125 -1.17111,3.09792 0.7176,0.72668 2.71328,2.13055 4.33288,1.69658 1.6196,-0.43397 2.83515,-3.16179 2.51509,-4.35627 -0.32006,-1.19448 -1.31464,0.1545 -2.32664,0.0213 z" />
     </g>
   </g>
 </svg>

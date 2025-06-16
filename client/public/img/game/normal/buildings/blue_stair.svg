@@ -7,36 +7,11 @@
    viewBox="0 0 58.473109 59.617779"
    version="1.1"
    id="svg1"
-   inkscape:version="1.3.2 (091e20e, 2023-11-25, custom)"
-   sodipodi:docname="blue_stair.svg"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg">
-  <sodipodi:namedview
-     id="namedview1"
-     pagecolor="#ffffff"
-     bordercolor="#000000"
-     borderopacity="0.25"
-     inkscape:showpageshadow="2"
-     inkscape:pageopacity="0.0"
-     inkscape:pagecheckerboard="0"
-     inkscape:deskcolor="#d1d1d1"
-     inkscape:document-units="mm"
-     inkscape:zoom="0.71713664"
-     inkscape:cx="-261.45645"
-     inkscape:cy="271.91471"
-     inkscape:window-width="1920"
-     inkscape:window-height="1001"
-     inkscape:window-x="-9"
-     inkscape:window-y="-9"
-     inkscape:window-maximized="1"
-     inkscape:current-layer="layer1" />
   <defs
      id="defs1" />
   <g
-     inkscape:label="Στρώση 1"
-     inkscape:groupmode="layer"
      id="layer1"
      transform="translate(-174.09579,-76.200008)">
     <g
@@ -45,13 +20,11 @@
       <path
          id="rect66-3-8"
          style="fill:#363636;fill-opacity:1;stroke:#0e0e0e;stroke-width:2.00001;stroke-linecap:round;stroke-linejoin:round"
-         d="m -7056.9131,-848.95016 h 6.7795 v 11.54906 h -6.7795 z"
-         sodipodi:nodetypes="ccccc" />
+         d="m -7056.9131,-848.95016 h 6.7795 v 11.54906 h -6.7795 z" />
       <path
          id="rect66-7-0-3"
          style="fill:#363636;fill-opacity:1;stroke:#0e0e0e;stroke-width:2.00001;stroke-linecap:round;stroke-linejoin:round"
-         d="m -7007.2195,-848.95016 h 6.7795 v 11.54906 h -6.7795 v -5.77453 z"
-         sodipodi:nodetypes="cccccc" />
+         d="m -7007.2195,-848.95016 h 6.7795 v 11.54906 h -6.7795 v -5.77453 z" />
       <rect
          style="fill:#363636;fill-opacity:1;stroke:#0e0e0e;stroke-width:2.00001;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
          id="rect66-5-7-5"
@@ -176,13 +149,11 @@
         <path
            id="rect61-5-9"
            style="fill:#2f425e;fill-opacity:1;stroke:#111721;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
-           d="m -7053.3975,-851.71856 h 5.0405 v 53.65464 h -5.0405 z"
-           sodipodi:nodetypes="ccccc" />
+           d="m -7053.3975,-851.71856 h 5.0405 v 53.65464 h -5.0405 z" />
         <path
            id="rect61-3-3-1"
            style="fill:#2f425e;fill-opacity:1;stroke:#111721;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
-           d="m -7008.9956,-851.7185 h 5.0405 v 53.65464 h -5.0405 z"
-           sodipodi:nodetypes="ccccc" />
+           d="m -7008.9956,-851.7185 h 5.0405 v 53.65464 h -5.0405 z" />
       </g>
     </g>
   </g>

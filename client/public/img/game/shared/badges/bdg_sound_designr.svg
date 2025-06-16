@@ -7,36 +7,12 @@
    viewBox="0 0 18.584875 18.570621"
    version="1.1"
    id="svg1"
-   sodipodi:docname="bdg_sound_designr.svg"
-   inkscape:version="1.4 (1:1.4+202410161351+e7c3feb100)"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg">
-  <sodipodi:namedview
-     id="namedview1"
-     pagecolor="#505050"
-     bordercolor="#ffffff"
-     borderopacity="1"
-     inkscape:showpageshadow="0"
-     inkscape:pageopacity="0"
-     inkscape:pagecheckerboard="1"
-     inkscape:deskcolor="#505050"
-     inkscape:document-units="mm"
-     inkscape:zoom="14.481547"
-     inkscape:cx="23.029308"
-     inkscape:cy="43.1929"
-     inkscape:window-width="2560"
-     inkscape:window-height="1368"
-     inkscape:window-x="0"
-     inkscape:window-y="0"
-     inkscape:window-maximized="1"
-     inkscape:current-layer="g9" />
   <defs
      id="defs1">
     <filter
        style="color-interpolation-filters:sRGB"
-       inkscape:label="Drop Shadow"
        id="filter6-9"
        x="-0.48722328"
        y="-0.48722328"
@@ -74,7 +50,6 @@
     </filter>
     <filter
        style="color-interpolation-filters:sRGB"
-       inkscape:label="Drop Shadow"
        id="filter10-0"
        x="-0.4872523"
        y="-0.4872523"
@@ -112,7 +87,6 @@
     </filter>
     <filter
        style="color-interpolation-filters:sRGB"
-       inkscape:label="Drop Shadow"
        id="filter16-2"
        x="-0.49619286"
        y="-0.87950513"
@@ -150,7 +124,6 @@
     </filter>
     <filter
        style="color-interpolation-filters:sRGB"
-       inkscape:label="Drop Shadow"
        id="filter4"
        x="-0.26289539"
        y="-0.26289539"
@@ -188,8 +161,6 @@
     </filter>
   </defs>
   <g
-     inkscape:label="Layer 1"
-     inkscape:groupmode="layer"
      id="layer1"
      transform="translate(-94.456247,-144.72708)">
     <circle

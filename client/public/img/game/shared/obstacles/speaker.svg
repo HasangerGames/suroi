@@ -7,36 +7,11 @@
    viewBox="0 0 34.806702 29.351887"
    version="1.1"
    id="svg1"
-   inkscape:version="1.4 (1:1.4+202410161351+e7c3feb100)"
-   sodipodi:docname="speaker.svg"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg">
-  <sodipodi:namedview
-     id="namedview1"
-     pagecolor="#ffffff"
-     bordercolor="#000000"
-     borderopacity="0.25"
-     inkscape:showpageshadow="2"
-     inkscape:pageopacity="0.0"
-     inkscape:pagecheckerboard="0"
-     inkscape:deskcolor="#d1d1d1"
-     inkscape:document-units="mm"
-     inkscape:zoom="8.1501761"
-     inkscape:cx="77.973775"
-     inkscape:cy="57.483421"
-     inkscape:window-width="2560"
-     inkscape:window-height="1368"
-     inkscape:window-x="0"
-     inkscape:window-y="0"
-     inkscape:window-maximized="1"
-     inkscape:current-layer="layer1" />
   <defs
      id="defs1" />
   <g
-     inkscape:label="Στρώση 1"
-     inkscape:groupmode="layer"
      id="layer1"
      transform="translate(-96.837456,-64.293748)">
     <rect
@@ -231,7 +206,6 @@
        y="103.66196"
        id="text8688"
        transform="scale(1.2051259,0.82978885)"><tspan
-         sodipodi:role="line"
          id="tspan8686"
          style="fill:#262626;fill-opacity:1;stroke:#262626;stroke-width:0.0999996;stroke-dasharray:none;stroke-opacity:1"
          x="91.689827"

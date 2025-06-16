@@ -6,32 +6,10 @@
    fill="none"
    version="1.1"
    id="svg17"
-   sodipodi:docname="lewis_gun_killfeed.svg"
-   inkscape:version="1.4 (e7c3feb1, 2024-10-09)"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg">
   <defs
      id="defs17" />
-  <sodipodi:namedview
-     id="namedview17"
-     pagecolor="#ffffff"
-     bordercolor="#000000"
-     borderopacity="0.25"
-     inkscape:showpageshadow="2"
-     inkscape:pageopacity="0.0"
-     inkscape:pagecheckerboard="0"
-     inkscape:deskcolor="#d1d1d1"
-     inkscape:zoom="3"
-     inkscape:cx="55"
-     inkscape:cy="7.8333333"
-     inkscape:window-width="1472"
-     inkscape:window-height="812"
-     inkscape:window-x="0"
-     inkscape:window-y="37"
-     inkscape:window-maximized="1"
-     inkscape:current-layer="svg17" />
   <path
      d="M 82.330705,1.64503e-4 82.667305,1.28693e-5 82.669005,0 c 0.0905,0.00203883 0.1862,0.0151508 0.2515,0.0986893 0.0573,0.0734247 0.0551,0.1396427 0.0533,0.1922087 -3e-4,0.007243 -5e-4,0.014227 -6e-4,0.020935 V 1.62623 l 0.5188,0.00223 v 6.69738 l -1.873,0.01531 V 1.62862 l 0.4019,-0.00223 V 0.315333 c -0.0024,-0.073005 0.0127,-0.156583 0.0728,-0.2234532 0.06,-0.0668565 0.1529,-0.09406215 0.237,-0.091715297 z"
      fill="#d9d9d9"

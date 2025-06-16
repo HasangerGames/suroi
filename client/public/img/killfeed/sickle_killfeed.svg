@@ -6,32 +6,10 @@
    fill="none"
    version="1.1"
    id="svg1"
-   sodipodi:docname="sickle_killfeed.svg"
-   inkscape:version="1.4 (e7c3feb1, 2024-10-09)"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg">
   <defs
      id="defs1" />
-  <sodipodi:namedview
-     id="namedview1"
-     pagecolor="#505050"
-     bordercolor="#ffffff"
-     borderopacity="1"
-     inkscape:showpageshadow="0"
-     inkscape:pageopacity="0"
-     inkscape:pagecheckerboard="1"
-     inkscape:deskcolor="#505050"
-     inkscape:zoom="8.9367055"
-     inkscape:cx="15.777626"
-     inkscape:cy="2.7415024"
-     inkscape:window-width="1472"
-     inkscape:window-height="812"
-     inkscape:window-x="0"
-     inkscape:window-y="37"
-     inkscape:window-maximized="1"
-     inkscape:current-layer="svg1" />
   <path
      d="M 13.990151,8.7255352 17.805097,11.257761 15.052053,7.5424532 19.990837,6.5819847 13.647255,5.1960373 C 13.29269,6.2175452 11.860963,6.801007 11.010903,5.8495151 L 8.2578592,9.9741442 11.942648,7.9544672 11.264036,11.611429 Z"
      fill="#d9d9d9"

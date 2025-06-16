@@ -6,10 +6,6 @@
    fill="none"
    version="1.1"
    id="svg52"
-   sodipodi:docname="birch_tree_particle.svg"
-   inkscape:version="1.4 (1:1.4+202410161351+e7c3feb100)"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
@@ -17,27 +13,6 @@
    xmlns:dc="http://purl.org/dc/elements/1.1/">
   <defs
      id="defs56" />
-  <sodipodi:namedview
-     id="namedview54"
-     pagecolor="#505050"
-     bordercolor="#ffffff"
-     borderopacity="1"
-     inkscape:pageshadow="0"
-     inkscape:pageopacity="0"
-     inkscape:pagecheckerboard="1"
-     showgrid="false"
-     inkscape:zoom="3.0669014"
-     inkscape:cx="-32.117107"
-     inkscape:cy="-19.074627"
-     inkscape:window-width="2560"
-     inkscape:window-height="1368"
-     inkscape:window-x="0"
-     inkscape:window-y="0"
-     inkscape:window-maximized="1"
-     inkscape:current-layer="svg52"
-     height="609.877px"
-     inkscape:showpageshadow="2"
-     inkscape:deskcolor="#505050" />
   <path
      style="color:#000000;fill:#cccccc;stroke-width:5.83269;stroke-linejoin:round;stroke-miterlimit:16;-inkscape-stroke:none"
      d="M 26.26145,60.058419 22.965301,32.101824 43.067702,2.9149961 38.611818,43.848561 49.766674,90.033559 40.518229,110.70181 Z"

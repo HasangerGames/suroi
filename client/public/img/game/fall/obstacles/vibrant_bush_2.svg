@@ -6,38 +6,13 @@
    viewBox="0 0 206 206"
    xml:space="preserve"
    id="svg218"
-   sodipodi:docname="vibrant_bush_2.svg"
-   inkscape:version="1.4 (1:1.4+202410161351+e7c3feb100)"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns="http://www.w3.org/2000/svg"
-   xmlns:svg="http://www.w3.org/2000/svg"><sodipodi:namedview
-   id="namedview220"
-   pagecolor="#505050"
-   bordercolor="#eeeeee"
-   borderopacity="1"
-   inkscape:showpageshadow="0"
-   inkscape:pageopacity="0"
-   inkscape:pagecheckerboard="true"
-   inkscape:deskcolor="#505050"
-   showgrid="false"
-   inkscape:zoom="1.8608913"
-   inkscape:cx="94.578335"
-   inkscape:cy="110.16226"
-   inkscape:window-width="2560"
-   inkscape:window-height="1368"
-   inkscape:window-x="0"
-   inkscape:window-y="0"
-   inkscape:window-maximized="1"
-   inkscape:current-layer="svg218"
-   showguides="true"
-   inkscape:pageshadow="0" />
+   xmlns:svg="http://www.w3.org/2000/svg">
 <desc
    id="desc181">Created with Fabric.js 5.3.0</desc>
 <defs
    id="defs183"><linearGradient
-     inkscape:collect="always"
      id="linearGradient5"><stop
        style="stop-color:#d3175f;stop-opacity:1;"
        offset="0.02017369"
@@ -45,7 +20,6 @@
        style="stop-color:#f26694;stop-opacity:1;"
        offset="1"
        id="stop4" /></linearGradient><linearGradient
-     inkscape:collect="always"
      xlink:href="#linearGradient5"
      id="linearGradient9"
      gradientUnits="userSpaceOnUse"
@@ -54,7 +28,6 @@
      y1="26.167612"
      x2="-24.132866"
      y2="26.167612" /><linearGradient
-     inkscape:collect="always"
      xlink:href="#linearGradient5"
      id="linearGradient6"
      gradientUnits="userSpaceOnUse"
@@ -63,7 +36,6 @@
      y1="26.167612"
      x2="-24.132866"
      y2="26.167612" /><linearGradient
-     inkscape:collect="always"
      xlink:href="#linearGradient5"
      id="linearGradient7"
      gradientUnits="userSpaceOnUse"
@@ -72,7 +44,6 @@
      y1="26.167612"
      x2="-24.132866"
      y2="26.167612" /><linearGradient
-     inkscape:collect="always"
      xlink:href="#linearGradient5"
      id="linearGradient10"
      gradientUnits="userSpaceOnUse"
@@ -81,7 +52,6 @@
      y1="26.167612"
      x2="-24.132866"
      y2="26.167612" /><linearGradient
-     inkscape:collect="always"
      xlink:href="#linearGradient5"
      id="linearGradient13"
      gradientUnits="userSpaceOnUse"
@@ -90,7 +60,6 @@
      y1="26.167612"
      x2="-24.132866"
      y2="26.167612" /><linearGradient
-     inkscape:collect="always"
      xlink:href="#linearGradient5"
      id="linearGradient14"
      gradientUnits="userSpaceOnUse"

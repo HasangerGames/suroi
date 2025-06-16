@@ -5,32 +5,10 @@
    fill="none"
    version="1.1"
    id="svg20"
-   sodipodi:docname="oak_tree_trunk_1.svg"
-   inkscape:version="1.4.2 (1:1.4.2+202505120737+ebf0e940d0)"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg">
   <defs
      id="defs20" />
-  <sodipodi:namedview
-     id="namedview20"
-     pagecolor="#505050"
-     bordercolor="#ffffff"
-     borderopacity="1"
-     inkscape:showpageshadow="0"
-     inkscape:pageopacity="0"
-     inkscape:pagecheckerboard="1"
-     inkscape:deskcolor="#505050"
-     inkscape:zoom="1.0212056"
-     inkscape:cx="364.27532"
-     inkscape:cy="29.86666"
-     inkscape:window-width="2560"
-     inkscape:window-height="1408"
-     inkscape:window-x="2560"
-     inkscape:window-y="0"
-     inkscape:window-maximized="1"
-     inkscape:current-layer="svg20" />
   <path
      d="M 373.66437,261.30036 272.31321,177.46374 c 0,0 -14.37233,-25.92498 -24.21468,-42.16085 C 228.22905,102.52507 193.275,53.893335 193.275,53.893335 L 125.73575,44.040106 177.88,70.875959 205.70285,160.72086 127.15784,177.42019 91.42208,95.841668 19.054864,70.637426 68.54216,111.24944 c 0,0 13.217983,42.04637 21.204685,61.7816 8.493416,20.98646 18.332045,33.94188 18.332045,33.94188 L 76.122581,221.53141 4.4979691,194.24487 77.458193,253.14868 197.90027,204.95129 l 37.66268,92.61904 57.28819,26.15352 -34.24879,-39.40786 -12.70604,-71.66065 99.42866,61.41316 19.19545,57.06746 z"
      fill="#5b3e24"

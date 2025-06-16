@@ -5,32 +5,10 @@
    height="84"
    viewBox="0 0 83.999996 83.999998"
    id="svg34"
-   sodipodi:docname="shushing_face.svg"
-   inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg">
   <defs
      id="defs38" />
-  <sodipodi:namedview
-     id="namedview36"
-     pagecolor="#505050"
-     bordercolor="#ffffff"
-     borderopacity="1"
-     inkscape:pageshadow="0"
-     inkscape:pageopacity="0"
-     inkscape:pagecheckerboard="1"
-     showgrid="false"
-     inkscape:zoom="4.386644"
-     inkscape:cx="25.076117"
-     inkscape:cy="45.364976"
-     inkscape:window-width="2560"
-     inkscape:window-height="1372"
-     inkscape:window-x="0"
-     inkscape:window-y="0"
-     inkscape:window-maximized="1"
-     inkscape:current-layer="svg34" />
   <path
      d=""
      fill="#ffcc4d"
@@ -82,8 +60,7 @@
        stroke-width="5"
        stroke-linecap="round"
        id="path12"
-       style="mix-blend-mode:normal;fill-rule:nonzero;stroke:#584d00;stroke-linejoin:miter;stroke-miterlimit:10;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-       sodipodi:nodetypes="cc" />
+       style="mix-blend-mode:normal;fill-rule:nonzero;stroke:#584d00;stroke-linejoin:miter;stroke-miterlimit:10;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
     <path
        d="m 64.535713,96.33132 c -8.00813,0 -14.5,-4.16178 -14.5,-9.29561 0,-5.13383 6.49187,-9.29561 14.5,-9.29561 8.00813,0 14.5,4.16178 14.5,9.29561 0,5.13383 -6.49187,9.29561 -14.5,9.29561 z"
        fill="#000000"
@@ -144,7 +121,6 @@
        stroke-width="5"
        stroke-linecap="round"
        id="path12-3"
-       style="mix-blend-mode:normal;fill-rule:nonzero;stroke:#584d00;stroke-linejoin:miter;stroke-miterlimit:10;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-       sodipodi:nodetypes="cc" />
+       style="mix-blend-mode:normal;fill-rule:nonzero;stroke:#584d00;stroke-linejoin:miter;stroke-miterlimit:10;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
   </g>
 </svg>

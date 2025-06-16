@@ -7,36 +7,11 @@
    viewBox="0 0 200.13479 107.77388"
    version="1.1"
    id="svg1"
-   inkscape:version="1.3.2 (091e20ef0f, 2023-11-25)"
-   sodipodi:docname="armory_vault_ceiling.svg"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg">
-  <sodipodi:namedview
-     id="namedview1"
-     pagecolor="#505050"
-     bordercolor="#ffffff"
-     borderopacity="1"
-     inkscape:showpageshadow="0"
-     inkscape:pageopacity="0"
-     inkscape:pagecheckerboard="1"
-     inkscape:deskcolor="#d1d1d1"
-     inkscape:document-units="px"
-     inkscape:zoom="0.5313938"
-     inkscape:cx="722.62793"
-     inkscape:cy="449.76061"
-     inkscape:window-width="1920"
-     inkscape:window-height="1008"
-     inkscape:window-x="0"
-     inkscape:window-y="0"
-     inkscape:window-maximized="1"
-     inkscape:current-layer="layer1" />
   <defs
      id="defs1" />
   <g
-     inkscape:label="Layer 1"
-     inkscape:groupmode="layer"
      id="layer1"
      transform="translate(124.61876,-79.639538)">
     <g
@@ -88,14 +63,12 @@
          id="rect101149"
          style="fill:#486c42;fill-opacity:1;fill-rule:evenodd;stroke:#1f2d1a;stroke-width:2.44811;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
          d="m 1544.0564,-832.5755 h 135.0683 l -4.667,-10.61847 h -130.4013 z m 146.9415,0 h 66.1581 v -10.61847 h -64.9423 z"
-         transform="rotate(90)"
-         sodipodi:nodetypes="cccccccccc" />
+         transform="rotate(90)" />
       <path
          id="rect101151"
          style="fill:#486c42;fill-opacity:1;fill-rule:evenodd;stroke:#1f2d1a;stroke-width:2.44811;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
          d="m 1544.0564,-860.55467 h 128.1415 l 9.6041,-10.61847 h -137.7456 z m 142.7303,-10.61847 -1.7566,10.61847 h 72.1259 v -10.61847 z"
-         transform="rotate(90)"
-         sodipodi:nodetypes="cccccccccc" />
+         transform="rotate(90)" />
       <rect
          style="fill:#486c42;fill-opacity:1;fill-rule:evenodd;stroke:#1f2d1a;stroke-width:2.44811;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
          id="rect101153"
@@ -108,26 +81,22 @@
          id="rect101155"
          style="fill:#486c42;fill-opacity:1;fill-rule:evenodd;stroke:#1f2d1a;stroke-width:2.44811;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
          d="m 1544.0564,-913.5287 h 189.8783 l -1.3968,-10.61847 h -188.4815 z m 192.3774,0 h 20.7222 v -10.61847 h -13.7085 z"
-         transform="rotate(90)"
-         sodipodi:nodetypes="cccccccccc" />
+         transform="rotate(90)" />
       <path
          id="rect101157"
          style="fill:#486c42;fill-opacity:1;fill-rule:evenodd;stroke:#1f2d1a;stroke-width:2.44811;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
          d="m 1544.0564,-940.95441 h 178.5201 l -10.1129,-10.61848 h -168.4072 z m 193.224,-10.61848 6.0382,10.61848 h 13.8374 v -10.61848 z"
-         transform="rotate(90)"
-         sodipodi:nodetypes="cccccccccc" />
+         transform="rotate(90)" />
       <path
          id="rect101159"
          style="fill:#486c42;fill-opacity:1;fill-rule:evenodd;stroke:#1f2d1a;stroke-width:2.44811;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
          d="m 1544.0564,-968.9341 h 178.8935 l 1.5863,-10.61847 h -180.4798 z m 186.3992,0 h 26.7004 v -10.61847 h -13.7816 z"
-         transform="rotate(90)"
-         sodipodi:nodetypes="cccccccccc" />
+         transform="rotate(90)" />
       <path
          id="rect101161"
          style="fill:#486c42;fill-opacity:1;fill-rule:evenodd;stroke:#1f2d1a;stroke-width:2.44811;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
          d="m 1544.0564,-996.35982 h 183.5661 l 14.7773,-6.09318 4.176,6.09318 h 10.5802 v -10.61848 h -213.0996 z"
-         transform="rotate(90)"
-         sodipodi:nodetypes="cccccccc" />
+         transform="rotate(90)" />
       <rect
          style="fill:#486c42;fill-opacity:1;fill-rule:evenodd;stroke:#1f2d1a;stroke-width:2.44811;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
          id="rect101163"

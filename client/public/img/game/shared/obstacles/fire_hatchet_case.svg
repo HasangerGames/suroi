@@ -7,54 +7,25 @@
    viewBox="0 0 62.130348 33.157272"
    version="1.1"
    id="svg1"
-   inkscape:version="1.4 (1:1.4+202410161351+e7c3feb100)"
-   sodipodi:docname="fire_hatchet_case.svg"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg">
-  <sodipodi:namedview
-     id="namedview1"
-     pagecolor="#ffffff"
-     bordercolor="#000000"
-     borderopacity="0.25"
-     inkscape:showpageshadow="2"
-     inkscape:pageopacity="0.0"
-     inkscape:pagecheckerboard="0"
-     inkscape:deskcolor="#d1d1d1"
-     inkscape:document-units="mm"
-     inkscape:zoom="4"
-     inkscape:cx="67.625001"
-     inkscape:cy="16.625"
-     inkscape:window-width="2560"
-     inkscape:window-height="1368"
-     inkscape:window-x="0"
-     inkscape:window-y="0"
-     inkscape:window-maximized="1"
-     inkscape:current-layer="layer1"
-     showguides="false" />
   <defs
      id="defs1">
     <pattern
-       inkscape:collect="always"
        xlink:href="#Strips1_1-3"
        preserveAspectRatio="xMidYMid"
        id="pattern18-9"
        patternTransform="matrix(2.1650635,1.25,-1.25,2.1650635,-1,37.231832)"
        y="0" />
     <pattern
-       inkscape:collect="always"
        patternUnits="userSpaceOnUse"
        width="2"
        height="10"
        patternTransform="translate(0,0) scale(2,2)"
        preserveAspectRatio="xMidYMid"
        id="Strips1_1-3"
-       style="fill:#e19a9a"
-       inkscape:stockid="Stripes 01 (1:1)"
-       inkscape:isstock="true"
-       inkscape:label="Stripes 01 (1:1)">
+       style="fill:#e19a9a">
       <rect
          style="stroke:none;fill:#e19a9a"
          x="0"
@@ -65,8 +36,6 @@
     </pattern>
   </defs>
   <g
-     inkscape:label="Στρώση 1"
-     inkscape:groupmode="layer"
      id="layer1"
      transform="translate(-228.33541,-115.62292)">
     <rect
@@ -80,8 +49,7 @@
     <path
        id="rect5-1"
        style="fill:#4d4d4d;fill-rule:evenodd;stroke:#272727;stroke-width:1.85208;stroke-linecap:round;stroke-linejoin:round"
-       d="m 282.60567,141.10002 h 6.93405 v 3.40161 c -2.47922,0.83051 -4.09894,0.75966 -6.93405,0 z"
-       sodipodi:nodetypes="ccccc" />
+       d="m 282.60567,141.10002 h 6.93405 v 3.40161 c -2.47922,0.83051 -4.09894,0.75966 -6.93405,0 z" />
     <g
        id="g19-9"
        transform="translate(-89.784281,-103.96834)">
@@ -131,13 +99,11 @@
       <path
          id="rect6-4"
          style="display:inline;opacity:1;fill:#e19a9a;fill-rule:evenodd;stroke-width:1.85196;stroke-linecap:round;stroke-linejoin:round"
-         d="m 373.40735,279.02529 h 1.35556 l -0.0462,4.413 h -3.03121 z"
-         sodipodi:nodetypes="ccccc" />
+         d="m 373.40735,279.02529 h 1.35556 l -0.0462,4.413 h -3.03121 z" />
       <path
          id="rect6-1-4"
          style="display:inline;fill:#e19a9a;fill-rule:evenodd;stroke-width:1.85196;stroke-linecap:round;stroke-linejoin:round"
-         d="m 320.3303,279.02529 h 1.35556 l -0.0462,4.413 h -1.30936 z"
-         sodipodi:nodetypes="ccccc" />
+         d="m 320.3303,279.02529 h 1.35556 l -0.0462,4.413 h -1.30936 z" />
     </g>
     <rect
        style="fill:none;fill-opacity:1;stroke:#3f0d0d;stroke-width:1.876;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:5;stroke-dasharray:none;stroke-opacity:1"

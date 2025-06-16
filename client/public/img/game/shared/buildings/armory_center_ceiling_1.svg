@@ -7,36 +7,11 @@
    viewBox="0 0 88.658898 66.046187"
    version="1.1"
    id="svg1"
-   inkscape:version="1.3.2 (091e20e, 2023-11-25, custom)"
-   sodipodi:docname="armory_center_ceiling_1.svg"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg">
-  <sodipodi:namedview
-     id="namedview1"
-     pagecolor="#505050"
-     bordercolor="#ffffff"
-     borderopacity="1"
-     inkscape:showpageshadow="0"
-     inkscape:pageopacity="0"
-     inkscape:pagecheckerboard="1"
-     inkscape:deskcolor="#d1d1d1"
-     inkscape:document-units="px"
-     inkscape:zoom="1.4803312"
-     inkscape:cx="266.15665"
-     inkscape:cy="231.7049"
-     inkscape:window-width="1920"
-     inkscape:window-height="1001"
-     inkscape:window-x="-9"
-     inkscape:window-y="-9"
-     inkscape:window-maximized="1"
-     inkscape:current-layer="layer1" />
   <defs
      id="defs1" />
   <g
-     inkscape:label="Layer 1"
-     inkscape:groupmode="layer"
      id="layer1"
      transform="translate(18.891941,-44.185418)">
     <g
@@ -57,18 +32,15 @@
       <path
          id="rect30"
          style="fill:#486c42;fill-opacity:1;fill-rule:evenodd;stroke:#1f2d1a;stroke-width:2.11667;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
-         d="m 304.64129,56.846308 v 10.940813 h 70.61985 l 7.01379,-6.203545 25.5177,-4.737268 z m 110.26164,4.082867 -0.91107,6.857946 h 87.58491 V 56.846308 h -77.28133 z"
-         sodipodi:nodetypes="cccccccccccc" />
+         d="m 304.64129,56.846308 v 10.940813 h 70.61985 l 7.01379,-6.203545 25.5177,-4.737268 z m 110.26164,4.082867 -0.91107,6.857946 h 87.58491 V 56.846308 h -77.28133 z" />
       <path
          id="rect31"
          style="fill:#486c42;fill-opacity:1;fill-rule:evenodd;stroke:#1f2d1a;stroke-width:2.11667;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
-         d="m 304.64129,80.779605 v 10.940814 h 46.3058 l -8.81486,-3.178651 8.77594,-7.762163 z m 89.7838,0 -7.46798,10.940814 H 501.57677 V 80.779605 Z"
-         sodipodi:nodetypes="ccccccccccc" />
+         d="m 304.64129,80.779605 v 10.940814 h 46.3058 l -8.81486,-3.178651 8.77594,-7.762163 z m 89.7838,0 -7.46798,10.940814 H 501.57677 V 80.779605 Z" />
       <path
          id="rect32"
          style="fill:#486c42;fill-opacity:1;fill-rule:evenodd;stroke:#1f2d1a;stroke-width:2.11667;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
-         d="m 304.64129,104.71247 v 10.94082 h 84.92403 l -2.45236,-10.94082 z m 100.85255,0 13.03611,10.94082 h 83.04682 v -10.94082 z"
-         sodipodi:nodetypes="cccccccccc" />
+         d="m 304.64129,104.71247 v 10.94082 h 84.92403 l -2.45236,-10.94082 z m 100.85255,0 13.03611,10.94082 h 83.04682 v -10.94082 z" />
       <rect
          style="fill:#486c42;fill-opacity:1;fill-rule:evenodd;stroke:#1f2d1a;stroke-width:2.11667;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
          id="rect33-2"

@@ -6,32 +6,10 @@
    fill="none"
    version="1.1"
    id="svg2"
-   sodipodi:docname="maul_killfeed.svg"
-   inkscape:version="1.4 (e7c3feb1, 2024-10-09)"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg">
   <defs
      id="defs2" />
-  <sodipodi:namedview
-     id="namedview2"
-     pagecolor="#ffffff"
-     bordercolor="#000000"
-     borderopacity="0.25"
-     inkscape:showpageshadow="2"
-     inkscape:pageopacity="0.0"
-     inkscape:pagecheckerboard="0"
-     inkscape:deskcolor="#d1d1d1"
-     inkscape:zoom="2.8235294"
-     inkscape:cx="12.75"
-     inkscape:cy="8.3229167"
-     inkscape:window-width="1472"
-     inkscape:window-height="812"
-     inkscape:window-x="0"
-     inkscape:window-y="37"
-     inkscape:window-maximized="1"
-     inkscape:current-layer="svg2" />
   <path
      d="M 16.326992,1.874733 16.178692,0 c 0,0 -0.6347,0.064041 -0.9388,0.145529 -0.3042,0.081492 -0.8859,0.343399 -0.8859,0.343399 l 0.8743,1.680185 -0.3957,0.10604 0.1629,0.60814 -14.88271685,3.98783 c -0.052837,0.01435 -0.090904,0.07508 -0.10584,0.16887 -0.014939,0.09379 -0.005529,0.21297 0.026161,0.33141 0.031728,0.11855 0.08318,0.22665 0.143059,0.30054 0.059875,0.0739 0.123277,0.10753 0.176267,0.09353 l 14.88276985,-3.98781 0.1629,0.60798 0.3133,-0.0839 c 0,0 0.3327,0.86682 0.4957,1.56428 0.163,0.69746 0.4031,2.62584 0.4031,2.62584 0,0 0.3671,-1.14633 0.3908,-2.1267 0.0237,-0.98039 -0.0915,-2.38446 -0.0915,-2.38446 l 0.3133,-0.08399 -0.5655,-2.11048 z"
      fill="#d9d9d9"

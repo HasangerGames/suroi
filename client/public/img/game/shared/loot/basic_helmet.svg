@@ -5,35 +5,8 @@
    height="64"
    viewBox="0 0 64 63.999998"
    id="svg82"
-   sodipodi:docname="basic_helmet.svg"
-   inkscape:version="1.4 (1:1.4+202410161351+e7c3feb100)"
-   inkscape:export-filename="basic_helmet(Simplified.png"
-   inkscape:export-xdpi="379.79892"
-   inkscape:export-ydpi="379.79892"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg">
-  <sodipodi:namedview
-     id="namedview84"
-     pagecolor="#505050"
-     bordercolor="#ffffff"
-     borderopacity="1"
-     inkscape:pageshadow="0"
-     inkscape:pageopacity="0"
-     inkscape:pagecheckerboard="1"
-     showgrid="false"
-     inkscape:zoom="16.000001"
-     inkscape:cx="32.281248"
-     inkscape:cy="27.781249"
-     inkscape:window-width="2560"
-     inkscape:window-height="1368"
-     inkscape:window-x="0"
-     inkscape:window-y="0"
-     inkscape:window-maximized="1"
-     inkscape:current-layer="g1"
-     inkscape:showpageshadow="0"
-     inkscape:deskcolor="#505050" />
   <defs
      id="defs32">
     <linearGradient
@@ -116,8 +89,7 @@
          stroke-width="0.577765"
          stroke-linecap="butt"
          id="path38"
-         style="display:inline;mix-blend-mode:normal;fill:#a9a9a9;fill-opacity:1;fill-rule:nonzero;stroke:url(#color-2);stroke-width:1.29012;stroke-linejoin:miter;stroke-miterlimit:10;stroke-dasharray:none;stroke-dashoffset:0"
-         sodipodi:nodetypes="ccccscssssc" />
+         style="display:inline;mix-blend-mode:normal;fill:#a9a9a9;fill-opacity:1;fill-rule:nonzero;stroke:url(#color-2);stroke-width:1.29012;stroke-linejoin:miter;stroke-miterlimit:10;stroke-dasharray:none;stroke-dashoffset:0" />
       <path
          d="m 8.8830221,37.313532 c 0,-3.266369 0.7590354,-8.302283 1.9953459,-12.164995 1.06965,-3.341987 3.64869,-5.952182 3.64869,-5.952182 5.349228,-6.268937 12.630687,-8.574435 20.684327,-8.781259 5.123802,0 9.435202,1.223964 13.236664,3.577752 3.586376,2.2206 5.827012,5.459395 7.965935,9.215302 1.562314,2.743402 3.283396,5.89197 3.991367,9.234927 0.06892,0.325256 0.998961,0.606524 1.047578,0.935261 0.883386,5.972821 0.993716,-0.161732 1.976308,5.105076 0.07011,0.375591 -0.383633,1.663145 -2.194698,2.706105 -2.633085,1.516355 -5.977877,2.834068 -8.169432,2.919024 -2.828014,0.109622 -5.644526,-1.381284 -8.65813,-1.73327 -2.734878,-0.319437 -5.652309,0.272067 -8.507274,0.501483 -1.709996,0.137402 -4.070829,0.476886 -6.253688,1.887059 -0.957863,0.618798 -1.160308,1.971349 -1.911549,2.897588 -0.453648,0.559313 -1.116679,0.763368 -1.571208,0.669917 -0.693246,-0.142518 -0.893362,-1.443129 -1.473154,-1.154862 -4.901762,2.734727 -6.497333,3.365789 -15.29538,6.765654 C 6.8098691,54.61057 3.5247976,54.329095 2.0271629,53.01841 1.0139227,52.13166 1.192115,50.64941 1.5291543,49.148005 3.662019,46.483243 8.4160096,44.489161 8.8205542,43.21271 9.236214,41.901203 8.8830222,39.650629 8.8830221,37.313532 Z"
          fill="url(#color-3)"
@@ -125,8 +97,7 @@
          stroke-width="1.15553"
          stroke-linecap="butt"
          id="path40"
-         style="mix-blend-mode:normal;fill:url(#color-3);fill-rule:nonzero;stroke:#242424;stroke-width:2.58025;stroke-linejoin:miter;stroke-miterlimit:10;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-         sodipodi:nodetypes="sscssscsssssssscscscss" />
+         style="mix-blend-mode:normal;fill:url(#color-3);fill-rule:nonzero;stroke:#242424;stroke-width:2.58025;stroke-linejoin:miter;stroke-miterlimit:10;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
       <path
          d="m 52.057475,37.471693 c -3.250022,0.420181 -7.565788,-0.442271 -12.352262,-0.442271 -6.075002,0 -11.863649,2.486145 -16.101905,3.568757 -2.683601,0.685498 -4.863619,0.354183 -6.093472,-0.0805 -0.16428,-0.0581 -1.443456,-0.79272 -2.478444,-2.1267 -1.472064,-1.897296 -2.21764,-3.60438 -1.97686,-7.178158 0.346763,-2.557187 1.050176,-3.186352 1.493515,-4.090428 0.64681,-1.318992 1.787204,-3.06722 2.910403,-4.623735 1.615618,-2.238925 6.814985,-7.640049 15.407183,-8.167161 4.416989,-0.270973 9.717759,-1.55655 19.96377,5.88534 1.60518,1.165875 3.586473,5.577565 3.586473,5.577565 0,0 -9.328973,-9.308806 -19.407997,-9.959446 -5.177902,-0.334256 -11.910078,1.795784 -16.262563,5.587014 -1.60518,1.398195 -3.971219,4.63889 -5.335272,7.509211 -0.716878,1.508493 -1.096033,2.914684 -1.074514,3.89736 0.02422,1.104658 -0.194544,1.666744 1.046328,3.782708 0.312463,0.532821 0.679914,1.335875 1.37326,1.927519 1.511897,1.290107 3.51767,1.364967 3.899601,1.318171 4.945428,-0.605904 11.37799,-4.511913 19.808592,-4.511913 4.590672,0 8.905837,1.187102 11.895898,0.603108 4.252027,-0.830474 6.935346,-2.768806 6.935346,-2.768806 0,0 0.916803,0.512797 0.956037,0.749276 0.04371,0.263487 0.04223,0.603228 0.04223,0.603228 z"
          fill="url(#color-4)"
@@ -134,8 +105,7 @@
          stroke-width="0.530467"
          stroke-linecap="butt"
          id="path42"
-         style="mix-blend-mode:normal;fill:url(#color-4);fill-rule:nonzero;stroke:none;stroke-width:0.541027;stroke-linejoin:miter;stroke-miterlimit:10;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-         sodipodi:nodetypes="csscccscsscssscsccsscscc" />
+         style="mix-blend-mode:normal;fill:url(#color-4);fill-rule:nonzero;stroke:none;stroke-width:0.541027;stroke-linejoin:miter;stroke-miterlimit:10;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
       <path
          d="m 9.0690016,44.488844 0.7530635,-0.799645 c 0,0 0.4776599,0.62316 1.1817329,1.15219 0.560232,0.420944 1.2731,0.743824 1.935719,0.922599 0.665926,0.179667 1.670318,0.367387 2.709493,0.570788 1.749882,0.342508 3.902959,0.155851 3.902959,0.155851 0,0 -2.168897,0.326861 -4.007093,0.125803 C 14.304531,46.480727 13.066604,46.356869 12.289584,46.219653 11.624873,46.102284 10.928668,45.88627 10.372615,45.552221 9.5962699,45.085843 9.0690048,44.488903 9.0690048,44.488903 Z"
          fill="#808080"
@@ -151,8 +121,7 @@
          stroke-width="0.353871"
          stroke-linecap="round"
          id="path74"
-         style="mix-blend-mode:normal;fill-rule:nonzero;stroke:#6e6e6e;stroke-linejoin:miter;stroke-miterlimit:10;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-         sodipodi:nodetypes="csscssc" />
+         style="mix-blend-mode:normal;fill-rule:nonzero;stroke:#6e6e6e;stroke-linejoin:miter;stroke-miterlimit:10;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
     </g>
   </g>
 </svg>

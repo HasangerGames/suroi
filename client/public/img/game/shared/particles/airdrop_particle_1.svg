@@ -5,17 +5,12 @@
    version="1.1"
    viewBox="0 0 32.788298 32.7883"
    id="svg30"
-   sodipodi:docname="airdrop_particle_1.svg"
-   inkscape:version="1.4 (1:1.4+202410161351+e7c3feb100)"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg">
   <defs
      id="defs34">
     <pattern
-       inkscape:collect="always"
        xlink:href="#Strips1_1-4"
        preserveAspectRatio="xMidYMid"
        id="pattern183-7"
@@ -23,17 +18,13 @@
        x="0"
        y="0" />
     <pattern
-       inkscape:collect="always"
        patternUnits="userSpaceOnUse"
        width="2"
        height="10"
        patternTransform="translate(0,0) scale(2,2)"
        preserveAspectRatio="xMidYMid"
        id="Strips1_1-4"
-       style="fill:#a68024"
-       inkscape:stockid="Stripes 01 (1:1)"
-       inkscape:isstock="true"
-       inkscape:label="Stripes 01 (1:1)">
+       style="fill:#a68024">
       <rect
          style="stroke:none;fill:#a68024"
          x="0"
@@ -43,28 +34,6 @@
          id="rect134-7" />
     </pattern>
   </defs>
-  <sodipodi:namedview
-     id="namedview32"
-     pagecolor="#505050"
-     bordercolor="#ffffff"
-     borderopacity="1"
-     inkscape:pageshadow="0"
-     inkscape:pageopacity="0"
-     inkscape:pagecheckerboard="1"
-     inkscape:document-units="px"
-     showgrid="false"
-     inkscape:zoom="4.7080999"
-     inkscape:cx="92.712561"
-     inkscape:cy="80.605766"
-     inkscape:window-width="2560"
-     inkscape:window-height="1368"
-     inkscape:window-x="0"
-     inkscape:window-y="0"
-     inkscape:window-maximized="1"
-     inkscape:current-layer="svg30"
-     units="px"
-     inkscape:showpageshadow="2"
-     inkscape:deskcolor="#d1d1d1" />
   <g
      id="g18"
      transform="translate(-56.895468,210.46018)">

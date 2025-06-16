@@ -7,34 +7,8 @@
    viewBox="0 0 88.037076 88.750901"
    version="1.1"
    id="svg5"
-   sodipodi:docname="clearing_boulder_2.svg"
-   inkscape:version="1.3 (0e150ed, 2023-07-21)"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg">
-  <sodipodi:namedview
-     id="namedview12"
-     pagecolor="#505050"
-     bordercolor="#ffffff"
-     borderopacity="1"
-     inkscape:pageshadow="0"
-     inkscape:pageopacity="0"
-     inkscape:pagecheckerboard="1"
-     inkscape:document-units="px"
-     showgrid="false"
-     units="px"
-     inkscape:zoom="2.046876"
-     inkscape:cx="203.23654"
-     inkscape:cy="121.89307"
-     inkscape:window-width="1440"
-     inkscape:window-height="900"
-     inkscape:window-x="0"
-     inkscape:window-y="0"
-     inkscape:window-maximized="0"
-     inkscape:current-layer="svg5"
-     inkscape:showpageshadow="2"
-     inkscape:deskcolor="#d1d1d1" />
   <defs
      id="defs2" />
   <path
@@ -44,13 +18,11 @@
   <path
      id="path2153"
      style="fill:#4b4b4b;fill-opacity:1;stroke:none;stroke-width:3.70417;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1;paint-order:normal"
-     d="M 1.9838096,56.194777 21.401217,52.405396 26.550258,36.625058 40.08008,24.829492 44.705618,1.9843115 15.587647,14.025211 5.0961698,33.110886 Z"
-     sodipodi:nodetypes="cccccccc" />
+     d="M 1.9838096,56.194777 21.401217,52.405396 26.550258,36.625058 40.08008,24.829492 44.705618,1.9843115 15.587647,14.025211 5.0961698,33.110886 Z" />
   <path
      id="path2570"
      style="fill:#676767;fill-opacity:1;stroke:none;stroke-width:3.70417;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1;paint-order:normal"
-     d="M 74.178079,46.826421 58.772609,64.724359 42.446001,70.675361 25.817129,83.337431 61.425985,86.771909 81.275161,66.15292 86.08444,39.77774 77.402589,16.353352 Z"
-     sodipodi:nodetypes="ccccccccc" />
+     d="M 74.178079,46.826421 58.772609,64.724359 42.446001,70.675361 25.817129,83.337431 61.425985,86.771909 81.275161,66.15292 86.08444,39.77774 77.402589,16.353352 Z" />
   <rect
      style="fill:#000000;fill-opacity:0;stroke:none;stroke-width:3.70417;stroke-linecap:round;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1;paint-order:normal"
      id="rect2804"

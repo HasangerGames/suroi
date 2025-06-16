@@ -7,25 +7,12 @@
    viewBox="0 0 90.304025 661.92083"
    version="1.1"
    id="svg1"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg">
-  <sodipodi:namedview
-     id="namedview1"
-     pagecolor="#ffffff"
-     bordercolor="#000000"
-     borderopacity="0.25"
-     inkscape:showpageshadow="2"
-     inkscape:pageopacity="0.0"
-     inkscape:pagecheckerboard="0"
-     inkscape:deskcolor="#d1d1d1"
-     inkscape:document-units="mm" />
   <defs
      id="defs1">
     <pattern
-       inkscape:collect="always"
        xlink:href="#pattern1-5-8-4-8"
        preserveAspectRatio="xMidYMid"
        id="pattern14"
@@ -36,8 +23,7 @@
        height="125.21288"
        patternTransform="translate(168.76758,406.25586)"
        preserveAspectRatio="xMidYMid"
-       id="pattern1-5-8-4-8"
-       inkscape:label="pattern1">
+       id="pattern1-5-8-4-8">
       <rect
          style="fill:#4d4d4d;stroke-width:7.49201;stroke-linecap:round"
          id="rect1-9-6-7-64-0"
@@ -52,8 +38,6 @@
     </pattern>
   </defs>
   <g
-     inkscape:label="Στρώση 1"
-     inkscape:groupmode="layer"
      id="layer1"
      transform="translate(-97.976056,148.43125)">
     <g
@@ -67,13 +51,11 @@
           <path
              id="rect80"
              style="fill:url(#pattern14);fill-opacity:1;stroke:#404040;stroke-width:2.64583;stroke-dasharray:none;stroke-opacity:1"
-             d="M -16.081801,-132.47121 H 63.786381 V 526.80351 H -16.081801 Z"
-             sodipodi:nodetypes="ccccc" />
+             d="M -16.081801,-132.47121 H 63.786381 V 526.80351 H -16.081801 Z" />
           <path
              id="rect80-9"
              style="fill:#2868ae;fill-opacity:0.5;stroke-width:0.264583"
-             d="m 65.109,122.245 v 137.0292 l -37.365,23.6311 -45.148,-11.171 V 124.6329 L 7.99,112.2864 Z"
-             sodipodi:nodetypes="ccccccc" />
+             d="m 65.109,122.245 v 137.0292 l -37.365,23.6311 -45.148,-11.171 V 124.6329 L 7.99,112.2864 Z" />
         </g>
       </g>
       <g
@@ -82,8 +64,7 @@
         <path
            id="rect82"
            style="fill:#b2b2b2;fill-rule:evenodd;stroke:#4d4d4d;stroke-width:1.85208;stroke-linecap:square;stroke-linejoin:round"
-           d="m 12902.819,5600.1893 v 266.9428 h -5.959 v -264.5594 l 2.73,-5.536 z m -5.959,-122.7485 v -268.5424 h 5.959 v 271.3231 l -3.785,0.9846 z"
-           sodipodi:nodetypes="cccccccccccc" />
+           d="m 12902.819,5600.1893 v 266.9428 h -5.959 v -264.5594 l 2.73,-5.536 z m -5.959,-122.7485 v -268.5424 h 5.959 v 271.3231 l -3.785,0.9846 z" />
         <rect
            style="fill:#b2b2b2;fill-opacity:1;fill-rule:evenodd;stroke:#4d4d4d;stroke-width:1.85208;stroke-linecap:square;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
            id="rect81"
@@ -175,8 +156,7 @@
         <path
            id="rect82-6"
            style="fill:#b2b2b2;fill-rule:evenodd;stroke:#4d4d4d;stroke-width:1.85208;stroke-linecap:square;stroke-linejoin:round"
-           d="m 12902.819,5596.6327 v 270.4994 h -5.959 v -268.116 l 2.73,-5.536 z m -5.959,-123.7185 v -264.0158 h 5.959 v 266.7965 l -3.785,0.9846 z"
-           sodipodi:nodetypes="cccccccccccc" />
+           d="m 12902.819,5596.6327 v 270.4994 h -5.959 v -268.116 l 2.73,-5.536 z m -5.959,-123.7185 v -264.0158 h 5.959 v 266.7965 l -3.785,0.9846 z" />
         <rect
            style="fill:#b2b2b2;fill-opacity:1;fill-rule:evenodd;stroke:#4d4d4d;stroke-width:1.85208;stroke-linecap:square;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
            id="rect81-7"

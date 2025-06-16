@@ -7,19 +7,10 @@
    width="511.98666"
    height="531.60101"
    viewBox="0 0 511.98666 531.60102"
-   sodipodi:docname="birch_tree_leaves_2.svg"
-   inkscape:version="1.4.2 (1:1.4.2+202505120737+ebf0e940d0)"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg">
   <defs
      id="defs1">
-    <inkscape:path-effect
-       effect="spiro"
-       id="path-effect19494"
-       is_visible="true"
-       lpeversion="1" />
     <clipPath
        clipPathUnits="userSpaceOnUse"
        id="clipPath335">
@@ -444,11 +435,6 @@
          transform="translate(-958.58282,-567.84331)"
          id="path366-0-4-9-9" />
     </clipPath>
-    <inkscape:path-effect
-       effect="spiro"
-       id="path-effect19494-3-2-9-3"
-       is_visible="true"
-       lpeversion="1" />
     <clipPath
        clipPathUnits="userSpaceOnUse"
        id="clipPath371-9-7-8-0">
@@ -498,30 +484,8 @@
          id="path378-1-4-5-3" />
     </clipPath>
   </defs>
-  <sodipodi:namedview
-     id="namedview1"
-     pagecolor="#505050"
-     bordercolor="#999999"
-     borderopacity="1"
-     inkscape:showpageshadow="0"
-     inkscape:pageopacity="0"
-     inkscape:pagecheckerboard="true"
-     inkscape:deskcolor="#d1d1d1"
-     showgrid="false"
-     inkscape:pageshadow="0"
-     inkscape:zoom="1.5033128"
-     inkscape:cx="263.41823"
-     inkscape:cy="263.75083"
-     inkscape:window-width="2560"
-     inkscape:window-height="1368"
-     inkscape:window-x="0"
-     inkscape:window-y="0"
-     inkscape:window-maximized="1"
-     inkscape:current-layer="g1" />
   <g
      id="layer-MC2"
-     inkscape:groupmode="layer"
-     inkscape:label="Layer 2"
      transform="translate(-717.17461,-163.47798)">
     <g
        id="g1">
@@ -699,23 +663,17 @@
          fill="#5f926a"
          id="path34-0-1-5-5-1"
          style="fill:#f2c60e;fill-opacity:0.964706;stroke-width:1.83005"
-         clip-path="none"
-         inkscape:transform-center-x="7.4483562"
-         inkscape:transform-center-y="6.8538471" />
+         clip-path="none" />
       <path
          d="m 1134.1488,521.75378 v 0 c 3.0792,-18.42315 -5.9585,-58.04957 -27.8941,-46.05135 -20.7953,13.87956 10.1326,40.24925 27.8846,46.05706 v 0 c -4e-4,-9.1e-4 0,-4.5e-4 0,-4.5e-4 0,7.1e-4 0,0 0,0 z"
          fill="#587e60"
          id="path36-4-4-2-8-2"
-         style="fill:#facb06;fill-opacity:0.964706;stroke-width:1.83005"
-         inkscape:transform-center-x="3.7484529"
-         inkscape:transform-center-y="7.3755785" />
+         style="fill:#facb06;fill-opacity:0.964706;stroke-width:1.83005" />
       <path
          d="m 1138.8467,484.98865 v 0 c -5.2887,-10.46638 -24.4558,-26.78199 -30.9278,-12.08129 -5.2094,15.19415 19.9422,16.19539 30.9252,12.08817 7e-4,-6.4e-4 0,0 0,0 z"
          fill="#77a37a"
          id="path38-9-9-1-5-0"
-         style="fill:#f2c60e;fill-opacity:0.964706;stroke-width:1.83005"
-         inkscape:transform-center-x="2.1597494"
-         inkscape:transform-center-y="1.9351755" />
+         style="fill:#f2c60e;fill-opacity:0.964706;stroke-width:1.83005" />
       <path
          d="m 734.09825,348.63018 c 12.22337,13.30741 47.86242,30.03367 51.80031,6.22979 1.82249,-24.05949 -36.768,-16.26693 -51.79993,-6.24041 v 0.001 c 0.003,0.002 0,0 0,0 z"
          fill="#77a37a"

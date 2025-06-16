@@ -7,32 +7,9 @@
    viewBox="0 0 43.672431 43.634772"
    version="1.1"
    id="svg1"
-   inkscape:version="1.4 (1:1.4+202410161351+e7c3feb100)"
-   sodipodi:docname="blueberry_bush.svg"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg">
-  <sodipodi:namedview
-     id="namedview1"
-     pagecolor="#505050"
-     bordercolor="#ffffff"
-     borderopacity="1"
-     inkscape:showpageshadow="0"
-     inkscape:pageopacity="0"
-     inkscape:pagecheckerboard="1"
-     inkscape:deskcolor="#505050"
-     inkscape:document-units="px"
-     inkscape:zoom="4.2368969"
-     inkscape:cx="81.427519"
-     inkscape:cy="102.31545"
-     inkscape:window-width="2560"
-     inkscape:window-height="1368"
-     inkscape:window-x="0"
-     inkscape:window-y="0"
-     inkscape:window-maximized="1"
-     inkscape:current-layer="layer1" />
   <defs
      id="defs1">
     <linearGradient
@@ -150,7 +127,6 @@
        gradientTransform="matrix(0.08613991,-0.25016845,-0.25016845,-0.08613991,178.86642,136.97758)"
        xlink:href="#linear-gradient1" />
     <linearGradient
-       inkscape:collect="always"
        xlink:href="#linear-gradient1"
        id="linearGradient25"
        gradientUnits="userSpaceOnUse"
@@ -160,7 +136,6 @@
        x2="-488.70001"
        y2="164.39999" />
     <linearGradient
-       inkscape:collect="always"
        xlink:href="#linear-gradient1"
        id="linearGradient1"
        gradientUnits="userSpaceOnUse"
@@ -170,7 +145,6 @@
        x2="-488.70001"
        y2="164.39999" />
     <linearGradient
-       inkscape:collect="always"
        xlink:href="#linear-gradient1"
        id="linearGradient2"
        gradientUnits="userSpaceOnUse"
@@ -180,7 +154,6 @@
        x2="-488.70001"
        y2="164.39999" />
     <linearGradient
-       inkscape:collect="always"
        xlink:href="#linear-gradient1"
        id="linearGradient3"
        gradientUnits="userSpaceOnUse"
@@ -190,7 +163,6 @@
        x2="-488.70001"
        y2="164.39999" />
     <linearGradient
-       inkscape:collect="always"
        xlink:href="#linear-gradient1"
        id="linearGradient4"
        gradientUnits="userSpaceOnUse"
@@ -200,7 +172,6 @@
        x2="-488.70001"
        y2="164.39999" />
     <linearGradient
-       inkscape:collect="always"
        xlink:href="#linear-gradient1"
        id="linearGradient5"
        gradientUnits="userSpaceOnUse"
@@ -210,7 +181,6 @@
        x2="-488.70001"
        y2="164.39999" />
     <linearGradient
-       inkscape:collect="always"
        xlink:href="#linear-gradient1"
        id="linearGradient6"
        gradientUnits="userSpaceOnUse"
@@ -220,7 +190,6 @@
        x2="-488.70001"
        y2="164.39999" />
     <linearGradient
-       inkscape:collect="always"
        xlink:href="#linear-gradient1"
        id="linearGradient7"
        gradientUnits="userSpaceOnUse"
@@ -230,7 +199,6 @@
        x2="-488.70001"
        y2="164.39999" />
     <linearGradient
-       inkscape:collect="always"
        xlink:href="#linear-gradient1"
        id="linearGradient8"
        gradientUnits="userSpaceOnUse"
@@ -240,7 +208,6 @@
        x2="-488.70001"
        y2="164.39999" />
     <linearGradient
-       inkscape:collect="always"
        xlink:href="#linear-gradient1"
        id="linearGradient9"
        gradientUnits="userSpaceOnUse"
@@ -250,7 +217,6 @@
        x2="-488.70001"
        y2="164.39999" />
     <linearGradient
-       inkscape:collect="always"
        xlink:href="#linear-gradient1"
        id="linearGradient10"
        gradientUnits="userSpaceOnUse"
@@ -260,7 +226,6 @@
        x2="-488.70001"
        y2="164.39999" />
     <linearGradient
-       inkscape:collect="always"
        xlink:href="#linear-gradient1"
        id="linearGradient11"
        gradientUnits="userSpaceOnUse"
@@ -271,8 +236,6 @@
        y2="164.39999" />
   </defs>
   <g
-     inkscape:label="Layer 1"
-     inkscape:groupmode="layer"
      id="layer1"
      transform="translate(-74.877083,-210.87292)">
     <path

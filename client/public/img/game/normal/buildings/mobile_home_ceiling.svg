@@ -7,25 +7,11 @@
    viewBox="0 0 237.81261 109.55579"
    version="1.1"
    id="svg1"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg">
-  <sodipodi:namedview
-     id="namedview1"
-     pagecolor="#ffffff"
-     bordercolor="#000000"
-     borderopacity="0.25"
-     inkscape:showpageshadow="2"
-     inkscape:pageopacity="0.0"
-     inkscape:pagecheckerboard="0"
-     inkscape:deskcolor="#d1d1d1"
-     inkscape:document-units="mm" />
   <defs
      id="defs1" />
   <g
-     inkscape:label="Layer 1"
-     inkscape:groupmode="layer"
      id="layer1">
     <g
        id="g1473"
@@ -84,8 +70,7 @@
       <path
          id="path1410-6"
          style="fill:#a8a8a8;stroke:#4d4d4d;stroke-width:2.97509;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
-         d="M 115.74066,196.14577 V 301.19568 H 340.36984 V 196.14577 Z m 47.65345,17.2961 h 64.60014 v 31.71124 h -64.60014 z"
-         sodipodi:nodetypes="cccccccccc" />
+         d="M 115.74066,196.14577 V 301.19568 H 340.36984 V 196.14577 Z m 47.65345,17.2961 h 64.60014 v 31.71124 h -64.60014 z" />
       <rect
          style="fill:#bfbfbf;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:6.18266;stroke-linecap:round;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1;stop-color:#000000"
          id="rect1412-0"

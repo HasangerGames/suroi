@@ -7,36 +7,11 @@
    viewBox="0 0 53.777035 93.19606"
    version="1.1"
    id="svg1"
-   inkscape:version="1.4 (1:1.4+202410161351+e7c3feb100)"
-   sodipodi:docname="planted_bushes.svg"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg">
-  <sodipodi:namedview
-     id="namedview1"
-     pagecolor="#ffffff"
-     bordercolor="#000000"
-     borderopacity="0.25"
-     inkscape:showpageshadow="2"
-     inkscape:pageopacity="0.0"
-     inkscape:pagecheckerboard="0"
-     inkscape:deskcolor="#d1d1d1"
-     inkscape:document-units="mm"
-     inkscape:zoom="1.7469907"
-     inkscape:cx="102.46191"
-     inkscape:cy="180.59627"
-     inkscape:window-width="1440"
-     inkscape:window-height="821"
-     inkscape:window-x="0"
-     inkscape:window-y="25"
-     inkscape:window-maximized="0"
-     inkscape:current-layer="layer1" />
   <defs
      id="defs1" />
   <g
-     inkscape:label="Στρώση 1"
-     inkscape:groupmode="layer"
      id="layer1"
      transform="translate(-110.23941,-93.150272)">
     <rect
@@ -56,10 +31,7 @@
     <g
        id="g14597"
        style="opacity:0.925;stroke:none"
-       transform="matrix(0.51593237,-0.04479156,0.04479156,0.51593237,2570.8355,929.77566)"
-       inkscape:export-filename="bush_02.svg"
-       inkscape:export-xdpi="96"
-       inkscape:export-ydpi="96">
+       transform="matrix(0.51593237,-0.04479156,0.04479156,0.51593237,2570.8355,929.77566)">
       <g
          transform="matrix(0.1875,0,0,0.1875,-4546.5994,-1963.9993)"
          id="g14565"
@@ -166,10 +138,7 @@
     <g
        id="g14597-4"
        style="opacity:0.925;stroke:none"
-       transform="matrix(0.51593237,-0.04479156,0.04479156,0.51593237,2570.8554,969.63126)"
-       inkscape:export-filename="bush_02.svg"
-       inkscape:export-xdpi="96"
-       inkscape:export-ydpi="96">
+       transform="matrix(0.51593237,-0.04479156,0.04479156,0.51593237,2570.8554,969.63126)">
       <g
          transform="matrix(0.1875,0,0,0.1875,-4546.5994,-1963.9993)"
          id="g14565-9"

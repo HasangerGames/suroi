@@ -7,32 +7,8 @@
    viewBox="0 0 8.9958334 8.9958334"
    version="1.1"
    id="svg950"
-   inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
-   sodipodi:docname="silver_lining_fist.svg"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg">
-  <sodipodi:namedview
-     id="namedview952"
-     pagecolor="#505050"
-     bordercolor="#ffffff"
-     borderopacity="1"
-     inkscape:pageshadow="0"
-     inkscape:pageopacity="0"
-     inkscape:pagecheckerboard="1"
-     inkscape:document-units="px"
-     showgrid="false"
-     units="px"
-     inkscape:zoom="24.829854"
-     inkscape:cx="10.914281"
-     inkscape:cy="16.794299"
-     inkscape:window-width="2560"
-     inkscape:window-height="1372"
-     inkscape:window-x="0"
-     inkscape:window-y="0"
-     inkscape:window-maximized="1"
-     inkscape:current-layer="layer1" />
   <defs
      id="defs947">
     <linearGradient
@@ -54,8 +30,6 @@
     </linearGradient>
   </defs>
   <g
-     inkscape:label="Layer 1"
-     inkscape:groupmode="layer"
      id="layer1">
     <path
        d="m 4.4979187,8.4666574 c -2.1918886,0 -3.96873871,-1.7768602 -3.96873871,-3.9687387 0,-2.1918783 1.77687041,-3.96873871 3.96873871,-3.96873871 2.1918886,0 3.9687387,1.77687051 3.9687387,3.96873871 0,2.1918886 -1.7768604,3.9687387 -3.9687387,3.9687387 z"
