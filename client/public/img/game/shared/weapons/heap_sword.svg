@@ -6,33 +6,9 @@
    fill="none"
    version="1.1"
    id="svg35"
-   sodipodi:docname="heap_sword.svg"
-   inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg">
-  <sodipodi:namedview
-     id="namedview35"
-     pagecolor="#505050"
-     bordercolor="#000000"
-     borderopacity="0.25"
-     inkscape:showpageshadow="2"
-     inkscape:pageopacity="0"
-     inkscape:pagecheckerboard="true"
-     inkscape:deskcolor="#d1d1d1"
-     inkscape:zoom="7.4272728"
-     inkscape:cx="30.293757"
-     inkscape:cy="42.276621"
-     inkscape:window-width="2560"
-     inkscape:window-height="1372"
-     inkscape:window-x="0"
-     inkscape:window-y="0"
-     inkscape:window-maximized="1"
-     inkscape:current-layer="svg35"
-     inkscape:pageshadow="0"
-     showgrid="false" />
   <defs
      id="defs35">
     <radialGradient
@@ -150,7 +126,6 @@
          id="stop35" />
     </linearGradient>
     <radialGradient
-       inkscape:collect="always"
        xlink:href="#linearGradient26"
        id="radialGradient25"
        cx="163.20874"
@@ -191,7 +166,6 @@
          style="stop-color:#2685d9;stop-opacity:0;" />
     </linearGradient>
     <radialGradient
-       inkscape:collect="always"
        xlink:href="#linearGradient143"
        id="radialGradient25-8"
        cx="163.20874"
@@ -311,27 +285,11 @@
     <path
        style="fill:url(#radialGradient25);fill-opacity:1;fill-rule:evenodd;stroke:#252628;stroke-width:0;stroke-linejoin:round;stroke-dasharray:none;paint-order:stroke markers fill"
        id="path24"
-       sodipodi:type="arc"
-       sodipodi:cx="74.24836"
-       sodipodi:cy="-63.01519"
-       sodipodi:rx="7.9430537"
-       sodipodi:ry="7.9430537"
-       sodipodi:start="3.1415927"
-       sodipodi:end="4.712389"
-       sodipodi:arc-type="slice"
        d="m 66.305306,-63.01519 a 7.9430537,7.9430537 0 0 1 7.943054,-7.943054 v 7.943054 z"
        transform="rotate(45)" />
     <path
        style="fill:url(#radialGradient25-8);fill-opacity:1;fill-rule:evenodd;stroke:#252628;stroke-width:0;stroke-linejoin:round;stroke-dasharray:none;paint-order:stroke markers fill"
        id="path24-3"
-       sodipodi:type="arc"
-       sodipodi:cx="74.24836"
-       sodipodi:cy="-63.01519"
-       sodipodi:rx="7.9430537"
-       sodipodi:ry="7.9430537"
-       sodipodi:start="4.712389"
-       sodipodi:end="0"
-       sodipodi:arc-type="slice"
        d="m 74.24836,-70.958244 a 7.9430537,7.9430537 0 0 1 7.943053,7.943054 H 74.24836 Z"
        transform="rotate(45)" />
   </g>

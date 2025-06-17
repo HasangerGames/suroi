@@ -7,36 +7,12 @@
    viewBox="0 0 178.87542 232.32169"
    version="1.1"
    id="svg1"
-   inkscape:version="1.4 (1:1.4+202410161351+e7c3feb100)"
-   sodipodi:docname="armory_vault_floor_2.svg"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg">
-  <sodipodi:namedview
-     id="namedview1"
-     pagecolor="#505050"
-     bordercolor="#ffffff"
-     borderopacity="1"
-     inkscape:showpageshadow="0"
-     inkscape:pageopacity="0"
-     inkscape:pagecheckerboard="1"
-     inkscape:deskcolor="#d1d1d1"
-     inkscape:document-units="px"
-     inkscape:zoom="0.5313938"
-     inkscape:cx="-91.269413"
-     inkscape:cy="428.11941"
-     inkscape:window-width="2560"
-     inkscape:window-height="1368"
-     inkscape:window-x="0"
-     inkscape:window-y="0"
-     inkscape:window-maximized="1"
-     inkscape:current-layer="g109754" />
   <defs
      id="defs1">
     <pattern
-       inkscape:collect="always"
        xlink:href="#pattern38"
        preserveAspectRatio="xMidYMid"
        id="pattern2"
@@ -49,8 +25,7 @@
        height="124.22794"
        patternTransform="translate(28.631867,1028.2472)"
        preserveAspectRatio="xMidYMid"
-       id="pattern379"
-       inkscape:label="pattern379">
+       id="pattern379">
       <g
          id="g343"
          transform="matrix(1.1648511,0,0,0.90435922,700.02169,-1367.9705)"
@@ -99,8 +74,7 @@
        height="516.94594"
        patternTransform="translate(1788.3221,1142.8606)"
        preserveAspectRatio="xMidYMid"
-       id="pattern38"
-       inkscape:label="pattern38">
+       id="pattern38">
       <rect
          style="fill:#906b32;fill-opacity:1;stroke:#5b441f;stroke-width:3.31;stroke-linecap:round;stroke-dasharray:none;stroke-opacity:1"
          id="rect14"
@@ -264,8 +238,6 @@
     </pattern>
   </defs>
   <g
-     inkscape:label="Layer 1"
-     inkscape:groupmode="layer"
      id="layer1"
      transform="translate(-90.569744,-31.48542)">
     <g
@@ -504,8 +476,7 @@
       <path
          style="fill:#000000;fill-opacity:0;fill-rule:nonzero;stroke:#4c4c4c;stroke-width:3.27825;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
          d="m 696.86046,679.77303 c -2.46753,32.69539 -10.75748,35.53853 -18.62908,40.82441 -7.87141,-5.17055 -16.1618,-8.12902 -18.62934,-40.82441 6.50508,-0.42773 13.08737,-0.70017 18.62934,-4.95822 5.54204,4.16548 12.12408,4.53049 18.62908,4.95822 z"
-         id="path14-7-2"
-         sodipodi:nodetypes="ccccc" />
+         id="path14-7-2" />
       <path
          id="rect6-1-5"
          style="fill:#4c4c4c;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"

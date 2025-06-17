@@ -1,8 +1,52 @@
-<svg width="12" height="35" viewBox="0 0 12 35" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M1.29688 30.6175L1.66359 8.19958L2.02608 6.11614V1.36588H10.0265V6.11614L10.389 8.19958L10.7557 30.6175L10.214 31.5342H1.83841L1.29688 30.6175Z" fill="#E1B54F"/>
-<path d="M1.29688 33.4088V32.3671H10.7557V33.4088L10.5474 33.6172H1.50522L1.29688 33.4088Z" fill="#E1B54F"/>
-<rect x="2.04297" y="32.3672" width="0.833378" height="7.96711" transform="rotate(-90 2.04297 32.3672)" fill="#DAA325"/>
-<rect x="2.04297" y="32.3672" width="0.833378" height="7.96711" transform="rotate(-90 2.04297 32.3672)" fill="#DAA325" stroke="#57410F" stroke-width="0.999999" stroke-miterlimit="3.99393"/>
-<path d="M1.29688 32.3671V33.4088L1.50522 33.6172H10.5474L10.7557 33.4088V32.3671H10.01V31.5337H10.214L10.7557 30.617L10.389 8.19915L10.0265 6.1157V1.36544H2.02608V6.1157L1.66359 8.19915L1.29688 30.617L1.83841 31.5337H2.04285V32.3671H1.29688Z" stroke="#57410F" stroke-width="2" stroke-miterlimit="3.99393"/>
-<path d="M10.3895 8.19922H1.66406M10.027 6.11577H2.02655" stroke="#57410F" stroke-width="2" stroke-miterlimit="3.99393"/>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="12"
+   height="35"
+   viewBox="0 0 12 35"
+   fill="none"
+   version="1.1"
+   id="svg4"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs4" />
+  <path
+     d="M1.29688 30.6175L1.66359 8.19958L2.02608 6.11614V1.36588H10.0265V6.11614L10.389 8.19958L10.7557 30.6175L10.214 31.5342H1.83841L1.29688 30.6175Z"
+     fill="#E1B54F"
+     id="path1" />
+  <path
+     d="M1.29688 33.4088V32.3671H10.7557V33.4088L10.5474 33.6172H1.50522L1.29688 33.4088Z"
+     fill="#E1B54F"
+     id="path2" />
+  <rect
+     x="2.04297"
+     y="32.3672"
+     width="0.833378"
+     height="7.96711"
+     transform="rotate(-90 2.04297 32.3672)"
+     fill="#DAA325"
+     id="rect2" />
+  <rect
+     x="2.04297"
+     y="32.3672"
+     width="0.833378"
+     height="7.96711"
+     transform="rotate(-90 2.04297 32.3672)"
+     fill="#DAA325"
+     stroke="#57410F"
+     stroke-width="0.999999"
+     stroke-miterlimit="3.99393"
+     id="rect3" />
+  <path
+     d="M1.29688 32.3671V33.4088L1.50522 33.6172H10.5474L10.7557 33.4088V32.3671H10.01V31.5337H10.214L10.7557 30.617L10.389 8.19915L10.0265 6.1157V1.36544H2.02608V6.1157L1.66359 8.19915L1.29688 30.617L1.83841 31.5337H2.04285V32.3671H1.29688Z"
+     stroke="#57410F"
+     stroke-width="2"
+     stroke-miterlimit="3.99393"
+     id="path3" />
+  <path
+     d="M10.3895 8.19922H1.66406M10.027 6.11577H2.02655"
+     stroke="#57410F"
+     stroke-width="2"
+     stroke-miterlimit="3.99393"
+     id="path4" />
 </svg>

@@ -7,42 +7,12 @@
    viewBox="0 0 280.72077 93.416442"
    version="1.1"
    id="svg5"
-   inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
-   sodipodi:docname="suroi_halloween.svg"
-   inkscape:export-filename="/home/desktopgeek/Downloads/suroi.png"
-   inkscape:export-xdpi="768"
-   inkscape:export-ydpi="768"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg">
-  <sodipodi:namedview
-     id="namedview7"
-     pagecolor="#505050"
-     bordercolor="#ffffff"
-     borderopacity="1"
-     inkscape:pageshadow="0"
-     inkscape:pageopacity="0"
-     inkscape:pagecheckerboard="1"
-     inkscape:document-units="px"
-     showgrid="false"
-     units="px"
-     width="1060.992px"
-     inkscape:zoom="1.4142136"
-     inkscape:cx="484.36815"
-     inkscape:cy="253.85133"
-     inkscape:window-width="2560"
-     inkscape:window-height="1372"
-     inkscape:window-x="0"
-     inkscape:window-y="0"
-     inkscape:window-maximized="1"
-     inkscape:current-layer="layer1"
-     height="353.07px" />
   <defs
      id="defs2">
     <linearGradient
-       inkscape:collect="always"
        id="linearGradient31523">
       <stop
          style="stop-color:#00d4ff;stop-opacity:1;"
@@ -54,7 +24,6 @@
          id="stop31521" />
     </linearGradient>
     <linearGradient
-       inkscape:collect="always"
        xlink:href="#linearGradient31523"
        id="linearGradient31525"
        x1="10.121879"
@@ -64,7 +33,6 @@
        gradientUnits="userSpaceOnUse" />
     <filter
        style="color-interpolation-filters:sRGB"
-       inkscape:label="Drop Shadow"
        id="filter32941"
        x="-0.18707006"
        y="-0.096207474"
@@ -100,7 +68,6 @@
     </filter>
     <filter
        style="color-interpolation-filters:sRGB"
-       inkscape:label="Drop Shadow"
        id="filter32971"
        x="-0.01645325"
        y="-0.18372764"
@@ -136,7 +103,6 @@
     </filter>
     <filter
        style="color-interpolation-filters:sRGB"
-       inkscape:label="Drop Shadow"
        id="filter12025"
        x="-0.032561472"
        y="-0.11884911"
@@ -581,9 +547,9 @@
     <filter
        id="b"
        x="-0.52623203"
-       y="-0.55007065"
+       y="-0.55007071"
        width="2.2890672"
-       height="2.3445786"
+       height="2.3445787"
        color-interpolation-filters="sRGB">
       <feFlood
          flood-color="rgb(43,43,43)"
@@ -783,8 +749,6 @@
     </filter>
   </defs>
   <g
-     inkscape:label="Layer 1"
-     inkscape:groupmode="layer"
      id="layer1">
     <path
        transform="matrix(2.2274,0,0,2.2274,21.158694,11.491506)"

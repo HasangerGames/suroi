@@ -7,34 +7,12 @@
    stroke-linecap="square"
    stroke-miterlimit="10"
    id="svg54"
-   sodipodi:docname="potted_plant_residue.svg"
    width="100.09064"
    height="83.72242"
-   inkscape:version="1.4 (1:1.4+202410161351+e7c3feb100)"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg">
   <defs
      id="defs1" />
-  <sodipodi:namedview
-     id="namedview54"
-     pagecolor="#505050"
-     bordercolor="#ffffff"
-     borderopacity="1"
-     inkscape:showpageshadow="0"
-     inkscape:pageopacity="0"
-     inkscape:pagecheckerboard="1"
-     inkscape:deskcolor="#505050"
-     inkscape:zoom="8.2340162"
-     inkscape:cx="45.542781"
-     inkscape:cy="29.815341"
-     inkscape:window-width="2560"
-     inkscape:window-height="1368"
-     inkscape:window-x="0"
-     inkscape:window-y="0"
-     inkscape:window-maximized="1"
-     inkscape:current-layer="svg54" />
   <path
      fill="#4b2817"
      d="m 38.589556,66.924362 v 0 c 0,-4.245673 3.441799,-7.687475 7.687475,-7.687475 v 0 c 2.03885,0 3.994189,0.809926 5.435872,2.251608 1.441677,1.441683 2.251608,3.397022 2.251608,5.435867 v 0 c 0,4.245681 -3.441799,7.687473 -7.68748,7.687473 v 0 c -4.245674,0 -7.687475,-3.441792 -7.687475,-7.687473 z"

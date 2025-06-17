@@ -6,30 +6,8 @@
    fill="none"
    version="1.1"
    id="svg25"
-   sodipodi:docname="model_89.svg"
-   inkscape:version="1.4.2 (1:1.4.2+202505120737+ebf0e940d0)"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg">
-  <sodipodi:namedview
-     id="namedview25"
-     pagecolor="#ffffff"
-     bordercolor="#000000"
-     borderopacity="0.25"
-     inkscape:showpageshadow="2"
-     inkscape:pageopacity="0.0"
-     inkscape:pagecheckerboard="0"
-     inkscape:deskcolor="#d1d1d1"
-     inkscape:zoom="2.8284271"
-     inkscape:cx="103.59114"
-     inkscape:cy="40.835417"
-     inkscape:window-width="2560"
-     inkscape:window-height="1368"
-     inkscape:window-x="0"
-     inkscape:window-y="0"
-     inkscape:window-maximized="1"
-     inkscape:current-layer="svg25" />
   <g
      id="g25"
      transform="matrix(0.99171517,0.26572929,-0.26572929,0.99171517,20.01857,-41.242569)">
@@ -42,8 +20,7 @@
        stroke-width="0.560504"
        stroke-miterlimit="3.99393"
        id="path1"
-       style="stroke-linecap:round;stroke-linejoin:round"
-       sodipodi:nodetypes="cccccccsccccccscccccccccccc" />
+       style="stroke-linecap:round;stroke-linejoin:round" />
     <rect
        x="80.941139"
        y="67.461838"
@@ -60,8 +37,7 @@
        stroke="#37332f"
        stroke-width="0.560504"
        id="path2"
-       style="stroke-linejoin:round"
-       sodipodi:nodetypes="cccccccccccc" />
+       style="stroke-linejoin:round" />
     <path
        d="m 40.9396,56.7778 c 0.6433,-0.8288 1.3985,-2.0091 0.3517,-4.3086 l 11.6991,-6.7545 c 0.5608,-0.3238 0.8201,-0.7399 0.5744,-1.1655 l 1.787,-1.0317 3.6069,6.2473 c -3.1943,1.9709 -7.4474,4.7736 -7.4474,4.7736 -3.6925,2.1318 -4.6434,3.3167 -6.4219,5.3465"
        fill="#9a9088"
@@ -73,8 +49,7 @@
        stroke-width="0.560504"
        stroke-miterlimit="3.99393"
        id="path4"
-       style="stroke-linecap:round;stroke-linejoin:round"
-       sodipodi:nodetypes="ccccc" />
+       style="stroke-linecap:round;stroke-linejoin:round" />
     <path
        d="m 104.746,15.9357 -0.818,-1.4181 1.575,-0.9098 0.518,0.2718 0.61,1.0579 z"
        fill="#534c47"
@@ -83,8 +58,7 @@
        stroke-miterlimit="3.99393"
        stroke-linecap="round"
        id="path5"
-       style="stroke-linejoin:round"
-       sodipodi:nodetypes="cccccc" />
+       style="stroke-linejoin:round" />
     <path
        d="M 106.9,14.2068 55.5556,43.8505 c -0.0674,0.0389 -0.0618,0.1746 0.0124,0.3032 l 1.0729,1.8583 c 0.0742,0.1286 0.1891,0.2013 0.2564,0.1624 L 108.242,16.5307 c 0.067,-0.0389 0.061,-0.1746 -0.013,-0.3032 l -1.073,-1.8583 c -0.074,-0.1286 -0.189,-0.2013 -0.256,-0.1624 z"
        fill="#8e8470"
@@ -93,8 +67,7 @@
        stroke-miterlimit="3.99393"
        stroke-linecap="round"
        id="path6"
-       style="stroke-linejoin:round"
-       sodipodi:nodetypes="ccccccccc" />
+       style="stroke-linejoin:round" />
     <path
        d="M 105.7,18.2161 78.8271,33.7313 c -0.0674,0.0389 -0.0733,0.1548 -0.0132,0.2589 l 0.8685,1.5043 c 0.0601,0.1041 0.1634,0.1569 0.2308,0.118 L 106.786,20.0973 c 0.068,-0.0389 0.074,-0.1548 0.013,-0.2589 l -0.868,-1.5042 c -0.06,-0.1041 -0.163,-0.157 -0.231,-0.1181 z"
        fill="#817760"
@@ -103,8 +76,7 @@
        stroke-miterlimit="3.99393"
        stroke-linecap="round"
        id="path7"
-       style="stroke-linejoin:round"
-       sodipodi:nodetypes="ccccccccc" />
+       style="stroke-linejoin:round" />
     <path
        d="m 58.9587,49.7656 -3.6069,-6.2473 -1.787,1.0317 2.6262,4.5489 c 0.2717,0.4706 0.0649,1.0214 -0.6018,1.4063 0,0 -1.0272,0.6002 -2.4709,1.675 -1.408,1.0482 -1.6138,1.5069 -1.607,2.359 0,0 4.253,-2.8026 7.4474,-4.7736 z"
        fill="#877c73"
@@ -130,8 +102,7 @@
        stroke-miterlimit="3.99393"
        stroke-linecap="round"
        id="path10"
-       style="stroke-linecap:round;stroke-linejoin:round"
-       sodipodi:nodetypes="cccccccccc" />
+       style="stroke-linecap:round;stroke-linejoin:round" />
     <path
        d="m 34.9418,73.0007 3.1424,-0.4318 c -1.0104,-5.8805 0.8668,-7.6153 4.2714,-11.328 l -2.8883,1.3274 0.8958,-3.1178 c -4.081,5.4055 -6.3829,6.0803 -5.4213,13.5502 z"
        fill="#743325"
@@ -144,8 +115,7 @@
        stroke-miterlimit="3.99393"
        stroke-linecap="round"
        id="path12"
-       style="stroke-linejoin:round"
-       sodipodi:nodetypes="cccc" />
+       style="stroke-linejoin:round" />
     <path
        d="m 85.6638,30.2979 c 0.2657,-0.1535 0.3568,-0.4933 0.2034,-0.7591 -0.1535,-0.2657 -0.4933,-0.3568 -0.7591,-0.2033 -0.2657,0.1534 -0.3568,0.4932 -0.2033,0.759 0.1534,0.2657 0.4932,0.3568 0.759,0.2034 z"
        fill="#47413d"
@@ -153,8 +123,7 @@
        stroke-width="0.560502"
        stroke-miterlimit="3.99393"
        stroke-linecap="round"
-       id="path13"
-       sodipodi:nodetypes="ccccc" />
+       id="path13" />
     <path
        d="m 56.4543,45.4285 26.7878,-15.6896 2.0582,3.5644 C 77.5056,39.7204 67.7162,45.0167 58.7059,49.3285 Z"
        fill="#883c2b"
@@ -207,8 +176,7 @@
        stroke-miterlimit="3.99393"
        stroke-linecap="round"
        id="path20"
-       style="stroke-linejoin:round"
-       sodipodi:nodetypes="ccccc" />
+       style="stroke-linejoin:round" />
     <path
        d="m 52.8053,51.4497 -0.8445,-1.4815 -3.5386,2.04 c -0.3395,0.7718 0.0356,1.429 0.8226,1.5104 z"
        fill="#3c3834"
@@ -225,8 +193,7 @@
        stroke-miterlimit="3.99393"
        stroke-linecap="round"
        id="path22"
-       style="stroke-linejoin:round"
-       sodipodi:nodetypes="cccccc" />
+       style="stroke-linejoin:round" />
     <path
        d="m 81.186,36.4659 c -5.0868,3.6631 -10.7344,6.9225 -16.3245,9.8089 l 0.0974,-3.3719 13.606,-7.8554 z"
        fill="#743325"
@@ -238,8 +205,7 @@
        stroke-miterlimit="3.99393"
        stroke-linecap="round"
        id="path24"
-       style="stroke-linejoin:round"
-       sodipodi:nodetypes="ccccc" />
+       style="stroke-linejoin:round" />
     <path
        d="m 40.9396,56.7778 c 0.6433,-0.8288 1.3985,-2.0091 0.3517,-4.3086 l 11.6991,-6.7545 c 0.5608,-0.3238 0.8201,-0.7399 0.5744,-1.1655 l 1.787,-1.0317 3.6069,6.2473 c -3.1943,1.9709 -7.4474,4.7736 -7.4474,4.7736 -3.6925,2.1318 -4.6434,3.3167 -6.4219,5.3465"
        stroke="#37332f"
@@ -247,8 +213,7 @@
        stroke-miterlimit="3.99393"
        stroke-linecap="round"
        id="path25"
-       style="stroke-linejoin:round"
-       sodipodi:nodetypes="cccccccc" />
+       style="stroke-linejoin:round" />
   </g>
   <defs
      id="defs25" />

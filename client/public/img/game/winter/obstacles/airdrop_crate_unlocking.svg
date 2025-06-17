@@ -8,92 +8,92 @@
    version="1.1"
    id="svg1"
    xml:space="preserve"
-   sodipodi:docname="airdrop_crate_unlocking.svg"
-   inkscape:version="1.3 (0e150ed, 2023-07-21)"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns="http://www.w3.org/2000/svg"
-   xmlns:svg="http://www.w3.org/2000/svg"><sodipodi:namedview
-     id="namedview1"
-     pagecolor="#ffffff"
-     bordercolor="#000000"
-     borderopacity="0.25"
-     inkscape:showpageshadow="2"
-     inkscape:pageopacity="0.0"
-     inkscape:pagecheckerboard="0"
-     inkscape:deskcolor="#d1d1d1"
-     inkscape:document-units="mm"
-     inkscape:zoom="2.067657"
-     inkscape:cx="87.780515"
-     inkscape:cy="75.689535"
-     inkscape:window-width="1440"
-     inkscape:window-height="900"
-     inkscape:window-x="0"
-     inkscape:window-y="0"
-     inkscape:window-maximized="0"
-     inkscape:current-layer="g1" /><defs
+   xmlns:svg="http://www.w3.org/2000/svg"><defs
      id="defs1"><style
-       id="style1-7">&#10;      .cls-1 {&#10;        fill: #bababa;&#10;      }&#10;&#10;      .cls-1, .cls-2, .cls-3 {&#10;        isolation: isolate;&#10;        opacity: .997;&#10;        stroke: #303030;&#10;        stroke-linecap: round;&#10;        stroke-miterlimit: 15.1181;&#10;        stroke-width: 5px;&#10;      }&#10;&#10;      .cls-2 {&#10;        fill: #5a70e0;&#10;      }&#10;&#10;      .cls-3 {&#10;        fill: #3f3fe0;&#10;      }&#10;&#10;      .cls-4 {&#10;        opacity: .9;&#10;      }&#10;    </style><pattern
-       inkscape:collect="always"
+       id="style1-7">
+      .cls-1 {
+        fill: #bababa;
+      }
+
+      .cls-1, .cls-2, .cls-3 {
+        isolation: isolate;
+        opacity: .997;
+        stroke: #303030;
+        stroke-linecap: round;
+        stroke-miterlimit: 15.1181;
+        stroke-width: 5px;
+      }
+
+      .cls-2 {
+        fill: #5a70e0;
+      }
+
+      .cls-3 {
+        fill: #3f3fe0;
+      }
+
+      .cls-4 {
+        opacity: .9;
+      }
+    </style><pattern
        xlink:href="#pattern188-2-3"
        preserveAspectRatio="xMidYMid"
        id="pattern189-8-5"
        patternTransform="matrix(5.3450593,5.3450593,-5.3450593,5.3450593,179.46267,1019.9613)"
        x="0.25"
        y="0" /><pattern
-       inkscape:collect="always"
        patternUnits="userSpaceOnUse"
        width="2"
        height="10"
        patternTransform="translate(0,0) scale(2,2)"
        preserveAspectRatio="xMidYMid"
        id="pattern188-2-3"
-       style="fill:#d9d9d9"
-       inkscape:stockid="Stripes 01 (1:1)"
-       inkscape:isstock="true"
-       inkscape:label="Stripes 01 (1:1)"><rect
+       style="fill:#d9d9d9"><rect
          style="stroke:none"
          x="0"
          y="-0.5"
          width="1"
          height="11"
          id="rect187-8-3" /></pattern><pattern
-       inkscape:collect="always"
        xlink:href="#pattern188-1-2-7"
        preserveAspectRatio="xMidYMid"
        id="pattern189-9-3-7"
        patternTransform="matrix(5.3450593,5.3450593,-5.3450593,5.3450593,179.46267,1168.6182)"
        x="0.25"
        y="0" /><pattern
-       inkscape:collect="always"
        patternUnits="userSpaceOnUse"
        width="2"
        height="10"
        patternTransform="translate(0,0) scale(2,2)"
        preserveAspectRatio="xMidYMid"
        id="pattern188-1-2-7"
-       style="fill:#d9d9d9"
-       inkscape:stockid="Stripes 01 (1:1)"
-       inkscape:isstock="true"
-       inkscape:label="Stripes 01 (1:1)"><rect
+       style="fill:#d9d9d9"><rect
          style="stroke:none"
          x="0"
          y="-0.5"
          width="1"
          height="11"
          id="rect187-0-2-9" /></pattern></defs><g
-     inkscape:label="Layer 1"
-     inkscape:groupmode="layer"
      id="layer1"
      transform="translate(-1.0069813,-83.117306)"><g
        id="g1"
        transform="matrix(0.26458333,0,0,0.26458333,-9.4742399,-7.4868277)"><g
          transform="translate(-163.08,-234.76)"
-         id="g9">&#10;	&#10;	&#10;	&#10;	&#10;<g
+         id="g9">
+	
+	
+	
+	
+<g
    id="g2-0-3"
    transform="translate(69.943652,51.517644)"
-   style="fill:#b94646;fill-opacity:1;stroke:#5d2323;stroke-opacity:1">&#10;		&#10;		&#10;		&#10;	</g></g><g
+   style="fill:#b94646;fill-opacity:1;stroke:#5d2323;stroke-opacity:1">
+		
+		
+		
+	</g></g><g
          transform="matrix(3.7795276,0,0,3.7795276,-367.14702,-1437.9782)"
          id="g5-3"><path
            d="m 120.27,480.13 -3.5786,3.5786 v 23.67 l 3.5781,3.5781 h 23.671 l 3.5776,-3.5776 v -23.671 L 143.94,480.13 Z"
@@ -196,4 +196,10 @@
              x="89.676208"
              y="697.18964" /></g></g></g></g><style
      type="text/css"
-     id="style1">&#10;	.st0{fill:#4059BF;stroke:#262673;stroke-width:5.5604;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:11.3386;}&#10;	.st1{fill:#384B94;stroke:#262673;stroke-width:5.5604;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:11.3386;}&#10;	.st2{fill:#262673;}&#10;	.st3{fill:#69532E;stroke:#333333;stroke-width:5.5616;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:11.3386;}&#10;	.st4{fill:#808080;stroke:#2E2E2E;stroke-width:2.7803;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:11.3386;}&#10;</style></svg>
+     id="style1">
+	.st0{fill:#4059BF;stroke:#262673;stroke-width:5.5604;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:11.3386;}
+	.st1{fill:#384B94;stroke:#262673;stroke-width:5.5604;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:11.3386;}
+	.st2{fill:#262673;}
+	.st3{fill:#69532E;stroke:#333333;stroke-width:5.5616;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:11.3386;}
+	.st4{fill:#808080;stroke:#2E2E2E;stroke-width:2.7803;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:11.3386;}
+</style></svg>

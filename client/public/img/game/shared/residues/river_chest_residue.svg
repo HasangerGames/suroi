@@ -5,13 +5,6 @@
    viewBox="0 0 29.772229 20.794759"
    version="1.1"
    id="svg1408"
-   sodipodi:docname="river_chest_residue.svg"
-   inkscape:version="1.3.2 (1:1.3.2+202404261509+091e20ef0f)"
-   inkscape:export-filename="treasure_pirate_chest_residue.svg"
-   inkscape:export-xdpi="96"
-   inkscape:export-ydpi="96"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
@@ -19,34 +12,6 @@
    xmlns:dc="http://purl.org/dc/elements/1.1/">
   <defs
      id="defs1402" />
-  <sodipodi:namedview
-     id="base"
-     pagecolor="#505050"
-     bordercolor="#666666"
-     borderopacity="1.0"
-     inkscape:pageopacity="0"
-     inkscape:pageshadow="2"
-     inkscape:zoom="10.634886"
-     inkscape:cx="62.624082"
-     inkscape:cy="31.829207"
-     inkscape:document-units="px"
-     inkscape:current-layer="layer1"
-     inkscape:document-rotation="0"
-     showgrid="false"
-     fit-margin-top="0"
-     fit-margin-left="0"
-     fit-margin-right="0"
-     fit-margin-bottom="0"
-     inkscape:window-width="2560"
-     inkscape:window-height="1368"
-     inkscape:window-x="0"
-     inkscape:window-y="0"
-     inkscape:window-maximized="1"
-     inkscape:pagecheckerboard="1"
-     units="px"
-     height="133.607px"
-     inkscape:showpageshadow="2"
-     inkscape:deskcolor="#d1d1d1" />
   <metadata
      id="metadata1405">
     <rdf:RDF>
@@ -59,8 +24,6 @@
     </rdf:RDF>
   </metadata>
   <g
-     inkscape:label="Layer 1"
-     inkscape:groupmode="layer"
      id="layer1"
      transform="translate(-82.925278,-94.9506)">
     <path
@@ -78,9 +41,7 @@
     <path
        id="rect998-6"
        style="fill:#a87e5a;fill-opacity:1;stroke:#63462c;stroke-width:0.529167;stroke-linecap:square;stroke-opacity:1"
-       d="m 112.46837,100.18487 -2.65894,2.5219 0.3439,-1.52893 -1.32117,1.82634 1.19038,-3.114947 -1.33275,1.533227 -0.79807,-0.0574 0.69425,-1.35648 0.0252,-2.050673 -8.907471,15.428173 c 0,0 2.523081,-2.48278 2.486481,-2.3947 -0.0366,0.0882 -0.21432,1.6807 -0.21432,1.6807 l 0.74526,-1.13787 1.2716,-2.16942 -0.33564,1.73478 1.54857,-2.08172 -1.37923,3.6808 1.3645,-1.58412 -1.62995,4.49854 z"
-       inkscape:transform-center-x="4.1674226"
-       inkscape:transform-center-y="1.2802321" />
+       d="m 112.46837,100.18487 -2.65894,2.5219 0.3439,-1.52893 -1.32117,1.82634 1.19038,-3.114947 -1.33275,1.533227 -0.79807,-0.0574 0.69425,-1.35648 0.0252,-2.050673 -8.907471,15.428173 c 0,0 2.523081,-2.48278 2.486481,-2.3947 -0.0366,0.0882 -0.21432,1.6807 -0.21432,1.6807 l 0.74526,-1.13787 1.2716,-2.16942 -0.33564,1.73478 1.54857,-2.08172 -1.37923,3.6808 1.3645,-1.58412 -1.62995,4.49854 z" />
     <path
        id="path2"
        style="color:#000000;fill:#2668ad;stroke-linecap:square;-inkscape-stroke:none;fill-opacity:0.49803922"

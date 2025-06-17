@@ -6,32 +6,10 @@
    fill="none"
    version="1.1"
    id="svg2"
-   sodipodi:docname="fists_killfeed.svg"
-   inkscape:version="1.4 (e7c3feb1, 2024-10-09)"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg">
   <defs
      id="defs2" />
-  <sodipodi:namedview
-     id="namedview2"
-     pagecolor="#ffffff"
-     bordercolor="#000000"
-     borderopacity="0.25"
-     inkscape:showpageshadow="2"
-     inkscape:pageopacity="0.0"
-     inkscape:pagecheckerboard="0"
-     inkscape:deskcolor="#d1d1d1"
-     inkscape:zoom="2.8235294"
-     inkscape:cx="12.75"
-     inkscape:cy="7.96875"
-     inkscape:window-width="1472"
-     inkscape:window-height="812"
-     inkscape:window-x="0"
-     inkscape:window-y="37"
-     inkscape:window-maximized="1"
-     inkscape:current-layer="svg2" />
   <path
      d="m 15.274627,3.692984 c 2.4812,2.75373 2.4781,4.59847 0,8.39816 l 3.1391,3.9089 -0.3329,-5.0199 4.6803,1.111 -3.5388,-4.20935 6.183,-1.3559 -6.183,-1.32979 4.704,-2.59784 -5.5126,0.49417 L 20.609827,0 Z"
      fill="#d9d9d9"

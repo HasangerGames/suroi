@@ -7,43 +7,17 @@
    viewBox="0 0 142.875 144.48895"
    version="1.1"
    id="svg1"
-   inkscape:version="1.4 (1:1.4+202410161351+e7c3feb100)"
-   sodipodi:docname="birch_tree_1.svg"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg">
-  <sodipodi:namedview
-     id="namedview1"
-     pagecolor="#505050"
-     bordercolor="#ffffff"
-     borderopacity="1"
-     inkscape:showpageshadow="0"
-     inkscape:pageopacity="0"
-     inkscape:pagecheckerboard="1"
-     inkscape:deskcolor="#505050"
-     inkscape:document-units="px"
-     inkscape:zoom="1.078823"
-     inkscape:cx="80.643446"
-     inkscape:cy="24.563808"
-     inkscape:window-width="2560"
-     inkscape:window-height="1368"
-     inkscape:window-x="0"
-     inkscape:window-y="0"
-     inkscape:window-maximized="1"
-     inkscape:current-layer="layer1" />
   <defs
      id="defs1" />
   <g
-     inkscape:label="Layer 1"
-     inkscape:groupmode="layer"
      id="layer1"
      transform="translate(-83.608333,-142.08125)">
     <path
        id="path7077"
        class="st2"
        d="m 147.39937,237.78104 7.24959,7.59354 -0.89959,-15.45166 3.83646,-18.60021 17.33021,-0.0794 5.74146,-1.00541 8.62541,2.98979 -5.74145,-7.75229 h -7.96396 c 0,-0.0265 -16.48354,2.06375 -16.48354,2.06375 l -2.40771,-23.62729 -9.2075,-6.24417 4.31271,9.78958 0.82021,19.15584 -19.92313,-4.36563 -14.39333,0.89958 -5.84729,4.49792 22.43666,2.19604 12.54125,6.16479 v 21.74875 z"
-       sodipodi:nodetypes="ccccccccccccccccccc"
        style="opacity:0.9;isolation:isolate;fill:#a574a2;stroke:#231823;stroke-width:2.38125px;stroke-linejoin:round" />
     <path
        id="path22751"
@@ -67,7 +41,6 @@
          id="path352"
          class="st7"
          d="m 271,259.9 4.2,2.8 c 0.7,0.5 1.5,0.7 2.1,0.6 l 6.9,-0.8 c 0.4,0 0.7,-0.2 0.9,-0.4 l 3.3,-3.5 v 0 c 0.7,-0.7 0.5,-2.2 -0.4,-3.5 l -12.2,-11.8 c -1.1,-1.6 -7.1,-7.6 -8.2,-7.1 -3.6,1.7 -3,9.3 -4,10.4 -0.1,0.1 -0.2,0.3 -0.3,0.5 l -0.3,0.8 c -0.3,0.8 0,2.1 0.9,3.1 l 5.9,7.6 c 0.4,0.5 0.8,0.9 1.3,1.2"
-         sodipodi:nodetypes="ccccccsccccccccc"
          style="fill:#4d194f" />
       <path
          id="path340"
@@ -118,7 +91,6 @@
          id="path19492"
          class="st7"
          d="m 378.1,337.9 c 0.8,-2.4 2.8,-4.4 5.1,-5.4 2.3,-1 5,-1.1 7.5,-0.5 2.5,0.6 4.7,2 6.6,3.6 1.9,1.7 3.5,3.7 4.8,5.9 2.3,3.9 4,8.3 3.7,12.8 -0.1,2.3 -0.8,4.5 -1.9,6.4 -1.2,1.9 -2.9,3.5 -5,4.4 -1.6,0.7 -3.5,1 -5.3,0.8 -4,-4.7 -7.8,-9.5 -11.4,-14.5 -1.4,-2 -2.8,-4.1 -3.7,-6.4 -0.9,-2.3 -1.2,-4.9 -0.4,-7.2 v 0 z"
-         sodipodi:nodetypes="sssccs"
          style="fill:#4d194f" />
     </g>
     <path

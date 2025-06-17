@@ -6,32 +6,10 @@
    fill="none"
    version="1.1"
    id="svg5"
-   sodipodi:docname="proj_smoke.svg"
-   inkscape:version="1.3 (0e150ed, 2023-07-21)"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg">
   <defs
      id="defs5" />
-  <sodipodi:namedview
-     id="namedview5"
-     pagecolor="#ffffff"
-     bordercolor="#000000"
-     borderopacity="0.25"
-     inkscape:showpageshadow="2"
-     inkscape:pageopacity="0.0"
-     inkscape:pagecheckerboard="0"
-     inkscape:deskcolor="#d1d1d1"
-     inkscape:zoom="9.5796274"
-     inkscape:cx="28.706753"
-     inkscape:cy="34.917851"
-     inkscape:window-width="1440"
-     inkscape:window-height="900"
-     inkscape:window-x="0"
-     inkscape:window-y="0"
-     inkscape:window-maximized="0"
-     inkscape:current-layer="svg5" />
   <path
      d="m 38.58951,3.8129181 c -7.54e-4,0.481618 0.189757,0.9437742 0.529585,1.2848537 0.339828,0.3410805 0.801218,0.533094 1.282526,0.5339118 0.238433,3.882e-4 0.474439,-0.04622 0.694727,-0.1371736 C 41.31677,5.403598 41.517065,5.2702661 41.68588,5.101865 41.854744,4.933549 41.9887,4.7336311 42.080303,4.5134289 42.171822,4.2932778 42.21922,4.0572026 42.21953,3.8186817 42.219918,3.5802486 42.173342,3.3441058 42.082515,3.123633 41.991684,2.9031591 41.858309,2.7027779 41.689994,2.5339142 41.521765,2.3650004 41.321797,2.2309573 41.101732,2.1393909 40.881704,2.0476853 40.645815,2.0004116 40.407467,2.0000023 39.926072,1.9992336 39.464053,2.1897835 39.123209,2.529822 38.782315,2.8697723 38.590315,3.3313854 38.58951,3.8129181 Z"
      fill="#373225"
@@ -55,7 +33,6 @@
      stroke-miterlimit="3.99393"
      stroke-linecap="square"
      id="path3-8"
-     sodipodi:nodetypes="ccccccccccc"
      style="fill:#8b7f50;fill-opacity:1;stroke:#1f1c11;stroke-opacity:1" />
   <rect
      style="fill:#8a4c70;fill-opacity:1;stroke:#1f1118;stroke-width:4;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"

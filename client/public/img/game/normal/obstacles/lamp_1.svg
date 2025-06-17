@@ -7,36 +7,11 @@
    viewBox="0 0 44.177796 15.338285"
    version="1.1"
    id="svg1"
-   inkscape:version="1.3.2 (091e20e, 2023-11-25, custom)"
-   sodipodi:docname="lamp.svg"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg">
-  <sodipodi:namedview
-     id="namedview1"
-     pagecolor="#ffffff"
-     bordercolor="#000000"
-     borderopacity="0.25"
-     inkscape:showpageshadow="2"
-     inkscape:pageopacity="0.0"
-     inkscape:pagecheckerboard="0"
-     inkscape:deskcolor="#d1d1d1"
-     inkscape:document-units="mm"
-     inkscape:zoom="0.71713664"
-     inkscape:cx="-127.59075"
-     inkscape:cy="282.37296"
-     inkscape:window-width="1920"
-     inkscape:window-height="1001"
-     inkscape:window-x="-9"
-     inkscape:window-y="-9"
-     inkscape:window-maximized="1"
-     inkscape:current-layer="layer1" />
   <defs
      id="defs1" />
   <g
-     inkscape:label="Στρώση 1"
-     inkscape:groupmode="layer"
      id="layer1"
      transform="translate(-138.7738,-73.951056)">
     <g
@@ -53,8 +28,7 @@
       <path
          style="fill:#666666;fill-opacity:1;stroke:#282828;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
          d="m 3083.939,301.23153 v -3.62323 h 42.1778 v 3.62323 z"
-         id="path13-70-3-3-2-4-9-5-4-1-2-3-5-9-8-5-8-2"
-         sodipodi:nodetypes="ccccc" />
+         id="path13-70-3-3-2-4-9-5-4-1-2-3-5-9-8-5-8-2" />
       <path
          id="rect26-8-6-4-3-5-1-5-2"
          style="fill:#fef6d4;fill-opacity:1;stroke:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
@@ -131,13 +105,11 @@
       <path
          style="fill:#808080;fill-opacity:1;stroke:none;stroke-width:2.29999;stroke-dasharray:none;stroke-opacity:1"
          d="m 3089.2758,301.23153 v -3.62323 h 31.5042 v 3.62323 z"
-         id="path13-70-3-3-2-4-2-4-7-0-9-9-3-5-0-3-5-6-5"
-         sodipodi:nodetypes="ccccc" />
+         id="path13-70-3-3-2-4-2-4-7-0-9-9-3-5-0-3-5-6-5" />
       <path
          style="fill:none;fill-opacity:1;stroke:#161616;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
          d="m 3083.939,301.23153 v -3.62323 h 42.1778 v 3.62323 z"
-         id="path13-70-3-3-2-4-9-5-4-1-2-9-8-1-9-3-4-9-3"
-         sodipodi:nodetypes="ccccc" />
+         id="path13-70-3-3-2-4-9-5-4-1-2-9-8-1-9-3-4-9-3" />
     </g>
   </g>
 </svg>

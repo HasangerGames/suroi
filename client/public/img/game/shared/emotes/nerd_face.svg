@@ -7,46 +7,10 @@
    viewBox="0 0 84 84"
    version="1.1"
    id="svg1"
-   inkscape:version="1.4 (1:1.4+202410161351+e7c3feb100)"
-   sodipodi:docname="nerd_face.svg"
-   inkscape:export-filename="Nerd_Face.png"
-   inkscape:export-xdpi="596"
-   inkscape:export-ydpi="596"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg">
-  <sodipodi:namedview
-     id="namedview1"
-     pagecolor="#ffffff"
-     bordercolor="#000000"
-     borderopacity="0.25"
-     inkscape:showpageshadow="2"
-     inkscape:pageopacity="0.0"
-     inkscape:pagecheckerboard="0"
-     inkscape:deskcolor="#d1d1d1"
-     inkscape:document-units="px"
-     inkscape:zoom="4.0637256"
-     inkscape:cx="38.634498"
-     inkscape:cy="73.085643"
-     inkscape:window-width="2560"
-     inkscape:window-height="1368"
-     inkscape:window-x="0"
-     inkscape:window-y="0"
-     inkscape:window-maximized="1"
-     inkscape:current-layer="layer1"
-     showgrid="false" />
   <defs
      id="defs1">
-    <inkscape:path-effect
-       effect="powerclip"
-       message=""
-       id="path-effect25"
-       is_visible="true"
-       lpeversion="1"
-       inverse="true"
-       flatten="false"
-       hide_clip="false" />
     <clipPath
        clipPathUnits="userSpaceOnUse"
        id="clipPath24">
@@ -69,14 +33,9 @@
     </clipPath>
   </defs>
   <g
-     inkscape:label="Layer 1"
-     inkscape:groupmode="layer"
      id="layer1">
     <g
        id="g3044"
-       inkscape:export-filename="Nerd_Face.png"
-       inkscape:export-xdpi="596"
-       inkscape:export-ydpi="596"
        transform="matrix(0.9034827,0,0,0.9034827,0,4.0537266)">
       <ellipse
          style="fill:#ffc703;fill-opacity:1;stroke:#584d00;stroke-width:3.89138;stroke-linecap:round;stroke-miterlimit:29"
@@ -116,9 +75,7 @@
              d="m 93.962465,16.356429 87.002285,0.174005 c 0,0 4.69812,0.522013 -2.26206,5.046132 0,0 -1.04403,20.010525 -8.70023,22.446589 0,0 -4.69812,4.176109 -19.66252,2.436064 0,0 -12.18032,-2.610069 -12.52833,-18.792493 0,0 -1.74004,18.792493 -14.61638,18.618488 0,0 -16.00842,3.654096 -22.27258,-7.656201 0,0 -1.392039,-0.870023 -3.654099,-17.052447 0,0 -7.134186,-4.002105 -3.306086,-5.220137 z"
              id="path2"
              clip-path="url(#clipPath24)"
-             transform="matrix(1.0109476,0,0,0.99974271,-92.693657,3.9302611)"
-             inkscape:original-d="m 93.962465,16.356429 87.002285,0.174005 c 0,0 4.69812,0.522013 -2.26206,5.046132 0,0 -1.04403,20.010525 -8.70023,22.446589 0,0 -4.69812,4.176109 -19.66252,2.436064 0,0 -12.18032,-2.610069 -12.52833,-18.792493 0,0 -1.74004,18.792493 -14.61638,18.618488 0,0 -16.00842,3.654096 -22.27258,-7.656201 0,0 -1.392039,-0.870023 -3.654099,-17.052447 0,0 -7.134186,-4.002105 -3.306086,-5.220137 z"
-             inkscape:path-effect="#path-effect25" />
+             transform="matrix(1.0109476,0,0,0.99974271,-92.693657,3.9302611)" />
           <g
              id="g22"
              transform="matrix(1.0109476,0,0,0.99974271,-92.681386,4.4593741)"
@@ -138,13 +95,11 @@
             <path
                style="fill:#fefefe;fill-opacity:0.344538;stroke:none;stroke-width:2.306;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:29;stroke-opacity:1"
                d="m 151.73198,23.229609 -5.56815,13.746361 c 0,0 3.39309,4.785125 6.43817,4.872128 l 9.13524,-18.705491 z"
-               id="path31"
-               sodipodi:nodetypes="ccccc" />
+               id="path31" />
             <path
                style="fill:#fefefe;fill-opacity:0.344538;stroke:none;stroke-width:2.306;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:29;stroke-opacity:1"
                d="m 113.10297,22.968602 -7.13419,13.659359 c 0,0 2.87107,4.350114 6.61217,4.611121 l 10.96229,-18.27048 z"
-               id="path32"
-               sodipodi:nodetypes="ccccc" />
+               id="path32" />
           </g>
         </g>
         <g
@@ -158,8 +113,7 @@
             <path
                style="fill:#ffefb6;fill-opacity:1;stroke:#363200;stroke-width:2.31827;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:29;stroke-opacity:1"
                d="m 37.831195,57.770819 c 0,0 -0.615694,7.306309 1.495231,7.915169 2.110906,0.608862 9.147286,1.652621 13.984803,-0.173957 0,0 1.40727,-0.782822 1.319315,-7.741212 z"
-               id="path28"
-               sodipodi:nodetypes="csccc" />
+               id="path28" />
           </g>
           <g
              id="g2967">

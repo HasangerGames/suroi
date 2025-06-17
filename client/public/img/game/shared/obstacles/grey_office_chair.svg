@@ -7,36 +7,11 @@
    viewBox="0 0 40.500034 39.283775"
    version="1.1"
    id="svg1"
-   inkscape:version="1.3.2 (091e20e, 2023-11-25, custom)"
-   sodipodi:docname="grey_office_chair.svg"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg">
-  <sodipodi:namedview
-     id="namedview1"
-     pagecolor="#ffffff"
-     bordercolor="#000000"
-     borderopacity="0.25"
-     inkscape:showpageshadow="2"
-     inkscape:pageopacity="0.0"
-     inkscape:pagecheckerboard="0"
-     inkscape:deskcolor="#d1d1d1"
-     inkscape:document-units="mm"
-     inkscape:zoom="0.70110129"
-     inkscape:cx="688.91615"
-     inkscape:cy="438.59568"
-     inkscape:window-width="1920"
-     inkscape:window-height="1001"
-     inkscape:window-x="-9"
-     inkscape:window-y="-9"
-     inkscape:window-maximized="1"
-     inkscape:current-layer="layer1" />
   <defs
      id="defs1" />
   <g
-     inkscape:label="Στρώση 1"
-     inkscape:groupmode="layer"
      id="layer1"
      transform="translate(77.258347,-32.54373)">
     <g
@@ -152,8 +127,7 @@
           <path
              id="path8172"
              style="fill:#525252;fill-opacity:1;stroke:none;stroke-width:1.5864;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1;stop-color:#000000"
-             d="m 2677.3373,-344.44773 v 1.3689 c 0,0.32048 4.341,0.99737 9.7328,0.99737 h 8.4322 c 5.3919,0 9.5784,-0.6948 9.5784,-0.99534 v -1.37093 z"
-             sodipodi:nodetypes="csssscc" />
+             d="m 2677.3373,-344.44773 v 1.3689 c 0,0.32048 4.341,0.99737 9.7328,0.99737 h 8.4322 c 5.3919,0 9.5784,-0.6948 9.5784,-0.99534 v -1.37093 z" />
         </g>
       </g>
     </g>

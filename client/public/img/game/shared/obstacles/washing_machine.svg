@@ -7,52 +7,20 @@
    viewBox="0 0 48.314912 39.630196"
    version="1.1"
    id="svg6035"
-   inkscape:version="1.3.2 (091e20e, 2023-11-25, custom)"
-   sodipodi:docname="washing_machine.svg"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg">
-  <sodipodi:namedview
-     id="namedview6037"
-     pagecolor="#505050"
-     bordercolor="#ffffff"
-     borderopacity="1"
-     inkscape:pageshadow="0"
-     inkscape:pageopacity="0"
-     inkscape:pagecheckerboard="1"
-     inkscape:document-units="px"
-     showgrid="false"
-     units="px"
-     inkscape:zoom="1.508138"
-     inkscape:cx="-15.913663"
-     inkscape:cy="34.811138"
-     inkscape:window-width="1920"
-     inkscape:window-height="1001"
-     inkscape:window-x="-9"
-     inkscape:window-y="-9"
-     inkscape:window-maximized="1"
-     inkscape:current-layer="layer1"
-     inkscape:showpageshadow="2"
-     inkscape:deskcolor="#d1d1d1" />
   <defs
      id="defs6032" />
   <g
-     inkscape:label="Layer 1"
-     inkscape:groupmode="layer"
      id="layer1"
      transform="translate(-21.166654,-16.933335)">
     <g
        id="g51-1-62"
-       inkscape:export-filename="washing_machine.svg"
-       inkscape:export-xdpi="96"
-       inkscape:export-ydpi="96"
        transform="translate(-745.70119,-418.62178)">
       <path
          id="rect41-4-2-4-25"
          style="fill:#85bde1;fill-opacity:0.608108;stroke:#1b3b4f;stroke-width:1.85208;stroke-linecap:square;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1"
-         d="m 771.61657,468.24435 h 38.81745 v 2.39993 c 0,0 -4.35723,3.61499 -19.40873,3.61499 -15.05149,0 -19.40872,-3.61499 -19.40872,-3.61499 z"
-         sodipodi:nodetypes="ccczcc" />
+         d="m 771.61657,468.24435 h 38.81745 v 2.39993 c 0,0 -4.35723,3.61499 -19.40873,3.61499 -15.05149,0 -19.40872,-3.61499 -19.40872,-3.61499 z" />
       <rect
          style="fill:#4c4c4c;fill-opacity:1;stroke:none;stroke-width:1.69553;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
          id="rect40-0-8-9-9"

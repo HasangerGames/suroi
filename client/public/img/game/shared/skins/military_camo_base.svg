@@ -5,32 +5,8 @@
    height="90"
    viewBox="0 0 89.999996 89.999998"
    id="svg33"
-   sodipodi:docname="military_camo_base.svg"
-   inkscape:version="1.4.2 (1:1.4.2+202505120737+ebf0e940d0)"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg">
-  <sodipodi:namedview
-     id="namedview35"
-     pagecolor="#505050"
-     bordercolor="#ffffff"
-     borderopacity="1"
-     inkscape:pageshadow="0"
-     inkscape:pageopacity="0"
-     inkscape:pagecheckerboard="1"
-     showgrid="false"
-     inkscape:zoom="9.4019872"
-     inkscape:cx="43.714163"
-     inkscape:cy="43.448262"
-     inkscape:window-width="2560"
-     inkscape:window-height="1368"
-     inkscape:window-x="0"
-     inkscape:window-y="0"
-     inkscape:window-maximized="1"
-     inkscape:current-layer="svg33"
-     inkscape:showpageshadow="2"
-     inkscape:deskcolor="#d1d1d1" />
   <defs
      id="defs17" />
   <path
@@ -62,7 +38,6 @@
      stroke-miterlimit="10"
      id="path23"
      style="mix-blend-mode:normal;fill:none;fill-opacity:1;fill-rule:nonzero;stroke-linejoin:miter;stroke-dasharray:none;stroke-dashoffset:0"
-     sodipodi:nodetypes="ssss"
      clip-path="none" />
   <rect
      style="fill:none;stroke:none;stroke-width:1.02967"

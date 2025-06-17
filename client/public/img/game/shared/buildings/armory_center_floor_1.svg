@@ -7,36 +7,12 @@
    viewBox="0 0 183.96096 121.86556"
    version="1.1"
    id="svg1"
-   inkscape:version="1.4 (1:1.4+202410161351+e7c3feb100)"
-   sodipodi:docname="armory_center_floor_1.svg"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg">
-  <sodipodi:namedview
-     id="namedview1"
-     pagecolor="#505050"
-     bordercolor="#ffffff"
-     borderopacity="1"
-     inkscape:showpageshadow="0"
-     inkscape:pageopacity="0"
-     inkscape:pagecheckerboard="1"
-     inkscape:deskcolor="#d1d1d1"
-     inkscape:document-units="px"
-     inkscape:zoom="0.69041244"
-     inkscape:cx="370.06865"
-     inkscape:cy="55.763769"
-     inkscape:window-width="2560"
-     inkscape:window-height="1368"
-     inkscape:window-x="0"
-     inkscape:window-y="0"
-     inkscape:window-maximized="1"
-     inkscape:current-layer="layer1" />
   <defs
      id="defs1">
     <pattern
-       inkscape:collect="always"
        xlink:href="#pattern38"
        preserveAspectRatio="xMidYMid"
        id="pattern2"
@@ -98,8 +74,7 @@
        height="516.94594"
        patternTransform="translate(1788.3221,1142.8606)"
        preserveAspectRatio="xMidYMid"
-       id="pattern38"
-       inkscape:label="pattern38">
+       id="pattern38">
       <rect
          style="fill:#906b32;fill-opacity:1;stroke:#5b441f;stroke-width:3.31;stroke-linecap:round;stroke-dasharray:none;stroke-opacity:1"
          id="rect14"
@@ -263,8 +238,6 @@
     </pattern>
   </defs>
   <g
-     inkscape:label="Layer 1"
-     inkscape:groupmode="layer"
      id="layer1"
      transform="translate(9.1418239,-71.702058)">
     <rect
@@ -323,7 +296,6 @@
        transform="matrix(1.3416753,0,0,1.3416753,-1648.9309,-1518.3106)">
       <g
          id="g20-5-5"
-         inkscape:label="logo"
          transform="matrix(1.4389717,0,0,1.4389717,1199.2663,1228.055)"
          style="opacity:0.5;stroke:#3f2e16;stroke-opacity:1">
         <g
@@ -336,8 +308,7 @@
             <path
                style="fill:none;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:3.17684;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
                d="M 92.102278,11.890069 C 89.711086,43.573921 81.6776,46.329183 74.04956,51.451508 66.421579,46.440912 58.387731,43.573921 55.996484,11.890069 62.300343,11.475486 68.678954,11.211498 74.04956,7.0851788 79.420076,11.121821 85.798489,11.475486 92.102278,11.890069 Z"
-               id="path19-9-2"
-               sodipodi:nodetypes="ccccc" />
+               id="path19-9-2" />
             <path
                id="rect6-1-4"
                style="fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"

@@ -7,72 +7,18 @@
    viewBox="0 0 62.938475 39.149363"
    version="1.1"
    id="svg1"
-   inkscape:version="1.3.2 (1:1.3.2+202404261509+091e20ef0f)"
-   sodipodi:docname="bathtub_residue.svg"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg">
-  <sodipodi:namedview
-     id="namedview1"
-     pagecolor="#505050"
-     bordercolor="#ffffff"
-     borderopacity="1"
-     inkscape:showpageshadow="0"
-     inkscape:pageopacity="0"
-     inkscape:pagecheckerboard="1"
-     inkscape:deskcolor="#505050"
-     inkscape:document-units="px"
-     inkscape:zoom="2.9505835"
-     inkscape:cx="36.941846"
-     inkscape:cy="66.596997"
-     inkscape:window-width="2560"
-     inkscape:window-height="1368"
-     inkscape:window-x="0"
-     inkscape:window-y="0"
-     inkscape:window-maximized="1"
-     inkscape:current-layer="layer1" />
   <defs
-     id="defs1">
-    <inkscape:path-effect
-       effect="spiro"
-       id="path-effect10"
-       is_visible="true"
-       lpeversion="1" />
-    <inkscape:path-effect
-       effect="spiro"
-       id="path-effect5"
-       is_visible="true"
-       lpeversion="1" />
-    <inkscape:path-effect
-       effect="spiro"
-       id="path-effect6"
-       is_visible="true"
-       lpeversion="1" />
-    <inkscape:path-effect
-       effect="spiro"
-       id="path-effect8"
-       is_visible="true"
-       lpeversion="1" />
-    <inkscape:path-effect
-       effect="spiro"
-       id="path-effect9"
-       is_visible="true"
-       lpeversion="1" />
-  </defs>
+     id="defs1" />
   <g
-     inkscape:label="Layer 1"
-     inkscape:groupmode="layer"
      id="layer1"
      transform="translate(-126.10915,-155.12696)">
     <path
        style="opacity:0.599918;fill:#5081d7;fill-opacity:1;stroke:#2354b3;stroke-width:0.529167;stroke-linecap:square;stroke-opacity:1"
        d="m 146.68993,128.6762 c 0.96685,1.5426 2.33284,2.80051 3.80666,3.86927 1.47383,1.06875 3.06447,1.96363 4.61601,2.91606 1.55154,0.95243 3.07746,1.97292 4.37128,3.25371 1.29382,1.28079 2.35335,2.844 2.81084,4.60613 0.4698,1.80953 0.27644,3.76769 -0.44596,5.492 -0.72241,1.72431 -1.95821,3.21513 -3.45948,4.32927 -3.00254,2.22828 -6.93994,2.90017 -10.66472,2.57395 -7.44957,-0.65243 -14.14491,-4.92412 -21.5307,-6.09539 -1.19171,-0.18899 -2.39508,-0.29594 -3.58839,-0.4746 -3.71928,-0.55684 -7.38338,-1.84514 -10.37001,-4.13056 -2.98664,-2.28542 -5.24802,-5.62787 -5.81804,-9.34515 -0.28502,-1.85865 -0.14514,-3.78801 0.46136,-5.56788 0.60651,-1.77986 1.68442,-3.40476 3.12675,-4.61119 1.44233,-1.20642 3.24933,-1.98427 5.12282,-2.14491 1.87349,-0.16064 3.80437,0.30644 5.36607,1.35375 1.39111,0.93291 2.44707,2.27346 3.63455,3.45473 0.59374,0.59064 1.22795,1.14741 1.94225,1.58462 0.7143,0.43721 1.51386,0.75277 2.34748,0.83307 1.42662,0.13742 2.84553,-0.42347 4.0274,-1.23422 1.18187,-0.81075 2.1725,-1.86358 3.20552,-2.85706 1.03302,-0.99348 2.14186,-1.95048 3.46314,-2.50577 0.66064,-0.27765 1.36995,-0.45013 2.08649,-0.46023 0.71654,-0.0101 1.44048,0.146 2.06839,0.49134 0.85717,0.47144 1.49284,1.26494 1.99803,2.10266 0.50519,0.83773 0.90273,1.73749 1.42226,2.5664 z"
        id="path9"
-       inkscape:path-effect="#path-effect10"
-       inkscape:original-d="m 146.68993,128.6762 c 7.23698,-3.03987 10.4032,9.76345 15.60479,14.64517 5.20159,4.88172 -24.06724,4.19989 -36.10086,6.29983 -12.03362,2.09994 -2.39226,-0.3164 -3.58839,-0.4746 -1.19614,-0.1582 -1.40737,-16.29729 -2.11105,-24.44594 -0.70369,-8.14865 5.28285,3.91495 7.92428,5.87242 2.64143,1.95748 9.90063,-4.37729 14.85094,-6.56594 12.4385,-5.49935 -46.243869,25.53043 3.42029,4.66906 z"
-       transform="translate(22.005727,37.936932)"
-       sodipodi:nodetypes="csssccsc" />
+       transform="translate(22.005727,37.936932)" />
     <path
        fill="#000000"
        fill-opacity="0"
@@ -192,8 +138,6 @@
        cy="36.815063"
        rx="3.3597858"
        ry="2.0764618"
-       transform="rotate(34.531069)"
-       inkscape:transform-center-x="-0.30958132"
-       inkscape:transform-center-y="-1.0127563" />
+       transform="rotate(34.531069)" />
   </g>
 </svg>

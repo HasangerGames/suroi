@@ -7,39 +7,12 @@
    viewBox="0 0 33.072915 33.072919"
    version="1.1"
    id="svg5"
-   inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
-   sodipodi:docname="loot_background_melee.svg"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg">
-  <sodipodi:namedview
-     id="namedview7"
-     pagecolor="#505050"
-     bordercolor="#ffffff"
-     borderopacity="1"
-     inkscape:pageshadow="0"
-     inkscape:pageopacity="0"
-     inkscape:pagecheckerboard="1"
-     inkscape:document-units="px"
-     showgrid="false"
-     units="px"
-     inkscape:zoom="2.0000001"
-     inkscape:cx="35.499998"
-     inkscape:cy="64.499997"
-     inkscape:window-width="2560"
-     inkscape:window-height="1372"
-     inkscape:window-x="0"
-     inkscape:window-y="0"
-     inkscape:window-maximized="1"
-     inkscape:current-layer="layer1"
-     inkscape:showpageshadow="2"
-     inkscape:deskcolor="#505050" />
   <defs
      id="defs2">
     <linearGradient
-       inkscape:collect="always"
        id="linearGradient1390">
       <stop
          style="stop-color:#e3e3e3;stop-opacity:0.80087042"
@@ -51,7 +24,6 @@
          id="stop1388" />
     </linearGradient>
     <radialGradient
-       inkscape:collect="always"
        xlink:href="#linearGradient1390"
        id="radialGradient954"
        cx="-34.420925"
@@ -63,8 +35,6 @@
        gradientTransform="matrix(1.0000094,0,0,1.0000094,63.919288,13.301593)" />
   </defs>
   <g
-     inkscape:label="Layer 1"
-     inkscape:groupmode="layer"
      id="layer1"
      transform="translate(-12.961579,12.599478)">
     <circle

@@ -6,37 +6,14 @@
    fill="none"
    version="1.1"
    id="svg1"
-   sodipodi:docname="hatchet_killfeed.svg"
-   inkscape:version="1.4 (e7c3feb1, 2024-10-09)"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg">
   <defs
      id="defs1" />
-  <sodipodi:namedview
-     id="namedview1"
-     pagecolor="#ffffff"
-     bordercolor="#000000"
-     borderopacity="0.25"
-     inkscape:showpageshadow="2"
-     inkscape:pageopacity="0.0"
-     inkscape:pagecheckerboard="0"
-     inkscape:deskcolor="#d1d1d1"
-     inkscape:zoom="7.8586965"
-     inkscape:cx="15.778698"
-     inkscape:cy="4.8990313"
-     inkscape:window-width="1472"
-     inkscape:window-height="812"
-     inkscape:window-x="0"
-     inkscape:window-y="37"
-     inkscape:window-maximized="1"
-     inkscape:current-layer="svg1" />
   <path
      d="m 17.966028,8.0780776 3.231721,2.5100994 -1.214397,-3.2909334 2.936081,-0.560167 -5.293305,-2.1576564 c -0.351467,1.012582 -1.770684,1.590946 -2.613316,0.6477677 l -2.521961,4.5828047 3.324976,-2.044042 1.403667,3.8454864 z"
      fill="#d9d9d9"
      id="path1"
-     sodipodi:nodetypes="cccccccccc"
      style="stroke-width:0.889791" />
   <g
      id="g182-6-2"
@@ -45,17 +22,14 @@
     <path
        id="rect164-7-2"
        style="fill:#d9d9d9;fill-opacity:1;stroke:#d9d9d9;stroke-width:1.1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:5;stroke-opacity:1;paint-order:fill markers stroke"
-       d="m 934.5155,-352.09793 c 0,0 0.30491,1.65845 -0.54092,3.6813 -0.84584,2.02285 -0.29799,16.26452 -0.62839,23.5401 -0.33844,5.5774 -1.05971,8.69962 -1.05971,8.69962 0,0 -0.58302,-0.0164 -1.60866,-1.042 -1.02563,-1.02563 -1.10689,-1.90464 -1.10689,-1.90464 0,0 1.15237,-2.41949 1.5201,-5.54861 0.36773,-3.12911 0.0935,-27.42577 0.0935,-27.42577 z"
-       sodipodi:nodetypes="czzczczcc" />
+       d="m 934.5155,-352.09793 c 0,0 0.30491,1.65845 -0.54092,3.6813 -0.84584,2.02285 -0.29799,16.26452 -0.62839,23.5401 -0.33844,5.5774 -1.05971,8.69962 -1.05971,8.69962 0,0 -0.58302,-0.0164 -1.60866,-1.042 -1.02563,-1.02563 -1.10689,-1.90464 -1.10689,-1.90464 0,0 1.15237,-2.41949 1.5201,-5.54861 0.36773,-3.12911 0.0935,-27.42577 0.0935,-27.42577 z" />
     <path
        id="rect165-7-4"
        style="fill:#d9d9d9;fill-opacity:1;stroke:#d9d9d9;stroke-width:1.1;stroke-linecap:round;stroke-miterlimit:5;stroke-opacity:1;paint-order:fill markers stroke"
-       d="m 930.16205,-356.69534 h 6.32514 v 4.79556 l -6.32514,-2.1e-4 -3.41746,0.73611 c 0,0 -0.79996,-1.4985 -0.79999,-3.13368 -3e-5,-1.63518 0.79999,-3.13389 0.79999,-3.13389 z"
-       sodipodi:nodetypes="ccccczcc" />
+       d="m 930.16205,-356.69534 h 6.32514 v 4.79556 l -6.32514,-2.1e-4 -3.41746,0.73611 c 0,0 -0.79996,-1.4985 -0.79999,-3.13368 -3e-5,-1.63518 0.79999,-3.13389 0.79999,-3.13389 z" />
     <path
        id="rect153-6-9-6"
        style="fill:#d9d9d9;fill-opacity:1;stroke:#d9d9d9;stroke-width:0.911052;stroke-linecap:square;stroke-miterlimit:5;stroke-opacity:1;paint-order:fill markers stroke"
-       d="m 928.03391,-356.60654 -0.97355,-0.19844 c 0,0 -0.5538,0.63629 -0.5538,2.47092 0,1.83463 0.57861,2.53928 0.57861,2.53928 l 0.89913,-0.19017 c 0,0 -0.44693,-0.46502 -0.44693,-2.34911 0,-1.88409 0.49654,-2.27248 0.49654,-2.27248 z"
-       sodipodi:nodetypes="cczcczc" />
+       d="m 928.03391,-356.60654 -0.97355,-0.19844 c 0,0 -0.5538,0.63629 -0.5538,2.47092 0,1.83463 0.57861,2.53928 0.57861,2.53928 l 0.89913,-0.19017 c 0,0 -0.44693,-0.46502 -0.44693,-2.34911 0,-1.88409 0.49654,-2.27248 0.49654,-2.27248 z" />
   </g>
 </svg>

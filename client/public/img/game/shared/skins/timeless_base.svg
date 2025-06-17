@@ -5,10 +5,6 @@
    viewBox="0 0 23.8125 23.8125"
    version="1.1"
    id="svg8"
-   sodipodi:docname="timeless_base.svg"
-   inkscape:version="1.3.2 (091e20e, 2023-11-25, custom)"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
@@ -16,33 +12,6 @@
    xmlns:dc="http://purl.org/dc/elements/1.1/">
   <defs
      id="defs2" />
-  <sodipodi:namedview
-     id="base"
-     pagecolor="#505050"
-     bordercolor="#666666"
-     borderopacity="1.0"
-     inkscape:pageopacity="0"
-     inkscape:pageshadow="2"
-     inkscape:zoom="6.1094026"
-     inkscape:cx="39.938438"
-     inkscape:cy="55.733764"
-     inkscape:document-units="px"
-     inkscape:current-layer="layer1"
-     inkscape:document-rotation="0"
-     showgrid="false"
-     inkscape:window-width="1920"
-     inkscape:window-height="1001"
-     inkscape:window-x="-9"
-     inkscape:window-y="-9"
-     inkscape:window-maximized="1"
-     fit-margin-top="0"
-     fit-margin-left="0"
-     fit-margin-right="0"
-     fit-margin-bottom="0"
-     inkscape:pagecheckerboard="1"
-     units="px"
-     inkscape:showpageshadow="2"
-     inkscape:deskcolor="#d1d1d1" />
   <metadata
      id="metadata5">
     <rdf:RDF>
@@ -55,8 +24,6 @@
     </rdf:RDF>
   </metadata>
   <g
-     inkscape:label="Layer 1"
-     inkscape:groupmode="layer"
      id="layer1"
      transform="translate(-84.253693,-147.08173)">
     <g
@@ -94,8 +61,7 @@
     <path
        id="path10"
        style="fill:#1a1a1a;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.132292;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
-       d="m 96.159943,147.08173 c -1.117705,0 -2.197878,0.15749 -3.223576,0.44545 l -0.982886,3.05925 1.297783,2.4236 -0.152445,1.52445 1.067118,-2.51561 -0.254001,-0.6583 1.058421,-0.30215 1.176311,0.96327 -0.765192,-1.68019 -1.911272,-0.16014 0.967574,-1.38876 c 0,0 0.989287,-0.9902 1.916468,-1.7062 -0.0649,-0.001 -0.129159,-0.005 -0.194303,-0.005 z"
-       sodipodi:nodetypes="sccccccccccccss" />
+       d="m 96.159943,147.08173 c -1.117705,0 -2.197878,0.15749 -3.223576,0.44545 l -0.982886,3.05925 1.297783,2.4236 -0.152445,1.52445 1.067118,-2.51561 -0.254001,-0.6583 1.058421,-0.30215 1.176311,0.96327 -0.765192,-1.68019 -1.911272,-0.16014 0.967574,-1.38876 c 0,0 0.989287,-0.9902 1.916468,-1.7062 -0.0649,-0.001 -0.129159,-0.005 -0.194303,-0.005 z" />
     <path
        id="path10-7"
        style="fill:#1a1a1a;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.132292;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"

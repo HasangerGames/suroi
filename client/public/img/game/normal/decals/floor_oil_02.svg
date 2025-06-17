@@ -7,47 +7,20 @@
    viewBox="0 0 65.069195 83.862823"
    version="1.1"
    id="svg1"
-   inkscape:version="1.3.2 (1:1.3.2+202311252150+091e20ef0f)"
-   sodipodi:docname="floor_oil_02.svg"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg">
-  <sodipodi:namedview
-     id="namedview1"
-     pagecolor="#505050"
-     bordercolor="#eeeeee"
-     borderopacity="1"
-     inkscape:showpageshadow="0"
-     inkscape:pageopacity="0"
-     inkscape:pagecheckerboard="0"
-     inkscape:deskcolor="#505050"
-     inkscape:document-units="mm"
-     inkscape:zoom="2.9683221"
-     inkscape:cx="42.95356"
-     inkscape:cy="179.05739"
-     inkscape:window-width="2560"
-     inkscape:window-height="1368"
-     inkscape:window-x="0"
-     inkscape:window-y="0"
-     inkscape:window-maximized="1"
-     inkscape:current-layer="layer1" />
   <defs
      id="defs1" />
   <g
-     inkscape:label="Calque 1"
-     inkscape:groupmode="layer"
      id="layer1"
      transform="translate(-79.850597,-102.55432)">
     <path
        style="fill:#454545;fill-opacity:0.87583333;stroke:none;stroke-width:2.559;stroke-linecap:square;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1;paint-order:fill markers stroke;stop-color:#000000"
        d="m 96.6027,177.88762 c -7.491857,-4.14761 -18.420648,-6.09955 -16.537578,-18.47613 2.046447,-13.45038 0.590217,-27.70383 5.680754,-40.41048 2.698682,-6.73626 7.906933,-15.22961 16.430234,-13.75309 3.77788,0.65446 5.71012,-0.96415 7.78414,-1.46258 6.4719,-1.55533 17.78644,-3.44656 17.8004,6.85678 0.0108,7.95208 6.01149,15.17775 3.45836,23.36708 -2.44028,7.82736 -11.7776,9.35176 -16.82115,15.05695 -6.26987,7.09239 5.46034,12.28256 8.71796,17.74654 3.07003,5.14933 8.25477,16.59461 0.11354,18.86345 -8.39758,2.34028 -16.23209,-1.17903 -22.73562,-6.12986 -1.122097,-0.8542 -2.621465,-0.9558 -3.89104,-1.65866 z"
-       id="path27543"
-       sodipodi:nodetypes="ssssssssssss" />
+       id="path27543" />
     <path
        style="fill:#454545;fill-opacity:0.87583333;stroke:none;stroke-width:2.559;stroke-linecap:square;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1;paint-order:fill markers stroke;stop-color:#000000"
        d="m 134.809,161.19456 c -3.0089,-0.066 -6.07508,-1.87013 -7.27839,-4.72945 -0.63213,-1.50208 -0.64518,-3.39189 0.484,-4.65543 0.53146,-0.5947 1.38341,-0.69941 2.04889,-1.13238 1.27144,-0.82722 1.94391,-2.56341 3.50285,-2.95668 1.02659,-0.25897 2.04797,0.2112 3.02766,0.47796 1.84631,0.50274 3.73919,0.9593 5.68827,0.71365 1.51205,-0.19057 2.56992,1.51893 2.63504,2.9242 0.0434,0.93727 -0.48685,1.85072 -1.40575,2.19524 -1.52851,0.57308 -3.40279,0.20453 -4.71423,1.15073 -1.52348,1.09919 -0.761,3.7521 -2.22685,5.05128 -0.50153,0.44451 -1.06189,0.97623 -1.76149,0.96088 z"
-       id="path27545"
-       sodipodi:nodetypes="ssssssssssss" />
+       id="path27545" />
   </g>
 </svg>

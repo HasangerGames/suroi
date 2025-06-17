@@ -7,142 +7,11 @@
    viewBox="0 0 34.852534 37.637081"
    version="1.1"
    id="svg1"
-   inkscape:version="1.3 (0e150ed, 2023-07-21)"
-   sodipodi:docname="grenade_crate_snow_3.svg"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg">
-  <sodipodi:namedview
-     id="namedview1"
-     pagecolor="#505050"
-     bordercolor="#ffffff"
-     borderopacity="1"
-     inkscape:showpageshadow="0"
-     inkscape:pageopacity="0"
-     inkscape:pagecheckerboard="1"
-     inkscape:deskcolor="#505050"
-     inkscape:document-units="px"
-     inkscape:zoom="1.6692872"
-     inkscape:cx="42.233596"
-     inkscape:cy="29.353847"
-     inkscape:window-width="1440"
-     inkscape:window-height="847"
-     inkscape:window-x="0"
-     inkscape:window-y="25"
-     inkscape:window-maximized="0"
-     inkscape:current-layer="layer1" />
   <defs
-     id="defs1">
-    <inkscape:path-effect
-       effect="spiro"
-       id="path-effect5-3"
-       is_visible="true"
-       lpeversion="1" />
-    <inkscape:path-effect
-       effect="spiro"
-       id="path-effect5-3-2"
-       is_visible="true"
-       lpeversion="1" />
-    <inkscape:path-effect
-       effect="spiro"
-       id="path-effect7-2"
-       is_visible="true"
-       lpeversion="1" />
-    <inkscape:path-effect
-       effect="spiro"
-       id="path-effect4-1"
-       is_visible="true"
-       lpeversion="1" />
-    <inkscape:path-effect
-       effect="spiro"
-       id="path-effect4-1-7"
-       is_visible="true"
-       lpeversion="1" />
-    <inkscape:path-effect
-       effect="spiro"
-       id="path-effect8-2"
-       is_visible="true"
-       lpeversion="1" />
-    <inkscape:path-effect
-       effect="spiro"
-       id="path-effect8-2-6"
-       is_visible="true"
-       lpeversion="1" />
-    <inkscape:path-effect
-       effect="spiro"
-       id="path-effect5-3-1"
-       is_visible="true"
-       lpeversion="1" />
-    <inkscape:path-effect
-       effect="spiro"
-       id="path-effect5-3-2-5"
-       is_visible="true"
-       lpeversion="1" />
-    <inkscape:path-effect
-       effect="spiro"
-       id="path-effect7-2-6"
-       is_visible="true"
-       lpeversion="1" />
-    <inkscape:path-effect
-       effect="spiro"
-       id="path-effect4-1-4"
-       is_visible="true"
-       lpeversion="1" />
-    <inkscape:path-effect
-       effect="spiro"
-       id="path-effect4-1-7-2"
-       is_visible="true"
-       lpeversion="1" />
-    <inkscape:path-effect
-       effect="spiro"
-       id="path-effect8-2-5"
-       is_visible="true"
-       lpeversion="1" />
-    <inkscape:path-effect
-       effect="spiro"
-       id="path-effect8-2-6-6"
-       is_visible="true"
-       lpeversion="1" />
-    <inkscape:path-effect
-       effect="spiro"
-       id="path-effect5-3-6"
-       is_visible="true"
-       lpeversion="1" />
-    <inkscape:path-effect
-       effect="spiro"
-       id="path-effect5-3-2-8"
-       is_visible="true"
-       lpeversion="1" />
-    <inkscape:path-effect
-       effect="spiro"
-       id="path-effect7-2-8"
-       is_visible="true"
-       lpeversion="1" />
-    <inkscape:path-effect
-       effect="spiro"
-       id="path-effect4-1-43"
-       is_visible="true"
-       lpeversion="1" />
-    <inkscape:path-effect
-       effect="spiro"
-       id="path-effect4-1-7-1"
-       is_visible="true"
-       lpeversion="1" />
-    <inkscape:path-effect
-       effect="spiro"
-       id="path-effect8-2-4"
-       is_visible="true"
-       lpeversion="1" />
-    <inkscape:path-effect
-       effect="spiro"
-       id="path-effect8-2-6-9"
-       is_visible="true"
-       lpeversion="1" />
-  </defs>
+     id="defs1" />
   <g
-     inkscape:label="Layer 1"
-     inkscape:groupmode="layer"
      id="layer1"
      transform="translate(-20.514808,-18.491155)">
     <g
@@ -273,8 +142,7 @@
       <path
          style="fill:#ababab;fill-opacity:1;fill-rule:evenodd;stroke:#4c4823;stroke-width:0;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
          d="m 63.563131,64.063301 -1.654975,0.95183 -1.351299,3.488952 1.779431,8.806196 -2.814957,0.461708 -2.185573,-10.418181 2.804322,-5.756695 -0.309564,-2.270798 4.137444,-2.37959 2.200421,1.993145 v 0.789443 l 1.578839,1.836424 z"
-         id="path23"
-         sodipodi:nodetypes="ccccccccccccc" />
+         id="path23" />
       <ellipse
          style="fill:#ababab;fill-opacity:1;fill-rule:evenodd;stroke:#4c4823;stroke-width:0;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
          id="circle23"
@@ -307,13 +175,11 @@
     <path
        style="fill:#c9d1d9;stroke:#a2a5c0;stroke-width:1.05833;stroke-linecap:round;stroke-linejoin:round"
        d="m 25.278599,23.126195 c 0.740044,1.664828 2.640085,2.807049 4.313162,3.47628 1.709126,0.68365 6.933632,0.685346 6.630681,3.411904 -0.328736,2.958628 -5.56066,1.759373 -7.016935,3.798157 -0.970743,1.933228 -2.715926,9.732493 -6.50193,8.175695 -1.207375,-2.41475 0.321877,-5.842015 0.321877,-8.433197 0,-2.712123 -2.16733,-11.691832 2.253145,-10.428839 z"
-       id="path1"
-       sodipodi:nodetypes="csssssc" />
+       id="path1" />
     <path
        style="fill:#c9d1d9;stroke:#a2a5c0;stroke-width:1.05833;stroke-linecap:round;stroke-linejoin:round"
        d="m 44.140635,45.593262 c 1.444443,-0.866666 5.783692,-3.288207 7.596316,-2.381895 1.865712,0.932856 1.054266,6.854946 -1.609389,7.853817 -4.616508,1.731189 -10.569272,0.445658 -15.257006,-0.257504 -1.847626,-0.277143 -4.051011,-1.099031 -3.47628,-1.673762 2.760974,-2.760976 8.65581,-1.086326 12.746359,-3.540656 z"
-       id="path4"
-       sodipodi:nodetypes="ssssss" />
+       id="path4" />
     <path
        style="fill:#c9d1d9;stroke:#a2a5c0;stroke-width:1.05833;stroke-linecap:round;stroke-linejoin:round"
        d="M 54.170795,35.562548 V 21.495225 h -9.48181 c -4.062412,6.085005 0.934794,3.638855 2.863973,6.532623 0.869433,1.30415 0.02253,3.100011 0.435905,4.477938 0.702495,2.34165 4.170594,3.879441 6.181932,3.056762 z"

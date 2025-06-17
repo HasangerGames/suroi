@@ -7,36 +7,12 @@
    viewBox="0 0 29.373049 29.373049"
    version="1.1"
    id="svg1"
-   inkscape:version="1.3.2 (091e20e, 2023-11-25, custom)"
-   sodipodi:docname="σχεδίαση.svg"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg">
-  <sodipodi:namedview
-     id="namedview1"
-     pagecolor="#ffffff"
-     bordercolor="#000000"
-     borderopacity="0.25"
-     inkscape:showpageshadow="2"
-     inkscape:pageopacity="0.0"
-     inkscape:pagecheckerboard="true"
-     inkscape:deskcolor="#d1d1d1"
-     inkscape:document-units="mm"
-     inkscape:zoom="1.4022026"
-     inkscape:cx="166.88031"
-     inkscape:cy="216.44519"
-     inkscape:window-width="1920"
-     inkscape:window-height="1001"
-     inkscape:window-x="-9"
-     inkscape:window-y="-9"
-     inkscape:window-maximized="1"
-     inkscape:current-layer="layer1" />
   <defs
      id="defs1">
     <filter
-       inkscape:collect="always"
        style="color-interpolation-filters:sRGB"
        id="filter60293-0-5-0-7-0"
        x="-0.02886773"
@@ -44,12 +20,10 @@
        width="1.0577355"
        height="1.0732713">
       <feGaussianBlur
-         inkscape:collect="always"
          stdDeviation="0.10869224"
          id="feGaussianBlur60295-5-3-5-4-4" />
     </filter>
     <filter
-       inkscape:collect="always"
        style="color-interpolation-filters:sRGB"
        id="filter60297-9-5-8-6-3"
        x="-0.041644538"
@@ -57,12 +31,10 @@
        width="1.0832891"
        height="1.0674398">
       <feGaussianBlur
-         inkscape:collect="always"
          stdDeviation="0.10869224"
          id="feGaussianBlur60299-6-5-0-5-2" />
     </filter>
     <filter
-       inkscape:collect="always"
        style="color-interpolation-filters:sRGB"
        id="filter88103-1-5"
        x="-0.09257827"
@@ -70,12 +42,10 @@
        width="1.1923235"
        height="1.2061528">
       <feGaussianBlur
-         inkscape:collect="always"
          stdDeviation="0.04932925"
          id="feGaussianBlur88105-9-3" />
     </filter>
     <filter
-       inkscape:collect="always"
        style="color-interpolation-filters:sRGB"
        id="filter88470-3-8"
        x="-0.1062238"
@@ -83,12 +53,10 @@
        width="1.2124476"
        height="1.1145642">
       <feGaussianBlur
-         inkscape:collect="always"
          stdDeviation="0.053693813"
          id="feGaussianBlur88472-0-4" />
     </filter>
     <linearGradient
-       inkscape:collect="always"
        xlink:href="#linearGradient25596"
        id="linearGradient109528"
        gradientUnits="userSpaceOnUse"
@@ -98,7 +66,6 @@
        x2="71.962891"
        y2="38.242188" />
     <linearGradient
-       inkscape:collect="always"
        id="linearGradient25596">
       <stop
          style="stop-color:#ff8f1b;stop-opacity:1;"
@@ -111,15 +78,11 @@
     </linearGradient>
   </defs>
   <g
-     inkscape:label="Στρώση 1"
-     inkscape:groupmode="layer"
      id="layer1"
      transform="translate(-39.34223,-67.644347)">
     <g
        id="g23170"
        transform="matrix(-0.84469488,0,0,-0.84469488,16764.02,-1604.8886)"
-       inkscape:transform-center-x="-0.89284631"
-       inkscape:transform-center-y="43.822987"
        style="stroke-width:1.18386">
       <g
          id="g23136"

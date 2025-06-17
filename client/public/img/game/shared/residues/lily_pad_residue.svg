@@ -5,32 +5,10 @@
    height="106.66218"
    viewBox="0 0 95.167833 106.66218"
    id="svg11"
-   sodipodi:docname="lily_pad_residue.svg"
-   inkscape:version="1.3.2 (1:1.3.2+202404261509+091e20ef0f)"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg">
   <defs
      id="defs11" />
-  <sodipodi:namedview
-     id="namedview11"
-     pagecolor="#505050"
-     bordercolor="#ffffff"
-     borderopacity="1"
-     inkscape:showpageshadow="0"
-     inkscape:pageopacity="0"
-     inkscape:pagecheckerboard="1"
-     inkscape:deskcolor="#505050"
-     inkscape:zoom="5.7606236"
-     inkscape:cx="37.669533"
-     inkscape:cy="37.06196"
-     inkscape:window-width="2560"
-     inkscape:window-height="1368"
-     inkscape:window-x="0"
-     inkscape:window-y="0"
-     inkscape:window-maximized="1"
-     inkscape:current-layer="g11" />
   <g
      transform="matrix(2.0541976,0,0,2.0600409,-608.96142,-317.70137)"
      id="g11"
@@ -91,8 +69,7 @@
          fill="#6bb02f"
          stroke="#526124"
          stroke-width="0"
-         id="path8"
-         sodipodi:nodetypes="cssscscc" />
+         id="path8" />
       <path
          d="m 321.54109,173.47412 c -6.67436,-4.21164 -10.76224,-16.84376 -3.26231,-18.18893 7.49992,-1.34517 21.23558,3.84926 23.16718,14.61885 1.9316,10.76959 -13.23049,7.78172 -19.90486,3.57008 z"
          fill="none"

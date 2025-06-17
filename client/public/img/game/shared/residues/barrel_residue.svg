@@ -5,34 +5,12 @@
    width="175"
    version="1.1"
    id="svg9"
-   sodipodi:docname="barrel_residue.svg"
-   inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg">
   <path
      id="rect931"
      style="fill:#505050;fill-opacity:1;stroke:#282828;stroke-width:2.5;stroke-linejoin:round;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none"
      d="m 135.69079,120.73924 0.75683,8.94138 -3.10936,1.85288 2.22236,4.46624 -5.18349,1.39723 1.83919,6.65845 -4.09188,0.89615 -0.28219,4.73315 4.72538,-2.974 1.97094,2.85408 4.07555,-0.3099 0.62936,4.45072 0.299,0.0974 4.18259,-2.51193 2.13494,3.88317 1.046,1.02669 0.0817,0.0266 0.31817,-3.55058 4.07023,4.97966 0.676,0.22014 2.47151,-0.84663 -2.76307,-4.23768 6.29323,-3.11456 -1.70013,-4.95348 3.88917,-4.20967 -3.92746,-2.56072 5.95295,-1.1487 0.32658,-1.00285 -0.45908,-1.80714 0.24915,-3.97568 -2.68167,-0.15434 -1.94824,1.13206 -2.47736,2.58659 0.24604,-5.40427 -2.44642,-1.32457 -5.1348,4.59074 0.81863,-6.38041 -6.02908,2.37279 0.29009,-3.32557 -3.17385,-1.658 -2.04801,2.68737 z" />
-  <sodipodi:namedview
-     id="namedview8"
-     pagecolor="#505050"
-     bordercolor="#ffffff"
-     borderopacity="1"
-     inkscape:pageshadow="0"
-     inkscape:pageopacity="0"
-     inkscape:pagecheckerboard="1"
-     showgrid="false"
-     inkscape:zoom="1.584873"
-     inkscape:cx="186.13479"
-     inkscape:cy="48.584336"
-     inkscape:window-width="2560"
-     inkscape:window-height="1372"
-     inkscape:window-x="0"
-     inkscape:window-y="0"
-     inkscape:window-maximized="1"
-     inkscape:current-layer="svg9" />
   <defs
      id="defs13" />
   <radialGradient

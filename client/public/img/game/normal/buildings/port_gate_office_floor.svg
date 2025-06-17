@@ -7,36 +7,12 @@
    viewBox="0 0 260.87406 150.23728"
    version="1.1"
    id="svg1"
-   inkscape:version="1.3.2 (091e20e, 2023-11-25, custom)"
-   sodipodi:docname="port_gate_office_floor.svg"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg">
-  <sodipodi:namedview
-     id="namedview1"
-     pagecolor="#ffffff"
-     bordercolor="#000000"
-     borderopacity="0.25"
-     inkscape:showpageshadow="2"
-     inkscape:pageopacity="0.0"
-     inkscape:pagecheckerboard="0"
-     inkscape:deskcolor="#d1d1d1"
-     inkscape:document-units="mm"
-     inkscape:zoom="0.71713664"
-     inkscape:cx="179.18482"
-     inkscape:cy="395.32215"
-     inkscape:window-width="1920"
-     inkscape:window-height="1001"
-     inkscape:window-x="-9"
-     inkscape:window-y="-9"
-     inkscape:window-maximized="1"
-     inkscape:current-layer="layer1" />
   <defs
      id="defs1">
     <pattern
-       inkscape:collect="always"
        xlink:href="#pattern30-5"
        preserveAspectRatio="xMidYMid"
        id="pattern65"
@@ -49,13 +25,11 @@
        height="182.91212"
        patternTransform="translate(244.99999,643.99997)"
        preserveAspectRatio="xMidYMid"
-       id="pattern30-5"
-       inkscape:label="pattern30">
+       id="pattern30-5">
       <path
          id="rect75879-2"
          style="fill:#543d2b;fill-opacity:1;stroke-width:5.1292;paint-order:markers stroke fill"
-         d="M 0,0 V 182.91212 H 338.12698 V 0 Z"
-         sodipodi:nodetypes="ccccc" />
+         d="M 0,0 V 182.91212 H 338.12698 V 0 Z" />
       <rect
          style="fill:#644c33;fill-opacity:1;stroke-width:1.54049;paint-order:markers stroke fill"
          id="rect18-1-9"
@@ -133,8 +107,6 @@
     </pattern>
   </defs>
   <g
-     inkscape:label="Στρώση 1"
-     inkscape:groupmode="layer"
      id="layer1"
      transform="translate(-57.414654,-43.920865)">
     <g
@@ -185,8 +157,7 @@
       <path
          id="rect396-2-9"
          style="fill:url(#pattern65);fill-opacity:1;stroke-width:2.291;stroke-dasharray:none"
-         d="m -8572.5656,-1533.9152 h 228.5977 v 117.1423 h -228.5977 z"
-         sodipodi:nodetypes="ccccc" />
+         d="m -8572.5656,-1533.9152 h 228.5977 v 117.1423 h -228.5977 z" />
       <g
          id="g1-74-3-1"
          transform="rotate(180,-4119.6197,-684.27185)">
@@ -242,8 +213,7 @@
       <path
          id="path62644-8-9-1-5-9"
          style="fill:#404040;fill-opacity:1;stroke:#1a1a1a;stroke-width:2.11667;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:24.5;stroke-dasharray:none;stroke-opacity:1;paint-order:markers fill stroke;stop-color:#000000"
-         d="m -8576.4433,-1538.1069 v 8.4553 h 235.3175 v -8.4553 z m 226.8508,59.2894 v 58.4957 h -73.2643 v 8.4672 h 81.731 v -66.9629 z m -226.8508,5.1475 v 61.6795 h 97.2551 v -8.4667 h -88.7879 v -53.2128 z"
-         sodipodi:nodetypes="ccccccccccccccccccc" />
+         d="m -8576.4433,-1538.1069 v 8.4553 h 235.3175 v -8.4553 z m 226.8508,59.2894 v 58.4957 h -73.2643 v 8.4672 h 81.731 v -66.9629 z m -226.8508,5.1475 v 61.6795 h 97.2551 v -8.4667 h -88.7879 v -53.2128 z" />
     </g>
   </g>
 </svg>

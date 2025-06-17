@@ -1672,23 +1672,6 @@ export async function setUpUI(): Promise<void> {
         element.checked = GameConsole.getBuiltInCVar("cv_killfeed_style") === "text";
     }
 
-    // Weapon slot style toggle
-    {
-        const element = $<HTMLInputElement>("#toggle-colored-slots")[0];
-
-        element.addEventListener("input", () => {
-            GameConsole.setBuiltInCVar("cv_weapon_slot_style", element.checked ? "colored" : "simple");
-            UIManager.updateWeaponSlots();
-        });
-
-        GameConsole.variables.addChangeListener("cv_weapon_slot_style", value => {
-            element.checked = value === "colored";
-            UIManager.updateWeaponSlots();
-        });
-
-        element.checked = GameConsole.getBuiltInCVar("cv_weapon_slot_style") === "colored";
-    }
-
     // Show a warning if hardware acceleration is not available/supported
     const tmpCanvas = document.createElement("canvas");
     let glContext = tmpCanvas.getContext("webgl2", { failIfMajorPerformanceCaveat: true });

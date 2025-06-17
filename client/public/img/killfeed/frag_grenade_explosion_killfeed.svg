@@ -6,32 +6,10 @@
    fill="none"
    version="1.1"
    id="svg6"
-   sodipodi:docname="frag_grenade_explosion_killfeed.svg"
-   inkscape:version="1.4 (e7c3feb1, 2024-10-09)"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg">
   <defs
      id="defs6" />
-  <sodipodi:namedview
-     id="namedview6"
-     pagecolor="#ffffff"
-     bordercolor="#000000"
-     borderopacity="0.25"
-     inkscape:showpageshadow="2"
-     inkscape:pageopacity="0.0"
-     inkscape:pagecheckerboard="0"
-     inkscape:deskcolor="#d1d1d1"
-     inkscape:zoom="2.8235294"
-     inkscape:cx="18.416667"
-     inkscape:cy="7.6145833"
-     inkscape:window-width="1472"
-     inkscape:window-height="812"
-     inkscape:window-x="0"
-     inkscape:window-y="37"
-     inkscape:window-maximized="1"
-     inkscape:current-layer="svg6" />
   <path
      d="m 19.030754,5.4394975 -0.675535,0.9208782 0.245313,1.1835219 V 8.640845 C 18.266714,8.5488 17.915096,8.4996276 17.551977,8.4996276 c -0.363519,0 -0.715437,0.049273 -1.049655,0.1414974 V 7.5439976 l -1.649786,-6.5e-4 0.991552,-2.7858457 h 2.511131 l 0.245313,0.2187514 h 0.19921 c 0,-0.076064 0.0151,-0.1513779 0.0442,-0.2216516 0.0291,-0.070344 0.0719,-0.134287 0.125806,-0.1881198 0.0538,-0.053843 0.117806,-0.096535 0.18821,-0.1256766 0.0704,-0.029142 0.145808,-0.044142 0.222012,-0.044132 0.0762,-10e-6 0.151708,0.014991 0.222111,0.044132 0.0704,0.029141 0.134307,0.071834 0.18821,0.1256766 0.0539,0.053833 0.09661,0.1177761 0.125807,0.1881198 0.0291,0.070344 0.0441,0.1457276 0.0441,0.2218716 0,0.076144 -0.015,0.1515479 -0.0441,0.2219016 -0.0292,0.070344 -0.0719,0.134257 -0.125807,0.1880999 -0.0539,0.053843 -0.117806,0.096555 -0.18821,0.1256865 -0.0704,0.029142 -0.145907,0.044122 -0.222111,0.044122 -0.0762,0 -0.151608,-0.014981 -0.222012,-0.044122 -0.0454,-0.018791 -0.0881,-0.043232 -0.127207,-0.072664 z"
      fill="#d9d9d9"

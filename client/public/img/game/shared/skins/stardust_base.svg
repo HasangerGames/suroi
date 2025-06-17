@@ -7,37 +7,12 @@
    viewBox="0 0 23.812499 23.812501"
    version="1.1"
    id="svg13218"
-   inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
-   sodipodi:docname="celestial_base.svg"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg">
-  <sodipodi:namedview
-     id="namedview13220"
-     pagecolor="#505050"
-     bordercolor="#ffffff"
-     borderopacity="1"
-     inkscape:pageshadow="0"
-     inkscape:pageopacity="0"
-     inkscape:pagecheckerboard="1"
-     inkscape:document-units="px"
-     showgrid="false"
-     units="px"
-     inkscape:zoom="4.3893395"
-     inkscape:cx="-12.302534"
-     inkscape:cy="35.31283"
-     inkscape:window-width="2560"
-     inkscape:window-height="1372"
-     inkscape:window-x="0"
-     inkscape:window-y="0"
-     inkscape:window-maximized="1"
-     inkscape:current-layer="layer1" />
   <defs
      id="defs13215">
     <linearGradient
-       inkscape:collect="always"
        id="linearGradient13409">
       <stop
          style="stop-color:#351c75;stop-opacity:1;"
@@ -49,7 +24,6 @@
          id="stop13407" />
     </linearGradient>
     <linearGradient
-       inkscape:collect="always"
        xlink:href="#linearGradient13409"
        id="linearGradient13411"
        x1="48.552654"
@@ -60,8 +34,6 @@
        gradientTransform="rotate(-135,-1.7775988,87.279396)" />
   </defs>
   <g
-     inkscape:label="Layer 1"
-     inkscape:groupmode="layer"
      id="layer1"
      transform="translate(-48.552654,-51.066555)">
     <circle

@@ -6,32 +6,10 @@
    fill="none"
    version="1.1"
    id="svg1"
-   sodipodi:docname="crowbar_killfeed.svg"
-   inkscape:version="1.4 (e7c3feb1, 2024-10-09)"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg">
   <defs
      id="defs1" />
-  <sodipodi:namedview
-     id="namedview1"
-     pagecolor="#505050"
-     bordercolor="#ffffff"
-     borderopacity="1"
-     inkscape:showpageshadow="0"
-     inkscape:pageopacity="0"
-     inkscape:pagecheckerboard="1"
-     inkscape:deskcolor="#505050"
-     inkscape:zoom="4.0976641"
-     inkscape:cx="20.499484"
-     inkscape:cy="15.984717"
-     inkscape:window-width="1472"
-     inkscape:window-height="812"
-     inkscape:window-x="0"
-     inkscape:window-y="37"
-     inkscape:window-maximized="1"
-     inkscape:current-layer="svg1" />
   <path
      d="m 16.5542,6.3720559 4.255433,0.772892 -3.072564,-1.953951 5.16227,-1.9231811 -6.72706,-0.4217422 C 15.776782,3.8669431 14.183031,4.450685 13.234564,3.4985974 l -2.862598,4.8138345 3.447245,-1.747606 1.895125,3.368508 z"
      fill="#d9d9d9"

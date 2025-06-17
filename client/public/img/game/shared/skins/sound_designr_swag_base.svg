@@ -7,37 +7,13 @@
    viewBox="0 0 23.8125 23.8125"
    version="1.1"
    id="svg1"
-   inkscape:version="1.3.2 (091e20e, 2023-11-25, custom)"
-   sodipodi:docname="sound_designr_swag_base.svg"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg">
-  <sodipodi:namedview
-     id="namedview1"
-     pagecolor="#ffffff"
-     bordercolor="#000000"
-     borderopacity="0.25"
-     inkscape:showpageshadow="2"
-     inkscape:pageopacity="0.0"
-     inkscape:pagecheckerboard="0"
-     inkscape:deskcolor="#d1d1d1"
-     inkscape:document-units="px"
-     inkscape:zoom="6.0674682"
-     inkscape:cx="81.088188"
-     inkscape:cy="30.902511"
-     inkscape:window-width="1920"
-     inkscape:window-height="1001"
-     inkscape:window-x="-9"
-     inkscape:window-y="-9"
-     inkscape:window-maximized="1"
-     inkscape:current-layer="layer1" />
   <defs
      id="defs1">
     <filter
        style="color-interpolation-filters:sRGB"
-       inkscape:label="Drop Shadow"
        id="filter10"
        x="-0.34927106"
        y="-0.62232776"
@@ -74,7 +50,6 @@
          id="feComposite10" />
     </filter>
     <linearGradient
-       inkscape:collect="always"
        xlink:href="#linearGradient6"
        id="linearGradient3566"
        x1="1.5875006"
@@ -84,7 +59,6 @@
        gradientUnits="userSpaceOnUse"
        gradientTransform="translate(25.952123,-10.628802)" />
     <linearGradient
-       inkscape:collect="always"
        id="linearGradient6">
       <stop
          style="stop-color:#6dbbab;stop-opacity:1;"
@@ -97,7 +71,6 @@
     </linearGradient>
     <filter
        style="color-interpolation-filters:sRGB"
-       inkscape:label="Drop Shadow"
        id="filter16"
        x="-0.56866589"
        y="-1.0681697"
@@ -135,8 +108,6 @@
     </filter>
   </defs>
   <g
-     inkscape:label="Layer 1"
-     inkscape:groupmode="layer"
      id="layer1">
     <g
        id="g3"
@@ -155,48 +126,39 @@
         <path
            style="font-variation-settings:normal;fill:#479485;fill-opacity:1;stroke:#7ec4b5;stroke-width:0.529167;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:fill markers stroke;stop-color:#000000"
            d="M 49.741664,44.712269 V 45.94515"
-           id="path12752-0-8-3"
-           sodipodi:nodetypes="cc" />
+           id="path12752-0-8-3" />
         <path
            style="font-variation-settings:normal;fill:#479485;fill-opacity:1;stroke:#7ec4b5;stroke-width:0.529167;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:fill markers stroke;stop-color:#000000"
            d="m 50.656357,43.606145 v 3.445129"
-           id="path12752-2-1-6-3"
-           sodipodi:nodetypes="cc" />
+           id="path12752-2-1-6-3" />
         <path
            style="font-variation-settings:normal;fill:#479485;fill-opacity:1;stroke:#7ec4b5;stroke-width:0.529167;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:fill markers stroke;stop-color:#000000"
            d="m 51.560419,43.391666 v 3.874088"
-           id="path12752-2-9-4-4-9"
-           sodipodi:nodetypes="cc" />
+           id="path12752-2-9-4-4-9" />
         <path
            style="font-variation-settings:normal;fill:#479485;fill-opacity:1;stroke:#7ec4b5;stroke-width:0.529167;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:fill markers stroke;stop-color:#000000"
            d="M 52.462526,43.867169 V 46.79025"
-           id="path12752-2-9-3-0-2-0"
-           sodipodi:nodetypes="cc" />
+           id="path12752-2-9-3-0-2-0" />
         <path
            style="font-variation-settings:normal;fill:#479485;fill-opacity:1;stroke:#7ec4b5;stroke-width:0.529167;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:fill markers stroke;stop-color:#000000"
            d="m 53.380166,44.490048 v 1.677324"
-           id="path12752-2-9-3-7-0-9-5"
-           sodipodi:nodetypes="cc" />
+           id="path12752-2-9-3-7-0-9-5" />
         <path
            style="font-variation-settings:normal;fill:#479485;fill-opacity:1;stroke:#7ec4b5;stroke-width:0.529167;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:fill markers stroke;stop-color:#000000"
            d="M 54.294859,44.185559 V 46.47186"
-           id="path12752-2-3-9-2-5"
-           sodipodi:nodetypes="cc" />
+           id="path12752-2-3-9-2-5" />
         <path
            style="font-variation-settings:normal;fill:#479485;fill-opacity:1;stroke:#7ec4b5;stroke-width:0.529167;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:fill markers stroke;stop-color:#000000"
            d="m 55.19892,44.088026 v 2.481368"
-           id="path12752-2-9-0-0-9-4"
-           sodipodi:nodetypes="cc" />
+           id="path12752-2-9-0-0-9-4" />
         <path
            style="font-variation-settings:normal;fill:#479485;fill-opacity:1;stroke:#7ec4b5;stroke-width:0.529167;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:fill markers stroke;stop-color:#000000"
            d="m 56.101027,44.616686 v 1.424047"
-           id="path12752-2-9-3-4-1-3-4"
-           sodipodi:nodetypes="cc" />
+           id="path12752-2-9-3-4-1-3-4" />
         <path
            style="font-variation-settings:normal;fill:#479485;fill-opacity:1;stroke:#7ec4b5;stroke-width:0.529167;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:fill markers stroke;stop-color:#000000"
            d="m 57.018667,44.936568 v 0.784283"
-           id="path12752-2-9-3-7-8-3-0-3"
-           sodipodi:nodetypes="cc" />
+           id="path12752-2-9-3-7-8-3-0-3" />
       </g>
     </g>
   </g>

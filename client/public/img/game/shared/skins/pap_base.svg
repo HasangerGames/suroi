@@ -7,37 +7,12 @@
    viewBox="0 0 23.938562 23.858066"
    version="1.1"
    id="svg5"
-   sodipodi:docname="pap_base.svg"
-   inkscape:version="1.3.2 (091e20e, 2023-11-25, custom)"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg">
-  <sodipodi:namedview
-     id="namedview5"
-     pagecolor="#505050"
-     bordercolor="#ffffff"
-     borderopacity="1"
-     inkscape:pageshadow="0"
-     inkscape:pageopacity="0"
-     inkscape:pagecheckerboard="1"
-     showgrid="false"
-     inkscape:zoom="4.5364584"
-     inkscape:cx="49.598162"
-     inkscape:cy="46.622273"
-     inkscape:window-width="1920"
-     inkscape:window-height="1001"
-     inkscape:window-x="-9"
-     inkscape:window-y="-9"
-     inkscape:window-maximized="1"
-     inkscape:current-layer="svg5"
-     inkscape:showpageshadow="2"
-     inkscape:deskcolor="#d1d1d1" />
   <defs
      id="defs2">
     <linearGradient
-       inkscape:collect="always"
        id="linearGradient10">
       <stop
          style="stop-color:#000000;stop-opacity:1;"
@@ -53,7 +28,6 @@
          id="stop10" />
     </linearGradient>
     <linearGradient
-       inkscape:collect="always"
        id="linearGradient5">
       <stop
          style="stop-color:#71fff3;stop-opacity:1;"
@@ -69,7 +43,6 @@
          id="stop5" />
     </linearGradient>
     <linearGradient
-       inkscape:collect="always"
        id="linearGradient3">
       <stop
          style="stop-color:#001a73;stop-opacity:1;"
@@ -81,7 +54,6 @@
          id="stop3" />
     </linearGradient>
     <linearGradient
-       inkscape:collect="always"
        id="linearGradient3564">
       <stop
          style="stop-color:#a4fffa;stop-opacity:1;"
@@ -93,7 +65,6 @@
          id="stop432" />
     </linearGradient>
     <linearGradient
-       inkscape:collect="always"
        xlink:href="#linearGradient3564"
        id="linearGradient1"
        x1="-11.90625"
@@ -103,7 +74,6 @@
        gradientUnits="userSpaceOnUse"
        gradientTransform="translate(0.00450993,0.0045098)" />
     <linearGradient
-       inkscape:collect="always"
        xlink:href="#linearGradient3"
        id="linearGradient2"
        gradientUnits="userSpaceOnUse"
@@ -113,7 +83,6 @@
        y2="16.83798"
        gradientTransform="translate(16.86468,-16.818981)" />
     <linearGradient
-       inkscape:collect="always"
        xlink:href="#linearGradient5"
        id="linearGradient6"
        x1="-12.000117"
@@ -123,7 +92,6 @@
        gradientUnits="userSpaceOnUse"
        gradientTransform="translate(0.12171515,0.03422964)" />
     <radialGradient
-       inkscape:collect="always"
        xlink:href="#linearGradient10"
        id="radialGradient10"
        cx="10.958971"

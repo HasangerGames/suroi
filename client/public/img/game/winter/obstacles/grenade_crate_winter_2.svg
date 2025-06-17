@@ -7,142 +7,11 @@
    viewBox="0 0 34.852534 37.637081"
    version="1.1"
    id="svg1"
-   inkscape:version="1.3 (0e150ed, 2023-07-21)"
-   sodipodi:docname="grenade_crate_snow_2.svg"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg">
-  <sodipodi:namedview
-     id="namedview1"
-     pagecolor="#505050"
-     bordercolor="#ffffff"
-     borderopacity="1"
-     inkscape:showpageshadow="0"
-     inkscape:pageopacity="0"
-     inkscape:pagecheckerboard="1"
-     inkscape:deskcolor="#505050"
-     inkscape:document-units="px"
-     inkscape:zoom="5.8239007"
-     inkscape:cx="61.556682"
-     inkscape:cy="44.471912"
-     inkscape:window-width="1440"
-     inkscape:window-height="847"
-     inkscape:window-x="0"
-     inkscape:window-y="25"
-     inkscape:window-maximized="0"
-     inkscape:current-layer="layer1" />
   <defs
-     id="defs1">
-    <inkscape:path-effect
-       effect="spiro"
-       id="path-effect5-3"
-       is_visible="true"
-       lpeversion="1" />
-    <inkscape:path-effect
-       effect="spiro"
-       id="path-effect5-3-2"
-       is_visible="true"
-       lpeversion="1" />
-    <inkscape:path-effect
-       effect="spiro"
-       id="path-effect7-2"
-       is_visible="true"
-       lpeversion="1" />
-    <inkscape:path-effect
-       effect="spiro"
-       id="path-effect4-1"
-       is_visible="true"
-       lpeversion="1" />
-    <inkscape:path-effect
-       effect="spiro"
-       id="path-effect4-1-7"
-       is_visible="true"
-       lpeversion="1" />
-    <inkscape:path-effect
-       effect="spiro"
-       id="path-effect8-2"
-       is_visible="true"
-       lpeversion="1" />
-    <inkscape:path-effect
-       effect="spiro"
-       id="path-effect8-2-6"
-       is_visible="true"
-       lpeversion="1" />
-    <inkscape:path-effect
-       effect="spiro"
-       id="path-effect5-3-1"
-       is_visible="true"
-       lpeversion="1" />
-    <inkscape:path-effect
-       effect="spiro"
-       id="path-effect5-3-2-5"
-       is_visible="true"
-       lpeversion="1" />
-    <inkscape:path-effect
-       effect="spiro"
-       id="path-effect7-2-6"
-       is_visible="true"
-       lpeversion="1" />
-    <inkscape:path-effect
-       effect="spiro"
-       id="path-effect4-1-4"
-       is_visible="true"
-       lpeversion="1" />
-    <inkscape:path-effect
-       effect="spiro"
-       id="path-effect4-1-7-2"
-       is_visible="true"
-       lpeversion="1" />
-    <inkscape:path-effect
-       effect="spiro"
-       id="path-effect8-2-5"
-       is_visible="true"
-       lpeversion="1" />
-    <inkscape:path-effect
-       effect="spiro"
-       id="path-effect8-2-6-6"
-       is_visible="true"
-       lpeversion="1" />
-    <inkscape:path-effect
-       effect="spiro"
-       id="path-effect5-3-6"
-       is_visible="true"
-       lpeversion="1" />
-    <inkscape:path-effect
-       effect="spiro"
-       id="path-effect5-3-2-8"
-       is_visible="true"
-       lpeversion="1" />
-    <inkscape:path-effect
-       effect="spiro"
-       id="path-effect7-2-8"
-       is_visible="true"
-       lpeversion="1" />
-    <inkscape:path-effect
-       effect="spiro"
-       id="path-effect4-1-43"
-       is_visible="true"
-       lpeversion="1" />
-    <inkscape:path-effect
-       effect="spiro"
-       id="path-effect4-1-7-1"
-       is_visible="true"
-       lpeversion="1" />
-    <inkscape:path-effect
-       effect="spiro"
-       id="path-effect8-2-4"
-       is_visible="true"
-       lpeversion="1" />
-    <inkscape:path-effect
-       effect="spiro"
-       id="path-effect8-2-6-9"
-       is_visible="true"
-       lpeversion="1" />
-  </defs>
+     id="defs1" />
   <g
-     inkscape:label="Layer 1"
-     inkscape:groupmode="layer"
      id="layer1"
      transform="translate(-20.514808,-18.491155)">
     <g
@@ -273,8 +142,7 @@
       <path
          style="fill:#ababab;fill-opacity:1;fill-rule:evenodd;stroke:#4c4823;stroke-width:0;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
          d="m 63.563131,64.063301 -1.654975,0.95183 -1.351299,3.488952 1.779431,8.806196 -2.814957,0.461708 -2.185573,-10.418181 2.804322,-5.756695 -0.309564,-2.270798 4.137444,-2.37959 2.200421,1.993145 v 0.789443 l 1.578839,1.836424 z"
-         id="path23"
-         sodipodi:nodetypes="ccccccccccccc" />
+         id="path23" />
       <ellipse
          style="fill:#ababab;fill-opacity:1;fill-rule:evenodd;stroke:#4c4823;stroke-width:0;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
          id="circle23"
@@ -307,17 +175,14 @@
     <path
        style="fill:#c9d1d9;stroke:#a2a5c0;stroke-width:1.05833332;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none"
        d="M 39.969379,21.57171 21.692522,21.49528 v 17.361881 c 1.929458,0.08815 2.648117,-1.707527 3.931604,-2.734316 1.05101,-0.840808 2.592842,-0.02905 3.328733,-1.664367 1.339131,-2.975849 -1.571991,-5.095069 2.139899,-6.538582 4.426814,-1.721539 5.40282,1.58063 7.64816,0.832183 2.231266,-0.743755 1.62888,-5.539581 1.228461,-7.180369 z"
-       id="path2"
-       sodipodi:nodetypes="cccssssc" />
+       id="path2" />
     <path
        style="fill:#c9d1d9;stroke:#a2a5c0;stroke-width:1.05833;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none"
        d="m 47.095315,34.000803 c 0,2.556959 -2.188665,5.649107 -0.887757,8.250924 2.299743,4.599485 6.460128,0.511966 6.736514,-3.081041 0.241142,-3.134857 -0.52221,-6.126992 -0.52221,-9.243124 0.03386,-3.813221 2.199756,-6.465322 -2.193285,-7.885376 -6.472229,-1.7546 -3.154295,8.366463 -3.133262,11.958617 z"
-       id="path3"
-       sodipodi:nodetypes="ssssss" />
+       id="path3" />
     <path
        style="fill:#c9d1d9;stroke:#a2a5c0;stroke-width:1.05833;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none"
        d="M 43.684416,53.398427 H 21.489528 v -4.241614 c 4.920025,1.105567 12.597534,-5.360753 17.924412,-3.04385 2.897779,1.260376 3.48645,4.579871 4.270476,7.285464 z"
-       id="path5"
-       sodipodi:nodetypes="cccsc" />
+       id="path5" />
   </g>
 </svg>
