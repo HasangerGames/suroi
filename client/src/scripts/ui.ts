@@ -2045,11 +2045,13 @@ export async function setUpUI(): Promise<void> {
                 const isTeamMode = Game.teamMode;
 
                 if (isPrimary) {
-                    if (InputManager.pingWheelActive && Game.teamMode) {
+                    if (MapPingWheelManager.enabled && Game.teamMode) {
                         InputManager.addAction({
                             type: InputActions.Emote,
                             emote: Emotes.fromString(item.idString)
                         });
+                        MapPingWheelManager.enabled = false;
+                        UIManager.updateRequestableItems();
                     } else {
                         InputManager.addAction({
                             type: InputActions.UseItem,
@@ -2099,11 +2101,13 @@ export async function setUpUI(): Promise<void> {
             const isTeamMode = Game.teamMode;
 
             if (isPrimary) {
-                if (InputManager.pingWheelActive && Game.teamMode) {
+                if (MapPingWheelManager.enabled && Game.teamMode) {
                     InputManager.addAction({
                         type: InputActions.Emote,
                         emote: Emotes.fromString(ammo.idString)
                     });
+                    MapPingWheelManager.enabled = false;
+                    UIManager.updateRequestableItems();
                 }
 
                 mobileDropItem(button, isTeamMode, ammo);
@@ -2220,25 +2224,21 @@ export async function setUpUI(): Promise<void> {
 
         $("#mobile-options").show();
 
-        ui.menuButton.on("click", () => ui.gameMenu.fadeToggle(250));
+        ui.menuButton.on("pointerup", () => ui.gameMenu.fadeToggle(250));
 
-        ui.emoteButton.on("click", () => {
-            const emoteWheelActive = EmoteWheelManager.active;
-
-            if (emoteWheelActive) {
-                EmoteWheelManager.close();
-            } else {
-                EmoteWheelManager.show();
-            }
+        ui.emoteButton.on("pointerup", () => {
+            const emoteWheelActive = !EmoteWheelManager.enabled;
+            EmoteWheelManager.enabled = emoteWheelActive;
 
             ui.emoteButton
-                .toggleClass("btn-alert", !emoteWheelActive)
-                .toggleClass("btn-primary", emoteWheelActive);
+                .toggleClass("btn-alert", emoteWheelActive)
+                .toggleClass("btn-primary", !emoteWheelActive);
         });
 
-        ui.pingToggle.on("click", () => {
+        ui.pingToggle.on("pointerup", () => {
             const pingWheelActive = !MapPingWheelManager.enabled;
             MapPingWheelManager.enabled = pingWheelActive;
+
             ui.pingToggle
                 .toggleClass("btn-danger", pingWheelActive)
                 .toggleClass("btn-primary", !pingWheelActive);

@@ -130,14 +130,14 @@ class MapManagerClass {
             this.teammateIndicatorContainer
         ).sortChildren();
 
-        this._borderContainer.on("click", e => {
-            if (!InputManager.isMobile) return;
-            this.switchToBigMap();
-            e.stopImmediatePropagation();
-        });
+        if (InputManager.isMobile) {
+            this._borderContainer.on("pointerup", e => {
+                this.switchToBigMap();
+                e.stopImmediatePropagation();
+            });
+        }
 
         this.sprite.eventMode = "static";
-
         this.sprite.on("pointerdown", e => {
             MapPingWheelManager.onMinimap = true;
             MapPingWheelManager.position = this.sprite.toLocal(e);

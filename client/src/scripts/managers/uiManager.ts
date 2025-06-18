@@ -569,17 +569,17 @@ class UIManagerClass {
         const pingWheelActive = MapPingWheelManager.enabled;
 
         $("#ammos-container, #healing-items-container").toggleClass("active", pingWheelActive);
-        for (const ammo of Ammos) {
-            const itemSlot = this._itemSlotCache[ammo.idString] ??= $(`#${ammo.idString}-slot`);
-            if (pingWheelActive && ammo.hideUnlessPresent) itemSlot.css("visibility", "visible");
-            else if (ammo.hideUnlessPresent && this.inventory.items[ammo.idString] === 0) itemSlot.css("visibility", "hidden");
+        for (const item of [...Ammos, ...HealingItems]) {
+            const itemSlot = this._itemSlotCache[item.idString] ??= $(`#${item.idString}-slot`);
+            if (pingWheelActive && item.hideUnlessPresent) itemSlot.css("visibility", "visible");
+            else if (item.hideUnlessPresent && this.inventory.items[item.idString] === 0) itemSlot.css("visibility", "hidden");
         }
 
-        $("#ammos-container, #healing-items-container").toggleClass("active", pingWheelActive);
-        for (const healItem of HealingItems) {
-            const itemSlot = this._itemSlotCache[healItem.idString] ??= $(`#${healItem.idString}-slot`);
-            if (pingWheelActive && healItem.hideUnlessPresent) itemSlot.css("visibility", "visible");
-            else if (healItem.hideUnlessPresent && this.inventory.items[healItem.idString] === 0) itemSlot.css("visibility", "hidden");
+        if (InputManager.isMobile) {
+            const pingWheelActive = MapPingWheelManager.enabled;
+            this.ui.pingToggle
+                .toggleClass("btn-danger", pingWheelActive)
+                .toggleClass("btn-primary", !pingWheelActive);
         }
     }
 
