@@ -716,30 +716,13 @@ export function setUpCommands(): void {
         }
     );
 
-    function updateEmoteWheels(): void {
-        if (EmoteWheelManager.enabled) {
-            if (MapPingWheelManager.enabled) {
-                MapPingWheelManager.show();
-                EmoteWheelManager.close();
-            } else {
-                EmoteWheelManager.show();
-                MapPingWheelManager.close();
-            }
-        } else {
-            EmoteWheelManager.close();
-            MapPingWheelManager.close();
-        }
-    }
-
     Command.createInvertiblePair(
         "emote_wheel",
         function() {
             EmoteWheelManager.enabled = true;
-            updateEmoteWheels();
         },
         function() {
             EmoteWheelManager.enabled = false;
-            updateEmoteWheels();
         },
         {
             short: "Opens the emote wheel",
@@ -760,12 +743,10 @@ export function setUpCommands(): void {
         function() {
             MapPingWheelManager.enabled = true;
             UIManager.updateRequestableItems();
-            updateEmoteWheels();
         },
         function() {
             MapPingWheelManager.enabled = false;
             UIManager.updateRequestableItems();
-            updateEmoteWheels();
         },
         {
             short: "Enables the emote wheel's ping mode",

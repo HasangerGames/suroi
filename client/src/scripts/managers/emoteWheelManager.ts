@@ -8,6 +8,7 @@ import { Color, Container, Graphics, type ColorSource } from "pixi.js";
 import { SuroiSprite } from "../utils/pixi";
 import { InputManager } from "./inputManager";
 import { UIManager } from "./uiManager";
+import { Game } from "../game";
 
 class EmoteWheelManagerClass {
     static readonly COLORS = {
@@ -33,7 +34,25 @@ class EmoteWheelManagerClass {
 
     container = new Container();
 
-    enabled = false;
+    private _enabled = false;
+    get enabled(): boolean { return this._enabled; }
+    set enabled(enabled: boolean) {
+        this._enabled = enabled;
+
+        if (EmoteWheelManager.enabled) {
+            if (MapPingWheelManager.enabled) {
+                MapPingWheelManager.show();
+                EmoteWheelManager.close();
+            } else {
+                EmoteWheelManager.show();
+                MapPingWheelManager.close();
+            }
+        } else {
+            EmoteWheelManager.close();
+            MapPingWheelManager.close();
+        }
+    }
+
     active = false;
     selection?: number;
 
@@ -143,7 +162,7 @@ class EmoteWheelManagerClass {
         this.container.visible = true;
         this.active = true;
 
-        this.container.position = InputManager.mousePosition;
+        this.container.position = InputManager.isMobile ? Vec.create(Game.pixi.screen.width / 2, Game.pixi.screen.height / 2) : InputManager.mousePosition;
     }
 
     /**
@@ -178,6 +197,8 @@ class EmoteWheelManagerClass {
         if (!this.active) return;
 
         this.container.tint = UIManager.blockEmoting ? 0xb1b1b1 : 0xffffff;
+
+        if (InputManager.isMobile) return;
 
         const position = InputManager.mousePosition;
         if (this._oldPosition && Vec.equals(position, this._oldPosition)) return;
