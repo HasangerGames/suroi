@@ -16,7 +16,7 @@ import { type PlayerPing } from "@common/definitions/mapPings";
 import { Obstacles, type ObstacleDefinition } from "@common/definitions/obstacles";
 import { type SyncedParticleDefinition } from "@common/definitions/syncedParticles";
 import { GameOverPacket, TeammateGameOverData } from "@common/packets/gameOverPacket";
-import { type InputData, type NoMobile } from "@common/packets/inputPacket";
+import { type InputData } from "@common/packets/inputPacket";
 import { DamageSources, KillPacket } from "@common/packets/killPacket";
 import { MutablePacketDataIn } from "@common/packets/packet";
 import { PacketStream } from "@common/packets/packetStream";

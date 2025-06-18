@@ -10231,6 +10231,14 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                     RectangleHitbox.fromRect(18.55, 45.56, Vec.create(10.71, 18.37)),
                     RectangleHitbox.fromRect(80.09, 65.24, Vec.create(58, 9.01))
                 )
+            },
+            {
+                type: FloorNames.Metal,
+                hitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(7.5, 10.68, Vec.create(-30.2, -39.26)),
+                    RectangleHitbox.fromRect(7.5, 10.68, Vec.create(-9.81, 45.95))
+                ),
+                layer: -1
             }
         ],
         floorImages: [
