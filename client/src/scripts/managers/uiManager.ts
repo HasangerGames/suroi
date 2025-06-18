@@ -985,7 +985,8 @@ class UIManagerClass {
                         if (this.skinID !== undefined && Skins.fromStringSafe(this.skinID)?.grassTint) { // ghillie suit
                             weaponImage = `url("data:image/svg+xml,${encodeURIComponent(`<svg width="34" height="34" viewBox="0 0 8.996 8.996" xmlns="http://www.w3.org/2000/svg"><circle fill="${Game.colors.ghillie.toHex()}" stroke="${new Color(Game.colors.ghillie).multiply("#111").toHex()}" stroke-width="1.05833" cx="4.498" cy="4.498" r="3.969"/></svg>`)}")`;
                         } else {
-                            weaponImage = `url(./img/game/shared/skins/${this.skinID ?? GameConsole.getBuiltInCVar("cv_loadout_skin")}_fist.svg)`;
+                            const skinDef = Skins.fromString(this.skinID ?? GameConsole.getBuiltInCVar("cv_loadout_skin"));
+                            weaponImage = `url(./img/game/shared/skins/${skinDef.fistImage ?? `${skinDef.idString}_fist`}.svg)`;
                         }
                     } else {
                         let frame = definition.idString;
