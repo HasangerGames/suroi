@@ -8,7 +8,6 @@ import { PerkCategories, PerkIds, type PerkDefinition } from "@common/definition
 import { DEFAULT_SCOPE, type ScopeDefinition } from "@common/definitions/items/scopes";
 import { Skins } from "@common/definitions/items/skins";
 import { Loots } from "@common/definitions/loots";
-import { MapPings, type PlayerPing } from "@common/definitions/mapPings";
 import { type GameOverData } from "@common/packets/gameOverPacket";
 import type { KillData } from "@common/packets/killPacket";
 import { DamageSources } from "@common/packets/killPacket";
@@ -30,6 +29,7 @@ import { SuroiSprite } from "../utils/pixi";
 import { getTranslatedString, TRANSLATIONS } from "../utils/translations/translations";
 import { type TranslationKeys } from "../utils/translations/typings";
 import { CameraManager } from "./cameraManager";
+import { MapPingWheelManager } from "./emoteWheelManager";
 import { InputManager } from "./inputManager";
 import { MapManager } from "./mapManager";
 import { ClientPerkManager } from "./perkManager";
@@ -191,10 +191,6 @@ class UIManagerClass {
         pingToggle: $<HTMLButtonElement>("#btn-toggle-ping"),
         menuButton: $<HTMLButtonElement>("#btn-game-menu"),
 
-        emoteWheel: $<HTMLDivElement>("#emote-wheel"),
-        emoteSelectors: [".emote-top", ".emote-right", ".emote-bottom", ".emote-left"]
-            .map(selector => $<HTMLDivElement>(`#emote-wheel > ${selector}`)),
-
         actionContainer: $<HTMLDivElement>("#action-container"),
         actionName: $<HTMLDivElement>("#action-name"),
         actionTime: $<HTMLHeadingElement>("#action-time"),
@@ -219,11 +215,6 @@ class UIManagerClass {
         gameOverOverlay: $<HTMLDivElement>("#game-over-overlay"),
         gameOverPlayerCards: $<HTMLDivElement>("#player-game-over-cards"),
         gameOverText: $<HTMLHeadingElement>("#game-over-text"),
-        /* gameOverPlayerName: $<HTMLHeadingElement>("#game-over-player-name"),
-        gameOverKills: $<HTMLSpanElement>("#game-over-kills"),
-        gameOverDamageDone: $<HTMLSpanElement>("#game-over-damage-done"),
-        gameOverDamageTaken: $<HTMLSpanElement>("#game-over-damage-taken"),
-        gameOverTime: $<HTMLSpanElement>("#game-over-time"), */
         gameOverRank: $<HTMLSpanElement>("#game-over-rank"),
         gameOverTeamKillsContainer: $<HTMLDivElement>("#game-over-team-kills-container"),
         gameOverTeamKills: $<HTMLSpanElement>("#game-over-team-kills"),
@@ -572,39 +563,23 @@ class UIManagerClass {
         setTimeout(() => ScreenRecordManager.endRecording(), 2500);
     }
 
-    // I'd rewrite this as MapPings.filter(…), but it's not really clear how
-    // > 4 player pings is _meant_ to be handled, so I'll begrudgingly leave this alone
-    readonly mapPings: readonly PlayerPing[] = [
-        "warning_ping",
-        "arrow_ping",
-        "gift_ping",
-        "heal_ping"
-    ].map(ping => MapPings.fromString<PlayerPing>(ping));
+    updateRequestableItems(): void {
+        if (!Game.teamMode) return;
 
-    updateEmoteWheel(): void {
-        const { pingWheelActive } = InputManager;
-        if (Game.teamMode) {
-            $("#ammos-container, #healing-items-container").toggleClass("active", pingWheelActive);
-            for (const ammo of Ammos) {
-                const itemSlot = this._itemSlotCache[ammo.idString] ??= $(`#${ammo.idString}-slot`);
-                if (pingWheelActive && ammo.hideUnlessPresent) itemSlot.css("visibility", "visible");
-                else if (ammo.hideUnlessPresent && this.inventory.items[ammo.idString] === 0) itemSlot.css("visibility", "hidden");
-            }
+        const pingWheelActive = MapPingWheelManager.enabled;
 
-            $("#ammos-container, #healing-items-container").toggleClass("active", pingWheelActive);
-            for (const healItem of HealingItems) {
-                const itemSlot = this._itemSlotCache[healItem.idString] ??= $(`#${healItem.idString}-slot`);
-                if (pingWheelActive && healItem.hideUnlessPresent) itemSlot.css("visibility", "visible");
-                else if (healItem.hideUnlessPresent && this.inventory.items[healItem.idString] === 0) itemSlot.css("visibility", "hidden");
-            }
+        $("#ammos-container, #healing-items-container").toggleClass("active", pingWheelActive);
+        for (const ammo of Ammos) {
+            const itemSlot = this._itemSlotCache[ammo.idString] ??= $(`#${ammo.idString}-slot`);
+            if (pingWheelActive && ammo.hideUnlessPresent) itemSlot.css("visibility", "visible");
+            else if (ammo.hideUnlessPresent && this.inventory.items[ammo.idString] === 0) itemSlot.css("visibility", "hidden");
         }
-        for (let i = 0; i < 4; i++) {
-            const definition = (pingWheelActive ? this.mapPings : this.emotes)[i];
 
-            this.ui.emoteSelectors[i].css(
-                "background-image",
-                definition ? `url("./img/game/shared/${pingWheelActive ? "mapPings" : "emotes"}/${definition.idString}.svg")` : ""
-            );
+        $("#ammos-container, #healing-items-container").toggleClass("active", pingWheelActive);
+        for (const healItem of HealingItems) {
+            const itemSlot = this._itemSlotCache[healItem.idString] ??= $(`#${healItem.idString}-slot`);
+            if (pingWheelActive && healItem.hideUnlessPresent) itemSlot.css("visibility", "visible");
+            else if (healItem.hideUnlessPresent && this.inventory.items[healItem.idString] === 0) itemSlot.css("visibility", "hidden");
         }
     }
 
@@ -853,10 +828,7 @@ class UIManagerClass {
             }
         }
 
-        if (blockEmoting !== this.blockEmoting) {
-            this.blockEmoting = blockEmoting;
-            this.ui.emoteWheel.css("opacity", this.blockEmoting ? "0.5" : "");
-        }
+        this.blockEmoting = blockEmoting;
     }
 
     reportedPlayerIDs = new Map<number, boolean>();

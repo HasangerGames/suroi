@@ -1,9 +1,9 @@
 // noinspection JSConstantReassignment
 import { GameConstants, InputActions, SpectateActions, TeamSize } from "@common/constants";
 import { HealingItems, type HealingItemDefinition } from "@common/definitions/items/healingItems";
-import { Loots } from "@common/definitions/loots";
 import { Scopes, type ScopeDefinition } from "@common/definitions/items/scopes";
 import { Throwables } from "@common/definitions/items/throwables";
+import { Loots } from "@common/definitions/loots";
 import { type InputAction } from "@common/packets/inputPacket";
 import { SpectatePacket } from "@common/packets/spectatePacket";
 import { Numeric } from "@common/utils/math";
@@ -12,15 +12,15 @@ import { ItemType, type ReferenceTo } from "@common/utils/objectDefinitions";
 import { Rectangle, RendererType, Sprite, VERSION } from "pixi.js";
 import { Config, type ServerInfo } from "../config";
 import { Game } from "../game";
+import { CameraManager } from "../managers/cameraManager";
+import { EmoteWheelManager, MapPingWheelManager } from "../managers/emoteWheelManager";
 import { InputManager, type CompiledAction, type CompiledTuple } from "../managers/inputManager";
+import { MapManager } from "../managers/mapManager";
+import { ScreenRecordManager } from "../managers/screenRecordManager";
+import { UIManager } from "../managers/uiManager";
 import { requestFullscreen, sanitizeHTML, stringify } from "../utils/misc";
 import { GameConsole, type PossibleError, type Stringable } from "./gameConsole";
 import { Casters, ConVar } from "./variables";
-import { Vec } from "@common/utils/vector";
-import { UIManager } from "../managers/uiManager";
-import { ScreenRecordManager } from "../managers/screenRecordManager";
-import { MapManager } from "../managers/mapManager";
-import { CameraManager } from "../managers/cameraManager";
 
 export type CommandExecutor<ErrorType> = (
     ...args: Array<string | undefined>
@@ -716,37 +716,30 @@ export function setUpCommands(): void {
         }
     );
 
+    function updateEmoteWheels(): void {
+        if (EmoteWheelManager.enabled) {
+            if (MapPingWheelManager.enabled) {
+                MapPingWheelManager.show();
+                EmoteWheelManager.close();
+            } else {
+                EmoteWheelManager.show();
+                MapPingWheelManager.close();
+            }
+        } else {
+            EmoteWheelManager.close();
+            MapPingWheelManager.close();
+        }
+    }
+
     Command.createInvertiblePair(
         "emote_wheel",
         function() {
-            if (
-                GameConsole.getBuiltInCVar("cv_hide_emotes")
-                || Game.gameOver
-                || InputManager.emoteWheelActive
-            ) return;
-
-            InputManager.emoteWheelActive = true;
-
-            if (!InputManager.pingWheelMinimap) {
-                InputManager.pingWheelPosition = Vec.clone(InputManager.gameMousePosition);
-            }
-
-            if (InputManager.pingWheelActive) {
-                Game.pingManager.show();
-                Game.emoteManager.close();
-            } else {
-                Game.emoteManager.show();
-                Game.pingManager.close();
-            }
+            EmoteWheelManager.enabled = true;
+            updateEmoteWheels();
         },
         function() {
-            if (!InputManager.emoteWheelActive) return;
-
-            InputManager.emoteWheelActive = false;
-            InputManager.pingWheelMinimap = false;
-
-            Game.pingManager.close();
-            Game.emoteManager.close();
+            EmoteWheelManager.enabled = false;
+            updateEmoteWheels();
         },
         {
             short: "Opens the emote wheel",
@@ -765,14 +758,14 @@ export function setUpCommands(): void {
     Command.createInvertiblePair(
         "map_ping",
         function() {
-            InputManager.pingWheelActive = true;
-            UIManager.updateEmoteWheel();
+            MapPingWheelManager.enabled = true;
+            UIManager.updateRequestableItems();
+            updateEmoteWheels();
         },
         function() {
-            InputManager.pingWheelActive = false;
-            UIManager.updateEmoteWheel();
-            Game.emoteManager.selection = null;
-            Game.pingManager.close();
+            MapPingWheelManager.enabled = false;
+            UIManager.updateRequestableItems();
+            updateEmoteWheels();
         },
         {
             short: "Enables the emote wheel's ping mode",

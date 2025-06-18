@@ -18,6 +18,7 @@ import { InputManager } from "./inputManager";
 import { UIManager } from "./uiManager";
 import { GameConsole } from "../console/gameConsole";
 import { CameraManager } from "./cameraManager";
+import { MapPingWheelManager } from "./emoteWheelManager";
 
 class MapManagerClass {
     private _expanded = false;
@@ -138,8 +139,8 @@ class MapManagerClass {
         this.sprite.eventMode = "static";
 
         this.sprite.on("pointerdown", e => {
-            InputManager.pingWheelPosition = this.sprite.toLocal(e);
-            InputManager.pingWheelMinimap = true;
+            MapPingWheelManager.onMinimap = true;
+            MapPingWheelManager.position = this.sprite.toLocal(e);
         });
 
         $("#btn-close-minimap").on("pointerdown", e => {
@@ -793,13 +794,6 @@ class MapManagerClass {
     }
 
     addMapPing(data: PingSerialization): void {
-        if (InputManager.isMobile) {
-            InputManager.emoteWheelActive = false;
-            UIManager.ui.emoteButton
-                .removeClass("btn-alert")
-                .addClass("btn-primary");
-        }
-
         const { position, definition } = data;
         const playerId = definition.isPlayerPing ? (data as PlayerPingSerialization).playerId : undefined;
 

@@ -29,7 +29,7 @@ import { setUpCommands } from "./console/commands";
 import { GameConsole } from "./console/gameConsole";
 import { defaultClientCVars } from "./console/variables";
 import { CameraManager } from "./managers/cameraManager";
-import { EmoteWheelManager, PlayerPingWheelManager } from "./managers/emoteWheelManager";
+import { EmoteWheelManager, MapPingWheelManager } from "./managers/emoteWheelManager";
 import { GasManager, GasRender } from "./managers/gasManager";
 import { InputManager } from "./managers/inputManager";
 import { MapManager } from "./managers/mapManager";
@@ -176,8 +176,6 @@ export const Game = new (class Game {
     hideSecondFloor = false;
 
     readonly pixi = new Application();
-    readonly emoteManager = new EmoteWheelManager(this);
-    readonly pingManager = new PlayerPingWheelManager(this);
 
     gasRender!: GasRender;
 
@@ -254,7 +252,11 @@ export const Game = new (class Game {
                 InputManager.isMobile
                     ? GameConsole.getBuiltInCVar("mb_high_res_textures")
                     : GameConsole.getBuiltInCVar("cv_high_res_textures")
-            );
+            ).then(() => {
+                EmoteWheelManager.init();
+                MapPingWheelManager.init();
+                MapPingWheelManager.setupSlots();
+            });
 
             // HACK: the game ui covers the canvas
             // so send pointer events manually to make clicking to spectate players work
@@ -276,16 +278,14 @@ export const Game = new (class Game {
                 DebugRenderer.graphics,
                 MapManager.container,
                 MapManager.mask,
+                EmoteWheelManager.container,
+                MapPingWheelManager.container,
                 ...Object.values(this.netGraph).map(g => g.container)
             );
 
             MapManager.visible = !GameConsole.getBuiltInCVar("cv_minimap_minimized");
             MapManager.expanded = GameConsole.getBuiltInCVar("cv_map_expanded");
             UIManager.ui.gameUi.toggle(GameConsole.getBuiltInCVar("cv_draw_hud"));
-
-            this.emoteManager.init();
-            this.pingManager.init();
-            this.emoteManager.setupSlots();
 
             pixi.renderer.on("resize", () => this.resize());
             this.resize();
@@ -377,10 +377,6 @@ export const Game = new (class Game {
                 ui.killFeed.html("");
                 ui.spectatingContainer.hide();
                 ui.joystickContainer.show();
-
-                InputManager.emoteWheelActive = false;
-                InputManager.pingWheelMinimap = false;
-                UIManager.ui.emoteWheel.hide();
             }
 
             let skin: typeof defaultClientCVars["cv_loadout_skin"];
@@ -591,8 +587,14 @@ export const Game = new (class Game {
         this.oceanAmbience = SoundManager.play("ocean_ambience", { loop: true, ambient: true });
         this.oceanAmbience.volume = 0;
 
-        UIManager.emotes = packet.emotes;
-        UIManager.updateEmoteWheel();
+        const emotes = EmoteWheelManager.emotes = packet.emotes
+            .slice(0, 6)
+            .filter(e => e !== undefined)
+            .map(({ idString }) => idString);
+        const len = emotes.length;
+        emotes.push(...emotes.splice(0, (1 % len + len) % len)); // rotates the array so emotes appear in the correct order
+        EmoteWheelManager.setupSlots();
+        UIManager.updateRequestableItems();
 
         const ui = UIManager.ui;
 
@@ -726,11 +728,15 @@ export const Game = new (class Game {
         for (const plane of this.planes) plane.update();
 
         CameraManager.update();
-        this.emoteManager.update();
-        this.pingManager.update();
-        DebugRenderer.graphics.position = CameraManager.container.position;
-        DebugRenderer.graphics.scale = CameraManager.container.scale;
-        DebugRenderer.render();
+
+        EmoteWheelManager.update();
+        MapPingWheelManager.update();
+
+        if (DEBUG_CLIENT) {
+            DebugRenderer.graphics.position = CameraManager.container.position;
+            DebugRenderer.graphics.scale = CameraManager.container.scale;
+            DebugRenderer.render();
+        }
 
         if (GameConsole.getBuiltInCVar("pf_show_fps")) {
             const fps = Math.round(this.pixi.ticker.FPS);

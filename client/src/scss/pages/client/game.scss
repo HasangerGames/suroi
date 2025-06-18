@@ -1972,58 +1972,6 @@
     }
 }
 
-#emote-wheel,
-#emote-customize-wheel {
-    position: absolute;
-    width: 286px;
-    height: 286px;
-    transform: translate(-50%, -50%);
-    z-index: 1;
-    //noinspection CssUnknownTarget
-    background-image: url("/img/misc/emote_wheel.svg");
-
-    & > div {
-        width: 84px;
-        height: 84px;
-        background-size: 84px 84px;
-        position: absolute;
-    }
-
-    .emote-top {
-        top: 14px;
-        left: 101px;
-    }
-
-    .emote-right {
-        right: 14px;
-        top: 101px;
-    }
-
-    .emote-bottom {
-        bottom: 14px;
-        left: 101px;
-    }
-
-    .emote-left {
-        left: 14px;
-        top: 101px;
-    }
-
-    .button-center {
-        width: 42px;
-        height: 42px;
-        left: calc(143px - calc(42px / 2));
-        top: calc(101px + calc(42px / 2));
-    }
-}
-
-#emote-wheel-highlight,
-#emote-customize-wheel-highlight {
-    position: absolute;
-    width: 286px;
-    height: 286px;
-}
-
 #game-over-overlay {
     display: flex;
     flex-direction: column;

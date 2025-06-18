@@ -405,66 +405,63 @@
         height: 100%;
     }
 
-    #emote-customize-wheel {
-        position: relative;
-        align-self: center;
+    .emote-display {
+        display: flex;
+        padding: 2px;
+        width: 84px;
+        height: 84px;
+        background-size: 64px 64px;
         flex-shrink: 0;
-        transform: none;
+        background-color: palette.$transparent_bg;
+        border-radius: 10px;
+        border: 5px solid transparent;
+        background-repeat: no-repeat;
+        background-position: center;
+        cursor: pointer;
 
-        .emote-top,
-        .emote-right,
-        .emote-bottom,
-        .emote-left {
+        &.selected {
+            border-color: palette.$orange;
+        }
+
+        img {
+            width: 1em;
+            height: 1em;
+        }
+
+        .fa-trash {
+            margin-left: auto;
+            height: 1em;
+            transform-origin: center;
+            &:hover {
+                transform: scale(1.25)
+            }
+        }
+    }
+
+    #emote-wheel-container {
+        min-width: 272px;
+        margin-right: 8px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    #emote-customize-wheel {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+
+        div {
             cursor: pointer;
             z-index: 10;
         }
     }
+
     #emote-wheel-bottom {
         display: flex;
         flex-direction: row;
         justify-content: space-between;
-        .emote-win,
-        .emote-death {
-            display: flex;
-            padding: 2px;
-            width: 104px;
-            height: 104px;
-            background-size: 84px 84px;
-            flex-shrink: 0;
-            background-color: palette.$transparent_bg;
-            border-radius: 10px;
-            border: 5px solid transparent;
-            background-repeat: no-repeat;
-            background-position: center;
-            cursor: pointer;
-
-            .fa-xmark {
-                color: red;
-                font-size: 24px;
-                position: absolute;
-                margin-left: calc(104px - calc(24px + 2px + 5px));
-                margin-top: calc(-2px - 1px);
-            }
-            &.selected {
-                border-color: palette.$orange;
-            }
-
-            img {
-                width: 1em;
-                height: 1em;
-                margin: 2px;
-            }
-
-            .remove-emote-btn {
-                margin-left: auto;
-                height: 1em;
-                padding: 2px;
-                transform-origin: center;
-                &:hover {
-                    transform: scale(1.1)
-                }
-            }
-        }
+        margin-top: 10px;
     }
 
     #emotes-list {
@@ -511,10 +508,6 @@
             text-align: center;
             font-weight: bold;
             @include variables.text-shadow;
-        }
-
-        #emote- {
-            justify-content: flex-end;
         }
     }
 

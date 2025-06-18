@@ -39,7 +39,7 @@ export const PIXI_SCALE = 20;
 
 export const WALL_STROKE_WIDTH = 8;
 
-export const EMOTE_SLOTS = ["top", "right", "bottom", "left", "win", "death"] as const;
+export const EMOTE_SLOTS = ["top", "right", "bottom", "left", "extra1", "extra2", "win", "death"] as const;
 
 export const SHOCKWAVE_EXPLOSION_MULTIPLIERS = Object.freeze({
     time: 5,
