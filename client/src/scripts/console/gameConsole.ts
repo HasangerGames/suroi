@@ -243,6 +243,7 @@ export const GameConsole = new (class GameConsole {
             }
 
             // FIXME remove after one or two updates (transition code grace period)
+            // written on november 9th 2024
             const badge = this.variables.get.builtIn("cv_loadout_badge").value;
             if (!Badges.hasString(badge) && !badge.startsWith("bdg_") && badge !== "") {
                 this.variables.set.builtIn("cv_loadout_badge", `bdg_${badge}`);
@@ -258,6 +259,13 @@ export const GameConsole = new (class GameConsole {
 
             for (const alias in config.aliases) {
                 this.aliases.set(alias, config.aliases[alias]);
+            }
+
+            // FIXME remove after one or two updates (transition code grace period)
+            // written on december 15th 2024
+            if ("+map_ping_wheel" in binds) {
+                (binds["+map_ping"] ??= []).push(...binds["+map_ping_wheel"]);
+                delete binds["+map_ping_wheel"];
             }
 
             this._autocmpData.cache.invalidateAll();

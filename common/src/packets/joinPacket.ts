@@ -25,7 +25,7 @@ export const JoinPacket = new Packet<JoinPacketCreation, JoinData>(PacketType.Jo
     serialize(stream, data) {
         const emotes = data.emotes;
         const hasBadge = data.badge !== undefined;
-        stream.writeBooleanGroup(
+        stream.writeBooleanGroup2(
             data.isMobile,
             hasBadge,
             emotes[0] !== undefined,
@@ -33,7 +33,9 @@ export const JoinPacket = new Packet<JoinPacketCreation, JoinData>(PacketType.Jo
             emotes[2] !== undefined,
             emotes[3] !== undefined,
             emotes[4] !== undefined,
-            emotes[5] !== undefined
+            emotes[5] !== undefined,
+            emotes[6] !== undefined,
+            emotes[7] !== undefined
         );
 
         stream.writeUint16(GameConstants.protocolVersion);
@@ -45,11 +47,10 @@ export const JoinPacket = new Packet<JoinPacketCreation, JoinData>(PacketType.Jo
             Badges.writeToStream(stream, data.badge);
         }
 
-        for (let i = 0; i < 6; i++) {
+        for (let i = 0; i < 8; i++) {
             const emote = emotes[i];
-            if (emote !== undefined) {
-                Emotes.writeToStream(stream, emote);
-            }
+            if (emote === undefined) continue;
+            Emotes.writeToStream(stream, emote);
         }
     },
 
@@ -58,7 +59,7 @@ export const JoinPacket = new Packet<JoinPacketCreation, JoinData>(PacketType.Jo
             isMobile,
             hasBadge,
             ...emotes
-        ] = stream.readBooleanGroup();
+        ] = stream.readBooleanGroup2();
         data.isMobile = isMobile;
 
         data.protocolVersion = stream.readUint16();
@@ -70,9 +71,10 @@ export const JoinPacket = new Packet<JoinPacketCreation, JoinData>(PacketType.Jo
             data.badge = Badges.readFromStream(stream);
         }
 
-        data.emotes = new Array(6);
-        for (let i = 0; i < 6; i++) {
-            if (emotes[i]) data.emotes[i] = Emotes.readFromStream(stream);
+        data.emotes = new Array(8);
+        for (let i = 0; i < 8; i++) {
+            if (!emotes[i]) continue;
+            data.emotes[i] = Emotes.readFromStream(stream);
         }
     }
 });

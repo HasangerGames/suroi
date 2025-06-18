@@ -1,26 +1,26 @@
 // noinspection JSConstantReassignment
 import { GameConstants, InputActions, SpectateActions, TeamSize } from "@common/constants";
 import { HealingItems, type HealingItemDefinition } from "@common/definitions/items/healingItems";
-import { Loots } from "@common/definitions/loots";
 import { Scopes, type ScopeDefinition } from "@common/definitions/items/scopes";
 import { Throwables } from "@common/definitions/items/throwables";
+import { Loots } from "@common/definitions/loots";
 import { type InputAction } from "@common/packets/inputPacket";
 import { SpectatePacket } from "@common/packets/spectatePacket";
 import { Numeric } from "@common/utils/math";
 import { handleResult, type Result } from "@common/utils/misc";
 import { ItemType, type ReferenceTo } from "@common/utils/objectDefinitions";
-import { Vec } from "@common/utils/vector";
 import { Rectangle, RendererType, Sprite, VERSION } from "pixi.js";
 import { Config, type ServerInfo } from "../config";
 import { Game } from "../game";
+import { CameraManager } from "../managers/cameraManager";
+import { EmoteWheelManager, MapPingWheelManager } from "../managers/emoteWheelManager";
 import { InputManager, type CompiledAction, type CompiledTuple } from "../managers/inputManager";
+import { MapManager } from "../managers/mapManager";
+import { ScreenRecordManager } from "../managers/screenRecordManager";
+import { UIManager } from "../managers/uiManager";
 import { requestFullscreen, sanitizeHTML, stringify } from "../utils/misc";
 import { GameConsole, type PossibleError, type Stringable } from "./gameConsole";
 import { Casters, ConVar } from "./variables";
-import { UIManager } from "../managers/uiManager";
-import { ScreenRecordManager } from "../managers/screenRecordManager";
-import { MapManager } from "../managers/mapManager";
-import { CameraManager } from "../managers/cameraManager";
 
 export type CommandExecutor<ErrorType> = (
     ...args: Array<string | undefined>
@@ -716,60 +716,13 @@ export function setUpCommands(): void {
         }
     );
 
-    const showEmoteWheel = (): void => {
-        if (!InputManager.pingWheelMinimap) {
-            InputManager.pingWheelPosition = Vec.clone(InputManager.gameMousePosition);
-        }
-
-        const { mouseX, mouseY } = InputManager;
-        const scale = GameConsole.getBuiltInCVar("cv_ui_scale");
-
-        UIManager.ui.emoteWheel
-            .css("left", `${mouseX / scale}px`)
-            .css("top", `${mouseY / scale}px`)
-            .css("background-image", 'url("./img/misc/emote_wheel.svg")')
-            .show();
-        InputManager.emoteWheelPosition = Vec.create(mouseX, mouseY);
-    };
-
     Command.createInvertiblePair(
         "emote_wheel",
         function() {
-            if (InputManager.emoteWheelActive) return;
-
-            InputManager.emoteWheelActive = true;
-
-            if (
-                (GameConsole.getBuiltInCVar("cv_hide_emotes") && !InputManager.pingWheelActive)
-                || Game.gameOver
-            ) return;
-
-            showEmoteWheel();
+            EmoteWheelManager.enabled = true;
         },
         function() {
-            if (!InputManager.emoteWheelActive) return;
-
-            InputManager.emoteWheelActive = false;
-            InputManager.pingWheelMinimap = false;
-
-            UIManager.ui.emoteWheel.hide();
-
-            if (InputManager.selectedEmote === undefined) return;
-
-            const emote = UIManager.emotes[InputManager.selectedEmote];
-            if (emote && !InputManager.pingWheelActive) {
-                InputManager.addAction({
-                    type: InputActions.Emote,
-                    emote
-                });
-            } else if (InputManager.pingWheelActive) {
-                InputManager.addAction({
-                    type: InputActions.MapPing,
-                    ping: UIManager.mapPings[InputManager.selectedEmote],
-                    position: InputManager.pingWheelPosition
-                });
-            }
-            InputManager.selectedEmote = undefined;
+            EmoteWheelManager.enabled = false;
         },
         {
             short: "Opens the emote wheel",
@@ -786,39 +739,24 @@ export function setUpCommands(): void {
     );
 
     Command.createInvertiblePair(
-        "map_ping_wheel",
+        "map_ping",
         function() {
-            if (
-                GameConsole.getBuiltInCVar("cv_hide_emotes")
-                && InputManager.emoteWheelActive
-                && !InputManager.pingWheelActive
-            ) {
-                showEmoteWheel();
-            }
-
-            InputManager.pingWheelActive = true;
-            UIManager.updateEmoteWheel();
+            MapPingWheelManager.enabled = true;
+            UIManager.updateRequestableItems();
         },
         function() {
-            if (GameConsole.getBuiltInCVar("cv_hide_emotes")) {
-                UIManager.ui.emoteWheel.hide();
-                InputManager.emoteWheelActive = false;
-                InputManager.pingWheelMinimap = false;
-                InputManager.selectedEmote = undefined;
-            }
-
-            InputManager.pingWheelActive = false;
-            UIManager.updateEmoteWheel();
+            MapPingWheelManager.enabled = false;
+            UIManager.updateRequestableItems();
         },
         {
             short: "Enables the emote wheel's ping mode",
-            long: "When invoked, the emote wheel will switch from triggering emotes to triggering map pings",
+            long: "When invoked, the map ping wheel will be opened, allowing the user to pick a map ping",
             allowOnlyWhenGameStarted: true,
             signatures: [{ args: [], noexcept: true }]
         },
         {
             short: "Disables the emote wheel's ping mode",
-            long: "When invoked, the emote wheel will revert back to trigger emotes",
+            long: "When invoked, the map ping wheel will be closed, and if a map ping has been selected, it will be displayed",
             allowOnlyWhenGameStarted: true,
             signatures: [{ args: [], noexcept: true }]
         }

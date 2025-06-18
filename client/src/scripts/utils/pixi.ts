@@ -7,7 +7,7 @@ import { UIManager } from "../managers/uiManager";
 import { PIXI_SCALE } from "./constants";
 import { getTranslatedString } from "./translations/translations";
 
-let spritesheetsLoaded = false;
+export let spritesheetsLoaded = false;
 
 const spritesheetCallbacks: Array<() => void> = [];
 

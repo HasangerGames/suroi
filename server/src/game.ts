@@ -479,7 +479,7 @@ export class Game implements GameData {
                 const { movement } = player;
                 movement.up = movement.down = movement.left = movement.right = false;
                 player.attacking = false;
-                player.sendEmote(player.loadout.emotes[4]);
+                player.sendEmote(player.loadout.emotes[6], true);
                 player.sendGameOverPacket(true);
                 this.pluginManager.emit("player_did_win", player);
             }

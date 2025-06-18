@@ -12,6 +12,8 @@ import { SuroiSprite } from "../utils/pixi";
 import { type Tween } from "../utils/tween";
 import { getLayerContainer as getLayerContainerIndex, LayerContainer } from "@common/utils/layer";
 import { type Timeout } from "@common/utils/misc";
+import { InputManager } from "./inputManager";
+import { EmoteWheelManager, MapPingWheelManager } from "./emoteWheelManager";
 
 class CameraManagerClass {
     container = new Container();
@@ -92,6 +94,10 @@ class CameraManagerClass {
             );
         } else {
             this.container.scale.set(scale);
+        }
+
+        if (InputManager.isMobile) {
+            EmoteWheelManager.container.position = MapPingWheelManager.position = Vec.create(Game.pixi.screen.width / 2, Game.pixi.screen.height / 2);
         }
     }
 

@@ -13,7 +13,6 @@ import { CustomTeamMessages, type CustomTeamMessage, type CustomTeamPlayerInfo, 
 import { ExtendedMap } from "@common/utils/misc";
 import { ItemType, type ReferenceTo, type ReifiableDef } from "@common/utils/objectDefinitions";
 import { pickRandomInArray } from "@common/utils/random";
-import { Vec, type Vector } from "@common/utils/vector";
 import { sound } from "@pixi/sound";
 import $ from "jquery";
 import { Color, isWebGPUSupported } from "pixi.js";
@@ -23,13 +22,13 @@ import { Config, type ServerInfo } from "./config";
 import { GameConsole } from "./console/gameConsole";
 import { defaultClientCVars, type CVarTypeMapping } from "./console/variables";
 import { Game } from "./game";
-import { CameraManager } from "./managers/cameraManager";
+import { EmoteWheelManager, MapPingWheelManager } from "./managers/emoteWheelManager";
 import { InputManager } from "./managers/inputManager";
 import { MapManager } from "./managers/mapManager";
 import { SoundManager } from "./managers/soundManager";
 import { UIManager } from "./managers/uiManager";
 import { body, createDropdown } from "./uiHelpers";
-import { EMOTE_SLOTS, PIXI_SCALE, UI_DEBUG_MODE } from "./utils/constants";
+import { EMOTE_SLOTS, UI_DEBUG_MODE } from "./utils/constants";
 import { Crosshairs, getCrosshair } from "./utils/crosshairs";
 import { html, humanDate, requestFullscreen } from "./utils/misc";
 import { spritesheetLoadPromise } from "./utils/pixi";
@@ -1139,7 +1138,6 @@ export async function setUpUI(): Promise<void> {
     let selectedEmoteSlot: typeof EMOTE_SLOTS[number] | undefined;
     const emoteList = $<HTMLDivElement>("#emotes-list");
 
-    const bottomEmoteUiCache: Partial<Record<typeof EMOTE_SLOTS[number], JQuery<HTMLSpanElement>>> = {};
     const emoteWheelUiCache: Partial<Record<typeof EMOTE_SLOTS[number], JQuery<HTMLDivElement>>> = {};
 
     function updateEmotesList(): void {
@@ -1153,17 +1151,13 @@ export async function setUpUI(): Promise<void> {
 
         for (const emote of emotes) {
             if (emote.category !== lastCategory) {
-                emoteList.append(
-                    $<HTMLDivElement>(
-                        `<div class="emote-list-header">${getTranslatedString(`emotes_category_${EmoteCategory[emote.category]}` as TranslationKeys)
-                        }</div>`
-                    )
-                );
+                emoteList.append($<HTMLDivElement>(
+                    `<div class="emote-list-header">${getTranslatedString(`emotes_category_${EmoteCategory[emote.category]}` as TranslationKeys)}</div>`
+                ));
                 lastCategory = emote.category;
             }
 
             const idString = emote.idString;
-            // noinspection CssUnknownTarget
             const emoteItem = $<HTMLDivElement>(
                 `<div id="emote-${idString}" class="emotes-list-item-container">
                     <div class="emotes-list-item" style="background-image: url(./img/game/shared/emotes/${idString}.svg)"></div>
@@ -1176,7 +1170,7 @@ export async function setUpUI(): Promise<void> {
 
                 const cvarName = selectedEmoteSlot;
                 (
-                    bottomEmoteUiCache[cvarName] ??= $((`#emote-wheel-bottom .emote-${cvarName} .fa-xmark` as const))
+                    emoteWheelUiCache[cvarName] ??= $((`#emote-wheel-bottom .emote-${cvarName} .fa-xmark` as const))
                 ).show();
 
                 GameConsole.setBuiltInCVar(`cv_loadout_${cvarName}_emote`, emote.idString);
@@ -1199,7 +1193,6 @@ export async function setUpUI(): Promise<void> {
 
     updateEmotesList();
 
-    const customizeEmote = $<HTMLDivElement>("#emote-customize-wheel");
     const emoteListItemContainer = $<HTMLDivElement>(".emotes-list-item-container");
 
     function changeEmoteSlotImage(slot: typeof EMOTE_SLOTS[number], emote: ReferenceTo<EmoteDefinition>): JQuery<HTMLDivElement> {
@@ -1231,22 +1224,9 @@ export async function setUpUI(): Promise<void> {
 
                 updateEmotesList();
 
-                if (EMOTE_SLOTS.indexOf(slot) > 3) {
-                    // win / death emote
-                    customizeEmote.css(
-                        "background-image",
-                        "url('/img/misc/emote_wheel.svg')"
-                    );
-
-                    (
-                        emoteWheelUiCache[slot] ??= $(`#emote-wheel-container .emote-${slot}`)
-                    ).addClass("selected");
-                } else {
-                    customizeEmote.css(
-                        "background-image",
-                        `url("./img/misc/emote_wheel_highlight_${slot}.svg"), url("/img/misc/emote_wheel.svg")`
-                    );
-                }
+                (
+                    emoteWheelUiCache[slot] ??= $(`#emote-wheel-container .emote-${slot}`)
+                ).addClass("selected");
 
                 emoteListItemContainer
                     .removeClass("selected")
@@ -1257,7 +1237,7 @@ export async function setUpUI(): Promise<void> {
 
         (
             emoteWheelUiCache[slot] ??= $(`#emote-wheel-container .emote-${slot}`)
-        ).children(".remove-emote-btn")
+        ).children(".fa-trash")
             .on("click", () => {
                 GameConsole.setBuiltInCVar(cvar, "");
                 (
@@ -2063,11 +2043,13 @@ export async function setUpUI(): Promise<void> {
                 const isTeamMode = Game.teamMode;
 
                 if (isPrimary) {
-                    if (InputManager.pingWheelActive && Game.teamMode) {
+                    if (MapPingWheelManager.enabled && Game.teamMode) {
                         InputManager.addAction({
                             type: InputActions.Emote,
                             emote: Emotes.fromString(item.idString)
                         });
+                        MapPingWheelManager.enabled = false;
+                        UIManager.updateRequestableItems();
                     } else {
                         InputManager.addAction({
                             type: InputActions.UseItem,
@@ -2117,11 +2099,13 @@ export async function setUpUI(): Promise<void> {
             const isTeamMode = Game.teamMode;
 
             if (isPrimary) {
-                if (InputManager.pingWheelActive && Game.teamMode) {
+                if (MapPingWheelManager.enabled && Game.teamMode) {
                     InputManager.addAction({
                         type: InputActions.Emote,
                         emote: Emotes.fromString(ammo.idString)
                     });
+                    MapPingWheelManager.enabled = false;
+                    UIManager.updateRequestableItems();
                 }
 
                 mobileDropItem(button, isTeamMode, ammo);
@@ -2236,98 +2220,28 @@ export async function setUpUI(): Promise<void> {
         // Active weapon ammo button reloads
         ui.activeAmmo.on("click", () => GameConsole.handleQuery("reload", "never"));
 
-        // Emote button & wheel
-        ui.emoteWheel
-            .css("top", "50%")
-            .css("left", "50%");
-
-        const createEmoteWheelListener = (slot: typeof EMOTE_SLOTS[number], emoteSlot: number): void => {
-            $(`#emote-wheel .emote-${slot}`).on("click", () => {
-                ui.emoteWheel.hide();
-                ui.emoteButton
-                    .removeClass("btn-alert")
-                    .addClass("btn-primary");
-                let clicked = true;
-
-                if (InputManager.pingWheelActive) {
-                    const ping = UIManager.mapPings[emoteSlot];
-
-                    setTimeout(() => {
-                        let gameMousePosition: Vector;
-
-                        if (MapManager.expanded) {
-                            ui.game.one("click", () => {
-                                gameMousePosition = InputManager.pingWheelPosition;
-
-                                if (ping && InputManager.pingWheelActive && clicked) {
-                                    InputManager.addAction({
-                                        type: InputActions.MapPing,
-                                        ping,
-                                        position: gameMousePosition
-                                    });
-
-                                    clicked = false;
-                                }
-                            });
-                        } else {
-                            ui.game.one("click", e => {
-                                const globalPos = Vec.create(e.clientX, e.clientY);
-                                const pixiPos = CameraManager.container.toLocal(globalPos);
-                                gameMousePosition = Vec.scale(pixiPos, 1 / PIXI_SCALE);
-
-                                if (ping && InputManager.pingWheelActive && clicked) {
-                                    InputManager.addAction({
-                                        type: InputActions.MapPing,
-                                        ping,
-                                        position: gameMousePosition
-                                    });
-
-                                    clicked = false;
-                                }
-                            });
-                        }
-                    }, 100); // 0.1 second (to wait for the emote wheel)
-                } else {
-                    const emote = UIManager.emotes[emoteSlot];
-                    if (emote) {
-                        InputManager.addAction({
-                            type: InputActions.Emote,
-                            emote
-                        });
-                    }
-                }
-            });
-        };
-
-        createEmoteWheelListener("top", 0);
-        createEmoteWheelListener("right", 1);
-        createEmoteWheelListener("bottom", 2);
-        createEmoteWheelListener("left", 3);
-
         $("#mobile-options").show();
 
-        ui.menuButton.on("click", () => ui.gameMenu.fadeToggle(250));
+        ui.menuButton.on("pointerup", () => ui.gameMenu.fadeToggle(250));
 
-        ui.emoteButton.on("click", () => {
-            const { emoteWheelActive } = InputManager;
-
-            InputManager.emoteWheelActive = !emoteWheelActive;
+        ui.emoteButton.on("pointerup", () => {
+            const emoteWheelActive = !EmoteWheelManager.enabled;
+            EmoteWheelManager.enabled = emoteWheelActive;
 
             ui.emoteButton
-                .toggleClass("btn-alert", !emoteWheelActive)
-                .toggleClass("btn-primary", emoteWheelActive);
-
-            UIManager.ui.emoteWheel.toggle(!emoteWheelActive);
+                .toggleClass("btn-alert", emoteWheelActive)
+                .toggleClass("btn-primary", !emoteWheelActive);
         });
 
-        ui.pingToggle.on("click", () => {
-            InputManager.pingWheelActive = !InputManager.pingWheelActive;
-            const { pingWheelActive } = InputManager;
+        ui.pingToggle.on("pointerup", () => {
+            const pingWheelActive = !MapPingWheelManager.enabled;
+            MapPingWheelManager.enabled = pingWheelActive;
+
             ui.pingToggle
                 .toggleClass("btn-danger", pingWheelActive)
                 .toggleClass("btn-primary", !pingWheelActive);
 
-            UIManager.updateEmoteWheel();
+            UIManager.updateRequestableItems();
         });
     }
 

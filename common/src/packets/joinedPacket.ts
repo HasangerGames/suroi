@@ -27,13 +27,14 @@ export const JoinedPacket = new Packet<JoinedData>(PacketType.Joined, {
             emotes[2] !== undefined,
             emotes[3] !== undefined,
             emotes[4] !== undefined,
-            emotes[5] !== undefined
+            emotes[5] !== undefined,
+            emotes[6] !== undefined,
+            emotes[7] !== undefined
         );
-        for (let i = 0; i < 6; i++) {
+        for (let i = 0; i < 8; i++) {
             const emote = emotes[i];
-            if (emote !== undefined) {
-                Emotes.writeToStream(stream, emote);
-            }
+            if (emote === undefined) continue;
+            Emotes.writeToStream(stream, emote);
         }
     },
 
@@ -46,10 +47,12 @@ export const JoinedPacket = new Packet<JoinedData>(PacketType.Joined, {
         }
 
         const emotes = stream.readBooleanGroup();
-        data.emotes = new Array(6);
-        for (let i = 0; i < 6; i++) {
-            if (emotes[i]) data.emotes[i] = Emotes.readFromStream(stream);
+        data.emotes = new Array(8);
+        for (let i = 0; i < 8; i++) {
+            if (!emotes[i]) continue;
+            data.emotes[i] = Emotes.readFromStream(stream);
         }
+        console.log(data.emotes);
 
         recordTo(DataSplitTypes.PlayerData);
     }

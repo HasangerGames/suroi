@@ -155,6 +155,7 @@
     width: 220px;
     height: 220px;
     margin-right: 5px;
+    z-index: 1002;
 
     border: 10px solid palette.$transparent_bg;
     border-radius: 10px;
@@ -1972,58 +1973,6 @@
     }
 }
 
-#emote-wheel,
-#emote-customize-wheel {
-    position: absolute;
-    width: 286px;
-    height: 286px;
-    transform: translate(-50%, -50%);
-    z-index: 1;
-    //noinspection CssUnknownTarget
-    background-image: url("/img/misc/emote_wheel.svg");
-
-    & > div {
-        width: 84px;
-        height: 84px;
-        background-size: 84px 84px;
-        position: absolute;
-    }
-
-    .emote-top {
-        top: 14px;
-        left: 101px;
-    }
-
-    .emote-right {
-        right: 14px;
-        top: 101px;
-    }
-
-    .emote-bottom {
-        bottom: 14px;
-        left: 101px;
-    }
-
-    .emote-left {
-        left: 14px;
-        top: 101px;
-    }
-
-    .button-center {
-        width: 42px;
-        height: 42px;
-        left: calc(143px - calc(42px / 2));
-        top: calc(101px + calc(42px / 2));
-    }
-}
-
-#emote-wheel-highlight,
-#emote-customize-wheel-highlight {
-    position: absolute;
-    width: 286px;
-    height: 286px;
-}
-
 #game-over-overlay {
     display: flex;
     flex-direction: column;
@@ -2268,10 +2217,8 @@
 #center-top-container,
 #game-menu,
 #mobile-options,
-#emote-wheel,
 #weapon-ammo-container,
 #interact-message,
-#minimap-border,
 #btn-spectate-options,
 #btn-close-minimap {
     z-index: 1001;
@@ -2280,33 +2227,22 @@
 #mobile-options {
     display: flex;
     flex-direction: column;
-
-    @media screen and (max-width: variables.$screen_large) {
-        position: relative;
-        bottom: 3px;
-    }
+    z-index: 1002;
 
     button {
-        width: 50px;
-    }
+        font-size: 18px;
+        width: 32px;
+        height: 32px !important;
 
-    #btn-game-menu,
-    #btn-toggle-ping,
-    #btn-emotes {
-        font-size: 20px;
-        height: auto;
-        width: 37px;
-
-        border-radius: 100%;
+        border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
-        flex-direction: column;
-        margin: 5px;
+        margin: 3px;
         border: none;
 
         img {
-            width: 21px;
+            width: 18px;
             pointer-events: none;
             vertical-align: middle;
         }
