@@ -442,6 +442,10 @@ class InputManagerClass {
                     activePlayer.container.rotation = this.rotation;
                 }
 
+                const joystickSize = GameConsole.getBuiltInCVar("mb_joystick_size");
+
+                this.distanceToMouse = Numeric.remap(data.distance, 0, joystickSize / 2, 0, GameConstants.player.maxMouseDist);
+
                 if (!activePlayer) return;
 
                 const def = activePlayer.activeItem;
@@ -450,7 +454,7 @@ class InputManagerClass {
                     activePlayer.images.aimTrail.alpha = 1;
                 }
 
-                const attacking = data.distance > GameConsole.getBuiltInCVar("mb_joystick_size") / 3;
+                const attacking = data.distance > joystickSize / 3;
                 if (
                     (def.itemType === ItemType.Throwable && this.attacking)
                     || (def.itemType === ItemType.Gun && def.shootOnRelease)

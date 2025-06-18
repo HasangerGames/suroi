@@ -2557,15 +2557,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
         if (this.turning = packet.turning) {
             this.rotation = packet.rotation;
-            if (!this.isMobile) {
-                this.distanceToMouse = (packet as typeof packet & NoMobile).distanceToMouse ?? 0;
-                /*
-                    we put ?? cause even though the packet's isMobile should match the server's, it might
-                    be possible—whether accidentally or maliciously—that it doesn't; however, the server is
-                    not to honor any change to isMobile. however, the packet will still be announcing itself
-                    as a mobile packet, and will thus lack the distanceToMouse field
-                */
-            }
+            this.distanceToMouse = packet.distanceToMouse;
         }
 
         const inventory = this.inventory;
