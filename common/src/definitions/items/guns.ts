@@ -2603,6 +2603,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
             animationDuration: 100
         },
         image: { position: Vec.create(80, 0) },
+        inventoryScale: 0.8,
         noMuzzleFlash: true,
         capacity: 30,
         extendedCapacity: 40,
