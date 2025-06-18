@@ -1515,7 +1515,8 @@
         &#weapon-slot-1 .item-image,
         &#weapon-slot-2 .item-image {
             width: 150px;
-            background-position: left center;
+            background-position: left;
+            transform-origin: left;
         }
 
         @media screen and (max-width: variables.$screen_large) {

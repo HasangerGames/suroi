@@ -92,6 +92,7 @@ type BaseGunDefinition = InventoryItemDefinition & {
         // no relation to the ZIndexes enum
         readonly zIndex?: number
     }
+    readonly inventoryScale?: number
 
     readonly noMuzzleFlash?: boolean
     readonly ballistics: BaseBulletDefinition
@@ -247,6 +248,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
             animationDuration: 100
         },
         image: { position: Vec.create(65, 0) },
+        inventoryScale: 0.8,
         casingParticles: [{
             position: Vec.create(3.5, 0.5),
             velocity: {
@@ -302,6 +304,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
             animationDuration: 100
         },
         image: { position: Vec.create(70, -1) },
+        inventoryScale: 0.8,
         casingParticles: [{
             position: Vec.create(3.5, 0.45),
             velocity: {
@@ -357,6 +360,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
             animationDuration: 100
         },
         image: { position: Vec.create(70, 0) },
+        inventoryScale: 0.85,
         casingParticles: [{
             frame: "casing_762x38mmR",
             position: Vec.create(3.5, 0.5),
@@ -419,6 +423,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
             animationDuration: 100
         },
         image: { position: Vec.create(75, 0) },
+        inventoryScale: 0.85,
         casingParticles: [{
             frame: "casing_50ae",
             position: Vec.create(3.5, 0.3),
@@ -499,6 +504,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
             }
         }],
         image: { position: Vec.create(87, 0) },
+        inventoryScale: 0.85,
         gasParticles: gasParticlePresets.pistol,
         capacity: 5,
         reloadTime: 2.4,
@@ -554,6 +560,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
             animationDuration: 100
         },
         image: { position: Vec.create(71, 0) },
+        inventoryScale: 0.85,
         casingParticles: [{
             position: Vec.create(4, 0.35)
         }],
@@ -663,6 +670,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
         }],
         gasParticles: gasParticlePresets.automatic,
         image: { position: Vec.create(68, 0) },
+        inventoryScale: 0.85,
         ballistics: {
             damage: 7.75,
             obstacleMultiplier: 1,

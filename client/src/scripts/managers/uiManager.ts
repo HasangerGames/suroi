@@ -966,6 +966,7 @@ class UIManagerClass {
                             "background-color": `hsla(${color.hue}, ${color.saturation}%, ${color.lightness / 2}%, 50%)`,
                             "color": `hsla(${color.hue}, ${color.saturation}%, 90%)`
                         });
+                        itemImage.css("transform", definition.inventoryScale !== undefined ? `scale(${definition.inventoryScale})` : "unset");
                     }
 
                     itemName.text(
