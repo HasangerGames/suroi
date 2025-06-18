@@ -411,8 +411,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             if (noMovementSmoothing) CameraManager.position = toPixiCoords(this.position);
 
             if (GameConsole.getBuiltInCVar("pf_show_pos")) {
-                UIManager.ui.debugPos.text(
-                    `X: ${this.position.x.toFixed(2)} Y: ${this.position.y.toFixed(2)} Z: ${this.layer}`
+                UIManager.ui.debugPos.html(
+                    `X: ${this.position.x.toFixed(2)}<br>Y: ${this.position.y.toFixed(2)}<br>Z: ${this.layer ?? 0}`
                 );
             }
         }

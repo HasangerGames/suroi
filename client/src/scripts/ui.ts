@@ -2192,6 +2192,11 @@ export async function setUpUI(): Promise<void> {
 
         ui.btnSpectateMenu.html("<i class=\"fa-solid fa-bars\"></i>");
         ui.btnSpectateMenu.addClass("btn-success");
+
+        // To fix overlapping gas timer with mobile options
+        ui.gasAndDebug.addClass("gas-and-debug-mobile-patch");
+        // silly
+        ui.ammosContainer.addClass("mobile-patch-ammos");
     }
 
     const optionsIcon = $("#btn-spectate-options-icon");

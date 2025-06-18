@@ -286,7 +286,9 @@ class UIManagerClass {
 
         inventoryMsg: $<HTMLSpanElement>("#inventory-message"),
 
-        debugPos: $<HTMLSpanElement>("#coordinates-hud")
+        debugPos: $<HTMLSpanElement>("#coordinates-hud"),
+
+        ammosContainer: $<HTMLDivElement>("#ammos-container")
     });
 
     private readonly _weaponSlotCache = new ExtendedMap<
