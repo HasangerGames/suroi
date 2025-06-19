@@ -1,7 +1,7 @@
 import { svelte } from "@sveltejs/vite-plugin-svelte";
 import path, { resolve } from "path";
 import { type UserConfig } from "vite";
-import { ViteImageOptimizer } from "vite-plugin-image-optimizer";
+// import { ViteImageOptimizer } from "vite-plugin-image-optimizer";
 import pkg from "../../package.json";
 import { newsPosts } from "./plugins/news-posts-plugin";
 import { translations } from "./plugins/translations-plugin";
@@ -62,10 +62,10 @@ const commonConfig: UserConfig = {
                 }
             }
         }),
-        ViteImageOptimizer({
-            test: /\.(svg)$/i,
-            logStats: false
-        }),
+        // ViteImageOptimizer({
+        //     test: /\.(svg)$/i,
+        //     logStats: false
+        // }),
         imageSpritesheet(),
         audioSpritesheet(),
         newsPosts(),
