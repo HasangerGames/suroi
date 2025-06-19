@@ -1680,16 +1680,24 @@
             background-repeat: no-repeat space;
             background-position-x: 26px;
             background-size: 32px;
+            mask-repeat: no-repeat space;
+            mask-position: 26px;
+            mask-size: 32px;
+            background-blend-mode: multiply;
             transform: rotate(90deg);
 
             @media screen and (max-width: variables.$screen_large) {
                 background-size: 19px;
                 background-position-x: 15px;
+                mask-size: 19px;
+                mask-position: 15px;
             }
 
             @media screen and (max-width: variables.$screen_medium) {
                 background-size: 13px;
                 background-position-x: 11px;
+                mask-size: 13px;
+                mask-position: 11px;
             }
         }
     }

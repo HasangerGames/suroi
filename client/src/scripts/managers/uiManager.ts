@@ -914,16 +914,16 @@ class UIManagerClass {
         );
     }
 
-    private readonly _weaponCache: Array<{
+    readonly weaponCache: Array<{
         hasItem?: boolean
         isActive?: boolean
         idString?: string
         ammo?: number
         hasAmmo?: boolean
-    }> = new Array<typeof this._weaponCache[number]>(GameConstants.player.maxWeapons);
+    } | undefined> = new Array<typeof this.weaponCache[number]>(GameConstants.player.maxWeapons);
 
     clearWeaponCache(): void {
-        this._weaponCache.length = 0;
+        this.weaponCache.length = 0;
     }
 
     updateWeaponSlots(): void {
@@ -931,8 +931,8 @@ class UIManagerClass {
 
         for (let i = 0, max = GameConstants.player.maxWeapons; i < max; i++) {
             const weapon = inventory.weapons[i];
-            const isNew = this._weaponCache[i] === undefined;
-            const cache = this._weaponCache[i] ??= {};
+            const isNew = this.weaponCache[i] === undefined;
+            const cache = this.weaponCache[i] ??= {};
 
             const {
                 container,
@@ -983,16 +983,22 @@ class UIManagerClass {
                     const isFists = definition.idString === "fists";
 
                     let weaponImage: string;
+                    let fistTint: Color | undefined;
                     if (isFists) {
-                        if (this.skinID !== undefined && Skins.fromStringSafe(this.skinID)?.grassTint) { // ghillie suit
-                            weaponImage = `url("data:image/svg+xml,${encodeURIComponent(`<svg width="34" height="34" viewBox="0 0 8.996 8.996" xmlns="http://www.w3.org/2000/svg"><circle fill="${Game.colors.ghillie.toHex()}" stroke="${new Color(Game.colors.ghillie).multiply("#111").toHex()}" stroke-width="1.05833" cx="4.498" cy="4.498" r="3.969"/></svg>`)}")`;
-                        } else {
-                            const skinDef = Skins.fromString(this.skinID ?? GameConsole.getBuiltInCVar("cv_loadout_skin"));
-                            weaponImage = `url(./img/game/shared/skins/${skinDef.fistImage ?? `${skinDef.idString}_fist`}.svg)`;
+                        const skinDef = Skins.fromString(this.skinID ?? GameConsole.getBuiltInCVar("cv_loadout_skin"));
+                        weaponImage = `url(./img/game/shared/skins/${skinDef.fistImage ?? `${skinDef.idString}_fist`}.svg)`;
+                        if (skinDef.grassTint) {
+                            fistTint = Game.colors.ghillie;
+                        } else if (skinDef.fistTint !== undefined) {
+                            fistTint = new Color(skinDef.fistTint);
                         }
                     } else {
                         let frame = definition.idString;
-                        if (ClientPerkManager.hasItem(PerkIds.PlumpkinBomb) && definition.itemType === ItemType.Throwable && !definition.noSkin) {
+                        if (
+                            ClientPerkManager.hasItem(PerkIds.PlumpkinBomb)
+                            && definition.itemType === ItemType.Throwable
+                            && !definition.noSkin
+                        ) {
                             frame += "_halloween";
                         }
                         weaponImage = `url(./img/game/${definition.reskins?.includes(Game.modeName) ? Game.modeName : "shared"}/weapons/${frame}.svg)`;
@@ -1000,7 +1006,11 @@ class UIManagerClass {
 
                     this._playSlotAnimation(container);
                     itemImage
-                        .css("background-image", weaponImage)
+                        .css({
+                            "background-image": weaponImage,
+                            "background-color": fistTint ? fistTint.toHex() : "unset",
+                            "mask-image": fistTint ? weaponImage : "unset"
+                        })
                         .toggleClass("is-fists", isFists)
                         .show();
                 } else {

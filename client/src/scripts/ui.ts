@@ -1046,16 +1046,14 @@ export async function setUpUI(): Promise<void> {
         base.css({
             "background-image": baseImage,
             "mask-image": hasBaseTint ? baseImage : "unset",
-            "background-color": hasBaseTint ? new Color(skinDef.baseTint).toHex() : "unset",
-            "background-blend-mode": hasBaseTint ? "multiply" : "unset"
+            "background-color": hasBaseTint ? new Color(skinDef.baseTint).toHex() : "unset"
         });
 
         const hasFistTint = skinDef.fistTint !== undefined;
         fists.css({
             "background-image": fistImage,
-            "mask-image": hasFistTint ? fistImage : "unset",
             "background-color": hasFistTint ? new Color(skinDef.fistTint).toHex() : "unset",
-            "background-blend-mode": hasFistTint ? "multiply" : "unset"
+            "mask-image": hasFistTint ? fistImage : "unset"
         });
     };
 

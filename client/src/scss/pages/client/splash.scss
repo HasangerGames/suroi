@@ -453,6 +453,7 @@
             height: 130px;
             background-size: cover;
             mask-size: cover;
+            background-blend-mode: multiply;
             transform: rotate(90deg);
         }
 
@@ -464,6 +465,7 @@
             height: 50px;
             background-size: cover;
             mask-size: cover;
+            background-blend-mode: multiply;
             transform: rotate(90deg);
         }
 
