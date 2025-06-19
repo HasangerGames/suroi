@@ -269,7 +269,7 @@
 "create_team_play": "Începe Joaca"
 "report_reporting": "Raportând"
 "report_id": "Raport ID:"
-"report_instructions": "\n      <p><strong>Vă rugăm citiți instrucțiunile de mai înjos!</strong> Dacă nu, raportul dvs va fi ignorat.</p>\n      <h4>Cum să Submiteți un Raport</h4>\n      <ol>\n        <li>Intrați în <a href=\"https://discord.suroi.io\">serverul de Discord.</a></li>\n        <li>Duceți-vă la <a href=\"https://discord.com/channels/1077043833621184563/1135288369526607973\">#cheater-reports\n            channel.</a></li>\n        <li>Citiți regulile de raport la mesajul fixat.</li>\n        <li>Submiteți raportul dvs ca un mesaj.</li>\n      </ol>"
+"report_instructions": "\n      <p><strong>Vă rugăm citiți instrucțiunile de mai înjos!</strong> Dacă nu, raportul dvs va fi ignorat.</p>\n      <h4>Cum să Submiteți un Raport</h4>\n      <ol>\n        <li>Intrați în <a href=\"https://discord.suroi.io\">serverul de Discord.</a></li>\n        <li>Duceți-vă la <a href=\"https://discord.com/channels/1077043833621184563/1135288369526607973\">#player-reports\n            channel.</a></li>\n        <li>Citiți regulile de raport la mesajul fixat.</li>\n        <li>Submiteți raportul dvs ca un mesaj.</li>\n      </ol>"
 "languages": "Limbile"
 "gauze": "Tifon"
 "medikit": "Trusă Medicală"

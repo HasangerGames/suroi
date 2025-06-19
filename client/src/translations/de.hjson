@@ -243,7 +243,7 @@
 "create_team_play": "Spiel starten"
 "report_reporting": "Meldeprozess läuft"
 "report_id": "Meldungs-ID:"
-"report_instructions": "\n      <p><strong>Bitte befolge die folgenden Anweisungen!</strong> Wenn du dies nicht tust, wird deine Meldung ignoriert.</p>\n      <h4>So reichst du eine Meldung ein</h4>\n      <ol>\n        <li>Trete dem <a href=\"https://discord.suroi.io\">Discord-Server</a> bei.</li>\n        <li>Gehe zum <a href=\"https://discord.com/channels/1077043833621184563/1135288369526607973\">#cheater-reports\n            Kanal.</a></li>\n        <li>Lies die Meldungsrichtlinien im angehefteten Beitrag.</li>\n        <li>Reiche deine Meldung als Beitrag ein.</li>\n      </ol>"
+"report_instructions": "\n      <p><strong>Bitte befolge die folgenden Anweisungen!</strong> Wenn du dies nicht tust, wird deine Meldung ignoriert.</p>\n      <h4>So reichst du eine Meldung ein</h4>\n      <ol>\n        <li>Trete dem <a href=\"https://discord.suroi.io\">Discord-Server</a> bei.</li>\n        <li>Gehe zum <a href=\"https://discord.com/channels/1077043833621184563/1135288369526607973\">#player-reports\n            Kanal.</a></li>\n        <li>Lies die Meldungsrichtlinien im angehefteten Beitrag.</li>\n        <li>Reiche deine Meldung als Beitrag ein.</li>\n      </ol>"
 "languages": "Sprachen"
 "gauze": "Mullbinde"
 "medikit": "Medikit"

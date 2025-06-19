@@ -265,7 +265,7 @@
 "create_team_not_ready": "Nem állok készen!"
 "report_reporting": "Játékos jelentése:"
 "report_id": "Jelentési azonosító:"
-"report_instructions": "\n    <p><strong>Kérlek kövesd az alábbi utasításokat!</strong> Ha nem teszed, a jelentésed figyelmen kívül lesz hagyva.</p>\n    <h4>Hogyan kell Beküldeni egy Jelentést</h4>\n    <ol>\n      <li>Csatlakozz a <a href=\"https://discord.suroi.io\">Discord szerverhez</a>!</li>\n      <li>Menj a <a href=\"https://discord.com/channels/1077043833621184563/1135288369526607973\">#cheater-reports\n          csatornához</a>!</li>\n      <li>Olvasd el a jelentési útmutatót a kitűzött posztban!</li>\n      <li>Küldd be a jelentésedet posztként!</li>\n    </ol>"
+"report_instructions": "\n    <p><strong>Kérlek kövesd az alábbi utasításokat!</strong> Ha nem teszed, a jelentésed figyelmen kívül lesz hagyva.</p>\n    <h4>Hogyan kell Beküldeni egy Jelentést</h4>\n    <ol>\n      <li>Csatlakozz a <a href=\"https://discord.suroi.io\">Discord szerverhez</a>!</li>\n      <li>Menj a <a href=\"https://discord.com/channels/1077043833621184563/1135288369526607973\">#player-reports\n          csatornához</a>!</li>\n      <li>Olvasd el a jelentési útmutatót a kitűzött posztban!</li>\n      <li>Küldd be a jelentésedet posztként!</li>\n    </ol>"
 "languages": "Nyelvek"
 "gauze": "Fásli"
 "medikit": "Elsősegély"

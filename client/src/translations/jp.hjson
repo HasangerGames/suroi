@@ -289,7 +289,7 @@
 "create_team_play": "ゲームを始める"
 "report_reporting": "あなたは通報しています。"
 "report_id": "通報ID："
-"report_instructions": "\n    <p><strong>以下の指示に従ってください！</strong> そうしないと、通報は無視されます。</p>\n    <h4>通報の方法</h4>\n    <ol>\n      <li><a href=\"https://discord.suroi.io\">Discordサーバー</a>に参加してください。</li>\n      <li><a href=\"https://discord.com/channels/1077043833621184563/1135288369526607973\">#cheater-reports\n          チャンネル</a>に移動してください。</li>\n      <li>ピン留めされた投稿のガイドラインをお読みください。</li>\n      <li>通報を投稿してください。</li>\n    </ol>"
+"report_instructions": "\n    <p><strong>以下の指示に従ってください！</strong> そうしないと、通報は無視されます。</p>\n    <h4>通報の方法</h4>\n    <ol>\n      <li><a href=\"https://discord.suroi.io\">Discordサーバー</a>に参加してください。</li>\n      <li><a href=\"https://discord.com/channels/1077043833621184563/1135288369526607973\">#player-reports\n          チャンネル</a>に移動してください。</li>\n      <li>ピン留めされた投稿のガイドラインをお読みください。</li>\n      <li>通報を投稿してください。</li>\n    </ol>"
 
 "languages": "言語"
 "gauze": "ガーゼ"

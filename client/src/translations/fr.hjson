@@ -267,7 +267,7 @@
 "create_team_play": "Commencer une partie"
 "report_reporting": "Signalant"
 "report_id": "Report ID:"
-"report_instructions": "\n      <p><strong>Merci de suivre les instructions ci-dessous! Sinon, votre signalement sera ignoré.</p>\n      <h4>Comment signaler</h4>\n      <ol>\n        <li>Rejoignez le <a href=\"https://discord.suroi.io\">serveur Discord.</a></li>\n        <li>Allez dans le salon <a href=\"https://discord.com/channels/1077043833621184563/1135288369526607973\">#cheater-reports.</a></li>\n        <li>Lisez les règles de signalement dans le post épinglé.</li>\n        <li>Envoyez votre signalement sous forme de post.</li>\n      </ol>"
+"report_instructions": "\n      <p><strong>Merci de suivre les instructions ci-dessous! Sinon, votre signalement sera ignoré.</p>\n      <h4>Comment signaler</h4>\n      <ol>\n        <li>Rejoignez le <a href=\"https://discord.suroi.io\">serveur Discord.</a></li>\n        <li>Allez dans le salon <a href=\"https://discord.com/channels/1077043833621184563/1135288369526607973\">#player-reports.</a></li>\n        <li>Lisez les règles de signalement dans le post épinglé.</li>\n        <li>Envoyez votre signalement sous forme de post.</li>\n      </ol>"
 "languages": "Languages"
 "gauze": "Bandages"
 "medikit": "Medikit"

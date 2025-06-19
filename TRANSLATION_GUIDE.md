@@ -288,11 +288,11 @@ can break the translations.
 is a translated example in comparison with the original.
 Original:
 ```
-"report_instructions": "\n      <p><strong>Please follow the instructions below!</strong> If you don't, your report will be ignored.</p>\n      <h4>How to Submit a Report</h4>\n      <ol>\n        <li>Join the <a href=\"https://discord.suroi.io\">Discord server.</a></li>\n        <li>Go to the <a href=\"https://discord.com/channels/1077043833621184563/1135288369526607973\">#cheater-reports\n            channel.</a></li>\n        <li>Read the report guidelines in the pinned post.</li>\n        <li>Submit your report as a post.</li>\n      </ol>"
+"report_instructions": "\n      <p><strong>Please follow the instructions below!</strong> If you don't, your report will be ignored.</p>\n      <h4>How to Submit a Report</h4>\n      <ol>\n        <li>Join the <a href=\"https://discord.suroi.io\">Discord server.</a></li>\n        <li>Go to the <a href=\"https://discord.com/channels/1077043833621184563/1135288369526607973\">#player-reports\n            channel.</a></li>\n        <li>Read the report guidelines in the pinned post.</li>\n        <li>Submit your report as a post.</li>\n      </ol>"
 ```
 Translated example (Hungarian):
 ```
-"report_instructions": "\n    <p><strong>Kérlek kövesd az alábbi utasításokat!</strong> Ha nem teszed, a jelentésed figyelmen kívül lesz hagyva.</p>\n    <h4>Hogyan kell Beküldeni egy Jelentést</h4>\n    <ol>\n      <li>Csatlakozz a <a href=\"https://discord.suroi.io\">Discord szerverhez</a>!</li>\n      <li>Menj a <a href=\"https://discord.com/channels/1077043833621184563/1135288369526607973\">#cheater-reports\n          csatornához</a>!</li>\n      <li>Olvasd el a jelentési útmutatót a kitűzött posztban!</li>\n      <li>Küldd be a jelentésedet posztként!</li>\n    </ol>"
+"report_instructions": "\n    <p><strong>Kérlek kövesd az alábbi utasításokat!</strong> Ha nem teszed, a jelentésed figyelmen kívül lesz hagyva.</p>\n    <h4>Hogyan kell Beküldeni egy Jelentést</h4>\n    <ol>\n      <li>Csatlakozz a <a href=\"https://discord.suroi.io\">Discord szerverhez</a>!</li>\n      <li>Menj a <a href=\"https://discord.com/channels/1077043833621184563/1135288369526607973\">#player-reports\n          csatornához</a>!</li>\n      <li>Olvasd el a jelentési útmutatót a kitűzött posztban!</li>\n      <li>Küldd be a jelentésedet posztként!</li>\n    </ol>"
 ```
 - `"keybind_clear_tooltip"` has two HTML tags: an opening and a closing tag (`<kbd>` and `</kbd>` respectively). You
 should **not** change them, nor move them, just translate the rest.

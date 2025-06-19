@@ -287,7 +287,7 @@
 
 "report_reporting": "举报"
 "report_id": "举报ID："
-"report_instructions": "\n    <p><strong>请按照以下说明操作！</strong>否则，你的举报将被忽略。</p>\n    <h4>如何提交举报</h4>\n    <ol>\n      <li>加入<a href=\"https://discord.suroi.io\">Discord服务器。</a></li>\n      <li>前往<a href=\"https://discord.com/channels/1077043833621184563/1135288369526607973\">#cheatr-reports\n          频道。</a></li>\n      <li>阅读置顶帖中的举报方针。</li>\n      <li>以帖子的形式提交你的举报。</li>\n    </ol>"
+"report_instructions": "\n    <p><strong>请按照以下说明操作！</strong>否则，你的举报将被忽略。</p>\n    <h4>如何提交举报</h4>\n    <ol>\n      <li>加入<a href=\"https://discord.suroi.io\">Discord服务器。</a></li>\n      <li>前往<a href=\"https://discord.com/channels/1077043833621184563/1135288369526607973\">#player-reports\n          频道。</a></li>\n      <li>阅读置顶帖中的举报方针。</li>\n      <li>以帖子的形式提交你的举报。</li>\n    </ol>"
 "languages": "语言"
 
 "gauze": "纱布"
