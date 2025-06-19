@@ -634,9 +634,12 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
             const skinID = skin.idString;
             if (this.isActivePlayer) {
+                const oldSkinID = UIManager.skinID;
                 UIManager.skinID = skinID;
-                UIManager.weaponCache[2] = undefined; // invalidate melee cache so fists in inventory update
-                UIManager.updateWeapons();
+                if (oldSkinID !== undefined && oldSkinID !== skinID) {
+                    UIManager.weaponCache[2] = undefined; // invalidate melee cache so fists in inventory update
+                    UIManager.updateWeapons();
+                }
             }
             this._skin = skinID;
             const skinDef = Loots.fromString<SkinDefinition>(skinID);

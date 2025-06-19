@@ -85,6 +85,7 @@
 "settings_anon_names": "Játékos nevek anonimizálása"
 "settings_hide_emotes": "Emote-ok elrejtése"
 "settings_text_killfeed": "Szöveg alapú killfeed"
+"settings_colored_weapon_slots": "Színes fegyver slotok"
 "settings_scope_looping": "Scope kiválasztás körbefordulással"
 "settings_draw_hud": "HUD megjelenítése"
 "settings_autopickup": "Autopickup engedélyzése"

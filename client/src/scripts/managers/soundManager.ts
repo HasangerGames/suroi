@@ -174,6 +174,7 @@ export class GameSound {
         this.instance?.stop();
         this.stereoFilter.destroy();
         this.equalizerFilter?.destroy();
+        this.instance = undefined;
         this.ended = true;
     }
 }

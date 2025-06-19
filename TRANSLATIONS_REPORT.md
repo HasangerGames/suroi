@@ -746,7 +746,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇫🇷 Français (88% Complete) - fr.hjson
+## 🇫🇷 Français (89% Complete) - fr.hjson
 
 ### Invalid Keys
 
@@ -1034,7 +1034,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇮🇹 Italiano (63% Complete) - it.hjson
+## 🇮🇹 Italiano (64% Complete) - it.hjson
 
 ### Invalid Keys
 

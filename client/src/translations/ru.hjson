@@ -117,6 +117,7 @@
 "settings_anon_names": "Анонимные имена игроков"
 "settings_hide_emotes": "Скрыть эмоции"
 "settings_text_killfeed": "Интерфейс с убийствами, основанный на тексте"
+"settings_colored_weapon_slots": "Цветные слоты с оружием"
 "settings_scope_looping": "Зацикленное переключение прицелов"
 "settings_draw_hud": "Показать HUD"
 "settings_autopickup": "Включить авто-подбор"

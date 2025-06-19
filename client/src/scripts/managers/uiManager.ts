@@ -962,13 +962,16 @@ class UIManagerClass {
                     const isGun = definition.itemType === ItemType.Gun;
 
                     if (isGun) {
-                        const color = Ammos.fromString(definition.ammoType).characteristicColor;
-                        container.css({
-                            "outline-color": `hsl(${color.hue}, ${color.saturation}%, ${(color.lightness + 50) / 3}%)`,
-                            "background-color": `hsla(${color.hue}, ${color.saturation}%, ${color.lightness / 2}%, 50%)`,
-                            "color": `hsla(${color.hue}, ${color.saturation}%, 90%)`
-                        });
                         itemImage.css("transform", definition.inventoryScale !== undefined ? `scale(${definition.inventoryScale})` : "unset");
+
+                        if (GameConsole.getBuiltInCVar("cv_weapon_slot_style") === "colored") {
+                            const color = Ammos.fromString(definition.ammoType).characteristicColor;
+                            container.css({
+                                "outline-color": `hsl(${color.hue}, ${color.saturation}%, ${(color.lightness + 50) / 3}%)`,
+                                "background-color": `hsla(${color.hue}, ${color.saturation}%, ${color.lightness / 2}%, 50%)`,
+                                "color": `hsla(${color.hue}, ${color.saturation}%, 90%)`
+                            });
+                        }
                     }
 
                     itemName.text(
