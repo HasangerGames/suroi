@@ -230,7 +230,7 @@
 "kf_suicide_kill": "<player>は自殺しました"
 "kf_suicide_down": "<player>は自分自身を気絶させました"
 "kf_suicide_finished_off": "<player>はようやく自殺しました"
-"kf_bleed_out_kill": "<player>は出血しました"
+"kf_bleed_out_kill": "<player>は出血死しました"
 "kf_bleed_out_down": "<player>は出血して気絶しました"
 "kf_finished_off_kill": "<player>はようやく<victim>を殺しました"
 "kf_finished_off_down": "<player>はようやく<victim>を気絶させました"
