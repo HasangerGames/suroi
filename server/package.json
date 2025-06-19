@@ -13,9 +13,9 @@
   "keywords": [],
   "license": "GPL-3.0",
   "devDependencies": {
-    "@swc/core": "^1.11.31",
+    "@swc/core": "^1.12.3",
     "@swc/helpers": "^0.5.17",
-    "@types/node": "^22.15.30",
+    "@types/node": "^22.15.32",
     "@types/sanitize-html": "^2.16.0",
     "nodemon": "^3.1.10",
     "regenerator-runtime": "^0.14.1",
@@ -25,7 +25,7 @@
     "typescript": "^5.8.3"
   },
   "dependencies": {
-    "croner": "^9.0.0",
+    "croner": "^9.1.0",
     "uWebSockets.js": "github:uNetworking/uWebSockets.js#v20.52.0"
   }
 }
