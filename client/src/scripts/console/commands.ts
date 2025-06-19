@@ -739,7 +739,7 @@ export function setUpCommands(): void {
     );
 
     Command.createInvertiblePair(
-        "map_ping",
+        "map_ping_wheel",
         function() {
             MapPingWheelManager.enabled = true;
             UIManager.updateRequestableItems();
