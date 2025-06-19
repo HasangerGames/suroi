@@ -37,8 +37,7 @@ export class Plane {
                 falloff: 0.5,
                 maxRange: 256,
                 dynamic: true,
-                loop: true,
-                noMuffledEffect: true
+                loop: true
             }
         );
 
