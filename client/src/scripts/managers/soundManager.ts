@@ -172,6 +172,8 @@ export class GameSound {
         // (maybe a bug? idk)
         if (this.ended) return;
         this.instance?.stop();
+        this.stereoFilter.destroy();
+        this.equalizerFilter?.destroy();
         this.ended = true;
     }
 }
