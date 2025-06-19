@@ -52,7 +52,6 @@ export const JoinedPacket = new Packet<JoinedData>(PacketType.Joined, {
             if (!emotes[i]) continue;
             data.emotes[i] = Emotes.readFromStream(stream);
         }
-        console.log(data.emotes);
 
         recordTo(DataSplitTypes.PlayerData);
     }

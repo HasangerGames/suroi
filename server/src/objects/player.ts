@@ -705,8 +705,6 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
         const spawnable = modeRestricted ? this.game.spawnableLoots : allWeapons;
 
-        console.log(allWeapons);
-
         const { inventory } = this;
         const { items, backpack: { maxCapacity }, throwableItemMap } = inventory;
         const type = GameConstants.player.inventorySlotTypings[slot];
