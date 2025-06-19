@@ -2735,31 +2735,6 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
             particle: "window_particle"
         }
     },
-    // TODO Combine this with glass_door (this is the same as glass_door but the image is in px)
-    {
-        idString: "bigger_glass_door",
-        name: "Bigger Glass Door",
-        defType: DefinitionType.Obstacle,
-        material: "glass",
-        doorSound: "auto_door",
-        health: 100,
-        scale: {
-            spawnMin: 1,
-            spawnMax: 1,
-            destroy: 1
-        },
-        hitbox: RectangleHitbox.fromRect(10.86, 1.14),
-        rotationMode: RotationMode.Limited,
-        noResidue: true,
-        isDoor: true,
-        automatic: true,
-        hideWhenOpen: true,
-        operationStyle: "slide",
-        slideFactor: 0.9,
-        frames: {
-            particle: "window_particle"
-        }
-    },
     {
         idString: "red_metal_auto_door",
         name: "Red Metal Automatic Door",

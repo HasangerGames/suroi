@@ -3353,8 +3353,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "filing_cabinet", position: Vec.create(-36.27, -33.43), rotation: 1 },
             { idString: "trash_can", position: Vec.create(-18.16, -42.45) },
             { idString: "grey_office_chair", position: Vec.create(-27.52, -41.7), rotation: 3 },
-            { idString: "bigger_glass_door", position: Vec.create(-30.95, -0.7), rotation: 1 },
-            { idString: "bigger_glass_door", position: Vec.create(-30.95, -11.65), rotation: 3 },
+            { idString: "glass_door", position: Vec.create(-30.95, -0.7), rotation: 1 },
+            { idString: "glass_door", position: Vec.create(-30.95, -11.65), rotation: 3 },
             { idString: "door", position: Vec.create(13.74, 34.46), rotation: 0 },
             { idString: "door", position: Vec.create(35.08, -46.74), rotation: 2 }
         ]
@@ -5871,7 +5871,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             {
                 key: "headquarters_vault_ceiling",
                 position: Vec.create(0.1, -7.4),
-                scale: Vec.create(2.16, 2.15)
+                scale: Vec.create(2.02, 2.01)
             }
         ]
     },
@@ -6059,8 +6059,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             // main entrance
             { idString: "planted_bushes", position: Vec.create(-46, 45.9), rotation: 0 },
             { idString: "planted_bushes", position: Vec.create(-14, 45.9), rotation: 0 },
-            { idString: "glass_door", position: Vec.create(-35.1, 36.9), rotation: 0 },
-            { idString: "glass_door", position: Vec.create(-25, 36.9), rotation: 2 },
+            { idString: "glass_door", position: Vec.create(-35.1, 36.9), rotation: 0, scale: 0.936 },
+            { idString: "glass_door", position: Vec.create(-25, 36.9), rotation: 2, scale: 0.936 },
 
             // main area (hallway/where unbreakable large desk is)
             { idString: "potted_plant", position: Vec.create(-32, -56.5) },
@@ -8114,8 +8114,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "cabinet", position: Vec.create(-144.6, 5.74), rotation: 2 },
             { idString: "small_drawer", position: Vec.create(-148.13, 14.18), rotation: 1 },
             { idString: "water_cooler", position: Vec.create(-148.65, 20.95), rotation: 1 },
-            { idString: "bigger_glass_door", position: Vec.create(-135.25, 25.85), rotation: 0 },
-            { idString: "bigger_glass_door", position: Vec.create(-124.42, 25.85), rotation: 2 },
+            { idString: "glass_door", position: Vec.create(-135.25, 25.85), rotation: 0 },
+            { idString: "glass_door", position: Vec.create(-124.42, 25.85), rotation: 2 },
 
             // northwest entrance/fire hatchet area
             { idString: "fire_hatchet_case", position: Vec.create(-119.35, -63.03), rotation: 1 },
