@@ -1936,18 +1936,18 @@
         }
 
         .item-image {
-            width: 45px;
+            max-width: 45px;
             height: 45px;
             align-self: flex-start;
             margin-top: 5px;
 
             @media screen and (max-width: variables.$screen_large) {
-                width: 32px;
+                max-width: 32px;
                 height: 32px;
             }
 
             @media screen and (max-width: variables.$screen_medium) {
-                width: 28px;
+                max-width: 28px;
                 height: 28px;
             }
         }
