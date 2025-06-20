@@ -22,7 +22,7 @@ Suroi is an open-source 2D battle royale game inspired by [surviv.io](https://su
 [suroi.io](https://suroi.io)
 
 ## Donate!
-Any amount helps! All donation money goes towards keeping the servers running.
+Any amount helps! All donation money goes towards the game directly.
 
 [ko-fi.com/suroi](https://ko-fi.com/suroi)
 
@@ -30,26 +30,39 @@ Any amount helps! All donation money goes towards keeping the servers running.
 [discord.suroi.io](https://discord.suroi.io)
 
 ## Installation and setup
-Start by installing [Node.js](https://nodejs.org) and [pnpm](https://pnpm.io).
+Start by installing [Node.js](https://nodejs.org). If you're running macOS or Linux, [nvm](https://github.com/nvm-sh/nvm) is recommended for ease of installation.
 
-Next, [click here to download the repo](https://github.com/HasangerGames/suroi/archive/refs/heads/master.zip), or use the following command to clone it:
+Once Node is installed, pnpm can be installed using the following command:
+```sh
+npm i -g pnpm
+```
+Alternatively, pnpm can be installed from [the official website](https://pnpm.io).
+
+
+Next, install [Git](https://git-scm.com/), and use the following command to clone the repo:
 ```sh
 git clone https://github.com/HasangerGames/suroi.git
 ```
+You can also [click here to download the repo](https://github.com/HasangerGames/suroi/archive/refs/heads/master.zip) and extract the files.
 
-To install dependencies, open a terminal in the project root, and run this command:
+If you used Git, enter the newly created `suroi` directory with this command:
+```sh
+cd suroi
+```
+
+Finally, run this command in the project root to install dependencies:
 ```sh
 pnpm install
 ```
 
-This will create a `node_modules` directory in all three folders (`client`, `common`, and `server`) and link the packages there.
-
 ## Development
-To run the game locally, open a terminal in the project root and run the following:
+To start the game locally, run the following command in the project root:
 
 ```sh
 pnpm dev
 ```
+Or, to see output from the server and client separately, you can use the `pnpm dev:server` and `pnpm dev:client` commands. (Both must be running simultaneously for the game to work.)
+
 To open the game, go to http://127.0.0.1:3000 in your browser.
 
 ## Production
@@ -57,10 +70,11 @@ To build for production, run this command in the project root:
 ```sh
 pnpm build
 ```
+The server and client can be built separately using the `pnpm build:server` and `pnpm build:client` commands.
 
-To start the WebSocket server, run this command:
+To start the game server, run this command:
 ```sh
 pnpm start
 ```
 
-Production builds are served using [NGINX](https://nginx.org). ~~Visit [the wiki](https://github.com/HasangerGames/suroi/wiki/Self%E2%80%90hosting) for details on how to self-host.~~ This documentation is outdated and will be updated in the future.
+Production builds are served using [NGINX](https://nginx.org). Visit [the wiki](https://github.com/HasangerGames/suroi/wiki/Self%E2%80%90hosting) for details on how to self-host.
