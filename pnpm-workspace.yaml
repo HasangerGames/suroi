@@ -9,3 +9,4 @@ onlyBuiltDependencies:
   - '@swc/core'
   - esbuild
   - skia-canvas
+  - unrs-resolver
