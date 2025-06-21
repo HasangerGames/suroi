@@ -412,7 +412,6 @@ export async function setUpUI(): Promise<void> {
         </article>
     `).join(""));
 
-    // createDropdown("#splash-more");
     createDropdown("#language-dropdown");
 
     ui.lockedInfo.on("click", () => ui.lockedTooltip.fadeToggle(250));
