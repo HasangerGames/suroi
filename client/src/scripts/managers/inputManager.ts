@@ -20,6 +20,7 @@ import { type TranslationKeys } from "../utils/translations/typings";
 import { CameraManager } from "./cameraManager";
 import { SoundManager } from "./soundManager";
 import { UIManager } from "./uiManager";
+import type { GunDefinition } from "@common/definitions/items/guns";
 
 class InputMapper {
     // These two maps must be kept in sync!!
@@ -450,8 +451,18 @@ class InputManagerClass {
 
                 const def = activePlayer.activeItem;
 
-                if (activePlayer.images.aimTrail !== undefined) {
-                    activePlayer.images.aimTrail.alpha = 1;
+                if (
+                    activePlayer.images.aimTrailNormal !== undefined
+                    && activePlayer.images.aimTrailDual !== undefined
+                ) {
+                    const weaponDef = activePlayer.activeItem as GunDefinition;
+                    if (weaponDef.isDual) {
+                        activePlayer.images.aimTrailNormal.alpha = 0;
+                        activePlayer.images.aimTrailDual.alpha = 1;
+                    } else {
+                        activePlayer.images.aimTrailNormal.alpha = 1;
+                        activePlayer.images.aimTrailDual.alpha = 0;
+                    }
                 }
 
                 const attacking = data.distance > joystickSize / 3;
@@ -468,7 +479,13 @@ class InputManagerClass {
 
             aimJoystick.on("end", () => {
                 aimJoystickUsed = false;
-                if (Game.activePlayer?.images.aimTrail !== undefined) Game.activePlayer.images.aimTrail.alpha = 0;
+                if (
+                    Game.activePlayer?.images.aimTrailNormal !== undefined
+                    && Game.activePlayer?.images.aimTrailDual !== undefined
+                ) {
+                    Game.activePlayer.images.aimTrailNormal.alpha = 0;
+                    Game.activePlayer.images.aimTrailDual.alpha = 0;
+                }
                 this.attacking = shootOnRelease;
                 this.resetAttacking = true;
                 shootOnRelease = false;

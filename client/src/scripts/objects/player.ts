@@ -105,7 +105,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
     private _skin: ReferenceTo<SkinDefinition> = "";
 
     readonly images: {
-        aimTrail?: Graphics
+        aimTrailNormal?: Graphics
+        aimTrailDual?: Graphics
         readonly vest: SuroiSprite
         readonly body: SuroiSprite
         readonly leftFist: SuroiSprite
@@ -195,12 +196,24 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         }
 
         if (InputManager.isMobile && this.isActivePlayer) {
-            const aimTrail = this.images.aimTrail = new Graphics();
+            const aimTrailNormal = new Graphics();
             for (let i = 0; i < 100; i++) {
-                aimTrail.circle((i * 50) + 20, 0, 8).fill({ color: 0xffffff, alpha: 0.35 });
+                aimTrailNormal.circle((i * 50) + 20, 0, 8).fill({ color: 0xffffff, alpha: 0.35 });
             }
-            aimTrail.alpha = 0;
-            this.container.addChild(aimTrail);
+
+            const aimTrailDual = new Graphics();
+            for (let i = 0; i < 100; i++) {
+                aimTrailDual.circle((i * 50) + 20, -27, 8).fill({ color: 0xffffff, alpha: 0.35 });
+                aimTrailDual.circle((i * 50) + 20, 27, 8).fill({ color: 0xffffff, alpha: 0.35 });
+            }
+
+            aimTrailNormal.alpha = 0;
+            aimTrailDual.alpha = 0;
+
+            this.images.aimTrailNormal = aimTrailNormal;
+            this.images.aimTrailDual = aimTrailDual;
+
+            this.container.addChild(aimTrailNormal, aimTrailDual);
         }
 
         this.container.addChild(
@@ -1964,7 +1977,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
         const { images, emote, teammateName, anims } = this;
 
-        images.aimTrail?.destroy();
+        images.aimTrailNormal?.destroy();
+        images.aimTrailDual?.destroy();
         images.vest.destroy();
         images.body.destroy();
         images.leftFist.destroy();
