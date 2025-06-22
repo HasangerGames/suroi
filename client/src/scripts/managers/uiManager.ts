@@ -1260,7 +1260,7 @@ class UIManagerClass {
 
                 // Remove spaces if chinese/japanese language.
                 if (TRANSLATIONS.translations[language].no_space && messageText) {
-                    messageText = messageText.replaceAll("<span>", "<span style=\"display:contents;\">");
+                    messageText = messageText.split("<span>").join("<span style=\"display:contents;\">");
                 }
 
                 // special case for turkish
