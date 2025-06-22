@@ -130,6 +130,7 @@ export const Emotes = new ObjectDefinitions<EmoteDefinition>([
             "Whale",
             "Carrot",
             "Egg",
+            "Wilted Rose",
             "Plumpkin",
             "Leek",
             "Tomato",
