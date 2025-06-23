@@ -20,7 +20,6 @@ import { type TranslationKeys } from "../utils/translations/typings";
 import { CameraManager } from "./cameraManager";
 import { SoundManager } from "./soundManager";
 import { UIManager } from "./uiManager";
-import type { GunDefinition } from "@common/definitions/items/guns";
 
 class InputMapper {
     // These two maps must be kept in sync!!
@@ -438,32 +437,23 @@ class InputManagerClass {
                 aimJoystickUsed = true;
                 this.rotation = -data.angle.radian;
                 this.turning = true;
-                const activePlayer = Game.activePlayer;
-                if (GameConsole.getBuiltInCVar("cv_responsive_rotation") && !Game.gameOver && activePlayer) {
-                    activePlayer.container.rotation = this.rotation;
-                }
 
                 const joystickSize = GameConsole.getBuiltInCVar("mb_joystick_size");
 
                 this.distanceToMouse = Numeric.remap(data.distance, 0, joystickSize / 2, 0, GameConstants.player.maxMouseDist);
 
+                const activePlayer = Game.activePlayer;
                 if (!activePlayer) return;
+
+                if (GameConsole.getBuiltInCVar("cv_responsive_rotation") && !Game.gameOver) {
+                    activePlayer.container.rotation = this.rotation;
+                }
 
                 const def = activePlayer.activeItem;
 
-                if (
-                    activePlayer.images.aimTrailNormal !== undefined
-                    && activePlayer.images.aimTrailDual !== undefined
-                ) {
-                    const weaponDef = activePlayer.activeItem as GunDefinition;
-                    if (weaponDef.isDual) {
-                        activePlayer.images.aimTrailNormal.alpha = 0;
-                        activePlayer.images.aimTrailDual.alpha = 1;
-                    } else {
-                        activePlayer.images.aimTrailNormal.alpha = 1;
-                        activePlayer.images.aimTrailDual.alpha = 0;
-                    }
-                }
+                const { aimTrail, altAimTrail } = activePlayer.images;
+                if (aimTrail) aimTrail.visible = true;
+                if (altAimTrail) altAimTrail.visible = def.itemType === ItemType.Gun && (def.isDual ?? false);
 
                 const attacking = data.distance > joystickSize / 3;
                 if (
@@ -479,16 +469,16 @@ class InputManagerClass {
 
             aimJoystick.on("end", () => {
                 aimJoystickUsed = false;
-                if (
-                    Game.activePlayer?.images.aimTrailNormal !== undefined
-                    && Game.activePlayer?.images.aimTrailDual !== undefined
-                ) {
-                    Game.activePlayer.images.aimTrailNormal.alpha = 0;
-                    Game.activePlayer.images.aimTrailDual.alpha = 0;
-                }
                 this.attacking = shootOnRelease;
                 this.resetAttacking = true;
                 shootOnRelease = false;
+
+                const activePlayer = Game.activePlayer;
+                if (!activePlayer) return;
+
+                const { aimTrail, altAimTrail } = activePlayer.images;
+                if (aimTrail) aimTrail.visible = false;
+                if (altAimTrail) altAimTrail.visible = false;
             });
         }
 

@@ -21,7 +21,7 @@ import { random, randomBoolean, randomFloat, randomPointInsideCircle, randomRota
 import { FloorNames, FloorTypes } from "@common/utils/terrain";
 import { Vec, type Vector } from "@common/utils/vector";
 import $ from "jquery";
-import { Container, Graphics, ObservablePoint, Text, type ColorSource } from "pixi.js";
+import { Container, Graphics, GraphicsContext, ObservablePoint, Text, type ColorSource } from "pixi.js";
 import { GameConsole } from "../console/gameConsole";
 import { Game } from "../game";
 import { CameraManager } from "../managers/cameraManager";
@@ -105,8 +105,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
     private _skin: ReferenceTo<SkinDefinition> = "";
 
     readonly images: {
-        aimTrailNormal?: Graphics
-        aimTrailDual?: Graphics
+        aimTrail?: Graphics
+        altAimTrail?: Graphics
         readonly vest: SuroiSprite
         readonly body: SuroiSprite
         readonly leftFist: SuroiSprite
@@ -195,25 +195,19 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             this.images.rightLeg = createLegImage();
         }
 
-        if (InputManager.isMobile && this.isActivePlayer) {
-            const aimTrailNormal = new Graphics();
+        if (InputManager.isMobile && this.isActivePlayer && !Game.spectating) {
+            const ctx = new GraphicsContext();
             for (let i = 0; i < 100; i++) {
-                aimTrailNormal.circle((i * 50) + 20, 0, 8).fill({ color: 0xffffff, alpha: 0.35 });
+                ctx.circle((i * 50) + 20, 0, 8).fill({ color: 0xffffff, alpha: 0.35 });
             }
 
-            const aimTrailDual = new Graphics();
-            for (let i = 0; i < 100; i++) {
-                aimTrailDual.circle((i * 50) + 20, -27, 8).fill({ color: 0xffffff, alpha: 0.35 });
-                aimTrailDual.circle((i * 50) + 20, 27, 8).fill({ color: 0xffffff, alpha: 0.35 });
-            }
+            const aimTrail = this.images.aimTrail = new Graphics(ctx);
+            const altAimTrail = this.images.altAimTrail = new Graphics(ctx);
 
-            aimTrailNormal.alpha = 0;
-            aimTrailDual.alpha = 0;
+            aimTrail.visible = false;
+            altAimTrail.visible = false;
 
-            this.images.aimTrailNormal = aimTrailNormal;
-            this.images.aimTrailDual = aimTrailDual;
-
-            this.container.addChild(aimTrailNormal, aimTrailDual);
+            this.container.addChild(aimTrail, altAimTrail);
         }
 
         this.container.addChild(
@@ -1092,6 +1086,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         const { fists } = weaponDef;
 
         const imagePresent = image !== undefined;
+        const isDualGun = imagePresent && weaponDef.itemType === ItemType.Gun && weaponDef.isDual;
         if (imagePresent) {
             let frame = `${reference.idString}${weaponDef.itemType === ItemType.Gun || (image as NonNullable<MeleeDefinition["image"]>).separateWorldImage
                 ? "_world"
@@ -1103,16 +1098,29 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             }
 
             const { angle, position: { x: pX, y: pY } } = image;
-
-            this.images.weapon.setFrame(frame);
-            this.images.altWeapon.setFrame(frame);
-            this.images.weapon.setAngle(angle);
-            this.images.altWeapon.setAngle(angle); // there's an ambiguity here as to whether the angle should be inverted or the same
-            this.images.weapon.setPivot(reference.image && "pivot" in reference.image && reference.image.pivot ? reference.image.pivot : Vec.create(0, 0));
-
             const offset = this._getOffset();
-            this.images.weapon.setPos(pX, pY + offset);
-            this.images.altWeapon.setPos(pX, pY - offset);
+
+            this.images.weapon
+                .setFrame(frame)
+                .setPos(pX, pY + offset)
+                .setAngle(angle)
+                .setPivot(reference.image && "pivot" in reference.image && reference.image.pivot ? reference.image.pivot : Vec.create(0, 0));
+
+            if (isDualGun) {
+                this.images.altWeapon
+                    .setFrame(frame)
+                    .setPos(pX, pY - offset)
+                    .setAngle(angle) // there's an ambiguity here as to whether the angle should be inverted or the same
+                    .setVisible(true);
+
+                this.images.aimTrail?.position.set(pX, pY + offset);
+                this.images.altAimTrail?.position.set(pX, pY - offset);
+            }
+        }
+
+        if (!isDualGun) {
+            this.images.altWeapon.setVisible(false);
+            this.images.aimTrail?.position.set(0, 0);
         }
 
         if (this.activeItem !== this._oldItem) {
@@ -1136,8 +1144,6 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
         this.images.weapon.setVisible(imagePresent);
         this.images.muzzleFlash.setVisible(imagePresent);
-
-        this.images.altWeapon.setVisible(weaponDef.itemType === ItemType.Gun && (weaponDef.isDual ?? false));
 
         switch (weaponDef.itemType) {
             case ItemType.Gun: {
@@ -1977,8 +1983,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
         const { images, emote, teammateName, anims } = this;
 
-        images.aimTrailNormal?.destroy();
-        images.aimTrailDual?.destroy();
+        images.aimTrail?.destroy();
+        images.altAimTrail?.destroy();
         images.vest.destroy();
         images.body.destroy();
         images.leftFist.destroy();
