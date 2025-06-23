@@ -16,6 +16,16 @@ export interface GasStage {
  */
 export const GAME_SPAWN_WINDOW = 84;
 
+type GasOffset = {
+    minOffset: number
+    maxOffset: number
+};
+
+export const gasOffset: GasOffset = {
+minOffset: 0.15,
+maxOffset: 0.3
+}
+
 const gasStageRadii: number[] = [
     0.76, // 0
     0.55, // 1
