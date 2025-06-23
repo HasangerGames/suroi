@@ -938,6 +938,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         trunkVariations: 6,
         zIndex: ZIndexes.ObstaclesLayer5,
         frames: {
+            base: "big_oak_tree_trunk",
             leaves: "big_oak_tree_leaves",
             particle: "oak_tree_particle",
             residue: "oak_tree_residue"
