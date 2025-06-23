@@ -63,7 +63,7 @@ export const JoinPacket = new Packet<JoinPacketCreation, JoinData>(PacketType.Jo
         data.isMobile = isMobile;
 
         data.protocolVersion = stream.readUint16();
-        data.name = stream.readPlayerName().replaceAll(/<[^>]+>/g, "").trim(); // Regex strips out HTML
+        data.name = stream.readPlayerName().split(/<[^>]+>/g).join("").trim(); // Regex strips out HTML
 
         data.skin = Loots.readFromStream(stream);
 

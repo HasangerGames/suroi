@@ -735,7 +735,8 @@ export function extractCommandsAndArgs(input: string): ParserNode {
                         throwCSE("Unterminated variable reference");
                     }
                 } else {
-                    const currentArgLength = args.at(-1)?.parts.at(-1)?.content.length;
+                    const lastArg = args[args.length - 1];
+                    const currentArgLength = lastArg?.parts[lastArg.parts.length - 1]?.content.length;
                     if (currentArgLength === undefined || creatingNewArg) {
                         /*
                             Runs when opening an argument with a quote. For example,

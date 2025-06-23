@@ -105,7 +105,7 @@ export function getTranslatedString(key: TranslationKeys, replacements?: Record<
     foundTranslation ??= key;
 
     for (const [search, replace] of Object.entries(replacements ?? {})) {
-        foundTranslation = foundTranslation.replaceAll(`<${search}>`, replace);
+        foundTranslation = foundTranslation.split(`<${search}>`).join(replace);
     }
 
     return foundTranslation;

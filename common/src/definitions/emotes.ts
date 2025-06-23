@@ -130,6 +130,7 @@ export const Emotes = new ObjectDefinitions<EmoteDefinition>([
             "Whale",
             "Carrot",
             "Egg",
+            "Wilted Rose",
             "Plumpkin",
             "Leek",
             "Tomato",
@@ -138,7 +139,7 @@ export const Emotes = new ObjectDefinitions<EmoteDefinition>([
         ]
     }).flatMap(([category, names]) =>
         names.map(name => ({
-            idString: name.toLowerCase().replaceAll(" ", "_"),
+            idString: name.toLowerCase().split(" ").join("_"),
             name,
             defType: DefinitionType.Emote as const,
             category: parseInt(category)

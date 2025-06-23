@@ -6,7 +6,7 @@ export interface BadgeDefinition extends ObjectDefinition {
 }
 
 const badge = (name: string, roles?: string[]): BadgeDefinition => ({
-    idString: `bdg_${name.toLowerCase().replaceAll(" ", "_")}`,
+    idString: `bdg_${name.toLowerCase().split(" ").join("_")}`,
     name,
     defType: DefinitionType.Badge,
     roles

@@ -106,7 +106,7 @@ export function styleText(string: string, ...styles: Array<Colors[Channel][Color
     const opening = `${OPENING_CODE}${styles.join(";")}m`;
     // replace the closing codes with this opening code
     // so that styling is consistent
-    return `${opening}${string.replaceAll(CLOSING_CODE, opening)}${CLOSING_CODE}`;
+    return `${opening}${string.split(CLOSING_CODE).join(opening)}${CLOSING_CODE}`;
 }
 
 export const Logger = {
