@@ -273,15 +273,20 @@ export const Game = new (class Game {
 
             pixi.ticker.add(this.render.bind(this));
 
-            pixi.stage.addChild(
-                CameraManager.container,
-                DebugRenderer.graphics,
+            const gameContainer = new Container({ isRenderGroup: true });
+            gameContainer.addChild(CameraManager.container);
+            if (DEBUG_CLIENT) gameContainer.addChild(DebugRenderer.graphics);
+
+            const uiContainer = new Container({ isRenderGroup: true });
+            uiContainer.addChild(
                 MapManager.container,
                 MapManager.mask,
+                ...Object.values(this.netGraph).map(g => g.container),
                 EmoteWheelManager.container,
-                MapPingWheelManager.container,
-                ...Object.values(this.netGraph).map(g => g.container)
+                MapPingWheelManager.container
             );
+
+            pixi.stage.addChild(gameContainer, uiContainer);
 
             MapManager.visible = !GameConsole.getBuiltInCVar("cv_minimap_minimized");
             MapManager.expanded = GameConsole.getBuiltInCVar("cv_map_expanded");
