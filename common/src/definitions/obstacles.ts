@@ -307,7 +307,7 @@ export const TintedParticles: Record<string, { readonly base: string, readonly t
     sandbags_particle: { base: "stone_particle_2", tint: 0xd59d4e },
     fire_pit_particle_1: { base: "stone_particle_1", tint: 0x5b4f3e },
     fire_pit_particle_2: { base: "stone_particle_2", tint: 0x5b4f3e },
-    porta_potty_door_particle: { base: "plastic_particle", tint: 0xf5f9fd },
+    door2_particle: { base: "plastic_particle", tint: 0xf5f9fd },
     porta_potty_toilet_particle: { base: "plastic_particle", tint: 0x5e5e5e },
     porta_potty_wall_particle: { base: "plastic_particle", tint: 0x1c71d8 },
     porta_potty_particle_fall: { base: "plastic_particle", tint: 0x78593b },
@@ -3510,7 +3510,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         }
     },
     {
-        idString: "porta_potty_door",
+        idString: "door2",
         name: "Porta Potty Door",
         defType: DefinitionType.Obstacle,
         material: "wood",

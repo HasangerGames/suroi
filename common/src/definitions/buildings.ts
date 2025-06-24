@@ -1579,7 +1579,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 rotation: 3
             },
             {
-                idString: "porta_potty_door",
+                idString: "door2",
                 position: Vec.create(2.2, 8.8),
                 rotation: 0
             },
@@ -6164,9 +6164,9 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "headquarters_wall_7", position: Vec.create(-5.55, -82.1), rotation: 0 },
             { idString: "headquarters_wall_7", position: Vec.create(9.3, -82.1), rotation: 0 },
             { idString: "headquarters_wall_8", position: Vec.create(-30.9, -82.1), rotation: 0 },
-            { idString: "porta_potty_door", position: Vec.create(3.25, -82.1), rotation: 0 },
-            { idString: "porta_potty_door", position: Vec.create(-11.7, -82.1), rotation: 0 },
-            { idString: "porta_potty_door", position: Vec.create(-23.6, -82.1), rotation: 0 },
+            { idString: "door2", position: Vec.create(3.25, -82.1), rotation: 0 },
+            { idString: "door2", position: Vec.create(-11.7, -82.1), rotation: 0 },
+            { idString: "door2", position: Vec.create(-23.6, -82.1), rotation: 0 },
             { idString: "trash_can", position: Vec.create(-29, -102) },
 
             // security room + vault
@@ -8081,8 +8081,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "sink2", position: Vec.create(-56.09, 13.38), rotation: 3 },
             { idString: "hq_toilet_paper_wall", position: Vec.create(-61.88, 7.31), rotation: 2 },
             { idString: "hq_toilet_paper_wall", position: Vec.create(-61.88, -7.84), rotation: 2 },
-            { idString: "porta_potty_door", position: Vec.create(-70.58, 2.03), rotation: 1 },
-            { idString: "porta_potty_door", position: Vec.create(-70.58, -13.06), rotation: 1 },
+            { idString: "door2", position: Vec.create(-70.58, 2.03), rotation: 1 },
+            { idString: "door2", position: Vec.create(-70.58, -13.06), rotation: 1 },
             { idString: randomToilet, position: Vec.create(-57.06, 0.82), rotation: 3 },
             { idString: randomToilet, position: Vec.create(-57.06, -14.38), rotation: 3 },
             { idString: "headquarters_wall_7", position: Vec.create(-70.63, -19.18), rotation: 1 },
