@@ -9909,7 +9909,6 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "hatchet_stump", position: Vec.create(-56.26, -19.3) },
             { idString: "stump", position: Vec.create(-75.79, -31.48) },
             { idString: "stump", position: Vec.create(-112.42, 33.21) },
-            { idString: "stump", position: Vec.create(-112.42, 33.21) },
             { idString: "stump", position: Vec.create(-74.33, -86.97) },
             { idString: randomStump, position: Vec.create(-130.31, -29.57) },
             { idString: randomStump, position: Vec.create(101.68, -46.53) },
