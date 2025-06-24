@@ -320,7 +320,7 @@ export const TintedParticles: Record<string, { readonly base: string, readonly t
     office_chair_particle: { base: "wood_particle", tint: 0x7d2b2b },
     hq_stone_wall_particle_1: { base: "stone_particle_1", tint: 0x591919 },
     hq_stone_wall_particle_2: { base: "stone_particle_2", tint: 0x591919 },
-    headquarters_desk_particle: { base: "wood_particle", tint: 0x61341a },
+    desk_particle: { base: "wood_particle", tint: 0x61341a },
     headquarters_c_desk_particle: { base: "wood_particle", tint: 0x6e5838 },
     gold_aegis_case_particle: { base: "wood_particle", tint: 0x1a1a1a },
     hq_tp_wall_particle: { base: "wood_particle", tint: 0x74858b },
@@ -1754,8 +1754,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         winterVariations: 2
     },
     {
-        idString: "hq_desk_left",
-        name: "Headquarters Desk",
+        idString: "desk_left",
+        name: "Desk",
         defType: DefinitionType.Obstacle,
         material: "wood",
         health: 100,
@@ -1770,14 +1770,14 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         ),
         rotationMode: RotationMode.Limited,
         hasLoot: true,
-        lootTable: "hq_desk",
+        lootTable: "desk",
         frames: {
-            particle: "headquarters_desk_particle"
+            particle: "desk_particle"
         }
     },
     {
-        idString: "hq_desk_right",
-        name: "Headquarters Desk",
+        idString: "desk_right",
+        name: "Desk",
         defType: DefinitionType.Obstacle,
         material: "wood",
         health: 100,
@@ -1792,9 +1792,9 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         ),
         rotationMode: RotationMode.Limited,
         hasLoot: true,
-        lootTable: "hq_desk",
+        lootTable: "desk",
         frames: {
-            particle: "headquarters_desk_particle"
+            particle: "desk_particle"
         }
     },
     {
@@ -4008,7 +4008,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         rotationMode: RotationMode.Limited,
         allowFlyover: FlyoverPref.Never,
         frames: {
-            particle: "headquarters_desk_particle"
+            particle: "desk_particle"
         },
         hitbox: RectangleHitbox.fromRect(12.5, 5)
     },
@@ -5444,7 +5444,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
             names: ["button_press", "puzzle_solved"]
         },
         frames: {
-            particle: "headquarters_desk_particle"
+            particle: "desk_particle"
         }
     },
     {
@@ -5462,7 +5462,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         hitbox: RectangleHitbox.fromRect(27.5, 5.2),
         rotationMode: RotationMode.Limited,
         frames: {
-            particle: "headquarters_desk_particle"
+            particle: "desk_particle"
         }
     },
     {
@@ -5478,7 +5478,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         allowFlyover: FlyoverPref.Always,
         invisible: true,
         frames: {
-            particle: "headquarters_desk_particle"
+            particle: "desk_particle"
         }
     },
     {
@@ -5497,7 +5497,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         allowFlyover: FlyoverPref.Always,
         invisible: true,
         frames: {
-            particle: "headquarters_desk_particle"
+            particle: "desk_particle"
         }
     },
     {

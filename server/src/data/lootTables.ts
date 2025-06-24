@@ -210,7 +210,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { table: "healing_items", weight: 0.8 },
             { table: "guns", weight: 0.3 }
         ],
-        hq_desk: [
+        desk: [
             [
                 { table: "equipment", weight: 1 },
                 { table: "guns", weight: 0.65 },
