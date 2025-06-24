@@ -9,7 +9,14 @@ import { MapName, Maps } from "../data/maps";
 import { Game } from "../game";
 
 export function modeFromMap(map: MapWithParams): ModeName {
-    const mapName = map.split(":")[0];
+    const args = map.split(":");
+
+    const lastArg = args[args.length - 1];
+    if (lastArg in Modes) {
+        return lastArg as ModeName;
+    }
+
+    const mapName = args[0];
     const mapMode = Maps[mapName as MapName]?.mode;
     if (mapMode) {
         return mapMode;
