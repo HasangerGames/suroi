@@ -5,9 +5,11 @@ dist/
 # Node
 node_modules/
 
+# Various config files
+config.json
 server/reports
 punishments.json
-teamSize.txt
+teamMode.txt
 map.txt
 
 # Vite

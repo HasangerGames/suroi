@@ -20,6 +20,7 @@ import { Player } from "../objects/player";
 import { GamePlugin } from "../pluginManager";
 import { getLootFromTable } from "../utils/lootHelpers";
 import { LootTables } from "./lootTables";
+import { ConfigSchema } from "../utils/config.d";
 
 export interface RiverDefinition {
     readonly minAmount: number
@@ -114,19 +115,7 @@ export const enum SpawnMode {
     Default
 }
 
-export type SpawnOptions =
-    | {
-        readonly mode: SpawnMode.Normal | SpawnMode.Center
-    }
-    | {
-        readonly mode: SpawnMode.Radius
-        readonly position: readonly [x: number, y: number, z?: number]
-        readonly radius: number
-    }
-    | {
-        readonly mode: SpawnMode.Fixed
-        readonly position: readonly [x: number, y: number, z?: number]
-    };
+export type SpawnOptions = ConfigSchema["spawn"];
 
 const maps = {
     normal: {
@@ -881,7 +870,7 @@ const maps = {
     debug: {
         width: 1620,
         height: 1620,
-        // spawn: { mode: SpawnMode.Center },
+        // spawn: { mode: "fixed" },
         oceanSize: 128,
         beachSize: 32,
         onGenerate(map) {
@@ -942,7 +931,7 @@ const maps = {
     arena: {
         width: 512,
         height: 512,
-        spawn: { mode: SpawnMode.Center },
+        spawn: { mode: "fixed" },
         beachSize: 16,
         oceanSize: 40,
         onGenerate(map) {
@@ -1057,7 +1046,7 @@ const maps = {
     singleBuilding: {
         width: 1024,
         height: 1024,
-        spawn: { mode: SpawnMode.Center },
+        spawn: { mode: "fixed" },
         beachSize: 32,
         oceanSize: 64,
         onGenerate(map, [building]) {
@@ -1071,7 +1060,7 @@ const maps = {
     singleObstacle: {
         width: 256,
         height: 256,
-        spawn: { mode: SpawnMode.Center },
+        spawn: { mode: "fixed" },
         beachSize: 8,
         oceanSize: 8,
         onGenerate(map, [obstacle]) {
@@ -1085,7 +1074,7 @@ const maps = {
     singleGun: {
         width: 256,
         height: 256,
-        spawn: { mode: SpawnMode.Center },
+        spawn: { mode: "fixed" },
         beachSize: 8,
         oceanSize: 8,
         onGenerate(map, [gun]) {
@@ -1186,7 +1175,7 @@ const maps = {
     lootTest: {
         width: 256,
         height: 256,
-        //  spawn: { mode: SpawnMode.Center },
+        //  spawn: { mode: "fixed" },
         beachSize: 16,
         oceanSize: 16,
         onGenerate(map) {
@@ -1203,7 +1192,7 @@ const maps = {
     bunkerSpawnTest: {
         width: 1024,
         height: 1024,
-        spawn: { mode: SpawnMode.Center },
+        spawn: { mode: "fixed" },
         beachSize: 32,
         oceanSize: 32,
         buildings: {

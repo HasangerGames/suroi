@@ -16,6 +16,7 @@
     "dev:server": "cd server && pnpm dev",
     "dev:test": "cd tests && pnpm stressTest",
     "watch:server": "cd server && tsc --noEmit --watch",
+    "updateConfigSchema": "cd server && pnpm updateConfigSchema",
     "typecheck": "tsc -v --noEmit",
     "lint": "eslint . --fix",
     "lint:check": "eslint .",
@@ -38,7 +39,7 @@
   "devDependencies": {
     "@eslint/js": "^9.29.0",
     "@stylistic/eslint-plugin": "^4.4.1",
-    "@types/node": "^22.15.32",
+    "@types/node": "^22.15.33",
     "eslint": "^9.29.0",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.34.1"

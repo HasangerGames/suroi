@@ -1,4 +1,4 @@
-import { GameConstants, TeamSize } from "@common/constants";
+import { GameConstants, TeamMode } from "@common/constants";
 import { Badges } from "@common/definitions/badges";
 import { Skins } from "@common/definitions/items/skins";
 import { ModeName } from "@common/definitions/modes";
@@ -8,11 +8,11 @@ import { URLSearchParams } from "node:url";
 import os from "os";
 import { App, WebSocket } from "uWebSockets.js";
 import { version } from "../../package.json";
-import { Config } from "./config";
 import { findGame, games, newGame, WorkerMessages } from "./gameManager";
 import { CustomTeam, CustomTeamPlayer, CustomTeamPlayerContainer } from "./team";
 import { cleanUsername, modeFromMap } from "./utils/misc";
 import { forbidden, getIP, getPunishment, parseRole, RateLimiter, serverError, serverLog, Switcher, textDecoder, writeCorsHeaders } from "./utils/serverHelpers";
+import { Config } from "./utils/config";
 
 if (Cluster.isPrimary && require.main === module) {
     //                   ^^^^^^^^^^^^^^^^^^^^^^^ only starts server if called directly from command line (not imported)
@@ -48,8 +48,8 @@ if (Cluster.isPrimary && require.main === module) {
         serverLog(perfString);
     }, 60000);
 
-    const teamsCreated = Config.maxTeams
-        ? new RateLimiter(Config.maxTeams)
+    const teamsCreated = Config.maxCustomTeams
+        ? new RateLimiter(Config.maxCustomTeams)
         : undefined;
 
     const customTeams: Map<string, CustomTeam> = new Map<string, CustomTeam>();
@@ -62,15 +62,15 @@ if (Cluster.isPrimary && require.main === module) {
         teamsCreated?.reset();
     };
 
-    const teamSize = new Switcher("teamSize", Config.teamSize, teamSize => {
+    const teamMode = new Switcher("teamMode", Config.teamMode, teamMode => {
         for (const game of games) {
-            game?.sendMessage({ type: WorkerMessages.UpdateTeamSize, teamSize });
+            game?.sendMessage({ type: WorkerMessages.UpdateTeamMode, teamMode });
         }
 
         resetTeams();
 
-        const humanReadableTeamSizes = [undefined, "solos", "duos", "trios", "squads"];
-        serverLog(`Switching to ${humanReadableTeamSizes[teamSize] ?? `team size ${teamSize}`}`);
+        const humanReadableTeamModes = [undefined, "solos", "duos", "trios", "squads"];
+        serverLog(`Switching to ${humanReadableTeamModes[teamMode] ?? `team mode ${teamMode}`}`);
     });
 
     let mode: ModeName;
@@ -105,9 +105,9 @@ if (Cluster.isPrimary && require.main === module) {
             res.writeHeader("Content-Type", "application/json").end(JSON.stringify({
                 protocolVersion: GameConstants.protocolVersion,
                 playerCount: games.reduce((a, b) => (a + (b?.aliveCount ?? 0)), 0),
-                teamSize: teamSize.current,
-                nextTeamSize: teamSize.next,
-                teamSizeSwitchTime: teamSize.nextSwitch ? teamSize.nextSwitch - Date.now() : undefined,
+                teamMode: teamMode.current,
+                nextTeamMode: teamMode.next,
+                teamModeSwitchTime: teamMode.nextSwitch ? teamMode.nextSwitch - Date.now() : undefined,
                 mode,
                 nextMode,
                 modeSwitchTime: map.nextSwitch ? map.nextSwitch - Date.now() : undefined,
@@ -120,11 +120,11 @@ if (Cluster.isPrimary && require.main === module) {
         res.onAborted(() => { /* no-op */ });
 
         let gameID: number | undefined;
-        const teamID = teamSize.current !== TeamSize.Solo && new URLSearchParams(req.getQuery()).get("teamID");
+        const teamID = teamMode.current !== TeamMode.Solo && new URLSearchParams(req.getQuery()).get("teamID");
         if (teamID) {
             gameID = customTeams.get(teamID)?.gameID;
         } else {
-            gameID = await findGame(teamSize.current, map.current);
+            gameID = await findGame(teamMode.current, map.current);
         }
 
         res.cork(() => {
@@ -151,7 +151,7 @@ if (Cluster.isPrimary && require.main === module) {
 
             // Prevent connection if it's solos + check rate limits & punishments
             if (
-                teamSize.current === TeamSize.Solo
+                teamMode.current === TeamMode.Solo
                 || teamsCreated?.isLimited(ip)
                 || await getPunishment(ip)
             ) {
@@ -164,13 +164,13 @@ if (Cluster.isPrimary && require.main === module) {
             let team: CustomTeam;
             if (teamID !== null) {
                 const givenTeam = customTeams.get(teamID);
-                if (!givenTeam || givenTeam.locked || givenTeam.players.length >= (teamSize.current as number)) {
+                if (!givenTeam || givenTeam.locked || givenTeam.players.length >= (teamMode.current as number)) {
                     forbidden(res); // TODO "Team is locked" and "Team is full" messages
                     return;
                 }
                 team = givenTeam;
             } else {
-                team = new CustomTeam(teamSize.current, map.current);
+                team = new CustomTeam(teamMode.current, map.current);
                 customTeams.set(team.id, team);
             }
 
@@ -240,6 +240,6 @@ if (Cluster.isPrimary && require.main === module) {
         serverLog(`Listening on ${Config.host}:${Config.port}`);
         serverLog("Press Ctrl+C to exit.");
 
-        void newGame(0, teamSize.current, map.current);
+        void newGame(0, teamMode.current, map.current);
     });
 }

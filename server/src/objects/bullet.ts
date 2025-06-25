@@ -138,7 +138,7 @@ export class Bullet extends BaseBullet {
             if (collision.dealDamage) {
                 const damageAmount = (
                     definition.teammateHeal
-                    && this.game.teamMode
+                    && this.game.isTeamMode
                     && this.shooter.isPlayer
                     && object.isPlayer
                     && object.teamID === this.shooter.teamID

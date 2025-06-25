@@ -1,4 +1,4 @@
-import { GameConstants, Layer, MapObjectSpawnMode, ObjectCategory, TeamSize } from "@common/constants";
+import { GameConstants, Layer, MapObjectSpawnMode, ObjectCategory, TeamMode } from "@common/constants";
 import { type ExplosionDefinition } from "@common/definitions/explosions";
 import { Loots, type LootDefinition } from "@common/definitions/loots";
 import { MapPings, type MapPing } from "@common/definitions/mapPings";
@@ -24,9 +24,9 @@ import { ColorStyles, Logger, styleText } from "@common/utils/logging";
 import { removeFrom } from "@common/utils/misc";
 
 import type { WebSocket } from "uWebSockets.js";
-import { Config, MapWithParams } from "./config";
+import { Config } from "./utils/config";
 import { GAME_SPAWN_WINDOW } from "./data/gasStages";
-import { MapName, Maps, SpawnMode } from "./data/maps";
+import { MapName, Maps, SpawnMode, SpawnOptions } from "./data/maps";
 import { type GameData } from "./gameManager";
 import { Gas } from "./gas";
 import { GunItem } from "./inventory/gunItem";
@@ -84,9 +84,9 @@ export class Game implements GameData {
      */
     readonly packets: PacketDataIn[] = [];
 
-    readonly teamSize: TeamSize;
+    readonly teamMode: TeamMode;
 
-    readonly teamMode: boolean;
+    readonly isTeamMode: boolean;
 
     readonly teams = new (class SetArray<T> extends Set<T> {
         private _valueCache?: T[];
@@ -204,7 +204,7 @@ export class Game implements GameData {
     private _now = Date.now();
     get now(): number { return this._now; }
 
-    private readonly idealDt = 1000 / Config.tps;
+    private readonly idealDt = 1000 / (Config.tps ?? GameConstants.tps);
 
     /**
      * Game Tick delta time
@@ -228,10 +228,10 @@ export class Game implements GameData {
         return this._idAllocator.takeNext();
     }
 
-    constructor(id: number, teamSize: TeamSize, map: MapWithParams) {
+    constructor(id: number, teamMode: TeamMode, map: string) {
         this.id = id;
-        this.teamSize = teamSize;
-        this.teamMode = this.teamSize > TeamSize.Solo;
+        this.teamMode = teamMode;
+        this.isTeamMode = this.teamMode > TeamMode.Solo;
         this.updateGameData({
             aliveCount: 0,
             allowJoin: false,
@@ -396,7 +396,7 @@ export class Game implements GameData {
                 enemySpeedMultiplier
                 && object.isPlayer
                 && source.isPlayer
-                && (!this.teamMode || object.teamID !== source.teamID || object.id === source.id)
+                && (!this.isTeamMode || object.teamID !== source.teamID || object.id === source.id)
             ) {
                 object.effectSpeedMultiplier = enemySpeedMultiplier.multiplier;
                 object.effectSpeedTimeout?.kill();
@@ -468,10 +468,10 @@ export class Game implements GameData {
         if (
             this._started
             && !this.over
-            && !Config.startImmediately
+            && (Config.minTeamsToStart ?? 1) > 1
             && (
-                this.teamMode
-                    ? this.aliveCount <= (this.teamSize as number) && new Set([...this.livingPlayers].map(p => p.teamID)).size <= 1
+                this.isTeamMode
+                    ? this.aliveCount <= (this.teamMode as number) && new Set([...this.livingPlayers].map(p => p.teamID)).size <= 1
                     : this.aliveCount <= 1
             )
         ) {
@@ -581,11 +581,11 @@ export class Game implements GameData {
             return;
         }
 
-        let spawnPosition = Vec.create(this.map.width / 2, this.map.height / 2);
+        let spawnPosition;
         let spawnLayer;
 
         let team: Team | undefined;
-        if (this.teamMode) {
+        if (this.isTeamMode) {
             const { teamID, autoFill } = socket?.getUserData() ?? {};
 
             if (teamID) {
@@ -594,7 +594,7 @@ export class Game implements GameData {
                 if (
                     !team // team doesn't exist
                     || (team.players.length && !team.hasLivingPlayers()) // team isn't empty but has no living players
-                    || team.players.length >= (this.teamSize as number) // team is full
+                    || team.players.length >= (this.teamMode as number) // team is full
                 ) {
                     this.teams.add(team = new Team(this.nextTeamID, autoFill));
                     this.customTeams.set(teamID, team);
@@ -603,7 +603,7 @@ export class Game implements GameData {
                 const vacantTeams = this.teams.valueArray.filter(
                     team =>
                         team.autoFill
-                        && team.players.length < (this.teamSize as number)
+                        && team.players.length < (this.teamMode as number)
                         && team.hasLivingPlayers()
                 );
                 if (vacantTeams.length) {
@@ -614,18 +614,16 @@ export class Game implements GameData {
             }
         }
 
-        const spawnOptions = Config.spawn.mode === SpawnMode.Default
-            ? this.map.mapDef.spawn ?? { mode: SpawnMode.Normal }
+        const spawnOptions = !Config.spawn || Config.spawn.mode === "default"
+            ? this.map.mapDef.spawn ?? { mode: "random" }
             : Config.spawn;
         switch (spawnOptions.mode) {
-            case SpawnMode.Normal: {
+            case "random": {
                 const hitbox = new CircleHitbox(5);
                 const gasPosition = this.gas.newPosition;
                 const gasRadius = this.gas.newRadius ** 2;
-                const teamPosition = this.teamMode
-                    // teamMode should guarantee the `team` object's existence
-                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                    ? pickRandomInArray(team!.getLivingPlayers())?.position
+                const teamPosition = this.isTeamMode && team
+                    ? pickRandomInArray(team.getLivingPlayers())?.position
                     : undefined;
 
                 let foundPosition = false;
@@ -639,7 +637,7 @@ export class Game implements GameData {
                         {
                             maxAttempts: 500,
                             spawnMode: MapObjectSpawnMode.GrassAndSand,
-                            getPosition: this.teamMode && teamPosition
+                            getPosition: this.isTeamMode && teamPosition
                                 ? () => randomPointInsideCircle(teamPosition, 20, 10)
                                 : undefined,
                             collides: position => Geometry.distanceSquared(position, gasPosition) >= gasRadius
@@ -658,9 +656,7 @@ export class Game implements GameData {
                         if (
                             object.isPlayer
                             && !object.dead
-                            // teamMode should guarantee the `team` object's existence
-                            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                            && (!this.teamMode || !team!.players.includes(object))
+                            && (!this.isTeamMode || !team?.players.includes(object))
                         ) {
                             foundPosition = false;
                         }
@@ -672,26 +668,28 @@ export class Game implements GameData {
 
                 break;
             }
-            case SpawnMode.Radius: {
-                const [x, y, layer] = spawnOptions.position;
-                spawnPosition = randomPointInsideCircle(
-                    Vec.create(x, y),
-                    spawnOptions.radius
+            case "fixed":
+            default: {
+                const [x, y, layer] = spawnOptions?.position ?? [];
+
+                const position = Vec.create(
+                    x ?? this.map.width / 2,
+                    y ?? this.map.height / 2
                 );
+
+                if (spawnOptions?.radius) {
+                    spawnPosition = randomPointInsideCircle(position, spawnOptions.radius);
+                } else {
+                    spawnPosition = position;
+                }
+
                 spawnLayer = layer ?? Layer.Ground;
-                break;
-            }
-            case SpawnMode.Fixed: {
-                const [x, y, layer] = spawnOptions.position;
-                spawnPosition = Vec.create(x, y);
-                spawnLayer = layer ?? Layer.Ground;
-                break;
-            }
-            case SpawnMode.Center: {
-                // no-op; this is the default
                 break;
             }
         }
+
+        // this should never happen
+        spawnPosition ??= Vec.create(0, 0);
 
         // Player is added to the players array when a JoinPacket is received from the client
         const player = new Player(this, socket, spawnPosition, spawnLayer, team);
@@ -749,7 +747,7 @@ export class Game implements GameData {
         player.sendPacket(
             JoinedPacket.create(
                 {
-                    teamSize: this.teamSize,
+                    teamMode: this.teamMode,
                     teamID: player.teamID ?? 0,
                     emotes: player.loadout.emotes
                 }
@@ -761,7 +759,7 @@ export class Game implements GameData {
         this.addTimeout(() => { player.disableInvulnerability(); }, 5000);
 
         if (
-            (this.teamMode ? this.teams.size : this.aliveCount) > (Config.startImmediately ? 0 : 1)
+            (this.isTeamMode ? this.teams.size : this.aliveCount) > (Config.minTeamsToStart ?? 1)
             && !this._started
             && this.startTimeout === undefined
         ) {
@@ -817,7 +815,7 @@ export class Game implements GameData {
             removeFrom(this.spectatablePlayers, player);
             this.updateGameData({ aliveCount: this.aliveCount });
 
-            if (this.teamMode) {
+            if (this.isTeamMode) {
                 const team = player.team;
                 if (team) {
                     team.removePlayer(player);
@@ -833,7 +831,7 @@ export class Game implements GameData {
             player.attacking = false;
             player.setPartialDirty();
 
-            if (this.teamMode && this.now - player.joinTime < 10000) {
+            if (this.isTeamMode && this.now - player.joinTime < 10000) {
                 player.team?.removePlayer(player);
             }
         }

@@ -1,5 +1,5 @@
 // noinspection JSConstantReassignment
-import { GameConstants, InputActions, SpectateActions, TeamSize } from "@common/constants";
+import { GameConstants, InputActions, SpectateActions, TeamMode } from "@common/constants";
 import { HealingItems, type HealingItemDefinition } from "@common/definitions/items/healingItems";
 import { Scopes, type ScopeDefinition } from "@common/definitions/items/scopes";
 import { Throwables } from "@common/definitions/items/throwables";
@@ -1759,8 +1759,8 @@ export function setUpCommands(): void {
                                     k,
                                     {
                                         ...v,
-                                        ...(typeof v.teamSizeSwitchTime === "number" ? { teamSizeSwitchTime: new Date(v.teamSizeSwitchTime) } : {}),
-                                        ...(typeof v.teamSize === "number" ? { teamSize: TeamSize[v.teamSize] } : {})
+                                        ...(typeof v.teamModeSwitchTime === "number" ? { teamModeSwitchTime: new Date(v.teamModeSwitchTime) } : {}),
+                                        ...(typeof v.teamMode === "number" ? { teamMode: TeamMode[v.teamMode] } : {})
                                     }
                                 ]
                             )

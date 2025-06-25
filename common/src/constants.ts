@@ -8,6 +8,7 @@ export const GameConstants = {
     // !!!!! NOTE: Increase this every time a byte stream change is made between latest release and master
     // or a new item is added to a definition list
     protocolVersion: 60,
+    tps: 40,
     gridSize: 32,
     maxPosition: 1924,
     objectMinScale: 0.15,
@@ -138,7 +139,7 @@ export const enum Layers {
     Equal     // Only collide with objects on the same layer
 }
 
-export enum TeamSize {
+export enum TeamMode {
     Solo = 1,
     Duo = 2,
     Trio = 3,

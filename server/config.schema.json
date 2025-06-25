@@ -39,12 +39,12 @@
             "type": "object",
             "properties": {
                 "mode": {
-                    "description": "There are five spawn modes: \"default\", \"normal\", \"radius\", \"fixed\", and \"center\".\n\"default\" uses the spawn options specified in the map definition, falling back to \"normal\" if no options are specified.\n\"normal\" spawns players randomly, spreading them out as much as possible.\n\"radius\" spawns players randomly within a circle with the specified position and radius.\n\"fixed\" spawns players exactly at the specified position.\n\"center\" spawns players at the exact center of the map.",
+                    "description": "There are three spawn modes: \"default\", \"random\", and \"fixed\".\n\"default\" uses the spawn options specified in the map definition, falling back to \"random\" if no options are specified.\n\"random\" spawns players randomly, spreading them out as much as possible.\n\"fixed\" spawns players exactly at the specified position, or randomly within a circle with the specified radius. If no position is specified, it defaults to the center of the map.",
                     "type": "string",
-                    "enum": ["default", "normal", "radius", "fixed", "center"]
+                    "enum": ["default", "random", "fixed"]
                 },
                 "position": {
-                    "description": "The position to spawn players at.\nWhen using the \"fixed\" spawn mode, players are spawned at this exact position.\nWhen using the \"radius\" spawn mode, players are spawned within a circle centered at this position.",
+                    "description": "The position to spawn players at.\nIf a \"radius\" is not specified, players are spawned at this exact position.\nIf a \"radius\" is specified, players are spawned randomly within a circle centered at this position.\nThis property is ignored unless the spawn mode is set to \"fixed\".",
                     "type": "array",
                     "items": {
                         "type": "number"
@@ -53,61 +53,12 @@
                     "maxItems": 3
                 },
                 "radius": {
-                    "description": "The radius of the circle to spawn players within when using the \"radius\" spawn mode.",
+                    "description": "The radius of the circle within which players will be spawned randomly.\nThis property is ignored unless the spawn mode is set to \"fixed\".",
                     "type": "number",
                     "minimum": 0
                 }
             },
             "required": ["mode"],
-            "allOf": [
-                {
-                    "if": {
-                        "properties": {
-                            "mode": {
-                                "const": "fixed"
-                            }
-                        }
-                    },
-                    "then": {
-                        "properties": {
-                            "position": true,
-                            "radius": false
-                        },
-                        "required": ["position"]
-                    }
-                },
-                {
-                    "if": {
-                        "properties": {
-                            "mode": {
-                                "const": "radius"
-                            }
-                        }
-                    },
-                    "then": {
-                        "properties": {
-                            "position": true,
-                            "radius": true
-                        },
-                        "required": ["position", "radius"]
-                    }
-                },
-                {
-                    "if": {
-                        "properties": {
-                            "mode": {
-                                "enum": ["default", "normal", "center"]
-                            }
-                        }
-                    },
-                    "then": {
-                        "properties": {
-                            "position": false,
-                            "radius": false
-                        }
-                    }
-                }
-            ],
             "additionalProperties": false
         },
         "teamMode": {

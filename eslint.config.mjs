@@ -155,10 +155,7 @@ export default tseslint.config(
             "common/dist/**",
             "client/dist/**",
             "server/dist/**",
-            "tests/dist/**",
-            "translations/src/build.ts",
-            "translations/src/validate.ts",
-            "translations/src/temporaryConversionScript.ts" // file may be deleted later
+            "tests/dist/**"
         ]
     }
 );

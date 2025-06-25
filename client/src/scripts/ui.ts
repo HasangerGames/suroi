@@ -1,4 +1,4 @@
-import { GameConstants, InputActions, ObjectCategory, SpectateActions, TeamSize } from "@common/constants";
+import { GameConstants, InputActions, ObjectCategory, SpectateActions, TeamMode } from "@common/constants";
 import { Badges, type BadgeDefinition } from "@common/definitions/badges";
 import { EmoteCategory, Emotes, type EmoteDefinition } from "@common/definitions/emotes";
 import { Ammos, type AmmoDefinition } from "@common/definitions/items/ammos";
@@ -52,9 +52,9 @@ interface RegionInfo {
     readonly offset: number
     readonly playerCount?: number
 
-    readonly teamSize?: TeamSize
-    readonly nextTeamSize?: TeamSize
-    readonly teamSizeSwitchTime?: number
+    readonly teamMode?: TeamMode
+    readonly nextTeamMode?: TeamMode
+    readonly teamModeSwitchTime?: number
 
     readonly mode?: ModeName
     readonly nextMode?: ModeName
@@ -84,41 +84,41 @@ export function unlockPlayButtons(): void { buttonsLocked = false; }
 let lastDisconnectTime: number | undefined;
 export function updateDisconnectTime(): void { lastDisconnectTime = Date.now(); }
 
-let btnMap: ReadonlyArray<readonly [TeamSize, JQuery<HTMLDivElement>]>;
+let btnMap: ReadonlyArray<readonly [TeamMode, JQuery<HTMLDivElement>]>;
 export function resetPlayButtons(): void { // TODO Refactor this method to use uiManager for jQuery calls
     if (buttonsLocked) return;
 
     const ui = UIManager.ui;
-    const { teamSize, nextTeamSize, nextMode } = selectedRegion ?? regionInfo[Config.defaultRegion];
+    const { teamMode, nextTeamMode, nextMode } = selectedRegion ?? regionInfo[Config.defaultRegion];
 
     ui.splashOptions.removeClass("loading");
     ui.loaderText.text("");
 
-    const isSolo = teamSize === TeamSize.Solo;
+    const isSolo = teamMode === TeamMode.Solo;
 
     for (
         const [size, btn] of (
             btnMap ??= [
-                [TeamSize.Solo, ui.playSoloBtn],
-                [TeamSize.Duo, ui.playDuoBtn],
-                [TeamSize.Squad, ui.playSquadBtn]
+                [TeamMode.Solo, ui.playSoloBtn],
+                [TeamMode.Duo, ui.playDuoBtn],
+                [TeamMode.Squad, ui.playSquadBtn]
             ]
         )
-    ) btn.toggleClass("locked", teamSize !== undefined && teamSize !== size);
+    ) btn.toggleClass("locked", teamMode !== undefined && teamMode !== size);
 
     ui.teamOptionBtns.toggleClass("locked", isSolo);
 
-    ui.switchMessages.css("top", isSolo ? "225px" : "150px").toggle(nextTeamSize !== undefined || nextMode !== undefined);
+    ui.switchMessages.css("top", isSolo ? "225px" : "150px").toggle(nextTeamMode !== undefined || nextMode !== undefined);
 
-    ui.nextTeamSizeMsg.toggle(nextTeamSize !== undefined);
-    const teamSizeIcons = [
+    ui.nextTeamModeMsg.toggle(nextTeamMode !== undefined);
+    const teamModeIcons = [
         "url(./img/misc/player_icon.svg)",
         "url(./img/misc/duos.svg)",
         undefined,
         "url(./img/misc/squads.svg)"
     ];
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    ui.nextTeamSizeIcon.css("background-image", nextTeamSize ? teamSizeIcons[nextTeamSize - 1]! : "none");
+    ui.nextTeamModeIcon.css("background-image", nextTeamMode ? teamModeIcons[nextTeamMode - 1]! : "none");
 
     ui.nextModeMsg.toggle(nextMode !== undefined);
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -223,22 +223,22 @@ export async function fetchServerData(): Promise<void> {
     };
     const updateSwitchTime = (): void => {
         if (!selectedRegion) return;
-        const { teamSizeSwitchTime, modeSwitchTime, retrievedTime } = selectedRegion;
+        const { teamModeSwitchTime, modeSwitchTime, retrievedTime } = selectedRegion;
 
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         const offset = Date.now() - retrievedTime!;
-        const timeBeforeTeamSizeSwitch = (teamSizeSwitchTime ?? Infinity) - offset;
+        const timeBeforeTeamModeSwitch = (teamModeSwitchTime ?? Infinity) - offset;
         const timeBeforeModeSwitch = (modeSwitchTime ?? Infinity) - offset;
 
         if (
-            (timeBeforeTeamSizeSwitch < 0 && !Game.gameStarted)
+            (timeBeforeTeamModeSwitch < 0 && !Game.gameStarted)
             || timeBeforeModeSwitch < 0
         ) {
             reloadPage();
             return;
         }
 
-        setTimeString(ui.teamSizeSwitchTime, timeBeforeTeamSizeSwitch);
+        setTimeString(ui.teamModeSwitchTime, timeBeforeTeamModeSwitch);
         setTimeString(ui.modeSwitchTime, timeBeforeModeSwitch);
     };
     setInterval(updateSwitchTime, 1000);
@@ -2003,7 +2003,7 @@ export async function setUpUI(): Promise<void> {
             slotListener(ele, button => {
                 const isPrimary = button === 0;
                 const isSecondary = button === 2;
-                const isTeamMode = Game.teamMode;
+                const isTeamMode = Game.isTeamMode;
 
                 if (isPrimary) {
                     InputManager.addAction({
@@ -2054,10 +2054,10 @@ export async function setUpUI(): Promise<void> {
             slotListener(ele, button => {
                 const isPrimary = button === 0;
                 const isSecondary = button === 2;
-                const isTeamMode = Game.teamMode;
+                const isTeamMode = Game.isTeamMode;
 
                 if (isPrimary) {
-                    if (MapPingWheelManager.enabled && Game.teamMode) {
+                    if (MapPingWheelManager.enabled && Game.isTeamMode) {
                         InputManager.addAction({
                             type: InputActions.Emote,
                             emote: Emotes.fromString(item.idString)
@@ -2110,10 +2110,10 @@ export async function setUpUI(): Promise<void> {
         slotListener(ele, button => {
             const isPrimary = button === 0;
             const isSecondary = button === 2;
-            const isTeamMode = Game.teamMode;
+            const isTeamMode = Game.isTeamMode;
 
             if (isPrimary) {
-                if (MapPingWheelManager.enabled && Game.teamMode) {
+                if (MapPingWheelManager.enabled && Game.isTeamMode) {
                     InputManager.addAction({
                         type: InputActions.Emote,
                         emote: Emotes.fromString(ammo.idString)
@@ -2154,7 +2154,7 @@ export async function setUpUI(): Promise<void> {
 
         slotListener(ele, button => {
             const isSecondary = button === 2;
-            const shouldDrop = Game.activePlayer && Game.teamMode;
+            const shouldDrop = Game.activePlayer && Game.isTeamMode;
 
             if (isSecondary && shouldDrop) {
                 const item = Game.activePlayer?.getEquipment(type);
