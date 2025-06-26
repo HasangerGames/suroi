@@ -9,6 +9,9 @@ export interface MeleeDefinition extends InventoryItemDefinition {
     readonly itemType: ItemType.Melee
     readonly tier: Tier
 
+    // If a melee weapon has maxHardness, it can only damage objects with hardness less than or equal to that value.
+    // If it is not specified, the melee can NOT damage objects with hardness.
+    readonly maxHardness?: number
     readonly fireMode?: FireMode
     readonly damage: number
     readonly obstacleMultiplier: number
@@ -487,6 +490,7 @@ export const Melees = new InventoryItemDefinitions<MeleeDefinition>([
         defType: DefinitionType.Melee,
         itemType: ItemType.Melee,
         tier: Tier.S,
+        maxHardness: 5,
         damage: 54,
         speedMultiplier: 1,
         iceMultiplier: 5,
