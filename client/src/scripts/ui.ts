@@ -934,7 +934,7 @@ export async function setUpUI(): Promise<void> {
     // Event listener for rules button
     rulesBtn.on("click", () => {
         GameConsole.setBuiltInCVar("cv_rules_acknowledged", true);
-        location.href = "./rules/";
+        window.open("/rules/", "_blank")?.focus();
     });
 
     $("#btn-quit-game, #btn-spectate-menu, #btn-menu").on("click", () => {
