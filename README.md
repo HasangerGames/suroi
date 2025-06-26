@@ -50,10 +50,12 @@ If you used Git, enter the newly created `suroi` directory with this command:
 cd suroi
 ```
 
-Finally, run this command in the project root to install dependencies:
+Next, run this command in the project root to install dependencies:
 ```sh
 pnpm install
 ```
+
+Finally, before running the server, create a `config.json` file in the `server` directory. You can copy over the contents of `config.example.json` as a starting point.
 
 ## Development
 To start the game locally, run the following command in the project root:
