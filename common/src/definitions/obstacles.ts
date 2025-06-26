@@ -4071,7 +4071,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         health: 120,
         indestructible: true,
         hitbox: RectangleHitbox.fromRect(10.1, 9),
-        zIndex: ZIndexes.ObstaclesLayer1 - 1,
+        zIndex: ZIndexes.DeadObstacles,
         rotationMode: RotationMode.Limited,
         allowFlyover: FlyoverPref.Always,
         frames: {
