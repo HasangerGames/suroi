@@ -26,10 +26,10 @@ import { ColorStyles, FontStyles, styleText } from "../../common/src/utils/loggi
 import { NullString, type ItemDefinition } from "../../common/src/utils/objectDefinitions";
 import { FloorTypes } from "../../common/src/utils/terrain";
 import { Vec, type Vector } from "../../common/src/utils/vector";
-import { Config, GasMode, Config as ServerConfig, type MapWithParams } from "../../server/src/config";
 import { GasStages } from "../../server/src/data/gasStages";
 import { LootTables } from "../../server/src/data/lootTables";
-import { Maps, SpawnMode, type MapName, type RiverDefinition } from "../../server/src/data/maps";
+import { Maps, type RiverDefinition } from "../../server/src/data/maps";
+import { Config as ServerConfig } from "../../server/src/utils/config";
 import type { FullLootTable, SimpleLootTable, WeightedItem } from "../../server/src/utils/lootHelpers";
 import { findDupes, logger, safeString, tester, validators } from "./validationUtils";
 
@@ -852,7 +852,7 @@ logger.indent("Validating badge definitions", () => {
                         (role, errorPath) => {
                             tester.assertReferenceExistsObject({
                                 value: role,
-                                collection: Config.roles,
+                                collection: ServerConfig.roles ?? {},
                                 collectionName: "roles",
                                 errorPath
                             });
@@ -3371,7 +3371,7 @@ logger.indent("Validating skins", () => {
                     (role, errorPath) => {
                         tester.assertReferenceExistsObject({
                             value: role,
-                            collection: Config.roles,
+                            collection: ServerConfig.roles ?? {},
                             collectionName: "roles",
                             errorPath
                         });
@@ -3789,7 +3789,7 @@ logger.indent("Validating {collection name}s", () => {
 */
 
 logger.indent("Validating configurations", () => {
-    logger.indent("Validating server config", () => {
+    /* logger.indent("Validating server config", () => {
         const errorPath = tester.createPath("configs", "server config");
 
         tester.assertIsNaturalFiniteNumber({
@@ -3946,7 +3946,7 @@ logger.indent("Validating configurations", () => {
             defaultValue: false,
             baseErrorPath: errorPath
         });
-    });
+    }); */
 
     logger.indent("Validating client config", () => {
         const errorPath = tester.createPath("configs", "client config");

@@ -241,7 +241,7 @@ export class Game implements GameData {
 
         this.mode = Modes[this.modeName = modeFromMap(map)];
 
-        this.pluginManager.loadPlugins();
+        void this.pluginManager.loadPlugins();
 
         const { width, height } = Maps[map.split(":")[0] as MapName];
         this.grid = new Grid(this, width, height);
