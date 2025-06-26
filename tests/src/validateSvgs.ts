@@ -18,7 +18,7 @@ const MAX_SIZES: Record<string, number> = {
     projectiles: 50_000,
     particles: 25_000,
     perks: 25_000,
-    decals: 25_000,
+    decals: 50_000,
     explosions: 25_000,
     mapPings: 25_000,
     player: 25_000,

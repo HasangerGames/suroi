@@ -22,7 +22,6 @@ export interface SoundOptions {
      */
     dynamic: boolean
     ambient: boolean
-    noMuffledEffect?: boolean
     onEnd?: () => void
 }
 
@@ -40,7 +39,6 @@ export class GameSound {
 
     readonly dynamic: boolean;
     readonly ambient: boolean;
-    readonly noMuffledEffect: boolean;
 
     get managerVolume(): number { return this.ambient ? SoundManager.ambienceVolume : SoundManager.sfxVolume; }
 
@@ -52,7 +50,6 @@ export class GameSound {
 
     instance?: PixiSound.IMediaInstance;
     readonly stereoFilter: PixiSound.filters.StereoFilter;
-    telephoneFilter?: PixiSound.filters.TelephoneFilter;
 
     ended = false;
 
@@ -66,7 +63,6 @@ export class GameSound {
         this.speed = options.speed ?? 1;
         this.dynamic = options.dynamic;
         this.ambient = options.ambient;
-        this.noMuffledEffect = options.noMuffledEffect ?? false;
         this.onEnd = options.onEnd;
         this.stereoFilter = new PixiSound.filters.StereoFilter(0);
 
@@ -135,7 +131,6 @@ export class GameSound {
 
         if (initial) {
             this.layerMult = layerMult;
-            // this._updateMuffledFilter(layerDelta);
             return;
         }
 
@@ -146,21 +141,8 @@ export class GameSound {
             duration: 500,
             onComplete: () => {
                 this.layerVolumeTween = undefined;
-                // this._updateMuffledFilter(layerDelta);
             }
         });
-    }
-
-    private _updateMuffledFilter(layerDelta: number): void {
-        if (this.noMuffledEffect || this.ambient) return;
-
-        if (layerDelta >= 2) {
-            // @ts-expect-error pixi sound doesn't have typings for this for some reason
-            this.instance.filters = [this.stereoFilter, this.telephoneFilter ??= new PixiSound.filters.TelephoneFilter()];
-        } else if (this.telephoneFilter) {
-            // @ts-expect-error see above
-            this.instance.filters = [this.stereoFilter];
-        }
     }
 
     setPaused(paused: boolean): void {

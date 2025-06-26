@@ -293,7 +293,6 @@ export const Throwables = new InventoryItemDefinitions<ThrowableDefinition>([
         cookTime: 250,
         throwTime: 150,
         cookSpeedMultiplier: 0.7,
-        health: 40,
         speedMultiplier: 1,
         hitboxRadius: 1,
         fireDelay: 1000,

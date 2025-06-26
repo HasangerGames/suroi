@@ -173,12 +173,12 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
                     )
                     || source instanceof Obstacle
                 )
-                || (weaponDef?.itemType === ItemType.Melee && definition.material === "stone" && !weaponDef?.stonePiercing))
-            )
-            || this.game.pluginManager.emit("obstacle_will_damage", {
-                obstacle: this,
-                ...params
-            })
+                || (weaponDef?.itemType === ItemType.Melee && definition.hardness !== undefined && (weaponDef.maxHardness === undefined || definition.hardness > weaponDef.maxHardness))
+                ))
+                || this.game.pluginManager.emit("obstacle_will_damage", {
+                    obstacle: this,
+                    ...params
+                })
         ) {
             return;
         }

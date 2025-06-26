@@ -248,7 +248,7 @@
 
 "report_reporting": "Segnalando"
 "report_id": "ID segnalazione:"
-"report_instructions": "\n<p><strong>Per favore, segui le istruzioni in basso!</strong> Se non lo farai, la tua segnalazione verrà ignorata.</p>\n<h4>Come presentare una segnalazione</h4>\n<ol>\n<li>Entra nel <a href=\"https://discord.suroi.io\">server Discord.</a></li>\n<li>Vai al canale <a href=\"https://discord.com/channels/1077043833621184563/1135288369526607973\">#cheater-reports.\n</a></li>\n<li>Leggi le linee guida di segnalazione nel post in evidenza.</li>\n<li>Manda la tua segnalazione con un post.</li>\n</ol>",
+"report_instructions": "\n<p><strong>Per favore, segui le istruzioni in basso!</strong> Se non lo farai, la tua segnalazione verrà ignorata.</p>\n<h4>Come presentare una segnalazione</h4>\n<ol>\n<li>Entra nel <a href=\"https://discord.suroi.io\">server Discord.</a></li>\n<li>Vai al canale <a href=\"https://discord.com/channels/1077043833621184563/1135288369526607973\">#player-reports.\n</a></li>\n<li>Leggi le linee guida di segnalazione nel post in evidenza.</li>\n<li>Manda la tua segnalazione con un post.</li>\n</ol>",
 
 "languages": "Lingue"
 
@@ -296,7 +296,7 @@
 "desstroyer_of_worlds": "Distruttore di Mondi"
 "revitalizer": "Rivitalizzante"
 "s_g17": "G17 (con visore)"
-"flues": "Doppietta"
+"badlander": "Doppietta"
 
 "frag_grenade": "Granata a frammentazione"
 "smoke_grenade": "Granata fumogena"

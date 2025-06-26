@@ -1,25 +1,25 @@
 import { GameConstants, InputActions } from "@common/constants";
-import { type WeaponDefinition } from "@common/definitions/loots";
 import { Scopes } from "@common/definitions/items/scopes";
 import { Throwables, type ThrowableDefinition } from "@common/definitions/items/throwables";
+import { type WeaponDefinition } from "@common/definitions/loots";
 import { areDifferent, InputPacket, type InputAction, type InputData, type SimpleInputActions } from "@common/packets/inputPacket";
-import { Angle, Geometry, Numeric } from "@common/utils/math";
+import { PacketType } from "@common/packets/packet";
+import { Geometry, Numeric } from "@common/utils/math";
 import { ItemType, type ItemDefinition } from "@common/utils/objectDefinitions";
 import { Vec } from "@common/utils/vector";
 import $ from "jquery";
 import nipplejs, { type JoystickOutputData } from "nipplejs";
 import { isMobile } from "pixi.js";
-import { getTranslatedString } from "../utils/translations/translations";
-import { type TranslationKeys } from "../utils/translations/typings";
-import { Game } from "../game";
 import { GameConsole, type GameSettings, type PossibleError } from "../console/gameConsole";
+import { defaultBinds } from "../console/variables";
+import { Game } from "../game";
 import { FORCE_MOBILE, PIXI_SCALE } from "../utils/constants";
 import { html } from "../utils/misc";
-import { PacketType } from "@common/packets/packet";
-import { UIManager } from "./uiManager";
-import { SoundManager } from "./soundManager";
+import { getTranslatedString } from "../utils/translations/translations";
+import { type TranslationKeys } from "../utils/translations/typings";
 import { CameraManager } from "./cameraManager";
-import { defaultBinds } from "../console/variables";
+import { SoundManager } from "./soundManager";
+import { UIManager } from "./uiManager";
 
 class InputMapper {
     // These two maps must be kept in sync!!
@@ -198,18 +198,7 @@ class InputManagerClass {
     // and inputManager assumes all keys of `movement` are booleans
     movementAngle = 0;
 
-    mouseX = 0;
-    mouseY = 0;
-
-    emoteWheelActive = false;
-    emoteWheelPosition = Vec.create(0, 0);
-    pingWheelActive = false;
-    /**
-     * If the ping wheel was activated in the minimap
-     */
-    pingWheelMinimap = false;
-    pingWheelPosition = Vec.create(0, 0);
-    selectedEmote?: number;
+    mousePosition = Vec.create(0, 0);
 
     rotation = 0;
 
@@ -369,65 +358,22 @@ class InputManagerClass {
         gameContainer.addEventListener("pointerup", this.handleInputEvent.bind(this, false));
         gameContainer.addEventListener("wheel", this.handleInputEvent.bind(this, true), { passive: true });
 
-        $("#emote-wheel > .button-center").on("click", () => {
-            this.emoteWheelActive = false;
-            UIManager.ui.emoteButton
-                .removeClass("btn-alert")
-                .addClass("btn-primary");
-            this.selectedEmote = undefined;
-            this.pingWheelMinimap = false;
-            $("#emote-wheel").hide();
-        });
-
-        const FIRST_EMOTE_ANGLE = Math.atan2(-1, -1);
-        const SECOND_EMOTE_ANGLE = Math.atan2(1, 1);
-        const THIRD_EMOTE_ANGLE = Math.atan2(-1, 1);
-        const FOURTH_EMOTE_ANGLE = Math.atan2(1, -1);
-
         gameContainer.addEventListener("pointermove", (e: MouseEvent) => {
             if (this.isMobile) return;
-            this.mouseX = e.clientX;
-            this.mouseY = e.clientY;
 
-            if (this.emoteWheelActive) {
-                const mousePosition = Vec.create(e.clientX, e.clientY);
-                if (Geometry.distanceSquared(this.emoteWheelPosition, mousePosition) > 500 && !UIManager.blockEmoting) {
-                    const angle = Angle.betweenPoints(this.emoteWheelPosition, mousePosition);
-                    let slotName: string | undefined;
-                    if (SECOND_EMOTE_ANGLE <= angle && angle <= FOURTH_EMOTE_ANGLE) {
-                        this.selectedEmote = 0;
-                        slotName = "top";
-                    } else if (!(angle >= FIRST_EMOTE_ANGLE && angle <= FOURTH_EMOTE_ANGLE)) {
-                        this.selectedEmote = 1;
-                        slotName = "right";
-                    } else if (FIRST_EMOTE_ANGLE <= angle && angle <= THIRD_EMOTE_ANGLE) {
-                        this.selectedEmote = 2;
-                        slotName = "bottom";
-                    } else if (THIRD_EMOTE_ANGLE <= angle && angle <= SECOND_EMOTE_ANGLE) {
-                        this.selectedEmote = 3;
-                        slotName = "left";
-                    }
-                    $("#emote-wheel").css("background-image", `url("./img/misc/emote_wheel_highlight_${slotName ?? "top"}.svg"), url("./img/misc/emote_wheel.svg")`);
-                } else {
-                    this.selectedEmote = undefined;
-                    $("#emote-wheel").css("background-image", "url(\"./img/misc/emote_wheel_highlight_center.svg\"), url(\"./img/misc/emote_wheel.svg\")");
-                }
-            }
-
+            this.mousePosition = Vec.create(e.clientX, e.clientY);
+            this.turning = true;
             this.rotation = Math.atan2(e.clientY - window.innerHeight / 2, e.clientX - window.innerWidth / 2);
 
-            if (!Game.gameOver && Game.activePlayer) {
-                const globalPos = Vec.create(e.clientX, e.clientY);
-                const pixiPos = CameraManager.container.toLocal(globalPos);
-                this.gameMousePosition = Vec.scale(pixiPos, 1 / PIXI_SCALE);
-                this.distanceToMouse = Geometry.distance(Game.activePlayer.position, this.gameMousePosition);
+            if (Game.gameOver || !Game.activePlayer) return;
 
-                if (GameConsole.getBuiltInCVar("cv_responsive_rotation")) {
-                    Game.activePlayer.container.rotation = this.rotation;
-                }
+            const pixiPos = CameraManager.container.toLocal(this.mousePosition);
+            this.gameMousePosition = Vec.scale(pixiPos, 1 / PIXI_SCALE);
+            this.distanceToMouse = Geometry.distance(Game.activePlayer.position, this.gameMousePosition);
+
+            if (GameConsole.getBuiltInCVar("cv_responsive_rotation")) {
+                Game.activePlayer.container.rotation = this.rotation;
             }
-
-            this.turning = true;
         });
 
         // Mobile joysticks
@@ -491,20 +437,25 @@ class InputManagerClass {
                 aimJoystickUsed = true;
                 this.rotation = -data.angle.radian;
                 this.turning = true;
+
+                const joystickSize = GameConsole.getBuiltInCVar("mb_joystick_size");
+
+                this.distanceToMouse = Numeric.remap(data.distance, 0, joystickSize / 2, 0, GameConstants.player.maxMouseDist);
+
                 const activePlayer = Game.activePlayer;
-                if (GameConsole.getBuiltInCVar("cv_responsive_rotation") && !Game.gameOver && activePlayer) {
+                if (!activePlayer) return;
+
+                if (GameConsole.getBuiltInCVar("cv_responsive_rotation") && !Game.gameOver) {
                     activePlayer.container.rotation = this.rotation;
                 }
 
-                if (!activePlayer) return;
-
                 const def = activePlayer.activeItem;
 
-                if (activePlayer.images.aimTrail !== undefined) {
-                    activePlayer.images.aimTrail.alpha = 1;
-                }
+                const { aimTrail, altAimTrail } = activePlayer.images;
+                if (aimTrail) aimTrail.visible = true;
+                if (altAimTrail) altAimTrail.visible = def.itemType === ItemType.Gun && (def.isDual ?? false);
 
-                const attacking = data.distance > GameConsole.getBuiltInCVar("mb_joystick_size") / 3;
+                const attacking = data.distance > joystickSize / 3;
                 if (
                     (def.itemType === ItemType.Throwable && this.attacking)
                     || (def.itemType === ItemType.Gun && def.shootOnRelease)
@@ -518,10 +469,16 @@ class InputManagerClass {
 
             aimJoystick.on("end", () => {
                 aimJoystickUsed = false;
-                if (Game.activePlayer?.images.aimTrail !== undefined) Game.activePlayer.images.aimTrail.alpha = 0;
                 this.attacking = shootOnRelease;
                 this.resetAttacking = true;
                 shootOnRelease = false;
+
+                const activePlayer = Game.activePlayer;
+                if (!activePlayer) return;
+
+                const { aimTrail, altAimTrail } = activePlayer.images;
+                if (aimTrail) aimTrail.visible = false;
+                if (altAimTrail) altAimTrail.visible = false;
             });
         }
 

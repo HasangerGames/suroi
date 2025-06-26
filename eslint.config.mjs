@@ -10,7 +10,6 @@ export default tseslint.config(
     ...tseslint.configs.strictTypeChecked,
     ...tseslint.configs.stylisticTypeChecked,
     stylistic.configs.customize({
-        flat: true,
         indent: 4,
         semi: true,
         commaDangle: "never"
@@ -156,10 +155,7 @@ export default tseslint.config(
             "common/dist/**",
             "client/dist/**",
             "server/dist/**",
-            "tests/dist/**",
-            "translations/src/build.ts",
-            "translations/src/validate.ts",
-            "translations/src/temporaryConversionScript.ts" // file may be deleted later
+            "tests/dist/**"
         ]
     }
 );

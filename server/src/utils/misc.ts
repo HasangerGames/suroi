@@ -4,12 +4,19 @@ import { halfπ, τ } from "@common/utils/math";
 import { ReferenceOrNull, ReferenceOrRandom, type ObjectDefinition } from "@common/utils/objectDefinitions";
 import { weightedRandom } from "@common/utils/random";
 import { Vec, type Vector } from "@common/utils/vector";
-import { Config, MapWithParams } from "../config";
+import { Config } from "../utils/config";
 import { MapName, Maps } from "../data/maps";
 import { Game } from "../game";
 
-export function modeFromMap(map: MapWithParams): ModeName {
-    const mapName = map.split(":")[0];
+export function modeFromMap(map: string): ModeName {
+    const args = map.split(":");
+
+    const lastArg = args[args.length - 1];
+    if (lastArg in Modes) {
+        return lastArg as ModeName;
+    }
+
+    const mapName = args[0];
     const mapMode = Maps[mapName as MapName]?.mode;
     if (mapMode) {
         return mapMode;
@@ -20,11 +27,13 @@ export function modeFromMap(map: MapWithParams): ModeName {
     }
 }
 
+const usernameFilters = Config.usernameFilters?.map(filter => new RegExp(filter));
+
 export function cleanUsername(name?: string | null): string {
     if (
         !name?.trim().length
         || name.length > GameConstants.player.nameMaxLength
-        || Config.usernameFilters?.some(regex => regex.test(name))
+        || usernameFilters?.some(regex => regex.test(name))
         || /[^\x20-\x7E]/g.test(name) // extended ASCII chars
     ) {
         return GameConstants.player.defaultName;

@@ -295,7 +295,7 @@
 
 "report_reporting": "Reportando"
 "report_id": "ID do Reporte:"
-"report_instructions": "\n<p><strong>Siga as instruções abaixo!</strong> Caso contrário, seu reporte será ignorado.</p>\n<h4>Como Enviar um Reporte</h4>\n<ol>\n<li>Entre no <a href=\"https://discord.suroi.io\">servidor do Discord.</a></li>\n<li>Vá para o <a href=\"https://discord.com/channels/1077043833621184563/1135288369526607973\">canal #cheater-reports.</a></li>\n<li>Leia as diretrizes do reporte no post fixado.</li>\n<li>Envie seu reporte como uma publicação.</li>\n</ol>"
+"report_instructions": "\n<p><strong>Siga as instruções abaixo!</strong> Caso contrário, seu reporte será ignorado.</p>\n<h4>Como Enviar um Reporte</h4>\n<ol>\n<li>Entre no <a href=\"https://discord.suroi.io\">servidor do Discord.</a></li>\n<li>Vá para o <a href=\"https://discord.com/channels/1077043833621184563/1135288369526607973\">canal #player-reports.</a></li>\n<li>Leia as diretrizes do reporte no post fixado.</li>\n<li>Envie seu reporte como uma publicação.</li>\n</ol>"
 "languages": "Idiomas"
 
 "gauze": "Gaze"
@@ -347,10 +347,10 @@
 "aug": "AUG"
 "pp19": "PP-19"
 "vepr12": "Vepr-12"
-"flues": "Flues"
+"badlander": "Badlander"
 "cz75a": "CZ-75A"
 "g19": "G19"
-"mp40": "MP40"
+"mpx": "MPX"
 "m1895": "M1895"
 "ak47": "AK-47"
 "vector": "Vector"

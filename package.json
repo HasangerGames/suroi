@@ -1,30 +1,27 @@
 {
   "name": "suroi",
-  "version": "0.27.1",
-  "description": "An open-source 2D battle royale game inspired by surviv.io",
-  "private": true,
+  "version": "0.27.2",
+  "description": "An open-source 2D battle royale game inspired by surviv.io.",
   "scripts": {
     "build": "pnpm -r build",
     "build:client": "cd client && pnpm build",
     "build:server": "cd server && pnpm build",
-    "start": "node --enable-source-maps server/dist/server/src/server.js",
-    "warn": "pnpm moderation warn",
-    "ban": "pnpm moderation ban",
-    "unban": "pnpm moderation unban",
+    "start": "cd server && pnpm start",
     "dev": "pnpm -r dev",
     "dev:client": "cd client && pnpm dev",
     "dev:server": "cd server && pnpm dev",
     "dev:test": "cd tests && pnpm stressTest",
     "watch:server": "cd server && tsc --noEmit --watch",
+    "updateConfigSchema": "cd server && pnpm updateConfigSchema",
     "typecheck": "tsc -v --noEmit",
     "lint": "eslint . --fix",
     "lint:check": "eslint .",
     "lint:ci": "eslint . --max-warnings 0",
-    "validateDefinitions": "cd tests && pnpm run build && pnpm validateDefinitions",
+    "validateDefinitions": "cd tests && pnpm build && pnpm validateDefinitions",
     "validateSvgs": "cd tests && pnpm validateSvgs",
-    "sanity-check": "pnpm lint:check && pnpm typecheck && pnpm validateDefinitions",
-    "full-reinstall": "rm -r node_modules pnpm-lock.yaml client/node_modules server/node_modules common/node_modules tests/node_modules && pnpm install",
-    "full-reinstall-win": "del /f /s /q node_modules\\* pnpm-lock.yaml client\\node_modules\\* server\\node_modules\\* common\\node_modules\\* tests\\node_modules\\* & pnpm install"
+    "sanityCheck": "pnpm lint:check && pnpm typecheck && pnpm validateDefinitions",
+    "fullReinstall": "rm -r node_modules pnpm-lock.yaml client/node_modules server/node_modules common/node_modules tests/node_modules && pnpm install",
+    "fullReinstallWin": "del /f /s /q node_modules\\* pnpm-lock.yaml client\\node_modules\\* server\\node_modules\\* common\\node_modules\\* tests\\node_modules\\* & pnpm install"
   },
   "engines": {
     "node": ">=20.0.0",
@@ -32,16 +29,19 @@
   },
   "keywords": [
     "nodejs",
-    "typescript"
+    "typescript",
+    "battle-royale",
+    "io-game",
+    "pixijs"
   ],
   "license": "GPL-3.0",
   "devDependencies": {
-    "@eslint/js": "^9.27.0",
-    "@stylistic/eslint-plugin": "^4.4.0",
-    "@types/node": "^22.15.21",
-    "eslint": "^9.27.0",
+    "@eslint/js": "^9.29.0",
+    "@stylistic/eslint-plugin": "^4.4.1",
+    "@types/node": "^22.15.33",
+    "eslint": "^9.29.0",
     "typescript": "^5.8.3",
-    "typescript-eslint": "^8.32.1"
+    "typescript-eslint": "^8.34.1"
   },
   "packageManager": "pnpm@10.11.0+sha512.6540583f41cc5f628eb3d9773ecee802f4f9ef9923cc45b69890fb47991d4b092964694ec3a4f738a420c918a333062c8b925d312f42e4f0c263eb603551f977"
 }

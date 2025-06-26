@@ -243,6 +243,7 @@ export const GameConsole = new (class GameConsole {
             }
 
             // FIXME remove after one or two updates (transition code grace period)
+            // written on november 9th 2024
             const badge = this.variables.get.builtIn("cv_loadout_badge").value;
             if (!Badges.hasString(badge) && !badge.startsWith("bdg_") && badge !== "") {
                 this.variables.set.builtIn("cv_loadout_badge", `bdg_${badge}`);

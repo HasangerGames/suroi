@@ -15,13 +15,13 @@
   "license": "GPL-3.0",
   "devDependencies": {
     "@jest/globals": "^29.7.0",
-    "@swc/core": "^1.11.29",
+    "@swc/core": "^1.12.3",
     "@swc/helpers": "^0.5.17",
-    "@types/node": "^22.15.21",
+    "@types/node": "^22.15.32",
     "@types/svg-parser": "^2.0.6",
     "@types/ws": "^8.18.1",
     "nodemon": "^3.1.10",
-    "ts-jest": "^29.3.4",
+    "ts-jest": "^29.4.0",
     "tsc-alias": "^1.8.16",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.8.3"

@@ -42,6 +42,7 @@ export class ThrowableItem extends CountableInventoryItem.derive(ItemType.Throwa
             || owner.downed
             || owner.disconnected
             || this !== owner.activeItem
+            || this.count <= 0
         ) {
             return;
         }

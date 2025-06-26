@@ -1,0 +1,25 @@
+{
+    "$schema": "config.schema.json",
+    "hostname": "127.0.0.1",
+    "port": 8000,
+    "map": "normal",
+    "teamMode": "solo",
+    "spawn": { "mode": "default" },
+    "maxPlayersPerGame": 80,
+    "maxGames": 5,
+    "roles": {
+        "developr": { "password": "developr", "isDev": true },
+        "dev_managr": { "password": "dev_managr" },
+        "designr": { "password": "designr" },
+        "vip_designr": { "password": "vip_designr" },
+        "sound_designr": { "password": "sound_designr" },
+        "moderatr": { "password": "moderatr" },
+        "administratr": { "password": "administratr" },
+        "content_creatr": { "password": "content_creatr" },
+        "donatr": { "password": "donatr" },
+
+        "hasanger": { "password": "hasanger", "isDev": true },
+        "pap": { "password": "pap", "isDev": true },
+        "zedaes": { "password": "zedaes", "isDev": true }
+    }
+}

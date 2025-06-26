@@ -55,8 +55,8 @@ const playerPing = (idString: string, ignoreExpiration = false): PlayerPing => (
 
 export const MapPings = new ObjectDefinitions<MapPingDefinition>([
     gamePing("airdrop_ping", 0x00ffff, true),
-    playerPing("warning_ping"),
     playerPing("arrow_ping", true),
     playerPing("gift_ping"),
-    playerPing("heal_ping")
+    playerPing("heal_ping"),
+    playerPing("warning_ping")
 ]);

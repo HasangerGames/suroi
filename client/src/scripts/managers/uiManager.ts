@@ -8,7 +8,6 @@ import { PerkCategories, PerkIds, type PerkDefinition } from "@common/definition
 import { DEFAULT_SCOPE, type ScopeDefinition } from "@common/definitions/items/scopes";
 import { Skins } from "@common/definitions/items/skins";
 import { Loots } from "@common/definitions/loots";
-import { MapPings, type PlayerPing } from "@common/definitions/mapPings";
 import { type GameOverData } from "@common/packets/gameOverPacket";
 import type { KillData } from "@common/packets/killPacket";
 import { DamageSources } from "@common/packets/killPacket";
@@ -30,6 +29,7 @@ import { SuroiSprite } from "../utils/pixi";
 import { getTranslatedString, TRANSLATIONS } from "../utils/translations/translations";
 import { type TranslationKeys } from "../utils/translations/typings";
 import { CameraManager } from "./cameraManager";
+import { MapPingWheelManager } from "./emoteWheelManager";
 import { InputManager } from "./inputManager";
 import { MapManager } from "./mapManager";
 import { ClientPerkManager } from "./perkManager";
@@ -145,7 +145,7 @@ class UIManagerClass {
             return teammate.id === id;
         });
 
-        const colorIndex = teammate ? teammate.colorIndex : (Game.teamMode ? undefined : 0);
+        const colorIndex = teammate ? teammate.colorIndex : (Game.isTeamMode ? undefined : 0);
         return colorIndex;
     }
 
@@ -191,10 +191,6 @@ class UIManagerClass {
         pingToggle: $<HTMLButtonElement>("#btn-toggle-ping"),
         menuButton: $<HTMLButtonElement>("#btn-game-menu"),
 
-        emoteWheel: $<HTMLDivElement>("#emote-wheel"),
-        emoteSelectors: [".emote-top", ".emote-right", ".emote-bottom", ".emote-left"]
-            .map(selector => $<HTMLDivElement>(`#emote-wheel > ${selector}`)),
-
         actionContainer: $<HTMLDivElement>("#action-container"),
         actionName: $<HTMLDivElement>("#action-name"),
         actionTime: $<HTMLHeadingElement>("#action-time"),
@@ -219,11 +215,6 @@ class UIManagerClass {
         gameOverOverlay: $<HTMLDivElement>("#game-over-overlay"),
         gameOverPlayerCards: $<HTMLDivElement>("#player-game-over-cards"),
         gameOverText: $<HTMLHeadingElement>("#game-over-text"),
-        /* gameOverPlayerName: $<HTMLHeadingElement>("#game-over-player-name"),
-        gameOverKills: $<HTMLSpanElement>("#game-over-kills"),
-        gameOverDamageDone: $<HTMLSpanElement>("#game-over-damage-done"),
-        gameOverDamageTaken: $<HTMLSpanElement>("#game-over-damage-taken"),
-        gameOverTime: $<HTMLSpanElement>("#game-over-time"), */
         gameOverRank: $<HTMLSpanElement>("#game-over-rank"),
         gameOverTeamKillsContainer: $<HTMLDivElement>("#game-over-team-kills-container"),
         gameOverTeamKills: $<HTMLSpanElement>("#game-over-team-kills"),
@@ -259,7 +250,7 @@ class UIManagerClass {
 
         lockedInfo: $<HTMLButtonElement>("#locked-info"),
         lockedTooltip: $<HTMLDivElement>("#locked-tooltip"),
-        teamSizeSwitchTime: $<HTMLSpanElement>("#next-team-size-msg .next-switch-time"),
+        teamModeSwitchTime: $<HTMLSpanElement>("#next-team-size-msg .next-switch-time"),
         modeSwitchTime: $<HTMLSpanElement>("#next-mode-msg .next-switch-time"),
 
         playSoloBtn: $<HTMLDivElement>("#btn-play-solo"),
@@ -269,8 +260,8 @@ class UIManagerClass {
         teamOptionBtns: $<HTMLDivElement>("#team-option-btns"),
 
         switchMessages: $<HTMLDivElement>("#next-switch-messages"),
-        nextTeamSizeMsg: $<HTMLDivElement>("#next-team-size-msg"),
-        nextTeamSizeIcon: $<HTMLDivElement>("#next-team-size-msg .next-switch-icon"),
+        nextTeamModeMsg: $<HTMLDivElement>("#next-team-size-msg"),
+        nextTeamModeIcon: $<HTMLDivElement>("#next-team-size-msg .next-switch-icon"),
         nextModeMsg: $<HTMLDivElement>("#next-mode-msg"),
         nextModeIcon: $<HTMLDivElement>("#next-mode-msg .next-switch-icon"),
 
@@ -295,7 +286,9 @@ class UIManagerClass {
 
         inventoryMsg: $<HTMLSpanElement>("#inventory-message"),
 
-        debugPos: $<HTMLSpanElement>("#coordinates-hud")
+        debugPos: $<HTMLSpanElement>("#coordinates-hud"),
+
+        ammosContainer: $<HTMLDivElement>("#ammos-container")
     });
 
     private readonly _weaponSlotCache = new ExtendedMap<
@@ -441,7 +434,7 @@ class UIManagerClass {
         let mostDamageTaken = 0;
         let mostDamageTakenIDs: number[] | undefined = [];
 
-        if (Game.teamMode) {
+        if (Game.isTeamMode) {
             for (const { playerID, kills, damageDone, damageTaken } of teammates) {
                 if (kills > highestKills) {
                     highestKills = kills;
@@ -485,7 +478,7 @@ class UIManagerClass {
             if (!alive) {
                 medal = "dead";
             }
-            if (Game.teamMode) {
+            if (Game.isTeamMode) {
                 if (highestKillsIDs?.includes(playerID)) {
                     medal = "kills";
                 } else if (mostDamageDoneIDs?.includes(playerID)) {
@@ -572,39 +565,23 @@ class UIManagerClass {
         setTimeout(() => ScreenRecordManager.endRecording(), 2500);
     }
 
-    // I'd rewrite this as MapPings.filter(…), but it's not really clear how
-    // > 4 player pings is _meant_ to be handled, so I'll begrudgingly leave this alone
-    readonly mapPings: readonly PlayerPing[] = [
-        "warning_ping",
-        "arrow_ping",
-        "gift_ping",
-        "heal_ping"
-    ].map(ping => MapPings.fromString<PlayerPing>(ping));
+    updateRequestableItems(): void {
+        if (!Game.isTeamMode) return;
 
-    updateEmoteWheel(): void {
-        const { pingWheelActive } = InputManager;
-        if (Game.teamMode) {
-            $("#ammos-container, #healing-items-container").toggleClass("active", pingWheelActive);
-            for (const ammo of Ammos) {
-                const itemSlot = this._itemSlotCache[ammo.idString] ??= $(`#${ammo.idString}-slot`);
-                if (pingWheelActive && ammo.hideUnlessPresent) itemSlot.css("visibility", "visible");
-                else if (ammo.hideUnlessPresent && this.inventory.items[ammo.idString] === 0) itemSlot.css("visibility", "hidden");
-            }
+        const pingWheelActive = MapPingWheelManager.enabled;
 
-            $("#ammos-container, #healing-items-container").toggleClass("active", pingWheelActive);
-            for (const healItem of HealingItems) {
-                const itemSlot = this._itemSlotCache[healItem.idString] ??= $(`#${healItem.idString}-slot`);
-                if (pingWheelActive && healItem.hideUnlessPresent) itemSlot.css("visibility", "visible");
-                else if (healItem.hideUnlessPresent && this.inventory.items[healItem.idString] === 0) itemSlot.css("visibility", "hidden");
-            }
+        $("#ammos-container, #healing-items-container").toggleClass("active", pingWheelActive);
+        for (const item of [...Ammos, ...HealingItems]) {
+            const itemSlot = this._itemSlotCache[item.idString] ??= $(`#${item.idString}-slot`);
+            if (pingWheelActive && item.hideUnlessPresent) itemSlot.css("visibility", "visible");
+            else if (item.hideUnlessPresent && this.inventory.items[item.idString] === 0) itemSlot.css("visibility", "hidden");
         }
-        for (let i = 0; i < 4; i++) {
-            const definition = (pingWheelActive ? this.mapPings : this.emotes)[i];
 
-            this.ui.emoteSelectors[i].css(
-                "background-image",
-                definition ? `url("./img/game/shared/${pingWheelActive ? "mapPings" : "emotes"}/${definition.idString}.svg")` : ""
-            );
+        if (InputManager.isMobile) {
+            const pingWheelActive = MapPingWheelManager.enabled;
+            this.ui.pingToggle
+                .toggleClass("btn-danger", pingWheelActive)
+                .toggleClass("btn-primary", !pingWheelActive);
         }
     }
 
@@ -738,7 +715,7 @@ class UIManagerClass {
                 .css("color", healthPercent <= 40 || Game.activePlayer?.downed ? "#ffffff" : "#000000");
         }
 
-        if (teammates && Game.teamMode) {
+        if (teammates && Game.isTeamMode) {
             this.teammates = teammates;
 
             const _teammateDataCache = this._teammateDataCache;
@@ -853,10 +830,7 @@ class UIManagerClass {
             }
         }
 
-        if (blockEmoting !== this.blockEmoting) {
-            this.blockEmoting = blockEmoting;
-            this.ui.emoteWheel.css("opacity", this.blockEmoting ? "0.5" : "");
-        }
+        this.blockEmoting = blockEmoting;
     }
 
     reportedPlayerIDs = new Map<number, boolean>();
@@ -940,16 +914,16 @@ class UIManagerClass {
         );
     }
 
-    private readonly _weaponCache: Array<{
+    readonly weaponCache: Array<{
         hasItem?: boolean
         isActive?: boolean
         idString?: string
         ammo?: number
         hasAmmo?: boolean
-    }> = new Array<typeof this._weaponCache[number]>(GameConstants.player.maxWeapons);
+    } | undefined> = new Array<typeof this.weaponCache[number]>(GameConstants.player.maxWeapons);
 
     clearWeaponCache(): void {
-        this._weaponCache.length = 0;
+        this.weaponCache.length = 0;
     }
 
     updateWeaponSlots(): void {
@@ -957,8 +931,8 @@ class UIManagerClass {
 
         for (let i = 0, max = GameConstants.player.maxWeapons; i < max; i++) {
             const weapon = inventory.weapons[i];
-            const isNew = this._weaponCache[i] === undefined;
-            const cache = this._weaponCache[i] ??= {};
+            const isNew = this.weaponCache[i] === undefined;
+            const cache = this.weaponCache[i] ??= {};
 
             const {
                 container,
@@ -986,24 +960,22 @@ class UIManagerClass {
 
                 if (definition) {
                     const isGun = definition.itemType === ItemType.Gun;
-                    const color = isGun
-                        ? Ammos.fromString(definition.ammoType).characteristicColor
-                        : { hue: 0, saturation: 0, lightness: 0 };
 
-                    container.css(isGun && GameConsole.getBuiltInCVar("cv_weapon_slot_style") === "colored"
-                        ? {
-                            "outline-color": `hsl(${color.hue}, ${color.saturation}%, ${(color.lightness + 50) / 3}%)`,
-                            "background-color": `hsla(${color.hue}, ${color.saturation}%, ${color.lightness / 2}%, 50%)`,
-                            "color": `hsla(${color.hue}, ${color.saturation}%, 90%)`
+                    if (isGun) {
+                        itemImage.css("transform", definition.inventoryScale !== undefined ? `scale(${definition.inventoryScale})` : "unset");
+
+                        if (GameConsole.getBuiltInCVar("cv_weapon_slot_style") === "colored") {
+                            const color = Ammos.fromString(definition.ammoType).characteristicColor;
+                            container.css({
+                                "outline-color": `hsl(${color.hue}, ${color.saturation}%, ${(color.lightness + 50) / 3}%)`,
+                                "background-color": `hsla(${color.hue}, ${color.saturation}%, ${color.lightness / 2}%, 50%)`,
+                                "color": `hsla(${color.hue}, ${color.saturation}%, 90%)`
+                            });
                         }
-                        : {
-                            "outline-color": "",
-                            "background-color": "",
-                            "color": ""
-                        });
+                    }
 
                     itemName.text(
-                        definition.itemType === ItemType.Gun && definition.isDual
+                        isGun && definition.isDual
                             ? getTranslatedString(
                                 "dual_template",
                                 { gun: getTranslatedString(definition.singleVariant as TranslationKeys) }
@@ -1014,15 +986,22 @@ class UIManagerClass {
                     const isFists = definition.idString === "fists";
 
                     let weaponImage: string;
+                    let fistTint: Color | undefined;
                     if (isFists) {
-                        if (this.skinID !== undefined && Skins.fromStringSafe(this.skinID)?.grassTint) { // ghillie suit
-                            weaponImage = `url("data:image/svg+xml,${encodeURIComponent(`<svg width="34" height="34" viewBox="0 0 8.996 8.996" xmlns="http://www.w3.org/2000/svg"><circle fill="${Game.colors.ghillie.toHex()}" stroke="${new Color(Game.colors.ghillie).multiply("#111").toHex()}" stroke-width="1.05833" cx="4.498" cy="4.498" r="3.969"/></svg>`)}")`;
-                        } else {
-                            weaponImage = `url(./img/game/shared/skins/${this.skinID ?? GameConsole.getBuiltInCVar("cv_loadout_skin")}_fist.svg)`;
+                        const skinDef = Skins.fromString(this.skinID ?? GameConsole.getBuiltInCVar("cv_loadout_skin"));
+                        weaponImage = `url(./img/game/shared/skins/${skinDef.fistImage ?? `${skinDef.idString}_fist`}.svg)`;
+                        if (skinDef.grassTint) {
+                            fistTint = Game.colors.ghillie;
+                        } else if (skinDef.fistTint !== undefined) {
+                            fistTint = new Color(skinDef.fistTint);
                         }
                     } else {
                         let frame = definition.idString;
-                        if (ClientPerkManager.hasItem(PerkIds.PlumpkinBomb) && definition.itemType === ItemType.Throwable && !definition.noSkin) {
+                        if (
+                            ClientPerkManager.hasItem(PerkIds.PlumpkinBomb)
+                            && definition.itemType === ItemType.Throwable
+                            && !definition.noSkin
+                        ) {
                             frame += "_halloween";
                         }
                         weaponImage = `url(./img/game/${definition.reskins?.includes(Game.modeName) ? Game.modeName : "shared"}/weapons/${frame}.svg)`;
@@ -1030,7 +1009,11 @@ class UIManagerClass {
 
                     this._playSlotAnimation(container);
                     itemImage
-                        .css("background-image", weaponImage)
+                        .css({
+                            "background-image": weaponImage,
+                            "background-color": fistTint ? fistTint.toHex() : "unset",
+                            "mask-image": fistTint ? weaponImage : "unset"
+                        })
                         .toggleClass("is-fists", isFists)
                         .show();
                 } else {
@@ -1277,7 +1260,7 @@ class UIManagerClass {
 
                 // Remove spaces if chinese/japanese language.
                 if (TRANSLATIONS.translations[language].no_space && messageText) {
-                    messageText = messageText.replaceAll("<span>", "<span style=\"display:contents;\">");
+                    messageText = messageText.split("<span>").join("<span style=\"display:contents;\">");
                 }
 
                 // special case for turkish

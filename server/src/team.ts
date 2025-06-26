@@ -1,8 +1,7 @@
-import { TeamSize } from "@common/constants";
+import { TeamMode } from "@common/constants";
 import { CustomTeamMessages, CustomTeamPlayerInfo, type CustomTeamMessage } from "@common/typings";
 import { random } from "@common/utils/random";
 import { WebSocket } from "uWebSockets.js";
-import { MapWithParams } from "./config";
 import { findGame } from "./gameManager";
 import { type Player } from "./objects/player";
 import { removeFrom } from "@common/utils/misc";
@@ -151,12 +150,12 @@ export class CustomTeam {
     resetTimeout?: NodeJS.Timeout;
 
     // these are only used when creating games
-    teamSize: TeamSize;
-    map: MapWithParams;
+    teamMode: TeamMode;
+    map: string;
 
-    constructor(teamSize: TeamSize, map: MapWithParams) {
+    constructor(teamMode: TeamMode, map: string) {
         this.id = Array.from({ length: 4 }, () => CustomTeam._idChars.charAt(random(0, CustomTeam._idCharMax))).join("");
-        this.teamSize = teamSize;
+        this.teamMode = teamMode;
         this.map = map;
     }
 
@@ -234,7 +233,7 @@ export class CustomTeam {
     }
 
     private async _startGame(): Promise<void> {
-        const result = await findGame(this.teamSize, this.map);
+        const result = await findGame(this.teamMode, this.map);
         if (result === undefined) return;
 
         this.gameID = result;

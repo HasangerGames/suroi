@@ -1,10 +1,10 @@
 import { ColorStyles, Logger, styleText } from "@common/utils/logging";
 import { Cron } from "croner";
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
-import { Config, StaticOrSwitched, Switchable } from "../config";
 import { HttpRequest, HttpResponse } from "uWebSockets.js";
 import { Numeric } from "@common/utils/math";
 import { PunishmentMessage } from "@common/typings";
+import { Config } from "./config";
 
 export function serverLog(...message: unknown[]): void {
     Logger.log(styleText("[Server]", ColorStyles.foreground.magenta.normal), ...message);
@@ -94,6 +94,7 @@ export function parseRole(searchParams: URLSearchParams): { readonly role?: stri
     if (
         password !== null
         && givenRole !== null
+        && Config.roles
         && givenRole in Config.roles
         && Config.roles[givenRole].password === password
     ) {
@@ -141,6 +142,20 @@ export class RateLimiter {
     }
 }
 
+export type Switchable = string | number;
+export interface Switched<T extends Switchable> {
+    /**
+     * List of items to rotate between.
+     * When the end is reached, it will loop back to the beginning.
+     */
+    readonly rotation: T[]
+    /**
+     * Cron pattern to use for switching
+     */
+    readonly cron: string
+}
+export type StaticOrSwitched<T extends Switchable> = T | Switched<T>;
+
 export class Switcher<T extends Switchable> {
     private readonly _cron: Cron | undefined;
 
@@ -159,14 +174,14 @@ export class Switcher<T extends Switchable> {
         if (typeof schedule === "object") {
             const rotation = schedule.rotation;
             const length = rotation.length;
-
             const filename = `${name}.txt`;
-            const initialIndex = existsSync(filename)
+
+            this._index = existsSync(filename)
                 ? parseInt(readFileSync(filename, "utf8"))
                 : 0;
 
-            this._current = rotation[initialIndex % length];
-            this._next = rotation[(initialIndex + 1) % length];
+            this._current = rotation[this._index % length];
+            this._next = rotation[(this._index + 1) % length];
 
             this._cron = new Cron(schedule.cron, () => {
                 this._current = rotation[++this._index % length];

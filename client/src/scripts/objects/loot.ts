@@ -60,22 +60,25 @@ export class Loot extends GameObject.derive(ObjectCategory.Loot) {
 
             if (itemType === ItemType.Skin) {
                 this.images.item
-                    .setFrame(`${idString}_base`)
+                    .setFrame(definition.baseImage ?? `${idString}_base`)
                     .setPos(0, -3)
                     .setScale(0.65)
-                    .setAngle(90);
+                    .setAngle(90)
+                    .setTint(definition.baseTint ?? 0xffffff);
 
-                const skinFist = `${idString}_fist`;
+                const skinFist = definition.fistImage ?? `${idString}_fist`;
                 this.images.skinFistLeft
                     .setFrame(skinFist)
                     .setPos(22, 20)
                     .setScale(0.65)
-                    .setAngle(90);
+                    .setAngle(90)
+                    .setTint(definition.fistTint ?? 0xffffff);
                 this.images.skinFistRight
                     .setFrame(skinFist)
                     .setPos(-22, 20)
                     .setScale(0.65)
-                    .setAngle(90);
+                    .setAngle(90)
+                    .setTint(definition.fistTint ?? 0xffffff);
 
                 if (definition.grassTint) {
                     const ghillieTint = Game.colors.ghillie;
@@ -87,6 +90,9 @@ export class Loot extends GameObject.derive(ObjectCategory.Loot) {
                 this.container.addChild(this.images.skinFistLeft, this.images.skinFistRight);
             } else {
                 this.images.item.setFrame(idString);
+                if (itemType === ItemType.Gun) {
+                    this.images.item.setAngle(-15);
+                }
             }
 
             const { backgroundTexture, scale } = Loot.getBackgroundAndScale(definition);

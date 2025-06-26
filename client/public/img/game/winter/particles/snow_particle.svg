@@ -1,10 +1,1 @@
-<svg width="65" height="65" fill="none" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
-    <defs>
-        <radialGradient xlink:href="#a" id="b" cx="30.434" cy="30.203" fx="30.434" fy="30.203" r="24.854" gradientUnits="userSpaceOnUse" gradientTransform="matrix(1.30766 0 0 1.30766 -7.297 -6.996)"/>
-        <linearGradient id="a">
-            <stop style="stop-color:#f9fbfb;stop-opacity:1" offset="0"/>
-            <stop style="stop-color:#f9fbfb;stop-opacity:0" offset="1"/>
-        </linearGradient>
-    </defs>
-    <circle style="fill:url(#b);stroke:none;stroke-width:10.9839;stroke-linecap:round;stroke-linejoin:round" cx="32.5" cy="32.5" r="32.5"/>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="65" height="65" fill="none"><defs><radialGradient xlink:href="#a" id="b" cx="30.434" cy="30.203" r="24.854" fx="30.434" fy="30.203" gradientTransform="translate(-7.297 -6.996)scale(1.30766)" gradientUnits="userSpaceOnUse"/><linearGradient id="a"><stop offset="0" style="stop-color:#f9fbfb;stop-opacity:1"/><stop offset="1" style="stop-color:#f9fbfb;stop-opacity:0"/></linearGradient></defs><circle cx="32.5" cy="32.5" r="32.5" style="fill:url(#b);stroke:none;stroke-width:10.9839;stroke-linecap:round;stroke-linejoin:round"/></svg>

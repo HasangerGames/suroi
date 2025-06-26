@@ -87,6 +87,7 @@
             height: auto;
             bottom: 220px;
             right: 5px;
+            border-radius: 5px;
 
             #detonate-key {
                 display: none;
@@ -117,6 +118,11 @@
 
         @media screen and (min-width: variables.$screen_large) and (max-height: 720px) {
             justify-content: center;
+        }
+
+        @media screen and (max-width: variables.$screen_medium) and (max-height: 500px) {
+            right: 6px;
+            bottom: 180px;
         }
     }
 }
@@ -155,6 +161,7 @@
     width: 220px;
     height: 220px;
     margin-right: 5px;
+    z-index: 1002;
 
     border: 10px solid palette.$transparent_bg;
     border-radius: 10px;
@@ -361,7 +368,7 @@
     gap: 10px;
     @media screen and (max-width: variables.$screen_large) {
         top: 0;
-        right: 95px;
+        right: 102px;
         padding: 4px 5px 4px 8px;
         gap: 5px;
         height: 26px;
@@ -389,8 +396,9 @@
     }
 
     @media screen and (max-width: variables.$screen_medium) {
-        padding: 0 12px 0 10px;
-        right: 75px;
+        padding: 0 4px 0 4px;
+        right: 70px;
+        height: 22px;
 
         #kill-leader-leader-container {
             display: flex;
@@ -485,8 +493,8 @@
         margin-right: 150px;
         margin-top: -10px;
         @media screen and (max-width: variables.$screen_large) {
-            margin-right: 20px;
-            margin-top: -12px;
+            margin-right: 28px;
+            margin-top: -10px;
             transform: scale(70%);
             transform-origin: 0% 0%;
         }
@@ -494,8 +502,12 @@
             margin-right: 0;
         }
         @media screen and (max-width: variables.$screen_medium) and (max-height: 500px) {
-            margin-top: -40px;
-            margin-right: 0;
+            margin-top: -15px;
+            margin-right: -15px;
+            height: 108px;
+            overflow: hidden;
+            transform: scale(60%);
+            transform-origin: 15% 0%;
         }
         .kill-feed-item {
             max-width: fit-content;
@@ -636,6 +648,13 @@
 
     @media screen and (max-height: variables.$screen_small) {
         padding: 3px 5px 3px 5px;
+    }
+
+    @media screen and (max-width: 900px) and (max-height: 500px) {
+        transform: scale(80%);
+        transform-origin: 0% 0%;
+        left: 45.5%;
+        top: 59%;
     }
 }
 
@@ -1128,6 +1147,12 @@
             font-size: 15px;;
         }
     }
+
+    @media screen and (max-width: 900px) and (max-height: 500px) {
+        transform: scale(65%);
+        transform-origin: -100% 0%;
+        bottom: 80px;
+    }
 }
 
 #gas-and-debug {
@@ -1135,6 +1160,28 @@
 
     .hidden-prop {
         visibility: hidden;
+    }
+
+    @media screen and (max-height: variables.$screen-large) and (max-width: variables.$screen_large) {
+        position: absolute;
+        bottom: 35px;
+        left: 135px;
+        display: block;
+        padding: 5px;
+
+        #gas-timer {
+            width: 65px;
+            font-size: 15px;
+        }
+    }
+}
+
+.gas-and-debug-mobile-patch {
+    left: 175px !important;
+
+    @media screen and (max-width: variables.$screen_medium) and (max-height: 500px) {
+        transform: scale(70%);
+        transform-origin: 0% 0%;
     }
 }
 
@@ -1146,6 +1193,15 @@
         font-size: 33px;
         width: 600px;
         text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
+
+        @media screen and (max-width: 900px) {
+            font-size: 14px !important;
+            width: 250px;
+        }
+
+        @media screen and (max-width: variables.$screen_medium) and (max-height: 500px) {
+            font-size: 11px !important;
+        }
 
         @media screen and (max-width: variables.$screen_large) {
             font-size: 16px;
@@ -1192,8 +1248,13 @@
     @include variables.text-shadow;
 
     @media screen and (max-height: 750px) {
-        font-size: 20px;
-        top: calc(60% + 50px);
+        font-size: 15px;
+        top: calc(60% + 35px);
+    }
+
+    @media screen and (max-width: 900px) and (max-height: 500px) {
+        font-size: 12px;
+        top: calc(40% + 50px);
     }
 }
 
@@ -1511,9 +1572,21 @@
         width: 230px;
         opacity: 0.75;
 
+        &#weapon-slot-1 .item-image,
+        &#weapon-slot-2 .item-image {
+            width: 150px;
+            background-position: left;
+            transform-origin: left;
+        }
+
         @media screen and (max-width: variables.$screen_large) {
             height: 45px;
             width: 120px;
+
+            &#weapon-slot-1 .item-image,
+            &#weapon-slot-2 .item-image {
+                width: 75px;
+            }
         }
 
         @media screen and (max-width: variables.$screen_medium) {
@@ -1607,16 +1680,24 @@
             background-repeat: no-repeat space;
             background-position-x: 26px;
             background-size: 32px;
+            mask-repeat: no-repeat space;
+            mask-position: 26px;
+            mask-size: 32px;
+            background-blend-mode: multiply;
             transform: rotate(90deg);
 
             @media screen and (max-width: variables.$screen_large) {
                 background-size: 19px;
                 background-position-x: 15px;
+                mask-size: 19px;
+                mask-position: 15px;
             }
 
             @media screen and (max-width: variables.$screen_medium) {
                 background-size: 13px;
                 background-position-x: 11px;
+                mask-size: 13px;
+                mask-position: 11px;
             }
         }
     }
@@ -1674,7 +1755,15 @@
         bottom: 215px;
         right: 5px;
     }
+
+    /* @media screen and (max-width: variables.$screen_medium) and (max-height: 500px) { <- danger
+        transform: scale(60%);
+        transform-origin: 75% 0%;
+        bottom: 170px;
+        background-color: red;
+    }*/
 }
+
 
 #ammo-container, #special-ammo-container {
     position: relative;
@@ -1847,18 +1936,18 @@
         }
 
         .item-image {
-            width: 45px;
+            max-width: 45px;
             height: 45px;
             align-self: flex-start;
             margin-top: 5px;
 
             @media screen and (max-width: variables.$screen_large) {
-                width: 32px;
+                max-width: 32px;
                 height: 32px;
             }
 
             @media screen and (max-width: variables.$screen_medium) {
-                width: 28px;
+                max-width: 28px;
                 height: 28px;
             }
         }
@@ -1959,58 +2048,6 @@
             transform: scale(1);
         }
     }
-}
-
-#emote-wheel,
-#emote-customize-wheel {
-    position: absolute;
-    width: 286px;
-    height: 286px;
-    transform: translate(-50%, -50%);
-    z-index: 1;
-    //noinspection CssUnknownTarget
-    background-image: url("/img/misc/emote_wheel.svg");
-
-    & > div {
-        width: 84px;
-        height: 84px;
-        background-size: 84px 84px;
-        position: absolute;
-    }
-
-    .emote-top {
-        top: 14px;
-        left: 101px;
-    }
-
-    .emote-right {
-        right: 14px;
-        top: 101px;
-    }
-
-    .emote-bottom {
-        bottom: 14px;
-        left: 101px;
-    }
-
-    .emote-left {
-        left: 14px;
-        top: 101px;
-    }
-
-    .button-center {
-        width: 42px;
-        height: 42px;
-        left: calc(143px - calc(42px / 2));
-        top: calc(101px + calc(42px / 2));
-    }
-}
-
-#emote-wheel-highlight,
-#emote-customize-wheel-highlight {
-    position: absolute;
-    width: 286px;
-    height: 286px;
 }
 
 #game-over-overlay {
@@ -2257,10 +2294,8 @@
 #center-top-container,
 #game-menu,
 #mobile-options,
-#emote-wheel,
 #weapon-ammo-container,
 #interact-message,
-#minimap-border,
 #btn-spectate-options,
 #btn-close-minimap {
     z-index: 1001;
@@ -2269,33 +2304,22 @@
 #mobile-options {
     display: flex;
     flex-direction: column;
-
-    @media screen and (max-width: variables.$screen_large) {
-        position: relative;
-        bottom: 3px;
-    }
+    z-index: 1002;
 
     button {
-        width: 50px;
-    }
-
-    #btn-game-menu,
-    #btn-toggle-ping,
-    #btn-emotes {
-        font-size: 20px;
-        height: auto;
-        width: 37px;
+        font-size: 18px;
+        width: 32px;
+        height: 32px !important;
 
         border-radius: 100%;
         display: flex;
         align-items: center;
         justify-content: center;
-        flex-direction: column;
-        margin: 5px;
+        margin: 3px;
         border: none;
 
         img {
-            width: 21px;
+            width: 18px;
             pointer-events: none;
             vertical-align: middle;
         }

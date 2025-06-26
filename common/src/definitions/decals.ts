@@ -1,5 +1,6 @@
 import { RotationMode, ZIndexes } from "../constants";
 import { DefinitionType, ObjectDefinitions, type ObjectDefinition } from "../utils/objectDefinitions";
+import { HealingItems } from "./items/healingItems";
 
 export interface DecalDefinition extends ObjectDefinition {
     readonly defType: DefinitionType.Decal
@@ -10,6 +11,7 @@ export interface DecalDefinition extends ObjectDefinition {
     readonly scale?: number
     readonly rotationMode: RotationMode
     readonly zIndex?: ZIndexes
+    readonly alpha?: number
 }
 
 export const Decals = new ObjectDefinitions<DecalDefinition>([
@@ -48,5 +50,13 @@ export const Decals = new ObjectDefinitions<DecalDefinition>([
         name: "Used Flare Decal",
         defType: DefinitionType.Decal,
         rotationMode: RotationMode.Full
-    }
+    },
+    ...HealingItems.definitions.map(healingItem => {
+        return {
+            idString: `${healingItem.idString}_residue`,
+            name: `${healingItem.name} Residue`,
+            defType: DefinitionType.Decal,
+            rotationMode: RotationMode.Full
+        } as DecalDefinition;
+    })
 ]);

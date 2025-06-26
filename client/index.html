@@ -368,32 +368,6 @@
             </a>
           </div>
         </div>
-
-        <!-- More dropdown (currently unused) -->
-        <!--<div id="splash-more" class="dropdown">
-          <button class="btn btn-darken btn-primary btn-dropdown" id="btn-dropdown-more">
-            More
-            <i class="fa-solid fa-caret-down"></i>
-          </button>
-          <div class="dropdown-content">
-            <a href="https://wiki.suroi.io" target="_blank" rel="noopener noreferrer">
-              Wiki
-              <i class="fa-solid fa-arrow-up-right-from-square"></i>
-            </a>
-            <a href="./proxy.txt" target="_blank" rel="noopener noreferrer">
-              Proxies
-              <i class="fa-solid fa-arrow-up-right-from-square"></i>
-            </a>
-            <a href="./leaderboard/" target="_blank" rel="noopener noreferrer">
-              Leaderboard
-              <i class="fa-solid fa-arrow-up-right-from-square"></i>
-            </a>
-            <a href="./news/" target="_blank" rel="noopener noreferrer">
-              News
-              <i class="fa-solid fa-arrow-up-right-from-square"></i>
-            </a>
-          </div>
-        </div>-->
       </div>
 
       <!-- Language selector -->
@@ -410,8 +384,8 @@
         <a href="./changelog/" target="_blank" rel="noopener noreferrer">v%VITE_APP_VERSION%</a>
       </div>
       <div id="splash-partners">
-        <a id="partners-link" href="#" translation="partners"></a>
-        <!-- <a id="privacy-policy-link" href="./privacy/" target="_blank" rel="noopener noreferrer" translation="privacy"></a> -->
+        <a id="partners-link" href="#" translation="partners"></a> |
+        <a id="privacy-policy-link" href="./privacy/" target="_blank" rel="noopener noreferrer" translation="privacy"></a>
       </div>
     </div>
 
@@ -659,15 +633,6 @@
 
         <!-- Weapons -->
         <div class="inventory-container" id="weapons-container"></div>
-
-        <!-- Emote wheel -->
-        <div id="emote-wheel" style="display: none">
-          <div class="emote-top"></div>
-          <div class="emote-right"></div>
-          <div class="emote-bottom"></div>
-          <div class="emote-left"></div>
-          <div class="button-center"></div>
-        </div>
 
         <!-- Game over screen -->
         <div id="game-over-overlay" style="display: none">
@@ -1171,19 +1136,25 @@
           <div class="tab-content" id="tab-emotes-content" style="display: none">
             <div id="emote-wheel-container">
               <div id="emote-customize-wheel">
-                <div class="emote-top"></div>
-                <div class="emote-right"></div>
-                <div class="emote-bottom"></div>
-                <div class="emote-left"></div>
+                <div class="emote-top emote-display"></div>
+                <div class="emote-right emote-display"></div>
+                <div class="emote-bottom emote-display"></div>
+                <div class="emote-left emote-display"></div>
+                <div class="emote-extra1 emote-display">
+                  <i class="fa-solid fa-trash" title="Remove emote"></i>
+                </div>
+                <div class="emote-extra2 emote-display">
+                  <i class="fa-solid fa-trash" title="Remove emote"></i>
+                </div>
               </div>
               <div id="emote-wheel-bottom">
-                <div class="emote-win">
+                <div class="emote-win emote-display">
                   <i class="fa-solid fa-crown"></i>
-                  <i class="remove-emote-btn fa-solid fa-trash" title="Remove emote"></i>
+                  <i class="fa-solid fa-trash" title="Remove emote"></i>
                 </div>
-                <div class="emote-death">
+                <div class="emote-death emote-display">
                   <img src="./img/misc/skull_icon.svg" />
-                  <i class="remove-emote-btn fa-solid fa-trash" title="Remove emote"></i>
+                  <i class="fa-solid fa-trash" title="Remove emote"></i>
                 </div>
               </div>
             </div>

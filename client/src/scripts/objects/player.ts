@@ -21,7 +21,7 @@ import { random, randomBoolean, randomFloat, randomPointInsideCircle, randomRota
 import { FloorNames, FloorTypes } from "@common/utils/terrain";
 import { Vec, type Vector } from "@common/utils/vector";
 import $ from "jquery";
-import { Container, Graphics, ObservablePoint, Text } from "pixi.js";
+import { Container, Graphics, GraphicsContext, ObservablePoint, Text, type ColorSource } from "pixi.js";
 import { GameConsole } from "../console/gameConsole";
 import { Game } from "../game";
 import { CameraManager } from "../managers/cameraManager";
@@ -106,6 +106,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
     readonly images: {
         aimTrail?: Graphics
+        altAimTrail?: Graphics
         readonly vest: SuroiSprite
         readonly body: SuroiSprite
         readonly leftFist: SuroiSprite
@@ -188,19 +189,25 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             backMeleeSprite: new SuroiSprite()
         };
 
-        if (Game.teamMode) {
+        if (Game.isTeamMode) {
             const createLegImage = (): SuroiSprite => new SuroiSprite().setPos(-35, 26).setZIndex(-1).setScale(1.5, 0.8);
             this.images.leftLeg = createLegImage();
             this.images.rightLeg = createLegImage();
         }
 
-        if (InputManager.isMobile && this.isActivePlayer) {
-            const aimTrail = this.images.aimTrail = new Graphics();
+        if (InputManager.isMobile && this.isActivePlayer && !Game.spectating) {
+            const ctx = new GraphicsContext();
             for (let i = 0; i < 100; i++) {
-                aimTrail.circle((i * 50) + 20, 0, 8).fill({ color: 0xffffff, alpha: 0.35 });
+                ctx.circle((i * 50) + 20, 0, 8).fill({ color: 0xffffff, alpha: 0.35 });
             }
-            aimTrail.alpha = 0;
-            this.container.addChild(aimTrail);
+
+            const aimTrail = this.images.aimTrail = new Graphics(ctx);
+            const altAimTrail = this.images.altAimTrail = new Graphics(ctx);
+
+            aimTrail.visible = false;
+            altAimTrail.visible = false;
+
+            this.container.addChild(aimTrail, altAimTrail);
         }
 
         this.container.addChild(
@@ -208,7 +215,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             this.images.body,
             this.images.leftFist,
             this.images.rightFist,
-            ...(Game.teamMode ? [this.images.leftLeg, this.images.rightLeg] as readonly SuroiSprite[] : []),
+            ...(Game.isTeamMode ? [this.images.leftLeg, this.images.rightLeg] as readonly SuroiSprite[] : []),
             this.images.backpack,
             this.images.helmet,
             this.images.weapon,
@@ -411,8 +418,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             if (noMovementSmoothing) CameraManager.position = toPixiCoords(this.position);
 
             if (GameConsole.getBuiltInCVar("pf_show_pos")) {
-                UIManager.ui.debugPos.text(
-                    `X: ${this.position.x.toFixed(2)} Y: ${this.position.y.toFixed(2)} Z: ${this.layer}`
+                UIManager.ui.debugPos.html(
+                    `X: ${this.position.x.toFixed(2)}<br>Y: ${this.position.y.toFixed(2)}<br>Z: ${this.layer ?? 0}`
                 );
             }
         }
@@ -634,30 +641,44 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
             const skinID = skin.idString;
             if (this.isActivePlayer) {
+                const oldSkinID = UIManager.skinID;
                 UIManager.skinID = skinID;
-                UIManager.updateWeapons();
+                if (oldSkinID !== undefined && oldSkinID !== skinID) {
+                    UIManager.weaponCache[2] = undefined; // invalidate melee cache so fists in inventory update
+                    UIManager.updateWeapons();
+                }
             }
             this._skin = skinID;
             const skinDef = Loots.fromString<SkinDefinition>(skinID);
-            const tint = skinDef.grassTint ? Game.colors.ghillie : 0xffffff;
+
+            let baseTint: ColorSource;
+            let fistTint: ColorSource;
+            if (skinDef.grassTint) {
+                baseTint = fistTint = Game.colors.ghillie;
+            } else {
+                baseTint = skinDef.baseTint ?? 0xffffff;
+                fistTint = skinDef.fistTint ?? 0xffffff;
+            }
 
             const { body, leftFist, rightFist, leftLeg, rightLeg } = this.images;
+            const baseFrame = skinDef.baseImage ?? `${skinID}_base`;
+            const fistFrame = skinDef.fistImage ?? `${skinID}_fist`;
 
             body
-                .setFrame(`${skinID}_base`)
-                .setTint(tint);
+                .setFrame(baseFrame)
+                .setTint(baseTint);
             leftFist
-                .setFrame(`${skinID}_fist`)
-                .setTint(tint);
+                .setFrame(fistFrame)
+                .setTint(fistTint);
             rightFist
-                .setFrame(`${skinID}_fist`)
-                .setTint(tint);
+                .setFrame(fistFrame)
+                .setTint(fistTint);
             leftLeg
-                ?.setFrame(`${skinID}_fist`)
-                .setTint(tint);
+                ?.setFrame(fistFrame)
+                .setTint(fistTint);
             rightLeg
-                ?.setFrame(`${skinID}_fist`)
-                .setTint(tint);
+                ?.setFrame(fistFrame)
+                .setTint(fistTint);
 
             if (sizeMod !== undefined) {
                 this.sizeMod = this.container.scale = sizeMod;
@@ -923,7 +944,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
     updateTeammateName(): void {
         if (
-            Game.teamMode
+            Game.isTeamMode
             && (
                 !this.isActivePlayer
                 && !this.teammateName
@@ -1065,6 +1086,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         const { fists } = weaponDef;
 
         const imagePresent = image !== undefined;
+        const isDualGun = imagePresent && weaponDef.itemType === ItemType.Gun && weaponDef.isDual;
         if (imagePresent) {
             let frame = `${reference.idString}${weaponDef.itemType === ItemType.Gun || (image as NonNullable<MeleeDefinition["image"]>).separateWorldImage
                 ? "_world"
@@ -1076,16 +1098,29 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             }
 
             const { angle, position: { x: pX, y: pY } } = image;
-
-            this.images.weapon.setFrame(frame);
-            this.images.altWeapon.setFrame(frame);
-            this.images.weapon.setAngle(angle);
-            this.images.altWeapon.setAngle(angle); // there's an ambiguity here as to whether the angle should be inverted or the same
-            this.images.weapon.setPivot(reference.image && "pivot" in reference.image && reference.image.pivot ? reference.image.pivot : Vec.create(0, 0));
-
             const offset = this._getOffset();
-            this.images.weapon.setPos(pX, pY + offset);
-            this.images.altWeapon.setPos(pX, pY - offset);
+
+            this.images.weapon
+                .setFrame(frame)
+                .setPos(pX, pY + offset)
+                .setAngle(angle)
+                .setPivot(reference.image && "pivot" in reference.image && reference.image.pivot ? reference.image.pivot : Vec.create(0, 0));
+
+            if (isDualGun) {
+                this.images.altWeapon
+                    .setFrame(frame)
+                    .setPos(pX, pY - offset)
+                    .setAngle(angle) // there's an ambiguity here as to whether the angle should be inverted or the same
+                    .setVisible(true);
+
+                this.images.aimTrail?.position.set(pX, pY + offset);
+                this.images.altAimTrail?.position.set(pX, pY - offset);
+            }
+        }
+
+        if (!isDualGun) {
+            this.images.altWeapon.setVisible(false);
+            this.images.aimTrail?.position.set(0, 0);
         }
 
         if (this.activeItem !== this._oldItem) {
@@ -1109,8 +1144,6 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
         this.images.weapon.setVisible(imagePresent);
         this.images.muzzleFlash.setVisible(imagePresent);
-
-        this.images.altWeapon.setVisible(weaponDef.itemType === ItemType.Gun && (weaponDef.isDual ?? false));
 
         switch (weaponDef.itemType) {
             case ItemType.Gun: {
@@ -1208,7 +1241,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             "pointerdown",
             e => {
                 e.stopImmediatePropagation();
-                if (e.button === 2 && def && Game.teamMode) {
+                if (e.button === 2 && def && Game.isTeamMode) {
                     InputManager.addAction({
                         type: InputActions.DropItem,
                         item: def
@@ -1238,7 +1271,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
     }
 
     canInteract(player: Player): boolean {
-        return Game.teamMode
+        return Game.isTeamMode
             && !player.downed
             && this.downed
             && !this.beingRevived
@@ -1420,8 +1453,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     }
 
                     targets.sort((a, b) => {
-                        if (Game.teamMode && a.isPlayer && a.teamID === this.teamID) return Infinity;
-                        if (Game.teamMode && b.isPlayer && b.teamID === this.teamID) return -Infinity;
+                        if (Game.isTeamMode && a.isPlayer && a.teamID === this.teamID) return Infinity;
+                        if (Game.isTeamMode && b.isPlayer && b.teamID === this.teamID) return -Infinity;
 
                         return (a.hitbox?.distanceTo(this.hitbox).distance ?? 0) - (b.hitbox?.distanceTo(this.hitbox).distance ?? 0);
                     });
@@ -1951,6 +1984,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         const { images, emote, teammateName, anims } = this;
 
         images.aimTrail?.destroy();
+        images.altAimTrail?.destroy();
         images.vest.destroy();
         images.body.destroy();
         images.leftFist.destroy();

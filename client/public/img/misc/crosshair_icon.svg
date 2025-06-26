@@ -1,14 +1,1 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- Created with Inkscape (http://www.inkscape.org/) -->
-
-<svg width="20" height="19.973715" viewBox="0 0 5.2916666 5.2847119" version="1.1" id="svg1" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">
-  <defs id="defs1" />
-  <g id="layer1">
-    <circle style="fill:#ffffff;stroke-width:0.106051" id="path2" cx="2.6519482" cy="2.6484706" r="0.39039543" />
-    <rect style="fill:#ffffff;stroke-width:0.125955" id="rect2-1" width="1.6665154" height="0.79302067" x="-2.6434981e-22" y="-3.035635" ry="0.39651033" transform="rotate(90)" />
-    <rect style="fill:#ffffff;stroke-width:0.125955" id="rect2-1-8" width="1.6665154" height="0.79302067" x="-1.6665154" y="-3.038866" ry="0.39651033" transform="scale(-1)" />
-    <rect style="fill:#ffffff;stroke-width:0.125955" id="rect2-1-8-4" width="1.6665154" height="0.79302067" x="-5.2916665" y="-3.038866" ry="0.39651033" transform="scale(-1)" />
-    <rect style="fill:#ffffff;stroke-width:0.125955" id="rect2-1-0" width="1.6665154" height="0.79302067" x="3.6181965" y="-3.0423436" ry="0.39651033" transform="rotate(90)" />
-    <circle style="fill:none;stroke:#ffffff;stroke-width:0.465;stroke-dasharray:none;stroke-opacity:1" id="path1-7" cx="2.642355" cy="2.6423557" r="1.816619" />
-  </g>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="20" height="19.974" viewBox="0 0 5.292 5.285"><circle cx="2.652" cy="2.648" r=".39" style="fill:#fff;stroke-width:.106051"/><rect width="1.667" height=".793" y="-3.036" ry=".397" style="fill:#fff;stroke-width:.125955" transform="rotate(90)"/><rect width="1.667" height=".793" x="-1.667" y="-3.039" ry=".397" style="fill:#fff;stroke-width:.125955" transform="scale(-1)"/><rect width="1.667" height=".793" x="-5.292" y="-3.039" ry=".397" style="fill:#fff;stroke-width:.125955" transform="scale(-1)"/><rect width="1.667" height=".793" x="3.618" y="-3.042" ry=".397" style="fill:#fff;stroke-width:.125955" transform="rotate(90)"/><circle cx="2.642" cy="2.642" r="1.817" style="fill:none;stroke:#fff;stroke-width:.465;stroke-dasharray:none;stroke-opacity:1"/></svg>

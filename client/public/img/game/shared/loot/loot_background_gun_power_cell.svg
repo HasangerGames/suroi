@@ -1,14 +1,1 @@
-<svg width="136" height="136" viewBox="0 0 136 136" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M68.4019 132.75C104.024 132.75 132.902 103.872 132.902 68.25C132.902 32.6276 104.024 3.75 68.4019 3.75C32.7796 3.75 3.90198 32.6276 3.90198 68.25C3.90198 103.872 32.7796 132.75 68.4019 132.75Z" fill="url(#paint0_radial_497_34)" stroke="url(#paint1_radial_497_34)" stroke-width="6.00007" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
-<defs>
-<radialGradient id="paint0_radial_497_34" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(68.4019 68.25) scale(66.286)">
-<stop stop-color="#D6D65C" stop-opacity="0.6"/>
-<stop offset="1" stop-color="#15538A" stop-opacity="0.745098"/>
-</radialGradient>
-<radialGradient id="paint1_radial_497_34" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(68.4019 68.25) rotate(90) scale(64.5)">
-<stop stop-color="#1F7BCC"/>
-<stop offset="0.958333" stop-color="#1F7BCC"/>
-<stop offset="1" stop-color="#0088FF"/>
-</radialGradient>
-</defs>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="136" height="136" fill="none"><path fill="url(#a)" stroke="url(#b)" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="6" d="M68.402 132.75c35.622 0 64.5-28.878 64.5-64.5s-28.878-64.5-64.5-64.5-64.5 28.878-64.5 64.5 28.878 64.5 64.5 64.5"/><defs><radialGradient id="a" cx="0" cy="0" r="1" gradientTransform="translate(68.402 68.25)scale(66.286)" gradientUnits="userSpaceOnUse"><stop stop-color="#D6D65C" stop-opacity=".6"/><stop offset="1" stop-color="#15538A" stop-opacity=".745"/></radialGradient><radialGradient id="b" cx="0" cy="0" r="1" gradientTransform="rotate(90 .076 68.326)scale(64.5)" gradientUnits="userSpaceOnUse"><stop stop-color="#1F7BCC"/><stop offset=".958" stop-color="#1F7BCC"/><stop offset="1" stop-color="#08F"/></radialGradient></defs></svg>

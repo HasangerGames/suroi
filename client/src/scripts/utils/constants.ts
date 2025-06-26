@@ -14,6 +14,7 @@ export const HITBOX_COLORS = {
     obstacleNoCollision: new Color("yellow"),
     stair: new Color("white"),
     spawnHitbox: new Color("orange"),
+    bunkerSpawnHitbox: new Color("greenyellow"),
     buildingZoomCeiling: new Color("purple"),
     buildingScopeCeiling: new Color("cyan"),
     buildingVisOverride: new Color("teal"),
@@ -38,7 +39,7 @@ export const PIXI_SCALE = 20;
 
 export const WALL_STROKE_WIDTH = 8;
 
-export const EMOTE_SLOTS = ["top", "right", "bottom", "left", "win", "death"] as const;
+export const EMOTE_SLOTS = ["top", "right", "bottom", "left", "extra1", "extra2", "win", "death"] as const;
 
 export const SHOCKWAVE_EXPLOSION_MULTIPLIERS = Object.freeze({
     time: 5,
