@@ -14,6 +14,8 @@ import { SyncedParticleDefinition } from "./syncedParticles";
 type CommonObstacleDefinition = ObjectDefinition & {
     readonly defType: DefinitionType.Obstacle
 
+    // each obstacle will have a hardness value which determines what melee weapon can destroy it
+    readonly hardness?: number
     readonly material: typeof Materials[number]
     readonly health: number
     readonly indestructible?: boolean
@@ -1371,6 +1373,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         name: "Flint Lockbox",
         defType: DefinitionType.Obstacle,
         material: "appliance",
+        hardness: 5,
         health: 200,
         impenetrable: true,
         hasLoot: true,
