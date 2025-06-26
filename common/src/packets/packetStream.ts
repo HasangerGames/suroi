@@ -49,7 +49,6 @@ export class PacketStream {
     }
 
     getBuffer(): ArrayBuffer {
-        // @ts-expect-error ts pmo fr icl 🥀
         return this.stream.buffer.slice(0, this.stream.index);
     }
 }
