@@ -15,7 +15,7 @@ import { ItemType, type ReferenceTo, type ReifiableDef } from "@common/utils/obj
 import { pickRandomInArray } from "@common/utils/random";
 import { sound } from "@pixi/sound";
 import $ from "jquery";
-import { Color, isWebGPUSupported } from "pixi.js";
+import { Color, isWebGLSupported, isWebGPUSupported } from "pixi.js";
 import { posts } from "virtual:news-posts";
 import type { NewsPost } from "../../vite/plugins/news-posts-plugin";
 import { Config, type ServerInfo } from "./config";
@@ -1658,16 +1658,8 @@ export async function setUpUI(): Promise<void> {
     }
 
     // Show a warning if hardware acceleration is not available/supported
-    const tmpCanvas = document.createElement("canvas");
-    let glContext = tmpCanvas.getContext("webgl2", { failIfMajorPerformanceCaveat: true });
-    if (!glContext) {
+    if (!isWebGLSupported(true)) {
         $("#splash-hw-acceleration-warning").show();
-    } else {
-        const loseContext = glContext.getExtension("WEBGL_lose_context");
-        if (loseContext) {
-            loseContext.loseContext();
-        }
-        glContext = null;
     }
 
     // render mode select menu
