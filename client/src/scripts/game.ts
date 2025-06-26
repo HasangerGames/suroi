@@ -1,4 +1,4 @@
-import { InputActions, InventoryMessages, Layer, ObjectCategory, TeamSize, ZIndexes } from "@common/constants";
+import { InputActions, InventoryMessages, Layer, ObjectCategory, TeamMode, ZIndexes } from "@common/constants";
 import { Badges, type BadgeDefinition } from "@common/definitions/badges";
 import { Emotes } from "@common/definitions/emotes";
 import { ArmorType } from "@common/definitions/items/armors";
@@ -120,7 +120,7 @@ export const Game = new (class Game {
     activePlayerID = -1;
     teamID = -1;
 
-    teamMode = false;
+    isTeamMode = false;
 
     _modeName: ModeName | undefined;
     get modeName(): ModeName {
@@ -603,7 +603,7 @@ export const Game = new (class Game {
 
         const ui = UIManager.ui;
 
-        if (this.teamMode = packet.teamSize !== TeamSize.Solo) {
+        if (this.isTeamMode = packet.teamMode !== TeamMode.Solo) {
             this.teamID = packet.teamID;
         }
 
@@ -614,7 +614,7 @@ export const Game = new (class Game {
         ui.killLeaderCount.text("0");
         ui.spectateKillLeader.addClass("btn-disabled");
 
-        if (!UI_DEBUG_MODE) ui.teamContainer.toggle(this.teamMode);
+        if (!UI_DEBUG_MODE) ui.teamContainer.toggle(this.isTeamMode);
     }
 
     async endGame(): Promise<void> {

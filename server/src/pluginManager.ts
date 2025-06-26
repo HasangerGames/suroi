@@ -8,7 +8,7 @@ import { type JoinData } from "@common/packets/joinPacket";
 import { PlayerModifiers, Variation, type Orientation } from "@common/typings";
 import { ExtendedMap } from "@common/utils/misc";
 import { Vector } from "@common/utils/vector";
-import { Config } from "./config";
+import { Config } from "./utils/config";
 import { Airdrop, Game } from "./game";
 import type { InventoryItem } from "./inventory/inventory";
 import { Building } from "./objects/building";
@@ -787,9 +787,14 @@ export class PluginManager {
         this._plugins.delete(plugin);
     }
 
-    loadPlugins(): void {
+    async loadPlugins(): Promise<void> {
+        if (!Config.plugins?.length) return;
+
         for (const plugin of Config.plugins) {
-            this.loadPlugin(plugin);
+            // stfu
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+            const pluginClass: new (game: Game) => GamePlugin = (await import(`./plugins/${plugin}`)).default;
+            this.loadPlugin(pluginClass);
         }
     }
 }

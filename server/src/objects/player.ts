@@ -36,7 +36,7 @@ import { FloorNames, FloorTypes } from "@common/utils/terrain";
 import { Vec, type Vector } from "@common/utils/vector";
 import { randomBytes } from "crypto";
 import { WebSocket } from "uWebSockets.js";
-import { Config } from "../config";
+import { Config } from "../utils/config";
 import { type Game } from "../game";
 import { HealingAction, ReloadAction, ReviveAction, type Action } from "../inventory/action";
 import { GunItem } from "../inventory/gunItem";
@@ -113,7 +113,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     get team(): Team | undefined { return this._team; }
 
     set team(value: Team | undefined) {
-        if (!this.game.teamMode) {
+        if (!this.game.isTeamMode) {
             console.warn("Trying to set a player's team while the game isn't in team mode");
             return;
         }
@@ -532,7 +532,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             this.isDev
             && data.lobbyClearing
             && data.weaponPreset
-            && !Config.disableLobbyClearing
+            && Config.allowLobbyClearing
         ) {
             const [
                 weaponA, weaponB, melee,
@@ -879,7 +879,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         if (
             "itemType" in source
             && (source.itemType === ItemType.Ammo || source.itemType === ItemType.Healing)
-            && !this.game.teamMode
+            && !this.game.isTeamMode
         ) return;
 
         const indexOf = this.loadout.emotes.indexOf(source);
@@ -1621,7 +1621,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             badge
         } as (UpdateDataCommon["newPlayers"] & object)[number]));
 
-        if (this.game.teamMode) {
+        if (this.game.isTeamMode) {
             for (const teammate of newPlayers.filter(({ teamID }) => teamID === player.teamID)) {
                 fullObjects.add(teammate);
             }
@@ -1714,7 +1714,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         const { spectatablePlayers } = game;
         switch (packet.spectateAction) {
             case SpectateActions.BeginSpectating: {
-                if (this.game.teamMode && this._team?.hasLivingPlayers()) {
+                if (this.game.isTeamMode && this._team?.hasLivingPlayers()) {
                     // Find closest teammate
                     toSpectate = this._team.getLivingPlayers()
                         .reduce((a, b) => Geometry.distanceSquared(a.position, this.position) < Geometry.distanceSquared(b.position, this.position) ? a : b);
@@ -1780,7 +1780,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 }
 
                 // Send the report to Discord
-                if (Config.apiServer?.reportWebhookURL) {
+                if (Config.apiServer?.reportWebhookUrl) {
                     const reportData = {
                         embeds: [
                             {
@@ -1805,7 +1805,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                         ]
                     };
 
-                    fetch(Config.apiServer.reportWebhookURL, {
+                    fetch(Config.apiServer.reportWebhookUrl, {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify(reportData)
@@ -1822,7 +1822,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             this.initializedSpecialSpectatingCase = true;
         }
 
-        if (this.game.teamMode) {
+        if (this.game.isTeamMode) {
             this.teamID = toSpectate.teamID;
             this.setDirty();
         }
@@ -1917,7 +1917,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         if (
             this.invulnerable
             || (
-                this.game.teamMode
+                this.game.isTeamMode
                 && source instanceof Player
                 && source.teamID === this.teamID
                 && source.id !== this.id
@@ -1987,13 +1987,11 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             source,
             weaponUsed
         });
+
         if (this.health <= 0 && !this.dead) {
             if (
-                this.game.teamMode
-
-                // teamMode hopefully guarantees team's existence
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                && this._team!.players.some(p => !p.dead && !p.downed && !p.disconnected && p !== this)
+                this.game.isTeamMode
+                && this._team?.players.some(p => !p.dead && !p.downed && !p.disconnected && p !== this)
                 && !this.downed
             ) {
                 this.down(source, weaponUsed);
@@ -2587,7 +2585,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                     break;
                 }
                 case InputActions.DropItem: {
-                    if (!this.game.teamMode && action.item.itemType !== ItemType.Perk) break;
+                    if (!this.game.isTeamMode && action.item.itemType !== ItemType.Perk) break;
                     this.action?.cancel();
                     inventory.dropItem(action.item);
                     break;
@@ -2692,7 +2690,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 case InputActions.Emote: {
                     let isValid = false;
                     for (const definitionList of [Emotes, Ammos, HealingItems, Guns, Melees, Throwables]) {
-                        if (this.game.teamMode && definitionList.hasString(action.emote.idString)) {
+                        if (this.game.isTeamMode && definitionList.hasString(action.emote.idString)) {
                             isValid = true;
                             break;
                         }

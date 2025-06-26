@@ -1,0 +1,235 @@
+{
+    "type": "object",
+    "properties": {
+        "$schema": {
+            "type": "string"
+        },
+        "hostname": {
+            "description": "The hostname to host the server on.",
+            "type": "string"
+        },
+        "port": {
+            "type": "number",
+            "description": "The port to host the server on.\nThe main server is hosted on the specified port, while game servers are hosted on the ports following it.\nFor example, if it's 8000, the main server is hosted on port 8000, the first game server is on 8001, the second is on 8002, and so on.",
+            "minimum": 0,
+            "maximum": 65535
+        },
+        "map": {
+            "description": "The map name, or a schedule to switch between maps. Must be a valid value from the server map definitions (maps.ts).\nExample: \"main\" for the main map or \"debug\" for the debug map.\nParameters can also be specified for certain maps, separated by colons (e.g. singleObstacle:rock).",
+            "oneOf": [
+                {
+                    "type": "string"
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "rotation": {
+                            "description": "A list of maps to be switched between.",
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            },
+                            "minItems": 1
+                        },
+                        "cron": {
+                            "description": "A cron pattern describing how often maps should be switched between.",
+                            "type": "string"
+                        }
+                    },
+                    "required": ["rotation", "cron"],
+                    "additionalProperties": false
+                }
+            ]
+        },
+        "teamMode": {
+            "description": "The team mode (solo, duo, or squad), or a schedule to switch between team modes.",
+            "oneOf": [
+                {
+                    "type": "string",
+                    "enum": ["solo", "duo", "squad"]
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "rotation": {
+                            "description": "A list of team modes to be switched between.",
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "enum": ["solo", "duo", "squad"]
+                            },
+                            "minItems": 1
+                        },
+                        "cron": {
+                            "description": "A cron pattern describing how often team modes should be switched between.",
+                            "type": "string"
+                        }
+                    },
+                    "required": ["rotation", "cron"],
+                    "additionalProperties": false
+                }
+            ]
+        },
+        "spawn": {
+            "description": "Options for player spawning. See the description of the \"mode\" property for more details.",
+            "type": "object",
+            "properties": {
+                "mode": {
+                    "description": "There are three spawn modes: \"default\", \"random\", and \"fixed\".\n\"default\" uses the spawn options specified in the map definition, falling back to \"random\" if no options are specified.\n\"random\" spawns players randomly, spreading them out as much as possible.\n\"fixed\" spawns players exactly at the specified position, or randomly within a circle with the specified radius. If no position is specified, it defaults to the center of the map.",
+                    "type": "string",
+                    "enum": ["default", "random", "fixed"]
+                },
+                "position": {
+                    "description": "The position to spawn players at.\nThe first, second, and third items in the array represent the X, Y, and Z coordinates respectively, with the Z coordinate being optional (defaulting to the ground layer).\nIf a \"radius\" is not specified, players are spawned at this exact position.\nIf a \"radius\" is specified, players are spawned randomly within a circle centered at this position.\nThis property is ignored unless the spawn mode is set to \"fixed\".",
+                    "type": "array",
+                    "items": {
+                        "type": "number"
+                    },
+                    "minItems": 2,
+                    "maxItems": 3
+                },
+                "radius": {
+                    "description": "The radius of the circle within which players will be spawned randomly.\nThis property is ignored unless the spawn mode is set to \"fixed\".",
+                    "type": "number",
+                    "minimum": 0
+                }
+            },
+            "required": ["mode"],
+            "additionalProperties": false
+        },
+        "gas": {
+            "description": "Options for the gas.",
+            "type": "object",
+            "properties": {
+                "disabled": {
+                    "description": "If set to true, the gas will be disabled.",
+                    "type": "boolean"
+                },
+                "forcePosition": {
+                    "description": "Forces the gas to shrink to a specific position. If set to true, it will shrink to the center of the map.",
+                    "type": ["array", "boolean"],
+                    "items": {
+                        "type": "number"
+                    },
+                    "minItems": 2,
+                    "maxItems": 2
+                },
+                "forceDuration": {
+                    "description": "Forces each stage of the gas to be a specific duration, in seconds.",
+                    "type": "number"
+                }
+            },
+            "additionalProperties": false
+        },
+        "minTeamsToStart": {
+            "description": "The minimum number of teams (players in solo) that must join a game for it to start.",
+            "type": "number",
+            "minimum": 0
+        },
+        "maxPlayersPerGame": {
+            "description": "The maximum number of players that can join a game.",
+            "type": "number",
+            "minimum": 1
+        },
+        "maxGames": {
+            "description": "The maximum number of concurrent games.",
+            "type": "number",
+            "minimum": 1
+        },
+        "tps": {
+            "description": "The number of game ticks that occur per second. Overrides the value of GameConstants.tps.",
+            "type": "number",
+            "exclusiveMinimum": 0
+        },
+        "plugins": {
+            "description": "List of plugins to load. Each item must correspond to the name of a file in server/src/plugins, minus the extension.",
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "apiServer": {
+            "description": "Options for the API server.",
+            "type": "object",
+            "properties": {
+                "url": {
+                    "type": "string"
+                },
+                "apiKey": {
+                    "type": "string"
+                },
+                "reportWebhookUrl": {
+                    "type": "string"
+                }
+            },
+            "required": ["url", "apiKey"],
+            "additionalProperties": false
+        },
+        "ipHeader": {
+            "description": "If this option is specified, the given HTTP header will be used to determine IP addresses.\nIf using nginx with the sample config, set it to \"X-Real-IP\".\nIf using Cloudflare, set it to \"CF-Connecting-IP\".\nIf not using a reverse proxy, this option should be omitted.",
+            "type": "string"
+        },
+        "maxSimultaneousConnections": {
+            "description": "Limits the number of simultaneous connections from each IP address.",
+            "type": "number",
+            "minimum": 1
+        },
+        "maxJoinAttempts": {
+            "description": "Limits the number of join attempts (\"count\") within the given duration (\"duration\", in milliseconds) from each IP address.",
+            "properties": {
+                "count": {
+                    "description": "The number of join attempts to allow within the given \"duration\".",
+                    "type": "number",
+                    "minimum": 1
+                },
+                "duration": {
+                    "description": "The amount of time (in milliseconds) during which the given number of join attempts (\"count\") should be allowed.",
+                    "type": "number",
+                    "exclusiveMinimum": 0
+                }
+            },
+            "required": ["count", "duration"],
+            "additionalProperties": false
+        },
+        "maxCustomTeams": {
+            "description": "Limits the number of custom teams that can be created simultaneously by any one IP address.",
+            "type": "number",
+            "minimum": 0
+        },
+        "usernameFilters": {
+            "description": "List of regexes to test usernames against. If a player's username matches one of the regexes in this array, it will be replaced with the default username.",
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "roles": {
+            "description": "Roles. Each role has a different password and can give exclusive skins and cheats.\nIf \"isDev\" is set to true for a role, cheats will be enabled for that role.\nTo use roles, add \"?password=PASSWORD&role=ROLE\" (minus quotes) to the URL, for example: http://127.0.0.1:3000/?password=developr&role=developr\nDev cheats can be enabled using the \"lobbyClearing\" option (http://127.0.0.1:3000/?password=developr&role=developr&lobbyClearing=true), but the server must also have it enabled (thru the \"allowLobbyClearing\" property).",
+            "type": "object",
+            "patternProperties": {
+                ".*": {
+                    "type": "object",
+                    "properties": {
+                        "password": {
+                            "type": "string"
+                        },
+                        "isDev": {
+                            "type": "boolean"
+                        }
+                    },
+                    "required": ["password"]
+                }
+            }
+        },
+        "allowLobbyClearing": {
+            "description": "Determines whether dev cheats should be allowed.",
+            "type": "boolean"
+        },
+        "disableBuildingCheck": {
+            "description": "If true, allows things like scopes and flares to work in buildings.",
+            "type": "boolean"
+        }
+    },
+    "required": ["$schema", "hostname", "port", "map", "teamMode", "maxPlayersPerGame", "maxGames"],
+    "additionalProperties": false
+}

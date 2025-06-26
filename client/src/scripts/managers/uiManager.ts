@@ -145,7 +145,7 @@ class UIManagerClass {
             return teammate.id === id;
         });
 
-        const colorIndex = teammate ? teammate.colorIndex : (Game.teamMode ? undefined : 0);
+        const colorIndex = teammate ? teammate.colorIndex : (Game.isTeamMode ? undefined : 0);
         return colorIndex;
     }
 
@@ -250,7 +250,7 @@ class UIManagerClass {
 
         lockedInfo: $<HTMLButtonElement>("#locked-info"),
         lockedTooltip: $<HTMLDivElement>("#locked-tooltip"),
-        teamSizeSwitchTime: $<HTMLSpanElement>("#next-team-size-msg .next-switch-time"),
+        teamModeSwitchTime: $<HTMLSpanElement>("#next-team-size-msg .next-switch-time"),
         modeSwitchTime: $<HTMLSpanElement>("#next-mode-msg .next-switch-time"),
 
         playSoloBtn: $<HTMLDivElement>("#btn-play-solo"),
@@ -260,8 +260,8 @@ class UIManagerClass {
         teamOptionBtns: $<HTMLDivElement>("#team-option-btns"),
 
         switchMessages: $<HTMLDivElement>("#next-switch-messages"),
-        nextTeamSizeMsg: $<HTMLDivElement>("#next-team-size-msg"),
-        nextTeamSizeIcon: $<HTMLDivElement>("#next-team-size-msg .next-switch-icon"),
+        nextTeamModeMsg: $<HTMLDivElement>("#next-team-size-msg"),
+        nextTeamModeIcon: $<HTMLDivElement>("#next-team-size-msg .next-switch-icon"),
         nextModeMsg: $<HTMLDivElement>("#next-mode-msg"),
         nextModeIcon: $<HTMLDivElement>("#next-mode-msg .next-switch-icon"),
 
@@ -434,7 +434,7 @@ class UIManagerClass {
         let mostDamageTaken = 0;
         let mostDamageTakenIDs: number[] | undefined = [];
 
-        if (Game.teamMode) {
+        if (Game.isTeamMode) {
             for (const { playerID, kills, damageDone, damageTaken } of teammates) {
                 if (kills > highestKills) {
                     highestKills = kills;
@@ -478,7 +478,7 @@ class UIManagerClass {
             if (!alive) {
                 medal = "dead";
             }
-            if (Game.teamMode) {
+            if (Game.isTeamMode) {
                 if (highestKillsIDs?.includes(playerID)) {
                     medal = "kills";
                 } else if (mostDamageDoneIDs?.includes(playerID)) {
@@ -566,7 +566,7 @@ class UIManagerClass {
     }
 
     updateRequestableItems(): void {
-        if (!Game.teamMode) return;
+        if (!Game.isTeamMode) return;
 
         const pingWheelActive = MapPingWheelManager.enabled;
 
@@ -715,7 +715,7 @@ class UIManagerClass {
                 .css("color", healthPercent <= 40 || Game.activePlayer?.downed ? "#ffffff" : "#000000");
         }
 
-        if (teammates && Game.teamMode) {
+        if (teammates && Game.isTeamMode) {
             this.teammates = teammates;
 
             const _teammateDataCache = this._teammateDataCache;

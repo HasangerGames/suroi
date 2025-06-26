@@ -114,7 +114,7 @@ export class Projectile extends GameObject.derive(ObjectCategory.Projectile) {
 
             this.hitbox.radius = def.hitboxRadius;
 
-            if (Game.teamMode
+            if (Game.isTeamMode
                 && this.throwerTeamID !== undefined
                 && this.tintIndex !== undefined
                 && Game.teamID === this.throwerTeamID

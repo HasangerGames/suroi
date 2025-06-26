@@ -12,7 +12,6 @@ import { NullString, type ReferenceTo, type ReifiableDef } from "@common/utils/o
 import { SeededRandom, pickRandomInArray, random, randomBoolean, randomFloat, randomPointInsideCircle, randomRotation, randomVector } from "@common/utils/random";
 import { River, Terrain } from "@common/utils/terrain";
 import { Vec, type Vector } from "@common/utils/vector";
-import { MapWithParams } from "./config";
 import { MapDefinition, MapName, Maps, ObstacleClump, RiverDefinition } from "./data/maps";
 import { type Game } from "./game";
 import { Building } from "./objects/building";
@@ -80,7 +79,7 @@ export class GameMap {
         }
     }
 
-    constructor(game: Game, mapData: MapWithParams) {
+    constructor(game: Game, mapData: string) {
         this.game = game;
 
         const [name, ...params] = mapData.split(":") as [MapName, ...string[]];

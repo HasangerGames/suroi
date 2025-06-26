@@ -15,7 +15,7 @@ const selectableThrowables = Throwables.definitions.filter(g => !g.killstreak &&
 /**
  * Plugin that swaps the player weapon when the player gets a kill
  */
-export class WeaponSwapPlugin extends GamePlugin {
+export default class WeaponSwapPlugin extends GamePlugin {
     protected override initListeners(): void {
         this.on("player_will_die", ({ source }) => {
             if (!(source instanceof Player)) return;

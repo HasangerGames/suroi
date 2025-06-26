@@ -189,7 +189,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             backMeleeSprite: new SuroiSprite()
         };
 
-        if (Game.teamMode) {
+        if (Game.isTeamMode) {
             const createLegImage = (): SuroiSprite => new SuroiSprite().setPos(-35, 26).setZIndex(-1).setScale(1.5, 0.8);
             this.images.leftLeg = createLegImage();
             this.images.rightLeg = createLegImage();
@@ -215,7 +215,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             this.images.body,
             this.images.leftFist,
             this.images.rightFist,
-            ...(Game.teamMode ? [this.images.leftLeg, this.images.rightLeg] as readonly SuroiSprite[] : []),
+            ...(Game.isTeamMode ? [this.images.leftLeg, this.images.rightLeg] as readonly SuroiSprite[] : []),
             this.images.backpack,
             this.images.helmet,
             this.images.weapon,
@@ -944,7 +944,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
     updateTeammateName(): void {
         if (
-            Game.teamMode
+            Game.isTeamMode
             && (
                 !this.isActivePlayer
                 && !this.teammateName
@@ -1241,7 +1241,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             "pointerdown",
             e => {
                 e.stopImmediatePropagation();
-                if (e.button === 2 && def && Game.teamMode) {
+                if (e.button === 2 && def && Game.isTeamMode) {
                     InputManager.addAction({
                         type: InputActions.DropItem,
                         item: def
@@ -1271,7 +1271,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
     }
 
     canInteract(player: Player): boolean {
-        return Game.teamMode
+        return Game.isTeamMode
             && !player.downed
             && this.downed
             && !this.beingRevived
@@ -1453,8 +1453,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     }
 
                     targets.sort((a, b) => {
-                        if (Game.teamMode && a.isPlayer && a.teamID === this.teamID) return Infinity;
-                        if (Game.teamMode && b.isPlayer && b.teamID === this.teamID) return -Infinity;
+                        if (Game.isTeamMode && a.isPlayer && a.teamID === this.teamID) return Infinity;
+                        if (Game.isTeamMode && b.isPlayer && b.teamID === this.teamID) return -Infinity;
 
                         return (a.hitbox?.distanceTo(this.hitbox).distance ?? 0) - (b.hitbox?.distanceTo(this.hitbox).distance ?? 0);
                     });

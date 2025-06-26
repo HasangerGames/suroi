@@ -1,4 +1,4 @@
-import { type TeamSize } from "@common/constants";
+import { type TeamMode } from "@common/constants";
 import type { ModeName } from "@common/definitions/modes";
 
 export const Config = {
@@ -75,8 +75,8 @@ export interface Region {
 export interface ServerInfo {
     readonly protocolVersion: number
     readonly playerCount: number
-    readonly teamSize: TeamSize
-    readonly teamSizeSwitchTime: number
+    readonly teamMode: TeamMode
+    readonly teamModeSwitchTime: number
     readonly mode: ModeName
     readonly modeSwitchTime: number
 }
