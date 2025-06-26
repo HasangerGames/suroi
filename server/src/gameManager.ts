@@ -2,7 +2,7 @@ import { TeamMode } from "@common/constants";
 import { pickRandomInArray } from "@common/utils/random";
 import Cluster, { type Worker } from "node:cluster";
 import { App, WebSocket } from "uWebSockets.js";
-import { Config, MapWithParams } from "./config";
+import { Config } from "./utils/config";
 import { Game } from "./game";
 import { PlayerSocketData } from "./objects/player";
 import { getPunishment, forbidden, getIP, parseRole, RateLimiter, serverLog, serverWarn } from "./utils/serverHelpers";
@@ -20,7 +20,7 @@ export type WorkerMessage =
     }
     | {
         readonly type: WorkerMessages.UpdateMap
-        readonly map: MapWithParams
+        readonly map: string
     }
     | {
         readonly type: WorkerMessages.NewGame
@@ -56,7 +56,7 @@ export class GameContainer {
     constructor(
         readonly id: number,
         teamMode: TeamMode,
-        map: MapWithParams,
+        map: string,
         resolve: (game: GameContainer) => void
     ) {
         this.promiseCallbacks.push(resolve);
@@ -79,13 +79,13 @@ export class GameContainer {
 export const games: Array<GameContainer | undefined> = [];
 let creating: GameContainer | undefined;
 
-export async function findGame(teamMode: TeamMode, map: MapWithParams): Promise<number | undefined> {
+export async function findGame(teamMode: TeamMode, map: string): Promise<number | undefined> {
     if (creating) return creating.id;
 
     const eligibleGames = games.filter((g?: GameContainer): g is GameContainer =>
         g !== undefined
         && g.allowJoin
-        && g.aliveCount < Config.maxPlayersPerGame
+        && g.aliveCount < (Config.maxPlayersPerGame ?? Infinity)
     );
 
     return (
@@ -95,7 +95,7 @@ export async function findGame(teamMode: TeamMode, map: MapWithParams): Promise<
     )?.id;
 }
 
-export async function newGame(id: number | undefined, teamMode: TeamMode, map: MapWithParams): Promise<GameContainer | undefined> {
+export async function newGame(id: number | undefined, teamMode: TeamMode, map: string): Promise<GameContainer | undefined> {
     return new Promise<GameContainer | undefined>(resolve => {
         if (creating) {
             creating.promiseCallbacks.push(resolve);
@@ -132,7 +132,7 @@ if (!Cluster.isPrimary) {
     const data = process.env as {
         readonly id: string
         readonly teamMode: string
-        readonly map: MapWithParams
+        readonly map: string
     };
     const id = parseInt(data.id);
     let teamMode = parseInt(data.teamMode);
@@ -249,7 +249,7 @@ if (!Cluster.isPrimary) {
             if (player) game.removePlayer(player);
             if (ip) simultaneousConnections?.decrement(ip);
         }
-    }).listen(Config.host, Config.port + id + 1, () => {
-        game.log(`Listening on ${Config.host}:${Config.port + id + 1}`);
+    }).listen(Config.hostname, Config.port + id + 1, () => {
+        game.log(`Listening on ${Config.hostname}:${Config.port + id + 1}`);
     });
 }

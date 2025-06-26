@@ -1,11 +1,12 @@
 {
     "$schema": "config.schema.json",
-    "host": "127.0.0.1",
+    "hostname": "127.0.0.1",
     "port": 8000,
     "map": "normal",
-    "spawn": { "mode": "default" },
     "teamMode": "solo",
-    "gas": { "mode": "normal" },
+    "spawn": { "mode": "default" },
+    "maxPlayersPerGame": 80,
+    "maxGames": 5,
     "roles": {
         "developr": { "password": "developr", "isDev": true },
         "dev_managr": { "password": "dev_managr" },

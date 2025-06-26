@@ -6,7 +6,7 @@
   "scripts": {
     "build": "tsc --project tsconfig.json && tsc-alias -p tsconfig.json",
     "start": "node dist/server/src/server.js",
-    "dev": "nodemon -r ts-node/register -r tsconfig-paths/register --watch ./src --watch ../common src/server.ts",
+    "dev": "nodemon -r ts-node/register -r tsconfig-paths/register --watch ./src --watch ../common --watch config.json src/server.ts",
     "updateConfigSchema": "json2ts -i config.schema.json -o src/utils/config.d.ts",
     "validateDefinitions": "node dist/server/src/validateDefinitions.js"
   },

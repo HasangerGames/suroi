@@ -4,7 +4,7 @@
         "$schema": {
             "type": "string"
         },
-        "host": {
+        "hostname": {
             "description": "The hostname to host the server on.",
             "type": "string"
         },
@@ -15,24 +15,60 @@
             "maximum": 65535
         },
         "map": {
-            "description": "The map name. Must be a valid value from the server map definitions (maps.ts).\nExample: \"main\" for the main map or \"debug\" for the debug map.\nParameters can also be specified for certain maps, separated by colons (e.g. singleObstacle:rock).",
-            "type": ["string", "object"],
-            "properties": {
-                "rotation": {
-                    "description": "A list of maps to be switched between.",
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    },
-                    "minItems": 1
-                },
-                "cron": {
-                    "description": "A cron pattern describing how often maps should be switched between.",
+            "description": "The map name, or a schedule to switch between maps. Must be a valid value from the server map definitions (maps.ts).\nExample: \"main\" for the main map or \"debug\" for the debug map.\nParameters can also be specified for certain maps, separated by colons (e.g. singleObstacle:rock).",
+            "oneOf": [
+                {
                     "type": "string"
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "rotation": {
+                            "description": "A list of maps to be switched between.",
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            },
+                            "minItems": 1
+                        },
+                        "cron": {
+                            "description": "A cron pattern describing how often maps should be switched between.",
+                            "type": "string"
+                        }
+                    },
+                    "required": ["rotation", "cron"],
+                    "additionalProperties": false
                 }
-            },
-            "required": ["rotation", "cron"],
-            "additionalProperties": false
+            ]
+        },
+        "teamMode": {
+            "description": "The team mode (solo, duo, or squad), or a schedule to switch between team modes.",
+            "oneOf": [
+                {
+                    "type": "string",
+                    "enum": ["solo", "duo", "squad"]
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "rotation": {
+                            "description": "A list of team modes to be switched between.",
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "enum": ["solo", "duo", "squad"]
+                            },
+                            "minItems": 1
+                        },
+                        "cron": {
+                            "description": "A cron pattern describing how often team modes should be switched between.",
+                            "type": "string"
+                        }
+                    },
+                    "required": ["rotation", "cron"],
+                    "additionalProperties": false
+                }
+            ]
         },
         "spawn": {
             "description": "Options for player spawning. See the description of the \"mode\" property for more details.",
@@ -44,7 +80,7 @@
                     "enum": ["default", "random", "fixed"]
                 },
                 "position": {
-                    "description": "The position to spawn players at.\nIf a \"radius\" is not specified, players are spawned at this exact position.\nIf a \"radius\" is specified, players are spawned randomly within a circle centered at this position.\nThis property is ignored unless the spawn mode is set to \"fixed\".",
+                    "description": "The position to spawn players at.\nThe first, second, and third items in the array represent the X, Y, and Z coordinates respectively, with the Z coordinate being optional (defaulting to the ground layer).\nIf a \"radius\" is not specified, players are spawned at this exact position.\nIf a \"radius\" is specified, players are spawned randomly within a circle centered at this position.\nThis property is ignored unless the spawn mode is set to \"fixed\".",
                     "type": "array",
                     "items": {
                         "type": "number"
@@ -61,37 +97,16 @@
             "required": ["mode"],
             "additionalProperties": false
         },
-        "teamMode": {
-            "description": "The team mode (solos, duos, trios, or squads).",
-            "type": ["string", "object"],
-            "enum": ["solo", "duo", "trio", "squad"],
-            "properties": {
-                "rotation": {
-                    "description": "A list of team modes to be switched between.",
-                    "type": "array",
-                    "items": {
-                        "type": "string",
-                        "enum": ["solo", "duo", "trio", "squad"]
-                    },
-                    "minItems": 1
-                },
-                "cron": {
-                    "description": "A cron pattern describing how often team modes should be switched between.",
-                    "type": "string"
-                }
-            },
-            "required": ["rotation", "cron"],
-            "additionalProperties": false
-        },
         "gas": {
-            "description": "Options for the gas. See the description of the \"mode\" property for more details.",
+            "description": "Options for the gas.",
             "type": "object",
             "properties": {
-                "mode": {
-                    "type": "string",
-                    "enum": ["normal", "debug", "disabled"]
+                "disabled": {
+                    "description": "If set to true, the gas will be disabled.",
+                    "type": "boolean"
                 },
-                "overridePosition": {
+                "forcePosition": {
+                    "description": "Forces the gas to shrink to a specific position. If set to true, it will shrink to the center of the map.",
                     "type": ["array", "boolean"],
                     "items": {
                         "type": "number"
@@ -99,48 +114,12 @@
                     "minItems": 2,
                     "maxItems": 2
                 },
-                "overrideDuration": {
+                "forceDuration": {
+                    "description": "Forces each stage of the gas to be a specific duration, in seconds.",
                     "type": "number"
                 }
             },
-            "required": ["mode"],
-            "additionalProperties": false,
-            "allOf": [
-                {
-                    "if": {
-                        "properties": {
-                            "mode": {
-                                "const": "debug"
-                            }
-                        }
-                    },
-                    "then": {
-                        "anyOf": [
-                            {
-                                "required": ["overridePosition"]
-                            },
-                            {
-                                "required": ["overrideDuration"]
-                            }
-                        ]
-                    }
-                },
-                {
-                    "if": {
-                        "properties": {
-                            "mode": {
-                                "enum": ["normal", "disabled"]
-                            }
-                        }
-                    },
-                    "then": {
-                        "properties": {
-                            "overridePosition": false,
-                            "overrideDuration": false
-                        }
-                    }
-                }
-            ]
+            "additionalProperties": false
         },
         "minTeamsToStart": {
             "description": "The minimum number of teams (players in solo) that must join a game for it to start.",
@@ -251,6 +230,6 @@
             "type": "boolean"
         }
     },
-    "required": ["$schema", "host", "port"],
+    "required": ["$schema", "hostname", "port", "map", "teamMode", "maxPlayersPerGame", "maxGames"],
     "additionalProperties": false
 }

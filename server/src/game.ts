@@ -1,7 +1,11 @@
 import { GameConstants, Layer, MapObjectSpawnMode, ObjectCategory, TeamMode } from "@common/constants";
+import { Bullets, type BulletDefinition } from "@common/definitions/bullets";
 import { type ExplosionDefinition } from "@common/definitions/explosions";
+import type { SingleGunNarrowing } from "@common/definitions/items/guns";
+import { PerkData, PerkIds, Perks } from "@common/definitions/items/perks";
 import { Loots, type LootDefinition } from "@common/definitions/loots";
 import { MapPings, type MapPing } from "@common/definitions/mapPings";
+import { ModeDefinition, ModeName, Modes } from "@common/definitions/modes";
 import { Obstacles, type ObstacleDefinition } from "@common/definitions/obstacles";
 import { SyncedParticles, type SyncedParticleDefinition } from "@common/definitions/syncedParticles";
 import { type JoinData } from "@common/packets/joinPacket";
@@ -10,23 +14,18 @@ import { PacketDataIn, PacketType } from "@common/packets/packet";
 import { PacketStream } from "@common/packets/packetStream";
 import { type PingSerialization } from "@common/packets/updatePacket";
 import { CircleHitbox, type Hitbox } from "@common/utils/hitbox";
+import { ColorStyles, Logger, styleText } from "@common/utils/logging";
 import { Angle, Geometry, Numeric, Statistics } from "@common/utils/math";
-import { Timeout } from "@common/utils/misc";
+import { removeFrom, Timeout } from "@common/utils/misc";
 import { ItemType, type ReferenceTo, type ReifiableDef } from "@common/utils/objectDefinitions";
 import { pickRandomInArray, randomPointInsideCircle, randomRotation } from "@common/utils/random";
 import { SuroiByteStream } from "@common/utils/suroiByteStream";
 import { Vec, type Vector } from "@common/utils/vector";
-import { Bullets, type BulletDefinition } from "@common/definitions/bullets";
-import type { SingleGunNarrowing } from "@common/definitions/items/guns";
-import { PerkData, PerkIds, Perks } from "@common/definitions/items/perks";
-import { ModeName, ModeDefinition, Modes } from "@common/definitions/modes";
-import { ColorStyles, Logger, styleText } from "@common/utils/logging";
-import { removeFrom } from "@common/utils/misc";
 
+import { DecalDefinition } from "@common/definitions/decals";
 import type { WebSocket } from "uWebSockets.js";
-import { Config } from "./utils/config";
 import { GAME_SPAWN_WINDOW } from "./data/gasStages";
-import { MapName, Maps, SpawnMode, SpawnOptions } from "./data/maps";
+import { MapName, Maps } from "./data/maps";
 import { type GameData } from "./gameManager";
 import { Gas } from "./gas";
 import { GunItem } from "./inventory/gunItem";
@@ -34,6 +33,7 @@ import type { MeleeItem } from "./inventory/meleeItem";
 import { ThrowableItem } from "./inventory/throwableItem";
 import { GameMap } from "./map";
 import { Bullet, type DamageRecord, type ServerBulletOptions } from "./objects/bullet";
+import { Decal } from "./objects/decal";
 import { type Emote } from "./objects/emote";
 import { Explosion } from "./objects/explosion";
 import { type BaseGameObject, type GameObject } from "./objects/gameObject";
@@ -44,12 +44,11 @@ import { Projectile, ProjectileParams } from "./objects/projectile";
 import { SyncedParticle } from "./objects/syncedParticle";
 import { PluginManager } from "./pluginManager";
 import { Team } from "./team";
+import { Config } from "./utils/config";
 import { Grid } from "./utils/grid";
 import { IDAllocator } from "./utils/idAllocator";
 import { Cache, getAllLoots, getSpawnableLoots, ItemRegistry } from "./utils/lootHelpers";
 import { cleanUsername, modeFromMap } from "./utils/misc";
-import { DecalDefinition } from "@common/definitions/decals";
-import { Decal } from "./objects/decal";
 
 export class Game implements GameData {
     public readonly id: number;
@@ -468,7 +467,7 @@ export class Game implements GameData {
         if (
             this._started
             && !this.over
-            && (Config.minTeamsToStart ?? 1) > 1
+            && (Config.minTeamsToStart ?? 2) > 1
             && (
                 this.isTeamMode
                     ? this.aliveCount <= (this.teamMode as number) && new Set([...this.livingPlayers].map(p => p.teamID)).size <= 1
@@ -759,7 +758,7 @@ export class Game implements GameData {
         this.addTimeout(() => { player.disableInvulnerability(); }, 5000);
 
         if (
-            (this.isTeamMode ? this.teams.size : this.aliveCount) > (Config.minTeamsToStart ?? 1)
+            (this.isTeamMode ? this.teams.size : this.aliveCount) >= (Config.minTeamsToStart ?? 2)
             && !this._started
             && this.startTimeout === undefined
         ) {

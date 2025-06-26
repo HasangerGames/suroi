@@ -10,9 +10,9 @@ import { App, WebSocket } from "uWebSockets.js";
 import { version } from "../../package.json";
 import { findGame, games, newGame, WorkerMessages } from "./gameManager";
 import { CustomTeam, CustomTeamPlayer, CustomTeamPlayerContainer } from "./team";
-import { cleanUsername, modeFromMap } from "./utils/misc";
-import { forbidden, getIP, getPunishment, parseRole, RateLimiter, serverError, serverLog, Switcher, textDecoder, writeCorsHeaders } from "./utils/serverHelpers";
 import { Config } from "./utils/config";
+import { cleanUsername, modeFromMap } from "./utils/misc";
+import { forbidden, getIP, getPunishment, parseRole, RateLimiter, serverError, serverLog, StaticOrSwitched, Switcher, textDecoder, writeCorsHeaders } from "./utils/serverHelpers";
 
 if (Cluster.isPrimary && require.main === module) {
     //                   ^^^^^^^^^^^^^^^^^^^^^^^ only starts server if called directly from command line (not imported)
@@ -62,14 +62,35 @@ if (Cluster.isPrimary && require.main === module) {
         teamsCreated?.reset();
     };
 
-    const teamMode = new Switcher("teamMode", Config.teamMode, teamMode => {
+    const stringToTeamMode = (teamMode: string): TeamMode => {
+        switch (teamMode) {
+            case "solo": default: return TeamMode.Solo;
+            case "duo": return TeamMode.Duo;
+            case "squad": return TeamMode.Squad;
+        }
+    };
+
+    let teamModeSchedule: StaticOrSwitched<TeamMode>;
+    if (typeof Config.teamMode === "string") {
+        teamModeSchedule = stringToTeamMode(Config.teamMode);
+    } else {
+        const { rotation, cron } = Config.teamMode;
+        teamModeSchedule = { rotation: rotation.map(t => stringToTeamMode(t)), cron };
+    }
+
+    const humanReadableTeamModes = {
+        [TeamMode.Solo]: "solos",
+        [TeamMode.Duo]: "duos",
+        [TeamMode.Squad]: "squads"
+    };
+
+    const teamMode = new Switcher("teamMode", teamModeSchedule, teamMode => {
         for (const game of games) {
             game?.sendMessage({ type: WorkerMessages.UpdateTeamMode, teamMode });
         }
 
         resetTeams();
 
-        const humanReadableTeamModes = [undefined, "solos", "duos", "trios", "squads"];
         serverLog(`Switching to ${humanReadableTeamModes[teamMode] ?? `team mode ${teamMode}`}`);
     });
 
@@ -229,7 +250,7 @@ if (Cluster.isPrimary && require.main === module) {
         }
     });
 
-    app.listen(Config.host, Config.port, token => {
+    app.listen(Config.hostname, Config.port, token => {
         if (!token) {
             serverError("Unable to start server.");
             process.exit(1);
@@ -237,7 +258,7 @@ if (Cluster.isPrimary && require.main === module) {
 
         process.stdout.write("\x1Bc"); // clears screen
         serverLog(`Suroi Server v${version}`);
-        serverLog(`Listening on ${Config.host}:${Config.port}`);
+        serverLog(`Listening on ${Config.hostname}:${Config.port}`);
         serverLog("Press Ctrl+C to exit.");
 
         void newGame(0, teamMode.current, map.current);

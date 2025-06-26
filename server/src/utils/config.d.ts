@@ -10,7 +10,7 @@ export interface ConfigSchema {
   /**
    * The hostname to host the server on.
    */
-  host: string;
+  hostname: string;
   /**
    * The port to host the server on.
    * The main server is hosted on the specified port, while game servers are hosted on the ports following it.
@@ -18,11 +18,11 @@ export interface ConfigSchema {
    */
   port: number;
   /**
-   * The map name. Must be a valid value from the server map definitions (maps.ts).
+   * The map name, or a schedule to switch between maps. Must be a valid value from the server map definitions (maps.ts).
    * Example: "main" for the main map or "debug" for the debug map.
    * Parameters can also be specified for certain maps, separated by colons (e.g. singleObstacle:rock).
    */
-  map?:
+  map:
     | string
     | {
         /**
@@ -33,6 +33,23 @@ export interface ConfigSchema {
         rotation: [string, ...string[]];
         /**
          * A cron pattern describing how often maps should be switched between.
+         */
+        cron: string;
+      };
+  /**
+   * The team mode (solo, duo, or squad), or a schedule to switch between team modes.
+   */
+  teamMode:
+    | ("solo" | "duo" | "squad")
+    | {
+        /**
+         * A list of team modes to be switched between.
+         *
+         * @minItems 1
+         */
+        rotation: ["solo" | "duo" | "squad", ...("solo" | "duo" | "squad")[]];
+        /**
+         * A cron pattern describing how often team modes should be switched between.
          */
         cron: string;
       };
@@ -49,6 +66,7 @@ export interface ConfigSchema {
     mode: "default" | "random" | "fixed";
     /**
      * The position to spawn players at.
+     * The first, second, and third items in the array represent the X, Y, and Z coordinates respectively, with the Z coordinate being optional (defaulting to the ground layer).
      * If a "radius" is not specified, players are spawned at this exact position.
      * If a "radius" is specified, players are spawned randomly within a circle centered at this position.
      * This property is ignored unless the spawn mode is set to "fixed".
@@ -64,27 +82,24 @@ export interface ConfigSchema {
     radius?: number;
   };
   /**
-   * The team mode (solos, duos, trios, or squads).
-   */
-  teamMode?:
-    | ("solo" | "duo" | "trio" | "squad")
-    | {
-        /**
-         * A list of team modes to be switched between.
-         *
-         * @minItems 1
-         */
-        rotation: ["solo" | "duo" | "trio" | "squad", ...("solo" | "duo" | "trio" | "squad")[]];
-        /**
-         * A cron pattern describing how often team modes should be switched between.
-         */
-        cron: string;
-      };
-  /**
-   * Options for the gas. See the description of the "mode" property for more details.
+   * Options for the gas.
    */
   gas?: {
-    [k: string]: unknown;
+    /**
+     * If set to true, the gas will be disabled.
+     */
+    disabled?: boolean;
+    /**
+     * Forces the gas to shrink to a specific position. If set to true, it will shrink to the center of the map.
+     *
+     * @minItems 2
+     * @maxItems 2
+     */
+    forcePosition?: [number, number] | boolean;
+    /**
+     * Forces each stage of the gas to be a specific duration, in seconds.
+     */
+    forceDuration?: number;
   };
   /**
    * The minimum number of teams (players in solo) that must join a game for it to start.
@@ -93,11 +108,11 @@ export interface ConfigSchema {
   /**
    * The maximum number of players that can join a game.
    */
-  maxPlayersPerGame?: number;
+  maxPlayersPerGame: number;
   /**
    * The maximum number of concurrent games.
    */
-  maxGames?: number;
+  maxGames: number;
   /**
    * The number of game ticks that occur per second. Overrides the value of GameConstants.tps.
    */
