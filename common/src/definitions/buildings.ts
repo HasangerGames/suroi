@@ -10352,7 +10352,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         }]
     },
     {
-        idString: "leopard_bunker_vault",
+        idString: "panther_bunker_vault",
         name: "Leopard Bunker Vault",
         defType: DefinitionType.Building,
         spawnHitbox: RectangleHitbox.fromRect(34.05, 28),
@@ -10364,7 +10364,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         }]
     },
     {
-        idString: "leopard_bunker_main",
+        idString: "panther_bunker_main",
         name: "Leopard Bunker",
         defType: DefinitionType.Building,
         spawnHitbox: RectangleHitbox.fromRect(80, 80),
@@ -10413,11 +10413,11 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         ],
         floorImages: [
             {
-                key: "leopard_bunker_floor_2",
+                key: "panther_bunker_floor_2",
                 position: Vec.create(22.25, 0)
             },
             {
-                key: "leopard_bunker_floor_1",
+                key: "panther_bunker_floor_1",
                 position: Vec.create(-14.4, 0)
             }
         ],
@@ -10444,14 +10444,14 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "pink_metal_auto_door", position: Vec.create(7.65, 1.55), rotation: 1 }
         ],
         subBuildings: [{
-            idString: "leopard_bunker_vault",
+            idString: "panther_bunker_vault",
             position: Vec.create(0, 22),
             orientation: 1
         }]
     },
     {
-        idString: "leopard_bunker",
-        name: "Leopard Bunker",
+        idString: "panther_bunker",
+        name: "Panther Bunker",
         defType: DefinitionType.Building,
         material: "metal_heavy",
         particle: "plumpkin_bunker_particle",
@@ -10483,12 +10483,12 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { key: "bunker_entrance_ceiling", position: Vec.create(-14.35, 29.5) }
         ],
         obstacles: [
-            { idString: "leopard_bunker_collider_hack", position: Vec.create(0, 0), rotation: 0, layer: -1 },
-            { idString: "leopard_bunker_stair", position: Vec.create(-14.2, 29.5), rotation: 2, layer: -1 },
-            { idString: "leopard_bunker_stair", position: Vec.create(-14.5, -29.5), rotation: 0, layer: -1 }
+            { idString: "panther_bunker_collider_hack", position: Vec.create(0, 0), rotation: 0, layer: -1 },
+            { idString: "panther_bunker_stair", position: Vec.create(-14.2, 29.5), rotation: 2, layer: -1 },
+            { idString: "panther_bunker_stair", position: Vec.create(-14.5, -29.5), rotation: 0, layer: -1 }
         ],
         subBuildings: [
-            { idString: "leopard_bunker_main", position: Vec.create(0, 0), layer: -2 }
+            { idString: "panther_bunker_main", position: Vec.create(0, 0), layer: -2 }
         ]
     }
 ]);

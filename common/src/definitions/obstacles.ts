@@ -5225,8 +5225,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         zIndex: ZIndexes.BuildingsFloor
     },
     {
-        idString: "leopard_bunker_stair",
-        name: "Leopard Bunker Stair",
+        idString: "panther_bunker_stair",
+        name: "Panther Bunker Stair",
         defType: DefinitionType.Obstacle,
         material: "metal_heavy",
         health: 1000,
@@ -5264,8 +5264,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         collideWithLayers: Layers.Equal
     },
     {
-        idString: "leopard_bunker_collider_hack",
-        name: "Leopard Bunker Collider Hack",
+        idString: "panther_bunker_collider_hack",
+        name: "Panther Bunker Collider Hack",
         defType: DefinitionType.Obstacle,
         material: "metal_heavy",
         health: 1000,
