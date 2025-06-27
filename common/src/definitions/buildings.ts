@@ -1,4 +1,4 @@
-import { FlyoverPref, Layers, MapObjectSpawnMode, RotationMode, ZIndexes } from "../constants";
+import { FlyoverPref, Layer, Layers, MapObjectSpawnMode, RotationMode, ZIndexes } from "../constants";
 import { type Orientation, type Variation } from "../typings";
 import { CircleHitbox, GroupHitbox, PolygonHitbox, RectangleHitbox, type Hitbox } from "../utils/hitbox";
 import { DefinitionType, ObjectDefinitions, type ObjectDefinition, type ReferenceOrRandom, type ReferenceTo } from "../utils/objectDefinitions";
@@ -12,7 +12,7 @@ interface BuildingObstacle {
     readonly position: Vector
     readonly rotation?: number
     // specified as an _offset_ relative to the layer of the building in which this obstacle is placed
-    readonly layer?: number
+    readonly layer?: Layer
     readonly variation?: Variation
     readonly scale?: number
     readonly lootSpawnOffset?: Vector
@@ -33,7 +33,7 @@ interface SubBuilding {
     readonly position: Vector
     readonly orientation?: Orientation
     // specified as an _offset_ relative to the layer of the building in which this building appears
-    readonly layer?: number
+    readonly layer?: Layer
 }
 
 export interface BuildingImageDefinition {
@@ -2843,11 +2843,11 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
 
     blueHouseVaultLayout(2,
         [
-            { idString: "blue_house_stair", position: Vec.create(17, 14.5), layer: -1, rotation: 0 },
+            { idString: "blue_house_stair", position: Vec.create(17, 14.5), layer: Layer.ToBasement, rotation: 0 },
             { idString: "blue_house_stair_walls", position: Vec.create(15, 7), rotation: 0 }
         ],
         [
-            { idString: "blue_house_basement", position: Vec.create(1.5, 4.25), layer: -2 }
+            { idString: "blue_house_basement", position: Vec.create(1.5, 4.25), layer: Layer.Basement }
         ]
     ),
 
@@ -2948,7 +2948,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         {
             type: FloorNames.Metal,
             hitbox: RectangleHitbox.fromRect(11, 11, Vec.create(14.25, 10)),
-            layer: -1
+            layer: Layer.ToBasement
         },
         {
             type: FloorNames.Metal,
@@ -4207,7 +4207,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 idString: "generator",
                 position: Vec.create(-2.01, 34.23),
                 rotation: 0,
-                layer: 2,
+                layer: Layer.Upstairs,
                 puzzlePiece: true
             },
             {
@@ -4215,18 +4215,18 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 position: Vec.create(25.6, -60),
                 rotation: 0,
                 locked: true,
-                layer: 0
+                layer: Layer.Ground
             },
             {
                 idString: "vault_door_deactivated",
                 position: Vec.create(42.5, -119.53),
                 rotation: 2,
                 locked: true,
-                layer: 0
+                layer: Layer.Ground
             }
         ],
         subBuildings: [
-            { idString: "cargo_ship_top_floor", position: Vec.create(-0.55, -6), layer: 2 },
+            { idString: "cargo_ship_top_floor", position: Vec.create(-0.55, -6), layer: Layer.Upstairs },
             { idString: "cargo_ship_bottom_floor", position: Vec.create(1.8, 0) }
         ]
     },
@@ -4385,7 +4385,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                     RectangleHitbox.fromRect(15.2, 11.27, Vec.create(-2.15, -162.84)),
                     RectangleHitbox.fromRect(15.2, 11.27, Vec.create(-27.31, 100.22))
                 ),
-                layer: 1
+                layer: Layer.ToUpstairs
             }
         ],
         floorImages: [
@@ -4456,9 +4456,9 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "pallet", position: Vec.create(38.32, 19.18), rotation: 1 },
             { idString: randomSmallStove, position: Vec.create(38.32, 19.18), rotation: 0 },
 
-            { idString: "cargo_ship_bottom_stair", position: Vec.create(23, -40.18), rotation: 0, layer: 1 },
-            { idString: "cargo_ship_bottom_stair", position: Vec.create(-2.15, -162.5), rotation: 1, layer: 1 },
-            { idString: "cargo_ship_bottom_stair", position: Vec.create(-29, 100.22), rotation: 0, layer: 1 },
+            { idString: "cargo_ship_bottom_stair", position: Vec.create(23, -40.18), rotation: 0, layer: Layer.ToUpstairs },
+            { idString: "cargo_ship_bottom_stair", position: Vec.create(-2.15, -162.5), rotation: 1, layer: Layer.ToUpstairs },
+            { idString: "cargo_ship_bottom_stair", position: Vec.create(-29, 100.22), rotation: 0, layer: Layer.ToUpstairs },
 
             { idString: "ship_thing_v2", position: Vec.create(-2.07, 175.32), rotation: 0 },
 
@@ -4738,7 +4738,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                     RectangleHitbox.fromRect(26.94, 10.06, Vec.create(63.37, -48.46)),
                     RectangleHitbox.fromRect(26.94, 10.06, Vec.create(63.44, 121.47))
                 ),
-                layer: 1
+                layer: Layer.ToUpstairs
             },
             // Ship Floor
             {
@@ -4767,13 +4767,13 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             }
         ],
         obstacles: [
-            { idString: "cargo_ship_top_stair", position: Vec.create(64, -119.14), rotation: 0, layer: -1 },
-            { idString: "cargo_ship_top_stair", position: Vec.create(-64, 21.67), rotation: 2, layer: -1 },
-            { idString: "cargo_ship_top_stair", position: Vec.create(-64, 121.57), rotation: 2, layer: -1 },
-            { idString: "cargo_ship_top_stair", position: Vec.create(64, -119.14), rotation: 0, layer: -1 },
-            { idString: "cargo_ship_top_stair", position: Vec.create(64, -48.46), rotation: 0, layer: -1 },
-            { idString: "cargo_ship_top_stair", position: Vec.create(64, 121.47), rotation: 0, layer: -1 },
-            { idString: "cargo_ship_top_stair", position: Vec.create(-64, -119.09), rotation: 2, layer: -1 },
+            { idString: "cargo_ship_top_stair", position: Vec.create(64, -119.14), rotation: 0, layer: Layer.ToBasement },
+            { idString: "cargo_ship_top_stair", position: Vec.create(-64, 21.67), rotation: 2, layer: Layer.ToBasement },
+            { idString: "cargo_ship_top_stair", position: Vec.create(-64, 121.57), rotation: 2, layer: Layer.ToBasement },
+            { idString: "cargo_ship_top_stair", position: Vec.create(64, -119.14), rotation: 0, layer: Layer.ToBasement },
+            { idString: "cargo_ship_top_stair", position: Vec.create(64, -48.46), rotation: 0, layer: Layer.ToBasement },
+            { idString: "cargo_ship_top_stair", position: Vec.create(64, 121.47), rotation: 0, layer: Layer.ToBasement },
+            { idString: "cargo_ship_top_stair", position: Vec.create(-64, -119.09), rotation: 2, layer: Layer.ToBasement },
 
             { idString: "cargo_ship_stair_support", position: Vec.create(26.36, -27.63), rotation: 0 },
             { idString: "cargo_ship_stair_support", position: Vec.create(26.28, -40.59), rotation: 0 },
@@ -4782,12 +4782,12 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "cargo_ship_stair_support", position: Vec.create(-26.09, 100.04), rotation: 2 },
             { idString: "cargo_ship_stair_support", position: Vec.create(-26.08, 113.1), rotation: 2 },
 
-            { idString: "cargo_ship_stair", position: Vec.create(63.71, -48.43), rotation: 0, layer: -1 },
-            { idString: "cargo_ship_stair", position: Vec.create(63.71, 121.45), rotation: 0, layer: -1 },
-            { idString: "cargo_ship_stair", position: Vec.create(63.71, -119.14), rotation: 0, layer: -1 },
-            { idString: "cargo_ship_stair", position: Vec.create(-63.71, -119.07), rotation: 2, layer: -1 },
-            { idString: "cargo_ship_stair", position: Vec.create(-63.71, 21.75), rotation: 2, layer: -1 },
-            { idString: "cargo_ship_stair", position: Vec.create(-63.71, 121.65), rotation: 2, layer: -1 },
+            { idString: "cargo_ship_stair", position: Vec.create(63.71, -48.43), rotation: 0, layer: Layer.ToBasement },
+            { idString: "cargo_ship_stair", position: Vec.create(63.71, 121.45), rotation: 0, layer: Layer.ToBasement },
+            { idString: "cargo_ship_stair", position: Vec.create(63.71, -119.14), rotation: 0, layer: Layer.ToBasement },
+            { idString: "cargo_ship_stair", position: Vec.create(-63.71, -119.07), rotation: 2, layer: Layer.ToBasement },
+            { idString: "cargo_ship_stair", position: Vec.create(-63.71, 21.75), rotation: 2, layer: Layer.ToBasement },
+            { idString: "cargo_ship_stair", position: Vec.create(-63.71, 121.65), rotation: 2, layer: Layer.ToBasement },
 
             { idString: "cargo_ship_stair_entrance_walls", position: Vec.create(0.11, -156.81), rotation: 0 },
             { idString: "cargo_ship_stair_entrance_walls", position: Vec.create(26.3, -34.17), rotation: 3 },
@@ -6029,7 +6029,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                     RectangleHitbox.fromRect(11.5, 11, Vec.create(-64.11, -100.43)),
                     RectangleHitbox.fromRect(12.5, 16, Vec.create(-52, -100.1))
                 ),
-                layer: 1
+                layer: Layer.ToUpstairs
             }
         ],
         groundGraphics: [{
@@ -6043,7 +6043,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 RectangleHitbox.fromRect(10, 2, Vec.create(78, -49.5)),
                 RectangleHitbox.fromRect(10, 2, Vec.create(78, -36.5))
             ),
-            layer: 2,
+            layer: Layer.Upstairs,
             allow: [0]
         }],
         obstacles: [
@@ -6053,8 +6053,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "headquarters_sinks", position: Vec.create(1, 1.5), rotation: 0 },
 
             // i have fully given up at this point
-            { idString: "hq_second_floor_collider_hack", position: Vec.create(0, 0), rotation: 0, layer: 2 },
-            { idString: "hq_second_floor_collider_hack_2", position: Vec.create(0, 0), rotation: 0, layer: 2 },
+            { idString: "hq_second_floor_collider_hack", position: Vec.create(0, 0), rotation: 0, layer: Layer.Upstairs },
+            { idString: "hq_second_floor_collider_hack_2", position: Vec.create(0, 0), rotation: 0, layer: Layer.Upstairs },
 
             // main entrance
             { idString: "planted_bushes", position: Vec.create(-46, 45.9), rotation: 0 },
@@ -6076,7 +6076,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
 
             // near stairs + near stairs room
             { idString: { box: 1, trash_can: 1, grenade_box: 0.5 }, position: Vec.create(-66.5, -67) },
-            { idString: "hq_stair", position: Vec.create(-57.7, -100.2), layer: 1, rotation: 3 },
+            { idString: "hq_stair", position: Vec.create(-57.7, -100.2), layer: Layer.ToUpstairs, rotation: 3 },
             { idString: "headquarters_wall_1", position: Vec.create(-40.9, -62.7), rotation: 0 },
             { idString: "door", position: Vec.create(-51.15, -62.7), rotation: 0 },
             { idString: "cabinet", position: Vec.create(-42.25, -90.25), lootSpawnOffset: Vec.create(0, 2), rotation: 0 },
@@ -6085,8 +6085,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
 
             // outside of hq (also windows and metal doors)
             { idString: "fire_exit_railing", position: Vec.create(79.1, -56.6), rotation: 0 },
-            { idString: "fire_exit_railing", position: Vec.create(79.1, -56.6), layer: 1, rotation: 0 },
-            { idString: "hq_large_stair", position: Vec.create(77.7, -63.49), layer: 1, rotation: 0 },
+            { idString: "fire_exit_railing", position: Vec.create(79.1, -56.6), layer: Layer.ToUpstairs, rotation: 0 },
+            { idString: "hq_large_stair", position: Vec.create(77.7, -63.49), layer: Layer.ToUpstairs, rotation: 0 },
             { idString: "metal_door", position: Vec.create(-57.55, -39.55), rotation: 3 },
             { idString: "metal_door", position: Vec.create(18.25, -106.4), rotation: 2 },
             { idString: "window", position: Vec.create(18.5, 36.75), rotation: 1 },
@@ -6184,7 +6184,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
 
         ] as BuildingObstacle[],
         subBuildings: [
-            { idString: "headquarters_second_floor", position: Vec.create(5.6, -0.6), layer: 2 },
+            { idString: "headquarters_second_floor", position: Vec.create(5.6, -0.6), layer: Layer.Upstairs },
             { idString: "headquarters_vault", position: Vec.create(-58.8, -9.4) },
             { idString: "detector", position: Vec.create(-35, 25.5) },
             { idString: "detector", position: Vec.create(-25, 25.5) }
@@ -6469,7 +6469,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             {
                 type: FloorNames.Metal,
                 hitbox: RectangleHitbox.fromRect(10, 12, Vec.create(0, 27)),
-                layer: -1
+                layer: Layer.ToBasement
             }
         ],
         obstacles: [
@@ -6520,8 +6520,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         ],
         bulletMask: RectangleHitbox.fromRect(11, 30, Vec.create(0, 30)),
         subBuildings: [
-            { idString: "small_bunker_main", position: Vec.create(0, -5), layer: -2 },
-            { idString: "small_bunker_entrance", position: Vec.create(0, 20), layer: -1 }
+            { idString: "small_bunker_main", position: Vec.create(0, -5), layer: Layer.Basement },
+            { idString: "small_bunker_entrance", position: Vec.create(0, 20), layer: Layer.ToBasement }
         ]
     },
     {
@@ -6698,7 +6698,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                     RectangleHitbox.fromRect(7, 7, Vec.create(-49.25, 0)),
                     RectangleHitbox.fromRect(7, 7, Vec.create(9.5, -35.25))
                 ),
-                layer: 1
+                layer: Layer.ToUpstairs
             }
         ],
         obstacles: [
@@ -6708,12 +6708,12 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             // -----------------------------------------------------------------------
             // { idString: "cobweb", position: Vec.create(-49.38, -35.17), rotation: 0 },
             // { idString: "cobweb", position: Vec.create(27.33, 11.48), rotation: 2 },
-            // { idString: "cobweb", position: Vec.create(-49.38, -35.11), rotation: 0, layer: 2 },
+            // { idString: "cobweb", position: Vec.create(-49.38, -35.11), rotation: 0, layer: Layer.Upstairs },
             // -----------------------------------------------------------------------
 
             { idString: "barn_stair_walls", position: Vec.create(0, 0), rotation: 0 },
             { idString: "barn_stair_walls_2", position: Vec.create(0, 0), rotation: 0 },
-            { idString: "barn_stair_walls_top_floor", position: Vec.create(0, 0), rotation: 0, layer: 2 },
+            { idString: "barn_stair_walls_top_floor", position: Vec.create(0, 0), rotation: 0, layer: Layer.Upstairs },
 
             // Columns
             { idString: "house_column", position: Vec.create(-33.5, -11.6) },
@@ -6728,14 +6728,14 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "house_column", position: Vec.create(-32.29, 40.32) },
             { idString: "house_column", position: Vec.create(-53.78, 40.32) },
 
-            { idString: "house_column", position: Vec.create(-33.5, -26.7), layer: 2 },
-            { idString: "house_column", position: Vec.create(-15, -26.7), layer: 2 },
-            { idString: "house_column", position: Vec.create(4.1, -26.7), layer: 2 },
-            { idString: "house_column", position: Vec.create(-33.5, -11.6), layer: 2 },
+            { idString: "house_column", position: Vec.create(-33.5, -26.7), layer: Layer.Upstairs },
+            { idString: "house_column", position: Vec.create(-15, -26.7), layer: Layer.Upstairs },
+            { idString: "house_column", position: Vec.create(4.1, -26.7), layer: Layer.Upstairs },
+            { idString: "house_column", position: Vec.create(-33.5, -11.6), layer: Layer.Upstairs },
 
             // stairs
-            { idString: "barn_stair", position: Vec.create(11, -35.35), rotation: 1, layer: 1 },
-            { idString: "barn_stair", position: Vec.create(-49.17, -1.9), rotation: 2, layer: 1 },
+            { idString: "barn_stair", position: Vec.create(11, -35.35), rotation: 1, layer: Layer.ToUpstairs },
+            { idString: "barn_stair", position: Vec.create(-49.17, -1.9), rotation: 2, layer: Layer.ToUpstairs },
 
             // outside
             { idString: "barrel", position: Vec.create(-31.04, 22.49) },
@@ -6770,20 +6770,20 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "house_wall_3", position: Vec.create(-12.36, 10.31), rotation: 1 },
 
             // top floor stuff
-            { idString: "regular_crate", position: Vec.create(-10.4, -34.56), layer: 2 },
-            { idString: "gun_case", position: Vec.create(-50.37, -33.89), rotation: 1, layer: 2 },
-            { idString: "regular_crate", position: Vec.create(-40.5, -25.5), layer: 2 },
-            { idString: "box", position: Vec.create(-20.71, -30.47), layer: 2 },
-            { idString: "gun_locker", position: Vec.create(-22.5, -36.7), lootSpawnOffset: Vec.create(0, 1), rotation: 0, layer: 2 },
-            { idString: "barrel", position: Vec.create(-49.44, -21.25), layer: 2 },
-            { idString: "grenade_box", position: Vec.create(-37.47, 13.07), layer: 2 },
-            { idString: "bookshelf", position: Vec.create(-46.82, 13.36), rotation: 0, layer: 2, lootSpawnOffset: Vec.create(0, -1) }
+            { idString: "regular_crate", position: Vec.create(-10.4, -34.56), layer: Layer.Upstairs },
+            { idString: "gun_case", position: Vec.create(-50.37, -33.89), rotation: 1, layer: Layer.Upstairs },
+            { idString: "regular_crate", position: Vec.create(-40.5, -25.5), layer: Layer.Upstairs },
+            { idString: "box", position: Vec.create(-20.71, -30.47), layer: Layer.Upstairs },
+            { idString: "gun_locker", position: Vec.create(-22.5, -36.7), lootSpawnOffset: Vec.create(0, 1), rotation: 0, layer: Layer.Upstairs },
+            { idString: "barrel", position: Vec.create(-49.44, -21.25), layer: Layer.Upstairs },
+            { idString: "grenade_box", position: Vec.create(-37.47, 13.07), layer: Layer.Upstairs },
+            { idString: "bookshelf", position: Vec.create(-46.82, 13.36), rotation: 0, layer: Layer.Upstairs, lootSpawnOffset: Vec.create(0, -1) }
         ],
         subBuildings: [
             { idString: "barn_top_floor_shadow", position: Vec.create(-24.5, -11.7) },
-            { idString: "barn_top_floor", position: Vec.create(-23.9, -11.85), layer: 2 },
+            { idString: "barn_top_floor", position: Vec.create(-23.9, -11.85), layer: Layer.Upstairs },
             { idString: "barn_exterior", position: Vec.create(0, 0) },
-            { idString: "barn_exterior_top_floor", position: Vec.create(0, 0), layer: 2 },
+            { idString: "barn_exterior_top_floor", position: Vec.create(0, 0), layer: Layer.Upstairs },
             { idString: randomHayShed, position: Vec.create(-5, -58) }
         ]
     },
@@ -7398,7 +7398,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             {
                 type: FloorNames.Wood,
                 hitbox: RectangleHitbox.fromRect(11.72, 8.8, Vec.create(-33.26, 24.86)),
-                layer: 1
+                layer: Layer.ToUpstairs
             }
         ],
         floorImages: [
@@ -7422,7 +7422,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             }
         ],
         subBuildings: [
-            { idString: "lodge_second_floor", position: Vec.create(0, 0), layer: 2 }
+            { idString: "lodge_second_floor", position: Vec.create(0, 0), layer: Layer.Upstairs }
         ],
         obstacles: [
             //
@@ -7513,7 +7513,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "bookshelf", position: Vec.create(-34.05, -6.26), rotation: 0 },
             { idString: "box", position: Vec.create(-30.42, 16) },
             { idString: "lodge_railing", position: Vec.create(0, 0), rotation: 0 },
-            { idString: "lodge_stair", position: Vec.create(-33.26, 24.86), rotation: 0, layer: 1 },
+            { idString: "lodge_stair", position: Vec.create(-33.26, 24.86), rotation: 0, layer: Layer.ToUpstairs },
 
             // laundry room
             { idString: "trash_can", position: Vec.create(-44.02, -14.19), rotation: 0 },
@@ -7764,9 +7764,9 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { key: "plumpkin_bunker_entrance_ceiling", position: Vec.create(-145.11, -52.85), rotation: Math.PI / 2 }
         ],
         obstacles: [
-            { idString: "plumpkin_bunker_stair", position: Vec.create(0.39, 121.67), rotation: 0, layer: -1 },
-            { idString: "plumpkin_bunker_stair", position: Vec.create(146.52, -33.84), rotation: 1, layer: -1 },
-            { idString: "plumpkin_bunker_stair", position: Vec.create(-146.1, -52.88), rotation: 2, layer: -1 },
+            { idString: "plumpkin_bunker_stair", position: Vec.create(0.39, 121.67), rotation: 0, layer: Layer.ToBasement },
+            { idString: "plumpkin_bunker_stair", position: Vec.create(146.52, -33.84), rotation: 1, layer: Layer.ToBasement },
+            { idString: "plumpkin_bunker_stair", position: Vec.create(-146.1, -52.88), rotation: 2, layer: Layer.ToBasement },
 
             // emergency entrance
             { idString: "dormant_oak_tree", position: Vec.create(-144.44, -62.77) },
@@ -7827,7 +7827,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         ],
         subBuildings: [
             { idString: "hay_shed_4", position: Vec.create(40.03, 146.55), orientation: 1 },
-            { idString: "plumpkin_bunker_main", position: Vec.create(0, 0), layer: -2 }
+            { idString: "plumpkin_bunker_main", position: Vec.create(0, 0), layer: Layer.Basement }
         ]
     },
     {
@@ -7835,7 +7835,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         name: "Plumpkin Bunker Main",
         defType: DefinitionType.Building,
         material: "metal_heavy",
-        particle: "plumpkin_bunker_particle",
+        particle: "bunker_particle",
         reflectBullets: true,
         collideWithLayers: Layers.Adjacent,
         spawnHitbox: RectangleHitbox.fromRect(350, 290),
@@ -7985,7 +7985,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                     RectangleHitbox.fromRect(11.3, 16.07, Vec.create(146.52, -33.84)),
                     RectangleHitbox.fromRect(16.07, 11.3, Vec.create(-146.1, -52.88))
                 ),
-                layer: -1
+                layer: Layer.ToBasement
             },
             {
                 type: FloorNames.Wood,
@@ -8484,7 +8484,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         defType: DefinitionType.Building,
         spawnHitbox: RectangleHitbox.fromRect(30, 30),
         material: "metal_heavy",
-        particle: "plumpkin_bunker_particle",
+        particle: "bunker_particle",
         reflectBullets: true,
         hitbox: new GroupHitbox(
             RectangleHitbox.fromRect(2, 17.4, Vec.create(-6.56, 0)),
@@ -8498,7 +8498,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             hitbox: RectangleHitbox.fromRect(11, 15, Vec.create(0, 0.8))
         }],
         obstacles: [
-            { idString: "memorial_bunker_stair", position: Vec.create(0, 2.5), rotation: 0, layer: -1 }
+            { idString: "memorial_bunker_stair", position: Vec.create(0, 2.5), rotation: 0, layer: Layer.ToBasement }
         ]
     },
 
@@ -8508,7 +8508,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         defType: DefinitionType.Building,
         spawnHitbox: RectangleHitbox.fromRect(30, 40),
         material: "metal_heavy",
-        particle: "plumpkin_bunker_particle",
+        particle: "bunker_particle",
         reflectBullets: true,
         collideWithLayers: Layers.Adjacent,
         ceilingHitbox: RectangleHitbox.fromRect(11.5, 30),
@@ -8529,12 +8529,12 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             {
                 type: FloorNames.Metal,
                 hitbox: RectangleHitbox.fromRect(11, 16, Vec.create(0, 9)),
-                layer: -2
+                layer: Layer.Basement
             },
             {
                 type: FloorNames.Metal,
                 hitbox: RectangleHitbox.fromRect(11, 16, Vec.create(0, 9)),
-                layer: -1
+                layer: Layer.ToBasement
             }
         ],
         obstacles: [{
@@ -8577,7 +8577,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         ],
         subBuildings: [
             { idString: "memorial_bunker_entrance", position: Vec.create(0, 0) },
-            { idString: "memorial_bunker_main", position: Vec.create(0, -8.5), layer: -2 }
+            { idString: "memorial_bunker_main", position: Vec.create(0, -8.5), layer: Layer.Basement }
         ]
     },
 
@@ -10132,7 +10132,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             RectangleHitbox.fromRect(2.01, 12.65, Vec.create(-14.55, 44.9))
         ),
         material: "metal_heavy",
-        particle: "plumpkin_bunker_particle",
+        particle: "bunker_particle",
         reflectBullets: true,
         collideWithLayers: Layers.Adjacent,
         floorImages: [
@@ -10150,7 +10150,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "bush", position: Vec.create(-27.44, -47.82), rotation: 0 },
             { idString: "bush", position: Vec.create(-8.38, -28.77), rotation: 0 },
             { idString: "bush", position: Vec.create(-55.92, -38.54), rotation: 0 },
-            { idString: "fulcrum_bunker_stair", position: Vec.create(-30.2, -39.26), rotation: 0, layer: -1 },
+            { idString: "fulcrum_bunker_stair", position: Vec.create(-30.2, -39.26), rotation: 0, layer: Layer.ToBasement },
 
             // Lower entrance
             { idString: randomTree, position: Vec.create(-9.82, 32.88) },
@@ -10160,11 +10160,11 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "bush", position: Vec.create(16.63, 37.75) },
             { idString: "bush", position: Vec.create(-27.11, 35.18) },
             { idString: "bush", position: Vec.create(-5.24, 55.57) },
-            { idString: "fulcrum_bunker_stair", position: Vec.create(-9.81, 45.95), rotation: 2, layer: -1 }
+            { idString: "fulcrum_bunker_stair", position: Vec.create(-9.81, 45.95), rotation: 2, layer: Layer.ToBasement }
         ],
         subBuildings: [
             { idString: "shed_2", position: Vec.create(0, 0) },
-            { idString: "fulcrum_bunker_main", position: Vec.create(0, 0), layer: -2 }
+            { idString: "fulcrum_bunker_main", position: Vec.create(0, 0), layer: Layer.Basement }
         ]
     },
     {
@@ -10201,7 +10201,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             RectangleHitbox.fromRect(9.95, 10.28, Vec.create(-30.3, -38.88))
         ),
         material: "metal_heavy",
-        particle: "plumpkin_bunker_particle",
+        particle: "bunker_particle",
         reflectBullets: true,
         collideWithLayers: Layers.Adjacent,
         floors: [
@@ -10237,7 +10237,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                     RectangleHitbox.fromRect(7.5, 10.68, Vec.create(-30.2, -39.26)),
                     RectangleHitbox.fromRect(7.5, 10.68, Vec.create(-9.81, 45.95))
                 ),
-                layer: -1
+                layer: Layer.ToBasement
             }
         ],
         floorImages: [
@@ -10365,7 +10365,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     },
     {
         idString: "panther_bunker_main",
-        name: "Leopard Bunker",
+        name: "Panther Bunker",
         defType: DefinitionType.Building,
         spawnHitbox: RectangleHitbox.fromRect(80, 80),
         ceilingHitbox: new GroupHitbox(
@@ -10391,7 +10391,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             RectangleHitbox.fromRect(3.21, 3.21, Vec.create(-7.07, -6.31))
         ),
         material: "metal_heavy",
-        particle: "plumpkin_bunker_particle",
+        particle: "bunker_particle",
         reflectBullets: true,
         collideWithLayers: Layers.Equal,
         floors: [
@@ -10408,7 +10408,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                     RectangleHitbox.fromRect(7.68, 10.82, Vec.create(-14.63, -28.85)),
                     RectangleHitbox.fromRect(7.68, 10.82, Vec.create(-14.32, 28.84))
                 ),
-                layer: -1
+                layer: Layer.ToBasement
             }
         ],
         floorImages: [
@@ -10422,6 +10422,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             }
         ],
         obstacles: [
+            { idString: "small_lamp_thingy", position: Vec.create(18.18, -0.51) },
+
             { idString: "control_panel_small", position: Vec.create(-14.36, 11.22), rotation: 0 },
             { idString: "control_panel_small", position: Vec.create(-14.36, -9.22), rotation: 2 },
 
@@ -10453,10 +10455,6 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         idString: "panther_bunker",
         name: "Panther Bunker",
         defType: DefinitionType.Building,
-        material: "metal_heavy",
-        particle: "plumpkin_bunker_particle",
-        collideWithLayers: Layers.Equal,
-        reflectBullets: true,
         spawnHitbox: new GroupHitbox(
             RectangleHitbox.fromRect(15, 18, Vec.create(-14.65, -29.5)),
             RectangleHitbox.fromRect(15, 18, Vec.create(-14.35, 29.5))
@@ -10465,30 +10463,139 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             RectangleHitbox.fromRect(7.5, 10, Vec.create(-14.65, -29.5)),
             RectangleHitbox.fromRect(7.5, 10, Vec.create(-14.35, 29.5))
         ),
-        hitbox: new GroupHitbox(
-            RectangleHitbox.fromRect(1.66, 12.3, Vec.create(-10, -29.67)),
-            RectangleHitbox.fromRect(1.66, 12.3, Vec.create(-19.25, -29.67)),
-            RectangleHitbox.fromRect(10.86, 1.83, Vec.create(-14.65, -24.25)),
-
-            RectangleHitbox.fromRect(1.66, 12.3, Vec.create(-9.7, 29.67)),
-            RectangleHitbox.fromRect(1.66, 12.3, Vec.create(-18.95, 29.67)),
-            RectangleHitbox.fromRect(10.86, 1.83, Vec.create(-14.35, 24.25))
-        ),
-        floorImages: [
-            { key: "bunker_entrance", position: Vec.create(-14.65, -29.5), rotation: Math.PI },
-            { key: "bunker_entrance", position: Vec.create(-14.35, 29.5) }
-        ],
         ceilingImages: [
             { key: "bunker_entrance_ceiling", position: Vec.create(-14.65, -29.5), rotation: Math.PI },
             { key: "bunker_entrance_ceiling", position: Vec.create(-14.35, 29.5) }
         ],
         obstacles: [
-            { idString: "panther_bunker_collider_hack", position: Vec.create(0, 0), rotation: 0, layer: -1 },
-            { idString: "panther_bunker_stair", position: Vec.create(-14.2, 29.5), rotation: 2, layer: -1 },
-            { idString: "panther_bunker_stair", position: Vec.create(-14.5, -29.5), rotation: 0, layer: -1 }
+            { idString: "bunker_entrance_hunted", position: Vec.create(-14.33, 29.5), rotation: 0 },
+            { idString: "bunker_entrance_hunted", position: Vec.create(-14.61, -29.46), rotation: 2 },
+            { idString: "panther_bunker_collider_hack", position: Vec.create(0, 0), rotation: 0, layer: Layer.ToBasement },
+            { idString: "hunted_bunker_stair", position: Vec.create(-14.2, 29.5), rotation: 2, layer: Layer.ToBasement },
+            { idString: "hunted_bunker_stair", position: Vec.create(-14.5, -29.5), rotation: 0, layer: Layer.ToBasement }
         ],
         subBuildings: [
-            { idString: "panther_bunker_main", position: Vec.create(0, 0), layer: -2 }
+            { idString: "panther_bunker_main", position: Vec.create(0, 0), layer: Layer.Basement }
+        ]
+    },
+    {
+        idString: "tiger_bunker", // TODO!!!: MISSING VAULT CEILING
+        name: "tiger Bunker",
+        defType: DefinitionType.Building,
+        spawnHitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(15, 18, Vec.create(30.77, -29.75)),
+            RectangleHitbox.fromRect(15, 18, Vec.create(-30.81, 29.75))
+        ),
+        ceilingHitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(7.5, 10, Vec.create(30.77, -29.75)),
+            RectangleHitbox.fromRect(7.5, 10, Vec.create(-30.81, 29.75))
+        ),
+        floorImages: [
+            { key: "bunker_entrance", position: Vec.create(30.77, -29.75), rotation: Math.PI },
+            { key: "bunker_entrance", position: Vec.create(-30.81, 29.75) }
+        ],
+        ceilingImages: [
+            { key: "bunker_entrance_ceiling", position: Vec.create(30.77, -29.75), rotation: Math.PI },
+            { key: "bunker_entrance_ceiling", position: Vec.create(-30.81, 29.75) }
+        ],
+        obstacles: [
+            { idString: "tiger_bunker_collider_hack", position: Vec.create(0, 0), rotation: 0, layer: Layer.ToBasement },
+            { idString: "bunker_entrance_hunted", position: Vec.create(-30.7, 29.83), rotation: 0 },
+            { idString: "bunker_entrance_hunted", position: Vec.create(30.7, -29.83), rotation: 2 },
+            { idString: "hunted_bunker_stair", position: Vec.create(30.72, -29.94), rotation: 0, layer: Layer.ToBasement },
+            { idString: "hunted_bunker_stair", position: Vec.create(-30.72, 29.94), rotation: 2, layer: Layer.ToBasement }
+        ],
+        subBuildings: [
+            { idString: "tiger_bunker_main", position: Vec.create(0, 0), layer: Layer.Basement }
+        ]
+    },
+    {
+        idString: "tiger_bunker_main",
+        name: "Tiger Bunker",
+        defType: DefinitionType.Building,
+        material: "metal_heavy",
+        particle: "bunker_particle",
+        collideWithLayers: Layers.Equal,
+        reflectBullets: true,
+        spawnHitbox: RectangleHitbox.fromRect(83.74, 83.74),
+        bunkerSpawnHitbox: RectangleHitbox.fromRect(83.74, 83.74),
+        ceilingHitbox: RectangleHitbox.fromRect(69.85, 69.85),
+        hitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(5.11, 5.14, Vec.create(11.7, -11.99)),
+            RectangleHitbox.fromRect(5.11, 5.14, Vec.create(11.7, 11.7)),
+            RectangleHitbox.fromRect(5.11, 5.14, Vec.create(-12.16, 11.64)),
+            RectangleHitbox.fromRect(5.11, 5.14, Vec.create(-12.11, -12.07)),
+            RectangleHitbox.fromRect(1.73, 20, Vec.create(-12.1, -0.12)),
+            RectangleHitbox.fromRect(1.69, 20, Vec.create(11.69, -0.13)),
+            RectangleHitbox.fromRect(1.72, 72.72, Vec.create(35.37, -0.02)),
+            RectangleHitbox.fromRect(1.72, 72.72, Vec.create(-35.4, -0.02)),
+            RectangleHitbox.fromRect(9.5, 1.71, Vec.create(5.67, -12.02)),
+            RectangleHitbox.fromRect(9.5, 1.71, Vec.create(-6, 11.65)),
+            RectangleHitbox.fromRect(70.44, 1.71, Vec.create(-0.23, -35.48)),
+            RectangleHitbox.fromRect(70.44, 1.71, Vec.create(0.19, 35.47)),
+            RectangleHitbox.fromRect(1.65, 13.38, Vec.create(26.21, -29.23)),
+            RectangleHitbox.fromRect(1.65, 13.38, Vec.create(-26.2, 29.25))
+        ),
+        floors: [
+            {
+                type: FloorNames.Stone,
+                hitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(60.38, 21.97, Vec.create(-4.72, -23.66)),
+                    RectangleHitbox.fromRect(69.71, 48.11, Vec.create(-0.12, 0)),
+                    RectangleHitbox.fromRect(60.38, 21.97, Vec.create(4.48, 23.84))
+                )
+            },
+            // Stairs
+            {
+                type: FloorNames.Metal,
+                hitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(7.76, 10.89, Vec.create(30.77, -29.39)),
+                    RectangleHitbox.fromRect(7.76, 10.89, Vec.create(-30.81, 29.35))
+                ),
+                layer: Layer.ToBasement
+            }
+        ],
+        floorImages: [{
+            key: "tiger_bunker_floor",
+            position: Vec.create(0, 0)
+        }],
+        obstacles: [
+            { idString: "small_lamp_thingy", position: Vec.create(0.09, -4.68) },
+            { idString: "special_table_vest", position: Vec.create(0.19, 0.17), rotation: 1 },
+
+            { idString: "pink_metal_auto_door", position: Vec.create(-4.32, -12.01), rotation: 2 },
+            { idString: "pink_metal_auto_door", position: Vec.create(3.9, 11.67), rotation: 0 },
+
+            { idString: "fire_hatchet_case", position: Vec.create(-15.16, 30.29), rotation: 2 },
+
+            { idString: "nsd_crate", position: Vec.create(18.19, -29.25) },
+
+            { idString: "ammo_crate", position: Vec.create(-0.02, -29.25) },
+            { idString: "ammo_crate", position: Vec.create(29.37, 0.05) },
+            { idString: "ammo_crate", position: Vec.create(-29.33, -0.02) },
+            { idString: "ammo_crate", position: Vec.create(0.05, 29.25) },
+
+            { idString: "control_panel_small", position: Vec.create(-29.59, -29.63), rotation: 0 }, // this poor control panel is as lonely as me
+
+            { idString: "control_panel2", position: Vec.create(29.41, 12.11), rotation: 3 },
+            { idString: "control_panel2", position: Vec.create(-19.5, -29.63), rotation: 0 },
+
+            { idString: "grey_office_chair", position: Vec.create(-29.84, -21.55), rotation: 2 },
+            { idString: "grey_office_chair", position: Vec.create(-21.31, -21.7), rotation: 1 },
+
+            {
+                idString: "cabinet",
+                position: Vec.create(12.4, 31.73),
+                rotation: 2,
+                lootSpawnOffset: Vec.create(0, -2)
+            },
+            {
+                idString: "cabinet",
+                position: Vec.create(27.06, 31.73),
+                rotation: 2,
+                lootSpawnOffset: Vec.create(-0.5, -2)
+            }
         ]
     }
+
 ]);

@@ -806,7 +806,7 @@ const maps = {
             melee_crate: 1,
             gold_rock: 1,
             loot_barrel: 1,
-            flint_stone: 1
+            flint_lockbox: 1
         },
         obstacleClumps: [
             {

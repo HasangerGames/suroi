@@ -109,6 +109,7 @@ type CommonObstacleDefinition = ObjectDefinition & {
         readonly tint?: number
         readonly scale?: number
         readonly alpha?: number
+        readonly zIndex?: ZIndexes
         readonly scaleAnim?: {
             readonly to: number
             readonly duration: number
@@ -267,6 +268,7 @@ export const TintedParticles: Record<string, { readonly base: string, readonly t
     propane_tank_particle: { base: "metal_particle_1", tint: 0xb08b3f },
     dumpster_particle: { base: "metal_particle_1", tint: 0x3c7033 },
     washing_machine_particle: { base: "metal_particle_1", tint: 0xb3b3b3 },
+    small_lamp_thingy_particle: { base: "window_particle", tint: 0xb3b3b3 },
     fridge_particle: { base: "metal_particle_1", tint: 0x666666 },
     tv_particle: { base: "metal_particle_1", tint: 0x333333 },
     smokestack_particle: { base: "metal_particle_1", tint: 0xb5b5b5 },
@@ -336,7 +338,7 @@ export const TintedParticles: Record<string, { readonly base: string, readonly t
     lodge_wall_particle: { base: "wood_particle", tint: 0x5a4320 },
     gun_mount_dual_rsh12_particle: { base: "wood_particle", tint: 0x595959 },
     square_desk_particle: { base: "wood_particle", tint: 0x4d3e28 },
-    plumpkin_bunker_particle: { base: "metal_particle_1", tint: 0x262626 },
+    bunker_particle: { base: "metal_particle_1", tint: 0x262626 },
     metal_auto_door_particle: { base: "metal_particle_1", tint: 0x404040 },
     red_metal_auto_door_particle: { base: "metal_particle_1", tint: 0x401a1a },
     blue_metal_auto_door_particle: { base: "metal_particle_1", tint: 0x1a1a40 },
@@ -5225,8 +5227,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         zIndex: ZIndexes.BuildingsFloor
     },
     {
-        idString: "panther_bunker_stair",
-        name: "Panther Bunker Stair",
+        idString: "hunted_bunker_stair",
+        name: "Bunker Stair",
         defType: DefinitionType.Obstacle,
         material: "metal_heavy",
         health: 1000,
@@ -5258,7 +5260,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         ),
         reflectBullets: true,
         frames: {
-            particle: "plumpkin_bunker_particle"
+            particle: "bunker_particle"
         },
         rotationMode: RotationMode.Limited,
         collideWithLayers: Layers.Equal
@@ -5279,7 +5281,28 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         ),
         reflectBullets: true,
         frames: {
-            particle: "plumpkin_bunker_particle"
+            particle: "bunker_particle"
+        },
+        rotationMode: RotationMode.Limited,
+        collideWithLayers: Layers.Equal
+    },
+    {
+        idString: "tiger_bunker_collider_hack",
+        name: "Tiger Bunker Collider Hack",
+        defType: DefinitionType.Obstacle,
+        material: "metal_heavy",
+        health: 1000,
+        indestructible: true,
+        invisible: true,
+        hitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(1.65, 13.38, Vec.create(26.21, -29.7)),
+            RectangleHitbox.fromRect(1.65, 13.38, Vec.create(-26.2, 29.7)),
+            RectangleHitbox.fromRect(1.65, 13.38, Vec.create(-35.4, 29.7)),
+            RectangleHitbox.fromRect(1.65, 13.38, Vec.create(35.4, -29.7))
+        ),
+        reflectBullets: true,
+        frames: {
+            particle: "bunker_particle"
         },
         rotationMode: RotationMode.Limited,
         collideWithLayers: Layers.Equal
@@ -5816,6 +5839,74 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         noCollisions: true,
         noResidue: true
         // hasLoot: true - TODO!!
+    },
+    {
+        idString: "special_table_vest",
+        name: "Small Table",
+        defType: DefinitionType.Obstacle,
+        material: "wood",
+        health: 100,
+        scale: {
+            spawnMin: 1,
+            spawnMax: 1,
+            destroy: 0.9
+        },
+        hideOnMap: true,
+        hitbox: RectangleHitbox.fromRect(8.3, 12.3),
+        rotationMode: RotationMode.Limited,
+        frames: {
+            particle: "furniture_particle"
+        },
+        zIndex: ZIndexes.ObstaclesLayer3,
+        noCollisions: true,
+        noResidue: true
+        // hasLoot: true - TODO!!
+    },
+    {
+        idString: "small_lamp_thingy",
+        name: "Small Lamp",
+        defType: DefinitionType.Obstacle,
+        material: "glass",
+        health: 35,
+        scale: {
+            spawnMin: 1,
+            spawnMax: 1,
+            destroy: 0.95
+        },
+        zIndex: ZIndexes.ObstaclesLayer3 + 0.6,
+        hitbox: new CircleHitbox(1.9),
+        noResidue: true,
+        rotationMode: RotationMode.Full,
+        glow: {
+            tint: 0xe7deb1,
+            scale: 0.38,
+            alpha: 0.8,
+            zIndex: ZIndexes.ObstaclesLayer3 + 0.1,
+            scaleAnim: {
+                to: 0.395,
+                duration: 150
+            }
+        }
+    },
+    {
+        idString: "bunker_entrance_hunted",
+        name: "Bunker Entrance",
+        defType: DefinitionType.Obstacle,
+        material: "metal_heavy",
+        health: 1000,
+        reflectBullets: true,
+        indestructible: true,
+        collideWithLayers: Layers.Equal,
+        hitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(1.67, 12.32, Vec.create(4.59, 0.16)),
+            RectangleHitbox.fromRect(1.67, 12.32, Vec.create(-4.59, 0.16)),
+            RectangleHitbox.fromRect(10.85, 1.86, Vec.create(0, -5.38))
+        ),
+        frames: {
+            particle: "bunker_particle",
+            base: "bunker_entrance"
+        },
+        rotationMode: RotationMode.Limited
     }
 ] satisfies readonly RawObstacleDefinition[] as readonly RawObstacleDefinition[]).flatMap((def: Mutable<RawObstacleDefinition>) => {
     if (def.variations !== undefined) (def as Mutable<ObstacleDefinition>).variationBits = Math.ceil(Math.log2(def.variations));

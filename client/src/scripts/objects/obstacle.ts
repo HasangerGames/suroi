@@ -306,7 +306,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
                     layer: this.layer,
                     lifetime: Infinity,
                     speed: Vec.create(0, 0),
-                    zIndex: this.container.zIndex - 0.5,
+                    zIndex: glow.zIndex ?? this.container.zIndex - 0.5,
                     tint: glow.tint,
                     scale: glow.scale
                 });
