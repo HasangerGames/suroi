@@ -4172,6 +4172,15 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             position: Vec.create(0, 0),
             scale: Vec.create(2, 2)
         }],
+        puzzle: {
+            delay: 450
+        },
+        sounds: {
+            solved: "recorder_buzz",
+            position: Vec.create(-7.5, -22.73),
+            maxRange: 150,
+            falloff: 1
+        },
         obstacles: [
             { idString: "melee_crate", position: Vec.create(8.39, 22.26) },
             { idString: "gun_case", position: Vec.create(9.12, 13.39), rotation: 3 },
@@ -4183,8 +4192,12 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "vat", position: Vec.create(-8.9, 12.8), rotation: 3, variation: 1 },
             { idString: "vat", position: Vec.create(-8.6, 5.49), rotation: 3, variation: 0 },
             { idString: "lamp", position: Vec.create(-10.82, -6.98), rotation: 3, variation: 1 },
-            { idString: "recorder", position: Vec.create(-7.5, -22.73), rotation: 0 } // TODO
-        ]
+            { idString: "recorder_interactable", position: Vec.create(-7.5, -22.73), rotation: 0, puzzlePiece: true } // TODO
+        ],
+        lootSpawners: [{
+            table: "gun_mount_m590m",
+            position: Vec.create(-2.63, -11.39)
+        }]
     },
     {
         idString: "cargo_ship",

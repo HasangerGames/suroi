@@ -3992,6 +3992,21 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         }
     },
     {
+        ...controlPanel("recorder_interactable", "Recorder"),
+        hitbox: RectangleHitbox.fromRect(8.7, 6.34),
+        indestructible: true,
+        isActivatable: true,
+        sound: {
+            names: ["speaker_start", "speaker_start"]
+        },
+        frames: {
+            base: "recorder",
+            activated: "recorder_used",
+            particle: "metal_particle",
+            residue: "barrel_residue"
+        }
+    },
+    {
         ...controlPanel("control_panel_small", "Small Control Panel"),
         hitbox: RectangleHitbox.fromRect(7.5, 8)
     },

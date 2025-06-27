@@ -164,6 +164,7 @@
 "interact_button": "Press Button"
 "interact_speaker": "Play Speaker"
 "interact_monument": "Pay Respects"
+"interact_recorder_interactable": "Play Recorder"
 "loading_spritesheets": "Loading Spritesheets <progress>"
 "loading_connecting": "Connecting"
 "loading_joining_game": "Joining Game"
