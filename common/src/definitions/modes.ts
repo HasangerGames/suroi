@@ -12,7 +12,7 @@ export type ModeName =
 
 export type SpritesheetNames = ModeName | "shared";
 
-type ColorKeys =
+export type ColorKeys =
     | "grass"
     | "water"
     | "border"

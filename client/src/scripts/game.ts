@@ -299,7 +299,7 @@ export const Game = new (class Game {
         let menuMusicSuffix: string;
         if (GameConsole.getBuiltInCVar("cv_use_old_menu_music")) {
             menuMusicSuffix = "_old";
-        } else if (this.mode.sounds?.replaceMenuMusic) {
+        } else if (this.mode.replaceMenuMusic) {
             menuMusicSuffix = `_${this.modeName}`;
         } else {
             menuMusicSuffix = "";
@@ -581,7 +581,7 @@ export const Game = new (class Game {
         // game started if page is out of focus.
         if (!document.hasFocus()) SoundManager.play("join_notification");
 
-        const ambience = this.mode.sounds?.ambience;
+        const ambience = this.mode.ambience;
         if (ambience) {
             this.ambience = SoundManager.play(ambience, { loop: true, ambient: true });
         }
