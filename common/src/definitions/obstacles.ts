@@ -3362,6 +3362,27 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         noResidue: true
     },
     {
+        idString: "small_table_papers",
+        name: "Small Table with Papers",
+        defType: DefinitionType.Obstacle,
+        material: "wood",
+        health: 100,
+        scale: {
+            spawnMin: 1,
+            spawnMax: 1,
+            destroy: 0.9
+        },
+        hideOnMap: true,
+        hitbox: RectangleHitbox.fromRect(8.3, 12.3),
+        rotationMode: RotationMode.Limited,
+        frames: {
+            particle: "furniture_particle"
+        },
+        zIndex: ZIndexes.ObstaclesLayer3,
+        noCollisions: true,
+        noResidue: true
+    },
+    {
         idString: "large_table",
         name: "Large Table",
         defType: DefinitionType.Obstacle,
@@ -4945,6 +4966,25 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         rotationMode: RotationMode.Limited
     },
     {
+        idString: "hunted_bunker_entrance",
+        name: "Hunted Bunker Entrance",
+        defType: DefinitionType.Obstacle,
+        material: "metal_heavy",
+        health: 1000,
+        reflectBullets: true,
+        indestructible: true,
+        collideWithLayers: Layers.Equal,
+        hitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(1.67, 12.32, Vec.create(4.59, 0.16)),
+            RectangleHitbox.fromRect(1.67, 12.32, Vec.create(-4.59, 0.16)),
+            RectangleHitbox.fromRect(10.85, 1.86, Vec.create(0, -5.38))
+        ),
+        frames: {
+            particle: "bunker_particle"
+        },
+        rotationMode: RotationMode.Limited
+    },
+    {
         idString: "bunker_stair",
         name: "Bunker Stair",
         defType: DefinitionType.Obstacle,
@@ -5231,7 +5271,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     },
     {
         idString: "hunted_bunker_stair",
-        name: "Bunker Stair",
+        name: "Hunted Bunker Stair",
         defType: DefinitionType.Obstacle,
         material: "metal_heavy",
         health: 1000,
@@ -5251,7 +5291,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     },
     {
         idString: "fulcrum_bunker_collider_hack",
-        name: "Flooded Bunker Collider Hack",
+        name: "Fulcrum Bunker Collider Hack",
         defType: DefinitionType.Obstacle,
         material: "metal_heavy",
         health: 1000,
@@ -5260,48 +5300,6 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         hitbox: new GroupHitbox(
             RectangleHitbox.fromRect(10.68, 0.68, Vec.create(-30.19, -32.02)),
             RectangleHitbox.fromRect(10.68, 0.68, Vec.create(-9.82, 38.92))
-        ),
-        reflectBullets: true,
-        frames: {
-            particle: "bunker_particle"
-        },
-        rotationMode: RotationMode.Limited,
-        collideWithLayers: Layers.Equal
-    },
-    {
-        idString: "panther_bunker_collider_hack",
-        name: "Panther Bunker Collider Hack",
-        defType: DefinitionType.Obstacle,
-        material: "metal_heavy",
-        health: 1000,
-        indestructible: true,
-        invisible: true,
-        hitbox: new GroupHitbox(
-            RectangleHitbox.fromRect(1.69, 13.66, Vec.create(-9.67, 28.73)),
-            RectangleHitbox.fromRect(1.69, 13.66, Vec.create(-9.96, -28.75)),
-            RectangleHitbox.fromRect(1.69, 13.66, Vec.create(-18.8, 28.73)),
-            RectangleHitbox.fromRect(1.69, 13.66, Vec.create(-19.12, -28.77))
-        ),
-        reflectBullets: true,
-        frames: {
-            particle: "bunker_particle"
-        },
-        rotationMode: RotationMode.Limited,
-        collideWithLayers: Layers.Equal
-    },
-    {
-        idString: "tiger_bunker_collider_hack",
-        name: "Tiger Bunker Collider Hack",
-        defType: DefinitionType.Obstacle,
-        material: "metal_heavy",
-        health: 1000,
-        indestructible: true,
-        invisible: true,
-        hitbox: new GroupHitbox(
-            RectangleHitbox.fromRect(1.65, 13.38, Vec.create(26.21, -29.7)),
-            RectangleHitbox.fromRect(1.65, 13.38, Vec.create(-26.2, 29.7)),
-            RectangleHitbox.fromRect(1.65, 13.38, Vec.create(-35.4, 29.7)),
-            RectangleHitbox.fromRect(1.65, 13.38, Vec.create(35.4, -29.7))
         ),
         reflectBullets: true,
         frames: {
@@ -5866,6 +5864,28 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         // hasLoot: true - TODO!!
     },
     {
+        idString: "special_table_pack",
+        name: "Small Table",
+        defType: DefinitionType.Obstacle,
+        material: "wood",
+        health: 100,
+        scale: {
+            spawnMin: 1,
+            spawnMax: 1,
+            destroy: 0.9
+        },
+        hideOnMap: true,
+        hitbox: RectangleHitbox.fromRect(8.3, 12.3),
+        rotationMode: RotationMode.Limited,
+        frames: {
+            particle: "furniture_particle"
+        },
+        zIndex: ZIndexes.ObstaclesLayer3,
+        noCollisions: true,
+        noResidue: true
+        // hasLoot: true - TODO!!
+    },
+    {
         idString: "small_lamp_thingy",
         name: "Small Lamp",
         defType: DefinitionType.Obstacle,
@@ -5890,26 +5910,6 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
                 duration: 150
             }
         }
-    },
-    {
-        idString: "bunker_entrance_hunted",
-        name: "Bunker Entrance",
-        defType: DefinitionType.Obstacle,
-        material: "metal_heavy",
-        health: 1000,
-        reflectBullets: true,
-        indestructible: true,
-        collideWithLayers: Layers.Equal,
-        hitbox: new GroupHitbox(
-            RectangleHitbox.fromRect(1.67, 12.32, Vec.create(4.59, 0.16)),
-            RectangleHitbox.fromRect(1.67, 12.32, Vec.create(-4.59, 0.16)),
-            RectangleHitbox.fromRect(10.85, 1.86, Vec.create(0, -5.38))
-        ),
-        frames: {
-            particle: "bunker_particle",
-            base: "bunker_entrance"
-        },
-        rotationMode: RotationMode.Limited
     }
 ] satisfies readonly RawObstacleDefinition[] as readonly RawObstacleDefinition[]).flatMap((def: Mutable<RawObstacleDefinition>) => {
     if (def.variations !== undefined) (def as Mutable<ObstacleDefinition>).variationBits = Math.ceil(Math.log2(def.variations));

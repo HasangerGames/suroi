@@ -770,7 +770,8 @@ const maps = {
             warehouse: 5,
             buoy: 12,
             panther_bunker: 1,
-            tiger_bunker: 1
+            tiger_bunker: 1,
+            lion_bunker: 1
         },
         quadBuildingLimit: {
             port: 1,
