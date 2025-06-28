@@ -59,9 +59,9 @@ function jaggedRectangle(
     random: SeededRandom
 ): Vector[] {
     const topLeft = Vec.clone(hitbox.min);
-    const topRight = Vec.create(hitbox.max.x, hitbox.min.y);
+    const topRight = Vec(hitbox.max.x, hitbox.min.y);
     const bottomRight = Vec.clone(hitbox.max);
-    const bottomLeft = Vec.create(hitbox.min.x, hitbox.max.y);
+    const bottomLeft = Vec(hitbox.min.x, hitbox.max.y);
     if (variation === 0) {
         return [
             topLeft,
@@ -77,16 +77,16 @@ function jaggedRectangle(
     const getVariation = (): number => random.get(-variation, variation);
 
     for (let x = topLeft.x + spacing; x < topRight.x; x += spacing) {
-        points.push(Vec.create(x, topLeft.y + getVariation()));
+        points.push(Vec(x, topLeft.y + getVariation()));
     }
     for (let y = topRight.y + spacing; y < bottomRight.y; y += spacing) {
-        points.push(Vec.create(topRight.x + getVariation(), y));
+        points.push(Vec(topRight.x + getVariation(), y));
     }
     for (let x = bottomRight.x - spacing; x > bottomLeft.x; x -= spacing) {
-        points.push(Vec.create(x, bottomRight.y + getVariation()));
+        points.push(Vec(x, bottomRight.y + getVariation()));
     }
     for (let y = bottomLeft.y - spacing; y > topLeft.y; y -= spacing) {
-        points.push(Vec.create(bottomLeft.x + getVariation(), y));
+        points.push(Vec(bottomLeft.x + getVariation(), y));
     }
 
     return points;
@@ -142,22 +142,22 @@ export class Terrain {
         const spacing = 16;
 
         const beachRect = this.groundRect = new RectangleHitbox(
-            Vec.create(oceanSize, oceanSize),
-            Vec.create(width - oceanSize, height - oceanSize)
+            Vec(oceanSize, oceanSize),
+            Vec(width - oceanSize, height - oceanSize)
         );
 
         const grassRect = new RectangleHitbox(
-            Vec.create(beachPadding, beachPadding),
-            Vec.create(width - beachPadding, height - beachPadding)
+            Vec(beachPadding, beachPadding),
+            Vec(width - beachPadding, height - beachPadding)
         );
 
         this.beachHitbox = new PolygonHitbox(jaggedRectangle(beachRect, spacing, Numeric.min(8, 2 * oceanSize), random));
         this.grassHitbox = new PolygonHitbox(jaggedRectangle(grassRect, spacing, Numeric.min(8, 2 * beachSize), random));
 
-        const point = Vec.create(0, 0);
+        const point = Vec(0, 0);
         Geometry.distanceSquared(
             point,
-            Vec.create(
+            Vec(
                 Math.max(-point.x, 0, point.x - width),
                 Math.max(-point.y, 0, point.y - height)
             )
@@ -174,10 +174,10 @@ export class Terrain {
 
             for (let x = min.x; x <= max.x; x++) {
                 for (let y = min.y; y <= max.y; y++) {
-                    const min = Vec.create(x * this.cellSize, y * this.cellSize);
+                    const min = Vec(x * this.cellSize, y * this.cellSize);
                     const rect = new RectangleHitbox(
                         min,
-                        Vec.add(min, Vec.create(this.cellSize, this.cellSize))
+                        Vec.add(min, Vec(this.cellSize, this.cellSize))
                     );
                     // only add it to cells it collides with
                     if (river.bankHitbox.collidesWith(rect)) {
@@ -285,7 +285,7 @@ export class Terrain {
     }
 
     private _roundToCells(vector: Vector): Vector {
-        return Vec.create(
+        return Vec(
             Numeric.clamp(Math.floor(vector.x / this.cellSize), 0, this.width),
             Numeric.clamp(Math.floor(vector.y / this.cellSize), 0, this.height)
         );
@@ -352,7 +352,7 @@ export class River {
             let collidingRiver: River | null = null;
             for (const river of otherRivers) {
                 if (river.isTrail !== isTrail) continue;
-                const length = Vec.length(
+                const length = Vec.len(
                     Vec.sub(
                         river.getPosition(river.getClosestT(current)),
                         current
@@ -436,8 +436,8 @@ export class River {
 
     getNormal(t: number): Vector {
         const tangent = this.getTangent(t);
-        const vec = Vec.normalizeSafe(tangent, Vec.create(1, 0));
-        return Vec.create(-vec.y, vec.x);
+        const vec = Vec.normalizeSafe(tangent, Vec(1, 0));
+        return Vec(-vec.y, vec.x);
     }
 
     getPosition(t: number): Vector {
@@ -477,7 +477,7 @@ export class River {
         for (let i = 0; i <= kIter; i++) {
             const testT = Numeric.lerp(i / kIter, tMin, tMax);
             const testPos = this.getPosition(testT);
-            const testDistSq = Vec.squaredLength(Vec.sub(testPos, position));
+            const testDistSq = Vec.squaredLen(Vec.sub(testPos, position));
             if (testDistSq < nearestDistSq) {
                 nearestT = testT;
                 nearestDistSq = testDistSq;
@@ -486,12 +486,12 @@ export class River {
 
         // Refine by offsetting along the spline tangent
         const tangent = this.getTangent(nearestT);
-        const tanLen = Vec.length(tangent);
+        const tanLen = Vec.len(tangent);
         if (tanLen > 0) {
             const nearest = this.getPosition(nearestT);
             const offset = Vec.dotProduct(tangent, Vec.sub(position, nearest)) / tanLen;
             const offsetT = nearestT + offset / (tanLen * len);
-            if (Vec.squaredLength(Vec.sub(position, this.getPosition(offsetT))) < Vec.squaredLength(Vec.sub(position, nearest))) {
+            if (Vec.squaredLen(Vec.sub(position, this.getPosition(offsetT))) < Vec.squaredLen(Vec.sub(position, nearest))) {
                 nearestT = offsetT;
             }
         }

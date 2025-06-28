@@ -43,11 +43,11 @@ class MapManagerClass {
 
     toggleMinimap(): void { this.visible = !this._visible; }
 
-    private _position = Vec.create(0, 0);
-    private _lastPosition = Vec.create(0, 0);
+    private _position = Vec(0, 0);
+    private _lastPosition = Vec(0, 0);
 
     // used for the gas to player line and circle
-    private _gasPos = Vec.create(0, 0);
+    private _gasPos = Vec(0, 0);
     private _gasRadius = 0;
     readonly safeZone = new Graphics();
 
@@ -75,7 +75,7 @@ class MapManagerClass {
     private _minimapHeight = 0;
     get minimapHeight(): number { return this._minimapHeight; }
 
-    margins = Vec.create(0, 0);
+    margins = Vec(0, 0);
 
     gasRender!: GasRender;
     readonly placesContainer = new Container();
@@ -366,7 +366,7 @@ class MapManagerClass {
                             .setTint(image.beachTinted ? Game.colors.beach : 0xffffff);
 
                         if (image.tint !== undefined) sprite.setTint(image.tint);
-                        sprite.scale = Vec.scale(image.scale ?? Vec.create(1, 1), 1 / PIXI_SCALE);
+                        sprite.scale = Vec.scale(image.scale ?? Vec(1, 1), 1 / PIXI_SCALE);
                         floorContainer.addChild(sprite);
                     }
                     mapRender.addChild(floorContainer);
@@ -514,8 +514,8 @@ class MapManagerClass {
         this._places = mapPacket.places;
 
         const mapBounds = new RectangleHitbox(
-            Vec.create(mapPacket.oceanSize, mapPacket.oceanSize),
-            Vec.create(mapPacket.width - mapPacket.oceanSize, mapPacket.height - mapPacket.oceanSize)
+            Vec(mapPacket.oceanSize, mapPacket.oceanSize),
+            Vec(mapPacket.width - mapPacket.oceanSize, mapPacket.height - mapPacket.oceanSize)
         );
 
         const rivers: River[] = [];
@@ -644,7 +644,7 @@ class MapManagerClass {
             // noinspection JSSuspiciousNameCombination
             this._minimapWidth = this.sprite.width * this.container.scale.x;
             this._minimapHeight = this.sprite.height * this.container.scale.y;
-            this.margins = Vec.create(screenWidth / 2 - (this._minimapWidth / 2), screenHeight / 2 - (this._minimapHeight / 2));
+            this.margins = Vec(screenWidth / 2 - (this._minimapWidth / 2), screenHeight / 2 - (this._minimapHeight / 2));
 
             const closeButton = $("#btn-close-minimap");
             const closeButtonPos = Numeric.min(
@@ -673,7 +673,7 @@ class MapManagerClass {
 
             this._minimapWidth = bounds.width - border * 2;
             this._minimapHeight = bounds.height - border * 2;
-            this.margins = Vec.create(bounds.left + border, bounds.top + border);
+            this.margins = Vec(bounds.left + border, bounds.top + border);
 
             if (window.innerWidth > 1200) {
                 this.container.scale.set(1 / 1.25 * uiScale);

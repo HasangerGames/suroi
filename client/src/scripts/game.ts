@@ -419,7 +419,7 @@ export const Game = new (class Game {
                             const width = CameraManager.width / PIXI_SCALE;
                             const height = CameraManager.height / PIXI_SCALE;
                             const player = This.activePlayer;
-                            if (!player) return Vec.create(0, 0);
+                            if (!player) return Vec(0, 0);
                             const { x, y } = player.position;
                             return randomVector(x - width, x + width, y - height, y + height);
                         },
@@ -1061,7 +1061,7 @@ export const Game = new (class Game {
 
                         SoundManager.play("detection", {
                             falloff: 0.25,
-                            position: Vec.create(object.position.x + 20, object.position.y - 20),
+                            position: Vec(object.position.x + 20, object.position.y - 20),
                             maxRange: 200
                         });
 

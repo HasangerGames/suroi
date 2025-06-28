@@ -129,7 +129,7 @@ export class Bullet extends BaseBullet {
                     explosion, thereby shielding others from its effects
                 */
                 rotation = 2 * Math.atan2(normal.y, normal.x) - this.rotation;
-                this.position = Vec.add(point, Vec.create(Math.sin(rotation), -Math.cos(rotation)));
+                this.position = Vec.add(point, Vec(Math.sin(rotation), -Math.cos(rotation)));
             } else {
                 // atan2 is expensive so we avoid the above calculation if possible
                 this.position = point;

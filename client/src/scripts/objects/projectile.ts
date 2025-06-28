@@ -130,7 +130,7 @@ export class Projectile extends GameObject.derive(ObjectCategory.Projectile) {
                 sprite += "_halloween";
             }
 
-            this.image.setAnchor(this.definition.image.anchor ?? Vec.create(0.5, 0.5));
+            this.image.setAnchor(this.definition.image.anchor ?? Vec(0.5, 0.5));
 
             this.image.setFrame(sprite);
         }
@@ -167,7 +167,7 @@ export class Projectile extends GameObject.derive(ObjectCategory.Projectile) {
                 zIndex: ZIndexes.Ground,
                 position: randomPointInsideCircle(this.position, 1),
                 lifetime: 1000,
-                speed: Vec.create(0, 0),
+                speed: Vec(0, 0),
                 scale: {
                     start: randomFloat(0.45, 0.55),
                     end: randomFloat(2.95, 3.05)

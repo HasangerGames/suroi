@@ -198,7 +198,7 @@ class InputManagerClass {
     // and inputManager assumes all keys of `movement` are booleans
     movementAngle = 0;
 
-    mousePosition = Vec.create(0, 0);
+    mousePosition = Vec(0, 0);
 
     rotation = 0;
 
@@ -249,7 +249,7 @@ class InputManagerClass {
         this.actions.push(action);
     }
 
-    gameMousePosition = Vec.create(0, 0);
+    gameMousePosition = Vec(0, 0);
     distanceToMouse = 0;
 
     attacking = false;
@@ -361,7 +361,7 @@ class InputManagerClass {
         gameContainer.addEventListener("pointermove", (e: MouseEvent) => {
             if (this.isMobile) return;
 
-            this.mousePosition = Vec.create(e.clientX, e.clientY);
+            this.mousePosition = Vec(e.clientX, e.clientY);
             this.turning = true;
             this.rotation = Math.atan2(e.clientY - window.innerHeight / 2, e.clientX - window.innerWidth / 2);
 

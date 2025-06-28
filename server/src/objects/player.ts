@@ -451,10 +451,10 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
     baseSpeed = GameConstants.player.baseSpeed;
 
-    private _movementVector = Vec.create(0, 0);
+    private _movementVector = Vec(0, 0);
     get movementVector(): Vector { return Vec.clone(this._movementVector); }
 
-    spawnPosition: Vector = Vec.create(this.game.map.width / 2, this.game.map.height / 2);
+    spawnPosition: Vector = Vec(this.game.map.width / 2, this.game.map.height / 2);
 
     private readonly _mapPings: Game["mapPings"] = [];
 
@@ -941,7 +941,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 y *= Math.SQRT1_2;
             }
 
-            movement = Vec.create(x, y);
+            movement = Vec(x, y);
         }
 
         // Rate Limiting: Team Pings & Emotes
@@ -1151,7 +1151,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         // Cancel reviving when out of range
         if (this.action instanceof ReviveAction) {
             if (
-                Vec.squaredLength(
+                Vec.squaredLen(
                     Vec.sub(
                         this.position,
                         this.action.target.position

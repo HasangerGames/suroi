@@ -41,7 +41,7 @@ export default class PlaceObjectPlugin extends GamePlugin {
             this._playerToObstacle.ifPresent(player, obstacle => {
                 const position = Vec.add(
                     player.position,
-                    Vec.create(Math.cos(player.rotation) * player.distanceToMouse, Math.sin(player.rotation) * player.distanceToMouse)
+                    Vec(Math.cos(player.rotation) * player.distanceToMouse, Math.sin(player.rotation) * player.distanceToMouse)
                 );
                 obstacle.position = position;
                 obstacle.layer = player.layer;
@@ -54,8 +54,8 @@ export default class PlaceObjectPlugin extends GamePlugin {
             this._playerToObstacle.ifPresent(player, obstacle => {
                 const map = this.game.map;
                 const round = (n: number): number => Math.round(n * 100) / 100;
-                console.log(`{ idString: "${obstacle.definition.idString}", position: Vec.create(${round(obstacle.position.x - map.width / 2)}, ${round(obstacle.position.y - map.height / 2)}), rotation: ${obstacle.rotation} },`);
-                // console.log(`Vec.create(${round(position.x - map.width / 2)}, ${round(position.y - map.height / 2)}),`);
+                console.log(`{ idString: "${obstacle.definition.idString}", position: Vec(${round(obstacle.position.x - map.width / 2)}, ${round(obstacle.position.y - map.height / 2)}), rotation: ${obstacle.rotation} },`);
+                // console.log(`Vec(${round(position.x - map.width / 2)}, ${round(position.y - map.height / 2)}),`);
             });
         });
     }

@@ -47,7 +47,7 @@ class Bot {
 
     readonly gameID: number;
 
-    position = Vec.create(0, 0);
+    position = Vec(0, 0);
 
     private _shootStart = false;
 

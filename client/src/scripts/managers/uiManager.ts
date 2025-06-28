@@ -1203,7 +1203,7 @@ class UIManagerClass {
             const boundingRects = child.getBoundingClientRect();
             return {
                 element: child as HTMLDivElement,
-                position: Vec.create(boundingRects.x, boundingRects.y)
+                position: Vec(boundingRects.x, boundingRects.y)
             };
         });
     }

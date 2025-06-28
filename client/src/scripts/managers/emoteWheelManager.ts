@@ -171,7 +171,7 @@ class EmoteWheelManagerClass {
                         let position: Vector | undefined;
                         // fuck you
                         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                        const globalPos = Vec.create(e.clientX!, e.clientY!);
+                        const globalPos = Vec(e.clientX!, e.clientY!);
                         MapPingWheelManager.updatePosition(globalPos);
                         position = MapPingWheelManager.position;
                         if (!position) {
@@ -203,7 +203,7 @@ class EmoteWheelManagerClass {
 
         let position: Vector;
         if (InputManager.isMobile) {
-            position = Vec.create(Game.pixi.screen.width / 2, Game.pixi.screen.height / 2);
+            position = Vec(Game.pixi.screen.width / 2, Game.pixi.screen.height / 2);
         } else {
             // this whole mess makes it so the position doesn't change when switching between wheels
             if (EmoteWheelManager.active) {
@@ -263,7 +263,7 @@ class EmoteWheelManagerClass {
         const { DIMENSIONS } = EmoteWheelManagerClass;
         const { blockEmoting } = UIManager;
         const dist = Vec.sub(position, this.container.position);
-        const len = Vec.squaredLength(dist);
+        const len = Vec.squaredLen(dist);
         const selected = len > DIMENSIONS.innerRingRadius ** 2;
 
         this.closeGraphics.visible = !selected && !blockEmoting;

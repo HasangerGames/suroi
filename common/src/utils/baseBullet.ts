@@ -197,7 +197,7 @@ export class BaseBullet {
         this.maxDistance = (range * (this.rangeVariance + 1)) / (this.reflectionCount + 1);
         this.maxDistanceSquared = this.maxDistance ** 2;
 
-        this.direction = Vec.create(Math.sin(this.rotation), -Math.cos(this.rotation));
+        this.direction = Vec(Math.sin(this.rotation), -Math.cos(this.rotation));
 
         this.velocity = Vec.scale(
             this.direction,
@@ -263,7 +263,7 @@ export class BaseBullet {
                     );
                     if (!point) return null;
                     const s = Vec.sub(pointA, pointB);
-                    const normal = Vec.normalize(Vec.create(-s.y, s.x));
+                    const normal = Vec.normalize(Vec(-s.y, s.x));
                     return { point, normal };
                 };
 

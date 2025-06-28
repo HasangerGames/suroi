@@ -47,7 +47,7 @@ export class SyncedParticle extends BaseGameObject.derive(ObjectCategory.SyncedP
 
         this.layer = layer ?? 0;
 
-        const clampToMapBounds = (position: Vector): Vector => Vec.create(
+        const clampToMapBounds = (position: Vector): Vector => Vec(
             Numeric.clamp(position.x, 0, GameConstants.maxPosition),
             Numeric.clamp(position.y, 0, GameConstants.maxPosition)
         );
