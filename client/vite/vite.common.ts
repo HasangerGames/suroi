@@ -87,6 +87,7 @@ const commonConfig: UserConfig = {
     },
 
     define: {
+        IS_CLIENT: true,
         APP_VERSION: JSON.stringify(pkg.version)
     }
 };

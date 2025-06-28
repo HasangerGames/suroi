@@ -1,3 +1,4 @@
+/* eslint-disable @stylistic/multiline-ternary */
 import { FlyoverPref, Layer, Layers, MapObjectSpawnMode, RotationMode, ZIndexes } from "../constants";
 import { type Orientation, type Variation } from "../typings";
 import { CircleHitbox, GroupHitbox, PolygonHitbox, RectangleHitbox, type Hitbox } from "../utils/hitbox";
@@ -6,6 +7,9 @@ import { pickRandomInArray, random, randomBoolean } from "../utils/random";
 import { FloorNames } from "../utils/terrain";
 import { Vec, type Vector } from "../utils/vector";
 import { Materials, type ObstacleDefinition } from "./obstacles";
+import "../utils/isClient";
+
+declare const IS_CLIENT: boolean;
 
 interface BuildingObstacle {
     readonly idString: ReferenceOrRandom<ObstacleDefinition>
@@ -885,7 +889,7 @@ const container = (
         ),
         ...(variant === "gas_can"
             ? {
-                obstacles: [
+                obstacles: IS_CLIENT ? undefined : [
                     { idString: "propane_tank", position: Vec(3, 10) },
                     { idString: "propane_tank", position: Vec(-3, 10) }
                 ]
@@ -964,7 +968,7 @@ const truck = (
         name: `Truck ${id}`,
         defType: DefinitionType.Building,
         spawnHitbox: RectangleHitbox.fromRect(25, 60, Vec(0, 6)),
-        obstacles: [
+        obstacles: IS_CLIENT ? undefined : [
             { idString: "truck_front", position: Vec(0, -11.5), rotation: 0 },
             { idString: "truck_tire", position: Vec(-7.15, 30.81), rotation: 0 },
             { idString: "truck_tire", position: Vec(7.15, 30.81), rotation: 0 },
@@ -975,7 +979,7 @@ const truck = (
             { idString: "truck_tire", position: Vec(-7.15, 5.84), rotation: 0 },
             { idString: "truck_tire", position: Vec(7.15, 5.84), rotation: 0 }
         ],
-        subBuildings: [{
+        subBuildings: IS_CLIENT ? undefined : [{
             idString: model === "two_sided" ? randomTruckContainerTwoSided : randomTruckContainerOneSided,
             position: Vec(0, 15)
         }]
@@ -991,7 +995,7 @@ const pallet = (
         name: `Pallet ${id}`,
         defType: DefinitionType.Building,
         spawnHitbox: RectangleHitbox.fromRect(10.1, 9),
-        obstacles: [
+        obstacles: IS_CLIENT ? undefined : [
             { idString: "pallet", position: Vec(0, 0), rotation: 0 },
             ...obstacles
         ]
@@ -1046,7 +1050,7 @@ const riverHut = (id: number, obstacles: readonly BuildingObstacle[]): BuildingD
                 hitbox: RectangleHitbox.fromRect(5.3, 11, Vec(-18.7, 12))
             }
         ],
-        obstacles: [
+        obstacles: IS_CLIENT ? undefined : [
             { idString: "door", position: Vec(-15.5, 12.18), rotation: 1 },
             { idString: "house_wall_20", position: Vec(0, -18.65), rotation: 0 },
             { idString: "house_wall_21", position: Vec(15.38, 8.12), rotation: 1 },
@@ -1093,19 +1097,21 @@ const tent = (
         resetCeilingResidueScale: true,
         destroyOnCeilingCollapse: ["pole", `tent_wall_${id}`],
         wallsToDestroy: 1,
-        obstacles: special
-            ? [
-                { idString: "pole", position: Vec(0, 0) },
-                { idString: `tent_wall_${id}`, position: Vec(0, -8), rotation: 0 },
-                { idString: `tent_wall_${id}`, position: Vec(0, 8), rotation: 2 },
-                { idString: "gun_case", position: Vec(0, 5), rotation: 2 }
-            ]
-            : [
-                { idString: "pole", position: Vec(0, 0) },
-                { idString: `tent_wall_${id}`, position: Vec(0, -8), rotation: 0 },
-                { idString: `tent_wall_${id}`, position: Vec(0, 8), rotation: 2 },
-                { idString: "box", position: Vec(0, 5) }
-            ],
+        obstacles: IS_CLIENT ? undefined : (
+            special
+                ? [
+                    { idString: "pole", position: Vec(0, 0) },
+                    { idString: `tent_wall_${id}`, position: Vec(0, -8), rotation: 0 },
+                    { idString: `tent_wall_${id}`, position: Vec(0, 8), rotation: 2 },
+                    { idString: "gun_case", position: Vec(0, 5), rotation: 2 }
+                ]
+                : [
+                    { idString: "pole", position: Vec(0, 0) },
+                    { idString: `tent_wall_${id}`, position: Vec(0, -8), rotation: 0 },
+                    { idString: `tent_wall_${id}`, position: Vec(0, 8), rotation: 2 },
+                    { idString: "box", position: Vec(0, 5) }
+                ]
+        ),
         lootSpawners: [{
             table: special ? "warehouse" : "ground_loot",
             position: Vec(0, -5)
@@ -1139,7 +1145,7 @@ const hayShed = (
     ceilingCollapseParticle: "hay_shed_ceiling_particle",
     ceilingCollapseParticleVariations: 2,
     wallsToDestroy: 2,
-    obstacles: [
+    obstacles: IS_CLIENT ? undefined : [
         { idString: "pole", position: Vec(14.04, -11.53) },
         { idString: "pole", position: Vec(-16.68, -11.55) },
         { idString: "pole", position: Vec(-16.52, 10.83) },
@@ -1183,7 +1189,7 @@ const bigTent = (
         ceilingCollapseParticleVariations: 3,
         wallsToDestroy: 1,
         destroyOnCeilingCollapse: ["pole", `tent_wall_big_${id}`, "tent_window"],
-        obstacles: [
+        obstacles: IS_CLIENT ? undefined : [
             { idString: "pole", position: Vec(3.42, -5.76) },
             { idString: "pole", position: Vec(-3.42, 5.76) },
             { idString: `tent_wall_big_${id}`, position: Vec(0, -10.5), rotation: 2 },
@@ -1289,7 +1295,7 @@ const tugboat = (color: string, mainLoot: string): BuildingDefinition => ({
         { type: FloorNames.Metal, hitbox: RectangleHitbox.fromRect(9.7, 10, Vec(71, -23.7)) },
         { type: FloorNames.Metal, hitbox: RectangleHitbox.fromRect(10, 8.7, Vec(89.9, -46)) }
     ],
-    obstacles: [
+    obstacles: IS_CLIENT ? undefined : [
         { idString: "tire", position: Vec(111.28, 5.18), rotation: 0, outdoors: true },
         { idString: "tire", position: Vec(111.4, 14.57), rotation: 0, outdoors: true },
         { idString: "tire", position: Vec(111.4, 24.17), rotation: 0, outdoors: true },
@@ -1390,7 +1396,7 @@ const blueHouse = (idString: string, subBuildings: BuildingDefinition["subBuildi
             )
         }
     ],
-    obstacles: [
+    obstacles: IS_CLIENT ? undefined : [
         // windows
         { idString: "window", position: Vec(-34.7, 7.2), rotation: 0 },
         { idString: "window", position: Vec(34.7, -2.6), rotation: 0 },
@@ -1497,7 +1503,7 @@ const shed = (num: number, ceilingTint: number): BuildingDefinition => ({
             )
         }
     ],
-    obstacles: [
+    obstacles: IS_CLIENT ? undefined : [
         { idString: "door", position: Vec(3.95, 12.15), rotation: 0 },
         { idString: "window", position: Vec(9.45, -2.6), rotation: 0 },
         { idString: "bookshelf", position: Vec(-7.75, 4.9), rotation: 1 },
@@ -1558,7 +1564,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 hitbox: RectangleHitbox.fromRect(9.8, 3.5, Vec(1.5, 10.6))
             }
         ],
-        obstacles: [
+        obstacles: IS_CLIENT ? undefined : [
             {
                 idString: {
                     porta_potty_toilet_open: 0.7,
@@ -1625,7 +1631,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 hitbox: RectangleHitbox.fromRect(10, 4.7, Vec(0, 10.07))
             }
         ],
-        obstacles: [
+        obstacles: IS_CLIENT ? undefined : [
             { idString: randomToilet, position: Vec(0, -6), rotation: 0 },
             { idString: "outhouse_back_wall", position: Vec(0, -11.55), rotation: 0 },
             { idString: "outhouse_toilet_paper_wall", position: Vec(-5.58, -2.83), rotation: 0 },
@@ -1690,7 +1696,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 hitbox: RectangleHitbox.fromRect(65, 48, Vec(0, 0))
             }
         ],
-        obstacles: [
+        obstacles: IS_CLIENT ? undefined : [
             { idString: randomBarrel, position: Vec(-27, 18) },
             { idString: randomBarrel, position: Vec(27, -18) },
             { idString: "window", position: Vec(32.4, 0), rotation: 2 },
@@ -1766,7 +1772,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 hitbox: RectangleHitbox.fromRect(65, 48, Vec(0, 0))
             }
         ],
-        obstacles: [
+        obstacles: IS_CLIENT ? undefined : [
             { idString: randomBarrel, position: Vec(-27, 18) },
             { idString: randomBarrel, position: Vec(27, -18) },
             { idString: "window", position: Vec(32.4, 0), rotation: 2 },
@@ -1942,11 +1948,11 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             type: FloorNames.Stone,
             hitbox: RectangleHitbox.fromRect(54.04, 105.96)
         }],
-        obstacles: [
+        obstacles: IS_CLIENT ? undefined : [
             { idString: warehouseObstacle, position: Vec(-19.39, -36.48) },
             { idString: warehouseObstacle, position: Vec(-19.39, 36.48) }
         ],
-        subBuildings: [{
+        subBuildings: IS_CLIENT ? undefined : [{
             idString: {
                 warehouse_layout_1: 1,
                 warehouse_layout_2: 1,
@@ -1994,11 +2000,11 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             type: FloorNames.Stone,
             hitbox: RectangleHitbox.fromRect(54.04, 105.96)
         }],
-        obstacles: [
+        obstacles: IS_CLIENT ? undefined : [
             { idString: warehouseObstacle, position: Vec(-19.39, -36.48) },
             { idString: warehouseObstacle, position: Vec(-19.39, 36.48) }
         ],
-        subBuildings: [{
+        subBuildings: IS_CLIENT ? undefined : [{
             idString: {
                 warehouse_layout_1: 1,
                 warehouse_layout_2: 1,
@@ -2043,7 +2049,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             scale: Vec(2, 2),
             damaged: "large_warehouse_ceiling_damaged"
         }],
-        obstacles: [{
+        obstacles: IS_CLIENT ? undefined : [{
             idString: "large_warehouse_wall",
             position: Vec(-16.45, -59.67),
             rotation: 0
@@ -2189,7 +2195,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 hitbox: RectangleHitbox.fromRect(176, 123, Vec(35, 21.50))
             }
         ],
-        obstacles: [
+        obstacles: IS_CLIENT ? undefined : [
             //
             // Inner room obstacles
             //
@@ -2407,7 +2413,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "inner_concrete_wall_1", position: Vec(-15, 76.65), rotation: 1 },
             { idString: "inner_concrete_wall_1", position: Vec(-15, 65.95), rotation: 1 }
         ] as BuildingObstacle[],
-        subBuildings: [
+        subBuildings: IS_CLIENT ? undefined : [
             {
                 idString: "porta_potty",
                 position: Vec(59.75, -27.6)
@@ -2465,7 +2471,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 hitbox: RectangleHitbox.fromRect(10.10, -4.70, Vec(-14.45, 31.75))
             }
         ],
-        obstacles: [
+        obstacles: IS_CLIENT ? undefined : [
 
             // -----------------------------------------------------------------------
             // TEMP: Remove if halloween ends.
@@ -2658,7 +2664,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 hitbox: RectangleHitbox.fromRect(10.10, -4.70, Vec(7.15, 31.75))
             }
         ],
-        obstacles: [
+        obstacles: IS_CLIENT ? undefined : [
 
             // -----------------------------------------------------------------------
             // TEMP: Remove if halloween ends.
@@ -2775,7 +2781,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 hitbox: RectangleHitbox.fromRect(10.3, 5, Vec(-35.7, 30.2))
             }
         ],
-        obstacles: [
+        obstacles: IS_CLIENT ? undefined : [
 
             // -----------------------------------------------------------------------
             // TEMP: Remove if halloween ends.
@@ -2973,7 +2979,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 position: Vec(15.25, 10.35)
             }
         ],
-        obstacles: [
+        obstacles: IS_CLIENT ? undefined : [
             { idString: "metal_door", position: Vec(9.8, -23.8), rotation: 3 },
             { idString: randomBarrel, position: Vec(4.61, 23.69) },
             { idString: "ammo_crate", position: Vec(-4.66, 22.71) },
@@ -3005,7 +3011,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 rotation: 2
             }
         ],
-        subBuildings: [{ idString: "blue_house_basement_ceiling", position: Vec(0, 0) }]
+        subBuildings: IS_CLIENT ? undefined : [{ idString: "blue_house_basement_ceiling", position: Vec(0, 0) }]
     },
     {
         idString: "blue_house_basement_ceiling",
@@ -3110,7 +3116,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         ceilingCollapseParticle: "hay_shed_ceiling_particle",
         ceilingCollapseParticleVariations: 2,
         wallsToDestroy: 2,
-        obstacles: [
+        obstacles: IS_CLIENT ? undefined : [
             { idString: "pole", position: Vec(14.04, -11.53) },
             { idString: "pole", position: Vec(-16.68, -11.55) },
             { idString: "pole", position: Vec(-16.52, 10.83) },
@@ -3157,7 +3163,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 )
             }
         ],
-        obstacles: [
+        obstacles: IS_CLIENT ? undefined : [
             { idString: "window2", position: Vec(23.65, -7.59), rotation: 0 },
             { idString: "desk_right", position: Vec(16.37, -2.1), rotation: 3 },
             { idString: "grey_office_chair", position: Vec(11.72, -5.76), rotation: 1 },
@@ -3202,12 +3208,12 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 hitbox: RectangleHitbox.fromRect(20, 20, Vec(0.36, -2.18))
             }
         ],
-        subBuildings: [{
+        subBuildings: IS_CLIENT ? undefined : [{
             idString: randomPallet,
             position: Vec(6.5, 9.05),
             orientation: 1
         }],
-        obstacles: [
+        obstacles: IS_CLIENT ? undefined : [
             { idString: "door", position: Vec(8.16, 9.3), rotation: 2 },
             { idString: "regular_crate", position: Vec(-8.94, 3.12) },
             { idString: "gun_case", position: Vec(-10.81, -6.67), rotation: 1 }
@@ -3317,7 +3323,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 )
             }
         ],
-        obstacles: [
+        obstacles: IS_CLIENT ? undefined : [
             { idString: "port_main_office_wall_1", position: Vec(-2.11, 12.26), rotation: 0 },
             { idString: "port_main_office_wall_2", position: Vec(-25.31, 12.26), rotation: 0 },
             { idString: "port_main_office_wall_3", position: Vec(-18.96, -18.13), rotation: 0 },
@@ -3392,7 +3398,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { key: "barrier_floor", position: Vec(0, -183.1) },
             { key: "barrier_floor", position: Vec(81.8, 54.9), rotation: Math.PI / 2 }
         ],
-        obstacles: [
+        obstacles: IS_CLIENT ? undefined : [
 
             // ------------------------------------------------------------------------------------------
             // Right Side: Bottom Right
@@ -3799,7 +3805,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "bollard", position: Vec(141.8, 185.44), rotation: 3 },
             { idString: "bollard", position: Vec(199.25, 185.47), rotation: 3 }
         ],
-        subBuildings: [
+        subBuildings: IS_CLIENT ? undefined : [
             { idString: "cargo_ship", position: Vec(0, 45.5) },
             { idString: "port_warehouse", position: Vec(-176.5, 98.75) },
 
@@ -4132,7 +4138,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             position: Vec(0, 0),
             scale: Vec(2, 2)
         }],
-        obstacles: [
+        obstacles: IS_CLIENT ? undefined : [
             { idString: "gun_case", position: Vec(-8.84, -20.65), rotation: 1 },
             { idString: "lamp", position: Vec(4.52, 6.59), rotation: 0, variation: 0 },
             { idString: "melee_crate", position: Vec(8.41, 4.07) },
@@ -4186,7 +4192,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             maxRange: 150,
             falloff: 1
         },
-        obstacles: [
+        obstacles: IS_CLIENT ? undefined : [
             { idString: "melee_crate", position: Vec(8.39, 22.26) },
             { idString: "gun_case", position: Vec(9.12, 13.39), rotation: 3 },
             { idString: "lamp", position: Vec(10.73, -2), rotation: 1, variation: 0 },
@@ -4220,7 +4226,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             maxRange: 50,
             falloff: 5
         },
-        obstacles: [
+        obstacles: IS_CLIENT ? undefined : [
             {
                 idString: "generator",
                 position: Vec(-2.01, 34.23),
@@ -4243,7 +4249,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 layer: 0
             }
         ],
-        subBuildings: [
+        subBuildings: IS_CLIENT ? undefined : [
             { idString: "cargo_ship_top_floor", position: Vec(-0.55, -6), layer: Layer.Upstairs },
             { idString: "cargo_ship_bottom_floor", position: Vec(1.8, 0) }
         ]
@@ -4469,7 +4475,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 alpha: 0.5
             }
         ],
-        obstacles: [
+        obstacles: IS_CLIENT ? undefined : [
             { idString: "forklift", position: Vec(49.66, 19.32), rotation: 3 },
             { idString: "pallet", position: Vec(38.32, 19.18), rotation: 1 },
             { idString: randomSmallStove, position: Vec(38.32, 19.18), rotation: 0 },
@@ -4572,7 +4578,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "lamp", position: Vec(-50.92, 118.9), rotation: 3, variation: 0 },
             { idString: "lamp", position: Vec(-50.67, -83.62), rotation: 3, variation: 0 }
         ],
-        subBuildings: [
+        subBuildings: IS_CLIENT ? undefined : [
             { idString: "mutated_forklift", position: Vec(-0.47, -76.52), orientation: 3 },
             { idString: randomPortDamagedContainerReversed, position: Vec(-101.24, 0.44), orientation: 2 },
 
@@ -4784,7 +4790,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 )
             }
         ],
-        obstacles: [
+        obstacles: IS_CLIENT ? undefined : [
             { idString: "cargo_ship_top_stair", position: Vec(64, -119.14), rotation: 0, layer: Layer.ToBasement },
             { idString: "cargo_ship_top_stair", position: Vec(-64, 21.67), rotation: 2, layer: Layer.ToBasement },
             { idString: "cargo_ship_top_stair", position: Vec(-64, 121.57), rotation: 2, layer: Layer.ToBasement },
@@ -4899,7 +4905,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "kitchen_unit_2", position: Vec(46.37, 145.11), rotation: 3 },
             { idString: "kitchen_unit_3", position: Vec(45.91, 152.89), rotation: 3 }
         ],
-        subBuildings: [
+        subBuildings: IS_CLIENT ? undefined : [
             { idString: "cargo_ship_top_floor_control_room_ceiling", position: Vec(0, 159.5) },
 
             // ----------------------------------
@@ -4998,7 +5004,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             type: FloorNames.Wood,
             hitbox: RectangleHitbox.fromRect(50, 84)
         }],
-        obstacles: [
+        obstacles: IS_CLIENT ? undefined : [
             { idString: "door", position: Vec(2.7, -41.3), rotation: 2 },
             { idString: "fridge", position: Vec(-19.8, -35.5), rotation: 1 },
             { idString: randomStove, position: Vec(-19.8, -26.1), rotation: 1 },
@@ -5060,7 +5066,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             type: FloorNames.Wood,
             hitbox: RectangleHitbox.fromRect(31, 44, Vec(1.5, 0))
         }],
-        obstacles: [
+        obstacles: IS_CLIENT ? undefined : [
             { idString: "door", position: Vec(-13.9, -12.43), rotation: 1 },
             { idString: "cabinet", position: Vec(12.45, -11.6), rotation: 3 },
             { idString: "small_table", position: Vec(8.85, 1.6), rotation: 1, variation: 0 },
@@ -5119,11 +5125,11 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             type: FloorNames.Wood,
             hitbox: RectangleHitbox.fromRect(72, 38, Vec(0, -2))
         }],
-        subBuildings: [{
+        subBuildings: IS_CLIENT ? undefined : [{
             idString: "armory_inner_vault",
             position: Vec(-25, -2.25)
         }],
-        obstacles: [
+        obstacles: IS_CLIENT ? undefined : [
             { idString: "door", position: Vec(3.8, 16.5), rotation: 0 },
             { idString: "window", position: Vec(18.1, 16.5), rotation: 1 },
             { idString: "gun_case", position: Vec(31.9, 10), rotation: 3 },
@@ -5177,7 +5183,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         defType: DefinitionType.Building,
         spawnHitbox: RectangleHitbox.fromRect(160, 176),
         spawnMode: MapObjectSpawnMode.GrassAndSand,
-        subBuildings: [
+        subBuildings: IS_CLIENT ? undefined : [
             { idString: "armory_barracks", position: Vec(-41.31, 27.86) },
             { idString: "armory_center", position: Vec(55.4, 15.07) },
             { idString: "armory_vault", position: Vec(-35.03, -58.37) },
@@ -5288,7 +5294,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 Vec(5.54, -41.2)
             ])
         }],
-        obstacles: [
+        obstacles: IS_CLIENT ? undefined : [
             { idString: "regular_crate", position: Vec(63.13, -15.17), outdoors: true },
             { idString: "regular_crate", position: Vec(-7.99, 2.28), outdoors: true },
             { idString: "regular_crate", position: Vec(7.06, 30.07), outdoors: true },
@@ -5432,7 +5438,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             }
         ],
         wallsToDestroy: 2,
-        obstacles: [
+        obstacles: IS_CLIENT ? undefined : [
             { idString: "small_drawer", position: Vec(8.5, -5.5), rotation: 0 },
             { idString: "sink", position: Vec(-16.8, -4.6), rotation: 1 },
             { idString: randomSmallStove, position: Vec(-16.8, 3.9), rotation: 1 },
@@ -5586,7 +5592,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 hitbox: RectangleHitbox.fromRect(10.37, 4.91, Vec(-0.47, 41.23))
             }
         ],
-        obstacles: [
+        obstacles: IS_CLIENT ? undefined : [
             { idString: "window", position: Vec(20.47, 11.8), rotation: 0 },
             { idString: "door", position: Vec(-0.02, 38), rotation: 0 },
             { idString: "small_stove", position: Vec(15.64, 33.27), rotation: 3 },
@@ -5611,7 +5617,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "propane_tank", position: Vec(20.43, 40.97) },
             { idString: "propane_tank", position: Vec(20.43, 45.02) }
         ],
-        subBuildings: [
+        subBuildings: IS_CLIENT ? undefined : [
             { idString: "lighthouse_lighting", position: Vec(0, -36.2) }
         ],
         lootSpawners: [
@@ -5634,7 +5640,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             scale: Vec(2, 2),
             hideOnDead: true
         }],
-        obstacles: [
+        obstacles: IS_CLIENT ? undefined : [
             { idString: "lighthouse_wall_2", position: Vec(0.25, 4.7), rotation: 0 },
             { idString: "lighthouse_stairs", position: Vec(0.25, 7.8), rotation: 0 }
         ]
@@ -5755,7 +5761,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         floors: [
             { type: FloorNames.Stone, hitbox: RectangleHitbox.fromRect(45, 210, Vec(0, 0)) }
         ],
-        obstacles: [
+        obstacles: IS_CLIENT ? undefined : [
             // North End of Bridge
             { idString: "barrel", position: Vec(-17.5, -80), rotation: 0, outdoors: true },
 
@@ -5793,7 +5799,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
 
             { idString: "grenade_crate", position: Vec(-27.5, 85.5), outdoors: true }
         ],
-        subBuildings: [
+        subBuildings: IS_CLIENT ? undefined : [
             // North West Shed
             { idString: "shed_1", position: Vec(-36, -95) },
             { idString: "shed_1", position: Vec(-36, -95), orientation: 2 }
@@ -5830,7 +5836,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         floors: [
             { type: FloorNames.Sand, hitbox: RectangleHitbox.fromRect(65, 65, Vec(0, 0)) }
         ],
-        obstacles: [
+        obstacles: IS_CLIENT ? undefined : [
             { idString: "bunker_entrance", position: Vec(-10, -16), rotation: 0 },
 
             { idString: "sandbags", position: Vec(18.42, -27.15), rotation: 0, outdoors: true },
@@ -5873,7 +5879,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         name: "Detector",
         defType: DefinitionType.Building,
         spawnHitbox: RectangleHitbox.fromRect(9, 3, Vec(0, 1)),
-        obstacles: [
+        obstacles: IS_CLIENT ? undefined : [
             { idString: "detector_walls", position: Vec(0, 0), rotation: 0 },
             { idString: "detector_top", position: Vec(0, 0.5), rotation: 0 }
         ]
@@ -6064,7 +6070,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             layer: 2,
             allow: [0]
         }],
-        obstacles: [
+        obstacles: IS_CLIENT ? undefined : [
             { idString: "headquarters_bottom_entrance", position: Vec(1, 2), rotation: 0 },
             { idString: "headquarters_main_desk", position: Vec(-10.7, -49.5), rotation: 0 },
             { idString: "headquarters_cafeteria_table", position: Vec(45, -82), rotation: 0 },
@@ -6201,7 +6207,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "box", position: Vec(-51, -14) }
 
         ] as BuildingObstacle[],
-        subBuildings: [
+        subBuildings: IS_CLIENT ? undefined : [
             { idString: "headquarters_second_floor", position: Vec(5.6, -0.6), layer: Layer.Upstairs },
             { idString: "headquarters_vault", position: Vec(-58.8, -9.4) },
             { idString: "detector", position: Vec(-35, 25.5) },
@@ -6326,7 +6332,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             maxRange: 105,
             falloff: 0.5
         },
-        obstacles: [
+        obstacles: IS_CLIENT ? undefined : [
             /*  couch parts (note by pap)
                 couch_end_right
                 couch_end_left
@@ -6421,7 +6427,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "chair", position: Vec(-45.5, 13.4), rotation: 1 }
             // ---------------------------------------------------------------------------------------------------------------
         ] as BuildingObstacle[],
-        subBuildings: [{ idString: "headquarters_secret_room", position: Vec(7.4, -94.5) }],
+        subBuildings: IS_CLIENT ? undefined : [{ idString: "headquarters_secret_room", position: Vec(7.4, -94.5) }],
         lootSpawners: [{
             position: Vec(16, -88),
             table: "hq_skin"
@@ -6445,7 +6451,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         floors: [
             { type: FloorNames.Metal, hitbox: RectangleHitbox.fromRect(10, 18, Vec(0, 0)) }
         ],
-        obstacles: [
+        obstacles: IS_CLIENT ? undefined : [
             { idString: "bunker_stair", position: Vec(0, 2.6), rotation: 0 }
         ]
     },
@@ -6490,7 +6496,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 layer: Layer.ToBasement
             }
         ],
-        obstacles: [
+        obstacles: IS_CLIENT ? undefined : [
             { idString: "small_desk", position: Vec(-12.9, 13.9), rotation: 0 },
             { idString: "metal_door", position: Vec(0.25, 18.3), rotation: 0 },
             { idString: "control_panel2", position: Vec(-14.5, -12.6), rotation: 0 },
@@ -6530,14 +6536,14 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         spawnHitbox: RectangleHitbox.fromRect(53, 53, Vec(0, 20)),
         bunkerSpawnHitbox: RectangleHitbox.fromRect(55, 55),
         ceilingHitbox: RectangleHitbox.fromRect(10, 15, Vec(0, 20)),
-        obstacles: [
+        obstacles: IS_CLIENT ? undefined : [
             { idString: randomTree, position: Vec(7.5, 9.8) },
             { idString: randomTree, position: Vec(10, 23) },
             { idString: randomTree, position: Vec(-10, 16) },
             { idString: randomTree, position: Vec(-5, 37) }
         ],
         bulletMask: RectangleHitbox.fromRect(11, 30, Vec(0, 30)),
-        subBuildings: [
+        subBuildings: IS_CLIENT ? undefined : [
             { idString: "small_bunker_main", position: Vec(0, -5), layer: Layer.Basement },
             { idString: "small_bunker_entrance", position: Vec(0, 20), layer: Layer.ToBasement }
         ]
@@ -6716,7 +6722,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 layer: 1
             }
         ],
-        obstacles: [
+        obstacles: IS_CLIENT ? undefined : [
 
             // -----------------------------------------------------------------------
             // TEMP: Remove if halloween ends.
@@ -6794,7 +6800,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "grenade_box", position: Vec(-37.47, 13.07), layer: Layer.Upstairs },
             { idString: "bookshelf", position: Vec(-46.82, 13.36), rotation: 0, layer: Layer.Upstairs, lootSpawnOffset: Vec(0, -1) }
         ],
-        subBuildings: [
+        subBuildings: IS_CLIENT ? undefined : [
             { idString: "barn_top_floor_shadow", position: Vec(-24.5, -11.7) },
             { idString: "barn_top_floor", position: Vec(-23.9, -11.85), layer: Layer.Upstairs },
             { idString: "barn_exterior", position: Vec(0, 0) },
@@ -6864,7 +6870,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             type: FloorNames.Wood,
             hitbox: RectangleHitbox.fromRect(50, 84)
         }],
-        obstacles: [
+        obstacles: IS_CLIENT ? undefined : [
             { idString: "fridge", position: Vec(-19.8, -35.5), rotation: 1 },
             { idString: randomStove, position: Vec(-19.8, -26.1), rotation: 1 },
             { idString: "bunk_bed", position: Vec(18, -31.25), rotation: 0 },
@@ -6952,7 +6958,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             type: FloorNames.Wood,
             hitbox: RectangleHitbox.fromRect(31, 44, Vec(1.5, 0))
         }],
-        obstacles: [
+        obstacles: IS_CLIENT ? undefined : [
             { idString: "chair", position: Vec(10.1, 6), rotation: 0 },
             { idString: "gun_mount_maul", position: Vec(2, 19.05), rotation: 2 },
             { idString: "trash_can", position: Vec(12, 17.5) },
@@ -7036,11 +7042,11 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             type: FloorNames.Wood,
             hitbox: RectangleHitbox.fromRect(72, 38, Vec(0, -2))
         }],
-        subBuildings: [{
+        subBuildings: IS_CLIENT ? undefined : [{
             idString: "armory_inner_vault",
             position: Vec(-25, -2.25)
         }],
-        obstacles: [
+        obstacles: IS_CLIENT ? undefined : [
             { idString: "gun_case", position: Vec(31.9, 10), rotation: 3 },
             { idString: "ammo_crate", position: Vec(29.5, -0.45), rotation: 0 },
             { idString: "tear_gas_crate", position: Vec(21.2, -0.45), rotation: 1 },
@@ -7072,7 +7078,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         defType: DefinitionType.Building,
         spawnHitbox: RectangleHitbox.fromRect(160, 176),
         spawnMode: MapObjectSpawnMode.GrassAndSand,
-        subBuildings: [
+        subBuildings: IS_CLIENT ? undefined : [
             { idString: "bombed_armory_barracks", position: Vec(-41.31, 27.86) },
             { idString: "bombed_armory_center", position: Vec(55.4, 15.07) },
             { idString: "bombed_armory_vault", position: Vec(-35.03, -58.37) },
@@ -7205,7 +7211,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { key: "regular_crate_residue", position: Vec(7.06, 30.07), zIndex: ZIndexes.Decals },
             { key: "large_refinery_barrel_residue", position: Vec(-5.81, 5.18), scale: Vec(0.8, 0.8), zIndex: ZIndexes.Decals }
         ],
-        obstacles: [
+        obstacles: IS_CLIENT ? undefined : [
             { idString: "roadblock", position: Vec(-44.18, -59.93), rotation: 0 },
             { idString: "roadblock", position: Vec(-59.26, -19.45), rotation: 1 },
             { idString: "roadblock", position: Vec(-46.35, -30.64), rotation: 0 },
@@ -7436,10 +7442,10 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 position: Vec(0, 29.9)
             }
         ],
-        subBuildings: [
+        subBuildings: IS_CLIENT ? undefined : [
             { idString: "lodge_second_floor", position: Vec(0, 0), layer: Layer.Upstairs }
         ],
-        obstacles: [
+        obstacles: IS_CLIENT ? undefined : [
             //
             // windows & doors (placed clockwise)
             //
@@ -7634,10 +7640,10 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             }
         ],
         ceilingZIndex: ZIndexes.BuildingsCeiling + 1,
-        subBuildings: [
+        subBuildings: IS_CLIENT ? undefined : [
             { idString: "lodge_secret_room", position: Vec(-2.7, -48) }
         ],
-        obstacles: [
+        obstacles: IS_CLIENT ? undefined : [
             // near stairs
             { idString: "small_drawer", position: Vec(-43.29, 0.37), rotation: 1 },
             { idString: "door", position: Vec(-26.44, 2.24), rotation: 3 },
@@ -7777,7 +7783,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { key: "plumpkin_bunker_entrance_ceiling", position: Vec(146.55, -32.85), rotation: Math.PI },
             { key: "plumpkin_bunker_entrance_ceiling", position: Vec(-145.11, -52.85), rotation: Math.PI / 2 }
         ],
-        obstacles: [
+        obstacles: IS_CLIENT ? undefined : [
             { idString: "plumpkin_bunker_stair", position: Vec(0.39, 121.67), rotation: 0, layer: Layer.ToBasement },
             { idString: "plumpkin_bunker_stair", position: Vec(146.52, -33.84), rotation: 1, layer: Layer.ToBasement },
             { idString: "plumpkin_bunker_stair", position: Vec(-146.1, -52.88), rotation: 2, layer: Layer.ToBasement },
@@ -7839,7 +7845,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             // { idString: "jack_o_lantern", position: Vec(43.69, 84.06) },
             // { idString: "jack_o_lantern", position: Vec(43.69, 106.7) }
         ],
-        subBuildings: [
+        subBuildings: IS_CLIENT ? undefined : [
             { idString: "hay_shed_4", position: Vec(40.03, 146.55), orientation: 1 },
             { idString: "plumpkin_bunker_main", position: Vec(0, 0), layer: Layer.Basement }
         ]
@@ -8028,7 +8034,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         lootSpawners: [
             { table: "plumpkin_bunker_skin", position: Vec(-49.23, -110.21) }
         ],
-        obstacles: [
+        obstacles: IS_CLIENT ? undefined : [
             // security office
             { idString: "blue_metal_auto_door", position: Vec(-33.27, 122.05), rotation: 3 },
             { idString: "blue_metal_auto_door", position: Vec(-135.45, 75.18), rotation: 2 },
@@ -8270,7 +8276,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "ammo_crate", position: Vec(134.15, -20.66) },
             { idString: "melee_crate", position: Vec(17.17, -21.35) }
         ],
-        subBuildings: [
+        subBuildings: IS_CLIENT ? undefined : [
             { idString: "detector", position: Vec(13.82, -100.67), orientation: 2 },
             { idString: "detector", position: Vec(27.24, -100.67), orientation: 2 },
             { idString: "plumpkin_bunker_second_puzzle", position: Vec(0, 0) },
@@ -8302,7 +8308,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             triggerOnSolve: "red_metal_auto_door",
             delay: 1000
         },
-        obstacles: [
+        obstacles: IS_CLIENT ? undefined : [
             { idString: "red_metal_auto_door", position: Vec(-78.35, -63.04), rotation: 3 },
             { idString: "red_metal_auto_door", position: Vec(52.68, -82.25), rotation: 3 },
             { idString: "red_metal_auto_door", position: Vec(12.34, -33.03), rotation: 3 },
@@ -8325,7 +8331,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             triggerOnSolve: "recorder",
             delay: 2000
         },
-        obstacles: [
+        obstacles: IS_CLIENT ? undefined : [
             { idString: "generator", position: Vec(78.21, -32.55), rotation: 0, puzzlePiece: true },
             { idString: "recorder", position: Vec(40.55, -32.63), rotation: 1 }
         ]
@@ -8347,7 +8353,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         name: "Christmas Camp",
         defType: DefinitionType.Building,
         spawnHitbox: RectangleHitbox.fromRect(150, 75, Vec(0, -1)),
-        obstacles: [
+        obstacles: IS_CLIENT ? undefined : [
             { idString: "christmas_tree", position: Vec(0, 0) },
             { idString: "ice_pick_case", position: Vec(65.8, 24.41), rotation: 3 },
             { idString: "regular_crate", position: Vec(64.3, -10.79), outdoors: true },
@@ -8397,7 +8403,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 ]
             ])
         ],
-        subBuildings: [
+        subBuildings: IS_CLIENT ? undefined : [
             { idString: "shed_1", position: Vec(22, -55), orientation: 3 },
             {
                 idString: {
@@ -8511,7 +8517,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             type: FloorNames.Metal,
             hitbox: RectangleHitbox.fromRect(11, 15, Vec(0, 0.8))
         }],
-        obstacles: [
+        obstacles: IS_CLIENT ? undefined : [
             { idString: "memorial_bunker_stair", position: Vec(0, 2.5), rotation: 0, layer: Layer.ToBasement }
         ]
     },
@@ -8551,7 +8557,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 layer: Layer.ToBasement
             }
         ],
-        obstacles: [{
+        obstacles: IS_CLIENT ? undefined : [{
             idString: "memorial_crate",
             position: Vec(0, -9)
         }]
@@ -8586,10 +8592,10 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             key: "memorial_bunker_entrance_ceiling",
             position: Vec(0, -3.4)
         }],
-        obstacles: [
+        obstacles: IS_CLIENT ? undefined : [
             { idString: "monument", position: Vec(0, 0), rotation: 3 }
         ],
-        subBuildings: [
+        subBuildings: IS_CLIENT ? undefined : [
             { idString: "memorial_bunker_entrance", position: Vec(0, 0) },
             { idString: "memorial_bunker_main", position: Vec(0, -8.5), layer: Layer.Basement }
         ]
@@ -8653,7 +8659,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 position: Vec(0, -9.5)
             }
         ],
-        obstacles: [
+        obstacles: IS_CLIENT ? undefined : [
             { idString: "truck_tire", position: Vec(-3.64, 6.92), rotation: 0 },
             { idString: "truck_tire", position: Vec(3.64, 6.92), rotation: 0 },
             { idString: "truck_tire", position: Vec(-3.64, -7.15), rotation: 0 },
@@ -8741,7 +8747,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             }
         ],
 
-        obstacles: [
+        obstacles: IS_CLIENT ? undefined : [
             { idString: "truck_front", position: Vec(0.1, -25.49), rotation: 0 },
             { idString: "truck_tire", position: Vec(7.26, -15.08), rotation: 0 },
             { idString: "truck_tire", position: Vec(7.26, 4.32), rotation: 0 },
@@ -8753,7 +8759,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "truck_tire", position: Vec(-7.26, 32.82), rotation: 0 }
         ],
 
-        subBuildings: [
+        subBuildings: IS_CLIENT ? undefined : [
             { idString: "blue_stair", position: Vec(23.33, 12.89), orientation: 3 },
             { idString: randomPortDamagedContainer, position: Vec(0, -23), orientation: 2 },
             { idString: randomPortDamagedContainer, position: Vec(0, -5.1) }
@@ -8869,7 +8875,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         defType: DefinitionType.Building,
         spawnMode: MapObjectSpawnMode.Beach,
         spawnHitbox: RectangleHitbox.fromRect(70, 110, Vec(50, 0)),
-        obstacles: [{
+        obstacles: IS_CLIENT ? undefined : [{
             idString: "buoy",
             get position() { return Vec(random(50, 100), 0); }
         }]
@@ -9865,7 +9871,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 )
             }
         ],
-        obstacles: [
+        obstacles: IS_CLIENT ? undefined : [
             { idString: "campsite_case", position: Vec(61.56, -48.94), rotation: 0 },
 
             { idString: "pebble", position: Vec(-5.9, -3.68) },
@@ -9981,7 +9987,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "small_logs_pile", position: Vec(-16.28, 99.83), rotation: 0 },
             { idString: "small_logs_pile", position: Vec(97.4, -80.86), rotation: 0 }
         ],
-        subBuildings: [
+        subBuildings: IS_CLIENT ? undefined : [
             { idString: randomTent, position: Vec(102.18, -95.33) },
             { idString: randomBigTent, position: Vec(-18, 24.5), orientation: 1 },
             { idString: randomTent, position: Vec(61.28, 25.97), orientation: 1 },
@@ -10096,7 +10102,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 scale: Vec(2, 2)
             }
         ],
-        obstacles: [
+        obstacles: IS_CLIENT ? undefined : [
             { idString: "oak_tree", position: Vec(-34.95, 95.26) },
             { idString: "oak_tree", position: Vec(-39.54, -93.9) },
             { idString: "oak_tree", position: Vec(2.65, -105.9) },
@@ -10125,7 +10131,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "stump", position: Vec(-18.25, -98.24) },
             { idString: "stump", position: Vec(-16.86, 99) }
         ],
-        subBuildings: [
+        subBuildings: IS_CLIENT ? undefined : [
             { idString: randomHayShed, position: Vec(9.77, 87) }
         ]
     },
@@ -10153,7 +10159,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { key: "fulcrum_bunker_entrance", position: Vec(-30.2, -38), rotation: Math.PI },
             { key: "fulcrum_bunker_entrance", position: Vec(-9.81, 44.9) }
         ],
-        obstacles: [
+        obstacles: IS_CLIENT ? undefined : [
             { idString: "fulcrum_bunker_collider_hack", position: Vec(0, 0), rotation: 0 },
 
             // Upper entrance
@@ -10176,7 +10182,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "bush", position: Vec(-5.24, 55.57) },
             { idString: "fulcrum_bunker_stair", position: Vec(-9.81, 45.95), rotation: 2, layer: Layer.ToBasement }
         ],
-        subBuildings: [
+        subBuildings: IS_CLIENT ? undefined : [
             { idString: "shed_2", position: Vec(0, 0) },
             { idString: "fulcrum_bunker_main", position: Vec(0, 0), layer: Layer.Basement }
         ]
@@ -10269,7 +10275,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             delay: 1000,
             unlockOnly: true
         },
-        obstacles: [
+        obstacles: IS_CLIENT ? undefined : [
             // TV/living area
             { idString: "bookshelf", position: Vec(-64.7, 0.33), rotation: 1, lootSpawnOffset: Vec(2, 0) },
             { idString: "bookshelf", position: Vec(-64.7, 13.15), rotation: 1, lootSpawnOffset: Vec(2, 0) },
@@ -10346,7 +10352,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "small_drawer", position: Vec(45.2, -35.82), rotation: 3 },
             { idString: "bed", position: Vec(40.71, -45.2), rotation: 3 }
         ],
-        subBuildings: [
+        subBuildings: IS_CLIENT ? undefined : [
             { idString: randomPallet, position: Vec(36, 22) },
             { idString: randomPallet, position: Vec(-25, 61), orientation: 1 },
             { idString: randomPallet, position: Vec(41, -16) },
