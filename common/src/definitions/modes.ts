@@ -42,6 +42,7 @@ export interface ModeDefinition {
     readonly playButtonImage?: string
     readonly weaponSwap?: boolean
     readonly plumpkinGrenades?: boolean
+    readonly unlockStage?: number // Used for hunted mode bunkers
 }
 
 export const Modes: Record<ModeName, ModeDefinition> = {
@@ -125,7 +126,8 @@ export const Modes: Record<ModeName, ModeDefinition> = {
             void: "hsl(25, 80%, 6%)"
         },
         ambience: "wind_ambience",
-        spriteSheets: ["shared", "normal", "hunted"]
+        spriteSheets: ["shared", "normal", "hunted"],
+        unlockStage: 3 // do not touch
     },
     birthday: { // copy of normal
         colors: {

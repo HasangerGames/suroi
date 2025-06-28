@@ -768,7 +768,9 @@ const maps = {
             tugboat_white: 5,
             small_bunker: 1,
             warehouse: 5,
-            buoy: 12
+            buoy: 12,
+            panther_bunker: 1,
+            tiger_bunker: 1
         },
         quadBuildingLimit: {
             port: 1,
@@ -793,8 +795,7 @@ const maps = {
             // oak_tree: 10,
             loot_tree: 1,
             regular_crate: 160,
-            flint_crate: 5,
-            aegis_crate: 5,
+            nsd_crate: 10,
             grenade_crate: 35,
             rock: 150,
             river_chest: 1,

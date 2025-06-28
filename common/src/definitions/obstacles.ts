@@ -66,6 +66,7 @@ type CommonObstacleDefinition = ObjectDefinition & {
     readonly reflectBullets?: boolean
     readonly hitSoundVariations?: number
     readonly noInteractMessage?: boolean
+    readonly unlockableWithStage?: boolean
     readonly customInteractMessage?: boolean
     readonly interactOnlyFromSide?: Orientation
     readonly weaponSwap?: {
@@ -2862,6 +2863,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         doorSound: "metal_auto_door",
         indestructible: true,
         reflectBullets: true,
+        unlockableWithStage: true,
+        openOnce: true,
         health: 100,
         hitbox: RectangleHitbox.fromRect(10.5, 1.62),
         rotationMode: RotationMode.Limited,

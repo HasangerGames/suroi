@@ -148,6 +148,11 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
                 offset: 0,
                 powered: false
             };
+
+            if (this.game.mode.unlockStage !== undefined && this.definition.unlockableWithStage && this.door.locked) {
+                this.game.unlockableDoors.push(this);
+                console.log(`door added, count: ${this.game.unlockableDoors.length}`);
+            }
         }
 
         this.puzzlePiece = puzzlePiece;

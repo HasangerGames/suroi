@@ -10443,7 +10443,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
 
             { idString: "nsd_crate", position: Vec.create(30.48, -11.52) },
             { idString: "special_table_helmet", position: Vec.create(30.98, 0.51), rotation: 0 },
-            { idString: "pink_metal_auto_door", position: Vec.create(7.65, 1.55), rotation: 1 }
+            { idString: "pink_metal_auto_door", position: Vec.create(7.65, 1.55), rotation: 1, locked: true }
         ],
         subBuildings: [{
             idString: "panther_bunker_vault",
@@ -10563,8 +10563,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "small_lamp_thingy", position: Vec.create(0.09, -4.68) },
             { idString: "special_table_vest", position: Vec.create(0.19, 0.17), rotation: 1 },
 
-            { idString: "pink_metal_auto_door", position: Vec.create(-4.32, -12.01), rotation: 2 },
-            { idString: "pink_metal_auto_door", position: Vec.create(3.9, 11.67), rotation: 0 },
+            { idString: "pink_metal_auto_door", position: Vec.create(-4.32, -12.01), rotation: 2, locked: true },
+            { idString: "pink_metal_auto_door", position: Vec.create(3.9, 11.67), rotation: 0, locked: true },
 
             { idString: "fire_hatchet_case", position: Vec.create(-15.16, 30.29), rotation: 2 },
 

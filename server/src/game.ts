@@ -49,6 +49,7 @@ import { Grid } from "./utils/grid";
 import { IDAllocator } from "./utils/idAllocator";
 import { Cache, getAllLoots, getSpawnableLoots, ItemRegistry } from "./utils/lootHelpers";
 import { cleanUsername, modeFromMap } from "./utils/misc";
+import { Obstacle } from "./objects/obstacle";
 
 export class Game implements GameData {
     public readonly id: number;
@@ -125,6 +126,7 @@ export class Game implements GameData {
 
     readonly explosions: Explosion[] = [];
     readonly emotes: Emote[] = [];
+    readonly unlockableDoors: Obstacle[] = [];
 
     /**
      * All bullets that currently exist
