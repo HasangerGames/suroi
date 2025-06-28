@@ -19,20 +19,20 @@
 
     let hitboxes: HitboxJSON[] = [
         ...new GroupHitbox(
-            RectangleHitbox.fromRect(5.11, 5.14, Vec.create(11.7, -11.99)),
-            RectangleHitbox.fromRect(5.11, 5.14, Vec.create(11.7, 11.7)),
-            RectangleHitbox.fromRect(5.11, 5.14, Vec.create(-12.16, 11.64)),
-            RectangleHitbox.fromRect(5.11, 5.14, Vec.create(-12.11, -12.07)),
-            RectangleHitbox.fromRect(1.73, 20, Vec.create(-12.1, -0.12)),
-            RectangleHitbox.fromRect(1.69, 20, Vec.create(11.69, -0.13)),
-            RectangleHitbox.fromRect(1.72, 72.72, Vec.create(35.37, -0.02)),
-            RectangleHitbox.fromRect(1.72, 72.72, Vec.create(-35.4, -0.02)),
-            RectangleHitbox.fromRect(9.5, 1.71, Vec.create(5.67, -12.02)),
-            RectangleHitbox.fromRect(9.5, 1.71, Vec.create(-6, 11.65)),
-            RectangleHitbox.fromRect(70.44, 1.71, Vec.create(-0.23, -35.48)),
-            RectangleHitbox.fromRect(70.44, 1.71, Vec.create(0.19, 35.47)),
-            RectangleHitbox.fromRect(1.65, 13.38, Vec.create(26.21, -29.23)),
-            RectangleHitbox.fromRect(1.65, 13.38, Vec.create(-26.2, 29.25))
+            RectangleHitbox.fromRect(5.11, 5.14, Vec(11.7, -11.99)),
+            RectangleHitbox.fromRect(5.11, 5.14, Vec(11.7, 11.7)),
+            RectangleHitbox.fromRect(5.11, 5.14, Vec(-12.16, 11.64)),
+            RectangleHitbox.fromRect(5.11, 5.14, Vec(-12.11, -12.07)),
+            RectangleHitbox.fromRect(1.73, 20, Vec(-12.1, -0.12)),
+            RectangleHitbox.fromRect(1.69, 20, Vec(11.69, -0.13)),
+            RectangleHitbox.fromRect(1.72, 72.72, Vec(35.37, -0.02)),
+            RectangleHitbox.fromRect(1.72, 72.72, Vec(-35.4, -0.02)),
+            RectangleHitbox.fromRect(9.5, 1.71, Vec(5.67, -12.02)),
+            RectangleHitbox.fromRect(9.5, 1.71, Vec(-6, 11.65)),
+            RectangleHitbox.fromRect(70.44, 1.71, Vec(-0.23, -35.48)),
+            RectangleHitbox.fromRect(70.44, 1.71, Vec(0.19, 35.47)),
+            RectangleHitbox.fromRect(1.65, 13.38, Vec(26.21, -29.23)),
+            RectangleHitbox.fromRect(1.65, 13.38, Vec(-26.2, 29.25))
         ).toJSON().hitboxes
     ];
 
@@ -179,7 +179,7 @@
             updateSelected();
         } else if (dragging) {
             const now = Date.now();
-            if (now - lastHitboxMove < 100 || BaseHitbox.fromJSON(selected).isPointInside(Vec.create(pointerX, pointerY))) {
+            if (now - lastHitboxMove < 100 || BaseHitbox.fromJSON(selected).isPointInside(Vec(pointerX, pointerY))) {
                 lastHitboxMove = now;
                 const [dx, dy] = [
                     e.movementX / scale / PIXI_SCALE,
@@ -259,10 +259,10 @@
             if (hitbox.type === HitboxType.Rect) {
                 const width = hitbox.max.x - hitbox.min.x;
                 const height = hitbox.max.y - hitbox.min.y;
-                const center = Vec.create(hitbox.min.x + (width / 2), hitbox.min.y + (height / 2));
-                return `    RectangleHitbox.fromRect(${round(width)}, ${round(height)}, ${(width === 0 && height === 0) ? "" : `Vec.create(${round(center.x)}, ${round(center.y)})`})`;
+                const center = Vec(hitbox.min.x + (width / 2), hitbox.min.y + (height / 2));
+                return `    RectangleHitbox.fromRect(${round(width)}, ${round(height)}, ${(width === 0 && height === 0) ? "" : `Vec(${round(center.x)}, ${round(center.y)})`})`;
             } else if (hitbox.type === HitboxType.Circle) {
-                return `    new CircleHitbox(${round(hitbox.radius)}, Vec.create(${round(hitbox.position.x)}, ${round(hitbox.position.y)}))`;
+                return `    new CircleHitbox(${round(hitbox.radius)}, Vec(${round(hitbox.position.x)}, ${round(hitbox.position.y)}))`;
             }
         }).join(",\n");
         hitboxesStr += "\n)";
@@ -276,7 +276,7 @@
         updateSelected();
     }
 
-    const addRectangle = () => createHitbox(new RectangleHitbox(Vec.create(-10, -10), Vec.create(10, 10)));
+    const addRectangle = () => createHitbox(new RectangleHitbox(Vec(-10, -10), Vec(10, 10)));
     const addCircle = () => createHitbox(new CircleHitbox(5));
 
     function duplicateSelected() {

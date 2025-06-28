@@ -235,7 +235,7 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
         if (definition.sounds) {
             const { sounds } = definition;
             const soundOptions = {
-                position: Vec.add(Vec.rotate(sounds.position ?? Vec.create(0, 0), this.rotation), this.position),
+                position: Vec.add(Vec.rotate(sounds.position ?? Vec(0, 0), this.rotation), this.position),
                 layer: this.layer,
                 fallOff: sounds.falloff,
                 maxRange: sounds.maxRange,

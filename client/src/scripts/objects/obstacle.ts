@@ -305,7 +305,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
                         : this.position,
                     layer: this.layer,
                     lifetime: Infinity,
-                    speed: Vec.create(0, 0),
+                    speed: Vec(0, 0),
                     zIndex: glow.zIndex ?? this.container.zIndex - 0.5,
                     tint: glow.tint,
                     scale: glow.scale
@@ -498,20 +498,20 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
             // using the same numbering system as server-side, but with array indexes
             const sides = [
                 [
-                    Vec.create(min.x, min.y),
-                    Vec.create(max.x, min.y)
+                    Vec(min.x, min.y),
+                    Vec(max.x, min.y)
                 ],
                 [
-                    Vec.create(max.x, min.y),
-                    Vec.create(max.x, max.y)
+                    Vec(max.x, min.y),
+                    Vec(max.x, max.y)
                 ],
                 [
-                    Vec.create(max.x, max.y),
-                    Vec.create(min.x, max.y)
+                    Vec(max.x, max.y),
+                    Vec(min.x, max.y)
                 ],
                 [
-                    Vec.create(min.x, max.y),
-                    Vec.create(min.x, min.y)
+                    Vec(min.x, max.y),
+                    Vec(min.x, min.y)
                 ]
             ];
 
@@ -557,13 +557,13 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
                 const protrusion = Numeric.min(2.5, 2.5 / ratio);
 
                 DebugRenderer.addLine(
-                    Vec.create(vertexA.x - protrusion, vertexA.y - protrusion * ratio),
+                    Vec(vertexA.x - protrusion, vertexA.y - protrusion * ratio),
                     vertexA,
                     0xffff00,
                     alpha
                 ).addLine(
                     vertexB,
-                    Vec.create(vertexB.x + protrusion, vertexB.y + protrusion * ratio),
+                    Vec(vertexB.x + protrusion, vertexB.y + protrusion * ratio),
                     0xffff00,
                     alpha
                 ).addLine(

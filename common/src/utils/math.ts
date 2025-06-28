@@ -204,16 +204,16 @@ export const Geometry = Object.freeze({
             const maxX = max.x; const maxY = max.y;
             switch (orientation) {
                 case 1:
-                    min = Vec.create(maxX, minY);
-                    max = Vec.create(minX, maxY);
+                    min = Vec(maxX, minY);
+                    max = Vec(minX, maxY);
                     break;
                 case 2:
-                    min = Vec.create(maxX, maxY);
-                    max = Vec.create(minX, minY);
+                    min = Vec(maxX, maxY);
+                    max = Vec(minX, minY);
                     break;
                 case 3:
-                    min = Vec.create(minX, maxY);
-                    max = Vec.create(maxX, minY);
+                    min = Vec(minX, maxY);
+                    max = Vec(maxX, minY);
                     break;
             }
         }
@@ -455,7 +455,7 @@ export const Collision = Object.freeze({
         // to rule out the segments being parallel or collinear, and so these lines must intersect at some point. Our
         // concern is whether or not they intersect within the boundaries of the line segment ([0, 1]).
         if ((0 <= ta && ta <= 1) && (0 <= tb && tb <= 1)) {
-            return Vec.create(
+            return Vec(
                 segmentAStart.x + (ta * Sa.x),
                 segmentAStart.y + (ta * Sa.y)
             );
@@ -474,7 +474,7 @@ export const Collision = Object.freeze({
      */
     lineIntersectsCircle(s0: Vector, s1: Vector, pos: Vector, rad: number): IntersectionResponse {
         let d = Vec.sub(s1, s0);
-        const len = Numeric.max(Vec.length(d), 0.000001);
+        const len = Numeric.max(Vec.len(d), 0.000001);
         d = Vec.normalizeSafe(d);
 
         const m = Vec.sub(s0, pos);
@@ -517,7 +517,7 @@ export const Collision = Object.freeze({
         const r = s0;
 
         let d = Vec.sub(s1, s0);
-        const dist = Vec.length(d);
+        const dist = Vec.len(d);
         d = Vec.normalizeSafe(d);
 
         let absDx = Math.abs(d.x);
@@ -569,8 +569,8 @@ export const Collision = Object.freeze({
         return {
             point: p,
             normal: Vec.normalizeSafe(
-                Vec.create(Math.trunc(x), Math.trunc(y)),
-                Vec.create(1, 0)
+                Vec(Math.trunc(x), Math.trunc(y)),
+                Vec(1, 0)
             )
         };
     },
@@ -588,7 +588,7 @@ export const Collision = Object.freeze({
 
         const eps = 1e-5;
         let d = Vec.sub(s1, s0);
-        const dist = Vec.length(d);
+        const dist = Vec.len(d);
         d = Vec.normalizeSafe(d);
 
         let absDx = Math.abs(d.x);
@@ -629,7 +629,7 @@ export const Collision = Object.freeze({
     circleCircleIntersection(centerA: Vector, radiusA: number, centerB: Vector, radiusB: number): CollisionResponse {
         const r = radiusA + radiusB;
         const toP1 = Vec.sub(centerB, centerA);
-        const distSqr = Vec.squaredLength(toP1);
+        const distSqr = Vec.squaredLen(toP1);
 
         return distSqr < r * r
             ? {
@@ -652,14 +652,14 @@ export const Collision = Object.freeze({
 
             return xp > yp
                 ? {
-                    dir: Vec.create(
+                    dir: Vec(
                         p.x > 0 ? -1 : 1,
                         0
                     ),
                     pen: -xp
                 }
                 : {
-                    dir: Vec.create(
+                    dir: Vec(
                         0,
                         p.y > 0 ? -1 : 1
                     ),
@@ -668,13 +668,13 @@ export const Collision = Object.freeze({
         }
 
         const dir = Vec.sub(
-            Vec.create(
+            Vec(
                 Numeric.clamp(pos.x, min.x, max.x),
                 Numeric.clamp(pos.y, min.y, max.y)
             ),
             pos
         );
-        const dstSqr = Vec.squaredLength(dir);
+        const dstSqr = Vec.squaredLen(dir);
 
         if (dstSqr < radius * radius) {
             const dst = Math.sqrt(dstSqr);
@@ -689,7 +689,7 @@ export const Collision = Object.freeze({
     distanceToLine(p: Vector, a: Vector, b: Vector): number {
         const ab = Vec.sub(b, a);
 
-        return Vec.squaredLength(
+        return Vec.squaredLen(
             Vec.sub(
                 Vec.add(
                     a,
@@ -733,7 +733,7 @@ export const Collision = Object.freeze({
      */
     rayIntersectsLine(origin: Vector, direction: Vector, lineA: Vector, lineB: Vector): number | null {
         const segment = Vec.sub(lineB, lineA);
-        const segmentPerp = Vec.create(segment.y, -segment.x);
+        const segmentPerp = Vec(segment.y, -segment.x);
         const perpDotDir = Vec.dotProduct(direction, segmentPerp);
 
         // If lines are parallel, no intersection
@@ -741,7 +741,7 @@ export const Collision = Object.freeze({
 
         const d = Vec.sub(lineA, origin);
         const distanceAlongRay = Vec.dotProduct(segmentPerp, d) / perpDotDir;
-        const distanceAlongLine = Vec.dotProduct(Vec.create(direction.y, -direction.x), d) / perpDotDir;
+        const distanceAlongLine = Vec.dotProduct(Vec(direction.y, -direction.x), d) / perpDotDir;
 
         // If t is positive and s lies within the line it intersects; returns t
         return distanceAlongRay >= 0 && distanceAlongLine >= 0 && distanceAlongLine <= 1 ? distanceAlongRay : null;
@@ -779,11 +779,11 @@ export const Collision = Object.freeze({
         return xo > 0 && yo > 0
             ? xo > yo
                 ? {
-                    dir: Vec.create(Math.sign(n.x) || 1, 0),
+                    dir: Vec(Math.sign(n.x) || 1, 0),
                     pen: xo
                 }
                 : {
-                    dir: Vec.create(0, Math.sign(n.y) || 1),
+                    dir: Vec(0, Math.sign(n.y) || 1),
                     pen: yo
                 }
             : null;
@@ -829,7 +829,7 @@ export function calculateDoorHitboxes<
             const openHitbox = Geometry.transformRectangle(
                 Vec.addAdjust(
                     position,
-                    Vec.create(
+                    Vec(
                         (definition.hitbox.min.x - definition.hitbox.max.x) * ((definition as Slide).slideFactor ?? 1),
                         0
                     ),
@@ -848,14 +848,14 @@ export function calculateDoorHitboxes<
         case "swivel":
         default: {
             const openRectangle = Geometry.transformRectangle(
-                Vec.addAdjust(position, Vec.add((definition as Swivel).hingeOffset, Vec.create(-(definition as Swivel).hingeOffset.y, (definition as Swivel).hingeOffset.x)), rotation),
+                Vec.addAdjust(position, Vec.add((definition as Swivel).hingeOffset, Vec(-(definition as Swivel).hingeOffset.y, (definition as Swivel).hingeOffset.x)), rotation),
                 definition.hitbox.min,
                 definition.hitbox.max,
                 1,
                 Numeric.absMod(rotation + 1, 4) as Orientation
             );
             const openAltRectangle = Geometry.transformRectangle(
-                Vec.addAdjust(position, Vec.add((definition as Swivel).hingeOffset, Vec.create((definition as Swivel).hingeOffset.y, -(definition as Swivel).hingeOffset.x)), rotation),
+                Vec.addAdjust(position, Vec.add((definition as Swivel).hingeOffset, Vec((definition as Swivel).hingeOffset.y, -(definition as Swivel).hingeOffset.x)), rotation),
                 definition.hitbox.min,
                 definition.hitbox.max,
                 1,

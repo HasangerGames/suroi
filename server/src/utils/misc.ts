@@ -76,23 +76,23 @@ export function getPatterningShape(
     ] = [3, 4, 5, 6].map(makeSimpleShape);
 
     switch (spawnCount) {
-        case 1: return [Vec.create(0, 0)];
+        case 1: return [Vec(0, 0)];
         case 2: return [
-            Vec.create(0, radius),
-            Vec.create(0, -radius)
+            Vec(0, radius),
+            Vec(0, -radius)
         ];
         case 3: return makeTriangle(radius);
-        case 4: return [Vec.create(0, 0), ...makeTriangle(radius)];
-        case 5: return [Vec.create(0, 0), ...makeSquare(radius)];
-        case 6: return [Vec.create(0, 0), ...makePentagon(radius)];
-        case 7: return [Vec.create(0, 0), ...makeHexagon(radius, halfπ)];
+        case 4: return [Vec(0, 0), ...makeTriangle(radius)];
+        case 5: return [Vec(0, 0), ...makeSquare(radius)];
+        case 6: return [Vec(0, 0), ...makePentagon(radius)];
+        case 7: return [Vec(0, 0), ...makeHexagon(radius, halfπ)];
         case 8: return [
-            Vec.create(0, 0),
+            Vec(0, 0),
             ...makeTriangle(radius / 2),
             ...makeSquare(radius, halfπ)
         ];
         case 9: return [
-            Vec.create(0, 0),
+            Vec(0, 0),
             ...makeTriangle(radius / 2),
             ...makePentagon(radius)
         ];

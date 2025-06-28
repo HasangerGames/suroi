@@ -105,26 +105,26 @@ export class GameMap {
 
         this.beachHitbox = new GroupHitbox(
             new RectangleHitbox(
-                Vec.create(this.width - beachPadding, oceanSize),
-                Vec.create(this.width - oceanSize, this.height - oceanSize)
+                Vec(this.width - beachPadding, oceanSize),
+                Vec(this.width - oceanSize, this.height - oceanSize)
             ),
             new RectangleHitbox(
-                Vec.create(oceanSize, oceanSize),
-                Vec.create(this.width - beachPadding, beachPadding)
+                Vec(oceanSize, oceanSize),
+                Vec(this.width - beachPadding, beachPadding)
             ),
             new RectangleHitbox(
-                Vec.create(oceanSize, oceanSize),
-                Vec.create(beachPadding, this.height - beachPadding)
+                Vec(oceanSize, oceanSize),
+                Vec(beachPadding, this.height - beachPadding)
             ),
             new RectangleHitbox(
-                Vec.create(oceanSize, this.height - beachPadding),
-                Vec.create(this.width - beachPadding, this.height - oceanSize)
+                Vec(oceanSize, this.height - beachPadding),
+                Vec(this.width - beachPadding, this.height - oceanSize)
             )
         );
 
         this.islandHitbox = new RectangleHitbox(
-            Vec.create(oceanSize, oceanSize),
-            Vec.create(this.width - oceanSize, this.height - oceanSize)
+            Vec(oceanSize, oceanSize),
+            Vec(this.width - oceanSize, this.height - oceanSize)
         );
 
         const rivers: River[] = [];
@@ -170,7 +170,7 @@ export class GameMap {
 
         if (mapDef.places) {
             packet.places = mapDef.places.map(({ name, position }) => {
-                const absPosition = Vec.create(
+                const absPosition = Vec(
                     this.width * (position.x + randomFloat(-0.04, 0.04)),
                     this.height * (position.y + randomFloat(-0.04, 0.04))
                 );
@@ -218,14 +218,14 @@ export class GameMap {
 
         const halfWidth = this.width / 2;
         const halfHeight = this.height / 2;
-        const center = Vec.create(halfWidth, halfHeight);
+        const center = Vec(halfWidth, halfHeight);
 
         const padding = isTrail ? GameConstants.trailPadding : GameConstants.riverPadding;
         const width = this.width - padding;
         const height = this.height - padding;
         const bounds = new RectangleHitbox(
-            Vec.create(padding, padding),
-            Vec.create(width, height)
+            Vec(padding, padding),
+            Vec(width, height)
         );
 
         let i = 0;
@@ -240,11 +240,11 @@ export class GameMap {
             if (horizontal) {
                 const topHalf = randomGenerator.get(padding, halfHeight);
                 const bottomHalf = randomGenerator.get(halfHeight, height);
-                start = Vec.create(padding, reverse ? bottomHalf : topHalf);
+                start = Vec(padding, reverse ? bottomHalf : topHalf);
             } else {
                 const leftHalf = randomGenerator.get(padding, halfWidth);
                 const rightHalf = randomGenerator.get(halfWidth, width);
-                start = Vec.create(reverse ? rightHalf : leftHalf, padding);
+                start = Vec(reverse ? rightHalf : leftHalf, padding);
             }
 
             const startAngle = Angle.betweenPoints(center, start) + (reverse ? 0 : Math.PI);
@@ -283,7 +283,7 @@ export class GameMap {
 
         for (let i = 1; i < points; i++) {
             const lastPoint = riverPoints[i - 1];
-            const center = Vec.create(this.width / 2, this.height / 2);
+            const center = Vec(this.width / 2, this.height / 2);
 
             const distFactor = Geometry.distance(lastPoint, center) / (this.width / 2);
 
@@ -316,7 +316,7 @@ export class GameMap {
             if (collided) break;
 
             if (!bounds.isPointInside(pos)) {
-                riverPoints[i] = Vec.create(
+                riverPoints[i] = Vec(
                     Numeric.clamp(pos.x, bounds.min.x, bounds.max.x),
                     Numeric.clamp(pos.y, bounds.min.y, bounds.max.y)
                 );
@@ -328,8 +328,8 @@ export class GameMap {
         if (riverPoints.length < 20 || riverPoints.length > 59) return false;
 
         const mapBounds = new RectangleHitbox(
-            Vec.create(this.oceanSize, this.oceanSize),
-            Vec.create(this.width - this.oceanSize, this.height - this.oceanSize)
+            Vec(this.oceanSize, this.oceanSize),
+            Vec(this.width - this.oceanSize, this.height - this.oceanSize)
         );
 
         rivers.push(new River(width, riverPoints, rivers, mapBounds, isTrail));
@@ -601,7 +601,7 @@ export class GameMap {
 
             let lootSpawnOffset: Vector | undefined;
 
-            if (obstacleData.lootSpawnOffset) lootSpawnOffset = Vec.addAdjust(Vec.create(0, 0), obstacleData.lootSpawnOffset, orientation);
+            if (obstacleData.lootSpawnOffset) lootSpawnOffset = Vec.addAdjust(Vec(0, 0), obstacleData.lootSpawnOffset, orientation);
 
             const obstacle = this.generateObstacle(
                 obstacleDef,
@@ -867,7 +867,7 @@ export class GameMap {
             river?: River
         }
     ): Vector | undefined {
-        let position: Vector | undefined = Vec.create(0, 0);
+        let position: Vector | undefined = Vec(0, 0);
 
         const scale = params?.scale ?? 1;
         let orientation = params?.orientation ?? 0;
@@ -1047,8 +1047,8 @@ export class GameMap {
                         const { min, max } = hitbox;
                         points = [
                             min,
-                            Vec.create(max.x, min.y),
-                            Vec.create(min.x, max.y),
+                            Vec(max.x, min.y),
+                            Vec(min.x, max.y),
                             max
                         ];
                     } else {

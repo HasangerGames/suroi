@@ -2920,7 +2920,7 @@ logger.indent("Validating obstacles", () => {
                         validatorIfPresent: (position, errorPath) => {
                             validators.vector(errorPath, position);
                         },
-                        defaultValue: Vec.create(0, 0),
+                        defaultValue: Vec(0, 0),
                         equalityFunction: Vec.equals,
                         baseErrorPath: errorPath2
                     });
@@ -3811,7 +3811,7 @@ logger.indent("Validating configurations", () => {
                     if (map !== undefined) {
                         validators.vector(
                             tester.createPath(errorPath, "spawn position"),
-                            Vec.create(...ServerConfig.spawn.position as [number, number]),
+                            Vec(...ServerConfig.spawn.position as [number, number]),
                             {
                                 min: 0,
                                 max: map.width,
@@ -3833,7 +3833,7 @@ logger.indent("Validating configurations", () => {
                     if (map !== undefined) {
                         validators.vector(
                             tester.createPath(errorPath, "spawn position"),
-                            Vec.create(...ServerConfig.spawn.position as [number, number]),
+                            Vec(...ServerConfig.spawn.position as [number, number]),
                             {
                                 min: 0,
                                 max: map.width,

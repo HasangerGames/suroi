@@ -33,7 +33,7 @@ class CameraManagerClass {
     // When the fade in is complete, the object is moved to the proper container.
     readonly tempLayerContainer = new Container();
 
-    position = Vec.create(0, 0);
+    position = Vec(0, 0);
 
     private _zoom = DEFAULT_SCOPE.zoomLevel;
     get zoom(): number { return this._zoom; }
@@ -97,7 +97,7 @@ class CameraManagerClass {
         }
 
         if (InputManager.isMobile) {
-            EmoteWheelManager.container.position = MapPingWheelManager.position = Vec.create(Game.pixi.screen.width / 2, Game.pixi.screen.height / 2);
+            EmoteWheelManager.container.position = MapPingWheelManager.position = Vec(Game.pixi.screen.width / 2, Game.pixi.screen.height / 2);
         }
     }
 
@@ -105,7 +105,7 @@ class CameraManagerClass {
         let position = this.position;
 
         if (this.shaking) {
-            position = Vec.add(position, randomPointInsideCircle(Vec.create(0, 0), this.shakeIntensity));
+            position = Vec.add(position, randomPointInsideCircle(Vec(0, 0), this.shakeIntensity));
             if (Date.now() - this.shakeStart > this.shakeDuration) this.shaking = false;
         }
 
@@ -115,7 +115,7 @@ class CameraManagerClass {
 
         const cameraPos = Vec.add(
             Vec.scale(position, this.container.scale.x),
-            Vec.create(-this.width / 2, -this.height / 2)
+            Vec(-this.width / 2, -this.height / 2)
         );
 
         this.container.position.set(-cameraPos.x, -cameraPos.y);

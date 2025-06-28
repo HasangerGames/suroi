@@ -8,16 +8,16 @@ export interface Vector {
     y: number
 }
 
-export const Vec = Object.freeze({
-    /**
-     * Creates a new `Vector`
-     * @param x The horizontal (x-axis) coordinate
-     * @param y The vertical (y-axis) coordinate
-     * @returns A new `Vector` object with the provided x and y coordinates
-     */
-    create(x: number, y: number): Vector {
-        return { x, y };
-    },
+/**
+ * Creates a new `Vector`
+ * @param x The horizontal (x-axis) coordinate
+ * @param y The vertical (y-axis) coordinate
+ * @returns A new `Vector` object with the provided x and y coordinates
+ */
+const create = (x: number, y: number): Vector => ({ x, y });
+
+// This approach allows Vec to behave as both an object and a function
+export const Vec = Object.assign(create, {
     /**
      * Adds two `Vector`s together
      * @param a The first `Vector`
@@ -25,7 +25,7 @@ export const Vec = Object.freeze({
      * @returns A new `Vector` resulting from the addition of vectors `a` and `b`
      */
     add(a: Vector, b: Vector): Vector {
-        return this.create(a.x + b.x, a.y + b.y);
+        return create(a.x + b.x, a.y + b.y);
     },
     /**
      * Adds two vectors together
@@ -35,7 +35,7 @@ export const Vec = Object.freeze({
      * @returns A new `Vector` resulting from the addition of `a`, and `x` and `y`
      */
     addComponent(a: Vector, x: number, y: number): Vector {
-        return this.create(a.x + x, a.y + y);
+        return create(a.x + x, a.y + y);
     },
     /**
      * Subtracts one `Vector` from another
@@ -44,7 +44,7 @@ export const Vec = Object.freeze({
      * @returns A new `Vector` resulting from the subtraction of vector `b` from vector `a`
      */
     sub(a: Vector, b: Vector): Vector {
-        return this.create(a.x - b.x, a.y - b.y);
+        return create(a.x - b.x, a.y - b.y);
     },
     /**
      * Subtracts one vector from another
@@ -54,7 +54,7 @@ export const Vec = Object.freeze({
      * @returns A new `Vector` resulting from the subtraction of `x` and `y` from `b`
      */
     subComponent(a: Vector, x: number, y: number): Vector {
-        return this.create(a.x - x, a.y - y);
+        return create(a.x - x, a.y - y);
     },
     /**
      * Multiplies a `Vector` by a scalar
@@ -63,7 +63,7 @@ export const Vec = Object.freeze({
      * @returns A new `Vector` resulting from the multiplication of vector `a` and scalar `n`
      */
     scale(a: Vector, n: number): Vector {
-        return this.create(a.x * n, a.y * n);
+        return create(a.x * n, a.y * n);
     },
     /**
      * Clones a `Vector`
@@ -71,7 +71,7 @@ export const Vec = Object.freeze({
      * @returns A new `Vector` with the same components as the input `Vector`
      */
     clone(vector: Vector): Vector {
-        return this.create(vector.x, vector.y);
+        return create(vector.x, vector.y);
     },
     /**
      * Rotates a `Vector` by a given angle
@@ -82,14 +82,14 @@ export const Vec = Object.freeze({
     rotate(vector: Vector, angle: number): Vector {
         const cos = Math.cos(angle);
         const sin = Math.sin(angle);
-        return this.create(vector.x * cos - vector.y * sin, vector.x * sin + vector.y * cos);
+        return create(vector.x * cos - vector.y * sin, vector.x * sin + vector.y * cos);
     },
     /**
      * Returns the squared length of a `Vector`
      * @param a The `Vector` to be measured
      * @returns The length of the `Vector` `a`, squared
      */
-    squaredLength(a: Vector): number {
+    squaredLen(a: Vector): number {
         return a.x * a.x + a.y * a.y;
     },
     /**
@@ -97,8 +97,8 @@ export const Vec = Object.freeze({
      * @param a The vector to be measured
      * @returns The length of the `Vector` `a`
      */
-    length(a: Vector): number {
-        return Math.sqrt(Vec.squaredLength(a));
+    len(a: Vector): number {
+        return Math.sqrt(Vec.squaredLen(a));
     },
     /**
      * Returns the direction of a given vector in radians
@@ -123,7 +123,7 @@ export const Vec = Object.freeze({
      * @returns A new `Vector` parallel to `projectOnto` which is the projection of `projected`
      */
     project(projected: Vector, projectOnto: Vector): Vector {
-        return this.scale(projectOnto, this.dotProduct(projected, projectOnto) / this.squaredLength(projectOnto));
+        return this.scale(projectOnto, this.dotProduct(projected, projectOnto) / this.squaredLen(projectOnto));
     },
     /**
      * Creates a new `Vector` parallel to the original, but whose length is 1
@@ -132,9 +132,9 @@ export const Vec = Object.freeze({
      * @returns A `Vector` whose length is 1 and is parallel to the original vector
      */
     normalizeSafe(a: Vector, fallback?: Vector): Vector {
-        fallback ??= this.create(1.0, 0.0);
+        fallback ??= create(1.0, 0.0);
         const eps = 0.000001;
-        const len = Vec.length(a);
+        const len = Vec.len(a);
         return len > eps
             ? {
                 x: a.x / len,
@@ -149,7 +149,7 @@ export const Vec = Object.freeze({
      */
     normalize(a: Vector): Vector {
         const eps = 0.000001;
-        const len = Vec.length(a);
+        const len = Vec.len(a);
         return len > eps
             ? {
                 x: a.x / len,
@@ -163,7 +163,7 @@ export const Vec = Object.freeze({
      * @returns A `Vector` whose components are -1 multiplied by the corresponding component in the original `Vector`
      */
     invert(a: Vector): Vector {
-        return this.create(-a.x, -a.y);
+        return create(-a.x, -a.y);
     },
     /**
      * Tests whether two `Vectors` are equal, within a certain tolerance
@@ -181,7 +181,7 @@ export const Vec = Object.freeze({
      * @param b The second vector
      */
     angleBetweenVectors(a: Vector, b: Vector): number {
-        return Math.acos((a.x * b.x + a.y * b.y) / Math.sqrt(Vec.length(a) * Vec.length(b)));
+        return Math.acos((a.x * b.x + a.y * b.y) / Math.sqrt(Vec.len(a) * Vec.len(b)));
     },
     /**
      * Interpolate between two `Vector`s
@@ -231,6 +231,6 @@ export const Vec = Object.freeze({
                 yOffset = position2.x;
                 break;
         }
-        return Vec.add(position1, Vec.create(xOffset, yOffset));
+        return Vec.add(position1, Vec(xOffset, yOffset));
     }
 });

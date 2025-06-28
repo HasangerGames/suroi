@@ -313,7 +313,7 @@ export class Projectile extends BaseGameObject.derive(ObjectCategory.Projectile)
     }
 
     private _reflect(normal: Vector): void {
-        const length = Vec.length(this._velocity);
+        const length = Vec.len(this._velocity);
         const direction = Vec.scale(this._velocity, 1 / length);
         const dot = Vec.dotProduct(direction, normal);
         const newDir = Vec.add(Vec.scale(normal, dot * -2), direction);

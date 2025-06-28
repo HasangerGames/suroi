@@ -107,7 +107,7 @@ export class GameSound {
             const diff = Vec.sub(SoundManager.position, this.position);
 
             this.instance.volume = (
-                1 - Numeric.clamp(Math.abs(Vec.length(diff) / this.maxRange), 0, 1)
+                1 - Numeric.clamp(Math.abs(Vec.len(diff) / this.maxRange), 0, 1)
             ) ** (1 + this.falloff * 2) * this.managerVolume * this.volume * this.layerMult;
 
             this.stereoFilter.pan = Numeric.clamp(-diff.x / this.maxRange, -1, 1);
@@ -164,7 +164,7 @@ class SoundManagerClass {
     sfxVolume = 0;
     ambienceVolume = 0;
 
-    position = Vec.create(0, 0);
+    position = Vec(0, 0);
 
     private _initialized = false;
     async init(): Promise<void> {

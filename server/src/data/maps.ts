@@ -247,12 +247,12 @@ const maps = {
             ground_loot: 60
         },
         places: [
-            { name: "Banana", position: Vec.create(0.23, 0.2) },
-            { name: "Takedown", position: Vec.create(0.23, 0.8) },
-            { name: "Lavlandet", position: Vec.create(0.75, 0.2) },
-            { name: "Noskin Narrows", position: Vec.create(0.72, 0.8) },
-            { name: "Mt. Sanger", position: Vec.create(0.5, 0.35) },
-            { name: "Deepwood", position: Vec.create(0.5, 0.65) }
+            { name: "Banana", position: Vec(0.23, 0.2) },
+            { name: "Takedown", position: Vec(0.23, 0.8) },
+            { name: "Lavlandet", position: Vec(0.75, 0.2) },
+            { name: "Noskin Narrows", position: Vec(0.72, 0.8) },
+            { name: "Mt. Sanger", position: Vec(0.5, 0.35) },
+            { name: "Deepwood", position: Vec(0.5, 0.65) }
         ]
     },
     fall: {
@@ -427,12 +427,12 @@ const maps = {
             ground_loot: 60
         },
         places: [
-            { name: "Antler", position: Vec.create(0.23, 0.2) },
-            { name: "Deadfall", position: Vec.create(0.23, 0.8) },
-            { name: "Beaverdam", position: Vec.create(0.75, 0.2) },
-            { name: "Crimson Hills", position: Vec.create(0.72, 0.8) },
-            { name: "Emerald Farms", position: Vec.create(0.5, 0.35) },
-            { name: "Darkwood", position: Vec.create(0.5, 0.65) }
+            { name: "Antler", position: Vec(0.23, 0.2) },
+            { name: "Deadfall", position: Vec(0.23, 0.8) },
+            { name: "Beaverdam", position: Vec(0.75, 0.2) },
+            { name: "Crimson Hills", position: Vec(0.72, 0.8) },
+            { name: "Emerald Farms", position: Vec(0.5, 0.35) },
+            { name: "Darkwood", position: Vec(0.5, 0.65) }
         ]
     },
     halloween: {
@@ -592,12 +592,12 @@ const maps = {
             ground_loot: 60
         },
         places: [
-            { name: "Pumpkin Patch", position: Vec.create(0.23, 0.2) },
-            { name: "Reaper", position: Vec.create(0.23, 0.8) },
-            { name: "Spøkelsesfelt", position: Vec.create(0.75, 0.2) },
-            { name: "Haunted Hollow", position: Vec.create(0.72, 0.8) },
-            { name: "Mt. Fang", position: Vec.create(0.5, 0.35) },
-            { name: "Darkwood", position: Vec.create(0.5, 0.65) }
+            { name: "Pumpkin Patch", position: Vec(0.23, 0.2) },
+            { name: "Reaper", position: Vec(0.23, 0.8) },
+            { name: "Spøkelsesfelt", position: Vec(0.75, 0.2) },
+            { name: "Haunted Hollow", position: Vec(0.72, 0.8) },
+            { name: "Mt. Fang", position: Vec(0.5, 0.35) },
+            { name: "Darkwood", position: Vec(0.5, 0.65) }
         ]
     },
     infection: {
@@ -730,12 +730,12 @@ const maps = {
             ground_loot: 60
         },
         places: [
-            { name: "Blightnana", position: Vec.create(0.23, 0.2) },
-            { name: "Quarantine", position: Vec.create(0.23, 0.8) },
-            { name: "Rotlandet", position: Vec.create(0.75, 0.2) },
-            { name: "Pathogen Narrows", position: Vec.create(0.72, 0.8) },
-            { name: "Mt. Putrid", position: Vec.create(0.5, 0.35) },
-            { name: "Decayedwood", position: Vec.create(0.5, 0.65) }
+            { name: "Blightnana", position: Vec(0.23, 0.2) },
+            { name: "Quarantine", position: Vec(0.23, 0.8) },
+            { name: "Rotlandet", position: Vec(0.75, 0.2) },
+            { name: "Pathogen Narrows", position: Vec(0.72, 0.8) },
+            { name: "Mt. Putrid", position: Vec(0.5, 0.35) },
+            { name: "Decayedwood", position: Vec(0.5, 0.65) }
         ]
     },
     hunted: {
@@ -846,12 +846,12 @@ const maps = {
             ground_loot: 60
         },
         places: [
-            { name: "Banana", position: Vec.create(0.23, 0.2) },
-            { name: "Takedown", position: Vec.create(0.23, 0.8) },
-            { name: "Lavlandet", position: Vec.create(0.75, 0.2) },
-            { name: "Noskin Narrows", position: Vec.create(0.72, 0.8) },
-            { name: "Mt. Sanger", position: Vec.create(0.5, 0.35) },
-            { name: "Deepwood", position: Vec.create(0.5, 0.65) }
+            { name: "Banana", position: Vec(0.23, 0.2) },
+            { name: "Takedown", position: Vec(0.23, 0.8) },
+            { name: "Lavlandet", position: Vec(0.75, 0.2) },
+            { name: "Noskin Narrows", position: Vec(0.72, 0.8) },
+            { name: "Mt. Sanger", position: Vec(0.5, 0.35) },
+            { name: "Deepwood", position: Vec(0.5, 0.65) }
         ]
     },
     winter: {
@@ -975,12 +975,12 @@ const maps = {
             ground_loot: 60
         },
         places: [
-            { name: "Banana", position: Vec.create(0.23, 0.2) },
-            { name: "Takedown", position: Vec.create(0.23, 0.8) },
-            { name: "Lavlandet", position: Vec.create(0.75, 0.2) },
-            { name: "Noskin Narrows", position: Vec.create(0.72, 0.8) },
-            { name: "Mt. Sanger", position: Vec.create(0.5, 0.35) },
-            { name: "Deepwood", position: Vec.create(0.5, 0.65) }
+            { name: "Banana", position: Vec(0.23, 0.2) },
+            { name: "Takedown", position: Vec(0.23, 0.8) },
+            { name: "Lavlandet", position: Vec(0.75, 0.2) },
+            { name: "Noskin Narrows", position: Vec(0.72, 0.8) },
+            { name: "Mt. Sanger", position: Vec(0.5, 0.35) },
+            { name: "Deepwood", position: Vec(0.5, 0.65) }
         ]
     },
     debug: {
@@ -992,7 +992,7 @@ const maps = {
         onGenerate(map) {
             // Generate all buildings
 
-            const buildingPos = Vec.create(200, map.height - 600);
+            const buildingPos = Vec(200, map.height - 600);
 
             for (const building of Buildings.definitions) {
                 map.generateBuilding(building.idString, buildingPos);
@@ -1007,7 +1007,7 @@ const maps = {
             }
 
             // Generate all obstacles
-            const obstaclePos = Vec.create(200, 200);
+            const obstaclePos = Vec(200, 200);
 
             for (const obstacle of Obstacles.definitions) {
                 if (obstacle.invisible) continue;
@@ -1023,7 +1023,7 @@ const maps = {
             }
 
             // Generate all Loots
-            const itemPos = Vec.create(map.width / 2, map.height / 2);
+            const itemPos = Vec(map.width / 2, map.height / 2);
             for (const item of Loots.definitions) {
                 map.game.addLoot(item, itemPos, 0, { count: Infinity, pushVel: 0, jitterSpawn: false });
 
@@ -1035,12 +1035,12 @@ const maps = {
             }
         },
         places: [
-            { name: "[object Object]", position: Vec.create(0.8, 0.7) },
-            { name: "Kernel Panic", position: Vec.create(0.6, 0.8) },
-            { name: "NullPointerException", position: Vec.create(0.7, 0.3) },
-            { name: "undefined Forest", position: Vec.create(0.3, 0.2) },
-            { name: "seg. fault\n(core dumped)", position: Vec.create(0.3, 0.7) },
-            { name: "Can't read props of null", position: Vec.create(0.4, 0.5) }
+            { name: "[object Object]", position: Vec(0.8, 0.7) },
+            { name: "Kernel Panic", position: Vec(0.6, 0.8) },
+            { name: "NullPointerException", position: Vec(0.7, 0.3) },
+            { name: "undefined Forest", position: Vec(0.3, 0.2) },
+            { name: "seg. fault\n(core dumped)", position: Vec(0.3, 0.7) },
+            { name: "Can't read props of null", position: Vec(0.4, 0.5) }
         ]
     },
     // Arena map to test guns with really bad custom generation code lol
@@ -1098,34 +1098,34 @@ const maps = {
 
             // Fixed obstacles
             const obstacles = [
-                { id: "rock", pos: Vec.create(10, 10) },
-                { id: "rock", pos: Vec.create(20, 40) },
-                { id: "rock", pos: Vec.create(20, 80) },
-                { id: "regular_crate", pos: Vec.create(20, 15) },
-                { id: "barrel", pos: Vec.create(25, 25) },
-                { id: "rock", pos: Vec.create(80, 10) },
-                { id: "rock", pos: Vec.create(60, 15) },
-                { id: "oak_tree", pos: Vec.create(20, 70) },
-                { id: "oil_tank", pos: Vec.create(140, 25) },
-                { id: "birch_tree", pos: Vec.create(120, 50) }
+                { id: "rock", pos: Vec(10, 10) },
+                { id: "rock", pos: Vec(20, 40) },
+                { id: "rock", pos: Vec(20, 80) },
+                { id: "regular_crate", pos: Vec(20, 15) },
+                { id: "barrel", pos: Vec(25, 25) },
+                { id: "rock", pos: Vec(80, 10) },
+                { id: "rock", pos: Vec(60, 15) },
+                { id: "oak_tree", pos: Vec(20, 70) },
+                { id: "oil_tank", pos: Vec(140, 25) },
+                { id: "birch_tree", pos: Vec(120, 50) }
             ];
 
-            const center = Vec.create(map.width / 2, map.height / 2);
+            const center = Vec(map.width / 2, map.height / 2);
 
             for (const obstacle of obstacles) {
                 const { id, pos } = obstacle;
                 const { x: posX, y: posY } = pos;
 
                 map.generateObstacle(id, Vec.add(center, pos), { rotation: 0 });
-                map.generateObstacle(id, Vec.add(center, Vec.create(-posX, posY)), { rotation: 0 });
-                map.generateObstacle(id, Vec.add(center, Vec.create(posX, -posY)), { rotation: 0 });
-                map.generateObstacle(id, Vec.add(center, Vec.create(-posX, -posY)), { rotation: 0 });
+                map.generateObstacle(id, Vec.add(center, Vec(-posX, posY)), { rotation: 0 });
+                map.generateObstacle(id, Vec.add(center, Vec(posX, -posY)), { rotation: 0 });
+                map.generateObstacle(id, Vec.add(center, Vec(-posX, -posY)), { rotation: 0 });
             }
 
-            genLoots(Vec.add(center, Vec.create(-70, 100)), 8, 8);
-            genLoots(Vec.add(center, Vec.create(70, 100)), 8, 8);
-            genLoots(Vec.add(center, Vec.create(-70, -100)), -8, 8);
-            genLoots(Vec.add(center, Vec.create(70, -100)), -8, 8);
+            genLoots(Vec.add(center, Vec(-70, 100)), 8, 8);
+            genLoots(Vec.add(center, Vec(70, 100)), 8, 8);
+            genLoots(Vec.add(center, Vec(-70, -100)), -8, 8);
+            genLoots(Vec.add(center, Vec(70, -100)), -8, 8);
 
             // Generate random obstacles around the center
             const randomObstacles: MapDefinition["obstacles"] = {
@@ -1156,7 +1156,7 @@ const maps = {
             }
         },
         places: [
-            { name: "stark is pro", position: Vec.create(0.5, 0.5) }
+            { name: "stark is pro", position: Vec(0.5, 0.5) }
         ]
     },
     singleBuilding: {
@@ -1166,11 +1166,11 @@ const maps = {
         beachSize: 32,
         oceanSize: 64,
         onGenerate(map, [building]) {
-            // map.game.grid.addObject(new Decal(map.game, "lodge_decal", Vec.create(this.width / 2, this.height / 2), 0));
+            // map.game.grid.addObject(new Decal(map.game, "lodge_decal", Vec(this.width / 2, this.height / 2), 0));
             /* for (let i = 0; i < 10; i++) {
-                map.generateBuilding(`container_${i + 1}`, Vec.create((this.width / 2) + 15 * i, this.height / 2 - 15), 0);
+                map.generateBuilding(`container_${i + 1}`, Vec((this.width / 2) + 15 * i, this.height / 2 - 15), 0);
             } */
-            map.generateBuilding(building, Vec.create(this.width / 2, this.height / 2), 0);
+            map.generateBuilding(building, Vec(this.width / 2, this.height / 2), 0);
         }
     },
     singleObstacle: {
@@ -1180,10 +1180,10 @@ const maps = {
         beachSize: 8,
         oceanSize: 8,
         onGenerate(map, [obstacle]) {
-            map.generateObstacle(obstacle, Vec.create(this.width / 2, this.height / 2), { layer: 0, rotation: 0 });
+            map.generateObstacle(obstacle, Vec(this.width / 2, this.height / 2), { layer: 0, rotation: 0 });
             // const def = Obstacles.fromString(obstacle);
             // for (let i = 0; i < (def.variations ?? 1); i++) {
-            //     map.generateObstacle(obstacle, Vec.create(i * 32 + 48, this.height / 2), { layer: 0, rotation: 0, variation: i as Variation });
+            //     map.generateObstacle(obstacle, Vec(i * 32 + 48, this.height / 2), { layer: 0, rotation: 0, variation: i as Variation });
             // }
         }
     },
@@ -1194,8 +1194,8 @@ const maps = {
         beachSize: 8,
         oceanSize: 8,
         onGenerate(map, [gun]) {
-            map.game.addLoot(gun, Vec.create(this.width / 2, this.height / 2 - 10), 0);
-            map.game.addLoot(Guns.fromString(gun).ammoType, Vec.create(this.width / 2, this.height / 2 - 10), 0, { count: Infinity });
+            map.game.addLoot(gun, Vec(this.width / 2, this.height / 2 - 10), 0);
+            map.game.addLoot(Guns.fromString(gun).ammoType, Vec(this.width / 2, this.height / 2 - 10), 0, { count: Infinity });
         }
     },
     gunsTest: (() => {
@@ -1241,15 +1241,15 @@ const maps = {
                                 for (let i = 0, l = Guns.definitions.length; i < l; i++) {
                                     const player = createBot(`bot ${i}`);
                                     if (player === undefined) return;
-                                    teleportPlayer(player, Vec.create(256, 24 + 6 * i));
+                                    teleportPlayer(player, Vec(256, 24 + 6 * i));
                                     const gun = Guns.definitions[i];
 
                                     player.inventory.addOrReplaceWeapon(0, gun.idString);
                                     (player.inventory.getWeapon(0) as GunItem).ammo = gun.capacity;
                                     player.inventory.items.setItem(gun.ammoType, Infinity);
                                     player.disableInvulnerability();
-                                    // map.game.addLoot(gun.idString, Vec.create(16, 32 + 16 * i), 0);
-                                    // map.game.addLoot(gun.ammoType, Vec.create(16, 32 + 16 * i), 0, { count: Infinity });
+                                    // map.game.addLoot(gun.idString, Vec(16, 32 + 16 * i), 0);
+                                    // map.game.addLoot(gun.ammoType, Vec(16, 32 + 16 * i), 0, { count: Infinity });
                                 }
                             });
                         }
@@ -1266,7 +1266,7 @@ const maps = {
         onGenerate(map, [obstacle]) {
             for (let x = 0; x <= 128; x += 16) {
                 for (let y = 0; y <= 128; y += 16) {
-                    map.generateObstacle(obstacle, Vec.create(x, y));
+                    map.generateObstacle(obstacle, Vec(x, y));
                 }
             }
         }
@@ -1279,11 +1279,11 @@ const maps = {
         onGenerate(map) {
             for (let x = 0; x < 256; x += 16) {
                 for (let y = 0; y < 256; y += 16) {
-                    /* const player = new Player(map.game, { getUserData: () => { return {}; } } as unknown as WebSocket<PlayerContainer>, Vec.create(x, y));
+                    /* const player = new Player(map.game, { getUserData: () => { return {}; } } as unknown as WebSocket<PlayerContainer>, Vec(x, y));
                     player.disableInvulnerability();
                     player.loadout.skin = pickRandomInArray(Skins.definitions);
                     map.game.grid.addObject(player); */
-                    if (random(0, 1) === 1) map.generateObstacle("barrel", Vec.create(x, y));
+                    if (random(0, 1) === 1) map.generateObstacle("barrel", Vec(x, y));
                 }
             }
         }
@@ -1301,7 +1301,7 @@ const maps = {
                 ...Armors.definitions,
                 ...Backpacks.definitions
             ].map(({ idString }) => idString).filter(idString => idString !== "bag" && idString !== "developr_vest").forEach(loot => {
-                game.addLoot(Loots.fromString(loot), Vec.create(x = x + 8, 120), 0, { pushVel: 0, jitterSpawn: false });
+                game.addLoot(Loots.fromString(loot), Vec(x = x + 8, 120), 0, { pushVel: 0, jitterSpawn: false });
             });
         }
     },
@@ -1370,7 +1370,7 @@ const maps = {
         oceanSize: 64,
         onGenerate(map) {
             const targetBuildingIdString = "headquarters";
-            map.generateBuilding(targetBuildingIdString, Vec.create(this.width / 2, this.height / 2), 0);
+            map.generateBuilding(targetBuildingIdString, Vec(this.width / 2, this.height / 2), 0);
 
             const buildings = {
                 red_house: ~~Math.random(),
@@ -1516,7 +1516,7 @@ const maps = {
             });
         },
         places: [
-            { name: "pap's lonely place", position: Vec.create(0.5, 0.5) }
+            { name: "pap's lonely place", position: Vec(0.5, 0.5) }
         ]
     }
 } satisfies Record<string, MapDefinition>;

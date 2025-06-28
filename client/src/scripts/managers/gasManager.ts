@@ -13,10 +13,10 @@ import { UIManager } from "./uiManager";
 class GasManagerClass {
     state = GasState.Inactive;
     currentDuration = 0;
-    oldPosition = Vec.create(0, 0);
-    lastPosition = Vec.create(0, 0);
-    position = Vec.create(0, 0);
-    newPosition = Vec.create(0, 0);
+    oldPosition = Vec(0, 0);
+    lastPosition = Vec(0, 0);
+    position = Vec(0, 0);
+    newPosition = Vec(0, 0);
     oldRadius = 2048;
     lastRadius = 2048;
     radius = 2048;

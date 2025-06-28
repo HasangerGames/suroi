@@ -172,7 +172,7 @@ class EmoteWheelManagerClass {
                             } else {
                                 // fuck you
                                 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                                const globalPos = Vec.create(e.clientX!, e.clientY!);
+                                const globalPos = Vec(e.clientX!, e.clientY!);
                                 const pixiPos = CameraManager.container.toLocal(globalPos);
                                 position = Vec.scale(pixiPos, 1 / PIXI_SCALE);
                             }
@@ -205,7 +205,7 @@ class EmoteWheelManagerClass {
         this.active = true;
 
         this.container.position = InputManager.isMobile
-            ? Vec.create(Game.pixi.screen.width / 2, Game.pixi.screen.height / 2)
+            ? Vec(Game.pixi.screen.width / 2, Game.pixi.screen.height / 2)
             : InputManager.mousePosition;
     }
 
@@ -253,7 +253,7 @@ class EmoteWheelManagerClass {
         const { DIMENSIONS } = EmoteWheelManagerClass;
         const { blockEmoting } = UIManager;
         const dist = Vec.sub(position, this.container.position);
-        const len = Vec.squaredLength(dist);
+        const len = Vec.squaredLen(dist);
         const selected = len > DIMENSIONS.innerRingRadius ** 2;
 
         this.closeGraphics.visible = !selected && !blockEmoting;

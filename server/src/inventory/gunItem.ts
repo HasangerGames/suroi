@@ -130,12 +130,12 @@ export class GunItem extends InventoryItemBase.derive(ItemType.Gun) {
 
         const ownerPos = owner.position;
         const startPosition = offset !== 0
-            ? Vec.add(ownerPos, Vec.rotate(Vec.create(0, offset), owner.rotation))
+            ? Vec.add(ownerPos, Vec.rotate(Vec(0, offset), owner.rotation))
             : ownerPos;
 
         let position = Vec.add(
             ownerPos,
-            Vec.scale(Vec.rotate(Vec.create(definition.length, offset), owner.rotation), owner.sizeMod)
+            Vec.scale(Vec.rotate(Vec(definition.length, offset), owner.rotation), owner.sizeMod)
         );
 
         let distToPos = Geometry.distanceSquared(startPosition, position);
@@ -153,7 +153,7 @@ export class GunItem extends InventoryItemBase.derive(ItemType.Gun) {
             if (intersection === null) continue;
 
             if (distToPos > Geometry.distanceSquared(startPosition, intersection.point)) {
-                position = Vec.sub(intersection.point, Vec.rotate(Vec.create(0.2 + jitter, 0), owner.rotation));
+                position = Vec.sub(intersection.point, Vec.rotate(Vec(0.2 + jitter, 0), owner.rotation));
                 distToPos = Geometry.distanceSquared(startPosition, position);
             }
         }

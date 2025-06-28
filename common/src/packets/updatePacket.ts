@@ -114,7 +114,7 @@ function serializePlayerData(
                     (downed ? 2 : 0) + (disconnected ? 1 : 0)
                 )
                     .writeObjectId(id)
-                    .writePosition(position ?? Vec.create(0, 0))
+                    .writePosition(position ?? Vec(0, 0))
                     .writeFloat(normalizedHealth, 0, 1, 1)
                     .writeUint8(colorIndex);
             },

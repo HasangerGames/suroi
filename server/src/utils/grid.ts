@@ -89,7 +89,7 @@ export class Grid {
                     y++
                 ) {
                     (xRow[y] ??= new Map()).set(object.id, object);
-                    cells.push(Vec.create(x, y));
+                    cells.push(Vec(x, y));
                 }
             }
         }
