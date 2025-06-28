@@ -3011,6 +3011,26 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         hideOnMap: true
     },
     {
+        idString: "ducktub",
+        name: "Ducktub",
+        defType: DefinitionType.Obstacle,
+        material: "appliance",
+        health: 180,
+        scale: {
+            spawnMin: 1,
+            spawnMax: 1,
+            destroy: 0.8
+        },
+        hitbox: RectangleHitbox.fromRect(17.72, 9.29),
+        allowFlyover: FlyoverPref.Sometimes,
+        rotationMode: RotationMode.Limited,
+        frames: {
+            particle: "toilet_particle"
+        },
+        hideOnMap: true,
+        hasLoot: true
+    },
+    {
         idString: "small_drawer",
         name: "Small Drawer",
         defType: DefinitionType.Obstacle,

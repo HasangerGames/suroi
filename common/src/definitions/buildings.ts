@@ -331,9 +331,14 @@ const randomToilet = {
     used_toilet: 1
 };
 
+const randomBathtub = {
+    bathtub: 0.9925,
+    ducktub: 0.0075
+};
+
 const randomStove = {
-    stove: 0.97,
-    pan_stove: 0.03
+    stove: 0.99,
+    pan_stove: 0.01
 };
 
 const randomSmallStove = {
@@ -7668,8 +7673,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "small_drawer", position: Vec.create(25.85, -30.78), rotation: 0 },
             { idString: "sink2", position: Vec.create(33.52, -30.95), rotation: 0 },
             { idString: randomToilet, position: Vec.create(41.73, -30.27), rotation: 0 },
-            { idString: "bathtub", position: Vec.create(38.2, -9.99), rotation: 0 },
-            { idString: "trash_can", position: Vec.create(25.61, -8.19), rotation: 0 },
+            { idString: randomBathtub, position: Vec.create(31.5, -9.99), rotation: 0 },
+            { idString: "trash_can", position: Vec.create(44, -8.19), rotation: 0 },
 
             // secret room
             { idString: "lodge_secret_room_wall", position: Vec.create(0.67, -35.78), rotation: 0 },

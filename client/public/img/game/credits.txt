@@ -330,6 +330,7 @@ Obstacles:
   Birch tree, particles, & residue: hasanger, Radians
 
   Bed, Drawers, Couch, Chair, Table, Fridge, Walls, Door, Window, Ceramic Toilet, Garage, Washing Machine: platonthek, hasanger
+  Ducktub: Wampi
   Stove: 1092384
   Residues for above obstacles: platonthek
 
