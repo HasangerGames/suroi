@@ -1453,6 +1453,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             fullObjects.add(object);
         }
 
+        packet.fullObjectsCache = fullObjects;
+
         packet.partialObjectsCache = [];
         for (const object of game.partialDirtyObjects) {
             if (!this.visibleObjects.has(object as GameObject) || fullObjects.has(object)) continue;
@@ -1464,106 +1466,90 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
         if (this.startedSpectating && this.spectating) {
             forceInclude = true;
-
-            // this line probably doesn't do anything
-            // packet.fullObjectsCache.push(this.spectating);
             this.startedSpectating = false;
         }
 
-        packet.playerData = {
+        const playerData: PlayerData = packet.playerData = {
             pingSeq: this._pingSeq,
-            ...(
-                player.dirty.maxMinStats || forceInclude
-                    ? { minMax: {
-                        maxHealth: player._maxHealth,
-                        minAdrenaline: player._minAdrenaline,
-                        maxAdrenaline: player._maxAdrenaline
-                    } }
-                    : {}
-            ),
-            ...(
-                player.dirty.health || forceInclude
-                    ? { health: player._normalizedHealth }
-                    : {}
-            ),
-            ...(
-                player.dirty.adrenaline || forceInclude
-                    ? { adrenaline: player._normalizedAdrenaline }
-                    : {}
-            ),
-            ...(
-                player.dirty.zoom || forceInclude
-                    ? { zoom: player._scope.zoomLevel }
-                    : {}
-            ),
-            ...(
-                player.dirty.id || forceInclude
-                    ? { id: {
-                        id: player.id,
-                        spectating: this.spectating !== undefined
-                    } }
-                    : {}
-            ),
-            ...(
-                player.dirty.teammates || forceInclude
-                    ? { teammates: player._team?.players as Player[] ?? [] }
-                    : {}
-            ),
-            ...(
-                player.dirty.weapons || forceInclude
-                    ? { inventory: {
-                        activeWeaponIndex: inventory.activeWeaponIndex,
-                        weapons: inventory.weapons.map(slot => {
-                            const item = slot;
-
-                            return (item && {
-                                definition: item.definition,
-                                count: item.isGun
-                                    ? item.ammo
-                                    : item instanceof CountableInventoryItem
-                                        ? item.count
-                                        : undefined,
-                                stats: item.stats
-                            }) satisfies ((PlayerData["inventory"] & object)["weapons"] & object)[number];
-                        })
-                    } }
-                    : {}
-            ),
-            ...(
-                player.dirty.slotLocks || forceInclude
-                    ? { lockedSlots: player.inventory.lockedSlots }
-                    : {}
-            ),
-            ...(
-                player.dirty.items || forceInclude
-                    ? { items: {
-                        items: inventory.items.asRecord(),
-                        scope: inventory.scope
-                    } }
-                    : {}
-            ),
-            ...(
-                player.dirty.layer || forceInclude
-                    ? { layer: player.layer }
-                    : {}
-            ),
-            ...(
-                player.dirty.activeC4s || forceInclude
-                    ? { activeC4s: this.c4s.size > 0 }
-                    : {}
-            ),
-            ...(
-                player.dirty.perks || forceInclude
-                    ? { perks: player.perks }
-                    : {}
-            ),
-            ...(
-                player.dirty.teamID || forceInclude
-                    ? { teamID: player.teamID }
-                    : {}
-            ),
             blockEmoting: player.blockEmoting
         };
+
+        if (player.dirty.maxMinStats || forceInclude) {
+            playerData.minMax = {
+                maxHealth: player._maxHealth,
+                minAdrenaline: player._minAdrenaline,
+                maxAdrenaline: player._maxAdrenaline
+            };
+        }
+
+        if (player.dirty.health || forceInclude) {
+            playerData.health = player._normalizedHealth;
+        }
+
+        if (player.dirty.adrenaline || forceInclude) {
+            playerData.adrenaline = player._normalizedAdrenaline;
+        }
+
+        if (player.dirty.zoom || forceInclude) {
+            playerData.zoom = player._scope.zoomLevel;
+        }
+
+        if (player.dirty.id || forceInclude) {
+            playerData.id = {
+                id: player.id,
+                spectating: this.spectating !== undefined
+            };
+        }
+
+        if ((player.dirty.teammates || forceInclude) && player._team) {
+            playerData.teammates = player._team.players as Player[];
+        }
+
+        if (player.dirty.weapons || forceInclude) {
+            playerData.inventory = {
+                activeWeaponIndex: inventory.activeWeaponIndex,
+                weapons: inventory.weapons.map(slot => {
+                    const item = slot;
+
+                    return (item && {
+                        definition: item.definition,
+                        count: item.isGun
+                            ? item.ammo
+                            : item instanceof CountableInventoryItem
+                                ? item.count
+                                : undefined,
+                        stats: item.stats
+                    }) satisfies ((PlayerData["inventory"] & object)["weapons"] & object)[number];
+                })
+            };
+        }
+
+        if (player.dirty.slotLocks || forceInclude) {
+            playerData.lockedSlots = player.inventory.lockedSlots;
+        }
+
+        if (player.dirty.items || forceInclude) {
+            playerData.items = {
+                items: inventory.items.asRecord(),
+                scope: inventory.scope
+            };
+        }
+
+        if (player.dirty.layer || forceInclude) {
+            playerData.layer = player.layer;
+        }
+
+        if (player.dirty.activeC4s || forceInclude) {
+            playerData.activeC4s = this.c4s.size > 0;
+        }
+
+        if (player.dirty.perks || forceInclude) {
+            playerData.perks = player.perks;
+        }
+
+        if (player.dirty.teamID || forceInclude) {
+            playerData.teamID = player.teamID;
+        }
 
         // Cull bullets
         /*
@@ -1578,72 +1564,81 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
                        fixing this is therefore not worth the performance penalty
         */
-        packet.bullets = game.newBullets.filter(
-            ({ initialPosition, finalPosition }) => Collision.lineIntersectsRectTest(
-                initialPosition,
-                finalPosition,
+        packet.bullets = [];
+        for (const bullet of game.newBullets) {
+            if (!Collision.lineIntersectsRectTest(
+                bullet.initialPosition,
+                bullet.finalPosition,
                 this.screenHitbox.min,
                 this.screenHitbox.max
-            )
-        );
-
-        /**
-         * It's in times like these where `inline constexpr`
-         * would be very cool.
-         */
-        const maxDistSquared = 128 ** 2;
-
-        // Cull explosions
-        packet.explosions = game.explosions.filter(
-            ({ position }) => this.screenHitbox.isPointInside(position)
-                || Geometry.distanceSquared(position, this.position) < maxDistSquared
-        );
-
-        packet.emotes = game.emotes.filter(({ player }) => this.visibleObjects.has(player));
-
-        const gas = game.gas;
-
-        // shut up
-        // eslint-disable-next-line @typescript-eslint/no-misused-spread
-        packet.gas = gas.dirty || this._firstPacket ? { ...gas, finalStage: gas.getDef().finalStage } : undefined;
-        packet.gasProgress = gas.completionRatioDirty || this._firstPacket ? gas.completionRatio : undefined;
-
-        const newPlayers = this._firstPacket
-            ? Array.from(game.grid.pool.getCategory(ObjectCategory.Player))
-            : game.newPlayers;
-
-        // new and deleted players
-        packet.newPlayers = newPlayers.map(({ id, name, hasColor, nameColor, loadout: { badge } }) => ({
-            id,
-            name,
-            hasColor,
-            nameColor: hasColor ? nameColor : undefined,
-            badge
-        } as (UpdateDataCommon["newPlayers"] & object)[number]));
-
-        if (this.game.isTeamMode) {
-            for (const teammate of newPlayers.filter(({ teamID }) => teamID === player.teamID)) {
-                fullObjects.add(teammate);
-            }
+            )) continue;
+            packet.bullets.push(bullet);
         }
 
-        packet.fullObjectsCache = Array.from(fullObjects);
+        // Cull explosions
+        packet.explosions = [];
+        for (const explosion of game.explosions) {
+            if (
+                !this.screenHitbox.isPointInside(explosion.position)
+                || Geometry.distanceSquared(explosion.position, this.position) > GameConstants.explosionMaxDistSquared
+            ) continue;
+            packet.explosions.push(explosion);
+        }
 
+        // Emotes
+        packet.emotes = [];
+        for (const emote of game.emotes) {
+            if (!this.visibleObjects.has(emote.player)) continue;
+            packet.emotes.push(emote);
+        }
+
+        // Gas
+        const gas = game.gas;
+        if (gas.dirty || this._firstPacket) {
+            packet.gas = gas;
+        }
+        if (gas.completionRatioDirty || this._firstPacket) {
+            packet.gasProgress = gas.completionRatio;
+        }
+
+        const newPlayers = this._firstPacket
+            ? game.grid.pool.getCategory(ObjectCategory.Player)
+            : game.newPlayers;
+
+        // New/deleted players
+        packet.newPlayers = [];
+        for (const newPlayer of newPlayers) {
+            const { id, teamID, name, hasColor, nameColor, loadout: { badge } } = newPlayer;
+
+            packet.newPlayers.push({
+                id,
+                name,
+                hasColor,
+                nameColor: hasColor ? nameColor : undefined,
+                badge
+            } as (UpdateDataCommon["newPlayers"] & object)[number]);
+
+            // Add new teammates to full objects
+            if (!this.game.isTeamMode || teamID !== player.teamID) continue;
+            fullObjects.add(newPlayer);
+        }
         packet.deletedPlayers = game.deletedPlayers;
 
-        packet.aliveCount = game.aliveCountDirty || this._firstPacket ? game.aliveCount : undefined;
+        if (game.aliveCountDirty || this._firstPacket) {
+            packet.aliveCount = game.aliveCount;
+        }
 
         packet.planes = game.planes;
 
         packet.mapPings = [...game.mapPings, ...this._mapPings];
         this._mapPings.length = 0;
 
-        packet.killLeader = game.killLeaderDirty || this._firstPacket
-            ? {
+        if (game.killLeaderDirty || this._firstPacket) {
+            packet.killLeader = {
                 id: game.killLeader?.id ?? -1,
                 kills: game.killLeader?.kills ?? 0
-            }
-            : undefined;
+            };
+        }
 
         // serialize and send update packet
         this.sendPacket(packet as unknown as MutablePacketDataIn);

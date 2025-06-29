@@ -82,6 +82,7 @@ export const GameConstants = {
             water: 5
         }
     },
+    explosionMaxDistSquared: 128 ** 2,
     riverPadding: 64,
     trailPadding: 384,
     explosionRayDistance: 2
