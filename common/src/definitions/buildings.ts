@@ -10760,5 +10760,151 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             position: Vec(0, 0),
             scale: Vec(3.745, 1.78)
         }]
+    },
+    {
+        idString: "sawnmill",
+        name: "Sawnmill",
+        defType: DefinitionType.Building,
+        spawnHitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(208.03, 113.63, Vec(13.83, -32.27)),
+            RectangleHitbox.fromRect(308.65, 230.96, Vec(-0.02, 126.46)),
+            RectangleHitbox.fromRect(304.3, 175.6, Vec(24.02, -159.72))
+        ),
+        groundGraphics: [
+            {
+                color: 0x614c35,
+                hitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(142.1, 187.94, Vec(14.04, -39.87)),
+                    RectangleHitbox.fromRect(291.56, 217.11, Vec(0, 126.05)),
+                    RectangleHitbox.fromRect(249.63, 148.34, Vec(20.4, -160.65))
+                )
+            },
+            // ROAD
+            {
+                color: 0x5a4731,
+                hitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(49.38, 370.23, Vec(25.85, -47.49)),
+                    RectangleHitbox.fromRect(152.97, 49.55, Vec(-25.94, -162.85)),
+                    RectangleHitbox.fromRect(92.45, 39.39, Vec(96.55, -149.14)),
+                    RectangleHitbox.fromRect(41.65, 258.28, Vec(-19.23, -11.92)),
+                    RectangleHitbox.fromRect(193.52, 49.79, Vec(-46.22, 92.32)),
+                    RectangleHitbox.fromRect(55.18, 123.4, Vec(8.47, 170.43)),
+                    RectangleHitbox.fromRect(96.63, 44.85, Vec(94.82, 57.86))
+                )
+            },
+            // Road Lines
+            {
+                color: 0xd5a244,
+                hitbox: new GroupHitbox(
+                    /// LINE WIDTH = 2.09
+
+                    // Special Case: Bottom Left, building entrance along with barricade line
+                    RectangleHitbox.fromRect(1.88, 42.14, Vec(-103.4, 187.4)),
+
+                    // Bottom
+                    RectangleHitbox.fromRect(2.09, 35.79, Vec(-34.99, 55.58)),
+                    RectangleHitbox.fromRect(102.66, 2.09, Vec(-85.49, 72.43)),
+                    RectangleHitbox.fromRect(121.68, 2.09, Vec(-75.54, 112.44)),
+                    // [Barricade Line]
+                    RectangleHitbox.fromRect(2.09, 99.22, Vec(32.45, 182.52)),
+                    RectangleHitbox.fromRect(2.09, 119.85, Vec(-15.74, 172.19)),
+                    RectangleHitbox.fromRect(14.52, 2.09, Vec(38.63, 133.91)),
+                    RectangleHitbox.fromRect(2.09, 96.2, Vec(44.86, 86.23)),
+
+                    // Top
+                    RectangleHitbox.fromRect(2.09, 29.46, Vec(-33.69, -127.37)),
+                    RectangleHitbox.fromRect(69.82, 2.09, Vec(-67.58, -141.12)),
+                    RectangleHitbox.fromRect(41.51, 2.09, Vec(-14.96, -184.02)),
+                    RectangleHitbox.fromRect(2.09, 4.91, Vec(-34.69, -186.81)),
+                    RectangleHitbox.fromRect(2.09, 4.91, Vec(-67.18, -186.82)),
+                    RectangleHitbox.fromRect(36.29, 2.09, Vec(-84.3, -183.99)),
+                    RectangleHitbox.fromRect(2.09, 40.28, Vec(4.77, -203.39)),
+                    RectangleHitbox.fromRect(2.09, 110.78, Vec(44.78, -168.48)),
+
+                    // f o r k l i f t  p a r k
+                    RectangleHitbox.fromRect(67.6, 2.09, Vec(105.95, -199.84)),
+                    RectangleHitbox.fromRect(2.09, 30.94, Vec(138.71, -184.28)),
+                    RectangleHitbox.fromRect(2.09, 30.94, Vec(87.29, -184.3)),
+                    RectangleHitbox.fromRect(2.09, 30.94, Vec(105.05, -184.31)),
+                    RectangleHitbox.fromRect(2.09, 30.94, Vec(121.87, -184.31))
+                )
+            },
+            // pine tree places
+            // border
+            {
+                color: 0x3f2e0a,
+                hitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(22.19, 22.22, Vec(7.35, 197.01)),
+                    RectangleHitbox.fromRect(22.19, 22.22, Vec(7.79, 139.99))
+                )
+            },
+            // fill
+            {
+                color: 0x543d0d,
+                hitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(19.94, 19.98, Vec(7.32, 197.02)),
+                    RectangleHitbox.fromRect(19.94, 19.98, Vec(7.83, 140.01))
+                )
+            }
+        ],
+        floors: [{
+            type: FloorNames.Sand,
+            hitbox: new GroupHitbox(
+                RectangleHitbox.fromRect(142.1, 187.94, Vec(14.04, -39.87)),
+                RectangleHitbox.fromRect(291.56, 217.11, Vec(0, 126.05)),
+                RectangleHitbox.fromRect(249.63, 148.34, Vec(20.4, -160.65))
+            )
+        }],
+        floorImages: [ // todo: repair barricade line svgs, pattern is broken (doesn't work with colors)
+            // {
+            //     key: "sawnmil_alpha",
+            //     position: Vec(0, 0)
+            // },
+
+            // Mud/ground cracks (decals)
+            // Top
+            { key: "mud_decal_1", position: Vec(-38.22, -161.23) },
+            { key: "mud_decal_2", position: Vec(27.78, -181.49) },
+            { key: "mud_decal_3", position: Vec(109.04, -140.77) },
+
+            { key: "ground_crack_1", position: Vec(-19.27, -150.02) },
+            { key: "ground_crack_2", position: Vec(19.59, -194.59) },
+            { key: "ground_crack_3", position: Vec(31.44, -133.88) },
+            { key: "ground_crack_3", position: Vec(93.92, -154.09), rotation: Math.PI / 3 },
+
+            // Bottom
+            { key: "est_1973_residue", position: Vec(47.08, 221.25) },
+            { key: "mud_decal_1", position: Vec(-55, 92.4), rotation: -Math.PI / 3.1 },
+            { key: "mud_decal_2", position: Vec(-8.5, 48.5), rotation: -Math.PI / 2.4 },
+            { key: "mud_decal_3", position: Vec(69.94, 64.22), rotation: Math.PI / 4 },
+            { key: "mud_decal_1", position: Vec(24.58, 160.3), rotation: Math.PI / 10.1, scale: Vec(0.7, 0.7), alpha: 0.7 },
+            { key: "mud_decal_1", position: Vec(100, 206.55), rotation: -Math.PI / 14, alpha: 0.3 },
+            { key: "mud_decal_2", position: Vec(-131.1, 222.55), rotation: Math.PI, scale: Vec(0.75, 0.75), alpha: 0.35 },
+
+            { key: "ground_crack_1", position: Vec(-29.5, 91.3), rotation: -Math.PI / 3.25 },
+            { key: "ground_crack_2", position: Vec(115.89, 48.95), rotation: Math.PI / 9 },
+            { key: "ground_crack_3", position: Vec(27.18, 110.39), rotation: Math.PI / 2.2 },
+            { key: "ground_crack_1", position: Vec(13.73, 177.1), rotation: -Math.PI / 6.25 },
+            { key: "ground_crack_1", position: Vec(65.8, 217), rotation: -Math.PI / 1.25, alpha: 0.25 },
+            { key: "ground_crack_1", position: Vec(-115.2, 218), rotation: -Math.PI / 4.8, alpha: 0.25 },
+
+            { key: "oil_decal_hunted_1", position: Vec(-79.52, -106.97) },
+
+            { key: "sawnmill_main_logo", position: Vec(6, 75.25), scale: Vec(2, 2) },
+
+            // Tinted
+            { key: "barricade_line", position: Vec(24.8, -226.65), tint: 0xd5a244, rotation: Math.PI / 2 }, // Top Center Road Line
+            { key: "barricade_line", position: Vec(-139.59, 92.45), tint: 0xd5a244 }, // Bottom Left Road Line
+            { key: "barricade_line", position: Vec(-106.59, 187.4), tint: 0xd5a244 }, // Bottom Left, entrance
+            { key: "barricade_line", position: Vec(47.11, 168.19), tint: 0xd5a244 }, // Bottom Right, entrance
+
+            // Barriers (NOT tinted)
+            { key: "barricade_line_small", position: Vec(-77.6, -89.7), rotation: Math.PI / 2 },
+            { key: "barricade_line_small2", position: Vec(112.16, 20.1), rotation: Math.PI / 2 },
+            { key: "barricade_line_small2", position: Vec(112.17, -90.4), rotation: Math.PI / 2 },
+            { key: "barricade_line_medium", position: Vec(-98.3, 20.31), rotation: Math.PI / 2 },
+            { key: "barricade_line_large", position: Vec(-53.67, -34.83) },
+            { key: "barricade_line_large", position: Vec(81.92, -34.83) }
+        ]
     }
 ]);

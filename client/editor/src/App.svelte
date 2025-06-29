@@ -19,20 +19,7 @@
 
     let hitboxes: HitboxJSON[] = [
         ...new GroupHitbox(
-            RectangleHitbox.fromRect(5.11, 5.14, Vec(11.7, -11.99)),
-            RectangleHitbox.fromRect(5.11, 5.14, Vec(11.7, 11.7)),
-            RectangleHitbox.fromRect(5.11, 5.14, Vec(-12.16, 11.64)),
-            RectangleHitbox.fromRect(5.11, 5.14, Vec(-12.11, -12.07)),
-            RectangleHitbox.fromRect(1.73, 20, Vec(-12.1, -0.12)),
-            RectangleHitbox.fromRect(1.69, 20, Vec(11.69, -0.13)),
-            RectangleHitbox.fromRect(1.72, 72.72, Vec(35.37, -0.02)),
-            RectangleHitbox.fromRect(1.72, 72.72, Vec(-35.4, -0.02)),
-            RectangleHitbox.fromRect(9.5, 1.71, Vec(5.67, -12.02)),
-            RectangleHitbox.fromRect(9.5, 1.71, Vec(-6, 11.65)),
-            RectangleHitbox.fromRect(70.44, 1.71, Vec(-0.23, -35.48)),
-            RectangleHitbox.fromRect(70.44, 1.71, Vec(0.19, 35.47)),
-            RectangleHitbox.fromRect(1.65, 13.38, Vec(26.21, -29.23)),
-            RectangleHitbox.fromRect(1.65, 13.38, Vec(-26.2, 29.25))
+            RectangleHitbox.fromRect(10, 10)
         ).toJSON().hitboxes
     ];
 
@@ -289,7 +276,7 @@
         selected = hitboxes[0];
     }
 
-    const bgImage = loadImage("/img/game/hunted/buildings/tiger_bunker_floor.svg");
+    const bgImage = loadImage("/img/game/hunted/buildings/sawnmil_noalpha.png");
 
     function handleKeydown(e: KeyboardEvent) {
         let moved = false;
