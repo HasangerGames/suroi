@@ -10367,14 +10367,18 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         ),
         bunkerSpawnHitbox: RectangleHitbox.fromRect(80, 80),
         ceilingHitbox: new GroupHitbox(
-            RectangleHitbox.fromRect(7.5, 10, Vec(-14.49, -27.97)),
-            RectangleHitbox.fromRect(7.5, 10, Vec(-14.31, 27.75))
+            RectangleHitbox.fromRect(7.5, 10, Vec(-14.49, -29.4)),
+            RectangleHitbox.fromRect(7.5, 10, Vec(-14.31, 29.4))
         ),
         ceilingImages: [
             { key: "hunted_bunker_entrance_ceiling", position: Vec(-14.49, -27.97), rotation: Math.PI },
             { key: "hunted_bunker_entrance_ceiling", position: Vec(-14.31, 27.75) }
         ],
         obstacles: IS_CLIENT ? undefined : [
+            { idString: "hunted_bunker_collider_hack", position: Vec(-18.83, 28.2), rotation: 0, layer: Layer.ToBasement },
+            { idString: "hunted_bunker_collider_hack", position: Vec(-9.77, 28.12), rotation: 0, layer: Layer.ToBasement },
+            { idString: "hunted_bunker_collider_hack", position: Vec(-19.18, -28.44), rotation: 0, layer: Layer.ToBasement },
+            { idString: "hunted_bunker_collider_hack", position: Vec(-10.02, -28.57), rotation: 0, layer: Layer.ToBasement },
             { idString: "hunted_bunker_entrance", position: Vec(-14.31, 27.75), rotation: 0 },
             { idString: "hunted_bunker_entrance", position: Vec(-14.49, -27.97), rotation: 2 },
             { idString: "hunted_bunker_stair", position: Vec(-14.2, 29.5), rotation: 2, layer: Layer.ToBasement },
@@ -10493,14 +10497,18 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             RectangleHitbox.fromRect(15, 18, Vec(-30.71, 28.2))
         ),
         ceilingHitbox: new GroupHitbox(
-            RectangleHitbox.fromRect(7.5, 10, Vec(30.78, -28.42)),
-            RectangleHitbox.fromRect(7.5, 10, Vec(-30.71, 28.2))
+            RectangleHitbox.fromRect(7.5, 10, Vec(30.78, -29.6)),
+            RectangleHitbox.fromRect(7.5, 10, Vec(-30.71, 29.42))
         ),
         ceilingImages: [
             { key: "hunted_bunker_entrance_ceiling", position: Vec(30.78, -28.42), rotation: Math.PI },
             { key: "hunted_bunker_entrance_ceiling", position: Vec(-30.71, 28.2) }
         ],
         obstacles: IS_CLIENT ? undefined : [
+            { idString: "hunted_bunker_collider_hack", position: Vec(-26.19, 28.76), rotation: 0, layer: Layer.ToBasement },
+            { idString: "hunted_bunker_collider_hack", position: Vec(-35.39, 29.12), rotation: 0, layer: Layer.ToBasement },
+            { idString: "hunted_bunker_collider_hack", position: Vec(26.18, -29.48), rotation: 0, layer: Layer.ToBasement },
+            { idString: "hunted_bunker_collider_hack", position: Vec(35.35, -29.41), rotation: 0, layer: Layer.ToBasement },
             { idString: "hunted_bunker_entrance", position: Vec(-30.71, 28.2), rotation: 0 },
             { idString: "hunted_bunker_entrance", position: Vec(30.78, -28.42), rotation: 2 },
             { idString: "hunted_bunker_stair", position: Vec(30.72, -29.94), rotation: 0, layer: Layer.ToBasement },
@@ -10599,8 +10607,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         ],
         subBuildings: IS_CLIENT ? undefined : [{
             idString: "tiger_bunker_vault",
-            position: Vec(0, 0),
-            orientation: 0
+            position: Vec(0, 0)
         }]
     },
     {
@@ -10621,11 +10628,13 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         defType: DefinitionType.Building,
         material: "metal_heavy",
         particle: "bunker_particle",
-        collideWithLayers: Layers.Equal,
-        reflectBullets: true,
         spawnHitbox: new GroupHitbox(
-            RectangleHitbox.fromRect(18, 15, Vec(52.54, -5.11)),
+            RectangleHitbox.fromRect(18, 15, Vec(52.3, -5.11)),
             RectangleHitbox.fromRect(15, 18, Vec(0, 28.3))
+        ),
+        ceilingHitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(10, 7.5, Vec(54, -5.11)),
+            RectangleHitbox.fromRect(7.5, 10, Vec(0, 29.6))
         ),
         bunkerSpawnHitbox: RectangleHitbox.fromRect(130, 80),
         ceilingImages: [
@@ -10633,6 +10642,10 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { key: "hunted_bunker_entrance_ceiling", position: Vec(0, 28.3) }
         ],
         obstacles: IS_CLIENT ? undefined : [
+            { idString: "hunted_bunker_collider_hack", position: Vec(-4.57, 28.71), rotation: 0, layer: Layer.ToBasement },
+            { idString: "hunted_bunker_collider_hack", position: Vec(4.66, 28.71), rotation: 0, layer: Layer.ToBasement },
+            { idString: "hunted_bunker_collider_hack", position: Vec(52.7, -9.67), rotation: 1, layer: Layer.ToBasement },
+            { idString: "hunted_bunker_collider_hack", position: Vec(52.7, -0.55), rotation: 1, layer: Layer.ToBasement },
             { idString: "hunted_bunker_stair", position: Vec(54.36, -5.14), rotation: 3, layer: Layer.ToBasement },
             { idString: "hunted_bunker_stair", position: Vec(0, 30.11), rotation: 2, layer: Layer.ToBasement },
             { idString: "hunted_bunker_entrance", position: Vec(0, 28.3), rotation: 0 },
@@ -10690,6 +10703,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             position: Vec(0, 0)
         }],
         obstacles: IS_CLIENT ? undefined : [
+            { idString: "small_lamp_thingy", position: Vec(-17.05, -28.85) },
             { idString: "regular_crate", position: Vec(-11.5, -6.15) },
             { idString: "regular_crate", position: Vec(12.73, 29.39) },
             { idString: "regular_crate", position: Vec(22.63, 27.75) },
@@ -10732,8 +10746,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         ],
         subBuildings: IS_CLIENT ? undefined : [{
             idString: "lion_bunker_vault",
-            position: Vec(0.1, -23.8),
-            orientation: 0
+            position: Vec(0.1, -23.8)
         }]
     },
     {
@@ -10745,7 +10758,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         ceilingImages: [{
             key: "vault_ceiling",
             position: Vec(0, 0),
-            scale: Vec(3.74, 1.78)
+            scale: Vec(3.745, 1.78)
         }]
     }
 ]);

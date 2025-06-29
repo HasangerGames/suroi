@@ -5309,6 +5309,22 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         collideWithLayers: Layers.Equal
     },
     {
+        idString: "hunted_bunker_collider_hack",
+        name: "Hunted Mode Bunker Collider Hack",
+        defType: DefinitionType.Obstacle,
+        material: "metal_heavy",
+        health: 1000,
+        indestructible: true,
+        invisible: true,
+        hitbox: RectangleHitbox.fromRect(1.67, 12.32),
+        reflectBullets: true,
+        frames: {
+            particle: "bunker_particle"
+        },
+        rotationMode: RotationMode.Limited,
+        collideWithLayers: Layers.Equal
+    },
+    {
         idString: "fire_exit_railing",
         name: "Fire exit railing",
         defType: DefinitionType.Obstacle,

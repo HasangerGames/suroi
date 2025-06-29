@@ -1487,7 +1487,7 @@ logger.indent("Validating building definitions", () => {
                                     obj: image,
                                     field: "scale",
                                     defaultValue: { x: 1, y: 1 },
-                                    equalityFunction: Vec.equals,
+                                    equalityFunction: (a: Vector, b: Vector) => Vec.equals(a, b),
                                     validatorIfPresent(value, errorPath) {
                                         validators.vector(
                                             errorPath,
@@ -1550,7 +1550,7 @@ logger.indent("Validating building definitions", () => {
                                     obj: image,
                                     field: "scale",
                                     defaultValue: { x: 1, y: 1 },
-                                    equalityFunction: Vec.equals,
+                                    equalityFunction: (a: Vector, b: Vector) => Vec.equals(a, b),
                                     validatorIfPresent(value, errorPath) {
                                         validators.vector(
                                             errorPath,
@@ -2921,7 +2921,7 @@ logger.indent("Validating obstacles", () => {
                             validators.vector(errorPath, position);
                         },
                         defaultValue: Vec(0, 0),
-                        equalityFunction: Vec.equals,
+                        equalityFunction: (a: Vector, b: Vector) => Vec.equals(a, b),
                         baseErrorPath: errorPath2
                     });
 

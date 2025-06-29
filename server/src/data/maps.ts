@@ -738,7 +738,7 @@ const maps = {
             { name: "Decayedwood", position: Vec(0.5, 0.65) }
         ]
     },
-    hunted: {
+    hunted: { // WIP
         width: 1632,
         height: 1632,
         oceanSize: 128,
@@ -758,7 +758,6 @@ const maps = {
             }
         },
         buildings: {
-            large_bridge: 2,
             small_bridge: Infinity,
             river_hut_1: 2,
             river_hut_2: 2,
@@ -774,7 +773,6 @@ const maps = {
             lion_bunker: 1
         },
         quadBuildingLimit: {
-            port: 1,
             river_hut_1: 1,
             river_hut_2: 1,
             river_hut_3: 1,
