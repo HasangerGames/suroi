@@ -4176,7 +4176,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
             RectangleHitbox.fromRect(8.15, 17.3, Vec(0, -3.8)),
             RectangleHitbox.fromRect(9.45, 10.6, Vec(0, -4.9))
         ),
-        zIndex: ZIndexes.ObstaclesLayer1 - 2,
+        zIndex: ZIndexes.ObstaclesLayer1 - 3,
         rotationMode: RotationMode.Limited,
         winterVariations: 1
     },
@@ -5925,6 +5925,94 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
                 to: 0.395,
                 duration: 150
             }
+        }
+    },
+    {
+        idString: "moldy_log",
+        name: "Moldy Wood Log",
+        defType: DefinitionType.Obstacle,
+        material: "tree",
+        health: 200,
+        scale: {
+            spawnMin: 1,
+            spawnMax: 1,
+            destroy: 0.7
+        },
+        hitbox: RectangleHitbox.fromRect(23.16, 2.98),
+        rotationMode: RotationMode.Limited,
+        allowFlyover: FlyoverPref.Always,
+        noResidue: true,
+        frames: {
+            particle: "log_particle"
+        }
+    },
+    {
+        idString: "large_logs_pile_2",
+        name: "Large Logs Pile",
+        defType: DefinitionType.Obstacle,
+        variations: 2,
+        material: "tree",
+        health: 250,
+        scale: {
+            spawnMin: 1,
+            spawnMax: 1,
+            destroy: 0.7
+        },
+        hitbox: RectangleHitbox.fromRect(17.54, 8.22),
+        rotationMode: RotationMode.Limited,
+        allowFlyover: FlyoverPref.Always,
+        noResidue: true,
+        frames: {
+            particle: "log_particle"
+        }
+    },
+    {
+        idString: "small_logs_pile_2",
+        name: "Small Logs Pile",
+        defType: DefinitionType.Obstacle,
+        material: "tree",
+        variations: 2,
+        health: 230,
+        scale: {
+            spawnMin: 1,
+            spawnMax: 1,
+            destroy: 0.7
+        },
+        hitbox: RectangleHitbox.fromRect(8.6, 8.21),
+        rotationMode: RotationMode.Limited,
+        allowFlyover: FlyoverPref.Always,
+        noResidue: true,
+        frames: {
+            particle: "log_particle"
+        }
+    },
+    {
+        idString: "small_moldy_logs",
+        name: "Small Moldy Logs",
+        defType: DefinitionType.Obstacle,
+        material: "tree",
+        health: 110,
+        scale: {
+            spawnMin: 1,
+            spawnMax: 1,
+            destroy: 0.7
+        },
+        hitbox: new GroupHitbox(
+            new CircleHitbox(1.5, Vec(0.94, 1.36)),
+            new CircleHitbox(1.21, Vec(-2.65, -1.14)),
+            new CircleHitbox(1.21, Vec(2.62, 1.85)),
+            new CircleHitbox(1.21, Vec(1.15, 2.72)),
+            new CircleHitbox(1.21, Vec(-1.38, -2.66)),
+            new CircleHitbox(1.45, Vec(-0.7, -0.41)),
+            new CircleHitbox(1.18, Vec(0.14, 0.47)),
+            new CircleHitbox(0.88, Vec(-1.87, -0.39)),
+            new CircleHitbox(0.88, Vec(-0.61, -1.62))
+        ),
+        rotationMode: RotationMode.Full,
+        allowFlyover: FlyoverPref.Always,
+        noResidue: true,
+        frames: {
+            particle: "log_particle"
         }
     }
 ] satisfies readonly RawObstacleDefinition[] as readonly RawObstacleDefinition[]).flatMap((def: Mutable<RawObstacleDefinition>) => {
