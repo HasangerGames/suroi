@@ -766,12 +766,12 @@ export class Game implements GameData {
                 this._started = true;
                 this.setGameData({ startedTime: this.now });
                 this.gas.advanceGasStage();
-            }, 3000);
 
-            this.addTimeout(() => {
-                this.log("Preventing new players from joining");
-                this.setGameData({ allowJoin: false });
-            }, GAME_SPAWN_WINDOW * 1000);
+                this.addTimeout(() => {
+                    this.log("Preventing new players from joining");
+                    this.setGameData({ allowJoin: false });
+                }, GAME_SPAWN_WINDOW * 1000);
+            }, 3000);
         }
 
         this.log(`"${player.name}" joined`);
