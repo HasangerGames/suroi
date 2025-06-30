@@ -17,7 +17,7 @@ import { CircleHitbox, type Hitbox } from "@common/utils/hitbox";
 import { ColorStyles, Logger, styleText } from "@common/utils/logging";
 import { Angle, Geometry, Numeric, Statistics } from "@common/utils/math";
 import { removeFrom, Timeout } from "@common/utils/misc";
-import { ItemType, type ReferenceTo, type ReifiableDef } from "@common/utils/objectDefinitions";
+import { DefinitionType, type ReferenceTo, type ReifiableDef } from "@common/utils/objectDefinitions";
 import { pickRandomInArray, randomPointInsideCircle, randomRotation } from "@common/utils/random";
 import { SuroiByteStream } from "@common/utils/suroiByteStream";
 import { Vec, type Vector } from "@common/utils/vector";
@@ -156,11 +156,11 @@ export class Game implements GameData {
     killLeader: Player | undefined;
     killLeaderDirty = false;
 
-    private readonly _spawnableItemTypeCache = [] as Cache;
+    private readonly _spawnableDefinitionTypeCache = [] as Cache;
 
     private _spawnableLoots: ItemRegistry | undefined;
     get spawnableLoots(): ItemRegistry {
-        return this._spawnableLoots ??= getSpawnableLoots(this.modeName, this.map.mapDef, this._spawnableItemTypeCache);
+        return this._spawnableLoots ??= getSpawnableLoots(this.modeName, this.map.mapDef, this._spawnableDefinitionTypeCache);
     }
 
     private readonly _allItemsTypeCache = [] as Cache;
@@ -715,7 +715,7 @@ export class Game implements GameData {
         player.isMobile = packet.isMobile;
         const skin = packet.skin;
         if (
-            skin.itemType === ItemType.Skin
+            skin.defType === DefinitionType.Skin
             && !skin.hideFromLoadout
             && (
                 skin.rolesRequired === undefined

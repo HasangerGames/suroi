@@ -2,7 +2,7 @@ import { Ammos } from "./definitions/items/ammos";
 import { HealingItems } from "./definitions/items/healingItems";
 import { Scopes } from "./definitions/items/scopes";
 import { Throwables } from "./definitions/items/throwables";
-import { ItemType } from "./utils/objectDefinitions";
+import { DefinitionType } from "./utils/objectDefinitions";
 
 export const DEFAULT_INVENTORY: Record<string, number> = Object.create(null) as Record<string, number>;
 
@@ -10,8 +10,8 @@ for (const item of [...HealingItems, ...Ammos, ...Scopes, ...Throwables]) {
     let amount = 0;
 
     switch (true) {
-        case item.itemType === ItemType.Ammo && item.ephemeral: amount = Infinity; break;
-        case item.itemType === ItemType.Scope && item.giveByDefault: amount = 1; break;
+        case item.defType === DefinitionType.Ammo && item.ephemeral: amount = Infinity; break;
+        case item.defType === DefinitionType.Scope && item.giveByDefault: amount = 1; break;
     }
 
     DEFAULT_INVENTORY[item.idString] = amount;

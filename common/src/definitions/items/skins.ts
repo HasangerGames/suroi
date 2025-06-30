@@ -1,4 +1,4 @@
-import { DefinitionType, ItemType, ObjectDefinitions, type ItemDefinition } from "../../utils/objectDefinitions";
+import { DefinitionType, ObjectDefinitions, type ItemDefinition } from "../../utils/objectDefinitions";
 
 /*
     eslint-disable @stylistic/no-multi-spaces
@@ -10,7 +10,7 @@ import { DefinitionType, ItemType, ObjectDefinitions, type ItemDefinition } from
 
 export interface SkinDefinition extends ItemDefinition {
     readonly defType: DefinitionType.Skin
-    readonly itemType: ItemType.Skin
+
     readonly hideFromLoadout?: boolean
     readonly grassTint?: boolean
     readonly baseImage?: string
@@ -34,7 +34,6 @@ const skin = (
     idString: name.toLowerCase().replace(/'/g, "").replace(/ /g, "_"),
     name,
     defType: DefinitionType.Skin,
-    itemType: ItemType.Skin,
     baseImage: baseTint !== undefined ? "plain_base" : undefined,
     fistImage: fistTint !== undefined ? "plain_fist" : undefined,
     baseTint,

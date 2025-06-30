@@ -15,7 +15,7 @@ import type { ReportData } from "@common/packets/reportPacket";
 import { type PlayerData, type UpdateDataCommon } from "@common/packets/updatePacket";
 import { Numeric } from "@common/utils/math";
 import { ExtendedMap } from "@common/utils/misc";
-import { DefinitionType, ItemType, type ReferenceTo } from "@common/utils/objectDefinitions";
+import { DefinitionType, DefinitionType, type ReferenceTo } from "@common/utils/objectDefinitions";
 import { Vec, type Vector } from "@common/utils/vector";
 import $ from "jquery";
 import { Color } from "pixi.js";
@@ -862,7 +862,7 @@ class UIManagerClass {
                 .css("color", count > 0 ? "inherit" : "red");
 
             let showReserve = false;
-            if (activeWeapon.definition.itemType === ItemType.Gun) {
+            if (activeWeapon.definition.defType === DefinitionType.Gun) {
                 const ammoType = activeWeapon.definition.ammoType;
                 let totalAmmo: number | string = ClientPerkManager.hasItem(PerkIds.InfiniteAmmo)
                     ? "∞"
@@ -888,7 +888,7 @@ class UIManagerClass {
             }
 
             if (InputManager.isMobile) {
-                this.ui.reloadIcon.toggle(activeWeapon.definition.itemType !== ItemType.Throwable);
+                this.ui.reloadIcon.toggle(activeWeapon.definition.defType !== DefinitionType.Throwable);
             }
         }
 
@@ -959,7 +959,7 @@ class UIManagerClass {
                 cache.idString = idString;
 
                 if (definition) {
-                    const isGun = definition.itemType === ItemType.Gun;
+                    const isGun = definition.defType === DefinitionType.Gun;
 
                     if (isGun) {
                         itemImage.css("transform", definition.inventoryScale !== undefined ? `scale(${definition.inventoryScale})` : "unset");
@@ -999,7 +999,7 @@ class UIManagerClass {
                         let frame = definition.idString;
                         if (
                             ClientPerkManager.hasItem(PerkIds.PlumpkinBomb)
-                            && definition.itemType === ItemType.Throwable
+                            && definition.defType === DefinitionType.Throwable
                             && !definition.noSkin
                         ) {
                             frame += "_halloween";
@@ -1107,11 +1107,11 @@ class UIManagerClass {
 
             itemSlot.toggleClass("has-item", isPresent);
 
-            if ((itemDef.itemType === ItemType.Ammo || itemDef.itemType === ItemType.Healing) && itemDef.hideUnlessPresent) {
+            if ((itemDef.defType === DefinitionType.Ammo || itemDef.defType === DefinitionType.HealingItem) && itemDef.hideUnlessPresent) {
                 itemSlot.css("visibility", isPresent ? "visible" : "hidden");
             }
 
-            if (itemDef.itemType === ItemType.Scope && !UI_DEBUG_MODE) {
+            if (itemDef.defType === DefinitionType.Scope && !UI_DEBUG_MODE) {
                 itemSlot.toggle(isPresent).removeClass("active");
             }
         }
@@ -1238,7 +1238,7 @@ class UIManagerClass {
         const grenadeImpactKill = (
             weaponPresent
             && weaponUsed.defType !== DefinitionType.Explosion
-            && weaponUsed.itemType === ItemType.Throwable
+            && weaponUsed.defType === DefinitionType.Throwable
         )
             ? getTranslatedString("kf_impact_of")
             : "";

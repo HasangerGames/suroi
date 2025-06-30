@@ -8,7 +8,7 @@ import { type InputAction } from "@common/packets/inputPacket";
 import { SpectatePacket } from "@common/packets/spectatePacket";
 import { Numeric } from "@common/utils/math";
 import { handleResult, type Result } from "@common/utils/misc";
-import { ItemType, type ReferenceTo } from "@common/utils/objectDefinitions";
+import { DefinitionType, type ReferenceTo } from "@common/utils/objectDefinitions";
 import { Rectangle, RendererType, Sprite, VERSION } from "pixi.js";
 import { Config, type ServerInfo } from "../config";
 import { Game } from "../game";
@@ -572,7 +572,7 @@ export function setUpCommands(): void {
         "equip_or_cycle_throwables",
         function(offset) {
             // If we're already on a throwable slot, start cycling. Otherwise, make that slot active
-            if (Game.activePlayer?.activeItem.itemType === ItemType.Throwable) {
+            if (Game.activePlayer?.activeItem.defType === DefinitionType.Throwable) {
                 const step = Casters.toInt(offset ?? "NaN");
 
                 if ("err" in step) {
@@ -583,7 +583,7 @@ export function setUpCommands(): void {
 
                 InputManager.cycleThrowable(step.res);
             } else {
-                const throwableSlot = GameConstants.player.inventorySlotTypings.findIndex(slot => slot === ItemType.Throwable);
+                const throwableSlot = GameConstants.player.inventorySlotTypings.findIndex(slot => slot === DefinitionType.Throwable);
 
                 if (throwableSlot !== -1) {
                     InputManager.addAction({

@@ -28,7 +28,7 @@ import { CircleHitbox, RectangleHitbox, type Hitbox } from "@common/utils/hitbox
 import { adjacentOrEqualLayer } from "@common/utils/layer";
 import { Angle, Collision, Geometry, Numeric } from "@common/utils/math";
 import { removeFrom, type SDeepMutable, type Timeout } from "@common/utils/misc";
-import { DefinitionType, ItemType, type EventModifiers, type ExtendedWearerAttributes, type ReferenceTo, type ReifiableDef, type WearerAttributes } from "@common/utils/objectDefinitions";
+import { DefinitionType, DefinitionType, type EventModifiers, type ExtendedWearerAttributes, type ReferenceTo, type ReifiableDef, type WearerAttributes } from "@common/utils/objectDefinitions";
 import { type FullData } from "@common/utils/objectsSerializations";
 import { pickRandomInArray, randomPointInsideCircle, weightedRandom } from "@common/utils/random";
 import { SuroiByteStream } from "@common/utils/suroiByteStream";
@@ -546,12 +546,12 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 kills?: string
             ): void => {
                 const weaponDef = Loots.fromStringSafe<GunDefinition | MeleeDefinition>(weaponName);
-                let itemType: ItemType;
+                let defType: DefinitionType;
 
                 if (
                     weaponDef === undefined // no such item
-                    || ![ItemType.Gun, ItemType.Melee].includes(itemType = weaponDef.itemType) // neither gun nor melee
-                    || GameConstants.player.inventorySlotTypings[slot] !== itemType // invalid type
+                    || ![DefinitionType.Gun, DefinitionType.Melee].includes(defType = weaponDef.defType) // neither gun nor melee
+                    || GameConstants.player.inventorySlotTypings[slot] !== defType // invalid type
                 ) return;
 
                 this.inventory.addOrReplaceWeapon(slot, weaponDef);
@@ -631,33 +631,33 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         inventory.throwableItemMap.get(idString)!.count = inventory.items.getItem(idString);
     }
 
-    private static readonly _weaponSwapWeights: Partial<Record<ItemType, Partial<Record<Tier, number>>>> = {
-        [ItemType.Gun]: {
+    private static readonly _weaponSwapWeights: Partial<Record<DefinitionType, Partial<Record<Tier, number>>>> = {
+        [DefinitionType.Gun]: {
             [Tier.S]: 0.15,
             [Tier.A]: 0.2,
             [Tier.B]: 0.5,
             [Tier.C]: 0.818,
             [Tier.D]: 0.182
         },
-        [ItemType.Melee]: {
+        [DefinitionType.Melee]: {
             [Tier.S]: 0.125,
             [Tier.A]: 0.5,
             [Tier.B]: 0.4,
             [Tier.C]: 0.4,
             [Tier.D]: 0.2
         },
-        [ItemType.Throwable]: {
+        [DefinitionType.Throwable]: {
             [Tier.S]: 0.4,
             [Tier.C]: 1,
             [Tier.D]: 0.5
         }
     };
 
-    private static readonly _weaponTiersCache: Partial<Record<ItemType, Partial<Record<Tier, WeaponDefinition[]>>>> = {};
+    private static readonly _weaponTiersCache: Partial<Record<DefinitionType, Partial<Record<Tier, WeaponDefinition[]>>>> = {};
 
     tryRefund(item: InventoryItem = this.activeItem): void {
         if (
-            item.category !== ItemType.Gun
+            item.category !== DefinitionType.Gun
             || item.owner !== this
             || item.definition.bulletCount !== 1
             || !this.inventory.weapons.includes(item)
@@ -697,7 +697,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         if (slot === -1) {
             // this happens if the item to be swapped isn't currently in the inventory
             // in that case, we just take the first slot matching that item's type
-            slot = GameConstants.player.inventorySlotTypings.filter(slot => slot === item.definition.itemType)?.[0] ?? 0;
+            slot = GameConstants.player.inventorySlotTypings.filter(slot => slot === item.definition.defType)?.[0] ?? 0;
             // and if we somehow don't have any matching slots, then someone's probably messing with us… fallback to slot 0 lol
         }
 
@@ -719,7 +719,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             : spawnable.forType(type).filter(item => !item.noSwap);
 
         const chosenItem = pickRandomInArray<WeaponDefinition>(
-            type === ItemType.Throwable
+            type === DefinitionType.Throwable
                 ? potentials.filter(
                     ({ idString: thr }) => (items.hasItem(thr) ? items.getItem(thr) : 0) < maxCapacity[thr]
                 )
@@ -727,8 +727,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         );
         if (chosenItem === undefined) return;
 
-        switch (chosenItem.itemType) { // chosenItem.itemType === type, but the former helps ts narrow chosenItem's type
-            case ItemType.Gun: {
+        switch (chosenItem.defType) { // chosenItem.defType === type, but the former helps ts narrow chosenItem's type
+            case DefinitionType.Gun: {
                 this.action?.cancel();
 
                 const { capacity, ammoType, ammoSpawnAmount, summonAirdrop } = chosenItem;
@@ -747,12 +747,12 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 break;
             }
 
-            case ItemType.Melee: {
+            case DefinitionType.Melee: {
                 inventory.replaceWeapon(slot, chosenItem, force);
                 break;
             }
 
-            case ItemType.Throwable: {
+            case DefinitionType.Throwable: {
                 const { idString } = chosenItem;
 
                 const count = items.hasItem(idString) ? items.getItem(idString) : 0;
@@ -778,7 +778,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
                 item.count = newCount;
 
-                const slot = inventory.slotsByItemType[ItemType.Throwable]?.[0];
+                const slot = inventory.slotsByDefinitionType[DefinitionType.Throwable]?.[0];
 
                 if (slot !== undefined && !inventory.hasWeapon(slot)) {
                     inventory.replaceWeapon(slot, item, force);
@@ -867,6 +867,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     sendEmote(source?: EmoteDefinition, isFromServer = false): void {
         if (this.emoteRateLimit() || !source) return;
 
+        // TODO do this server side, shouldn't need this check
         let isValid = false;
         for (const definitionList of [Emotes, Ammos, HealingItems, Guns, Melees, Throwables]) {
             if (definitionList.hasString(source.idString)) {
@@ -874,15 +875,9 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 break;
             }
         }
-        if (!isValid) return;
+        if (!isValid || !this.game.isTeamMode) return;
 
-        if (
-            "itemType" in source
-            && (source.itemType === ItemType.Ammo || source.itemType === ItemType.Healing)
-            && !this.game.isTeamMode
-        ) return;
-
-        const indexOf = this.loadout.emotes.indexOf(source);
+        constdefType = this.loadout.emotes.indexOf(source);
         if (!isFromServer && (indexOf < 0 || indexOf > 5)) return;
 
         if (this.game.pluginManager.emit("player_will_emote", { player: this, emote: source })) return;
@@ -2158,7 +2153,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         const old = this.backEquippedMelee?.idString;
         this.backEquippedMelee = this.inventory.weapons.find(w => {
             return w
-                && w.definition.itemType === ItemType.Melee
+                && w.definition.defType === DefinitionType.Melee
                 && w.definition.onBack
                 && w !== this.activeItem;
         })?.definition as MeleeDefinition | undefined;
@@ -2340,7 +2335,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             if (count > 0) {
                 if (def.noDrop || ("ephemeral" in def && def.ephemeral)) continue;
 
-                if (def.itemType === ItemType.Ammo && count !== Infinity) {
+                if (def.defType === DefinitionType.Ammo && count !== Infinity) {
                     let left = count;
                     let subtractAmount = 0;
 
@@ -2363,8 +2358,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             if (item && !item.noDrop) {
                 this.game.addLoot(item, position, layer);
             }
-        }
-
+        }defType
+defType
         this.inventory.helmet = this.inventory.vest = undefined;
 
         // Drop skin
@@ -2580,7 +2575,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                     break;
                 }
                 case InputActions.DropItem: {
-                    if (!this.game.isTeamMode && action.item.itemType !== ItemType.Perk) break;
+                    if (!this.game.isTeamMode && action.item.defType !== DefinitionType.Perk) break;
                     this.action?.cancel();
                     inventory.dropItem(action.item);
                     break;
@@ -2633,7 +2628,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                             (isLoot || (type === InputActions.Interact && isInteractable))
                             && object.hitbox?.collidesWith(detectionHitbox)
                             && adjacentOrEqualLayer(this.layer, object.layer)
-                            && !(isLoot && [ItemType.Throwable, ItemType.Gun].includes(object.definition.itemType) && this.perks.hasItem(PerkIds.Lycanthropy))
+                            && !(isLoot && [DefinitionType.Throwable, DefinitionType.Gun].includes(object.definition.defType) && this.perks.hasItem(PerkIds.Lycanthropy))
                         ) {
                             const dist = Geometry.distanceSquared(object.position, this.position);
                             if (isInteractable) {
