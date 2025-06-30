@@ -312,7 +312,7 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
 
         switch (defType) {
             case DefinitionType.Melee: {
-                const slot: number | undefined = (inventory.slotsByDefinitionType[DefinitionType.Melee] ?? [])[0];
+                const slot: number | undefined = (inventory.slotsByDefType[DefinitionType.Melee] ?? [])[0];
 
                 // No melee slot? Nothing to do
                 if (slot === undefined) {
@@ -408,7 +408,7 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
                 };
 
                 if (definition.defType === DefinitionType.Throwable) {
-                    const slot: number | undefined = (inventory.slotsByDefinitionType[DefinitionType.Throwable] ?? [])[0];
+                    const slot: number | undefined = (inventory.slotsByDefType[DefinitionType.Throwable] ?? [])[0];
 
                     // No grenade slot? Nothing to do, don't even add it to the inventory's item collection
                     if (slot === undefined) {

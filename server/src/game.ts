@@ -156,11 +156,11 @@ export class Game implements GameData {
     killLeader: Player | undefined;
     killLeaderDirty = false;
 
-    private readonly _spawnableDefinitionTypeCache = [] as Cache;
+    private readonly _spawnableItemTypeCache = [] as Cache;
 
     private _spawnableLoots: ItemRegistry | undefined;
     get spawnableLoots(): ItemRegistry {
-        return this._spawnableLoots ??= getSpawnableLoots(this.modeName, this.map.mapDef, this._spawnableDefinitionTypeCache);
+        return this._spawnableLoots ??= getSpawnableLoots(this.modeName, this.map.mapDef, this._spawnableItemTypeCache);
     }
 
     private readonly _allItemsTypeCache = [] as Cache;

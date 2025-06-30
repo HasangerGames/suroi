@@ -5,12 +5,12 @@ import type { AbstractConstructor, Constructor, PredicateFor } from "@common/uti
 import { DefinitionType, type ReifiableDef, type WearerAttributes } from "@common/utils/objectDefinitions";
 import { type ItemData } from "../objects/loot";
 import { type Player } from "../objects/player";
-import type { InventoryItem, WeaponDefinitionTypeMap } from "./inventory";
+import type { InventoryItem, WeaponItemTypeMap } from "./inventory";
 
 type PredicateForItem<Type extends WeaponTypes> = {
     readonly category: Type
     readonly definition: LootDefForType<Type>
-} & PredicateFor<WeaponDefinitionTypeMap, Type>;
+} & PredicateFor<WeaponItemTypeMap, Type>;
 
 type LoosePredicateFor<Type extends WeaponTypes = WeaponTypes> = {
     readonly category: Type
@@ -18,9 +18,9 @@ type LoosePredicateFor<Type extends WeaponTypes = WeaponTypes> = {
 } & {
     // if Type === WeaponTypes, then they should all be boolean | undefined; if not, narrow as appropriate
     // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
-    readonly [K in (keyof WeaponDefinitionTypeMap & string) as `is${K}`]: WeaponTypes extends Type
+    readonly [K in (keyof WeaponItemTypeMap & string) as `is${K}`]: WeaponTypes extends Type
         ? boolean | undefined
-        : WeaponDefinitionTypeMap[K] extends Type
+        : WeaponItemTypeMap[K] extends Type
             ? true
             : false | undefined
 };

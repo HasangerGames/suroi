@@ -28,7 +28,7 @@ import { CircleHitbox, RectangleHitbox, type Hitbox } from "@common/utils/hitbox
 import { adjacentOrEqualLayer } from "@common/utils/layer";
 import { Angle, Collision, Geometry, Numeric } from "@common/utils/math";
 import { removeFrom, type SDeepMutable, type Timeout } from "@common/utils/misc";
-import { DefinitionType, DefinitionType, type EventModifiers, type ExtendedWearerAttributes, type ReferenceTo, type ReifiableDef, type WearerAttributes } from "@common/utils/objectDefinitions";
+import { DefinitionType, type EventModifiers, type ExtendedWearerAttributes, type ReferenceTo, type ReifiableDef, type WearerAttributes } from "@common/utils/objectDefinitions";
 import { type FullData } from "@common/utils/objectsSerializations";
 import { pickRandomInArray, randomPointInsideCircle, weightedRandom } from "@common/utils/random";
 import { SuroiByteStream } from "@common/utils/suroiByteStream";
@@ -778,7 +778,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
                 item.count = newCount;
 
-                const slot = inventory.slotsByDefinitionType[DefinitionType.Throwable]?.[0];
+                const slot = inventory.slotsByDefType[DefinitionType.Throwable]?.[0];
 
                 if (slot !== undefined && !inventory.hasWeapon(slot)) {
                     inventory.replaceWeapon(slot, item, force);
@@ -867,17 +867,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     sendEmote(source?: EmoteDefinition, isFromServer = false): void {
         if (this.emoteRateLimit() || !source) return;
 
-        // TODO do this server side, shouldn't need this check
-        let isValid = false;
-        for (const definitionList of [Emotes, Ammos, HealingItems, Guns, Melees, Throwables]) {
-            if (definitionList.hasString(source.idString)) {
-                isValid = true;
-                break;
-            }
-        }
-        if (!isValid || !this.game.isTeamMode) return;
-
-        constdefType = this.loadout.emotes.indexOf(source);
+        const indexOf = this.loadout.emotes.indexOf(source);
         if (!isFromServer && (indexOf < 0 || indexOf > 5)) return;
 
         if (this.game.pluginManager.emit("player_will_emote", { player: this, emote: source })) return;
@@ -2358,8 +2348,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             if (item && !item.noDrop) {
                 this.game.addLoot(item, position, layer);
             }
-        }defType
-defType
+        }
         this.inventory.helmet = this.inventory.vest = undefined;
 
         // Drop skin

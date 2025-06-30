@@ -15,7 +15,7 @@ import type { ReportData } from "@common/packets/reportPacket";
 import { type PlayerData, type UpdateDataCommon } from "@common/packets/updatePacket";
 import { Numeric } from "@common/utils/math";
 import { ExtendedMap } from "@common/utils/misc";
-import { DefinitionType, DefinitionType, type ReferenceTo } from "@common/utils/objectDefinitions";
+import { DefinitionType, type ReferenceTo } from "@common/utils/objectDefinitions";
 import { Vec, type Vector } from "@common/utils/vector";
 import $ from "jquery";
 import { Color } from "pixi.js";

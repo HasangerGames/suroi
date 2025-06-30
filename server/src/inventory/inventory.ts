@@ -24,7 +24,7 @@ export type ReifiableItem = InventoryItem | ReifiableDef<InventoryItem["definiti
 export type ReifiableItemOfType<Type extends WeaponTypes> =
     InventoryItemMapping[Type] | ReifiableDef<LootDefForType<Type>>;
 
-export type WeaponDefinitionTypeMap = { [K in GetEnumMemberName<typeof DefinitionType, WeaponTypes>]: (typeof DefinitionType)[K] };
+export type WeaponItemTypeMap = { [K in GetEnumMemberName<typeof DefinitionType, WeaponTypes>]: (typeof DefinitionType)[K] };
 
 export type InventoryItem = InventoryItemMapping[WeaponTypes];
 
@@ -39,7 +39,7 @@ export const InventoryItemCtorMapping = {
     [DefinitionType.Melee]: MeleeItem,
     [DefinitionType.Throwable]: ThrowableItem
 } satisfies {
-    [K in WeaponTypes]: AbstractConstructor<InventoryItem & PredicateFor<WeaponDefinitionTypeMap, K>, [def: ReifiableDef<LootDefForType<K>>, owner: Player, data?: ItemData<LootDefForType<K>>]>
+    [K in WeaponTypes]: AbstractConstructor<InventoryItem & PredicateFor<WeaponItemTypeMap, K>, [def: ReifiableDef<LootDefForType<K>>, owner: Player, data?: ItemData<LootDefForType<K>>]>
 };
 
 /**
@@ -79,7 +79,7 @@ export class Inventory {
         () => undefined
     );
 
-    readonly slotsByDefinitionType = Object.freeze(
+    readonly slotsByDefType = Object.freeze(
         GameConstants.player.inventorySlotTypings.reduce(
             (acc, cur, i) => {
                 (acc[cur] ??= []).push(i);
@@ -458,7 +458,7 @@ export class Inventory {
 
                 // if we get here, there's hopefully a throwable slot
                 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                const slot = this.slotsByDefinitionType[DefinitionType.Throwable]![0];
+                const slot = this.slotsByDefType[DefinitionType.Throwable]![0];
 
                 this.unlock(slot);
                 this.weapons[slot] = undefined;
@@ -816,7 +816,7 @@ export class Inventory {
                 }
                 this.owner.setDirty();
                 this.owner.dirty.weapons = true;
-                const slot = this.slotsByDefinitionType[DefinitionType.Throwable]?.[0];
+                const slot = this.slotsByDefType[DefinitionType.Throwable]?.[0];
                 // Let's hope there's only one throwable slot…
                 if (slot !== undefined) {
                     const old = this.weapons[slot];
