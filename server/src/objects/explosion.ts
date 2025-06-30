@@ -94,15 +94,7 @@ export class Explosion {
                             source: this.source,
                             weaponUsed: this
                         });
-
-                        // Destroy pallets
-                        if (object.isObstacle && object.definition.pallet) {
-                            object.dead = true;
-                            object.setDirty();
-                        }
-                    }
-
-                    if (isLoot || isProjectile) {
+                    } else if (isLoot || isProjectile) {
                         if (isProjectile) object.damage({ amount: definition.damage });
 
                         const multiplier = isProjectile ? 0.002 : 0.01;

@@ -34,7 +34,6 @@ type CommonObstacleDefinition = ObjectDefinition & {
     readonly spawnHitbox?: Hitbox
     readonly noCollisions?: boolean
     readonly noCollisionAfterDestroyed?: boolean
-    readonly pallet?: boolean
     readonly rotationMode: RotationMode // for obstacles with a role, this cannot be RotationMode.Full
     readonly particleVariations?: number
     readonly zIndex?: ZIndexes
@@ -4107,9 +4106,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         defType: DefinitionType.Obstacle,
         material: "wood",
         health: 120,
-        indestructible: true,
         hitbox: RectangleHitbox.fromRect(10.1, 9),
-        zIndex: ZIndexes.DeadObstacles,
+        zIndex: ZIndexes.Decals,
         rotationMode: RotationMode.Limited,
         allowFlyover: FlyoverPref.Always,
         frames: {
@@ -4118,8 +4116,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         },
         noCollisions: true,
         noMeleeCollision: true,
-        noBulletCollision: true,
-        pallet: true
+        noBulletCollision: true
     },
     {
         idString: "pipe",
