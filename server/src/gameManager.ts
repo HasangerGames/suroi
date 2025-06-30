@@ -138,9 +138,9 @@ if (!Cluster.isPrimary) {
     let teamMode = parseInt(data.teamMode);
     let map = data.map;
 
-    let game = new Game(id, teamMode, map);
+    let game: Game | undefined;
 
-    process.on("uncaughtException", e => game.error("An unhandled error occurred. Details:", e));
+    process.on("uncaughtException", e => game?.error("An unhandled error occurred. Details:", e));
 
     process.on("message", (message: WorkerMessage) => {
         switch (message.type) {
@@ -150,7 +150,7 @@ if (!Cluster.isPrimary) {
             }
             case WorkerMessages.UpdateMap: {
                 map = message.map;
-                game.kill();
+                game?.kill();
                 break;
             }
             case WorkerMessages.NewGame: {
@@ -162,7 +162,7 @@ if (!Cluster.isPrimary) {
 
     setInterval(() => {
         const memoryUsage = process.memoryUsage().rss;
-        game.log(`RAM usage: ${Math.round(memoryUsage / 1024 / 1024 * 100) / 100} MB`);
+        game?.log(`RAM usage: ${Math.round(memoryUsage / 1024 / 1024 * 100) / 100} MB`);
     }, 60000);
 
     const { maxSimultaneousConnections, maxJoinAttempts } = Config;
@@ -177,7 +177,7 @@ if (!Cluster.isPrimary) {
         async upgrade(res, req, context) {
             res.onAborted(() => { /* no-op */ });
 
-            if (!game.allowJoin) {
+            if (!game?.allowJoin) {
                 forbidden(res);
                 return;
             }
@@ -191,12 +191,12 @@ if (!Cluster.isPrimary) {
             const webSocketExtensions = req.getHeader("sec-websocket-extensions");
 
             if (simultaneousConnections?.isLimited(ip)) {
-                game.warn(ip, "exceeded maximum simultaneous connections");
+                game?.warn(ip, "exceeded maximum simultaneous connections");
                 forbidden(res);
                 return;
             }
             if (joinAttempts?.isLimited(ip)) {
-                game.warn(ip, "exceeded maximum join attempts");
+                game?.warn(ip, "exceeded maximum join attempts");
                 forbidden(res);
                 return;
             }
@@ -228,7 +228,7 @@ if (!Cluster.isPrimary) {
 
         open(socket: WebSocket<PlayerSocketData>) {
             const data = socket.getUserData();
-            data.player = game.addPlayer(socket);
+            data.player = game?.addPlayer(socket);
             if (data.player === undefined) return;
 
             simultaneousConnections?.increment(data.ip);
@@ -237,7 +237,7 @@ if (!Cluster.isPrimary) {
 
         message(socket: WebSocket<PlayerSocketData>, message: ArrayBuffer) {
             try {
-                game.onMessage(socket.getUserData().player, message);
+                game?.onMessage(socket.getUserData().player, message);
             } catch (e) {
                 console.warn("Error parsing message:", e);
             }
@@ -246,10 +246,11 @@ if (!Cluster.isPrimary) {
         close(socket: WebSocket<PlayerSocketData>) {
             const { player, ip } = socket.getUserData();
 
-            if (player) game.removePlayer(player);
+            if (player) game?.removePlayer(player);
             if (ip) simultaneousConnections?.decrement(ip);
         }
     }).listen(Config.hostname, Config.port + id + 1, () => {
+        game = new Game(id, teamMode, map);
         game.log(`Listening on ${Config.hostname}:${Config.port + id + 1}`);
     });
 }
