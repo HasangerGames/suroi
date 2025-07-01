@@ -10928,7 +10928,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 { length: 5 },
                 (_, i) => ({
                     idString: "fence",
-                    position: Vec(-103.06 - 8.8 * i, 115.42),
+                    position: Vec(-103.06 - 8.5 * i, 115.42),
                     rotation: 0
                 })
             ),
@@ -10937,7 +10937,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 { length: 13 },
                 (_, i) => ({
                     idString: "fence",
-                    position: Vec(-142.78, 118 + 8.8 * i),
+                    position: Vec(-142.78, 118.48 + 8.5 * i),
                     rotation: 1
                 })
             ),
@@ -10946,16 +10946,16 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 { length: 10 },
                 (_, i) => ({
                     idString: "fence",
-                    position: Vec(-106.02 + 8.8 * i, 231.49),
+                    position: Vec(-106.02 + 8.5 * i, 231.49),
                     rotation: 0
                 })
             ),
 
             ...Array.from(
-                { length: 10 },
+                { length: 11 },
                 (_, i) => ({
                     idString: "fence",
-                    position: Vec(38.13 + 8.8 * i, 231.48),
+                    position: Vec(38.13 + 8.5 * i, 231.48),
                     rotation: 0
                 })
             ),
@@ -10973,11 +10973,12 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "fence", position: Vec(142.12, 211.01), rotation: 1 },
             { idString: "fence", position: Vec(142.12, 219.34), rotation: 1 },
             { idString: "fence", position: Vec(142.12, 227.63), rotation: 1 },
+            { idString: "fence", position: Vec(-142.78, 228.61), rotation: 1 }, // this because some designer miscalculated the fence distance
             { idString: "fence", position: Vec(-22.52, 231.53), rotation: 0 }, // this because some designer miscalculated the fence distance
 
             { idString: "metal_column", position: Vec(-142.96, 26.09) },
             { idString: "metal_column", position: Vec(-142.78, 115.5) },
-            { idString: "metal_column", position: Vec(-142.78, 229) },
+            { idString: "metal_column", position: Vec(-142.78, 231.5) },
             { idString: "metal_column", position: Vec(-98.73, 115.29) },
             { idString: "metal_column", position: Vec(-110.19, 231.53) },
             { idString: "metal_column", position: Vec(-18.29, 231.44) },
@@ -10988,7 +10989,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "metal_column", position: Vec(142.39, 25.17) },
             { idString: "metal_column", position: Vec(50.71, 120.24) },
             { idString: "metal_column", position: Vec(51.36, 97.42) },
-            { idString: "metal_column", position: Vec(123.12, 231.59) },
+            { idString: "metal_column", position: Vec(128, 231.59) },
 
             { idString: "barrier", position: Vec(-100.92, 92.36), rotation: 2 },
             { idString: "barrier", position: Vec(8.34, 226.46), rotation: 1 },
@@ -11023,7 +11024,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
 
             { idString: "small_moldy_logs", position: Vec(-78.92, 68.79), rotation: 0 },
             { idString: "small_moldy_logs", position: Vec(138.02, 216.19), rotation: 1 },
-            { idString: "small_moldy_logs", position: Vec(-68.77, 74.2), rotation: 2 },
+            { idString: "small_moldy_logs", position: Vec(-68.77, 74.2), rotation: 3 },
 
             { idString: "small_logs_pile_2", position: Vec(-17.61, 69.07), rotation: 0, variation: 2 },
             { idString: "small_logs_pile_2", position: Vec(13.28, 123.94), rotation: 2, variation: 1 },
@@ -11032,8 +11033,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "small_logs_pile_2", position: Vec(63.51, 100.71), rotation: 0, variation: 2 },
             { idString: "small_logs_pile_2", position: Vec(84.21, 49.22), rotation: 0, variation: 2 },
 
-            { idString: "large_logs_pile_2", position: Vec(6.04, 93.4), rotation: 0, variation: 1 },
-            { idString: "large_logs_pile_2", position: Vec(-7.61, 89.32), rotation: 1, variation: 2 },
+            { idString: "large_logs_pile_2", position: Vec(6.04, 93.4), rotation: 0, variation: 2 },
+            { idString: "large_logs_pile_2", position: Vec(-7.61, 89.32), rotation: 1, variation: 1 },
             { idString: "large_logs_pile_2", position: Vec(-122.89, 146.31), rotation: 0, variation: 1 },
             { idString: "large_logs_pile_2", position: Vec(-125.21, 170.94), rotation: 1, variation: 2 },
             { idString: "large_logs_pile_2", position: Vec(-130.91, 184.79), rotation: 2, variation: 2 },
@@ -11067,13 +11068,179 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "pallet", position: Vec(-52.56, 42.29), rotation: 0 }, // P2
             { idString: "pallet", position: Vec(-111.41, 92.44), rotation: 1 }, // P4
             { idString: "pallet", position: Vec(-15.02, 167.23), rotation: 1 }, // P6
-            { idString: "pallet", position: Vec(63.6, 91.1), rotation: 1 } // P7
+            { idString: "pallet", position: Vec(63.6, 91.1), rotation: 1 }, // P7
+
+            // Top
+
+            ...Array.from(
+                { length: 3 },
+                (_, i) => ({
+                    idString: "fence",
+                    position: Vec(119.44 + 8.5 * i, -228.46),
+                    rotation: 0
+                })
+            ),
+
+            ...Array.from(
+                { length: 7 },
+                (_, i) => ({
+                    idString: "fence",
+                    position: Vec(141.97, -225.35 + 8.5 * i),
+                    rotation: 1
+                })
+            ),
+
+            ...Array.from(
+                { length: 4 },
+                (_, i) => ({
+                    idString: "fence",
+                    position: Vec(55.24 + 8.5 * i, -128.2),
+                    rotation: 0
+                })
+            ),
+
+            ...Array.from(
+                { length: 4 },
+                (_, i) => ({
+                    idString: "fence",
+                    position: Vec(141.69, -99.31 - 8.5 * i),
+                    rotation: 1
+                })
+            ),
+
+            ...Array.from(
+                { length: 4 },
+                (_, i) => ({
+                    idString: "fence",
+                    position: Vec(111.71 + 8.5 * i, -128.12),
+                    rotation: 0
+                })
+            ),
+
+            ...Array.from(
+                { length: 3 },
+                (_, i) => ({
+                    idString: "fence",
+                    position: Vec(-39.38, -115.4 - 8.5 * i),
+                    rotation: 1
+                })
+            ),
+
+            ...Array.from(
+                { length: 3 },
+                (_, i) => ({
+                    idString: "fence",
+                    position: Vec(-45.28 - 8.5 * i, -136.63),
+                    rotation: 0
+                })
+            ),
+
+            ...Array.from(
+                { length: 3 },
+                (_, i) => ({
+                    idString: "fence",
+                    position: Vec(-96.12 + 8.5 * i, -136.63),
+                    rotation: 0
+                })
+            ),
+
+            ...Array.from(
+                { length: 5 },
+                (_, i) => ({
+                    idString: "fence",
+                    position: Vec(-101.44, -99.42 - 8.5 * i),
+                    rotation: 1
+                })
+            ),
+
+            { idString: "fence", position: Vec(51.35, -228.95), rotation: 0 },
+            { idString: "fence", position: Vec(50.08, -115.07), rotation: 1 },
+            { idString: "fence", position: Vec(50.07, -122.38), rotation: 1 },
+
+            { idString: "metal_column", position: Vec(1.48, -228.82) },
+            { idString: "metal_column", position: Vec(47.91, -229.06) },
+            { idString: "metal_column", position: Vec(113.75, -228.47) },
+            { idString: "metal_column", position: Vec(142.1, -228.47) },
+            { idString: "metal_column", position: Vec(141.72, -169) },
+            { idString: "metal_column", position: Vec(49.91, -128.23) },
+            { idString: "metal_column", position: Vec(141.72, -128.19) },
+            { idString: "metal_column", position: Vec(141.71, -96.16) },
+            { idString: "metal_column", position: Vec(-39.41, -136.65) },
+            { idString: "metal_column", position: Vec(-101.38, -136.55) },
+            { idString: "metal_column", position: Vec(-101.42, -96.18) },
+            { idString: "metal_column", position: Vec(-101.34, -189.11) },
+
+            { idString: "lansiraami_crate", position: Vec(-61.72, -119.9) },
+            { idString: "lansiraami_crate", position: Vec(135.17, -221.47) },
+
+            { idString: "barrel", position: Vec(-76.86, -105.29) },
+            { idString: "barrel", position: Vec(124.89, -221.59) },
+            { idString: "barrel", position: Vec(134.3, -211.76) },
+
+            { idString: "ammo_crate", position: Vec(-50.97, -125.68) },
+            { idString: "ammo_crate", position: Vec(-67.2, -103.03) },
+            { idString: "ammo_crate", position: Vec(-77.7, -96.55) },
+            { idString: "ammo_crate", position: Vec(66.85, -147.85) },
+
+            { idString: "regular_crate", position: Vec(-61.75, -162.56) },
+            { idString: "regular_crate", position: Vec(77.06, -143.65) },
+            { idString: "regular_crate", position: Vec(100.02, -188.44) },
+            { idString: "regular_crate", position: Vec(109.92, -185.27) },
+            { idString: "regular_crate", position: Vec(134.84, -104.53) },
+
+            { idString: "box", position: Vec(-70.08, -95.62) },
+            { idString: "box", position: Vec(-90.97, -108.57) }, // P8
+            { idString: "box", position: Vec(-94.25, -113.17) }, // P8
+            { idString: "box", position: Vec(12.86, -143.04) },
+            { idString: "box", position: Vec(14.47, -138.07) },
+            { idString: "box", position: Vec(-9.05, -163.37) }, // P9
+            { idString: "box", position: Vec(-12.12, -168.18) }, // P9
+            { idString: "box", position: Vec(82.53, -103.69) }, // P10
+
+            { idString: "barrier", position: Vec(24.53, -203.9), rotation: 3 },
+            { idString: "barrier", position: Vec(-96.93, -162.48), rotation: 0 },
+
+            { idString: "large_logs_pile_2", position: Vec(105.39, -101.22), rotation: 0, variation: 2 },
+            { idString: "large_logs_pile_2", position: Vec(90.8, -105.51), rotation: 1, variation: 1 },
+            { idString: "large_logs_pile_2", position: Vec(5.8, -140.08), rotation: 3, variation: 2 },
+
+            { idString: "small_logs_pile_2", position: Vec(64.83, -115.86), rotation: 0, variation: 2 },
+            { idString: "small_logs_pile_2", position: Vec(-71.44, -167.01), rotation: 2, variation: 2 },
+
+            { idString: "small_moldy_logs", position: Vec(120.62, -169.01), rotation: 0 },
+            { idString: "small_moldy_logs", position: Vec(130.35, -163.62), rotation: 3 },
+
+            { idString: "pallet", position: Vec(-92.6, -110.86), rotation: 1 }, // P8
+            { idString: "pallet", position: Vec(-10.18, -165.75), rotation: 1 }, // P9
+            { idString: "pallet", position: Vec(81.28, -105.19), rotation: 1 }, // P10
+            { idString: "pallet", position: Vec(-93.07, -121.72), rotation: 0 }, // P12
+
+            { idString: "forklift", position: Vec(1.02, -165.82), rotation: 3 },
+            { idString: "forklift", position: Vec(79.4, -185.2), rotation: 2 },
+            { idString: "forklift", position: Vec(130.95, -183.99), rotation: 0 },
+
+            { idString: "grenade_crate", position: Vec(-93.07, -121.72) }, // P12
+
+            { idString: "moldy_log", position: Vec(-1.02, -139.43), rotation: 3 },
+
+            // Center
+            { idString: "regular_crate", position: Vec(-49.22, -27.19) },
+            { idString: "regular_crate", position: Vec(-51.63, -36.81) },
+
+            { idString: "small_logs_pile_2", position: Vec(-45.27, -64.89), rotation: 2, variation: 2 },
+            { idString: "small_logs_pile_2", position: Vec(73.31, -25.39), rotation: 2, variation: 2 },
+
+            { idString: "barrel", position: Vec(-45.23, -73.05) },
+
+            { idString: "moldy_log", position: Vec(72.02, -42.31), rotation: 3 }
         ],
         subBuildings: [
             { idString: randomPallet, position: Vec(-70.25, 64.65) }, // P3
             { idString: randomPallet, position: Vec(-71.27, 219.63) }, // P5
+            { idString: randomPallet, position: Vec(130.72, -172.72) }, // P11
 
-            { idString: "abandoned_warehouse_1", position: Vec(-62.54, 167.62) }
+            { idString: "abandoned_warehouse_1", position: Vec(-62.54, 167.62) },
+            { idString: "porta_potty", position: Vec(-118.1, -130), orientation: 3 }
         ]
     },
     {
@@ -11140,7 +11307,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "barrel", position: Vec(-2.98, -8.19) },
             { idString: "small_logs_pile_2", position: Vec(6.17, -8.57), rotation: 2, variation: 2 },
             { idString: "lansiraami_crate", position: Vec(-12.5, -7.96) },
-            { idString: "small_moldy_logs", position: Vec(9.14, 16.81), rotation: 1 },
+            { idString: "small_moldy_logs", position: Vec(8, 16.81), rotation: 2 },
             { idString: "forklift", position: Vec(-33.73, 17.78), rotation: 1 },
             { idString: "cobweb", position: Vec(7.42, 40.52), rotation: 2 },
             { idString: "gun_case", position: Vec(18.36, -6.88), rotation: 1 },

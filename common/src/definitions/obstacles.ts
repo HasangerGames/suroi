@@ -6030,7 +6030,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
             new CircleHitbox(0.88, Vec(-1.87, -0.39)),
             new CircleHitbox(0.88, Vec(-0.61, -1.62))
         ),
-        rotationMode: RotationMode.Full,
+        rotationMode: RotationMode.Limited,
         allowFlyover: FlyoverPref.Always,
         noResidue: true,
         frames: {
