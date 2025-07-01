@@ -11521,7 +11521,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         name: "Cabin",
         defType: DefinitionType.Building,
         material: "stone",
-        particle: "wall_particle",
+        particle: "cabin_wall_particle",
         hitbox: new GroupHitbox(
             RectangleHitbox.fromRect(1.52, 18.96, Vec(-46.54, 1.55)),
             RectangleHitbox.fromRect(1.52, 19.91, Vec(-46.54, 23.97)),
