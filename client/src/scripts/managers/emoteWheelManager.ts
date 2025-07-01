@@ -152,51 +152,51 @@ class EmoteWheelManagerClass {
             sprite.height = emoteSize - DIMENSIONS.emotePadding;
             this.emoteSlotSprites.addChild(sprite);
 
-            if (InputManager.isMobile) {
-                sprite.eventMode = "static";
-                sprite.on("pointerdown", () => {
-                    this.selection = this.emotes.indexOf(emote);
-                    EmoteWheelManager._enabled = false;
-                    EmoteWheelManager.close();
-                    MapPingWheelManager._enabled = false;
-                    MapPingWheelManager.close(false);
+            if (!InputManager.isMobile) continue;
 
-                    UIManager.ui.emoteButton.addClass("btn-primary").removeClass("btn-alert");
-                    UIManager.ui.pingToggle.addClass("btn-primary").removeClass("btn-danger");
-                    UIManager.updateRequestableItems();
+            sprite.eventMode = "static";
+            sprite.on("pointerdown", () => {
+                this.selection = this.emotes.indexOf(emote);
+                EmoteWheelManager._enabled = false;
+                EmoteWheelManager.close();
+                MapPingWheelManager._enabled = false;
+                MapPingWheelManager.close(false);
 
-                    setTimeout(() => {
-                        UIManager.ui.game.one("pointerdown", e => {
-                            let position: Vector | undefined;
-                            if (MapManager.expanded) {
-                                position = MapPingWheelManager.position;
-                            } else {
-                                // fuck you
-                                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                                const globalPos = Vec.create(e.clientX!, e.clientY!);
-                                const pixiPos = CameraManager.container.toLocal(globalPos);
-                                position = Vec.scale(pixiPos, 1 / PIXI_SCALE);
-                            }
-                            if (!position) return;
+                UIManager.ui.emoteButton.addClass("btn-primary").removeClass("btn-alert");
+                UIManager.ui.pingToggle.addClass("btn-primary").removeClass("btn-danger");
+                UIManager.updateRequestableItems();
 
-                            InputManager.addAction({
-                                type: InputActions.MapPing,
-                                ping: MapPings.fromString(emote),
-                                position
-                            });
+                setTimeout(() => {
+                    UIManager.ui.game.one("pointerdown", e => {
+                        let position: Vector | undefined;
+                        // fuck you
+                        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                        const globalPos = Vec.create(e.clientX!, e.clientY!);
+                        if (MapManager.expanded) {
+                            position = MapManager.sprite.toLocal(globalPos);
+                        } else {
+                            const pixiPos = CameraManager.container.toLocal(globalPos);
+                            position = Vec.scale(pixiPos, 1 / PIXI_SCALE);
+                        }
+                        if (!position) return;
+
+                        InputManager.addAction({
+                            type: InputActions.MapPing,
+                            ping: MapPings.fromString(emote),
+                            position
                         });
-                    }, 250);
-                });
-            }
+                    });
+                }, 250);
+            });
         }
 
-        if (!InputManager.isMobile) {
-            this.selectionGraphics
-                .arc(0, 0, DIMENSIONS.innerRingRadius, -this._slotAngle / 2, this._slotAngle / 2)
-                .arc(0, 0, DIMENSIONS.outerRingRadius, this._slotAngle / 2, -this._slotAngle / 2, true)
-                .closePath()
-                .stroke({ width: 5, color: COLORS.selection, cap: "round" });
-        }
+        if (InputManager.isMobile) return;
+
+        this.selectionGraphics
+            .arc(0, 0, DIMENSIONS.innerRingRadius, -this._slotAngle / 2, this._slotAngle / 2)
+            .arc(0, 0, DIMENSIONS.outerRingRadius, this._slotAngle / 2, -this._slotAngle / 2, true)
+            .closePath()
+            .stroke({ width: 5, color: COLORS.selection, cap: "round" });
     }
 
     show(): void {
@@ -291,14 +291,22 @@ class MapPingWheelManagerClass extends EmoteWheelManagerClass {
         if (this.active) return;
 
         super.show();
-        if (!this.onMinimap) {
-            this.position = Vec.clone(InputManager.gameMousePosition);
-        }
-    }
 
-    override close(emitEmote = true): void {
-        super.close(emitEmote);
-        this.onMinimap = false;
+        if (InputManager.isMobile) return;
+
+        const position = MapManager.sprite.toLocal(InputManager.mousePosition);
+
+        if (MapManager.expanded) {
+            const { x, y } = position;
+            const { width, height } = MapManager;
+            this.onMinimap = x >= 0 && x <= width && y >= 0 && y <= height;
+        } else {
+            const { x, y } = InputManager.mousePosition;
+            const { margins, minimapWidth, minimapHeight } = MapManager;
+            this.onMinimap = x >= margins.x && x <= minimapWidth + margins.x && y >= margins.y && y <= minimapHeight + margins.y;
+        }
+
+        this.position = this.onMinimap ? position : Vec.clone(InputManager.gameMousePosition);
     }
 }
 
