@@ -172,13 +172,12 @@ class EmoteWheelManagerClass {
                         // fuck you
                         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                         const globalPos = Vec.create(e.clientX!, e.clientY!);
-                        if (MapManager.expanded) {
-                            position = MapManager.sprite.toLocal(globalPos);
-                        } else {
+                        MapPingWheelManager.updatePosition(globalPos);
+                        position = MapPingWheelManager.position;
+                        if (!position) {
                             const pixiPos = CameraManager.container.toLocal(globalPos);
                             position = Vec.scale(pixiPos, 1 / PIXI_SCALE);
                         }
-                        if (!position) return;
 
                         InputManager.addAction({
                             type: InputActions.MapPing,
@@ -294,19 +293,26 @@ class MapPingWheelManagerClass extends EmoteWheelManagerClass {
 
         if (InputManager.isMobile) return;
 
-        const position = MapManager.sprite.toLocal(InputManager.mousePosition);
+        this.updatePosition(InputManager.mousePosition);
+        if (!this.position) {
+            this.position = Vec.clone(InputManager.gameMousePosition);
+        }
+    }
+
+    updatePosition(globalPos: Vector): void {
+        const position = MapManager.sprite.toLocal(globalPos);
 
         if (MapManager.expanded) {
             const { x, y } = position;
             const { width, height } = MapManager;
             this.onMinimap = x >= 0 && x <= width && y >= 0 && y <= height;
         } else {
-            const { x, y } = InputManager.mousePosition;
+            const { x, y } = globalPos;
             const { margins, minimapWidth, minimapHeight } = MapManager;
             this.onMinimap = x >= margins.x && x <= minimapWidth + margins.x && y >= margins.y && y <= minimapHeight + margins.y;
         }
 
-        this.position = this.onMinimap ? position : Vec.clone(InputManager.gameMousePosition);
+        this.position = this.onMinimap ? position : undefined;
     }
 }
 
