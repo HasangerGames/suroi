@@ -201,12 +201,22 @@ class EmoteWheelManagerClass {
     show(): void {
         if (this.active) return;
 
+        let position: Vector;
+        if (InputManager.isMobile) {
+            position = Vec.create(Game.pixi.screen.width / 2, Game.pixi.screen.height / 2);
+        } else {
+            // this whole mess makes it so the position doesn't change when switching between wheels
+            if (EmoteWheelManager.active) {
+                position = EmoteWheelManager.container.position;
+            } else if (MapPingWheelManager.active) {
+                position = MapPingWheelManager.container.position;
+            } else {
+                position = InputManager.mousePosition;
+            }
+        }
+        this.container.position = position;
         this.container.visible = true;
         this.active = true;
-
-        this.container.position = InputManager.isMobile
-            ? Vec.create(Game.pixi.screen.width / 2, Game.pixi.screen.height / 2)
-            : InputManager.mousePosition;
     }
 
     /**
