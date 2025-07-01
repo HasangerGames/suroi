@@ -1,4 +1,4 @@
-import { GameConstants, GasState, Layer, ObjectCategory, Z_INDEX_COUNT, ZIndexes } from "@common/constants";
+import { GameConstants, GasState, Layer, ObjectCategory, ZIndexes, Z_INDEX_COUNT } from "@common/constants";
 import { type MapPingDefinition } from "@common/definitions/mapPings";
 import { type MapData } from "@common/packets/mapPacket";
 import { type PingSerialization, type PlayerPingSerialization } from "@common/packets/updatePacket";
@@ -8,17 +8,16 @@ import { FloorTypes, River, Terrain } from "@common/utils/terrain";
 import { Vec, type Vector } from "@common/utils/vector";
 import $ from "jquery";
 import { Container, Graphics, RenderTexture, Sprite, Text, isMobile, type ColorSource, type Texture } from "pixi.js";
-import { getTranslatedString } from "../utils/translations/translations";
+import { GameConsole } from "../console/gameConsole";
 import { Game } from "../game";
 import { DIFF_LAYER_HITBOX_OPACITY, FOOTSTEP_HITBOX_LAYER, PIXI_SCALE, TEAMMATE_COLORS } from "../utils/constants";
 import { SuroiSprite, drawGroundGraphics, drawHitbox, toPixiCoords } from "../utils/pixi";
-import { GasManager, GasRender } from "./gasManager";
-import { SoundManager } from "./soundManager";
-import { InputManager } from "./inputManager";
-import { UIManager } from "./uiManager";
-import { GameConsole } from "../console/gameConsole";
+import { getTranslatedString } from "../utils/translations/translations";
 import { CameraManager } from "./cameraManager";
-import { MapPingWheelManager } from "./emoteWheelManager";
+import { GasManager, GasRender } from "./gasManager";
+import { InputManager } from "./inputManager";
+import { SoundManager } from "./soundManager";
+import { UIManager } from "./uiManager";
 
 class MapManagerClass {
     private _expanded = false;
