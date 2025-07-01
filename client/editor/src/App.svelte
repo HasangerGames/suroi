@@ -38,22 +38,25 @@
 
     let nudgeStep = 1; // world units to move per arrow key
 
+    let nudgeStep = 0.01; // world units to move per arrow key
+
     let dragging = false;
     let rightDragging = false; // Flag for right mouse button drag
     let resizing = false;
     let resizeHandle = '';
-
+    
     function pointerDown(e: PointerEvent) {
-        if (e.button !== 0) return; // Left mouse button
-
-        const handle = getResizeHandle(pointerX, pointerY);
-        if (handle) {
-            dragging = false;
-            resizing = true;
-            resizeHandle = handle;
-        } else {
-            dragging = true;
-            resizing = false;
+        if (e.button === 0) { // Left mouse button
+            // Check if clicking on resize handle
+            const handle = getResizeHandle(pointerX, pointerY);
+            if (handle) {
+                resizing = true;
+                resizeHandle = handle;
+            } else {
+                dragging = true;
+            }
+        } else if (e.button === 2) { // Right mouse button
+            rightDragging = true;
         }
     }
 
@@ -71,6 +74,69 @@
 
     let adjustingWidth = false;
     let adjustingHeight = false;
+    
+    function getResizeHandle(x: number, y: number): string {
+        if (selected.type === HitboxType.Rect) {
+            const { min, max } = selected;
+            const tolerance = 0.5; // Small tolerance for edge detection
+            
+            // Check if we're on the border of the rectangle
+            const onLeftEdge = Math.abs(x - min.x) < tolerance && y >= min.y - tolerance && y <= max.y + tolerance;
+            const onRightEdge = Math.abs(x - max.x) < tolerance && y >= min.y - tolerance && y <= max.y + tolerance;
+            const onTopEdge = Math.abs(y - min.y) < tolerance && x >= min.x - tolerance && x <= max.x + tolerance;
+            const onBottomEdge = Math.abs(y - max.y) < tolerance && x >= min.x - tolerance && x <= max.x + tolerance;
+            
+            // Corner handles (corners have priority)
+            if (onLeftEdge && onTopEdge) return 'nw';
+            if (onRightEdge && onTopEdge) return 'ne';
+            if (onLeftEdge && onBottomEdge) return 'sw';
+            if (onRightEdge && onBottomEdge) return 'se';
+            
+            // Edge handles (only if on edge, not corner)
+            if (onTopEdge && !onLeftEdge && !onRightEdge) return 'n';
+            if (onBottomEdge && !onLeftEdge && !onRightEdge) return 's';
+            if (onLeftEdge && !onTopEdge && !onBottomEdge) return 'w';
+            if (onRightEdge && !onTopEdge && !onBottomEdge) return 'e';
+            
+        } else if (selected.type === HitboxType.Circle) {
+            const { position, radius } = selected;
+            const tolerance = 0.5; // Small tolerance for edge detection
+            
+            const distanceFromCenter = Math.sqrt(
+                Math.pow(x - position.x, 2) + Math.pow(y - position.y, 2)
+            );
+            
+            // Only detect handles if we're very close to the circumference
+            if (Math.abs(distanceFromCenter - radius) < tolerance) {
+                const angle = Math.atan2(y - position.y, x - position.x);
+                
+                // Check which cardinal direction is closest
+                const angles = {
+                    'e': 0,
+                    's': Math.PI / 2,
+                    'w': Math.PI,
+                    'n': -Math.PI / 2
+                };
+                
+                let closestHandle = 'e';
+                let smallestDiff = Math.abs(angle - angles.e);
+                
+                for (const [handle, handleAngle] of Object.entries(angles)) {
+                    let diff = Math.abs(angle - handleAngle);
+                    // Handle wrap-around for angles
+                    if (diff > Math.PI) diff = 2 * Math.PI - diff;
+                    
+                    if (diff < smallestDiff && diff < Math.PI / 4) { // Only if within 45 degrees
+                        smallestDiff = diff;
+                        closestHandle = handle;
+                    }
+                }
+                
+                return closestHandle;
+            }
+        }
+        return '';
+    }
 
     function getResizeHandle(x: number, y: number): string {
         const handleSize = 0.5;
@@ -121,10 +187,10 @@
                 e.movementX / scale / PIXI_SCALE,
                 e.movementY / scale / PIXI_SCALE
             ];
-
+            
             if (selected.type === HitboxType.Rect) {
                 const { min, max } = selected;
-
+                
                 switch (resizeHandle) {
                     case 'nw':
                         selected.min.x = Math.min(min.x + dx, max.x - 0.1);
@@ -157,14 +223,14 @@
                 }
             } else if (selected.type === HitboxType.Circle) {
                 const distance = Math.sqrt(
-                    Math.pow(pointerX - selected.position.x, 2) +
+                    Math.pow(pointerX - selected.position.x, 2) + 
                     Math.pow(pointerY - selected.position.y, 2)
                 );
                 // @ts-expect-error radius is technically read only but who cares
                 selected.radius = Math.max(0.1, distance);
             }
             updateSelected();
-        } else if (dragging) {
+        } else if (dragging && !rightDragging) {
             const now = Date.now();
             if (now - lastHitboxMove < 100 || BaseHitbox.fromJSON(selected).isPointInside(Vec(pointerX, pointerY))) {
                 lastHitboxMove = now;
@@ -172,7 +238,7 @@
                     e.movementX / scale / PIXI_SCALE,
                     e.movementY / scale / PIXI_SCALE
                 ];
-
+                
                 if (selected.type === HitboxType.Circle) {
                     selected.position.x += dx;
                     selected.position.y += dy;
@@ -195,6 +261,22 @@
             hitboxesContainer.style.cursor = handle ? `${handle}-resize` : 'default';
         } else if (dragging) {
             hitboxesContainer.style.cursor = "grabbing";
+        }
+        
+        // Update cursor based on what we're hovering over
+        if (!resizing && !dragging) {
+            const handle = getResizeHandle(pointerX, pointerY);
+            hitboxesContainer.style.cursor = handle ? getCursorForHandle(handle) : 'default';
+        }
+    }
+    
+    function getCursorForHandle(handle: string): string {
+        switch (handle) {
+            case 'nw': case 'se': return 'nw-resize';
+            case 'ne': case 'sw': return 'ne-resize';
+            case 'n': case 's': return 'n-resize';
+            case 'w': case 'e': return 'e-resize';
+            default: return 'default';
         }
     }
 
@@ -263,7 +345,7 @@
         updateSelected();
     }
 
-    const addRectangle = () => createHitbox(new RectangleHitbox(Vec(-10, -10), Vec(10, 10)));
+    const addRectangle = () => createHitbox(new RectangleHitbox(Vec.create(-5, -5), Vec.create(5, 5)));
     const addCircle = () => createHitbox(new CircleHitbox(5));
 
     function duplicateSelected() {
@@ -275,8 +357,9 @@
         hitboxes = hitboxes;
         selected = hitboxes[0];
     }
-
-    const bgImage = loadImage("/img/game/hunted/buildings/sawnmil_noalpha.png");
+    const bgImage = loadImage("/img/game/shared/buildings/cabin_roof.svg");
+    // const bgImage = loadImage("/img/game/shared/buildings/cabin_floor.svg");
+    // const bgImage = loadImage("/img/game/shared/buildings/cabin_floor_bare.svg");
 
     function handleKeydown(e: KeyboardEvent) {
         let moved = false;
@@ -311,7 +394,7 @@
             <button on:click={deleteSelected}>Delete Selected</button>
            <div>
                <label>
-                   Nudge Step:
+                   Nudge Step: 
                    <input type="number" bind:value={nudgeStep} min="0.1" step="0.1" style="width: 60px;" />
                </label>
            </div>
@@ -394,7 +477,7 @@
         on:wheel={mouseWheel}
         on:contextmenu={contextMenu_}
         on:keydown={handleKeydown}
-        tabindex="-1"
+        tabindex="0"
         role="application"
         aria-label="Hitbox editor canvas"
     >
@@ -405,7 +488,7 @@
                 {:then img}
                     <image class="nopointer" x={-(img.width / 2)} y={-(img.height / 2)} href={img.src}></image>
                 {/await}
-
+                
                 {#each hitboxes as hitbox (hitbox)}
                     <Hitbox
                         on:pointerdown={() => {
@@ -416,33 +499,34 @@
                         selected={selected === hitbox}
                     />
                 {/each}
-
-               <!-- Resize handles -->
+               
+               <!-- Resize handles for selected hitbox -->
                {#if selected.type === HitboxType.Rect}
                    {@const { min, max } = selected}
                    {@const centerX = (min.x + max.x) / 2}
                    {@const centerY = (min.y + max.y) / 2}
-                   {@const s = 2 / scale}
-
+                   {@const handleSize = 2 / scale}
+                   
                    <!-- Corner handles -->
-                   <rect x={(min.x * PIXI_SCALE) - s} y={(min.y * PIXI_SCALE) - s} width={s * 2} height={s * 2} class="resize-handle" />
-                   <rect x={(max.x * PIXI_SCALE) - s} y={(min.y * PIXI_SCALE) - s} width={s * 2} height={s * 2} class="resize-handle" />
-                   <rect x={(min.x * PIXI_SCALE) - s} y={(max.y * PIXI_SCALE) - s} width={s * 2} height={s * 2} class="resize-handle" />
-                   <rect x={(max.x * PIXI_SCALE) - s} y={(max.y * PIXI_SCALE) - s} width={s * 2} height={s * 2} class="resize-handle" />
-
+                   <rect x={(min.x * PIXI_SCALE) - handleSize} y={(min.y * PIXI_SCALE) - handleSize} width={handleSize * 2} height={handleSize * 2} fill="blue" class="resize-handle" />
+                   <rect x={(max.x * PIXI_SCALE) - handleSize} y={(min.y * PIXI_SCALE) - handleSize} width={handleSize * 2} height={handleSize * 2} fill="blue" class="resize-handle" />
+                   <rect x={(min.x * PIXI_SCALE) - handleSize} y={(max.y * PIXI_SCALE) - handleSize} width={handleSize * 2} height={handleSize * 2} fill="blue" class="resize-handle" />
+                   <rect x={(max.x * PIXI_SCALE) - handleSize} y={(max.y * PIXI_SCALE) - handleSize} width={handleSize * 2} height={handleSize * 2} fill="blue" class="resize-handle" />
+                   
                    <!-- Edge handles -->
-                   <rect x={(centerX * PIXI_SCALE) - s} y={(min.y * PIXI_SCALE) - s} width={s * 2} height={s * 2} class="resize-handle" />
-                   <rect x={(centerX * PIXI_SCALE) - s} y={(max.y * PIXI_SCALE) - s} width={s * 2} height={s * 2} class="resize-handle" />
-                   <rect x={(min.x * PIXI_SCALE) - s} y={(centerY * PIXI_SCALE) - s} width={s * 2} height={s * 2} class="resize-handle" />
-                   <rect x={(max.x * PIXI_SCALE) - s} y={(centerY * PIXI_SCALE) - s} width={s * 2} height={s * 2} class="resize-handle" />
+                   <rect x={(centerX * PIXI_SCALE) - handleSize} y={(min.y * PIXI_SCALE) - handleSize} width={handleSize * 2} height={handleSize * 2} fill="lightblue" class="resize-handle" />
+                   <rect x={(centerX * PIXI_SCALE) - handleSize} y={(max.y * PIXI_SCALE) - handleSize} width={handleSize * 2} height={handleSize * 2} fill="lightblue" class="resize-handle" />
+                   <rect x={(min.x * PIXI_SCALE) - handleSize} y={(centerY * PIXI_SCALE) - handleSize} width={handleSize * 2} height={handleSize * 2} fill="lightblue" class="resize-handle" />
+                   <rect x={(max.x * PIXI_SCALE) - handleSize} y={(centerY * PIXI_SCALE) - handleSize} width={handleSize * 2} height={handleSize * 2} fill="lightblue" class="resize-handle" />
                {:else if selected.type === HitboxType.Circle}
                    {@const { position, radius } = selected}
-                   {@const s = 2 / scale}
-
-                   <circle cx={(position.x + radius) * PIXI_SCALE} cy={position.y * PIXI_SCALE} r={s} class="resize-handle" />
-                   <circle cx={(position.x - radius) * PIXI_SCALE} cy={position.y * PIXI_SCALE} r={s} class="resize-handle" />
-                   <circle cx={position.x * PIXI_SCALE} cy={(position.y - radius) * PIXI_SCALE} r={s} class="resize-handle" />
-                   <circle cx={position.x * PIXI_SCALE} cy={(position.y + radius) * PIXI_SCALE} r={s} class="resize-handle" />
+                   {@const handleSize = 2 / scale}
+                   
+                   <!-- Radius handles -->
+                   <circle cx={(position.x + radius) * PIXI_SCALE} cy={position.y * PIXI_SCALE} r={handleSize} fill="blue" class="resize-handle" />
+                   <circle cx={(position.x - radius) * PIXI_SCALE} cy={position.y * PIXI_SCALE} r={handleSize} fill="blue" class="resize-handle" />
+                   <circle cx={position.x * PIXI_SCALE} cy={(position.y - radius) * PIXI_SCALE} r={handleSize} fill="blue" class="resize-handle" />
+                   <circle cx={position.x * PIXI_SCALE} cy={(position.y + radius) * PIXI_SCALE} r={handleSize} fill="blue" class="resize-handle" />
                {/if}
             </g>
         </svg>
@@ -498,10 +582,10 @@
     }
 
     .resize-handle {
-        fill: yellow;
         pointer-events: all;
+        cursor: pointer;
     }
-
+    
     #hitboxes-container:focus {
         outline: none;
     }
