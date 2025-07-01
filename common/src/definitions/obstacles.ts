@@ -263,6 +263,7 @@ export const TintedParticles: Record<string, { readonly base: string, readonly t
     _glow_: { base: "_glow_", tint: 0xffffff },
 
     cabin_wall_particle: { base: "wood_particle", tint: 0x5D4622 },
+    cabin_particle: { base: "wood_particle", tint: 0x49371d },
     metal_particle: { base: "metal_particle_1", tint: 0x5f5f5f },
     cargo_ship_particle: { base: "metal_particle_1", tint: 0x273140 },
     metal_column_particle: { base: "metal_particle_1", tint: 0x8f8f8f },
