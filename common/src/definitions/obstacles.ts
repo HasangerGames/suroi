@@ -262,6 +262,7 @@ const aidrTint = 0x4059bf; // GameConstants.modeName as string === "winter" ? 0x
 export const TintedParticles: Record<string, { readonly base: string, readonly tint: number, readonly variants?: number }> = {
     _glow_: { base: "_glow_", tint: 0xffffff },
 
+    cabin_particle: { base: "wood_particle", tint: 0x5D4622 },
     metal_particle: { base: "metal_particle_1", tint: 0x5f5f5f },
     cargo_ship_particle: { base: "metal_particle_1", tint: 0x273140 },
     metal_column_particle: { base: "metal_particle_1", tint: 0x8f8f8f },
@@ -477,6 +478,33 @@ const hqWall = (lengthNumber: number, hitbox: RectangleHitbox, customHealth = fa
 const lodgeWall = (id: string, length: number): RawObstacleDefinition => ({
     idString: `lodge_wall_${id}`,
     name: "Lodge Wall",
+    defType: DefinitionType.Obstacle,
+    material: "wood",
+    hideOnMap: true,
+    noResidue: true,
+    health: 170,
+    scale: {
+        spawnMin: 1,
+        spawnMax: 1,
+        destroy: 1
+    },
+    hitbox: RectangleHitbox.fromRect(length, 2.06),
+    rotationMode: RotationMode.Limited,
+    allowFlyover: FlyoverPref.Never,
+    frames: {
+        particle: "lodge_wall_particle"
+    },
+    isWall: true,
+    wall: {
+        borderColor: 0x291e0f,
+        color: 0x5a4320,
+        rounded: true
+    }
+});
+
+const cabinWall = (id: string, length: number): RawObstacleDefinition => ({
+    idString: `cabin_wall_${id}`,
+    name: "Cabin Wall",
     defType: DefinitionType.Obstacle,
     material: "wood",
     hideOnMap: true,
@@ -2352,6 +2380,13 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     hqWall(8, RectangleHitbox.fromRect(3.5, 1.6), true),
     hqWall(9, RectangleHitbox.fromRect(21, 2.1)),
 
+    // cabin walls
+    cabinWall("1", 8.22),
+    cabinWall("2", 8.28),
+    cabinWall("3", 18.79),
+    cabinWall("4", 19.68),
+    cabinWall("5", 26.35),
+    
     lodgeWall("1", 9.15),
     lodgeWall("2", 9.7),
     lodgeWall("3", 9.82),
@@ -3144,6 +3179,55 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         hasLoot: true,
         frames: {
             particle: "furniture_particle"
+        }
+    },
+    {
+        idString: "cabin_particle",
+        name: "Cabin Wood Chunk",
+        defType: DefinitionType.Obstacle,
+        material: "wood",
+        health: 1, 
+        indestructible: true, // Make it completely indestructible
+        scale: {
+            spawnMin: 1,
+            spawnMax: 1,
+            destroy: 0.6
+        },
+        hitbox: RectangleHitbox.fromRect(0.1, 0.1), 
+        rotationMode: RotationMode.Full,
+        allowFlyover: FlyoverPref.Always,
+        noCollisions: true, 
+        noResidue: true,
+        hideOnMap: true, 
+        tint: 0x5D4622,
+        frames: {
+            base: "wood_particle",
+            particle: "cabin_particle"
+        }
+    },
+    {
+        idString: "cabin_fence",
+        name: "Cabin Fence",
+        defType: DefinitionType.Obstacle,
+        material: "fence",
+        health: 50,
+        indestructible: true, 
+        scale: {
+            spawnMin: 1,
+            spawnMax: 1,
+            destroy: 0.8
+        },
+        hitbox: RectangleHitbox.fromRect(21.92, 1.52),
+        rotationMode: RotationMode.Limited,
+        noResidue: true,
+        frames: {
+            particle: "cabin_particle"
+        },
+        isWall: true,
+        wall: {
+            borderColor: 0x342512, 
+            color: 0x6b5431,       
+            rounded: false         
         }
     },
     {
@@ -4335,6 +4419,30 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         rotationMode: RotationMode.None,
         allowFlyover: FlyoverPref.Never,
         tint: 0xa3917b,
+        frames: {
+            base: "column",
+            particle: "wall_particle"
+        },
+        isWall: true
+    },
+    {
+        idString: "cabin_column",
+        name: "Cabin Column",
+        defType: DefinitionType.Obstacle,
+        material: "stone",
+        indestructible: true,
+        health: 340,
+        scale: {
+            spawnMin: 1,
+            spawnMax: 1,
+            destroy: 0.95
+        },
+        hitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(3, 3)
+        ),
+        rotationMode: RotationMode.None,
+        allowFlyover: FlyoverPref.Never,
+        tint: 0x5a4320,
         frames: {
             base: "column",
             particle: "wall_particle"

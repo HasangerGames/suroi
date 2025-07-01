@@ -11382,5 +11382,123 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "desk_left", position: Vec(-5.92, 6.16), rotation: 2, lootSpawnOffset: Vec(0, -1) },
             { idString: "small_desk", position: Vec(23.99, 5.97), rotation: 1, lootSpawnOffset: Vec(-1, -0.5) }
         ]
+    },
+
+    {
+        idString: "cabin",
+        name: "Cabin",
+        defType: DefinitionType.Building,
+        material: "stone",
+        particle: "wall_particle",
+        hitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(3.02, 3.01, Vec(-46.55, -9.44)),
+            RectangleHitbox.fromRect(1.52, 18.96, Vec(-46.54, 1.55)),
+            RectangleHitbox.fromRect(3.02, 3.03, Vec(-46.49, 12.51)),
+            RectangleHitbox.fromRect(1.52, 19.91, Vec(-46.54, 23.97)),
+            RectangleHitbox.fromRect(3.01, 3.01, Vec(-46.53, 35.4)),
+            RectangleHitbox.fromRect(1.9, 26.83, Vec(-26.6, -19.92)),
+            RectangleHitbox.fromRect(1.9, 33.33, Vec(-26.6, 20.25)),
+            RectangleHitbox.fromRect(19.41, 1.91, Vec(-17.86, -32.39)),
+            RectangleHitbox.fromRect(35.21, 1.9, Vec(-9.95, 35.96)),
+            RectangleHitbox.fromRect(48.58, 1.91, Vec(27.23, -32.38)),
+            RectangleHitbox.fromRect(1.51, 5.28, Vec(6.91, 39.55)),
+            new CircleHitbox(1.04, Vec(6.91, 43.22)),
+            RectangleHitbox.fromRect(3.04, 3.04, Vec(13.05, -10.27)),
+            RectangleHitbox.fromRect(13.09, 1.9, Vec(24.24, 35.97)),
+            RectangleHitbox.fromRect(1.54, 5.45, Vec(18.47, 39.65)),
+            new CircleHitbox(1.04, Vec(18.46, 43.4)),
+            RectangleHitbox.fromRect(3, 3, Vec(21.58, 7.13)),
+            RectangleHitbox.fromRect(1.9, 19.55, Vec(50.57, -23.57)),
+            RectangleHitbox.fromRect(1.91, 39.59, Vec(50.57, 17.13)),
+            RectangleHitbox.fromRect(9.62, 1.89, Vec(46.71, 35.97))
+        ),
+        spawnHitbox: RectangleHitbox.fromRect(108.61, 134.94, Vec(3.16, 3.27)),
+        subBuildings: [
+            { idString: "outhouse", position: Vec(-42.87, -32.12), orientation: 3 }
+        ],
+        ceilingHitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(79, 70.08, Vec(11.96, 1.73)),
+            RectangleHitbox.fromRect(20.89, 47.73, Vec(-37.99, 12.99))
+        ),
+        floorImages: [
+            {
+                key: "cabin_floor",
+                position: Vec(0, 0)
+            }
+        ],
+        ceilingImages: [
+            {
+                key: "cabin_roof",
+                position: Vec(0, 0)
+            }
+        ],
+        obstacles: [
+            { idString: "window", position: Vec(-2.66, -32.41), rotation: 1 },
+            { idString: "window", position: Vec(50.63, -8.23), rotation: 0 },
+            { idString: "window", position: Vec(36.2, 36), rotation: 1 },
+
+            { idString: "small_logs_pile", position: Vec(-32.87, 10.96), rotation: 0 },
+            { idString: "trash_bag", position: Vec(-31.32, 18.88), rotation: 0 },
+            { idString: "door", position: Vec(-26.63, -0.98), rotation: 3 },
+            { idString: "bed", position: Vec(-17.28, -25.6), rotation: 1 },
+            { idString: "small_drawer", position: Vec(-21.7, -15.41), rotation: 1 },
+            { idString: randomStove, position: Vec(-21.84, 13.9), rotation: 1 },
+            { idString: "kitchen_unit_3", position: Vec(-21.87, 23.66), rotation: 1 },
+            { idString: "kitchen_unit_2", position: Vec(-22.34, 31.7), rotation: 1 },
+            { idString: "kitchen_unit_1", position: Vec(-15.73, 31.26), rotation: 2 },
+            { idString: "fridge", position: Vec(-7.52, 31.07), rotation: 2 },
+            { idString: "door", position: Vec(-1.27, -10.25), rotation: 0 },
+            { idString: "small_table", position: Vec(2.52, 8.97), rotation: 1, variation: 1 },
+            { idString: "bookshelf", position: Vec(9.37, -21.55), rotation: 3 },
+            { idString: "door", position: Vec(12.26, 35.99), rotation: 2 },
+            { idString: "potted_plant", position: Vec(19.54, -27.25), rotation: 0 },
+            { idString: "small_bed", position: Vec(26.6, 26.81), rotation: 2 },
+            { idString: "fireplace", position: Vec(32.68, -27.28), rotation: 0 },
+            { idString: "couch", position: Vec(32.65, -10.98), rotation: 1 },
+            { idString: "door", position: Vec(35.98, 7.16), rotation: 2 },
+            { idString: "potted_plant", position: Vec(44.87, -26.73), rotation: 2 },
+            { idString: "trash_can", position: Vec(46.23, 11.33), rotation: 0 },
+            { idString: "large_drawer", position: Vec(45.37, 28.18), rotation: 3 },
+
+            { idString: "cabin_wall_2", position: Vec(27.2, 7.13), rotation: 0 },
+            { idString: "cabin_wall_3", position: Vec(-16.25, -10.17), rotation: 0 },
+            { idString: "cabin_wall_4", position: Vec(13.03, -21.53), rotation: 1 },
+            { idString: "cabin_wall_5", position: Vec(21.69, 21.8), rotation: 1 },
+            { idString: "cabin_wall_1", position: Vec(45.53, 7.13), rotation: 0 },
+            { idString: "cabin_wall_1", position: Vec(7.44, -10.16), rotation: 0 },
+
+            { idString: "cabin_fence", position: Vec(-31.57, 63.71), rotation: 0 },
+            { idString: "cabin_fence", position: Vec(-7.63, 63.71), rotation: 0 },
+            { idString: "cabin_fence", position: Vec(15.71, 63.71), rotation: 0 },
+            { idString: "cabin_fence", position: Vec(38.38, 63.71), rotation: 0 },
+            { idString: "cabin_fence", position: Vec(49.59, 52.84), rotation: 1 },
+            { idString: "cabin_fence", position: Vec(38.66, -58.86), rotation: 0 },
+            { idString: "cabin_fence", position: Vec(15.49, -58.86), rotation: 0 },
+            { idString: "cabin_fence", position: Vec(-7.82, -58.86), rotation: 0 },
+
+            { idString: "box", position: Vec(-7.53, -53.77), rotation: 0 },
+            { idString: "box", position: Vec(-2.59, -55.04), rotation: 0 },
+            { idString: "box", position: Vec(-29.67, 59.77), rotation: 0 },
+            { idString: "trash_bag", position: Vec(-11.8, 41.41), rotation: 0 },
+            { idString: "trash_bag", position: Vec(-6.01, 42.69), rotation: 3 },
+            { idString: "barrel", position: Vec(33.59, 57.14), rotation: 1 },
+            { idString: "regular_crate", position: Vec(43.08, 57.22), rotation: 0 },
+
+            { idString: "cabin_column", position: Vec(-19.43, -58.87), rotation: 0 },
+            { idString: "cabin_column", position: Vec(3.81, -58.85), rotation: 0 },
+            { idString: "cabin_column", position: Vec(27.43, -58.9), rotation: 0 },
+            { idString: "cabin_column", position: Vec(50.1, -58.84), rotation: 0 },
+            { idString: "cabin_column", position: Vec(50.18, -34.99), rotation: 0 },
+            { idString: "cabin_column", position: Vec(-43.51, 63.65), rotation: 0 },
+            { idString: "cabin_column", position: Vec(-19.56, 63.75), rotation: 0 },
+            { idString: "cabin_column", position: Vec(4.39, 63.7), rotation: 0 },
+            { idString: "cabin_column", position: Vec(26.99, 63.74), rotation: 0 },
+            { idString: "cabin_column", position: Vec(49.63, 63.65), rotation: 0 },
+
+            { idString: "cabin_particle", position: Vec(51.33, 39.12), rotation: 0 },
+            { idString: "cabin_particle", position: Vec(50.41, -41.21), rotation: 0 },
+            { idString: "cabin_particle", position: Vec(50.86, -46.67), rotation: 1 },
+            { idString: "cabin_particle", position: Vec(50.15, -53.71), rotation: 3 }
+        ]
     }
 ]);
