@@ -290,6 +290,7 @@ export const TintedParticles: Record<string, { readonly base: string, readonly t
     memorial_crate_particle: { base: "wood_particle", tint: 0x763800 },
     flint_crate_particle: { base: "wood_particle", tint: 0xda6a0b },
     nsd_crate_particle: { base: "wood_particle", tint: 0x3d6336 },
+    lansiraami_crate_particle: { base: "wood_particle", tint: 0x725940 },
     furniture_particle: { base: "wood_particle", tint: 0x785a2e },
     couch_part_particle: { base: "wood_particle", tint: 0x6a330b },
     grenade_crate_particle: { base: "wood_particle", tint: 0x4c4823 },
@@ -402,7 +403,11 @@ export const TintedParticles: Record<string, { readonly base: string, readonly t
     truck_container_particle_orange: { base: "metal_particle_1", tint: TruckContainerTints.orange },
     truck_container_particle_purple: { base: "metal_particle_1", tint: TruckContainerTints.purple },
     truck_container_particle_green: { base: "metal_particle_1", tint: TruckContainerTints.green },
-    truck_container_particle_red: { base: "metal_particle_1", tint: TruckContainerTints.red }
+    truck_container_particle_red: { base: "metal_particle_1", tint: TruckContainerTints.red },
+
+    abandoned_warehouse_1_particle_1: { base: "stone_particle_1", tint: 0x5a1919 },
+    abandoned_warehouse_1_particle_2: { base: "stone_particle_1", tint: 0x5a1919 },
+    abandoned_warehouse_col_particle: { base: "metal_particle_1", tint: 0x3c3c3c }
 };
 
 const houseWall = (
@@ -1707,6 +1712,23 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         hasLoot: true,
         hideOnMap: true,
         winterVariations: 6
+    },
+    {
+        idString: "lansiraami_crate",
+        name: "Lansiraami Crate",
+        defType: DefinitionType.Obstacle,
+        material: "crate",
+        health: 80,
+        scale: {
+            spawnMin: 1,
+            spawnMax: 1,
+            destroy: 0.5
+        },
+        spawnMode: MapObjectSpawnMode.GrassAndSand,
+        rotationMode: RotationMode.None,
+        hitbox: RectangleHitbox.fromRect(9.2, 9.2),
+        hasLoot: true,
+        hideOnMap: true
     },
     {
         idString: "grenade_crate",
@@ -6014,6 +6036,29 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         frames: {
             particle: "log_particle"
         }
+    },
+    {
+        idString: "abandoned_warehouse_metal_collider",
+        name: "Abandoned Warehouse Metal Collider",
+        defType: DefinitionType.Obstacle,
+        material: "metal_heavy",
+        health: 1000,
+        indestructible: true,
+        invisible: true,
+        hitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(1.15, 68.3, Vec(37.87, -5.4)),
+            new CircleHitbox(1.5, Vec(38.05, 46.12)),
+            new CircleHitbox(1.5, Vec(18.27, -40.56)),
+            new CircleHitbox(1.5, Vec(37.88, -40.32)),
+            new CircleHitbox(1.5, Vec(37.87, -20.32)),
+            new CircleHitbox(1.5, Vec(37.88, 6.23)),
+            new CircleHitbox(1.5, Vec(37.87, 29.21))
+        ),
+        reflectBullets: true,
+        frames: {
+            particle: "abandoned_warehouse_col_particle"
+        },
+        rotationMode: RotationMode.Limited
     }
 ] satisfies readonly RawObstacleDefinition[] as readonly RawObstacleDefinition[]).flatMap((def: Mutable<RawObstacleDefinition>) => {
     if (def.variations !== undefined) (def as Mutable<ObstacleDefinition>).variationBits = Math.ceil(Math.log2(def.variations));

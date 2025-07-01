@@ -10867,10 +10867,10 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             )
         }],
         floorImages: [ // todo: repair barricade line svgs, pattern is broken (doesn't work with colors)
-            // {
-            //     key: "sawnmil_alpha",
-            //     position: Vec(0, 0)
-            // },
+            {
+                key: "sawnmil_alpha",
+                position: Vec(0, 0)
+            },
 
             // Mud/ground cracks (decals)
             // Top
@@ -11071,7 +11071,96 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         ],
         subBuildings: [
             { idString: randomPallet, position: Vec(-70.25, 64.65) }, // P3
-            { idString: randomPallet, position: Vec(-71.27, 219.63) } // P5
+            { idString: randomPallet, position: Vec(-71.27, 219.63) }, // P5
+
+            { idString: "abandoned_warehouse_1", position: Vec(-62.54, 167.62) }
+        ]
+    },
+    {
+        idString: "abandoned_warehouse_1", // TODO: repair floor pattern svg, corrupted.
+        name: "Abandoned Warehouse",
+        defType: DefinitionType.Building,
+        spawnHitbox: RectangleHitbox.fromRect(98.99, 102.8, Vec(0.27, 0)),
+        ceilingHitbox: RectangleHitbox.fromRect(77.17, 84.98, Vec(-1.36, 2.83)),
+        material: "stone",
+        particleVariations: 2,
+        particle: "abandoned_warehouse_1_particle",
+        hitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(34.6, 2.03, Vec(-3.01, -15.25)),
+            RectangleHitbox.fromRect(2.02, 61.6, Vec(13.28, 16.17)),
+            RectangleHitbox.fromRect(79.1, 2, Vec(-1.88, 46.28)),
+            RectangleHitbox.fromRect(2.01, 6.43, Vec(-40.43, 44.05)),
+            RectangleHitbox.fromRect(2, 13.46, Vec(-19.3, -7.93)),
+            RectangleHitbox.fromRect(2, 39.2, Vec(-40.43, -20.74)),
+            RectangleHitbox.fromRect(59.3, 2.01, Vec(-11.78, -40.56))
+        ),
+        floors: [
+            {
+                type: FloorNames.Metal,
+                hitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(76.75, 23.4, Vec(-1.01, -27.94)),
+                    RectangleHitbox.fromRect(23.14, 66.54, Vec(25.87, 12.25)),
+                    RectangleHitbox.fromRect(11.86, 16.87, Vec(40.28, 37.29)),
+                    RectangleHitbox.fromRect(19.65, 9.73, Vec(28.07, -42.81)),
+                    RectangleHitbox.fromRect(19.49, 18.15, Vec(-29.66, -10.25))
+                )
+            },
+            {
+                type: FloorNames.Stone,
+                hitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(30.67, 59.67, Vec(-3.01, 15.44)),
+                    RectangleHitbox.fromRect(22.78, 46.69, Vec(-29.58, 21.96))
+                )
+            }
+        ],
+        ceilingImages: [{
+            key: "abandoned_warehouse_1_ceiling",
+            position: Vec(-1.36, 2.83),
+            scale: Vec(2, 2)
+        }],
+        floorImages: [
+            {
+                key: "abandoned_warehouse_1_stair",
+                position: Vec(28, -43.22),
+                scale: Vec(1, 1.2),
+                rotation: -Math.PI / 2
+            },
+            {
+                key: "abandoned_warehouse_1_stair",
+                position: Vec(41.81, 37.31)
+            },
+            {
+                key: "abandoned_warehouse_1_floor",
+                position: Vec(-0.85, 2.9)
+            }
+        ],
+        obstacles: [
+            { idString: "abandoned_warehouse_metal_collider", position: Vec(0, 0), rotation: 0 },
+            { idString: "grenade_crate", position: Vec(19.68, 8.05) },
+            { idString: "barrel", position: Vec(-2.98, -8.19) },
+            { idString: "small_logs_pile_2", position: Vec(6.17, -8.57), rotation: 2, variation: 2 },
+            { idString: "lansiraami_crate", position: Vec(-12.5, -7.96) },
+            { idString: "small_moldy_logs", position: Vec(9.14, 16.81), rotation: 1 },
+            { idString: "forklift", position: Vec(-33.73, 17.78), rotation: 1 },
+            { idString: "cobweb", position: Vec(7.42, 40.52), rotation: 2 },
+            { idString: "gun_case", position: Vec(18.36, -6.88), rotation: 1 },
+
+            { idString: "regular_crate", position: Vec(-3.21, 35.96) },
+            { idString: "regular_crate", position: Vec(6.99, 39.82) },
+
+            { idString: "ammo_crate", position: Vec(-13.2, -32.58) },
+            { idString: "ammo_crate", position: Vec(-2.96, -34.49) },
+
+            { idString: "pallet", position: Vec(20.59, 3.03), rotation: 0 },
+            { idString: "pallet", position: Vec(19.73, 12.66), rotation: 1 },
+            { idString: "pallet", position: Vec(-22.5, 17.83), rotation: 1 },
+
+            { idString: "box", position: Vec(-35.61, -35.85) },
+            { idString: "box", position: Vec(-24.4, 20.2) },
+            { idString: "box", position: Vec(-20.9, 15.46) },
+            { idString: "box", position: Vec(21.68, 42.52) },
+            { idString: "box", position: Vec(18.53, 14.36) },
+            { idString: { box: 1, grenade_box: 0.75 }, position: Vec(21.52, 1.61) }
         ]
     }
 ]);
