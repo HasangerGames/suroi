@@ -36,8 +36,6 @@
     let hitboxesContainer: HTMLElement;
     onMount(() => { hitboxesContainer = document.getElementById("hitboxes-container")!; });
 
-    let nudgeStep = 1; // world units to move per arrow key
-
     let nudgeStep = 0.01; // world units to move per arrow key
 
     let dragging = false;
@@ -134,43 +132,6 @@
                 
                 return closestHandle;
             }
-        }
-        return '';
-    }
-
-    function getResizeHandle(x: number, y: number): string {
-        const handleSize = 0.5;
-        if (selected.type === HitboxType.Rect) {
-            const { min, max } = selected;
-
-            // Corner handles
-            if (Math.abs(x - min.x) < handleSize && Math.abs(y - min.y) < handleSize) return 'nw';
-            if (Math.abs(x - max.x) < handleSize && Math.abs(y - min.y) < handleSize) return 'ne';
-            if (Math.abs(x - min.x) < handleSize && Math.abs(y - max.y) < handleSize) return 'sw';
-            if (Math.abs(x - max.x) < handleSize && Math.abs(y - max.y) < handleSize) return 'se';
-
-            // Edge handles
-            const centerX = (min.x + max.x) / 2;
-            const centerY = (min.y + max.y) / 2;
-            const isInsideRect =
-                x > min.x + handleSize
-                && x < max.x - handleSize
-                && y > min.y + handleSize
-                && y < max.y - handleSize;
-
-            if (!isInsideRect) {
-                if (Math.abs(x - centerX) < handleSize && Math.abs(y - min.y) < handleSize) return 'n';
-                if (Math.abs(x - centerX) < handleSize && Math.abs(y - max.y) < handleSize) return 's';
-                if (Math.abs(x - min.x) < handleSize && Math.abs(y - centerY) < handleSize) return 'w';
-                if (Math.abs(x - max.x) < handleSize && Math.abs(y - centerY) < handleSize) return 'e';
-            }
-        } else if (selected.type === HitboxType.Circle) {
-            const { position, radius } = selected;
-
-            if (Math.abs(x - (position.x + radius)) < handleSize && Math.abs(y - position.y) < handleSize) return 'e';
-            if (Math.abs(x - (position.x - radius)) < handleSize && Math.abs(y - position.y) < handleSize) return 'w';
-            if (Math.abs(x - position.x) < handleSize && Math.abs(y - (position.y - radius)) < handleSize) return 'n';
-            if (Math.abs(x - position.x) < handleSize && Math.abs(y - (position.y + radius)) < handleSize) return 's';
         }
         return '';
     }
@@ -345,7 +306,7 @@
         updateSelected();
     }
 
-    const addRectangle = () => createHitbox(new RectangleHitbox(Vec.create(-5, -5), Vec.create(5, 5)));
+    const addRectangle = () => createHitbox(new RectangleHitbox(Vec(-5, -5), Vec(5, 5)));
     const addCircle = () => createHitbox(new CircleHitbox(5));
 
     function duplicateSelected() {
