@@ -10867,10 +10867,10 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             )
         }],
         floorImages: [ // todo: repair barricade line svgs, pattern is broken (doesn't work with colors)
-            {
-                key: "sawnmil_alpha",
-                position: Vec(0, 0)
-            },
+            // {
+            //     key: "sawnmil_alpha",
+            //     position: Vec(0, 0)
+            // },
 
             // Mud/ground cracks (decals)
             // Top
@@ -11240,6 +11240,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: randomPallet, position: Vec(130.72, -172.72) }, // P11
 
             { idString: "abandoned_warehouse_1", position: Vec(-62.54, 167.62) },
+            { idString: "sawnmill_office", position: Vec(-115.17, 49.69) },
+            { idString: "sawnmill_office", position: Vec(83.43, -216.09) },
             { idString: "porta_potty", position: Vec(-118.1, -130), orientation: 3 }
         ]
     },
@@ -11328,6 +11330,57 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "box", position: Vec(21.68, 42.52) },
             { idString: "box", position: Vec(18.53, 14.36) },
             { idString: { box: 1, grenade_box: 0.75 }, position: Vec(21.52, 1.61) }
+        ]
+    },
+    {
+        idString: "sawnmill_office",
+        name: "Sawnmill Office",
+        defType: DefinitionType.Building,
+        spawnHitbox: RectangleHitbox.fromRect(70, 42),
+        ceilingHitbox: RectangleHitbox.fromRect(53.85, 24.8, Vec(-0.03, 0.35)),
+        hitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(19.47, 2.01, Vec(-6.76, 13.4)),
+            RectangleHitbox.fromRect(2, 28.09, Vec(27.85, 0.25)),
+            RectangleHitbox.fromRect(2.01, 27.49, Vec(-27.85, 0.65)),
+            RectangleHitbox.fromRect(45.57, 2, Vec(-6.06, -12.8)),
+            RectangleHitbox.fromRect(6.38, 2, Vec(25.66, 13.39))
+        ),
+        material: "stone",
+        particle: "sawnmill_office_particle",
+        floors: [
+            {
+                type: FloorNames.Wood,
+                hitbox: RectangleHitbox.fromRect(54.3, 27.2)
+            },
+            {
+                type: FloorNames.Stone,
+                hitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(10.49, 5.31, Vec(21.77, -15.35)),
+                    RectangleHitbox.fromRect(10.4, 4.52, Vec(-21.65, 15.74))
+                )
+            }
+        ],
+        ceilingImages: [{
+            key: "sawnmill_office_ceiling",
+            position: Vec(0, 0),
+            scale: Vec(2, 2)
+        }],
+        floorImages: [
+            {
+                key: "sawnmill_office_alpha",
+                position: Vec(0, 0)
+            }
+        ],
+        obstacles: [
+            { idString: "door", position: Vec(-22.11, 13.43), rotation: 2 },
+            { idString: "door", position: Vec(21.37, -12.75), rotation: 2 },
+            { idString: "cobweb", position: Vec(-21.95, -6.99), rotation: 0 },
+            { idString: "window2", position: Vec(7.78, 13.36), rotation: 1 },
+            { idString: "window2", position: Vec(17.27, 13.36), rotation: 1 },
+            { idString: "potted_plant", position: Vec(-22.71, -7.81), rotation: 0 },
+            { idString: { box: 1, grenade_box: 0.1 }, position: Vec(-16.19, -9.05) },
+            { idString: "desk_left", position: Vec(-5.92, 6.16), rotation: 2, lootSpawnOffset: Vec(0, -1) },
+            { idString: "small_desk", position: Vec(23.99, 5.97), rotation: 1, lootSpawnOffset: Vec(-1, -0.5) }
         ]
     }
 ]);

@@ -407,7 +407,9 @@ export const TintedParticles: Record<string, { readonly base: string, readonly t
 
     abandoned_warehouse_1_particle_1: { base: "stone_particle_1", tint: 0x5a1919 },
     abandoned_warehouse_1_particle_2: { base: "stone_particle_1", tint: 0x5a1919 },
-    abandoned_warehouse_col_particle: { base: "metal_particle_1", tint: 0x3c3c3c }
+    abandoned_warehouse_col_particle: { base: "metal_particle_1", tint: 0x3c3c3c },
+
+    sawnmill_office_particle: { base: "wood_particle", tint: 0x36271c }
 };
 
 const houseWall = (
@@ -4286,6 +4288,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         hitbox: RectangleHitbox.fromRect(8.45, 1.6),
         rotationMode: RotationMode.Limited,
         noResidue: true,
+        zIndex: ZIndexes.BuildingsFloor - 0.5,
         frames: {
             particle: "fence_particle"
         }
