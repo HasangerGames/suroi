@@ -10867,10 +10867,10 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             )
         }],
         floorImages: [ // todo: repair barricade line svgs, pattern is broken (doesn't work with colors)
-            // {
-            //     key: "sawnmil_alpha",
-            //     position: Vec(0, 0)
-            // },
+            //  {
+            //      key: "sawnmil_alpha",
+            //      position: Vec(0, 0)
+            //  },
 
             // Mud/ground cracks (decals)
             // Top
@@ -11240,6 +11240,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: randomPallet, position: Vec(130.72, -172.72) }, // P11
 
             { idString: "abandoned_warehouse_1", position: Vec(-62.54, 167.62) },
+            { idString: "sawnmill_warehouse", position: Vec(96.43, 136.61) },
             { idString: "sawnmill_office", position: Vec(-115.17, 49.69) },
             { idString: "sawnmill_office", position: Vec(83.43, -216.09) },
             { idString: "porta_potty", position: Vec(-118.1, -130), orientation: 3 }
@@ -11333,6 +11334,139 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         ]
     },
     {
+        idString: "sawnmill_warehouse",
+        name: "Sawnmill Warehouse",
+        defType: DefinitionType.Building,
+        material: "stone",
+        particleVariations: 2,
+        particle: "sawnmill_warehouse_particle",
+        spawnHitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(107.27, 77.64, Vec(-0.83, 32)),
+            RectangleHitbox.fromRect(88.2, 63.17, Vec(8.73, -36.48))
+        ),
+        ceilingHitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(70.14, 115.07, Vec(9.82, 2.95)),
+            RectangleHitbox.fromRect(20.88, 57.89, Vec(-35.22, 31.54))
+        ),
+        hitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(21.52, 2.02, Vec(-35.98, 1.79)),
+            RectangleHitbox.fromRect(2.01, 14.48, Vec(-45.74, 8.12)),
+            RectangleHitbox.fromRect(2.01, 117.88, Vec(45.82, 3.33)),
+            RectangleHitbox.fromRect(26.57, 2.01, Vec(33.55, -55.51)),
+            RectangleHitbox.fromRect(27.38, 2.03, Vec(-13.54, -55.51)),
+            RectangleHitbox.fromRect(2.03, 58.1, Vec(-26.22, -26.81)),
+            RectangleHitbox.fromRect(2, 14.13, Vec(-45.83, 54.62)),
+            RectangleHitbox.fromRect(81.56, 1.9, Vec(-6.05, 61.25))
+        ),
+        floors: [
+            {
+                type: FloorNames.Wood,
+                hitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(47.4, 23.58, Vec(-1.49, -26.84)),
+                    RectangleHitbox.fromRect(19.72, 22.56, Vec(12.37, -8.68)),
+                    RectangleHitbox.fromRect(30.14, 69.31, Vec(29.83, -19.87)),
+                    RectangleHitbox.fromRect(22.33, 19.02, Vec(9.38, -45.89)),
+                    RectangleHitbox.fromRect(41.53, 2.15, Vec(-4.57, 1.85))
+                )
+            },
+            {
+                type: FloorNames.Stone,
+                hitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(61.36, 57.91, Vec(-15.01, 31.49)),
+                    RectangleHitbox.fromRect(31.59, 45.54, Vec(29.08, 37.91)),
+                    RectangleHitbox.fromRect(24.83, 17.01, Vec(-12.88, -46.14)),
+                    RectangleHitbox.fromRect(36.45, 7.85, Vec(10.25, -58.66))
+                )
+            },
+            {
+                type: FloorNames.Carpet,
+                hitbox: RectangleHitbox.fromRect(27.75, 15.75, Vec(-11.33, -7.13))
+            }
+        ],
+        floorImages: [
+            {
+                key: "sawnmill_warehouse_floor_2",
+                position: Vec(9.8, -27.88)
+            },
+            {
+                key: "sawnmill_warehouse_floor_1",
+                position: Vec(0.06, 31.57)
+            }
+        ],
+        ceilingImages: [
+            {
+                key: "sawnmill_warehouse_ceiling_2",
+                position: Vec(9.7, -26.86),
+                scale: Vec(2, 2)
+            },
+            {
+                key: "sawnmill_warehouse_ceiling_1",
+                position: Vec(-0.02, 31.64),
+                scale: Vec(2, 2)
+            }
+        ],
+        groundGraphics: [
+            { // stroke
+                color: 0x343434,
+                hitbox: RectangleHitbox.fromRect(36.37, 6.98, Vec(10.25, -59.06))
+            },
+            { // fill
+                color: 0x4c4c4c,
+                hitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(16.93, 6.17, Vec(19.19, -58.73)),
+                    RectangleHitbox.fromRect(16.98, 6.17, Vec(1.35, -58.69))
+                )
+            }
+        ],
+        obstacles: [
+            { idString: "headquarters_security_desk", position: Vec(-11.33, -17.63), rotation: 2, activated: true },
+            { idString: randomToilet, position: Vec(-20.58, -46.84), rotation: 1 },
+            { idString: "box", position: Vec(-41.54, 6.09) },
+            { idString: "box", position: Vec(-41.39, 10.98) },
+            { idString: "box", position: Vec(36.5, 18.7) },
+            { idString: "box", position: Vec(41.02, 21.62) },
+            { idString: "box", position: Vec(-22.04, -9.38) },
+            { idString: "box", position: Vec(42.06, -32.99) },
+            { idString: "large_logs_pile_2", position: Vec(-25.22, 7.95), rotation: 2, variation: 2 },
+            { idString: "large_logs_pile_2", position: Vec(-14.07, 17.72), rotation: 2, variation: 1 },
+            { idString: "large_logs_pile_2", position: Vec(1.56, 41.95), rotation: 1, variation: 1 },
+            { idString: "barrel", position: Vec(-39.88, 54.75) },
+            { idString: "barrel", position: Vec(40.35, 42.35) },
+            { idString: "pallet", position: Vec(38.67, 20.25), rotation: 0 },
+            { idString: "regular_crate", position: Vec(11.22, 48.05) },
+            { idString: "regular_crate", position: Vec(21.34, 44.9) },
+            { idString: "small_logs_pile_2", position: Vec(-20.55, 55.01), rotation: 3, variation: 2 },
+            { idString: "small_logs_pile_2", position: Vec(10.7, 37.82), rotation: 3, variation: 2 },
+            { idString: "large_drawer", position: Vec(40.29, 6.61), rotation: 3 },
+            { idString: "desk_left", position: Vec(34.52, -48.19), rotation: 0 },
+            { idString: "desk_right", position: Vec(34.48, -15.7), rotation: 2 },
+            { idString: "ammo_crate", position: Vec(-30.03, 54.84) },
+            { idString: "lansiraami_crate", position: Vec(-10.75, 8.12) },
+            { idString: "filing_cabinet", position: Vec(-21.09, -3.38), rotation: 1 },
+            { idString: "trash_can", position: Vec(-4.68, -51.76) },
+            { idString: "potted_plant", position: Vec(40.75, -3.29), rotation: 0 },
+            { idString: "potted_plant", position: Vec(-21.44, -33.41), rotation: 0 },
+            { idString: "grey_office_chair", position: Vec(35.77, -20.84), rotation: 0 },
+            { idString: "grey_office_chair", position: Vec(-6.16, -9.76), rotation: 2 },
+            { idString: "file_cart", position: Vec(10.38, -30.47), rotation: 3 },
+            { idString: "cobweb", position: Vec(39.97, -49.62), rotation: 3 },
+            { idString: "door", position: Vec(5.69, -55.48), rotation: 0 },
+            { idString: "door", position: Vec(14.84, -55.48), rotation: 2 },
+            { idString: "door", position: Vec(15.13, 7.61), rotation: 1 },
+            { idString: "door", position: Vec(40.21, 61.24), rotation: 0 },
+            { idString: "door", position: Vec(-7.5, -38.14), rotation: 2 },
+            { idString: "sawnmill_warehouse_wall_1", position: Vec(-4.63, 1.76), rotation: 0 },
+            { idString: "sawnmill_warehouse_wall_2", position: Vec(29.58, 14.39), rotation: 0 },
+            { idString: "sawnmill_warehouse_wall_3", position: Vec(-18.62, -38.08), rotation: 0 },
+            { idString: "sawnmill_warehouse_wall_4", position: Vec(-0.98, -45.8), rotation: 0 },
+            { idString: "sawnmill_warehouse_wall_5", position: Vec(22.93, -15), rotation: 0 },
+            { idString: "sawnmill_warehouse_wall_6", position: Vec(22.93, -46.68), rotation: 0 },
+            { idString: "sawnmill_warehouse_wall_7", position: Vec(33.43, -8.14), rotation: 0 },
+            { idString: "sawnmill_warehouse_column", position: Vec(22.93, -22.4) },
+            { idString: "sawnmill_warehouse_column", position: Vec(22.93, -37.42) }
+        ]
+    },
+    {
         idString: "sawnmill_office",
         name: "Sawnmill Office",
         defType: DefinitionType.Building,
@@ -11365,12 +11499,10 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             position: Vec(0, 0),
             scale: Vec(2, 2)
         }],
-        floorImages: [
-            {
-                key: "sawnmill_office_alpha",
-                position: Vec(0, 0)
-            }
-        ],
+        floorImages: [{
+            key: "sawnmill_office_floor",
+            position: Vec(0, 0)
+        }],
         obstacles: [
             { idString: "door", position: Vec(-22.11, 13.43), rotation: 2 },
             { idString: "door", position: Vec(21.37, -12.75), rotation: 2 },
@@ -11482,18 +11614,18 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "trash_bag", position: Vec(-11.8, 41.41), rotation: 0 },
             { idString: "trash_bag", position: Vec(-6.01, 42.69), rotation: 3 },
             { idString: "barrel", position: Vec(33.59, 57.14), rotation: 1 },
-            { idString: "regular_crate", position: Vec(43.08, 57.22), rotation: 0 },
+            { idString: "regular_crate", position: Vec(43.08, 57.22) },
 
-            { idString: "cabin_column", position: Vec(-19.43, -58.87), rotation: 0 },
-            { idString: "cabin_column", position: Vec(3.81, -58.85), rotation: 0 },
-            { idString: "cabin_column", position: Vec(27.43, -58.9), rotation: 0 },
-            { idString: "cabin_column", position: Vec(50.1, -58.84), rotation: 0 },
-            { idString: "cabin_column", position: Vec(50.18, -34.99), rotation: 0 },
-            { idString: "cabin_column", position: Vec(-43.51, 63.65), rotation: 0 },
-            { idString: "cabin_column", position: Vec(-19.56, 63.75), rotation: 0 },
-            { idString: "cabin_column", position: Vec(4.39, 63.7), rotation: 0 },
-            { idString: "cabin_column", position: Vec(26.99, 63.74), rotation: 0 },
-            { idString: "cabin_column", position: Vec(49.63, 63.65), rotation: 0 },
+            { idString: "cabin_column", position: Vec(-19.43, -58.87) },
+            { idString: "cabin_column", position: Vec(3.81, -58.85) },
+            { idString: "cabin_column", position: Vec(27.43, -58.9) },
+            { idString: "cabin_column", position: Vec(50.1, -58.84) },
+            { idString: "cabin_column", position: Vec(50.18, -34.99) },
+            { idString: "cabin_column", position: Vec(-43.51, 63.65) },
+            { idString: "cabin_column", position: Vec(-19.56, 63.75) },
+            { idString: "cabin_column", position: Vec(4.39, 63.7) },
+            { idString: "cabin_column", position: Vec(26.99, 63.74) },
+            { idString: "cabin_column", position: Vec(49.63, 63.65) },
 
             { idString: "cabin_particle", position: Vec(51.33, 39.12), rotation: 0 },
             { idString: "cabin_particle", position: Vec(50.41, -41.21), rotation: 0 },
