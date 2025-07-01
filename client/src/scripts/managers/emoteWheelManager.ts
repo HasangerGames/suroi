@@ -12,6 +12,7 @@ import { Game } from "../game";
 import { MapManager } from "./mapManager";
 import { CameraManager } from "./cameraManager";
 import { PIXI_SCALE } from "../utils/constants";
+import { GameConsole } from "../console/gameConsole";
 
 class EmoteWheelManagerClass {
     static readonly COLORS = {
@@ -46,7 +47,7 @@ class EmoteWheelManagerClass {
             if (MapPingWheelManager.enabled) {
                 MapPingWheelManager.show();
                 EmoteWheelManager.close();
-            } else {
+            } else if (!GameConsole.getBuiltInCVar("cv_hide_emotes")) {
                 EmoteWheelManager.show();
                 MapPingWheelManager.close();
             }
