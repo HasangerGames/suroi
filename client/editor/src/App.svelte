@@ -318,9 +318,7 @@
         hitboxes = hitboxes;
         selected = hitboxes[0];
     }
-    const bgImage = loadImage("/img/game/shared/buildings/cabin_roof.svg");
-    // const bgImage = loadImage("/img/game/shared/buildings/cabin_floor.svg");
-    // const bgImage = loadImage("/img/game/shared/buildings/cabin_floor_bare.svg");
+    const bgImage = loadImage("/img/game/hunted/buildings/cabin_floor.svg");
 
     function handleKeydown(e: KeyboardEvent) {
         let moved = false;

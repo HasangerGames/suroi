@@ -11523,11 +11523,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         material: "stone",
         particle: "wall_particle",
         hitbox: new GroupHitbox(
-            RectangleHitbox.fromRect(3.02, 3.01, Vec(-46.55, -9.44)),
             RectangleHitbox.fromRect(1.52, 18.96, Vec(-46.54, 1.55)),
-            RectangleHitbox.fromRect(3.02, 3.03, Vec(-46.49, 12.51)),
             RectangleHitbox.fromRect(1.52, 19.91, Vec(-46.54, 23.97)),
-            RectangleHitbox.fromRect(3.01, 3.01, Vec(-46.53, 35.4)),
             RectangleHitbox.fromRect(1.9, 26.83, Vec(-26.6, -19.92)),
             RectangleHitbox.fromRect(1.9, 33.33, Vec(-26.6, 20.25)),
             RectangleHitbox.fromRect(19.41, 1.91, Vec(-17.86, -32.39)),
@@ -11535,11 +11532,9 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             RectangleHitbox.fromRect(48.58, 1.91, Vec(27.23, -32.38)),
             RectangleHitbox.fromRect(1.51, 5.28, Vec(6.91, 39.55)),
             new CircleHitbox(1.04, Vec(6.91, 43.22)),
-            RectangleHitbox.fromRect(3.04, 3.04, Vec(13.05, -10.27)),
             RectangleHitbox.fromRect(13.09, 1.9, Vec(24.24, 35.97)),
             RectangleHitbox.fromRect(1.54, 5.45, Vec(18.47, 39.65)),
             new CircleHitbox(1.04, Vec(18.46, 43.4)),
-            RectangleHitbox.fromRect(3, 3, Vec(21.58, 7.13)),
             RectangleHitbox.fromRect(1.9, 19.55, Vec(50.57, -23.57)),
             RectangleHitbox.fromRect(1.91, 39.59, Vec(50.57, 17.13)),
             RectangleHitbox.fromRect(9.62, 1.89, Vec(46.71, 35.97))
@@ -11549,19 +11544,84 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "outhouse", position: Vec(-42.87, -32.12), orientation: 3 }
         ],
         ceilingHitbox: new GroupHitbox(
-            RectangleHitbox.fromRect(79, 70.08, Vec(11.96, 1.73)),
-            RectangleHitbox.fromRect(20.89, 47.73, Vec(-37.99, 12.99))
+            RectangleHitbox.fromRect(75.36, 66.63, Vec(11.95, 1.77)),
+            RectangleHitbox.fromRect(18.34, 47.81, Vec(-36.7, 12.94)),
+            RectangleHitbox.fromRect(10, 10.38, Vec(-26.9, -1.42)),
+            RectangleHitbox.fromRect(10, 2.09, Vec(12.71, 34.83))
         ),
         floorImages: [
             {
-                key: "cabin_floor",
-                position: Vec(0, 0)
+                key: "cabin_front_stair",
+                position: Vec(12.71, 40.13)
+            },
+            {
+                key: "cabin_floor_1",
+                position: Vec(-37.1, 13.05)
+            },
+            {
+                key: "cabin_floor_2",
+                position: Vec(12.77, 1.93)
+            },
+            {
+                key: "cabin_stair",
+                position: Vec(-36.28, -14.58)
+            },
+            {
+                key: "cabin_stair",
+                position: Vec(-36.28, 40.67),
+                rotation: Math.PI
+            },
+            // particles (floor)
+            {
+                key: "wood_particle",
+                position: Vec(51.33, 39.12),
+                tint: 0x5d4622
+            },
+            {
+                key: "wood_particle",
+                position: Vec(50.41, -41.21),
+                tint: 0x5d4622
+            },
+            {
+                key: "wood_particle",
+                position: Vec(50.86, -46.67),
+                rotation: Math.PI / 3,
+                tint: 0x5d4622
+            },
+            {
+                key: "wood_particle",
+                position: Vec(50.15, -53.71),
+                rotation: Math.PI,
+                tint: 0x5d4622
+            }
+        ],
+        floors: [
+            {
+                type: FloorNames.Wood,
+                hitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(75.4, 40.34, Vec(12.07, -11.26)),
+                    RectangleHitbox.fromRect(20.34, 47.58, Vec(-35.78, 12.99)),
+                    RectangleHitbox.fromRect(45.85, 26.32, Vec(26.74, 21.98)),
+                    RectangleHitbox.fromRect(10, 10, Vec(12.69, 38.45)),
+                    RectangleHitbox.fromRect(14.59, 10, Vec(-36.29, 39.54)),
+                    RectangleHitbox.fromRect(14.57, 10, Vec(-36.26, -13.46))
+                )
+            },
+            {
+                type: FloorNames.Stone,
+                hitbox: RectangleHitbox.fromRect(30.1, 26.7, Vec(-10.85, 21.9))
             }
         ],
         ceilingImages: [
             {
-                key: "cabin_roof",
-                position: Vec(0, 0)
+                key: "cabin_ceiling_1",
+                position: Vec(11.94, 1.91),
+                scale: Vec(2, 2)
+            },
+            {
+                key: "cabin_ceiling_2",
+                position: Vec(-37.97, 12.95),
+                scale: Vec(2, 2)
             }
         ],
         obstacles: [
@@ -11626,11 +11686,11 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "cabin_column", position: Vec(4.39, 63.7) },
             { idString: "cabin_column", position: Vec(26.99, 63.74) },
             { idString: "cabin_column", position: Vec(49.63, 63.65) },
-
-            { idString: "cabin_particle", position: Vec(51.33, 39.12), rotation: 0 },
-            { idString: "cabin_particle", position: Vec(50.41, -41.21), rotation: 0 },
-            { idString: "cabin_particle", position: Vec(50.86, -46.67), rotation: 1 },
-            { idString: "cabin_particle", position: Vec(50.15, -53.71), rotation: 3 }
+            { idString: "cabin_column", position: Vec(12.96, -10.22) },
+            { idString: "cabin_column", position: Vec(21.64, 7.2) },
+            { idString: "cabin_column", position: Vec(-46.8, 35.44) },
+            { idString: "cabin_column", position: Vec(-46.8, 12.48) },
+            { idString: "cabin_column", position: Vec(-46.8, -9.48) }
         ]
     }
 ]);

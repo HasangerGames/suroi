@@ -262,7 +262,7 @@ const aidrTint = 0x4059bf; // GameConstants.modeName as string === "winter" ? 0x
 export const TintedParticles: Record<string, { readonly base: string, readonly tint: number, readonly variants?: number }> = {
     _glow_: { base: "_glow_", tint: 0xffffff },
 
-    cabin_particle: { base: "wood_particle", tint: 0x5D4622 },
+    cabin_wall_particle: { base: "wood_particle", tint: 0x5D4622 },
     metal_particle: { base: "metal_particle_1", tint: 0x5f5f5f },
     cargo_ship_particle: { base: "metal_particle_1", tint: 0x273140 },
     metal_column_particle: { base: "metal_particle_1", tint: 0x8f8f8f },
@@ -3217,48 +3217,19 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         }
     },
     {
-        idString: "cabin_particle",
-        name: "Cabin Wood Chunk",
-        defType: DefinitionType.Obstacle,
-        material: "wood",
-        health: 1,
-        indestructible: true, // Make it completely indestructible
-        scale: {
-            spawnMin: 1,
-            spawnMax: 1,
-            destroy: 0.6
-        },
-        hitbox: RectangleHitbox.fromRect(0.1, 0.1),
-        rotationMode: RotationMode.Full,
-        allowFlyover: FlyoverPref.Always,
-        noCollisions: true,
-        noResidue: true,
-        hideOnMap: true,
-        tint: 0x5D4622,
-        frames: {
-            base: "wood_particle",
-            particle: "cabin_particle"
-        }
-    },
-    {
         idString: "cabin_fence",
         name: "Cabin Fence",
         defType: DefinitionType.Obstacle,
-        material: "fence",
+        material: "stone",
         health: 50,
         indestructible: true,
-        scale: {
-            spawnMin: 1,
-            spawnMax: 1,
-            destroy: 0.8
-        },
         hitbox: RectangleHitbox.fromRect(21.92, 1.52),
         rotationMode: RotationMode.Limited,
-        noResidue: true,
         frames: {
-            particle: "cabin_particle"
+            particle: "cabin_wall_particle"
         },
         isWall: true,
+        hideOnMap: true,
         wall: {
             borderColor: 0x342512,
             color: 0x6b5431
@@ -4474,7 +4445,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         tint: 0x5a4320,
         frames: {
             base: "column",
-            particle: "wall_particle"
+            particle: "cabin_wall_particle"
         },
         isWall: true
     },
