@@ -1,4 +1,4 @@
-import { GameConstants, InventoryMessages, ObjectCategory, PlayerActions } from "@common/constants";
+import { GameConstants, InventoryMessages, Layer, ObjectCategory, PlayerActions } from "@common/constants";
 import { ArmorType } from "@common/definitions/items/armors";
 import { type GunDefinition } from "@common/definitions/items/guns";
 import { Loots, type LootDefinition } from "@common/definitions/loots";
@@ -97,21 +97,22 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
         this._oldPosition = Vec.clone(this.position);
 
         const { terrain } = this.game.map;
-        if (terrain.getFloor(this.position, this.layer) === FloorNames.Water && terrain.groundRect.isPointInside(this.position)) {
+        if (
+            this.layer === Layer.Ground
+            && terrain.getFloor(this.position, this.layer) === FloorNames.Water
+            && terrain.groundRect.isPointInside(this.position)
+        ) {
             for (const river of terrain.getRiversInPosition(this.position)) {
-                if (river.waterHitbox?.isPointInside(this.position)) {
-                    const tangent = river.getTangent(
-                        river.getClosestT(this.position)
-                    );
+                if (!river.waterHitbox?.isPointInside(this.position)) continue;
 
-                    this.push(Math.atan2(tangent.y, tangent.x), -0.001);
-                    break;
-                }
+                const tangent = river.getTangent(river.getClosestT(this.position));
+                this.push(Vec.direction(tangent), -0.001);
+                break;
             }
         }
 
         const dt = this.game.dt;
-        const halfDt = dt * 0.5;
+        const halfDt = dt / 2;
 
         const calculateSafeDisplacement = (): Vector => {
             let displacement = Vec.scale(this.velocity, halfDt);
@@ -123,14 +124,13 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
         };
 
         this.position = Vec.add(this.position, calculateSafeDisplacement());
-        this.velocity = Vec.scale(this.velocity, 1 / (1 + this.game.dt * 0.003));
+        this.velocity = Vec.scale(this.velocity, 1 / (1 + dt * 0.003));
 
         this.position = Vec.add(this.position, calculateSafeDisplacement());
         this.position.x = Numeric.clamp(this.position.x, this.hitbox.radius, this.game.map.width - this.hitbox.radius);
         this.position.y = Numeric.clamp(this.position.y, this.hitbox.radius, this.game.map.height - this.hitbox.radius);
 
-        const objects = this.game.grid.intersectsHitbox(this.hitbox);
-        for (const object of objects) {
+        for (const object of this.game.grid.intersectsHitbox(this.hitbox)) {
             if (
                 (object.isObstacle || object.isBuilding)
                 && object.collidable
@@ -139,12 +139,10 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
             ) {
                 if (object.isObstacle && object.definition.isStair) {
                     object.handleStairInteraction(this);
-                } else if (adjacentOrEqualLayer(object.layer, this.layer)) {
+                } else {
                     this.hitbox.resolveCollision(object.hitbox);
                 }
-            }
-
-            if (
+            } else if (
                 object.isLoot
                 && object !== this
                 && object.hitbox.collidesWith(this.hitbox)
