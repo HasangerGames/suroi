@@ -10761,7 +10761,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             scale: Vec(3.745, 1.78)
         }]
     },
-    {
+    { // mrrraowww :3
         idString: "sawmill",
         name: "sawmill",
         defType: DefinitionType.Building,
@@ -10878,8 +10878,9 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         }],
         floorImages: [ // todo: repair barricade line svgs, pattern is broken (doesn't work with colors)
             {
-                key: "sawmil_alpha",
-                position: Vec(0, 0)
+                key: "sawmil_noalpha",
+                position: Vec(0, 0),
+                alpha: 0.75
             },
 
             // Mud/ground cracks (decals)
@@ -11257,6 +11258,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "sawmill_office", position: Vec(-115.17, 49.69) },
             { idString: "sawmill_office", position: Vec(83.43, -216.09) },
             { idString: "sawmill_center_warehouse", position: Vec(13.75, -37) },
+            { idString: "sawmill_storage", position: Vec(-51.47, -212.03) },
             { idString: "porta_potty", position: Vec(-118.1, -130), orientation: 3 }
         ]
     },
@@ -11845,6 +11847,71 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "cabin_column", position: Vec(-46.8, 35.44) },
             { idString: "cabin_column", position: Vec(-46.8, 12.48) },
             { idString: "cabin_column", position: Vec(-46.8, -9.48) }
+        ]
+    },
+    {
+        idString: "sawmill_storage",
+        name: "Sawmill Storage",
+        defType: DefinitionType.Building,
+        spawnHitbox: RectangleHitbox.fromRect(114.82, 52.97, Vec(0.99, -0.09)),
+        ceilingHitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(99.01, 39.08, Vec(-0.03, -0.3)),
+            RectangleHitbox.fromRect(29.53, 2.74, Vec(0.56, 19.38))
+        ),
+        hitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(89.67, 2.01, Vec(5.4, -20.4)),
+            RectangleHitbox.fromRect(2, 42.01, Vec(-50.47, -0.39)),
+            RectangleHitbox.fromRect(2, 41.84, Vec(50.46, -0.48)),
+            RectangleHitbox.fromRect(34.66, 2, Vec(34.13, 20.24)),
+            RectangleHitbox.fromRect(34.66, 2.01, Vec(-34.14, 20.24))
+        ),
+        material: "stone",
+        particle: "sawmill_warehouse_particle",
+        particleVariations: 2,
+        floorImages: [
+            {
+                key: "sawmill_storage_floor",
+                position: Vec(0, 0)
+            },
+            {
+                key: "porta_potty_floor",
+                position: Vec(-38.24, 11.3),
+                rotation: -Math.PI / 2
+            },
+            {
+                key: "porta_potty_residue",
+                position: Vec(-38.61, 11.37),
+                rotation: -Math.PI / 2
+            }
+        ],
+        ceilingImages: [{
+            key: "sawmill_storage_ceiling",
+            position: Vec(0, 0),
+            scale: Vec(2, 2)
+        }],
+        floors: [{
+            type: FloorNames.Stone,
+            hitbox: RectangleHitbox.fromRect(100.32, 41.74, Vec(-0.09, -0.13))
+        }],
+        obstacles: [
+            { idString: "sawmill_storage_column", position: Vec(-15.64, 20.24) },
+            { idString: "sawmill_storage_column", position: Vec(16.85, 20.24) },
+            { idString: "door", position: Vec(-43.9, -20.43), rotation: 0 },
+            { idString: "cobweb", position: Vec(44.62, -14.63), rotation: 3 },
+            { idString: "box", position: Vec(-36.77, 0.8) },
+            { idString: "box", position: Vec(-7.45, 2.4) },
+            { idString: "box", position: Vec(-2.56, -1.17) },
+            { idString: "log", position: Vec(6.54, -17.34), rotation: 0, variation: 1 },
+            { idString: "small_moldy_logs", position: Vec(-9.68, -14.99), rotation: 0 },
+            { idString: "regular_crate", position: Vec(43.58, -13.3) },
+            { idString: "regular_crate", position: Vec(33.44, -10.67) },
+            { idString: "lansiraami_crate", position: Vec(40.9, 11.59) },
+            { idString: "grenade_crate", position: Vec(0.41, 8.53) },
+            { idString: "pallet", position: Vec(0.2, 8.09), rotation: 0 },
+            { idString: "small_logs_pile_2", position: Vec(-44.19, -1.03), rotation: 2, variation: 2 },
+            { idString: "large_logs_pile_2", position: Vec(39.26, 0.2), rotation: 2, variation: 2 },
+            { idString: "porta_potty_toilet_open", position: Vec(-44.41, 11.59), rotation: 1 },
+            { idString: "porta_potty_sink_wall", position: Vec(-39.6, 5.7), rotation: 2 }
         ]
     }
 ]);

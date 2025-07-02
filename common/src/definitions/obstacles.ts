@@ -4529,6 +4529,26 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         isWall: true
     },
     {
+        idString: "sawmill_storage_column",
+        name: "sawmill Storage Column",
+        defType: DefinitionType.Obstacle,
+        material: "stone",
+        indestructible: true,
+        particleVariations: 2,
+        health: 340,
+        hitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(3, 3)
+        ),
+        rotationMode: RotationMode.None,
+        allowFlyover: FlyoverPref.Never,
+        tint: 0x5a1919,
+        frames: {
+            base: "column",
+            particle: "hq_stone_wall_particle"
+        },
+        isWall: true
+    },
+    {
         idString: "potted_plant",
         name: "Potted Plant",
         defType: DefinitionType.Obstacle,
