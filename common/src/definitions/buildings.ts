@@ -10837,9 +10837,31 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                     RectangleHitbox.fromRect(2.09, 30.94, Vec(138.71, -184.28)),
                     RectangleHitbox.fromRect(2.09, 30.94, Vec(87.29, -184.3)),
                     RectangleHitbox.fromRect(2.09, 30.94, Vec(105.05, -184.31)),
-                    RectangleHitbox.fromRect(2.09, 30.94, Vec(121.87, -184.31))
+                    RectangleHitbox.fromRect(2.09, 30.94, Vec(121.87, -184.31)),
+
+                    // big barricade (border)
+                    RectangleHitbox.fromRect(2.02, 31.78, Vec(71.36, -184.88)),
+                    RectangleHitbox.fromRect(17.21, 2.03, Vec(63.43, -199.75)),
+                    RectangleHitbox.fromRect(17.21, 2.03, Vec(63.78, -170)),
+                    RectangleHitbox.fromRect(2.02, 31.78, Vec(55.53, -184.88))
                 )
             },
+
+            // ------------------------------------
+            // for yellow barricade lines
+            // SOMEONE FIX BARRICADE LINES PLS :sob:
+            // ------------------------------------
+            // {
+            //     color: 0xd5a244,
+            //     hitbox: new PolygonHitbox([
+            //         Vec(70.32, -174.35),
+            //         Vec(70.33, -176.43),
+            //         Vec(66.96, -171.04),
+            //         Vec(64.89, -171.04)
+            //     ])
+            // },
+            // ------------------------------------
+
             // bottom forklift park
             {
                 color: 0x473827,
@@ -11030,8 +11052,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "grenade_crate", position: Vec(-111.41, 92.44) }, // P4
             { idString: "grenade_crate", position: Vec(63.6, 91.1) }, // P7
 
-            { idString: "log", position: Vec(1.37, 100.55), rotation: 0, variation: 1 },
-            { idString: "log", position: Vec(-88.48, 216.96), rotation: 0, variation: 1 },
+            { idString: "log", position: Vec(1.37, 100.55), rotation: 0, variation: 2 },
+            { idString: "log", position: Vec(-88.48, 216.96), rotation: 0, variation: 2 },
 
             { idString: "small_moldy_logs", position: Vec(-78.92, 68.79), rotation: 0 },
             { idString: "small_moldy_logs", position: Vec(138.02, 216.19), rotation: 1 },
@@ -11232,7 +11254,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
 
             { idString: "grenade_crate", position: Vec(-93.07, -121.72) }, // P12
 
-            { idString: "log", position: Vec(-1.02, -139.43), rotation: 3, variation: 1 },
+            { idString: "log", position: Vec(-1.02, -139.43), rotation: 3, variation: 2 },
 
             // Center
             { idString: "regular_crate", position: Vec(-49.22, -27.19) },
@@ -11243,7 +11265,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
 
             { idString: "barrel", position: Vec(-45.23, -73.05) },
 
-            { idString: "log", position: Vec(72.02, -42.31), rotation: 3, variation: 1 },
+            { idString: "log", position: Vec(72.02, -42.31), rotation: 3, variation: 2 },
 
             { idString: "saw", position: Vec(5.88, -10.22), rotation: 0 },
             { idString: "headquarters_security_desk", position: Vec(85.04, 118.94), rotation: 2, puzzlePiece: true }
@@ -11901,7 +11923,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "box", position: Vec(-36.77, 0.8) },
             { idString: "box", position: Vec(-7.45, 2.4) },
             { idString: "box", position: Vec(-2.56, -1.17) },
-            { idString: "log", position: Vec(6.54, -17.34), rotation: 0, variation: 1 },
+            { idString: "log", position: Vec(6.54, -17.34), rotation: 0, variation: 2 },
             { idString: "small_moldy_logs", position: Vec(-9.68, -14.99), rotation: 0 },
             { idString: "regular_crate", position: Vec(43.58, -13.3) },
             { idString: "regular_crate", position: Vec(33.44, -10.67) },
