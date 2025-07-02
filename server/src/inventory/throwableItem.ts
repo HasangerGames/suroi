@@ -2,7 +2,7 @@ import { AnimationType, GameConstants, InventoryMessages } from "@common/constan
 import { PerkIds } from "@common/definitions/items/perks";
 import { type ThrowableDefinition } from "@common/definitions/items/throwables";
 import { Numeric } from "@common/utils/math";
-import { ItemType, type ReifiableDef } from "@common/utils/objectDefinitions";
+import { DefinitionType, type ReifiableDef } from "@common/utils/objectDefinitions";
 import { Vec } from "@common/utils/vector";
 import { type ItemData } from "../objects/loot";
 import { type Player } from "../objects/player";
@@ -10,7 +10,7 @@ import { CountableInventoryItem } from "./inventoryItem";
 import { Timeout } from "@common/utils/misc";
 import { PickupPacket } from "@common/packets/pickupPacket";
 
-export class ThrowableItem extends CountableInventoryItem.derive(ItemType.Throwable) {
+export class ThrowableItem extends CountableInventoryItem.derive(DefinitionType.Throwable) {
     count: number;
 
     private _cookStart?: number;
@@ -23,7 +23,7 @@ export class ThrowableItem extends CountableInventoryItem.derive(ItemType.Throwa
 
         this.count = count;
 
-        if (this.category !== ItemType.Throwable) {
+        if (this.category !== DefinitionType.Throwable) {
             throw new TypeError(`Attempted to create a Throwable object based on a definition for a non-gun object (Received a ${this.category as unknown as string} definition)`);
         }
 

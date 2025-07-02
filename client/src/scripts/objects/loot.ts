@@ -4,7 +4,7 @@ import { PerkIds } from "@common/definitions/items/perks";
 import { type LootDefinition } from "@common/definitions/loots";
 import { CircleHitbox } from "@common/utils/hitbox";
 import { EaseFunctions } from "@common/utils/math";
-import { ItemType } from "@common/utils/objectDefinitions";
+import { DefinitionType } from "@common/utils/objectDefinitions";
 import { type ObjectsNetData } from "@common/utils/objectsSerializations";
 import { type Vector } from "@common/utils/vector";
 import { GameConsole } from "../console/gameConsole";
@@ -54,11 +54,11 @@ export class Loot extends GameObject.derive(ObjectCategory.Loot) {
         if (data.full) {
             const definition = this.definition = data.full.definition;
             const idString = definition.idString;
-            const itemType = definition.itemType;
+            const defType = definition.defType;
 
             this.container.addChild(this.images.background, this.images.item);
 
-            if (itemType === ItemType.Skin) {
+            if (defType === DefinitionType.Skin) {
                 this.images.item
                     .setFrame(definition.baseImage ?? `${idString}_base`)
                     .setPos(0, -3)
@@ -90,7 +90,7 @@ export class Loot extends GameObject.derive(ObjectCategory.Loot) {
                 this.container.addChild(this.images.skinFistLeft, this.images.skinFistRight);
             } else {
                 this.images.item.setFrame(idString);
-                if (itemType === ItemType.Gun) {
+                if (defType === DefinitionType.Gun) {
                     this.images.item.setAngle(-15);
                 }
             }
@@ -103,7 +103,7 @@ export class Loot extends GameObject.derive(ObjectCategory.Loot) {
             }
             if (scale) this.images.item.setScale(scale);
 
-            this.hitbox = new CircleHitbox(GameConstants.lootRadius[itemType]);
+            this.hitbox = new CircleHitbox(GameConstants.lootRadius[defType]);
 
             /*
                 Infinity is serialized as 0 in the bit stream
@@ -142,39 +142,39 @@ export class Loot extends GameObject.derive(ObjectCategory.Loot) {
     }
 
     static getBackgroundAndScale(definition?: LootDefinition): { backgroundTexture?: string, scale?: number } {
-        switch (definition?.itemType) {
-            case ItemType.Gun:
+        switch (definition?.defType) {
+            case DefinitionType.Gun:
                 return {
                     backgroundTexture: `loot_background_gun_${definition.ammoType}`,
                     scale: 0.85
                 };
 
-            case ItemType.Melee:
+            case DefinitionType.Melee:
                 return {
                     backgroundTexture: "loot_background_melee",
                     scale: definition.image?.lootScale
                 };
 
-            case ItemType.Healing:
+            case DefinitionType.HealingItem:
                 return { backgroundTexture: "loot_background_healing" };
 
-            case ItemType.Armor:
-            case ItemType.Backpack:
-            case ItemType.Scope:
-            case ItemType.Skin:
+            case DefinitionType.Armor:
+            case DefinitionType.Backpack:
+            case DefinitionType.Scope:
+            case DefinitionType.Skin:
                 return { backgroundTexture: "loot_background_equipment" };
 
-            case ItemType.Throwable:
+            case DefinitionType.Throwable:
                 return { backgroundTexture: "loot_background_throwable" };
 
-            case ItemType.Perk:
+            case DefinitionType.Perk:
                 return {
                     backgroundTexture: definition.idString === PerkIds.PlumpkinGamble // FIXME bad
                         ? "loot_background_plumpkin_gamble"
                         : "loot_background_perk"
                 };
 
-            case ItemType.Ammo:
+            case DefinitionType.Ammo:
             default:
                 return {};
         }
@@ -209,12 +209,12 @@ export class Loot extends GameObject.derive(ObjectCategory.Loot) {
         const { weapons, lockedSlots } = inventory;
         const definition = this.definition;
 
-        switch (definition.itemType) {
-            case ItemType.Gun: {
+        switch (definition.defType) {
+            case DefinitionType.Gun: {
                 let i = 0;
                 for (const weapon of weapons) {
                     if (
-                        weapon?.definition.itemType === ItemType.Gun
+                        weapon?.definition.defType === DefinitionType.Gun
                         && (
                             definition.idString === weapon.definition.dualVariant
                             || (
@@ -233,38 +233,38 @@ export class Loot extends GameObject.derive(ObjectCategory.Loot) {
                 return (!weapons[0] && !(lockedSlots & 0b01))
                     || (!weapons[1] && !(lockedSlots & 0b10))
                     || (
-                        GameConstants.player.inventorySlotTypings[activeWeaponIndex] === ItemType.Gun
+                        GameConstants.player.inventorySlotTypings[activeWeaponIndex] === DefinitionType.Gun
                         && definition !== weapons[activeWeaponIndex]?.definition
                         && !(lockedSlots & (1 << activeWeaponIndex))
                     );
             }
-            case ItemType.Melee: {
+            case DefinitionType.Melee: {
                 return definition !== weapons[2]?.definition && !(lockedSlots & 0b100);
             }
-            case ItemType.Healing:
-            case ItemType.Ammo:
-            case ItemType.Throwable: {
+            case DefinitionType.HealingItem:
+            case DefinitionType.Ammo:
+            case DefinitionType.Throwable: {
                 const { idString } = definition;
 
                 return !(lockedSlots & 0b1000) && inventory.items[idString] + 1 <= player.equipment.backpack.maxCapacity[idString];
             }
-            case ItemType.Armor: {
+            case DefinitionType.Armor: {
                 switch (true) {
                     case definition.armorType === ArmorType.Helmet: return definition.level > player.helmetLevel;
                     case definition.armorType === ArmorType.Vest: return definition.level > player.vestLevel;
                     default: return false;
                 }
             }
-            case ItemType.Backpack: {
+            case DefinitionType.Backpack: {
                 return definition.level > player.backpackLevel;
             }
-            case ItemType.Scope: {
+            case DefinitionType.Scope: {
                 return inventory.items[definition.idString] === 0;
             }
-            case ItemType.Skin: {
+            case DefinitionType.Skin: {
                 return true;
             }
-            case ItemType.Perk: {
+            case DefinitionType.Perk: {
                 return !ClientPerkManager.asList()[0]?.noSwap && !ClientPerkManager.hasItem(definition);
             }
         }

@@ -34,7 +34,6 @@ type CommonObstacleDefinition = ObjectDefinition & {
     readonly spawnHitbox?: Hitbox
     readonly noCollisions?: boolean
     readonly noCollisionAfterDestroyed?: boolean
-    readonly pallet?: boolean
     readonly rotationMode: RotationMode // for obstacles with a role, this cannot be RotationMode.Full
     readonly particleVariations?: number
     readonly zIndex?: ZIndexes
@@ -3011,6 +3010,26 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         hideOnMap: true
     },
     {
+        idString: "ducktub",
+        name: "Ducktub",
+        defType: DefinitionType.Obstacle,
+        material: "appliance",
+        health: 180,
+        scale: {
+            spawnMin: 1,
+            spawnMax: 1,
+            destroy: 0.8
+        },
+        hitbox: RectangleHitbox.fromRect(17.72, 9.29),
+        allowFlyover: FlyoverPref.Sometimes,
+        rotationMode: RotationMode.Limited,
+        frames: {
+            particle: "toilet_particle"
+        },
+        hideOnMap: true,
+        hasLoot: true
+    },
+    {
         idString: "small_drawer",
         name: "Small Drawer",
         defType: DefinitionType.Obstacle,
@@ -4087,9 +4106,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         defType: DefinitionType.Obstacle,
         material: "wood",
         health: 120,
-        indestructible: true,
         hitbox: RectangleHitbox.fromRect(10.1, 9),
-        zIndex: ZIndexes.DeadObstacles,
+        zIndex: ZIndexes.Decals,
         rotationMode: RotationMode.Limited,
         allowFlyover: FlyoverPref.Always,
         frames: {
@@ -4098,8 +4116,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         },
         noCollisions: true,
         noMeleeCollision: true,
-        noBulletCollision: true,
-        pallet: true
+        noBulletCollision: true
     },
     {
         idString: "pipe",

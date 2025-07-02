@@ -8,10 +8,10 @@ import { Perks } from "@common/definitions/items/perks";
 import { Scopes } from "@common/definitions/items/scopes";
 import { Skins } from "@common/definitions/items/skins";
 import { Throwables } from "@common/definitions/items/throwables";
-import { LootDefForType, LootDefinition, Loots } from "@common/definitions/loots";
+import { ItemType, LootDefForType, LootDefinition, Loots } from "@common/definitions/loots";
 import { ModeName } from "@common/definitions/modes";
 import { isArray } from "@common/utils/misc";
-import { ItemType, NullString, ObjectDefinition, ObjectDefinitions, ReferenceOrRandom, ReferenceTo } from "@common/utils/objectDefinitions";
+import { DefinitionType, NullString, ObjectDefinition, ObjectDefinitions, ReferenceOrRandom, ReferenceTo } from "@common/utils/objectDefinitions";
 import { random, weightedRandom } from "@common/utils/random";
 import { LootTables } from "../data/lootTables";
 import { MapDefinition } from "../data/maps";
@@ -105,7 +105,7 @@ function getLoot(modeName: ModeName, items: WeightedItem[], noDuplicates?: boole
         throw new ReferenceError(`Unknown loot item: ${item}`);
     }
 
-    if ("ammoType" in definition && definition.ammoSpawnAmount) {
+    if (definition.defType === DefinitionType.Gun) {
         // eslint-disable-next-line prefer-const
         let { ammoType, ammoSpawnAmount } = definition;
 
@@ -123,7 +123,7 @@ function getLoot(modeName: ModeName, items: WeightedItem[], noDuplicates?: boole
             loot.push(new LootItem(ammoType, ammoSpawnAmount));
         }
     }
-    if (definition.itemType === ItemType.Gun && definition.spawnScope) {
+    if (definition.defType === DefinitionType.Gun && definition.spawnScope) {
         loot.push(new LootItem(definition.spawnScope, 1));
     }
 
@@ -147,19 +147,19 @@ export type ItemRegistry = ReadonlySet<ReferenceTo<LootDefinition>> & {
     forType<K extends ItemType>(type: K): ReadonlyArray<LootDefForType<K>>
 };
 
-const itemTypeToCollection: {
+const defTypeToCollection: {
     [K in ItemType]: ObjectDefinitions<LootDefForType<K>>
 } = {
-    [ItemType.Gun]: Guns,
-    [ItemType.Ammo]: Ammos,
-    [ItemType.Melee]: Melees,
-    [ItemType.Throwable]: Throwables,
-    [ItemType.Healing]: HealingItems,
-    [ItemType.Armor]: Armors,
-    [ItemType.Backpack]: Backpacks,
-    [ItemType.Scope]: Scopes,
-    [ItemType.Skin]: Skins,
-    [ItemType.Perk]: Perks
+    [DefinitionType.Gun]: Guns,
+    [DefinitionType.Ammo]: Ammos,
+    [DefinitionType.Melee]: Melees,
+    [DefinitionType.Throwable]: Throwables,
+    [DefinitionType.HealingItem]: HealingItems,
+    [DefinitionType.Armor]: Armors,
+    [DefinitionType.Backpack]: Backpacks,
+    [DefinitionType.Scope]: Scopes,
+    [DefinitionType.Skin]: Skins,
+    [DefinitionType.Perk]: Perks
 };
 
 export type Cache = {
@@ -243,7 +243,7 @@ export function getSpawnableLoots(modeName: ModeName, mapDef: MapDefinition, cac
                 // without this seemingly useless assertion, assignability errors occur
                 // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
                 cache[type] as Array<LootDefForType<K>> | undefined
-            ) ??= itemTypeToCollection[type].definitions.filter(({ idString }) => spawnableLoots.has(idString))
+            ) ??= defTypeToCollection[type].definitions.filter(({ idString }) => spawnableLoots.has(idString))
         );
     };
 
@@ -253,7 +253,7 @@ export function getSpawnableLoots(modeName: ModeName, mapDef: MapDefinition, cac
 export function getAllLoots(cache: Cache, dev?: boolean): ItemRegistry {
     // returns a set of all loot items in the game
     // property "dev" allows including dev items if true
-    const filter = (def: LootDefinition): boolean => dev ? true : !def.devItem;
+    const filter = (def: LootDefinition): boolean => dev || !def.devItem;
 
     const allLoots: ReadonlySet<ReferenceTo<LootDefinition>> = new Set<ReferenceTo<LootDefinition>>([
         ...Loots.definitions.filter(filter)
@@ -264,7 +264,7 @@ export function getAllLoots(cache: Cache, dev?: boolean): ItemRegistry {
             (
                 // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
                 cache[type] as Array<LootDefForType<K>> | undefined
-            ) ??= itemTypeToCollection[type].definitions.filter(({ idString }) => allLoots.has(idString))
+            ) ??= defTypeToCollection[type].definitions.filter(({ idString }) => allLoots.has(idString))
         );
     };
 

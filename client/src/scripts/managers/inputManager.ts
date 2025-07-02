@@ -5,7 +5,7 @@ import { type WeaponDefinition } from "@common/definitions/loots";
 import { areDifferent, InputPacket, type InputAction, type InputData, type SimpleInputActions } from "@common/packets/inputPacket";
 import { PacketType } from "@common/packets/packet";
 import { Geometry, Numeric } from "@common/utils/math";
-import { ItemType, type ItemDefinition } from "@common/utils/objectDefinitions";
+import { DefinitionType, type ItemDefinition } from "@common/utils/objectDefinitions";
 import { Vec } from "@common/utils/vector";
 import $ from "jquery";
 import nipplejs, { type JoystickOutputData } from "nipplejs";
@@ -224,20 +224,20 @@ class InputManagerClass {
             let playSound = !item.noDrop;
 
             if (playSound) {
-                switch (item.itemType) {
-                    case ItemType.Ammo:
-                    case ItemType.Healing:
-                    case ItemType.Scope:
+                switch (item.defType) {
+                    case DefinitionType.Ammo:
+                    case DefinitionType.HealingItem:
+                    case DefinitionType.Scope:
                         playSound = inventory.items[item.idString] > 0;
                         break;
-                    case ItemType.Throwable:
-                    case ItemType.Armor:
-                    case ItemType.Gun:
-                    case ItemType.Melee:
-                    case ItemType.Skin:
+                    case DefinitionType.Throwable:
+                    case DefinitionType.Armor:
+                    case DefinitionType.Gun:
+                    case DefinitionType.Melee:
+                    case DefinitionType.Skin:
                         playSound = true; // probably fine…?
                         break;
-                    case ItemType.Backpack:
+                    case DefinitionType.Backpack:
                         playSound = false; // womp womp
                         break;
                 }
@@ -453,12 +453,12 @@ class InputManagerClass {
 
                 const { aimTrail, altAimTrail } = activePlayer.images;
                 if (aimTrail) aimTrail.visible = true;
-                if (altAimTrail) altAimTrail.visible = def.itemType === ItemType.Gun && (def.isDual ?? false);
+                if (altAimTrail) altAimTrail.visible = def.defType === DefinitionType.Gun && (def.isDual ?? false);
 
                 const attacking = data.distance > joystickSize / 3;
                 if (
-                    (def.itemType === ItemType.Throwable && this.attacking)
-                    || (def.itemType === ItemType.Gun && def.shootOnRelease)
+                    (def.defType === DefinitionType.Throwable && this.attacking)
+                    || (def.defType === DefinitionType.Gun && def.shootOnRelease)
                 ) {
                     shootOnRelease = true;
                     this.shootOnReleaseAngle = this.rotation;
@@ -714,7 +714,7 @@ class InputManagerClass {
 
     cycleThrowable(offset: number): void {
         const throwable = UIManager.inventory.weapons
-            .find(weapon => weapon?.definition.itemType === ItemType.Throwable)
+            .find(weapon => weapon?.definition.defType === DefinitionType.Throwable)
             ?.definition as ThrowableDefinition | undefined;
 
         if (!throwable) return;

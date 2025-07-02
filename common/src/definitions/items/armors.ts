@@ -1,8 +1,7 @@
-import { DefinitionType, ItemType, ObjectDefinitions, type ItemDefinition } from "../../utils/objectDefinitions";
+import { DefinitionType, ObjectDefinitions, type ItemDefinition } from "../../utils/objectDefinitions";
 
 export type ArmorDefinition = ItemDefinition & {
     readonly defType: DefinitionType.Armor
-    readonly itemType: ItemType.Armor
     readonly level: number
     readonly damageReduction: number
 } & (
@@ -28,7 +27,6 @@ export const Armors = new ObjectDefinitions<ArmorDefinition>([
         idString: "basic_helmet",
         name: "Basic Helmet",
         defType: DefinitionType.Armor,
-        itemType: ItemType.Armor,
         armorType: ArmorType.Helmet,
         level: 1,
         damageReduction: 0.1
@@ -37,7 +35,6 @@ export const Armors = new ObjectDefinitions<ArmorDefinition>([
         idString: "regular_helmet",
         name: "Regular Helmet",
         defType: DefinitionType.Armor,
-        itemType: ItemType.Armor,
         armorType: ArmorType.Helmet,
         level: 2,
         damageReduction: 0.15
@@ -46,7 +43,6 @@ export const Armors = new ObjectDefinitions<ArmorDefinition>([
         idString: "tactical_helmet",
         name: "Tactical Helmet",
         defType: DefinitionType.Armor,
-        itemType: ItemType.Armor,
         armorType: ArmorType.Helmet,
         level: 3,
         damageReduction: 0.2
@@ -59,7 +55,6 @@ export const Armors = new ObjectDefinitions<ArmorDefinition>([
         idString: "basic_vest",
         name: "Basic Vest",
         defType: DefinitionType.Armor,
-        itemType: ItemType.Armor,
         armorType: ArmorType.Vest,
         level: 1,
         damageReduction: 0.2,
@@ -69,7 +64,6 @@ export const Armors = new ObjectDefinitions<ArmorDefinition>([
         idString: "regular_vest",
         name: "Regular Vest",
         defType: DefinitionType.Armor,
-        itemType: ItemType.Armor,
         armorType: ArmorType.Vest,
         level: 2,
         damageReduction: 0.35,
@@ -79,7 +73,6 @@ export const Armors = new ObjectDefinitions<ArmorDefinition>([
         idString: "tactical_vest",
         name: "Tactical Vest",
         defType: DefinitionType.Armor,
-        itemType: ItemType.Armor,
         armorType: ArmorType.Vest,
         level: 3,
         damageReduction: 0.45,
@@ -89,7 +82,6 @@ export const Armors = new ObjectDefinitions<ArmorDefinition>([
         idString: "developr_vest",
         name: "Developr Vest",
         defType: DefinitionType.Armor,
-        itemType: ItemType.Armor,
         armorType: ArmorType.Vest,
         level: 99,
         devItem: true,

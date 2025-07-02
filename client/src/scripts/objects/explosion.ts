@@ -19,7 +19,7 @@ import { SoundManager } from "../managers/soundManager";
 export function explosion(definition: ExplosionDefinition, position: Vector, layer: Layer): void {
     const pixiPos = toPixiCoords(position);
 
-    const image = new SuroiSprite("explosion_1");
+    const image = new SuroiSprite("_glow_");
 
     const isOnSameLayer = adjacentOrEqualLayer(layer, Game.layer);
 

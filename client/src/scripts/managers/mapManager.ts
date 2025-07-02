@@ -1,4 +1,4 @@
-import { GameConstants, GasState, Layer, ObjectCategory, Z_INDEX_COUNT, ZIndexes } from "@common/constants";
+import { GameConstants, GasState, Layer, ObjectCategory, ZIndexes, Z_INDEX_COUNT } from "@common/constants";
 import { type MapPingDefinition } from "@common/definitions/mapPings";
 import { type MapData } from "@common/packets/mapPacket";
 import { type PingSerialization, type PlayerPingSerialization } from "@common/packets/updatePacket";
@@ -8,17 +8,16 @@ import { FloorTypes, River, Terrain } from "@common/utils/terrain";
 import { Vec, type Vector } from "@common/utils/vector";
 import $ from "jquery";
 import { Container, Graphics, RenderTexture, Sprite, Text, isMobile, type ColorSource, type Texture } from "pixi.js";
-import { getTranslatedString } from "../utils/translations/translations";
+import { GameConsole } from "../console/gameConsole";
 import { Game } from "../game";
 import { DIFF_LAYER_HITBOX_OPACITY, FOOTSTEP_HITBOX_LAYER, PIXI_SCALE, TEAMMATE_COLORS } from "../utils/constants";
 import { SuroiSprite, drawGroundGraphics, drawHitbox, toPixiCoords } from "../utils/pixi";
-import { GasManager, GasRender } from "./gasManager";
-import { SoundManager } from "./soundManager";
-import { InputManager } from "./inputManager";
-import { UIManager } from "./uiManager";
-import { GameConsole } from "../console/gameConsole";
+import { getTranslatedString } from "../utils/translations/translations";
 import { CameraManager } from "./cameraManager";
-import { MapPingWheelManager } from "./emoteWheelManager";
+import { GasManager, GasRender } from "./gasManager";
+import { InputManager } from "./inputManager";
+import { SoundManager } from "./soundManager";
+import { UIManager } from "./uiManager";
 
 class MapManagerClass {
     private _expanded = false;
@@ -76,7 +75,7 @@ class MapManagerClass {
     private _minimapHeight = 0;
     get minimapHeight(): number { return this._minimapHeight; }
 
-    private _margins = Vec.create(0, 0);
+    margins = Vec.create(0, 0);
 
     gasRender!: GasRender;
     readonly placesContainer = new Container();
@@ -136,12 +135,6 @@ class MapManagerClass {
                 e.stopImmediatePropagation();
             });
         }
-
-        this.sprite.eventMode = "static";
-        this.sprite.on("pointerdown", e => {
-            MapPingWheelManager.onMinimap = true;
-            MapPingWheelManager.position = this.sprite.toLocal(e);
-        });
 
         $("#btn-close-minimap").on("pointerdown", e => {
             this.switchToSmallMap();
@@ -651,11 +644,11 @@ class MapManagerClass {
             // noinspection JSSuspiciousNameCombination
             this._minimapWidth = this.sprite.width * this.container.scale.x;
             this._minimapHeight = this.sprite.height * this.container.scale.y;
-            this._margins = Vec.create(screenWidth / 2 - (this._minimapWidth / 2), screenHeight / 2 - (this._minimapHeight / 2));
+            this.margins = Vec.create(screenWidth / 2 - (this._minimapWidth / 2), screenHeight / 2 - (this._minimapHeight / 2));
 
             const closeButton = $("#btn-close-minimap");
             const closeButtonPos = Numeric.min(
-                this._margins.x + this._minimapWidth + 16,
+                this.margins.x + this._minimapWidth + 16,
                 screenWidth - (closeButton.outerWidth() ?? 0)
             ) / uiScale;
             closeButton.css("left", `${closeButtonPos}px`);
@@ -680,7 +673,7 @@ class MapManagerClass {
 
             this._minimapWidth = bounds.width - border * 2;
             this._minimapHeight = bounds.height - border * 2;
-            this._margins = Vec.create(bounds.left + border, bounds.top + border);
+            this.margins = Vec.create(bounds.left + border, bounds.top + border);
 
             if (window.innerWidth > 1200) {
                 this.container.scale.set(1 / 1.25 * uiScale);
@@ -695,7 +688,7 @@ class MapManagerClass {
         }
 
         this.mask.clear()
-            .rect(this._margins.x, this._margins.y, this._minimapWidth, this._minimapHeight)
+            .rect(this.margins.x, this.margins.y, this._minimapWidth, this._minimapHeight)
             .fill();
 
         this.updatePosition();
@@ -719,8 +712,8 @@ class MapManagerClass {
             return;
         }
         const pos = Vec.clone(this._position);
-        pos.x -= (this._minimapWidth / 2 + this._margins.x) / this.container.scale.x;
-        pos.y -= (this._minimapHeight / 2 + this._margins.y) / this.container.scale.y;
+        pos.x -= (this._minimapWidth / 2 + this.margins.x) / this.container.scale.x;
+        pos.y -= (this._minimapHeight / 2 + this.margins.y) / this.container.scale.y;
 
         this.container.position.set(0, 0);
         this._objectsContainer.position.copyFrom(Vec.scale(pos, -1));

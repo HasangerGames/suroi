@@ -567,6 +567,31 @@ export class ByteStream {
     }
 
     /**
+     * Writes an Set's elements to the stream, with a maximum length depending on the chosen byte count
+     * @param source The source Set. Sets exceeding the maximum length will be truncated silently (see below for maximum lengths)
+     * @param elementWriter A function allowing the serialization of any given element in the Set
+     * @param bytes The amount of bytes to use to signal the Set's size. 1 byte allows for up to 255 elements, while 2 bytes allows for up to 65,535.
+     */
+    writeSet<T>(source: Set<T>, elementWriter: (item: T, stream: this) => void, bytes: 1 | 2 = 1): this {
+        const length = Numeric.min(source.size, bytes === 1 ? 255 : 65535);
+
+        if (bytes === 1) {
+            this.writeUint8(length);
+        } else if (bytes === 2) {
+            this.writeUint16(length);
+        }
+
+        let i = 0;
+        for (const item of source) {
+            if (i >= length) break;
+            elementWriter(item, this);
+            i++;
+        }
+
+        return this;
+    }
+
+    /**
      * Reads and creates an array based on the contents of this stream. The length depends on the byte count provided
      * @param bytes The number of bytes to read to obtain the array's length
      * @param elementReader A function allowing to read any given element from the stream

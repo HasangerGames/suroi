@@ -1,9 +1,9 @@
-import type { WeaponTypes } from "./definitions/loots";
+import type { ItemType, WeaponTypes } from "./definitions/loots";
 import { type ModeName } from "./definitions/modes";
 import { PlayerModifiers } from "./typings";
-import { ItemType } from "./utils/objectDefinitions";
+import { DefinitionType } from "./utils/objectDefinitions";
 
-const inventorySlotTypings = Object.freeze([ItemType.Gun, ItemType.Gun, ItemType.Melee, ItemType.Throwable] as const);
+const inventorySlotTypings = Object.freeze([DefinitionType.Gun, DefinitionType.Gun, DefinitionType.Melee, DefinitionType.Throwable] as const);
 export const GameConstants = {
     // !!!!! NOTE: Increase this every time a byte stream change is made between latest release and master
     // or a new item is added to a definition list
@@ -51,21 +51,21 @@ export const GameConstants = {
     },
     lootSpawnMaxJitter: 0.7,
     lootRadius: {
-        [ItemType.Gun]: 3.4,
-        [ItemType.Ammo]: 2,
-        [ItemType.Melee]: 3,
-        [ItemType.Throwable]: 3,
-        [ItemType.Healing]: 2.5,
-        [ItemType.Armor]: 3,
-        [ItemType.Backpack]: 3,
-        [ItemType.Scope]: 3,
-        [ItemType.Skin]: 3,
-        [ItemType.Perk]: 3
+        [DefinitionType.Gun]: 3.4,
+        [DefinitionType.Ammo]: 2,
+        [DefinitionType.Melee]: 3,
+        [DefinitionType.Throwable]: 3,
+        [DefinitionType.HealingItem]: 2.5,
+        [DefinitionType.Armor]: 3,
+        [DefinitionType.Backpack]: 3,
+        [DefinitionType.Scope]: 3,
+        [DefinitionType.Skin]: 3,
+        [DefinitionType.Perk]: 3
     } satisfies Record<ItemType, number>,
     defaultSpeedModifiers: {
-        [ItemType.Gun]: 0.88,
-        [ItemType.Melee]: 1,
-        [ItemType.Throwable]: 0.92
+        [DefinitionType.Gun]: 0.88,
+        [DefinitionType.Melee]: 1,
+        [DefinitionType.Throwable]: 0.92
     } satisfies Record<WeaponTypes, number>,
     airdrop: {
         fallTime: 8000,
@@ -82,6 +82,7 @@ export const GameConstants = {
             water: 5
         }
     },
+    explosionMaxDistSquared: 128 ** 2,
     riverPadding: 64,
     trailPadding: 384,
     explosionRayDistance: 2

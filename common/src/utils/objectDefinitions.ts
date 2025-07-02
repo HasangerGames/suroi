@@ -136,21 +136,7 @@ export type ReferenceOrRandom<T extends ObjectDefinition> = Partial<Record<Refer
  */
 export type ReifiableDef<T extends ObjectDefinition> = ReferenceTo<T> | T;
 
-export enum ItemType {
-    Gun,
-    Ammo,
-    Melee,
-    Throwable,
-    Healing,
-    Armor,
-    Backpack,
-    Scope,
-    Skin,
-    Perk
-}
-
 export interface ItemDefinition extends ObjectDefinition {
-    readonly itemType: ItemType
     readonly noDrop?: boolean
     readonly noSwap?: boolean
     readonly devItem?: boolean

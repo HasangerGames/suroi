@@ -2775,13 +2775,6 @@ logger.indent("Validating obstacles", () => {
 
             tester.assertNoPointlessValue({
                 obj: obstacle,
-                field: "pallet",
-                defaultValue: false,
-                baseErrorPath: errorPath
-            });
-
-            tester.assertNoPointlessValue({
-                obj: obstacle,
                 field: "noDestroyEffect",
                 defaultValue: false,
                 baseErrorPath: errorPath

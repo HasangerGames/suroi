@@ -11,7 +11,7 @@ import { Modes, type ModeName } from "@common/definitions/modes";
 import { SpectatePacket } from "@common/packets/spectatePacket";
 import { CustomTeamMessages, type CustomTeamMessage, type CustomTeamPlayerInfo, type PunishmentMessage } from "@common/typings";
 import { ExtendedMap } from "@common/utils/misc";
-import { ItemType, type ReferenceTo, type ReifiableDef } from "@common/utils/objectDefinitions";
+import { DefinitionType, type ReferenceTo, type ReifiableDef } from "@common/utils/objectDefinitions";
 import { pickRandomInArray } from "@common/utils/random";
 import { sound } from "@pixi/sound";
 import $ from "jquery";
@@ -1949,7 +1949,7 @@ export async function setUpUI(): Promise<void> {
                     </div>`
                 );
 
-                const isGrenadeSlot = inventorySlotTypings[slot] === ItemType.Throwable;
+                const isGrenadeSlot = inventorySlotTypings[slot] === DefinitionType.Throwable;
 
                 const element = ele[0];
 
@@ -1968,7 +1968,7 @@ export async function setUpUI(): Promise<void> {
                     // We cycle the throwables after the drop item call, otherwise the wrong grenade will be dropped.
                     if (
                         isGrenadeSlot
-                        && Game.activePlayer?.activeItem.itemType === ItemType.Throwable
+                        && Game.activePlayer?.activeItem.defType === DefinitionType.Throwable
                         && e.button !== 2 // it can be anything but the right click, because right click drops stuff
                     ) {
                         InputManager.cycleThrowable(step);

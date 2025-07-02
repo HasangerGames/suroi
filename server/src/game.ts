@@ -17,7 +17,7 @@ import { CircleHitbox, type Hitbox } from "@common/utils/hitbox";
 import { ColorStyles, Logger, styleText } from "@common/utils/logging";
 import { Angle, Geometry, Numeric, Statistics } from "@common/utils/math";
 import { removeFrom, Timeout } from "@common/utils/misc";
-import { ItemType, type ReferenceTo, type ReifiableDef } from "@common/utils/objectDefinitions";
+import { DefinitionType, type ReferenceTo, type ReifiableDef } from "@common/utils/objectDefinitions";
 import { pickRandomInArray, randomPointInsideCircle, randomRotation } from "@common/utils/random";
 import { SuroiByteStream } from "@common/utils/suroiByteStream";
 import { Vec, type Vector } from "@common/utils/vector";
@@ -715,7 +715,7 @@ export class Game implements GameData {
         player.isMobile = packet.isMobile;
         const skin = packet.skin;
         if (
-            skin.itemType === ItemType.Skin
+            skin.defType === DefinitionType.Skin
             && !skin.hideFromLoadout
             && (
                 skin.rolesRequired === undefined
@@ -766,12 +766,12 @@ export class Game implements GameData {
                 this._started = true;
                 this.setGameData({ startedTime: this.now });
                 this.gas.advanceGasStage();
-            }, 3000);
 
-            this.addTimeout(() => {
-                this.log("Preventing new players from joining");
-                this.setGameData({ allowJoin: false });
-            }, GAME_SPAWN_WINDOW * 1000);
+                this.addTimeout(() => {
+                    this.log("Preventing new players from joining");
+                    this.setGameData({ allowJoin: false });
+                }, GAME_SPAWN_WINDOW * 1000);
+            }, 3000);
         }
 
         this.log(`"${player.name}" joined`);
