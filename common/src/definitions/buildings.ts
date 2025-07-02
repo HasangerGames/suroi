@@ -11635,9 +11635,27 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             position: Vec(0, 0),
             scale: Vec(2, 2)
         }],
+        groundGraphics: [
+            { // stroke
+                color: 0x4d4d4d,
+                hitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(10.37, 4.02, Vec(-21.61, 16.01)),
+                    RectangleHitbox.fromRect(10.38, 4.77, Vec(21.8, -15.62))
+                )
+            },
+            { // fill
+                color: 0x666666,
+                hitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(4.65, 3.59, Vec(-19.07, 16.02)),
+                    RectangleHitbox.fromRect(4.65, 3.59, Vec(-24.24, 16.01)),
+                    RectangleHitbox.fromRect(4.66, 4.38, Vec(24.35, -15.53)),
+                    RectangleHitbox.fromRect(4.66, 4.38, Vec(19.19, -15.54))
+                )
+            }
+        ],
         floorImages: [{
             key: "sawmill_office_floor",
-            position: Vec(0, 0)
+            position: Vec(0.07, 0.32)
         }],
         obstacles: [
             { idString: "door", position: Vec(-22.11, 13.43), rotation: 2 },

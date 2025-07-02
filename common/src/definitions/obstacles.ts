@@ -6246,7 +6246,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         name: "Solid Regular Crate",
         defType: DefinitionType.Obstacle,
         material: "crate",
-        health: 100,
+        health: 850,
         scale: {
             spawnMin: 1,
             spawnMax: 1,
@@ -6256,7 +6256,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         rotationMode: RotationMode.Binary,
         hitbox: RectangleHitbox.fromRect(9.2, 9.2),
         hasLoot: true,
-        hardness: 8,
+        hardness: 5,
         impenetrable: true,
         frames: {
             particle: "solid_crate_particle"
