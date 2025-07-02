@@ -10762,8 +10762,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         }]
     },
     {
-        idString: "sawnmill",
-        name: "Sawnmill",
+        idString: "sawmill",
+        name: "sawmill",
         defType: DefinitionType.Building,
         spawnHitbox: new GroupHitbox(
             RectangleHitbox.fromRect(208.03, 113.63, Vec(13.83, -32.27)),
@@ -10867,10 +10867,10 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             )
         }],
         floorImages: [ // todo: repair barricade line svgs, pattern is broken (doesn't work with colors)
-            //  {
-            //      key: "sawnmil_alpha",
-            //      position: Vec(0, 0)
-            //  },
+              {
+                  key: "sawmil_alpha",
+                  position: Vec(0, 0)
+              },
 
             // Mud/ground cracks (decals)
             // Top
@@ -10905,7 +10905,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
 
             { key: "oil_decal_hunted_1", position: Vec(-79.52, -106.97) },
 
-            { key: "sawnmill_main_logo", position: Vec(6, 75.25), scale: Vec(2, 2) },
+            { key: "sawmill_main_logo", position: Vec(6, 75.25), scale: Vec(2, 2) },
 
             // Tinted
             { key: "barricade_line", position: Vec(24.8, -226.65), tint: 0xd5a244, rotation: Math.PI / 2 }, // Top Center Road Line
@@ -11240,9 +11240,9 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: randomPallet, position: Vec(130.72, -172.72) }, // P11
 
             { idString: "abandoned_warehouse_1", position: Vec(-62.54, 167.62) },
-            { idString: "sawnmill_warehouse", position: Vec(96.43, 136.61) },
-            { idString: "sawnmill_office", position: Vec(-115.17, 49.69) },
-            { idString: "sawnmill_office", position: Vec(83.43, -216.09) },
+            { idString: "sawmill_warehouse", position: Vec(96.43, 136.61) },
+            { idString: "sawmill_office", position: Vec(-115.17, 49.69) },
+            { idString: "sawmill_office", position: Vec(83.43, -216.09) },
             { idString: "porta_potty", position: Vec(-118.1, -130), orientation: 3 }
         ]
     },
@@ -11334,12 +11334,12 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         ]
     },
     {
-        idString: "sawnmill_warehouse",
-        name: "Sawnmill Warehouse",
+        idString: "sawmill_warehouse",
+        name: "sawmill Warehouse",
         defType: DefinitionType.Building,
         material: "stone",
         particleVariations: 2,
-        particle: "sawnmill_warehouse_particle",
+        particle: "sawmill_warehouse_particle",
         spawnHitbox: new GroupHitbox(
             RectangleHitbox.fromRect(107.27, 77.64, Vec(-0.83, 32)),
             RectangleHitbox.fromRect(88.2, 63.17, Vec(8.73, -36.48))
@@ -11385,22 +11385,22 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         ],
         floorImages: [
             {
-                key: "sawnmill_warehouse_floor_2",
+                key: "sawmill_warehouse_floor_2",
                 position: Vec(9.8, -27.88)
             },
             {
-                key: "sawnmill_warehouse_floor_1",
+                key: "sawmill_warehouse_floor_1",
                 position: Vec(0.06, 31.57)
             }
         ],
         ceilingImages: [
             {
-                key: "sawnmill_warehouse_ceiling_2",
+                key: "sawmill_warehouse_ceiling_2",
                 position: Vec(9.7, -26.86),
                 scale: Vec(2, 2)
             },
             {
-                key: "sawnmill_warehouse_ceiling_1",
+                key: "sawmill_warehouse_ceiling_1",
                 position: Vec(-0.02, 31.64),
                 scale: Vec(2, 2)
             }
@@ -11455,20 +11455,20 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "door", position: Vec(15.13, 7.61), rotation: 1 },
             { idString: "door", position: Vec(40.21, 61.24), rotation: 0 },
             { idString: "door", position: Vec(-7.5, -38.14), rotation: 2 },
-            { idString: "sawnmill_warehouse_wall_1", position: Vec(-4.63, 1.76), rotation: 0 },
-            { idString: "sawnmill_warehouse_wall_2", position: Vec(29.58, 14.39), rotation: 0 },
-            { idString: "sawnmill_warehouse_wall_3", position: Vec(-18.62, -38.08), rotation: 0 },
-            { idString: "sawnmill_warehouse_wall_4", position: Vec(-0.98, -45.8), rotation: 0 },
-            { idString: "sawnmill_warehouse_wall_5", position: Vec(22.93, -15), rotation: 0 },
-            { idString: "sawnmill_warehouse_wall_6", position: Vec(22.93, -46.68), rotation: 0 },
-            { idString: "sawnmill_warehouse_wall_7", position: Vec(33.43, -8.14), rotation: 0 },
-            { idString: "sawnmill_warehouse_column", position: Vec(22.93, -22.4) },
-            { idString: "sawnmill_warehouse_column", position: Vec(22.93, -37.42) }
+            { idString: "sawmill_warehouse_wall_1", position: Vec(-4.63, 1.76), rotation: 0 },
+            { idString: "sawmill_warehouse_wall_2", position: Vec(29.58, 14.39), rotation: 0 },
+            { idString: "sawmill_warehouse_wall_3", position: Vec(-18.62, -38.08), rotation: 0 },
+            { idString: "sawmill_warehouse_wall_4", position: Vec(-0.98, -45.8), rotation: 0 },
+            { idString: "sawmill_warehouse_wall_5", position: Vec(22.93, -15), rotation: 0 },
+            { idString: "sawmill_warehouse_wall_6", position: Vec(22.93, -46.68), rotation: 0 },
+            { idString: "sawmill_warehouse_wall_7", position: Vec(33.43, -8.14), rotation: 0 },
+            { idString: "sawmill_warehouse_column", position: Vec(22.93, -22.4) },
+            { idString: "sawmill_warehouse_column", position: Vec(22.93, -37.42) }
         ]
     },
     {
-        idString: "sawnmill_office",
-        name: "Sawnmill Office",
+        idString: "sawmill_office",
+        name: "sawmill Office",
         defType: DefinitionType.Building,
         spawnHitbox: RectangleHitbox.fromRect(70, 42),
         ceilingHitbox: RectangleHitbox.fromRect(53.85, 24.8, Vec(-0.03, 0.35)),
@@ -11480,7 +11480,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             RectangleHitbox.fromRect(6.38, 2, Vec(25.66, 13.39))
         ),
         material: "stone",
-        particle: "sawnmill_office_particle",
+        particle: "sawmill_office_particle",
         floors: [
             {
                 type: FloorNames.Wood,
@@ -11495,12 +11495,12 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             }
         ],
         ceilingImages: [{
-            key: "sawnmill_office_ceiling",
+            key: "sawmill_office_ceiling",
             position: Vec(0, 0),
             scale: Vec(2, 2)
         }],
         floorImages: [{
-            key: "sawnmill_office_floor",
+            key: "sawmill_office_floor",
             position: Vec(0, 0)
         }],
         obstacles: [
@@ -11620,8 +11620,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             },
             {
                 key: "cabin_ceiling_2",
-                position: Vec(-37.97, 12.95),
-                scale: Vec(2, 2)
+                position: Vec(-37.97, 13),
+                scale: Vec(2, 2.015)
             }
         ],
         obstacles: [

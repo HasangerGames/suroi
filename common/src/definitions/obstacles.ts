@@ -411,10 +411,10 @@ export const TintedParticles: Record<string, { readonly base: string, readonly t
     abandoned_warehouse_1_particle_2: { base: "stone_particle_1", tint: 0x5a1919 },
     abandoned_warehouse_col_particle: { base: "metal_particle_1", tint: 0x3c3c3c },
 
-    sawnmill_office_particle: { base: "wood_particle", tint: 0x6e4f32 },
-    sawnmill_warehouse_particle_1: { base: "stone_particle_1", tint: 0x5a1919 },
-    sawnmill_warehouse_particle_2: { base: "stone_particle_2", tint: 0x5a1919 },
-    sawnmill_warehouse_wall_particle: { base: "wood_particle", tint: 0x764423 }
+    sawmill_office_particle: { base: "wood_particle", tint: 0x6e4f32 },
+    sawmill_warehouse_particle_1: { base: "stone_particle_1", tint: 0x5a1919 },
+    sawmill_warehouse_particle_2: { base: "stone_particle_2", tint: 0x5a1919 },
+    sawmill_warehouse_wall_particle: { base: "wood_particle", tint: 0x764423 }
 };
 
 const houseWall = (
@@ -533,11 +533,11 @@ const cabinWall = (id: string, length: number): RawObstacleDefinition => ({
     }
 });
 
-const sawnmillWarehouseWall = (
+const sawmillWarehouseWall = (
     lengthNumber: number,
     hitbox: RectangleHitbox
 ): RawObstacleDefinition => ({
-    idString: `sawnmill_warehouse_wall_${lengthNumber}`,
+    idString: `sawmill_warehouse_wall_${lengthNumber}`,
     name: `Port Main Office Wall ${lengthNumber}`,
     defType: DefinitionType.Obstacle,
     material: "wood",
@@ -548,7 +548,7 @@ const sawnmillWarehouseWall = (
     rotationMode: RotationMode.Limited,
     allowFlyover: FlyoverPref.Never,
     frames: {
-        particle: "sawnmill_warehouse_wall_particle"
+        particle: "sawmill_warehouse_wall_particle"
     },
     isWall: true,
     wall: {
@@ -2474,13 +2474,13 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     lighthouseWall(2, RectangleHitbox.fromRect(11.89, 2)),
     lighthouseWall(3, RectangleHitbox.fromRect(2, 21.14)),
 
-    sawnmillWarehouseWall(1, RectangleHitbox.fromRect(41.13, 2.02)),
-    sawnmillWarehouseWall(2, RectangleHitbox.fromRect(30.47, 2.02)),
-    sawnmillWarehouseWall(3, RectangleHitbox.fromRect(13.11, 2.02)),
-    sawnmillWarehouseWall(4, RectangleHitbox.fromRect(2.02, 17.43)),
-    sawnmillWarehouseWall(5, RectangleHitbox.fromRect(2.02, 11.82)),
-    sawnmillWarehouseWall(6, RectangleHitbox.fromRect(2.02, 15.75)),
-    sawnmillWarehouseWall(7, RectangleHitbox.fromRect(23.01, 2.02)),
+    sawmillWarehouseWall(1, RectangleHitbox.fromRect(41.13, 2.02)),
+    sawmillWarehouseWall(2, RectangleHitbox.fromRect(30.47, 2.02)),
+    sawmillWarehouseWall(3, RectangleHitbox.fromRect(13.11, 2.02)),
+    sawmillWarehouseWall(4, RectangleHitbox.fromRect(2.02, 17.43)),
+    sawmillWarehouseWall(5, RectangleHitbox.fromRect(2.02, 11.82)),
+    sawmillWarehouseWall(6, RectangleHitbox.fromRect(2.02, 15.75)),
+    sawmillWarehouseWall(7, RectangleHitbox.fromRect(23.01, 2.02)),
 
     {
         idString: "fridge",
@@ -4471,8 +4471,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         isWall: true
     },
     {
-        idString: "sawnmill_warehouse_column",
-        name: "Sawnmill Warehouse Column",
+        idString: "sawmill_warehouse_column",
+        name: "sawmill Warehouse Column",
         defType: DefinitionType.Obstacle,
         material: "stone",
         indestructible: true,
@@ -4485,7 +4485,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         tint: 0x764423,
         frames: {
             base: "column",
-            particle: "sawnmill_warehouse_wall_particle"
+            particle: "sawmill_warehouse_wall_particle"
         },
         isWall: true
     },

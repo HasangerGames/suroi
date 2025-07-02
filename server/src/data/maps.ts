@@ -770,21 +770,14 @@ const maps = {
             buoy: 12,
             panther_bunker: 1,
             tiger_bunker: 1,
-            lion_bunker: 1
+            lion_bunker: 1,
+            cabin: 1,
         },
         quadBuildingLimit: {
-            river_hut_1: 1,
-            river_hut_2: 1,
-            river_hut_3: 1,
-            red_house: 1,
-            red_house_v2: 1,
-            warehouse: 2,
-            green_house: 1,
-            blue_house: 1,
-            mobile_home: 3,
-            porta_potty: 3,
-            construction_site: 1,
-            blue_house_special: 1
+            panther_bunker: 1,
+            tiger_bunker: 1,
+            lion_bunker: 1,
+            cabin: 1
         },
         obstacles: {
             oil_tank: 12,
