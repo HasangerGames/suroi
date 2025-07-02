@@ -18,7 +18,7 @@ import { Timeout } from "@common/utils/misc";
 import { ItemType } from "@common/utils/objectDefinitions";
 import { ObjectPool } from "@common/utils/objectPool";
 import { type ObjectsNetData } from "@common/utils/objectsSerializations";
-import { random, randomFloat, randomRotation, randomVector } from "@common/utils/random";
+import { pickRandomInArray, random, randomFloat, randomRotation, randomVector } from "@common/utils/random";
 import { Vec, type Vector } from "@common/utils/vector";
 import { sound, type Sound } from "@pixi/sound";
 import FontFaceObserver from "fontfaceobserver";
@@ -1010,6 +1010,10 @@ export const Game = new (class Game {
             for (const object of this.objects) {
                 const { isLoot, isObstacle, isPlayer, isBuilding } = object;
                 const isInteractable = (isLoot || isObstacle || isPlayer) && object.canInteract(player);
+
+                if (object.isObstacle && object.definition.damageOtherObstacles && object.definition.animationFrames !== undefined && object.activated) {
+                    object.image.setFrame(pickRandomInArray(object.definition.animationFrames));
+                }
 
                 if (
                     (isLoot || isInteractable)

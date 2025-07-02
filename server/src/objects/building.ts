@@ -196,6 +196,21 @@ export class Building extends BaseGameObject.derive(ObjectCategory.Building) {
                             obstacle.door.powered = true;
                         }
 
+                        // Saw
+                        if (obstacle.definition.damageOtherObstacles) {
+                            obstacle.activated = true;
+                            obstacle.setDirty();
+                            console.log(obstacle.activated);
+                            for (const object of this.game.grid.intersectsHitbox(obstacle.hitbox)) {
+                                if (object.hitbox !== undefined && obstacle.hitbox.collidesWith(object.hitbox) && object.isObstacle && !object.definition.indestructible) {
+                                    object.damage({
+                                        amount: object.health,
+                                        source: obstacle
+                                    });
+                                }
+                            }
+                        }
+
                         if (!puzzleDef.unlockOnly) obstacle.interact(undefined);
                         else obstacle.setDirty();
                     }

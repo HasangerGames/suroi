@@ -100,6 +100,13 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
                 { table: "special_scopes", weight: 0.3 }
             ]
         },
+        solid_crate: { // TODO
+            min: 1,
+            max: 1,
+            loot: [
+                { item: "death_ray", weight: 1 }
+            ]
+        },
         dumpster: {
             min: 2,
             max: 4,

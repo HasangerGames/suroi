@@ -771,7 +771,7 @@ const maps = {
             panther_bunker: 1,
             tiger_bunker: 1,
             lion_bunker: 1,
-            cabin: 1,
+            cabin: 1
         },
         quadBuildingLimit: {
             panther_bunker: 1,

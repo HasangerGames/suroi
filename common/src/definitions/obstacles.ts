@@ -78,8 +78,11 @@ type CommonObstacleDefinition = ObjectDefinition & {
     }
     readonly requiresPower?: boolean
 
+    readonly animationFrames?: string[]
+
     readonly interactionDelay?: number
     readonly regenerateAfterDestroyed?: number
+    readonly damageOtherObstacles?: boolean
 
     readonly applyPerkOnDestroy?: {
         readonly mode?: ModeName
@@ -270,6 +273,7 @@ export const TintedParticles: Record<string, { readonly base: string, readonly t
     super_barrel_particle: { base: "metal_particle_1", tint: 0xce2b29 },
     propane_tank_particle: { base: "metal_particle_1", tint: 0xb08b3f },
     dumpster_particle: { base: "metal_particle_1", tint: 0x3c7033 },
+    solid_crate_particle: { base: "wood_particle", tint: 0x595959 },
     washing_machine_particle: { base: "metal_particle_1", tint: 0xb3b3b3 },
     small_lamp_thingy_particle: { base: "window_particle", tint: 0xb3b3b3 },
     fridge_particle: { base: "metal_particle_1", tint: 0x666666 },
@@ -4084,6 +4088,21 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         }
     ),
     gunMount(
+        "hatchet",
+        "melee",
+        false,
+        new GroupHitbox(
+            RectangleHitbox.fromRect(5.05, 1, Vec(0, -1.3)),
+            RectangleHitbox.fromRect(0.8, 3, Vec(-1.55, 0.35)),
+            RectangleHitbox.fromRect(0.8, 3, Vec(1.55, 0.35))
+        ),
+        {
+            base: "gun_mount_melee",
+            particle: "furniture_particle",
+            residue: "gun_mount_residue"
+        }
+    ),
+    gunMount(
         "dual_rsh12",
         "gun",
         true,
@@ -4486,6 +4505,26 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         frames: {
             base: "column",
             particle: "sawmill_warehouse_wall_particle"
+        },
+        isWall: true
+    },
+    {
+        idString: "sawmill_center_warehouse_column",
+        name: "Sawmill Center Warehouse Column",
+        defType: DefinitionType.Obstacle,
+        material: "stone",
+        indestructible: true,
+        particleVariations: 2,
+        health: 340,
+        hitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(3, 3)
+        ),
+        rotationMode: RotationMode.None,
+        allowFlyover: FlyoverPref.Never,
+        tint: 0x5a1919,
+        frames: {
+            base: "column",
+            particle: "sawmill_warehouse_particle"
         },
         isWall: true
     },
@@ -6076,10 +6115,11 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         }
     },
     {
-        idString: "moldy_log",
-        name: "Moldy Wood Log",
+        idString: "log",
+        name: "Wood Log",
         defType: DefinitionType.Obstacle,
         material: "tree",
+        variations: 2,
         health: 200,
         scale: {
             spawnMin: 1,
@@ -6185,6 +6225,61 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
             particle: "abandoned_warehouse_col_particle"
         },
         rotationMode: RotationMode.Limited
+    },
+    {
+        idString: "sawmill_center_warehouse_table_collider",
+        name: "Sawmill Center Warehouse Table Collider",
+        defType: DefinitionType.Obstacle,
+        material: "wood",
+        health: 1000,
+        indestructible: true,
+        invisible: true,
+        hitbox: RectangleHitbox.fromRect(12.24, 74.46, Vec(-7.99, -10.4)),
+        frames: {
+            particle: "desk_particle"
+        },
+        rotationMode: RotationMode.Limited,
+        allowFlyover: FlyoverPref.Always
+    },
+    {
+        idString: "solid_crate",
+        name: "Solid Regular Crate",
+        defType: DefinitionType.Obstacle,
+        material: "crate",
+        health: 100,
+        scale: {
+            spawnMin: 1,
+            spawnMax: 1,
+            destroy: 0.5
+        },
+        spawnMode: MapObjectSpawnMode.GrassAndSand,
+        rotationMode: RotationMode.Binary,
+        hitbox: RectangleHitbox.fromRect(9.2, 9.2),
+        hasLoot: true,
+        hardness: 8,
+        impenetrable: true,
+        frames: {
+            particle: "solid_crate_particle"
+        }
+    },
+    {
+        idString: "saw",
+        name: "Saw",
+        defType: DefinitionType.Obstacle,
+        material: "metal_light",
+        animationFrames: ["saw_1", "saw_1", "saw_2"],
+        health: 1000,
+        isActivatable: true,
+        indestructible: true,
+        hitbox: RectangleHitbox.fromRect(1.99, 16.71),
+        reflectBullets: true,
+        frames: {
+            particle: "metal_particle",
+            base: "saw_1"
+        },
+        rotationMode: RotationMode.Limited,
+        zIndex: ZIndexes.ObstaclesLayer2,
+        damageOtherObstacles: true
     }
 ] satisfies readonly RawObstacleDefinition[] as readonly RawObstacleDefinition[]).flatMap((def: Mutable<RawObstacleDefinition>) => {
     if (def.variations !== undefined) (def as Mutable<ObstacleDefinition>).variationBits = Math.ceil(Math.log2(def.variations));
