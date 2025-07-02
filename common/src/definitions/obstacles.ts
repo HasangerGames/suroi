@@ -5541,7 +5541,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         name: "Pole",
         defType: DefinitionType.Obstacle,
         material: "fence",
-        health: 150,
+        health: 50,
         scale: {
             spawnMin: 0.9,
             spawnMax: 1.1,
