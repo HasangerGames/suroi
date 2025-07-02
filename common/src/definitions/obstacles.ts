@@ -122,7 +122,6 @@ type CommonObstacleDefinition = ObjectDefinition & {
     readonly wall?: {
         readonly color: number
         readonly borderColor: number
-        readonly rounded?: boolean
     }
 
     readonly spawnMode?: MapObjectSpawnMode
@@ -429,8 +428,7 @@ const houseWall = (
     isWall: true,
     wall: {
         borderColor: (tintProperties?.border) ?? 0x4a4134,
-        color: (tintProperties?.color) ?? 0xafa08c,
-        rounded: true
+        color: (tintProperties?.color) ?? 0xafa08c
     }
 });
 
@@ -483,8 +481,7 @@ const lodgeWall = (id: string, length: number): RawObstacleDefinition => ({
     isWall: true,
     wall: {
         borderColor: 0x291e0f,
-        color: 0x5a4320,
-        rounded: true
+        color: 0x5a4320
     }
 });
 
@@ -569,8 +566,7 @@ const innerConcreteWall = (id: number, hitbox: Hitbox): RawObstacleDefinition =>
     isWall: true,
     wall: {
         color: 0x808080,
-        borderColor: 0x484848,
-        rounded: true
+        borderColor: 0x484848
     }
 });
 
@@ -2208,7 +2204,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     houseWall(14, RectangleHitbox.fromRect(17, 2)),
     houseWall(15, RectangleHitbox.fromRect(12.1, 2)),
     houseWall(16, RectangleHitbox.fromRect(10.5, 2)),
-    houseWall(17, RectangleHitbox.fromRect(22.5, 2)),
+    houseWall(17, RectangleHitbox.fromRect(22.56, 2)),
 
     // small bunker special wall
     houseWall(

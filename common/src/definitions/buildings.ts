@@ -1429,7 +1429,7 @@ const blueHouse = (idString: string, subBuildings: BuildingDefinition["subBuildi
         // top left
         { idString: "house_wall_16", position: Vec.create(-10, -13.65), rotation: 1 },
         { idString: "door", position: Vec.create(-10, -23.5), rotation: 3 },
-        { idString: "house_wall_17", position: Vec.create(-22.3, -9.4), rotation: 0 },
+        { idString: "house_wall_17", position: Vec.create(-22.26, -9.4), rotation: 0 },
         { idString: "small_drawer", position: Vec.create(-14.7, -14.5), rotation: 2 },
         { idString: "small_bed", position: Vec.create(-29.25, -19.9), rotation: 2 },
         { idString: "bookshelf", position: Vec.create(-15.25, -6), rotation: 0 },
@@ -6279,7 +6279,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         floorImages: [
             {
                 key: "headquarters_second_floor_top",
-                position: Vec.create(-5.57, -68.35)
+                position: Vec.create(-5.57, -68.31)
             },
             {
                 key: "headquarters_second_floor_bottom",
