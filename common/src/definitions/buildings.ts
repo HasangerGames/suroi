@@ -6575,10 +6575,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             RectangleHitbox.fromRect(1, 3, Vec.create(28.25, -17)),
             RectangleHitbox.fromRect(2, 1, Vec.create(29, -18))
         ),
-        spawnHitbox: new GroupHitbox(
-            RectangleHitbox.fromRect(20.5, 55.5, Vec.create(-19.5, 0)),
-            RectangleHitbox.fromRect(60, 14, Vec.create(0, -21))
-        ),
+        spawnHitbox: RectangleHitbox.fromRect(120, 92, Vec.create(-23.9, -11.85)),
         ceilingHitbox: new GroupHitbox(
             RectangleHitbox.fromRect(30.5, 55.5, Vec.create(-19.5, 0)),
             RectangleHitbox.fromRect(61, 14, Vec.create(7, -21))
