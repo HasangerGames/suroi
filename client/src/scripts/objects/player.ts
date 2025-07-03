@@ -409,7 +409,14 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
         const noMovementSmoothing = !GameConsole.getBuiltInCVar("cv_movement_smoothing");
 
-        if (noMovementSmoothing || isNew) this.container.rotation = this.rotation;
+        if (
+            (
+                noMovementSmoothing
+                && !(this.isActivePlayer && GameConsole.getBuiltInCVar("cv_responsive_rotation"))
+            ) || isNew
+        ) {
+            this.container.rotation = this.rotation;
+        }
 
         if (this.isActivePlayer) {
             SoundManager.position = this.position;
