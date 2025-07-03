@@ -152,7 +152,7 @@ if (Cluster.isPrimary && require.main === module) {
             writeCorsHeaders(res);
             res.writeHeader("Content-Type", "application/json").end(JSON.stringify(
                 gameID !== undefined
-                    ? { success: true, gameID }
+                    ? { success: true, gameID, mode }
                     : { success: false }
             ));
         });

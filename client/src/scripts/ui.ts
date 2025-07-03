@@ -428,12 +428,13 @@ export async function setUpUI(): Promise<void> {
         ui.loaderText.text(getTranslatedString("loading_finding_game"));
         // ui.cancelFindingGame.css("display", "");
 
-        await spritesheetLoadPromise();
-
-        type GetGameResponse = { success: true, gameID: number } | { success: false };
+        type GetGameResponse = { success: true, gameID: number, mode: ModeName } | { success: false };
         let response: GetGameResponse | undefined;
         try {
-            const res = await fetch(`${selectedRegion.mainAddress}/api/getGame${teamID ? `?teamID=${teamID}` : ""}`);
+            const [res] = await Promise.all([
+                fetch(`${selectedRegion.mainAddress}/api/getGame${teamID ? `?teamID=${teamID}` : ""}`),
+                spritesheetLoadPromise()
+            ]);
             if (res.ok) response = await res.json() as GetGameResponse;
         } catch (e) {
             console.error("Error finding game. Details:", e);
@@ -444,6 +445,12 @@ export async function setUpUI(): Promise<void> {
             ui.splashMsgText.html(getTranslatedString("msg_err_finding"));
             ui.splashMsg.show();
             resetPlayButtons();
+            return;
+        }
+
+        if (response?.mode !== Game.modeName) {
+            alert(`Mode mismatch: expected ${Game.modeName}, but server is on ${response.mode}`);
+            location.reload();
             return;
         }
 
