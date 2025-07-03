@@ -468,10 +468,10 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
                 this.distSinceLastFootstep = 0;
 
-                if (FloorTypes[floorType].particles && this.layer >= Layer.Ground) {
+                if (FloorTypes[floorType].particles) {
                     const options = {
                         frames: "ripple_particle",
-                        zIndex: ZIndexes.Ground + 0.9,
+                        zIndex: ZIndexes.BuildingsFloor + 0.9,
                         position: this._hitbox.randomPoint(),
                         lifetime: 1000,
                         layer: this.layer,
