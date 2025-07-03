@@ -768,6 +768,7 @@ const maps = {
             small_bunker: 1,
             warehouse: 5,
             buoy: 12,
+            warehouse_hunted: 4,
             panther_bunker: 1,
             tiger_bunker: 1,
             lion_bunker: 1,

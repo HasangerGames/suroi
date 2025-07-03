@@ -418,7 +418,9 @@ export const TintedParticles: Record<string, { readonly base: string, readonly t
     sawmill_office_particle: { base: "wood_particle", tint: 0x6e4f32 },
     sawmill_warehouse_particle_1: { base: "stone_particle_1", tint: 0x5a1919 },
     sawmill_warehouse_particle_2: { base: "stone_particle_2", tint: 0x5a1919 },
-    sawmill_warehouse_wall_particle: { base: "wood_particle", tint: 0x764423 }
+    sawmill_warehouse_wall_particle: { base: "wood_particle", tint: 0x764423 },
+
+    warehouse_hunted_particle: { base: "wood_particle", tint: 0x6e4f32 }
 };
 
 const houseWall = (
@@ -558,6 +560,30 @@ const sawmillWarehouseWall = (
     wall: {
         borderColor: 0x341b0b,
         color: 0x764423
+    }
+});
+
+const warehouseHuntedWall = (
+    lengthNumber: number,
+    hitbox: RectangleHitbox
+): RawObstacleDefinition => ({
+    idString: `warehouse_hunted_wall_${lengthNumber}`,
+    name: `Abandoned Warehouse Wall ${lengthNumber}`,
+    defType: DefinitionType.Obstacle,
+    material: "wood",
+    hideOnMap: true,
+    noResidue: true,
+    health: 200,
+    hitbox,
+    rotationMode: RotationMode.Limited,
+    allowFlyover: FlyoverPref.Never,
+    frames: {
+        particle: "warehouse_hunted_particle"
+    },
+    isWall: true,
+    wall: {
+        borderColor: 0x332416,
+        color: 0x6e4f32
     }
 });
 
@@ -2485,6 +2511,9 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     sawmillWarehouseWall(5, RectangleHitbox.fromRect(2.02, 11.82)),
     sawmillWarehouseWall(6, RectangleHitbox.fromRect(2.02, 15.75)),
     sawmillWarehouseWall(7, RectangleHitbox.fromRect(23.01, 2.02)),
+
+    warehouseHuntedWall(1, RectangleHitbox.fromRect(2.01, 12.31)),
+    warehouseHuntedWall(2, RectangleHitbox.fromRect(2.01, 16.78)),
 
     {
         idString: "fridge",
@@ -4545,6 +4574,25 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         frames: {
             base: "column",
             particle: "hq_stone_wall_particle"
+        },
+        isWall: true
+    },
+    {
+        idString: "warehouse_hunted_column",
+        name: "Abandoned Warehouse Column",
+        defType: DefinitionType.Obstacle,
+        material: "stone",
+        indestructible: true,
+        health: 340,
+        hitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(3, 3)
+        ),
+        rotationMode: RotationMode.None,
+        allowFlyover: FlyoverPref.Never,
+        tint: 0x6e4f32,
+        frames: {
+            base: "column",
+            particle: "warehouse_hunted_particle"
         },
         isWall: true
     },
