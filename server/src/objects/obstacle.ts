@@ -225,7 +225,7 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
             if (definition.explosion !== undefined && source instanceof BaseGameObject) {
                 //                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
                 // FIXME This is implying that obstacles won't explode if destroyed by non–game objects
-                this.game.addExplosion(definition.explosion, this.position, source, source.layer, weaponIsItem ? weaponUsed : weaponUsed?.weapon);
+                this.game.addExplosion(definition.explosion, this.position, source, this.layer, weaponIsItem ? weaponUsed : weaponUsed?.weapon);
             }
 
             if (source instanceof BaseGameObject && source.isPlayer) {
@@ -235,7 +235,7 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
                     && definition.material === "pumpkin"
                 ) {
                     this.playMaterialDestroyedSound = false;
-                    this.game.addExplosion("pumpkin_explosion", this.position, source, source.layer);
+                    this.game.addExplosion("pumpkin_explosion", this.position, source, this.layer);
                 }
 
                 // Infected perk
