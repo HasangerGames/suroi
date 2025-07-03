@@ -639,7 +639,9 @@
 
 #interact-message {
     position: absolute;
-    top: 60%;
+    display: flex;
+    align-items: center;
+    top: 58%;
     left: 50%;
     transform: translateX(-50%);
     background-color: palette.$transparent_bg;
@@ -663,8 +665,8 @@
     justify-content: center;
     align-items: center;
     vertical-align: middle;
-    width: 30px;
-    height: 30px;
+    width: 25px;
+    height: 25px;
     background-color: #eee;
     border-radius: 3px;
     border: 1px solid #b4b4b4;
@@ -672,11 +674,11 @@
         0 2px 0 0 rgba(255, 255, 255, 0.7) inset;
     color: #333;
     font-family: "Inter", sans-serif;
-    font-size: 25px;
+    font-size: 20px;
     font-weight: 700;
     line-height: 1;
     padding: 2px 4px;
-    margin-right: 3px;
+    margin-right: 5px;
     white-space: nowrap;
 
     @media screen and (max-width: variables.$screen-large) {
@@ -701,15 +703,6 @@
 
     @media screen and (min-width: variables.$screen_large) and (max-height: 720px) {
         top: 0;
-    }
-}
-
-#interact-key.active + #interact-text {
-    position: relative;
-    top: 3px;
-
-    @media screen and (max-width: variables.$screen-large) {
-        top: 0.95px;
     }
 }
 
@@ -1248,6 +1241,11 @@
     @include variables.text-shadow;
 
     @media screen and (max-height: 750px) {
+        font-size: 20px;
+        top: calc(60% + 30px);
+    }
+
+    @media screen and (max-height: 750px) and (max-height: 500px) {
         font-size: 15px;
         top: calc(60% + 35px);
     }
