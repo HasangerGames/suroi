@@ -981,8 +981,7 @@ export class Game implements GameData {
         if (def.allowRangeOverride && options.rangeOverride !== undefined) {
             range = Numeric.clamp(options.rangeOverride, 0, range);
         }
-
-        if (range <= 0) return;
+        if (range < 0) return;
 
         const bullet = new Bullet(
             this,
