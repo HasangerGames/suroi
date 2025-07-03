@@ -494,6 +494,10 @@ export const Game = new (class Game {
                 }
                 ui.btnSpectate.addClass("btn-disabled");
                 if (!this.error) void this.endGame();
+            } else {
+                for (const sound of SoundManager.updatableSounds) {
+                    sound.stop();
+                }
             }
         };
     }
@@ -972,13 +976,11 @@ export const Game = new (class Game {
         let detonateBindIcon: JQuery<HTMLImageElement> | undefined;
 
         return () => {
-            if (!this.gameStarted || (this.gameOver && !this.spectating)) {
-                SoundManager.update();
-                return;
-            }
+            if (!this.gameStarted || (this.gameOver && !this.spectating)) return;
+
             InputManager.update();
             SoundManager.update();
-            ScreenRecordManager?.update();
+            ScreenRecordManager.update();
 
             const player = this.activePlayer;
             if (!player) return;
