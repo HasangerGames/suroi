@@ -356,10 +356,14 @@ Buildings:
   Tents: Emeraldneo
   Breached Dam: Emeraldneo
 
+Emotes:
+  Primary Artists: EndermanKing, Slapdap, Tofi38
+
+  Suroi General Chat: Thermobarium
+
 Other:
   Death Marker & Skull: hasanger
   Bullet trails: hasanger
-  Emotes: EndermanKing, Slapdap, Tofi38
   Healing item residues: Death Trap Engineer, hasanger
   Main Logo: hasanger
   A.E.G.I.S. Logo: Katloo
