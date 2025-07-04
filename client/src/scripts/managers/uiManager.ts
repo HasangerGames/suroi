@@ -1596,7 +1596,7 @@ class UIManagerClass {
                     if (creditedId === victimId) {
                         event = "kf_finally_ended_themselves";
                     } else if (creditedId !== undefined) {
-                        event = "kf_finally_killed";
+                        event = activeId === victimId ? "kf_were_finally_killed" : "kf_finally_killed";
                     } else {
                         event = "kf_finally_died";
                     }

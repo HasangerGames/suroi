@@ -221,6 +221,7 @@
 "kf_finally_died": "<player> finally died"
 "kf_finally_ended_themselves": "<player> finally ended themselves"
 "kf_finally_killed": "<player> was finally killed"
+"kf_were_finally_killed": "<player> were finally killed"
 "kf_finally_down": "<player> was finally knocked out"
 "kf_gas_kill": "<player> died to the gas"
 "kf_gas_down": "<player> was knocked out by the gas"
