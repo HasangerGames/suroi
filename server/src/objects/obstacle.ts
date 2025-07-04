@@ -64,7 +64,7 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
 
     puzzlePiece?: string | boolean;
 
-    // TODO: remove flyover pref when henry finishes refactoring definitions
+    // TODO replace flyoverpref with actual height values
     get height(): number {
         if (this.door && !this.door.isOpen) return Infinity;
 

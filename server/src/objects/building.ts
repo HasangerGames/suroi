@@ -1,4 +1,4 @@
-import { ObjectCategory } from "@common/constants";
+import { FlyoverPref, ObjectCategory } from "@common/constants";
 import { Buildings, type BuildingDefinition } from "@common/definitions/buildings";
 import { type Orientation } from "@common/typings";
 import { type Hitbox } from "@common/utils/hitbox";
@@ -47,6 +47,17 @@ export class Building extends BaseGameObject.derive(ObjectCategory.Building) {
     get hasPuzzle(): boolean { return this.puzzle !== undefined; }
 
     readonly puzzlePieces: Obstacle[] = [];
+
+    // TODO replace flyoverpref with actual height values
+    get height(): number {
+        switch (this.definition.allowFlyover) {
+            case FlyoverPref.Always:
+                return 0.2;
+            case FlyoverPref.Sometimes:
+                return 0.5;
+        }
+        return Infinity;
+    }
 
     constructor(game: Game, definition: ReifiableDef<BuildingDefinition>, position: Vector, orientation: Orientation, layer: number) {
         super(game, position);
