@@ -7481,7 +7481,6 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             // laundry room
             { idString: "lodge_wall_5", position: Vec.create(-37.33, -9.94), rotation: 0 },
             { idString: "lodge_wall_7", position: Vec.create(-26.45, -16), rotation: 1 },
-            { idString: "lodge_wall_7", position: Vec.create(-26.45, -16), rotation: 1 },
             { idString: "lodge_wall_2", position: Vec.create(-42.47, -27.75), rotation: 0 },
 
             // between dining table and couch
