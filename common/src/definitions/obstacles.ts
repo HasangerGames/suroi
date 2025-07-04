@@ -1269,6 +1269,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         rotationMode: RotationMode.Full,
         allowFlyover: FlyoverPref.Always,
         frames: {
+            base: "plumpkin_base",
             particle: "plumpkin_particle"
         },
         hasLoot: true
