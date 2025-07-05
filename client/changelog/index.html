@@ -28,6 +28,46 @@
 <body>
   <pre>
 # Changelog
+v0.27.3 - [7/5/2025]
+- **New gun!** Added the FN FAL, a 7.62mm battle rifle which replaces the Lewis Gun.
+- **New emote!** Added wilted rose emote.
+- **Many optimizations!** Technical details:
+  - Ported the server config to JSON to make it easier to use.
+  - Separated the game world and UI using Pixi.js render groups, improving performance.
+  - Removed unused properties from building definitions on the client, reducing file sizes and RAM usage.
+  - Switched to a Pixi.js function to check for hardware acceleration, improving loading performance.
+  - Switched from `Text` to `BitmapText` for the FPS/ping/network counters, improving performance and fixing a memory leak.
+- Added aim lines for dual guns on mobile.
+- Increased rarity of higher tier equipment in harvest mode.
+- Added a rare bathtub variant.
+- The M590M now spawns in the rare cargo ship vault variant.
+- Decreased pan stove spawn chance from 3% to 1%.
+- Standardized wall border radii. All indestructible walls now have square corners, while destructible walls have rounded corners.
+- Reduced pole health.
+- Redrew Suroi General Chat (lobotomy) emote.
+- Fixed Flint Lockbox being breakable with lower tier melees.
+- Fixed error joining/finding game on less populated servers.
+- Fixed occasional missing texture issues.
+- Fixed USAS-12 & M590M not firing when the mouse is too close to the player.
+- Fixed not being able to throw grenades over small bridges.
+- Fixed rivers pushing loot in bunkers.
+- Fixed obstacle explosions happening on the same layer as what destroyed them.
+- Fixed map ping wheel not working on fullscreen map when using keyboard binds.
+- Fixed emote/ping wheel moving when switching between emotes/pings.
+- Fixed "Hide Emotes" option not disabling emote wheel.
+- Fixed looped sounds (e.g. airdrop plane) continuing to play after the game ends.
+- Fixed jerky player rotation with responsive rotation on and movement smoothing off.
+- Fixed grammatically incorrect "You was finally killed" death message.
+- Fixed obstacle residues rendering below pallets.
+- Fixed plumpkin emote using wrong sprite.
+- Fixed barn ceiling disappearing with higher scopes.
+- Fixed missing water ripple particles in fulcrum bunker.
+- Fixed duplicate wall in lodge.
+- Fixed duplicate stump at campsite.
+- Fixed grenades being able to pass through/over the "ship oil source" obstacle.
+- Fixed hay shed ceiling issue.
+- Fixed porta potty door scaling.
+
 v0.27.2 - [6/18/2025]
 - **New guns!** 3 guns have been replaced with new ones with identical stats.
   - DT-11 -> **Stevens 555**
