@@ -359,7 +359,7 @@ Buildings:
 Emotes:
   Primary Artists: EndermanKing, Slapdap, Tofi38
 
-  Suroi General Chat: Thermobarium
+  Suroi General Chat: Astronautical
 
 Other:
   Death Marker & Skull: hasanger
