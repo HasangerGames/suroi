@@ -1,8 +1,10 @@
 import { existsSync, readFileSync, writeFileSync } from "fs";
 
-if (!existsSync("config.json") && existsSync("config.example.json")) {
+let configExists = existsSync("config.json");
+if (!configExists && existsSync("config.example.json")) {
     writeFileSync("config.json", readFileSync("config.example.json", "utf8"));
+    configExists = true;
 }
 
 import type { ConfigSchema } from "./config.d";
-export const Config = JSON.parse(readFileSync("config.json", "utf8")) as ConfigSchema;
+export const Config = (configExists ? JSON.parse(readFileSync("config.json", "utf8")) : {}) as ConfigSchema;

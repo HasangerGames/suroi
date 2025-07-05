@@ -1959,7 +1959,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇷🇴 Română (98% Complete) - ro.hjson
+## 🇷🇴 Română (99% Complete) - ro.hjson
 
 ### Invalid Keys
 
@@ -1969,7 +1969,6 @@ This file is a report of all errors and missing keys in the translation files of
 
 - Key `action_vaccine_syringe_use` is not defined
 - Key `interact_recorder_interactable` is not defined
-- Key `kf_were_finally_killed` is not defined
 - Key `tt_desc` is not defined
 - Key `vaccine_syringe` is not defined
 - Key `vaccine_syringe_desc` is not defined
