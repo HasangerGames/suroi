@@ -1114,19 +1114,19 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
     // Light machine guns (LMGs)
     //
     {
-        idString: "lewis_gun",
-        name: "Lewis Gun",
+        idString: "fn_fal",
+        name: "FN FAL",
         defType: DefinitionType.Gun,
         tier: Tier.C,
         ammoType: "762mm",
-        ammoSpawnAmount: 94,
-        capacity: 47,
-        extendedCapacity: 97,
+        ammoSpawnAmount: 100,
+        capacity: 50,
+        extendedCapacity: 100,
         reloadTime: 3.4,
         fireDelay: 115,
         switchDelay: 400,
         speedMultiplier: 0.897,
-        recoilMultiplier: 0.7, // also test out 6.75
+        recoilMultiplier: 0.7, // also test out 0.75
         recoilDuration: 200,
         fireMode: FireMode.Auto,
         shotSpread: 3.5,
@@ -1138,10 +1138,10 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
             rightZIndex: 4,
             animationDuration: 100
         },
-        image: { position: Vec(100, 0) },
+        image: { position: Vec(100, 3) },
         casingParticles: [{
-            frame: "casing_30-06",
-            position: Vec(3.3, 0.6)
+            frame: "casing_762x51mm",
+            position: Vec(3.5, 0.6)
         }],
         gasParticles: gasParticlePresets.automatic,
         ballistics: {

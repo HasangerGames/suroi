@@ -77,6 +77,11 @@ Guns:
     World Image: Emeraldneo
     Killfeed Image: eiπ
 
+  FN FAL:
+    Loot Image: hugh jass
+    World Image: Skullboi249
+    Killfeed Image: hugh jass
+
   G17 (scoped):
     Loot Image: eiπ
     World Image: eiπ
@@ -96,11 +101,6 @@ Guns:
     Loot Image: Winter
     World Image: Winter
     Killfeed Image: Winter
-
-  Lewis Gun:
-    Loot Image: Winter
-    World Image: Winter
-    Killfeed Image: eiπ
 
   M1 Garand:
     Loot Image: jchen, eiπ, Emeraldneo, Skullboi249
