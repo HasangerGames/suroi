@@ -1,6 +1,6 @@
 import { existsSync, readFileSync, writeFileSync } from "fs";
 
-if (!existsSync("config.json")) {
+if (!existsSync("config.json") && existsSync("config.example.json")) {
     writeFileSync("config.json", readFileSync("config.example.json", "utf8"));
 }
 
