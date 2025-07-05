@@ -1721,7 +1721,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇳🇱 Nederlands (98% Complete) - nl.hjson
+## 🇳🇱 Nederlands (99% Complete) - nl.hjson
 
 ### (No Invalid Keys)
 
@@ -1729,7 +1729,6 @@ This file is a report of all errors and missing keys in the translation files of
 
 - Key `action_vaccine_syringe_use` is not defined
 - Key `interact_recorder_interactable` is not defined
-- Key `kf_were_finally_killed` is not defined
 - Key `tt_desc` is not defined
 - Key `vaccine_syringe` is not defined
 - Key `vaccine_syringe_desc` is not defined
