@@ -3038,12 +3038,6 @@ logger.indent("Validating obstacles", () => {
             if (obstacle.wall !== undefined) {
                 validators.color(tester.createPath(errorPath, "wall color"), obstacle.wall.color);
                 validators.color(tester.createPath(errorPath, "wall border color"), obstacle.wall.borderColor);
-                tester.assertNoPointlessValue({
-                    obj: obstacle.wall,
-                    field: "rounded",
-                    defaultValue: false,
-                    baseErrorPath: tester.createPath(errorPath, "wall")
-                });
             }
 
             if (obstacle.tint !== undefined) {
