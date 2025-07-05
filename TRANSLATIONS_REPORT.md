@@ -810,7 +810,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇫🇷 Français (98% Complete) - fr.hjson
+## 🇫🇷 Français (99% Complete) - fr.hjson
 
 ### Invalid Keys
 
@@ -824,7 +824,6 @@ This file is a report of all errors and missing keys in the translation files of
 
 - Key `action_vaccine_syringe_use` is not defined
 - Key `interact_recorder_interactable` is not defined
-- Key `kf_were_finally_killed` is not defined
 - Key `tt_desc` is not defined
 - Key `vaccine_syringe` is not defined
 - Key `vaccine_syringe_desc` is not defined
@@ -1222,7 +1221,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇯🇵 日本語 (99% Complete) - jp.hjson
+## 🇯🇵 日本語 (100% Complete) - jp.hjson
 
 ### Invalid Keys
 
@@ -1459,7 +1458,6 @@ This file is a report of all errors and missing keys in the translation files of
 ### Undefined Keys
 
 - Key `interact_recorder_interactable` is not defined
-- Key `kf_were_finally_killed` is not defined
 
 ## 🇱🇹 Lietuvių (66% Complete) - lt.hjson
 
@@ -1987,7 +1985,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_show_inout` is not defined
 - Key `action_vaccine_syringe_use` is not defined
 - Key `interact_recorder_interactable` is not defined
-- Key `kf_were_finally_killed` is not defined
 - Key `tt_desc` is not defined
 - Key `m16a4` is not defined
 - Key `vaccine_syringe` is not defined
@@ -2521,6 +2518,5 @@ This file is a report of all errors and missing keys in the translation files of
 ### Undefined Keys
 
 - Key `interact_recorder_interactable` is not defined
-- Key `kf_were_finally_killed` is not defined
 - Key `m16a4` is not defined
 

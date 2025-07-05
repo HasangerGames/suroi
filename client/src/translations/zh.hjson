@@ -233,6 +233,7 @@
 "kf_finally_died": "<player>最终死了"
 "kf_finally_ended_themselves": "<player>最终结束了自己的生命"
 "kf_finally_killed": "<player>最终被击杀了"
+"kf_were_finally_killed": "<player>最终被击杀了"
 "kf_finally_down": "<player>最终被击倒了"
 "kf_gas_kill": "<player>死于毒气"
 "kf_gas_down": "<player>被毒倒了"
