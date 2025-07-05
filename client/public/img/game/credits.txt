@@ -80,7 +80,7 @@ Guns:
   FN FAL:
     Loot Image: hugh jass
     World Image: Skullboi249
-    Killfeed Image: hugh jass
+    Killfeed Image: Skullboi249
 
   G17 (scoped):
     Loot Image: eiπ
