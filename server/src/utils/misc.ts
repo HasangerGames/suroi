@@ -27,7 +27,7 @@ export function modeFromMap(map: string): ModeName {
     }
 }
 
-const usernameFilters = Config.usernameFilters?.map(filter => new RegExp(filter));
+const usernameFilters = Config.usernameFilters?.map(filter => new RegExp(filter, "i"));
 
 export function cleanUsername(name?: string | null): string {
     if (
