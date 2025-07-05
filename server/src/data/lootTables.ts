@@ -1583,14 +1583,14 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
         ],
         equipment: [
             { item: "regular_helmet", weight: 1 },
-            { item: "tactical_helmet", weight: 0.2 },
+            { item: "tactical_helmet", weight: 0.08 },
 
             { item: "regular_vest", weight: 1 },
-            { item: "tactical_vest", weight: 0.2 },
+            { item: "tactical_vest", weight: 0.08 },
 
             { item: "basic_pack", weight: 0.9 },
-            { item: "regular_pack", weight: 0.2 },
-            { item: "tactical_pack", weight: 0.07 }
+            { item: "regular_pack", weight: 0.13 },
+            { item: "tactical_pack", weight: 0.05 }
         ],
         special_equipment: [
             { item: "regular_helmet", weight: 1 },
