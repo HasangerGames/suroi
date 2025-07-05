@@ -4998,6 +4998,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         health: 69,
         indestructible: true,
         reflectBullets: true,
+        allowFlyover: FlyoverPref.Never,
         hitbox: new GroupHitbox(
             RectangleHitbox.fromRect(7.7, 19.43, Vec(-6.47, 0)),
             RectangleHitbox.fromRect(2.38, 15.56, Vec(9.13, -0.3))
