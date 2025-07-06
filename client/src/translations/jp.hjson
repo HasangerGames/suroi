@@ -3,6 +3,9 @@
 "no_space": true
 "no_resize": false
 "html_lang": ja
+
+// translatr(s): squarecube_3235
+
 "msg_rotate": "より良い体験のために、デバイスを横向きに回転してください。"
 "msg_loading": "接続中"
 "msg_err_joining": "ゲームへの参加中にエラーが発生しました。"
@@ -21,9 +24,9 @@
 "msg_punishment_temp": "あなたは一時的にBANされました！"
 "msg_punishment_temp_reason": "あなたは次の理由でBANされました： <reason>"
 "msg_punishment_perma": "あなたは永久にBANされました！"
-"msg_punishment_perma_reason": "あなたは次の理由でBANされましたため： <reason>"
+"msg_punishment_perma_reason": "あなたは次の理由でBANされました： <reason>"
 "msg_punishment_vpn": "VPN/プロキシが検出されました！"
-"msg_punishment_vpn_reason": "BAN回避を困難にするため、VPNおよびプロキシの使用は禁止されています。ゲームをプレイするには、VPN／プロキシを無効にしてください。このメッセージが誤りであると思われる場合、または免除を申請する場合は、Discordサーバー（https://discord.suroi.io）の管理者に連絡するか、support@suroi.ioまでメールでお問い合わせください。"
+"msg_punishment_vpn_reason": "BAN回避を困難にするため、VPNおよびプロキシの使用は禁止されています。ゲームをプレイするには、VPN・プロキシを無効にしてください。このメッセージが誤りであると思われる場合、または免除を申請する場合は、Discordサーバー（https://discord.suroi.io）の管理者に連絡するか、support@suroi.ioまでメールでお問い合わせください。"
 "msg_no_reason": "理由は示されていません。"
 "msg_punishment_warn_agreement": "この警告を理解し、二度と違反行為をしません。"
 
@@ -260,11 +263,11 @@
 "km_gas_down_you": "あなたはガスで気絶しました"
 "km_airdrop_kill_you": "あなたは補給物資に潰され圧死しました"
 "km_airdrop_down_you": "あなたは補給物資に潰され気絶しました"
-"km_knocked_you": "あなたを気絶させました"
-"km_finished_off_you": "あなたをようやく殺しました"
-"km_killed_you": "あなたを殺しました"
-"km_suicide_down": "あなたは自分自身を気絶させました"
-"km_suicide_finished_off": "あなたは自殺しました"
+"km_knocked_you": "気絶させました"
+"km_finished_off_you": "ようやく殺しました"
+"km_killed_you": "を殺しました"
+"km_suicide_down": "自分自身を気絶させました"
+"km_suicide_finished_off": "自殺しました"
 "themselves": "彼ら自身"
 "kf_message": "<player>は<weapon><with><victim>を<event>"
 "kf_kl_promotion": "<player>はキルリーダーになりました！"
@@ -336,6 +339,7 @@
 "kukri": "ククリ"
 
 "mosin_nagant": "モシン・ナガン"
+"fn_fal": "FN FAL"
 "hp18": "HP-18"
 "acr": "ACR"
 "saf200": "SAF-200"
@@ -346,7 +350,7 @@
 "g17_scoped": "G17 (スコープ付き)"
 "vss": "VSSヴィントレス"
 "aug": "AUG"
-"pp19": "PP-19"
+"pp19": "PP-19 ヴィチャズ" // apparently some websites like https://wikiwiki.jp/eft/PP-19-01%20Vityaz%209x19%20submachine%20gun and the Japanese Wikipedia article for the 71-931 tram (https://ja.wikipedia.org/wiki/%E3%83%B4%E3%82%A3%E3%83%81%E3%83%A3%E3%82%BA_(%E8%B7%AF%E9%9D%A2%E9%9B%BB%E8%BB%8A%E8%BB%8A%E4%B8%A1) use the translation
 "vepr12": "ヴェープル12"
 "flues": "フルース"
 "cz75a": "CZ-75A"
@@ -377,9 +381,12 @@
 "revitalizer": "リバイタライザー"
 "rgs": "RGスカウト"
 "seedshot": "シードショット"
-"vaccinator": "ワクチネーター"
+"vaccinator": "ワクチネーター" // from the Japanese word for vaccine, "ワクチン"
 "vector": "ヴェクター"
 "vks": "VKSヴィフロプ" // pulled from https://wikiwiki.jp/tfw/VKS%20VYKHLOP
+"badlander": "バッドランダー"
+"stevens_555": "スティーブンス555"
+"mpx": "MPX"
 
 "frag_grenade": "手榴弾"
 "smoke_grenade": "発煙弾" // seems to be the name of the Japanese Wikipedia article for smoke grenades
@@ -426,7 +433,7 @@
 "bdg_youtubr": "YouTubr"
 "bdg_boostr": "ブースター"
 "bdg_ownr": "オーナー"
-"bdg_bleh": "ブレッ"
+"bdg_bleh": "べー"
 "bdg_froog": "カエール"
 "bdg_aegis_logo": "AEGIS"
 "bdg_flint_logo": "フリント"
@@ -539,6 +546,7 @@
 "emote_whale": "クジラ"
 "emote_carrot": "ニンジン"
 "emote_egg": "卵"
+"emote_wilted_rose": "しおれたバラ"
 "emote_plumpkin": "がぼちゃ"
 "emote_leek": "ネギ"
 "emote_tomato": "トマト"
@@ -552,7 +560,7 @@
 "arctic_camo": "北極の迷彩"
 "armadillo": "アルマジロ"
 "ashfall": "火山灰"
-"aurora": "极光"
+"aurora": "オーロラ"
 "basic_outfit": "ベーシック服"
 "beacon": "ビーコン"
 "bee": "ハチ"
@@ -623,6 +631,34 @@
 "wave_jumpsuit": "波々ジャンプスーツ"
 "werewolf": "人狼"
 "zebra": "シマウマ"
+
+"banana": "バナナ"
+"takedown": "テイクダウン"
+"lavlandet": "ラヴランネ" // approximation of pronunciation by Google Translate voice
+"noskin_narrows": "ノースキンナローズ"
+"mt_sanger": "サンガー山" // based off of the transliteration of Larry Sanger's name, ラリー・サンガー
+"deepwood": "ディープウッド"
+
+"antler": "アントラー"
+"beaverdam": "ビーバーダム"
+"emerald_farms": "エメラルドファームズ"
+"darkwood": "ダークウッド"
+"deadfall": "デッドフォール"
+"crimson_hills": "クリムゾンヒルズ"
+
+"blightnana": "ブライトナナ"
+"quarantine": "クアランティーン"
+"rotlandet": "ロットランネ"
+"pathogen_narrows": "パソジェンナローズ"
+"mt_putrid": "腐敗山"
+"decayedwood": "ディケイドウッド"
+
+"pumpkin_patch": "パンプキンパッチ"
+"reaper": "リーパー"
+"spokelsesfelt": "スペーケルセスフェルト" // approximation of pronunciation by Google Translate voice
+"haunted_hollow": "ホーンテッドホロー"
+"mt_fang": "ファング山"
+// darkwood exists in harvest as well
 
 "region_dev": "ローカルホスト"
 "region_na": "北アメリカ"

@@ -1371,6 +1371,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `emote_whale` is not a valid key
 - Key `emote_carrot` is not a valid key
 - Key `emote_egg` is not a valid key
+- Key `emote_wilted_rose` is not a valid key
 - Key `emote_plumpkin` is not a valid key
 - Key `emote_leek` is not a valid key
 - Key `emote_tomato` is not a valid key
@@ -1454,6 +1455,29 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `wave_jumpsuit` is not a valid key
 - Key `werewolf` is not a valid key
 - Key `zebra` is not a valid key
+- Key `banana` is not a valid key
+- Key `takedown` is not a valid key
+- Key `lavlandet` is not a valid key
+- Key `noskin_narrows` is not a valid key
+- Key `mt_sanger` is not a valid key
+- Key `deepwood` is not a valid key
+- Key `antler` is not a valid key
+- Key `beaverdam` is not a valid key
+- Key `emerald_farms` is not a valid key
+- Key `darkwood` is not a valid key
+- Key `deadfall` is not a valid key
+- Key `crimson_hills` is not a valid key
+- Key `blightnana` is not a valid key
+- Key `quarantine` is not a valid key
+- Key `rotlandet` is not a valid key
+- Key `pathogen_narrows` is not a valid key
+- Key `mt_putrid` is not a valid key
+- Key `decayedwood` is not a valid key
+- Key `pumpkin_patch` is not a valid key
+- Key `reaper` is not a valid key
+- Key `spokelsesfelt` is not a valid key
+- Key `haunted_hollow` is not a valid key
+- Key `mt_fang` is not a valid key
 
 ### Undefined Keys
 
