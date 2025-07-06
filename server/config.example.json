@@ -17,9 +17,9 @@
         "administratr": { "password": "administratr" },
         "content_creatr": { "password": "content_creatr" },
         "donatr": { "password": "donatr" },
+        "marketr": { "password": "marketr", "isDev": true },
 
         "hasanger": { "password": "hasanger", "isDev": true },
-        "pap": { "password": "pap", "isDev": true },
-        "zedaes": { "password": "zedaes", "isDev": true }
+        "pap": { "password": "pap", "isDev": true }
     }
 }
