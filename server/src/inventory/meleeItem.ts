@@ -4,7 +4,7 @@ import { PerkIds } from "@common/definitions/items/perks";
 import { CircleHitbox } from "@common/utils/hitbox";
 import { adjacentOrEquivLayer } from "@common/utils/layer";
 import { Numeric } from "@common/utils/math";
-import { ItemType, type ReifiableDef } from "@common/utils/objectDefinitions";
+import { DefinitionType, type ReifiableDef } from "@common/utils/objectDefinitions";
 import { Vec } from "@common/utils/vector";
 import { Building } from "../objects/building";
 import { type ItemData } from "../objects/loot";
@@ -16,7 +16,7 @@ import { InventoryItemBase } from "./inventoryItem";
 /**
  * A class representing a melee weapon
  */
-export class MeleeItem extends InventoryItemBase.derive(ItemType.Melee) {
+export class MeleeItem extends InventoryItemBase.derive(DefinitionType.Melee) {
     private _autoUseTimeoutID?: NodeJS.Timeout;
 
     /**
@@ -28,7 +28,7 @@ export class MeleeItem extends InventoryItemBase.derive(ItemType.Melee) {
     constructor(idString: ReifiableDef<MeleeDefinition>, owner: Player, data?: ItemData<MeleeDefinition>) {
         super(idString, owner);
 
-        if (this.category !== ItemType.Melee) {
+        if (this.category !== DefinitionType.Melee) {
             throw new TypeError(`Attempted to create a Melee object based on a definition for a non-melee object (Received a ${this.category as unknown as string} definition)`);
         }
 

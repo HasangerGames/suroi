@@ -2,7 +2,7 @@ import { GameConstants } from "@common/constants";
 import { Loots, type LootDefForType, type LootDefinition, type WeaponTypes } from "@common/definitions/loots";
 import { Numeric } from "@common/utils/math";
 import type { AbstractConstructor, Constructor, PredicateFor } from "@common/utils/misc";
-import { ItemType, type ReifiableDef, type WearerAttributes } from "@common/utils/objectDefinitions";
+import { DefinitionType, type ReifiableDef, type WearerAttributes } from "@common/utils/objectDefinitions";
 import { type ItemData } from "../objects/loot";
 import { type Player } from "../objects/player";
 import type { InventoryItem, WeaponItemTypeMap } from "./inventory";
@@ -110,14 +110,14 @@ export abstract class InventoryItemBase<Type extends WeaponTypes = WeaponTypes> 
         static derive<
             This extends AbstractConstructor,
             Type extends WeaponTypes = WeaponTypes
-        >(this: This, itemType: Type): new (...args: ConstructorParameters<This>) => InstanceType<This> & PredicateForItem<Type> {
-            if (itemType in InventoryItemBase._subclasses) {
-                throw new Error(`Subclass for category '${ItemType[itemType]}' already registered`);
+        >(this: This, defType: Type): new (...args: ConstructorParameters<This>) => InstanceType<This> & PredicateForItem<Type> {
+            if (defType in InventoryItemBase._subclasses) {
+                throw new Error(`Subclass for category '${DefinitionType[defType]}' already registered`);
             }
 
             // @ts-expect-error i don't know
-            return InventoryItemBase._subclasses[itemType] = class extends (this as RealType<Type>) {
-                override readonly category = itemType;
+            return InventoryItemBase._subclasses[defType] = class extends (this as RealType<Type>) {
+                override readonly category = defType;
                 override readonly definition: LootDefForType<Type>;
 
                 constructor(...args: [definition: ReifiableDef<LootDefForType<Type>>, owner: Player, ...ConstructorParameters<This>]) {
@@ -126,14 +126,14 @@ export abstract class InventoryItemBase<Type extends WeaponTypes = WeaponTypes> 
 
                     this.definition = Loots.reify(args[0]);
 
-                    if (this.definition.itemType !== itemType) {
+                    if (this.definition.defType !== defType) {
                         throw new TypeError(
-                            `Attempted to create a '${new.target.name}' object based on a definition with a mismatching item type (expected '${ItemType[itemType]}', got '${ItemType[this.definition.itemType]}')`
+                            `Attempted to create a '${new.target.name}' object based on a definition with a mismatching item type (expected '${DefinitionType[defType]}', got '${DefinitionType[this.definition.defType]}')`
                         );
                     }
 
                     // @ts-expect-error it's easier this way lol
-                    this[`is${ItemType[itemType]}`] = true;
+                    this[`is${DefinitionType[defType]}`] = true;
                 }
             };
         }

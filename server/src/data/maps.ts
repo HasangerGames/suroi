@@ -11,7 +11,7 @@ import { PacketType } from "@common/packets/packet";
 import { Orientation, type Variation } from "@common/typings";
 import { CircleHitbox } from "@common/utils/hitbox";
 import { Collision } from "@common/utils/math";
-import { ItemType, type ReferenceTo } from "@common/utils/objectDefinitions";
+import { DefinitionType, type ReferenceTo } from "@common/utils/objectDefinitions";
 import { random, randomFloat } from "@common/utils/random";
 import { Vec, type Vector } from "@common/utils/vector";
 import { type GunItem } from "../inventory/gunItem";
@@ -1052,30 +1052,30 @@ const maps = {
                 const itemPos = Vec.clone(startPos);
 
                 const countMap = {
-                    [ItemType.Gun]: 1,
-                    [ItemType.Ammo]: Infinity,
-                    [ItemType.Melee]: 1,
-                    [ItemType.Throwable]: Infinity,
-                    [ItemType.Healing]: Infinity,
-                    [ItemType.Armor]: 1,
-                    [ItemType.Backpack]: 1,
-                    [ItemType.Scope]: 1,
-                    [ItemType.Skin]: 1,
-                    [ItemType.Perk]: Infinity
+                    [DefinitionType.Gun]: 1,
+                    [DefinitionType.Ammo]: Infinity,
+                    [DefinitionType.Melee]: 1,
+                    [DefinitionType.Throwable]: Infinity,
+                    [DefinitionType.HealingItem]: Infinity,
+                    [DefinitionType.Armor]: 1,
+                    [DefinitionType.Backpack]: 1,
+                    [DefinitionType.Scope]: 1,
+                    [DefinitionType.Skin]: 1,
+                    [DefinitionType.Perk]: Infinity
                 };
 
                 const game = map.game;
                 for (const item of Loots.definitions) {
                     if (
-                        ((item.itemType === ItemType.Melee || item.itemType === ItemType.Scope) && item.noDrop)
-                        || (item.itemType === ItemType.Ammo && item.ephemeral)
-                        || (item.itemType === ItemType.Backpack && item.level === 0)
-                        || (item.itemType === ItemType.Perk && item.category === PerkCategories.Halloween)
-                        || item.itemType === ItemType.Skin
+                        ((item.defType === DefinitionType.Melee || item.defType === DefinitionType.Scope) && item.noDrop)
+                        || (item.defType === DefinitionType.Ammo && item.ephemeral)
+                        || (item.defType === DefinitionType.Backpack && item.level === 0)
+                        || (item.defType === DefinitionType.Perk && item.category === PerkCategories.Halloween)
+                        || item.defType === DefinitionType.Skin
                         || item.devItem
                     ) continue;
 
-                    game.addLoot(item, itemPos, 0, { count: countMap[item.itemType] ?? 1, pushVel: 0, jitterSpawn: false });
+                    game.addLoot(item, itemPos, 0, { count: countMap[item.defType] ?? 1, pushVel: 0, jitterSpawn: false });
 
                     itemPos.x += xSpacing;
                     if (

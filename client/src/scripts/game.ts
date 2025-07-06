@@ -15,7 +15,7 @@ import { CircleHitbox } from "@common/utils/hitbox";
 import { adjacentOrEqualLayer, equalLayer } from "@common/utils/layer";
 import { EaseFunctions, Geometry, Numeric } from "@common/utils/math";
 import { Timeout } from "@common/utils/misc";
-import { ItemType } from "@common/utils/objectDefinitions";
+import { DefinitionType } from "@common/utils/objectDefinitions";
 import { ObjectPool } from "@common/utils/objectPool";
 import { type ObjectsNetData } from "@common/utils/objectsSerializations";
 import { pickRandomInArray, random, randomFloat, randomRotation, randomVector } from "@common/utils/random";
@@ -494,6 +494,10 @@ export const Game = new (class Game {
                 }
                 ui.btnSpectate.addClass("btn-disabled");
                 if (!this.error) void this.endGame();
+            } else {
+                for (const sound of SoundManager.updatableSounds) {
+                    sound.stop();
+                }
             }
         };
     }
@@ -532,27 +536,27 @@ export const Game = new (class Game {
                     this.inventoryMsgTimeout = window.setTimeout(() => inventoryMsg.fadeOut(250), 2500);
                 } else if (item !== undefined) {
                     let soundID: string;
-                    switch (item.itemType) {
-                        case ItemType.Ammo:
+                    switch (item.defType) {
+                        case DefinitionType.Ammo:
                             soundID = "ammo_pickup";
                             break;
-                        case ItemType.Healing:
+                        case DefinitionType.HealingItem:
                             soundID = `${item.idString}_pickup`;
                             break;
-                        case ItemType.Scope:
+                        case DefinitionType.Scope:
                             soundID = "scope_pickup";
                             break;
-                        case ItemType.Armor:
+                        case DefinitionType.Armor:
                             if (item.armorType === ArmorType.Helmet) soundID = "helmet_pickup";
                             else soundID = "vest_pickup";
                             break;
-                        case ItemType.Backpack:
+                        case DefinitionType.Backpack:
                             soundID = "backpack_pickup";
                             break;
-                        case ItemType.Throwable:
+                        case DefinitionType.Throwable:
                             soundID = "throwable_switch";
                             break;
-                        case ItemType.Perk:
+                        case DefinitionType.Perk:
                             soundID = "pickup";
                             break;
                         default:
@@ -847,7 +851,7 @@ export const Game = new (class Game {
         for (const emote of updateData.emotes ?? []) {
             if (
                 GameConsole.getBuiltInCVar("cv_hide_emotes")
-                && !("itemType" in emote.definition) // Never hide team emotes (ammo & healing items)
+                && emote.definition.defType === DefinitionType.Emote // healing item/weapon emotes are always displayed
             ) break;
 
             const player = this.objects.get(emote.playerID);
@@ -972,13 +976,11 @@ export const Game = new (class Game {
         let detonateBindIcon: JQuery<HTMLImageElement> | undefined;
 
         return () => {
-            if (!this.gameStarted || (this.gameOver && !this.spectating)) {
-                SoundManager.update();
-                return;
-            }
+            if (!this.gameStarted || (this.gameOver && !this.spectating)) return;
+
             InputManager.update();
             SoundManager.update();
-            ScreenRecordManager?.update();
+            ScreenRecordManager.update();
 
             const player = this.activePlayer;
             if (!player) return;
@@ -1173,7 +1175,7 @@ export const Game = new (class Game {
                     interactMsg,
                     interactText
                 } = UIManager.ui;
-                const type = object?.isLoot ? object.definition.itemType : undefined;
+                const type = object?.isLoot ? object.definition.defType : undefined;
 
                 // Update interact message
                 if (object !== undefined || (isAction && showCancel)) {
@@ -1193,7 +1195,7 @@ export const Game = new (class Game {
                             }
                             case object?.isLoot: {
                                 const definition = object.definition;
-                                const itemName = definition.itemType === ItemType.Gun && definition.isDual
+                                const itemName = definition.defType === DefinitionType.Gun && definition.isDual
                                     ? getTranslatedString(
                                         "dual_template",
                                         { gun: getTranslatedString(definition.singleVariant as TranslationKeys) }
@@ -1265,27 +1267,27 @@ export const Game = new (class Game {
                                     // Auto-pickup dual gun
                                     // Only pick up melees if no melee is equipped
                                     (
-                                        type !== ItemType.Melee || weapons?.[2]?.definition.idString === "fists" // FIXME are y'all fr
+                                        type !== DefinitionType.Melee || weapons?.[2]?.definition.idString === "fists" // FIXME are y'all fr
                                     )
 
                                     // Only pick up guns if there's a free slot
                                     && (
-                                        type !== ItemType.Gun || (!weapons?.[0] || !weapons?.[1])
+                                        type !== DefinitionType.Gun || (!weapons?.[0] || !weapons?.[1])
                                     )
 
                                     // Don't pick up skins
-                                    && type !== ItemType.Skin
+                                    && type !== DefinitionType.Skin
 
                                     // Don't pick up perks
-                                    && type !== ItemType.Perk
+                                    && type !== DefinitionType.Perk
                                 )
                             ) || (
-                                type === ItemType.Gun
+                                type === DefinitionType.Gun
                                 && weapons?.some(
                                         weapon => {
                                             const definition = weapon?.definition;
 
-                                            return definition?.itemType === ItemType.Gun
+                                            return definition?.defType === DefinitionType.Gun
                                                 && (
                                                     (
                                                         object?.definition === definition

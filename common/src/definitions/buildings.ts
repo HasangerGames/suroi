@@ -335,9 +335,14 @@ const randomToilet = {
     used_toilet: 1
 };
 
+const randomBathtub = {
+    bathtub: 0.9925,
+    ducktub: 0.0075
+};
+
 const randomStove = {
-    stove: 0.97,
-    pan_stove: 0.03
+    stove: 0.99,
+    pan_stove: 0.01
 };
 
 const randomSmallStove = {
@@ -1430,7 +1435,7 @@ const blueHouse = (idString: string, subBuildings: BuildingDefinition["subBuildi
         // top left
         { idString: "house_wall_16", position: Vec(-10, -13.65), rotation: 1 },
         { idString: "door", position: Vec(-10, -23.5), rotation: 3 },
-        { idString: "house_wall_17", position: Vec(-22.3, -9.4), rotation: 0 },
+        { idString: "house_wall_17", position: Vec(-22.26, -9.4), rotation: 0 },
         { idString: "small_drawer", position: Vec(-14.7, -14.5), rotation: 2 },
         { idString: "small_bed", position: Vec(-29.25, -19.9), rotation: 2 },
         { idString: "bookshelf", position: Vec(-15.25, -6), rotation: 0 },
@@ -4178,6 +4183,15 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             position: Vec(0, 0),
             scale: Vec(2, 2)
         }],
+        puzzle: {
+            delay: 450
+        },
+        sounds: {
+            solved: "recorder_buzz",
+            position: Vec(-7.5, -22.73),
+            maxRange: 150,
+            falloff: 1
+        },
         obstacles: IS_CLIENT ? undefined : [
             { idString: "melee_crate", position: Vec(8.39, 22.26) },
             { idString: "gun_case", position: Vec(9.12, 13.39), rotation: 3 },
@@ -4189,8 +4203,12 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "vat", position: Vec(-8.9, 12.8), rotation: 3, variation: 1 },
             { idString: "vat", position: Vec(-8.6, 5.49), rotation: 3, variation: 0 },
             { idString: "lamp", position: Vec(-10.82, -6.98), rotation: 3, variation: 1 },
-            { idString: "recorder", position: Vec(-7.5, -22.73), rotation: 0 } // TODO
-        ]
+            { idString: "recorder_interactable", position: Vec(-7.5, -22.73), rotation: 0, puzzlePiece: true } // TODO
+        ],
+        lootSpawners: [{
+            table: "gun_mount_m590m",
+            position: Vec(-2.63, -11.39)
+        }]
     },
     {
         idString: "cargo_ship",
@@ -6267,7 +6285,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         floorImages: [
             {
                 key: "headquarters_second_floor_top",
-                position: Vec(-5.57, -68.35)
+                position: Vec(-5.57, -68.31)
             },
             {
                 key: "headquarters_second_floor_bottom",
@@ -6563,10 +6581,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             RectangleHitbox.fromRect(1, 3, Vec(28.25, -17)),
             RectangleHitbox.fromRect(2, 1, Vec(29, -18))
         ),
-        spawnHitbox: new GroupHitbox(
-            RectangleHitbox.fromRect(20.5, 55.5, Vec(-19.5, 0)),
-            RectangleHitbox.fromRect(60, 14, Vec(0, -21))
-        ),
+        spawnHitbox: RectangleHitbox.fromRect(120, 92, Vec(-23.9, -11.85)),
         ceilingHitbox: new GroupHitbox(
             RectangleHitbox.fromRect(30.5, 55.5, Vec(-19.5, 0)),
             RectangleHitbox.fromRect(61, 14, Vec(7, -21))
@@ -7472,7 +7487,6 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             // laundry room
             { idString: "lodge_wall_5", position: Vec(-37.33, -9.94), rotation: 0 },
             { idString: "lodge_wall_7", position: Vec(-26.45, -16), rotation: 1 },
-            { idString: "lodge_wall_7", position: Vec(-26.45, -16), rotation: 1 },
             { idString: "lodge_wall_2", position: Vec(-42.47, -27.75), rotation: 0 },
 
             // between dining table and couch
@@ -7661,7 +7675,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "small_drawer", position: Vec(25.85, -30.78), rotation: 0 },
             { idString: "sink2", position: Vec(33.52, -30.95), rotation: 0 },
             { idString: randomToilet, position: Vec(41.73, -30.27), rotation: 0 },
-            { idString: "bathtub", position: Vec(38.2, -9.99), rotation: 0 },
+            { idString: randomBathtub, position: Vec(38.2, -9.99), rotation: 0 },
             { idString: "trash_can", position: Vec(25.61, -8.19), rotation: 0 },
 
             // secret room

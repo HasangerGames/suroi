@@ -77,6 +77,11 @@ Guns:
     World Image: Emeraldneo
     Killfeed Image: eiπ
 
+  FN FAL:
+    Loot Image: hugh jass
+    World Image: Skullboi249
+    Killfeed Image: Skullboi249
+
   G17 (scoped):
     Loot Image: eiπ
     World Image: eiπ
@@ -96,11 +101,6 @@ Guns:
     Loot Image: Winter
     World Image: Winter
     Killfeed Image: Winter
-
-  Lewis Gun:
-    Loot Image: Winter
-    World Image: Winter
-    Killfeed Image: eiπ
 
   M1 Garand:
     Loot Image: jchen, eiπ, Emeraldneo, Skullboi249
@@ -330,6 +330,7 @@ Obstacles:
   Birch tree, particles, & residue: hasanger, Radians
 
   Bed, Drawers, Couch, Chair, Table, Fridge, Walls, Door, Window, Ceramic Toilet, Garage, Washing Machine: platonthek, hasanger
+  Ducktub: Wampi
   Stove: 1092384
   Residues for above obstacles: platonthek
 
@@ -355,10 +356,14 @@ Buildings:
   Tents: Emeraldneo
   Breached Dam: Emeraldneo
 
+Emotes:
+  Primary Artists: EndermanKing, Slapdap, Tofi38
+
+  Suroi General Chat: Astronautical
+
 Other:
   Death Marker & Skull: hasanger
   Bullet trails: hasanger
-  Emotes: EndermanKing, Slapdap, Tofi38
   Healing item residues: Death Trap Engineer, hasanger
   Main Logo: hasanger
   A.E.G.I.S. Logo: Katloo

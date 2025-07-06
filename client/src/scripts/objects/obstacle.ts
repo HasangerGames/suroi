@@ -117,7 +117,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
                 }
                 this.container.addChild(this.graphics);
             } else if (definition.wall) {
-                const { color, borderColor, rounded } = definition.wall;
+                const { color, borderColor } = definition.wall;
                 const dimensions = (definition.hitbox as RectangleHitbox).clone();
                 dimensions.scale(PIXI_SCALE);
                 const { x, y } = dimensions.min;
@@ -125,7 +125,8 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
                 const s = WALL_STROKE_WIDTH;
                 this.graphics = new Graphics()
                     .rect(x, y, w, h)
-                    .fill({ color: borderColor })[rounded ? "roundRect" : "rect"](x + s, y + s, w - s * 2, h - s * 2, s)
+                    .fill({ color: borderColor })
+                    .roundRect(x + s, y + s, w - s * 2, h - s * 2, s)
                     .fill({ color });
                 this.container.addChild(this.graphics);
             }
@@ -306,7 +307,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
                     layer: this.layer,
                     lifetime: Infinity,
                     speed: Vec(0, 0),
-                    zIndex: glow.zIndex ?? this.container.zIndex - 0.5,
+                    zIndex: this.container.zIndex - 0.5,
                     tint: glow.tint,
                     scale: glow.scale
                 });

@@ -15,6 +15,7 @@ export class Gas {
     currentDuration = 0;
     countdownStart = 0;
     completionRatio = 0;
+    finalStage = false;
 
     oldPosition: Vector;
     newPosition: Vector;
@@ -91,6 +92,7 @@ export class Gas {
         this.currentDuration = duration;
         this.completionRatio = 1;
         this.countdownStart = this.game.now;
+        this.finalStage = currentStage.finalStage ?? false;
 
         // Hunted Mode: Bunker doors
         if (this.game.mode.unlockStage !== undefined && this.stage === this.game.mode.unlockStage) {

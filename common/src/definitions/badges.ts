@@ -23,6 +23,7 @@ export const Badges = new ObjectDefinitions<BadgeDefinition>([
     badge("Administratr", ["administratr"]),
     badge("Content Creatr", ["content_creatr"]),
     badge("Donatr", ["donatr"]),
+    badge("Marketr", ["marketr"]),
     badge("Ownr", ["hasanger"]),
 
     // Player

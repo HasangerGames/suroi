@@ -7,7 +7,7 @@ import { InputPacket, areDifferent, type InputAction, type InputData } from "../
 import { JoinPacket } from "../../common/src/packets/joinPacket";
 import { PacketStream } from "../../common/src/packets/packetStream";
 import { Geometry, π, τ } from "../../common/src/utils/math";
-import { ItemType, type ReferenceTo } from "../../common/src/utils/objectDefinitions";
+import { DefinitionType, type ReferenceTo } from "../../common/src/utils/objectDefinitions";
 import { type FullData } from "../../common/src/utils/objectsSerializations";
 import { pickRandomInArray, random, randomBoolean, randomFloat, randomSign } from "../../common/src/utils/random";
 import { Vec, type Vector } from "../../common/src/utils/vector";
@@ -242,7 +242,7 @@ class Bot {
             const slot = aimhax ? random(0, 1) : random(0, GameConstants.player.maxWeapons - 1);
             actions.push({ type: InputActions.EquipItem, slot });
 
-            if (GameConstants.player.inventorySlotTypings[slot] === ItemType.Throwable && this._shootStart) {
+            if (GameConstants.player.inventorySlotTypings[slot] === DefinitionType.Throwable && this._shootStart) {
                 this._dontCommitGrenadeSuicideTimer ??= setTimeout(() => {
                     this._grenadeSuicidePrevention = true;
                     this._dontCommitGrenadeSuicideTimer = undefined;

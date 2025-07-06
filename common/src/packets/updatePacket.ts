@@ -489,20 +489,21 @@ interface ObjectPartialData {
 
 export interface PlayerData {
     readonly pingSeq: number
-    readonly minMax?: {
+    readonly blockEmoting: boolean
+    minMax?: {
         readonly maxHealth: number
         readonly minAdrenaline: number
         readonly maxAdrenaline: number
     }
-    readonly health?: number
-    readonly adrenaline?: number
-    readonly zoom?: number
-    readonly layer?: number
-    readonly id?: {
+    health?: number
+    adrenaline?: number
+    zoom?: number
+    layer?: number
+    id?: {
         readonly id: number
         readonly spectating: boolean
     }
-    readonly teammates?: Array<{
+    teammates?: Array<{
         readonly id: number
         readonly position: Vector
         readonly normalizedHealth: number
@@ -510,7 +511,7 @@ export interface PlayerData {
         readonly disconnected: boolean
         readonly colorIndex: number
     }>
-    readonly inventory?: {
+    inventory?: {
         readonly activeWeaponIndex: number
         readonly weapons?: Array<undefined | {
             readonly definition: WeaponDefinition
@@ -520,15 +521,14 @@ export interface PlayerData {
             }
         }>
     }
-    readonly lockedSlots?: number
-    readonly items?: {
+    lockedSlots?: number
+    items?: {
         readonly items: typeof DEFAULT_INVENTORY
         readonly scope: ScopeDefinition
     }
-    readonly activeC4s?: boolean
-    readonly perks?: PerkCollection
-    readonly teamID?: number
-    readonly blockEmoting: boolean
+    activeC4s?: boolean
+    perks?: PerkCollection
+    teamID?: number
 }
 
 export interface UpdateDataCommon {
@@ -574,7 +574,7 @@ export interface UpdateDataCommon {
 
 export interface ServerOnly {
     readonly bullets?: readonly BaseBullet[]
-    readonly fullObjectsCache: ReadonlyArray<{
+    readonly fullObjectsCache: Set<{
         get partialStream(): SuroiByteStream
         get fullStream(): SuroiByteStream
     }>
@@ -627,8 +627,8 @@ export const UpdatePacket = new Packet<UpdateDataIn, UpdateDataOut>(PacketType.U
             flags |= UpdateFlags.DeletedObjects;
         }
 
-        if (data.fullObjectsCache?.length) {
-            strm.writeArray(
+        if (data.fullObjectsCache?.size) {
+            strm.writeSet(
                 data.fullObjectsCache,
                 object => {
                     strm.writeStream(object.partialStream)

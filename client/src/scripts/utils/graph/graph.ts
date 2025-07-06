@@ -5,7 +5,7 @@
 import { Numeric } from "@common/utils/math";
 import { type DeepPartial, mergeDeep } from "@common/utils/misc";
 import type { Vector } from "@common/utils/vector";
-import { type CanvasTextOptions, type ColorSource, Container, type FillStyle, Graphics, type StrokeStyle, Text, type TextOptions, type TextStyleOptions } from "pixi.js";
+import { BitmapText, type CanvasTextOptions, type ColorSource, Container, type FillStyle, Graphics, type StrokeStyle, type TextOptions, type TextStyleOptions } from "pixi.js";
 
 export const defaultLabelTextOptions: TextOptions = {
     style: {
@@ -13,14 +13,7 @@ export const defaultLabelTextOptions: TextOptions = {
         fill: {
             color: "white"
         },
-        fontSize: 13,
-        dropShadow: {
-            alpha: 0.5,
-            angle: 0,
-            blur: 5,
-            color: "black",
-            distance: 0
-        }
+        fontSize: 13
     }
 };
 
@@ -70,7 +63,7 @@ const defaultOptions: GraphOptions = {
 };
 
 export interface GraphLabel<Stats extends object> {
-    readonly text: Text
+    readonly text: BitmapText
     updateText: (stats: Stats) => string
     forceX?: number
     forceY?: number
@@ -81,7 +74,7 @@ export interface GraphLabel<Stats extends object> {
 export interface Graph<DataType extends readonly any[], Stats extends object> {
     readonly container: Container
     readonly gfx: Graphics
-    readonly title: Text
+    readonly title: BitmapText
 
     get history(): ReadonlyArray<readonly [number, ...DataType]>
     //                           timestamp ^^^^^^  ^^^^^^^^^^^ value
@@ -123,7 +116,7 @@ export interface Graph<DataType extends readonly any[], Stats extends object> {
 export abstract class BaseGraph<DataType extends readonly any[], Stats extends object> implements Graph<DataType, Stats> {
     readonly container = new Container();
     readonly gfx = new Graphics();
-    readonly title = new Text();
+    readonly title = new BitmapText();
 
     fill: FillStyle;
     stroke: StrokeStyle;
@@ -207,7 +200,7 @@ export abstract class BaseGraph<DataType extends readonly any[], Stats extends o
         textOptions: DeepPartial<TextOptions> = {},
         { x: forceX, y: forceY }: Partial<Vector> = {}
     ): this {
-        const text = new Text(mergeDeep({}, defaultLabelTextOptions, textOptions) as CanvasTextOptions);
+        const text = new BitmapText(mergeDeep({}, defaultLabelTextOptions, textOptions) as CanvasTextOptions);
         this.container.addChild(text);
         this._labels.push({ text, updateText, forceX, forceY });
         return this;
@@ -444,7 +437,7 @@ export class SegmentedBarGraph extends SVSGraph<readonly [number, readonly numbe
 
         this.legend = new Container({
             children: [...this._segmentSpec, { name: "total", color: this.fill.color, alpha: this.fill.alpha }].map(
-                (spec, i) => new Text(
+                (spec, i) => new BitmapText(
                     mergeDeep(
                         {},
                         defaultLabelTextOptions,

@@ -4,7 +4,7 @@ import { Obstacles, type ObstacleDefinition } from "@common/definitions/obstacle
 import { type Orientation, type Variation } from "@common/typings";
 import { CircleHitbox, RectangleHitbox, type Hitbox } from "@common/utils/hitbox";
 import { Angle, calculateDoorHitboxes, resolveStairInteraction } from "@common/utils/math";
-import { ItemType, NullString, type ReifiableDef } from "@common/utils/objectDefinitions";
+import { DefinitionType, NullString, type ReifiableDef } from "@common/utils/objectDefinitions";
 import { type FullData } from "@common/utils/objectsSerializations";
 import { Vec, type Vector } from "@common/utils/vector";
 import { type Game } from "../game";
@@ -64,7 +64,7 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
 
     puzzlePiece?: string | boolean;
 
-    // TODO: remove flyover pref when henry finishes refactoring definitions
+    // TODO replace flyoverpref with actual height values
     get height(): number {
         if (this.door && !this.door.isOpen) return Infinity;
 
@@ -172,12 +172,12 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
                 definition.impenetrable
                 && (!(
                     (
-                        weaponDef?.itemType === ItemType.Melee
+                        weaponDef?.defType === DefinitionType.Melee
                         && weaponDef.piercingMultiplier !== undefined
                     )
                     || source instanceof Obstacle
                 )
-                || (weaponDef?.itemType === ItemType.Melee && definition.hardness !== undefined && (weaponDef.maxHardness === undefined || definition.hardness > weaponDef.maxHardness))
+                || (weaponDef?.defType === DefinitionType.Melee && definition.hardness !== undefined && (weaponDef.maxHardness === undefined || definition.hardness > weaponDef.maxHardness))
                 ))
                 || this.game.pluginManager.emit("obstacle_will_damage", {
                     obstacle: this,
@@ -229,7 +229,7 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
             if (definition.explosion !== undefined && source instanceof BaseGameObject) {
                 //                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
                 // FIXME This is implying that obstacles won't explode if destroyed by non–game objects
-                this.game.addExplosion(definition.explosion, this.position, source, source.layer, weaponIsItem ? weaponUsed : weaponUsed?.weapon);
+                this.game.addExplosion(definition.explosion, this.position, source, this.layer, weaponIsItem ? weaponUsed : weaponUsed?.weapon);
             }
 
             if (source instanceof BaseGameObject && source.isPlayer) {
@@ -239,7 +239,7 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
                     && definition.material === "pumpkin"
                 ) {
                     this.playMaterialDestroyedSound = false;
-                    this.game.addExplosion("pumpkin_explosion", this.position, source, source.layer);
+                    this.game.addExplosion("pumpkin_explosion", this.position, source, this.layer);
                 }
 
                 // Infected perk

@@ -15,7 +15,7 @@ import { CircleHitbox } from "@common/utils/hitbox";
 import { adjacentOrEquivLayer } from "@common/utils/layer";
 import { Angle, EaseFunctions, Geometry, Numeric } from "@common/utils/math";
 import { removeFrom, type Timeout } from "@common/utils/misc";
-import { ItemType, type ReferenceTo } from "@common/utils/objectDefinitions";
+import { DefinitionType, type ReferenceTo } from "@common/utils/objectDefinitions";
 import { type ObjectsNetData } from "@common/utils/objectsSerializations";
 import { random, randomBoolean, randomFloat, randomPointInsideCircle, randomRotation, randomSign, randomVector } from "@common/utils/random";
 import { FloorNames, FloorTypes } from "@common/utils/terrain";
@@ -247,7 +247,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             active: false,
             spawnOptions: () => {
                 let frame = "";
-                if (this.action.item?.itemType === ItemType.Healing) {
+                if (this.action.item?.defType === DefinitionType.HealingItem) {
                     if (this.action.item.healType === HealType.Special) {
                         frame = this.action.item.idString.toLowerCase();
                     } else { frame = HealType[this.action.item.healType].toLowerCase(); }
@@ -409,7 +409,14 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
         const noMovementSmoothing = !GameConsole.getBuiltInCVar("cv_movement_smoothing");
 
-        if (noMovementSmoothing || isNew) this.container.rotation = this.rotation;
+        if (
+            (
+                noMovementSmoothing
+                && !(this.isActivePlayer && GameConsole.getBuiltInCVar("cv_responsive_rotation"))
+            ) || isNew
+        ) {
+            this.container.rotation = this.rotation;
+        }
 
         if (this.isActivePlayer) {
             SoundManager.position = this.position;
@@ -468,10 +475,10 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
                 this.distSinceLastFootstep = 0;
 
-                if (FloorTypes[floorType].particles && this.layer >= Layer.Ground) {
+                if (FloorTypes[floorType].particles) {
                     const options = {
                         frames: "ripple_particle",
-                        zIndex: ZIndexes.Ground + 0.9,
+                        zIndex: ZIndexes.BuildingsFloor + 0.9,
                         position: this._hitbox.randomPoint(),
                         lifetime: 1000,
                         layer: this.layer,
@@ -559,7 +566,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             const hadSkin = this.halloweenThrowableSkin;
             if (
                 hadSkin !== (this.halloweenThrowableSkin = halloweenThrowableSkin)
-                && this.activeItem.itemType === ItemType.Throwable
+                && this.activeItem.defType === DefinitionType.Throwable
                 && !this.activeItem.noSkin
             ) {
                 this.images.weapon.setFrame(`${this.activeItem.idString}${this.halloweenThrowableSkin ? "_halloween" : ""}`);
@@ -867,8 +874,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             DebugRenderer.addLine(start, lineEnd, HITBOX_COLORS.playerWeapon, alpha);
         };
 
-        switch (this.activeItem.itemType) {
-            case ItemType.Gun: {
+        switch (this.activeItem.defType) {
+            case DefinitionType.Gun: {
                 const offset = this.activeItem.bulletOffset ?? 0;
 
                 const start = Vec.add(this.position,
@@ -886,7 +893,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 );
                 break;
             }
-            case ItemType.Melee: {
+            case DefinitionType.Melee: {
                 DebugRenderer.addCircle(
                     this.activeItem.radius * this.sizeMod,
                     Vec.add(
@@ -929,7 +936,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
     private _getItemReference(): SingleGunNarrowing | Exclude<WeaponDefinition, GunDefinition> {
         const weaponDef = this.activeItem;
 
-        return weaponDef.itemType === ItemType.Gun && weaponDef.isDual
+        return weaponDef.defType === DefinitionType.Gun && weaponDef.isDual
             ? Loots.fromString<SingleGunNarrowing>(weaponDef.singleVariant)
             : weaponDef as SingleGunNarrowing | Exclude<WeaponDefinition, GunDefinition>;
     }
@@ -937,7 +944,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
     private _getOffset(): number {
         const weaponDef = this.activeItem;
 
-        return weaponDef.itemType === ItemType.Gun && weaponDef.isDual
+        return weaponDef.defType === DefinitionType.Gun && weaponDef.isDual
             ? weaponDef.leftRightOffset * PIXI_SCALE
             : 0;
     }
@@ -1058,7 +1065,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         if (reference.image) {
             const { image: { position, angle } } = reference;
 
-            if (reference.itemType === ItemType.Throwable && !reference.noSkin) {
+            if (reference.defType === DefinitionType.Throwable && !reference.noSkin) {
                 this.images.weapon.setFrame(`${reference.idString}${this.halloweenThrowableSkin ? "_halloween" : ""}`);
             }
 
@@ -1086,14 +1093,14 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         const { fists } = weaponDef;
 
         const imagePresent = image !== undefined;
-        const isDualGun = imagePresent && weaponDef.itemType === ItemType.Gun && weaponDef.isDual;
+        const isDualGun = imagePresent && weaponDef.defType === DefinitionType.Gun && weaponDef.isDual;
         if (imagePresent) {
-            let frame = `${reference.idString}${weaponDef.itemType === ItemType.Gun || (image as NonNullable<MeleeDefinition["image"]>).separateWorldImage
+            let frame = `${reference.idString}${weaponDef.defType === DefinitionType.Gun || (image as NonNullable<MeleeDefinition["image"]>).separateWorldImage
                 ? "_world"
                 : ""
             }`;
 
-            if (weaponDef.itemType === ItemType.Throwable && this.halloweenThrowableSkin && !weaponDef.noSkin) {
+            if (weaponDef.defType === DefinitionType.Throwable && this.halloweenThrowableSkin && !weaponDef.noSkin) {
                 frame += "_halloween";
             }
 
@@ -1129,9 +1136,9 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             this.images.muzzleFlash.alpha = 0;
             if (this.isActivePlayer && !isNew) {
                 let soundID: string;
-                if (reference.itemType === ItemType.Throwable) {
+                if (reference.defType === DefinitionType.Throwable) {
                     soundID = "throwable";
-                } else if (reference.itemType === ItemType.Gun && reference.isDual) {
+                } else if (reference.defType === DefinitionType.Gun && reference.isDual) {
                     soundID = reference.idString.slice("dual_".length);
                 } else if (SoundManager.has(`${reference.idString}_switch`)) {
                     soundID = reference.idString;
@@ -1145,8 +1152,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         this.images.weapon.setVisible(imagePresent);
         this.images.muzzleFlash.setVisible(imagePresent);
 
-        switch (weaponDef.itemType) {
-            case ItemType.Gun: {
+        switch (weaponDef.defType) {
+            case DefinitionType.Gun: {
                 this.images.rightFist.setZIndex((fists as SingleGunNarrowing["fists"]).rightZIndex ?? 1);
                 this.images.leftFist.setZIndex((fists as SingleGunNarrowing["fists"]).leftZIndex ?? 1);
                 this.images.weapon.setZIndex(image?.zIndex ?? 2);
@@ -1154,14 +1161,14 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 this.images.body.setZIndex(3);
                 break;
             }
-            case ItemType.Melee: {
+            case DefinitionType.Melee: {
                 this.images.leftFist.setZIndex(4);
                 this.images.rightFist.setZIndex(4);
                 this.images.body.setZIndex(2);
                 this.images.weapon.setZIndex(reference.image?.zIndex ?? 1);
                 break;
             }
-            case ItemType.Throwable: {
+            case DefinitionType.Throwable: {
                 this.images.leftFist.setZIndex(4);
                 this.images.rightFist.setZIndex(4);
                 this.images.body.setZIndex(2);
@@ -1225,7 +1232,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             container.children(".item-image").attr("src", `./img/game/shared/loot/${def.idString}.svg`);
 
             let itemTooltip = getTranslatedString(def.idString as TranslationKeys);
-            if (def.itemType === ItemType.Armor) {
+            if (def.defType === DefinitionType.Armor) {
                 itemTooltip = getTranslatedString("tt_reduces", {
                     item: `<b>${getTranslatedString(def.idString as TranslationKeys)}</b><br>`,
                     percent: (def.damageReduction * 100).toString()
@@ -1330,7 +1337,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
     playAnimation(anim: AnimationType): void {
         switch (anim) {
             case AnimationType.Melee: {
-                if (this.activeItem.itemType !== ItemType.Melee) {
+                if (this.activeItem.defType !== DefinitionType.Melee) {
                     console.warn(`Attempted to play melee animation with non-melee item '${this.activeItem.idString}'`);
                     return;
                 }
@@ -1531,7 +1538,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             case AnimationType.GunFire:
             case AnimationType.GunFireAlt:
             case AnimationType.LastShot: {
-                if (this.activeItem.itemType !== ItemType.Gun) {
+                if (this.activeItem.defType !== DefinitionType.Gun) {
                     const name = ({
                         [AnimationType.GunFire]: "GunFire",
                         [AnimationType.GunFireAlt]: "GunFireAlt",
@@ -1691,7 +1698,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 break;
             }
             case AnimationType.ThrowableCook: {
-                if (this.activeItem.itemType !== ItemType.Throwable) {
+                if (this.activeItem.defType !== DefinitionType.Throwable) {
                     console.warn(`Attempted to play throwable cooking animation with non-throwable item '${this.activeItem.idString}'`);
                     return;
                 }
@@ -1808,7 +1815,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 break;
             }
             case AnimationType.ThrowableThrow: {
-                if (this.activeItem.itemType !== ItemType.Throwable) {
+                if (this.activeItem.defType !== DefinitionType.Throwable) {
                     console.warn(`Attempted to play throwable throwing animation with non-throwable item '${this.activeItem.idString}'`);
                     return;
                 }

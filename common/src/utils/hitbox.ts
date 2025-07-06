@@ -725,7 +725,7 @@ export class PolygonHitbox extends BaseHitbox<HitboxType.Polygon> {
     override clone(deep = true): PolygonHitbox {
         return new PolygonHitbox(
             deep
-                ? this.points.map(point => Vec.clone(point))
+                ? this.points.map(p => Vec.clone(p))
                 : this.points
         );
     }

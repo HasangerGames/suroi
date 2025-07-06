@@ -7,7 +7,7 @@ import { CircleHitbox, RectangleHitbox } from "@common/utils/hitbox";
 import { adjacentOrEqualLayer, isStairLayer } from "@common/utils/layer";
 import { Angle, Geometry, HALF_PI, resolveStairInteraction } from "@common/utils/math";
 import { type DeepMutable, type DeepRequired, type Timeout } from "@common/utils/misc";
-import { ItemType, type ReifiableDef } from "@common/utils/objectDefinitions";
+import { DefinitionType, type ReifiableDef } from "@common/utils/objectDefinitions";
 import { randomFloat, randomPointInsideCircle } from "@common/utils/random";
 import { Vec, type Vector } from "@common/utils/vector";
 import { type ItemData } from "../objects/loot";
@@ -19,7 +19,7 @@ import { InventoryItemBase } from "./inventoryItem";
 /**
  * A class representing a firearm
  */
-export class GunItem extends InventoryItemBase.derive(ItemType.Gun) {
+export class GunItem extends InventoryItemBase.derive(DefinitionType.Gun) {
     ammo = 0;
 
     private _consecutiveShots = 0;
@@ -52,7 +52,7 @@ export class GunItem extends InventoryItemBase.derive(ItemType.Gun) {
     constructor(idString: ReifiableDef<GunDefinition>, owner: Player, data?: ItemData<GunDefinition>) {
         super(idString, owner);
 
-        if (this.category !== ItemType.Gun) {
+        if (this.category !== DefinitionType.Gun) {
             throw new TypeError(`Attempted to create a Gun object based on a definition for a non-gun object (Received a ${this.category as unknown as string} definition)`);
         }
 

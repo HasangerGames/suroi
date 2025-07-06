@@ -35,7 +35,7 @@ jobs:
         # Server
       - name: Build Server
         working-directory: ./server
-        run: pnpm build
+        run: cp config.example.json config.json && pnpm build
 
         # Tests
       - name: Build Tests

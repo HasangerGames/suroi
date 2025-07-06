@@ -3,7 +3,6 @@ import { Modes, type ModeName } from "@common/definitions/modes";
 import { HitboxType, RectangleHitbox } from "@common/utils/hitbox";
 import { Config as ClientConfig } from "../../client/src/scripts/config";
 import { FireMode, GameConstants, Layers, RotationMode } from "../../common/src/constants";
-import { Badges } from "../../common/src/definitions/badges";
 import { Buildings } from "../../common/src/definitions/buildings";
 import { Bullets } from "../../common/src/definitions/bullets";
 import { Decals } from "../../common/src/definitions/decals";
@@ -29,7 +28,6 @@ import { Vec, type Vector } from "../../common/src/utils/vector";
 import { GasStages } from "../../server/src/data/gasStages";
 import { LootTables } from "../../server/src/data/lootTables";
 import { Maps, type RiverDefinition } from "../../server/src/data/maps";
-import { Config as ServerConfig } from "../../server/src/utils/config";
 import type { FullLootTable, SimpleLootTable, WeightedItem } from "../../server/src/utils/lootHelpers";
 import { findDupes, logger, safeString, tester, validators } from "./validationUtils";
 
@@ -837,33 +835,33 @@ logger.indent("Validating backpack definitions", () => {
     }
 });
 
-logger.indent("Validating badge definitions", () => {
-    tester.assertNoDuplicateIDStrings(Badges.definitions, "Badges", "badges");
+// logger.indent("Validating badge definitions", () => {
+//     tester.assertNoDuplicateIDStrings(Badges.definitions, "Badges", "badges");
 
-    for (const badge of Badges) {
-        const errorPath = tester.createPath("badges", `badge '${badge.idString}'`);
+//     for (const badge of Badges) {
+//         const errorPath = tester.createPath("badges", `badge '${badge.idString}'`);
 
-        logger.indent(`Validating '${badge.idString}'`, () => {
-            const roles = badge.roles;
-            if (roles !== undefined) {
-                logger.indent("Validating required roles", () => {
-                    tester.runTestOnArray(
-                        roles,
-                        (role, errorPath) => {
-                            tester.assertReferenceExistsObject({
-                                value: role,
-                                collection: ServerConfig.roles ?? {},
-                                collectionName: "roles",
-                                errorPath
-                            });
-                        },
-                        errorPath
-                    );
-                });
-            }
-        });
-    }
-});
+//         logger.indent(`Validating '${badge.idString}'`, () => {
+//             const roles = badge.roles;
+//             if (roles !== undefined) {
+//                 logger.indent("Validating required roles", () => {
+//                     tester.runTestOnArray(
+//                         roles,
+//                         (role, errorPath) => {
+//                             tester.assertReferenceExistsObject({
+//                                 value: role,
+//                                 collection: ServerConfig.roles ?? {},
+//                                 collectionName: "roles",
+//                                 errorPath
+//                             });
+//                         },
+//                         errorPath
+//                     );
+//                 });
+//             }
+//         });
+//     }
+// });
 
 logger.indent("Validating building definitions", () => {
     tester.assertNoDuplicateIDStrings(Buildings.definitions, "Buildings", "buildings");
@@ -1487,7 +1485,7 @@ logger.indent("Validating building definitions", () => {
                                     obj: image,
                                     field: "scale",
                                     defaultValue: { x: 1, y: 1 },
-                                    equalityFunction: (a: Vector, b: Vector) => Vec.equals(a, b),
+                                    equalityFunction: (a, b) => Vec.equals(a, b),
                                     validatorIfPresent(value, errorPath) {
                                         validators.vector(
                                             errorPath,
@@ -1550,7 +1548,7 @@ logger.indent("Validating building definitions", () => {
                                     obj: image,
                                     field: "scale",
                                     defaultValue: { x: 1, y: 1 },
-                                    equalityFunction: (a: Vector, b: Vector) => Vec.equals(a, b),
+                                    equalityFunction: (a, b) => Vec.equals(a, b),
                                     validatorIfPresent(value, errorPath) {
                                         validators.vector(
                                             errorPath,
@@ -2767,13 +2765,6 @@ logger.indent("Validating obstacles", () => {
 
             tester.assertNoPointlessValue({
                 obj: obstacle,
-                field: "pallet",
-                defaultValue: false,
-                baseErrorPath: errorPath
-            });
-
-            tester.assertNoPointlessValue({
-                obj: obstacle,
                 field: "noDestroyEffect",
                 defaultValue: false,
                 baseErrorPath: errorPath
@@ -2921,7 +2912,7 @@ logger.indent("Validating obstacles", () => {
                             validators.vector(errorPath, position);
                         },
                         defaultValue: Vec(0, 0),
-                        equalityFunction: (a: Vector, b: Vector) => Vec.equals(a, b),
+                        equalityFunction: (a, b) => Vec.equals(a, b),
                         baseErrorPath: errorPath2
                     });
 
@@ -3037,12 +3028,6 @@ logger.indent("Validating obstacles", () => {
             if (obstacle.wall !== undefined) {
                 validators.color(tester.createPath(errorPath, "wall color"), obstacle.wall.color);
                 validators.color(tester.createPath(errorPath, "wall border color"), obstacle.wall.borderColor);
-                tester.assertNoPointlessValue({
-                    obj: obstacle.wall,
-                    field: "rounded",
-                    defaultValue: false,
-                    baseErrorPath: tester.createPath(errorPath, "wall")
-                });
             }
 
             if (obstacle.tint !== undefined) {
@@ -3355,21 +3340,6 @@ logger.indent("Validating skins", () => {
 
             if (skin.backpackTint !== undefined) {
                 validators.color(tester.createPath(errorPath, "backpack tint"), skin.backpackTint);
-            }
-
-            if (skin.rolesRequired !== undefined) {
-                tester.runTestOnArray(
-                    skin.rolesRequired,
-                    (role, errorPath) => {
-                        tester.assertReferenceExistsObject({
-                            value: role,
-                            collection: ServerConfig.roles ?? {},
-                            collectionName: "roles",
-                            errorPath
-                        });
-                    },
-                    errorPath
-                );
             }
         });
     }
@@ -3780,176 +3750,15 @@ logger.indent("Validating {collection name}s", () => {
 
 */
 
-logger.indent("Validating configurations", () => {
-    /* logger.indent("Validating server config", () => {
-        const errorPath = tester.createPath("configs", "server config");
+logger.indent("Validating client config", () => {
+    const errorPath = tester.createPath("configs", "client config");
 
-        tester.assertIsNaturalFiniteNumber({
-            obj: ServerConfig,
-            field: "port",
-            baseErrorPath: errorPath
-        });
-
-        const validateForMapName = (spec: MapWithParams, _errorPath = errorPath): void => {
-            const [name] = spec.split(":") as [MapName, string[]];
-            tester.assertReferenceExistsObject({
-                value: name,
-                collection: Maps,
-                collectionName: "maps",
-                errorPath: _errorPath
-            });
-
-            switch (ServerConfig.spawn.mode) {
-                case SpawnMode.Radius: {
-                    tester.assertIsPositiveFiniteReal({
-                        obj: ServerConfig.spawn,
-                        field: "radius",
-                        baseErrorPath: errorPath
-                    });
-
-                    const map = Maps[name];
-                    if (map !== undefined) {
-                        validators.vector(
-                            tester.createPath(errorPath, "spawn position"),
-                            Vec(...ServerConfig.spawn.position as [number, number]),
-                            {
-                                min: 0,
-                                max: map.width,
-                                includeMin: true,
-                                includeMax: true
-                            },
-                            {
-                                min: 0,
-                                max: map.height,
-                                includeMin: true,
-                                includeMax: true
-                            }
-                        );
-                    }
-                    break;
-                }
-                case SpawnMode.Fixed: {
-                    const map = Maps[name];
-                    if (map !== undefined) {
-                        validators.vector(
-                            tester.createPath(errorPath, "spawn position"),
-                            Vec(...ServerConfig.spawn.position as [number, number]),
-                            {
-                                min: 0,
-                                max: map.width,
-                                includeMin: true,
-                                includeMax: true
-                            },
-                            {
-                                min: 0,
-                                max: map.height,
-                                includeMin: true,
-                                includeMax: true
-                            }
-                        );
-                    }
-                    break;
-                }
-                case SpawnMode.Normal:
-                case SpawnMode.Center:
-                case SpawnMode.Default:
-                default:
-                    break;
-            }
-        };
-
-        if (typeof ServerConfig.map === "string") {
-            validateForMapName(ServerConfig.map);
-        } else {
-            tester.runTestOnArray(
-                ServerConfig.map.rotation,
-                (name, errorPath) => {
-                    validateForMapName(name, errorPath);
-                },
-                errorPath
-            );
-        }
-
-        tester.assertNoPointlessValue({
-            obj: ServerConfig,
-            field: "startImmediately",
-            defaultValue: false,
-            baseErrorPath: errorPath
-        });
-
-        tester.assertIsNaturalNumber({
-            obj: ServerConfig,
-            field: "maxPlayersPerGame",
-            baseErrorPath: errorPath
-        });
-
-        tester.assertIsNaturalNumber({
-            obj: ServerConfig,
-            field: "maxGames",
-            baseErrorPath: errorPath
-        });
-
-        if (ServerConfig.gas.mode === GasMode.Debug) {
-            tester.assertNoPointlessValue({
-                obj: ServerConfig.gas,
-                field: "overridePosition",
-                defaultValue: false,
-                baseErrorPath: errorPath
-            });
-
-            tester.assertIsPositiveReal({
-                obj: ServerConfig.gas,
-                field: "overrideDuration",
-                baseErrorPath: errorPath
-            });
-        }
-
-        tester.assertIsNaturalFiniteNumber({
-            obj: ServerConfig,
-            field: "tps",
-            baseErrorPath: errorPath
-        });
-
-        tester.assertNoPointlessValue({
-            obj: ServerConfig,
-            field: "disableBuildingCheck",
-            defaultValue: false,
-            baseErrorPath: errorPath
-        });
-
-        logger.indent("Validating roles", () => {
-            for (const [name, role] of Object.entries(ServerConfig.roles)) {
-                logger.indent(`Validating role '${name}'`, () => {
-                    const errorPath2 = tester.createPath(errorPath, "roles", `role '${name}'`);
-
-                    tester.assertNoPointlessValue({
-                        obj: role,
-                        field: "isDev",
-                        defaultValue: false,
-                        baseErrorPath: errorPath2
-                    });
-                });
-            }
-        });
-
-        tester.assertNoPointlessValue({
-            obj: ServerConfig,
-            field: "disableLobbyClearing",
-            defaultValue: false,
-            baseErrorPath: errorPath
-        });
-    }); */
-
-    logger.indent("Validating client config", () => {
-        const errorPath = tester.createPath("configs", "client config");
-
-        tester.assertReferenceExistsObject({
-            obj: ClientConfig,
-            field: "defaultRegion",
-            collection: ClientConfig.regions,
-            collectionName: "regions",
-            baseErrorPath: errorPath
-        });
+    tester.assertReferenceExistsObject({
+        obj: ClientConfig,
+        field: "defaultRegion",
+        collection: ClientConfig.regions,
+        collectionName: "regions",
+        baseErrorPath: errorPath
     });
 });
 

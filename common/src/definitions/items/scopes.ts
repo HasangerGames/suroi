@@ -1,8 +1,8 @@
-import { DefinitionType, ItemType, ObjectDefinitions, type ItemDefinition } from "../../utils/objectDefinitions";
+import { DefinitionType, ObjectDefinitions, type ItemDefinition } from "../../utils/objectDefinitions";
 
 export interface ScopeDefinition extends ItemDefinition {
     readonly defType: DefinitionType.Scope
-    readonly itemType: ItemType.Scope
+
     readonly zoomLevel: number
     readonly giveByDefault?: boolean
 }
@@ -18,7 +18,6 @@ export const Scopes = new ObjectDefinitions<ScopeDefinition>(([
     idString: `${magnification}_scope`,
     name: `${magnification} Scope`,
     defType: DefinitionType.Scope,
-    itemType: ItemType.Scope,
     noDrop: defaultScope,
     giveByDefault: defaultScope,
     zoomLevel

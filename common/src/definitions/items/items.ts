@@ -12,7 +12,7 @@ export class InventoryItemDefinitions<Def extends WeaponDefinition> extends Obje
     constructor(definitions: readonly Def[]) {
         super(
             definitions.map(i => {
-                (i as Mutable<Def>).speedMultiplier *= GameConstants.defaultSpeedModifiers[i.itemType];
+                (i as Mutable<Def>).speedMultiplier *= GameConstants.defaultSpeedModifiers[i.defType];
 
                 return i;
             })

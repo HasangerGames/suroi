@@ -8,7 +8,7 @@ import type { CommonGameObject } from "./gameObject";
 import { type Hitbox } from "./hitbox";
 import { adjacentOrEqualLayer, equivLayer } from "./layer";
 import { Collision, Geometry, type IntersectionResponse, Numeric } from "./math";
-import { ItemType, ReferenceTo, type ReifiableDef } from "./objectDefinitions";
+import { DefinitionType, ReferenceTo, type ReifiableDef } from "./objectDefinitions";
 import type { SuroiByteStream } from "./suroiByteStream";
 import { Vec, type Vector } from "./vector";
 
@@ -270,7 +270,7 @@ export class BaseBullet {
                 const activeDef = object.activeItemDefinition;
                 const backDef = object.backEquippedMelee;
 
-                if (activeDef.itemType === ItemType.Melee && activeDef.reflectiveSurface) {
+                if (activeDef.defType === DefinitionType.Melee && activeDef.reflectiveSurface) {
                     const intersection = getIntersection(activeDef.reflectiveSurface);
                     if (intersection) {
                         collisions.push({

@@ -4,7 +4,7 @@ import { Backpacks, type BackpackDefinition } from "./items/backpacks";
 import { Guns, type GunDefinition } from "./items/guns";
 import { HealingItems, type HealingItemDefinition } from "./items/healingItems";
 import { Melees, type MeleeDefinition } from "./items/melees";
-import { ObjectDefinitions, type ItemType } from "../utils/objectDefinitions";
+import { ObjectDefinitions, type DefinitionType } from "../utils/objectDefinitions";
 import { Perks, type PerkDefinition } from "./items/perks";
 import { Scopes, type ScopeDefinition } from "./items/scopes";
 import { Skins, type SkinDefinition } from "./items/skins";
@@ -27,21 +27,33 @@ export type WeaponDefinition =
     | MeleeDefinition
     | ThrowableDefinition;
 
-export type WeaponTypes = WeaponDefinition["itemType"];
+export type WeaponTypes = WeaponDefinition["defType"];
 
-export type TypedLootDefinition<Type extends ItemType> = LootDefinition & { readonly itemType: Type };
+export type TypedLootDefinition<Type extends DefinitionType> = LootDefinition & { readonly defType: Type };
+
+export type ItemType =
+    | DefinitionType.Gun
+    | DefinitionType.Ammo
+    | DefinitionType.Melee
+    | DefinitionType.Throwable
+    | DefinitionType.HealingItem
+    | DefinitionType.Armor
+    | DefinitionType.Backpack
+    | DefinitionType.Scope
+    | DefinitionType.Skin
+    | DefinitionType.Perk;
 
 export type LootDefForType<K extends ItemType> = {
-    [ItemType.Gun]: GunDefinition
-    [ItemType.Ammo]: AmmoDefinition
-    [ItemType.Melee]: MeleeDefinition
-    [ItemType.Throwable]: ThrowableDefinition
-    [ItemType.Healing]: HealingItemDefinition
-    [ItemType.Armor]: ArmorDefinition
-    [ItemType.Backpack]: BackpackDefinition
-    [ItemType.Scope]: ScopeDefinition
-    [ItemType.Skin]: SkinDefinition
-    [ItemType.Perk]: PerkDefinition
+    [DefinitionType.Gun]: GunDefinition
+    [DefinitionType.Ammo]: AmmoDefinition
+    [DefinitionType.Melee]: MeleeDefinition
+    [DefinitionType.Throwable]: ThrowableDefinition
+    [DefinitionType.HealingItem]: HealingItemDefinition
+    [DefinitionType.Armor]: ArmorDefinition
+    [DefinitionType.Backpack]: BackpackDefinition
+    [DefinitionType.Scope]: ScopeDefinition
+    [DefinitionType.Skin]: SkinDefinition
+    [DefinitionType.Perk]: PerkDefinition
 }[K];
 
 export const Loots = new ObjectDefinitions<LootDefinition>([
