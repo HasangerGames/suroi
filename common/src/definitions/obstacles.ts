@@ -418,7 +418,8 @@ export const TintedParticles: Record<string, { readonly base: string, readonly t
     sawmill_warehouse_particle_2: { base: "stone_particle_2", tint: 0x5a1919 },
     sawmill_warehouse_wall_particle: { base: "wood_particle", tint: 0x764423 },
 
-    warehouse_hunted_particle: { base: "wood_particle", tint: 0x6e4f32 }
+    warehouse_hunted_particle: { base: "wood_particle", tint: 0x6e4f32 },
+    hunting_stand_particle: { base: "wood_particle", tint: 0x764423 }
 };
 
 const houseWall = (
@@ -437,11 +438,6 @@ const houseWall = (
     hideOnMap: true,
     noResidue: true,
     health: 170,
-    scale: {
-        spawnMin: 1,
-        spawnMax: 1,
-        destroy: 1
-    },
     hitbox,
     rotationMode: RotationMode.Limited,
     allowFlyover: FlyoverPref.Never,
@@ -463,11 +459,6 @@ const hqWall = (lengthNumber: number, hitbox: RectangleHitbox, customHealth = fa
     hideOnMap: true,
     noResidue: true,
     health: customHealth ? 100 : 170,
-    scale: {
-        spawnMin: 1,
-        spawnMax: 1,
-        destroy: 1
-    },
     rotationMode: RotationMode.Limited,
     allowFlyover: FlyoverPref.Never,
     frames: {
@@ -490,11 +481,6 @@ const lodgeWall = (id: string, length: number): RawObstacleDefinition => ({
     hideOnMap: true,
     noResidue: true,
     health: 170,
-    scale: {
-        spawnMin: 1,
-        spawnMax: 1,
-        destroy: 1
-    },
     hitbox: RectangleHitbox.fromRect(length, 2.06),
     rotationMode: RotationMode.Limited,
     allowFlyover: FlyoverPref.Never,
@@ -516,11 +502,6 @@ const cabinWall = (id: string, length: number): RawObstacleDefinition => ({
     hideOnMap: true,
     noResidue: true,
     health: 170,
-    scale: {
-        spawnMin: 1,
-        spawnMax: 1,
-        destroy: 1
-    },
     hitbox: RectangleHitbox.fromRect(length, 2.06),
     rotationMode: RotationMode.Limited,
     allowFlyover: FlyoverPref.Never,
@@ -530,8 +511,7 @@ const cabinWall = (id: string, length: number): RawObstacleDefinition => ({
     isWall: true,
     wall: {
         borderColor: 0x291e0f,
-        color: 0x5a4320,
-        rounded: true
+        color: 0x5a4320
     }
 });
 
@@ -594,11 +574,6 @@ const portMainOfficeWall = (
     hideOnMap: true,
     noResidue: true,
     health: 200,
-    scale: {
-        spawnMin: 1,
-        spawnMax: 1,
-        destroy: 1
-    },
     hitbox,
     rotationMode: RotationMode.Limited,
     allowFlyover: FlyoverPref.Never,
@@ -623,11 +598,6 @@ const lighthouseWall = (
     hideOnMap: true,
     noResidue: true,
     health: 200,
-    scale: {
-        spawnMin: 1,
-        spawnMax: 1,
-        destroy: 1
-    },
     hitbox,
     rotationMode: RotationMode.Limited,
     allowFlyover: FlyoverPref.Never,
@@ -650,11 +620,6 @@ const innerConcreteWall = (id: number, hitbox: Hitbox): RawObstacleDefinition =>
     health: 500,
     noResidue: true,
     hideOnMap: true,
-    scale: {
-        spawnMin: 1,
-        spawnMax: 1,
-        destroy: 1
-    },
     rotationMode: RotationMode.Limited,
     allowFlyover: FlyoverPref.Never,
     particleVariations: 2,
@@ -676,11 +641,6 @@ const mobileHomeWall = (lengthNumber: string, hitbox: RectangleHitbox): RawObsta
     noResidue: true,
     hideOnMap: true,
     health: 240,
-    scale: {
-        spawnMin: 1,
-        spawnMax: 1,
-        destroy: 1
-    },
     rotationMode: RotationMode.Limited,
     allowFlyover: FlyoverPref.Never,
     hitbox,
@@ -705,11 +665,6 @@ const tentWall = (
     hideOnMap: true,
     noResidue: true,
     health: 100,
-    scale: {
-        spawnMin: 1,
-        spawnMax: 1,
-        destroy: 1
-    },
     rotationMode: RotationMode.Limited,
     allowFlyover: FlyoverPref.Never,
     hitbox: new GroupHitbox(
@@ -768,11 +723,6 @@ const bigTentWall = (
     hideOnMap: true,
     noResidue: true,
     health: 200,
-    scale: {
-        spawnMin: 1,
-        spawnMax: 1,
-        destroy: 1
-    },
     rotationMode: RotationMode.Limited,
     allowFlyover: FlyoverPref.Never,
     hitbox: new GroupHitbox(
@@ -920,6 +870,28 @@ const rshCase = (idString: string): RawObstacleDefinition => ({
     frames: {
         particle: "rsh_case_particle",
         residue: "rsh_case_residue"
+    }
+});
+
+const huntingStandWall = (length: number, hitbox: RectangleHitbox): RawObstacleDefinition => ({
+    idString: `hunting_stand_wall_${length}`,
+    name: "Hunting Stand Wall",
+    defType: DefinitionType.Obstacle,
+    material: "stone",
+    hideOnMap: true,
+    noResidue: true,
+    health: 69420,
+    indestructible: true,
+    hitbox: hitbox,
+    rotationMode: RotationMode.Limited,
+    allowFlyover: FlyoverPref.Never,
+    frames: {
+        particle: "hunting_stand_particle"
+    },
+    isWall: true,
+    wall: {
+        borderColor: 0x341b0b,
+        color: 0x764423
     }
 });
 
@@ -2457,11 +2429,6 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         hideOnMap: true,
         noResidue: true,
         health: 100,
-        scale: {
-            spawnMin: 1,
-            spawnMax: 1,
-            destroy: 1
-        },
         hitbox: RectangleHitbox.fromRect(17.62, 1.91),
         rotationMode: RotationMode.Limited,
         allowFlyover: FlyoverPref.Never,
@@ -2510,6 +2477,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
 
     warehouseHuntedWall(1, RectangleHitbox.fromRect(2.01, 12.31)),
     warehouseHuntedWall(2, RectangleHitbox.fromRect(2.01, 16.78)),
+
+    huntingStandWall(1, RectangleHitbox.fromRect(10.77, 2)),
 
     {
         idString: "fridge",
@@ -2743,11 +2712,6 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         defType: DefinitionType.Obstacle,
         material: "wood",
         health: 120,
-        scale: {
-            spawnMin: 1,
-            spawnMax: 1,
-            destroy: 1
-        },
         hitbox: RectangleHitbox.fromRect(10.15, 1.6, Vec(-0.44, 0)),
         rotationMode: RotationMode.Limited,
         noResidue: true,
@@ -2765,11 +2729,6 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         material: "wood",
         doorSound: "barn_door",
         health: 150,
-        scale: {
-            spawnMin: 1,
-            spawnMax: 1,
-            destroy: 1
-        },
         hitbox: RectangleHitbox.fromRect(12.7, 1.6, Vec(0.85, 0)),
         rotationMode: RotationMode.Limited,
         noResidue: true,
@@ -2893,11 +2852,6 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         material: "wood",
         noInteractMessage: true,
         health: 120,
-        scale: {
-            spawnMin: 1,
-            spawnMax: 1,
-            destroy: 1
-        },
         hitbox: RectangleHitbox.fromRect(11, 1.75, Vec(-0.8, 0)),
         rotationMode: RotationMode.Limited,
         noResidue: true,
@@ -2914,11 +2868,6 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         material: "glass",
         doorSound: "auto_door",
         health: 100,
-        scale: {
-            spawnMin: 1,
-            spawnMax: 1,
-            destroy: 1
-        },
         hitbox: RectangleHitbox.fromRect(10.86, 1.13),
         rotationMode: RotationMode.Limited,
         noResidue: true,
@@ -3039,11 +2988,6 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         collideWithLayers: Layers.Adjacent,
         //  visibleFromLayers: Layers.All,
         health: 500,
-        scale: {
-            spawnMin: 1,
-            spawnMax: 1,
-            destroy: 1
-        },
         hitbox: RectangleHitbox.fromRect(10.46, 1.69, Vec(-0.25, 0)),
         rotationMode: RotationMode.Limited,
         noResidue: true,
@@ -3684,11 +3628,6 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         defType: DefinitionType.Obstacle,
         material: "glass",
         health: 1000,
-        scale: {
-            spawnMin: 1,
-            spawnMax: 1,
-            destroy: 1
-        },
         hitbox: RectangleHitbox.fromRect(18.57, 2.45),
         allowFlyover: FlyoverPref.Never,
         rotationMode: RotationMode.Limited,
@@ -3796,11 +3735,6 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         material: "wood",
         health: 100,
         noResidue: true,
-        scale: {
-            spawnMin: 1,
-            spawnMax: 1,
-            destroy: 1
-        },
         hideOnMap: true,
         hitbox: RectangleHitbox.fromRect(10.5, 1.4, Vec(-0.8, 0)),
         rotationMode: RotationMode.Limited,
@@ -3816,11 +3750,6 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         material: "wood",
         health: 100,
         noResidue: true,
-        scale: {
-            spawnMin: 1,
-            spawnMax: 1,
-            destroy: 1
-        },
         hideOnMap: true,
         hitbox: RectangleHitbox.fromRect(9.91, 1.5),
         rotationMode: RotationMode.Limited,
@@ -4626,6 +4555,25 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         isWall: true
     },
     {
+        idString: "hunting_stand_column",
+        name: "Hunting Stand Column",
+        defType: DefinitionType.Obstacle,
+        material: "stone",
+        indestructible: true,
+        health: 340,
+        hitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(3, 3)
+        ),
+        rotationMode: RotationMode.None,
+        allowFlyover: FlyoverPref.Never,
+        tint: 0x764423,
+        frames: {
+            base: "column",
+            particle: "hunting_stand_particle"
+        },
+        isWall: true
+    },
+    {
         idString: "potted_plant",
         name: "Potted Plant",
         defType: DefinitionType.Obstacle,
@@ -5285,6 +5233,22 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         frames: {
             particle: "metal_particle"
         },
+        rotationMode: RotationMode.Limited
+    },
+    {
+        idString: "blue_stair_collider",
+        name: "Blue Stair",
+        defType: DefinitionType.Obstacle,
+        material: "metal_heavy",
+        health: 1000,
+        indestructible: true,
+        isStair: true,
+        activeEdges: {
+            high: 2,
+            low: 0
+        },
+        invisible: true,
+        hitbox: RectangleHitbox.fromRect(7.17, 9.78),
         rotationMode: RotationMode.Limited
     },
     {

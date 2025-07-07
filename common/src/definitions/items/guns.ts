@@ -1140,7 +1140,6 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
         },
         image: { position: Vec(100, 3) },
         casingParticles: [{
-            frame: "casing_762x51mm",
             position: Vec(3.5, 0.6)
         }],
         gasParticles: gasParticlePresets.automatic,

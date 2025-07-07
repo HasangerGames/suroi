@@ -318,7 +318,7 @@
         hitboxes = hitboxes;
         selected = hitboxes[0];
     }
-    const bgImage = loadImage("/img/game/hunted/buildings/abandoned_warehouse.svg");
+    const bgImage = loadImage("/img/game/hunted/buildings/hunting_stand_2r.svg");
 
     function handleKeydown(e: KeyboardEvent) {
         let moved = false;

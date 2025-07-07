@@ -8607,7 +8607,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         defType: DefinitionType.Building,
         spawnHitbox: RectangleHitbox.fromRect(15, 15),
         material: "metal_heavy",
-        particle: "metal_particle",
+        particle: "cargo_ship_particle",
         reflectBullets: true,
         floorImages: [{
             key: "blue_stair",
@@ -12497,6 +12497,97 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "warehouse_hunted_column", position: Vec(4.45, -6.09) },
             { idString: "warehouse_hunted_wall_1", position: Vec(4.45, 1.43), rotation: 0 },
             { idString: "warehouse_hunted_wall_2", position: Vec(-16.07, -15.74), rotation: 0 }
+        ]
+    },
+    {
+        idString: "hunting_stand_bottom",
+        name: "Hunting Stand (Bottom)",
+        defType: DefinitionType.Building,
+        spawnHitbox: RectangleHitbox.fromRect(24.22, 30.14),
+        ceilingHitbox: RectangleHitbox.fromRect(20.77, 27.13),
+        floorZIndex: ZIndexes.Ground,
+        hasSecondFloor: true,
+        groundGraphics: [{
+            color: 0x34513e,
+            hitbox: RectangleHitbox.fromRect(20.77, 27.13)
+        }],
+        obstacles: [
+            { idString: "hunting_stand_wall_1", position: Vec(-0.19, -10.54), rotation: 0 },
+            { idString: "hunting_stand_wall_1", position: Vec(-0.19, 10.26), rotation: 0 },
+            { idString: "hunting_stand_column", position: Vec(-6.86, -10.54) },
+            { idString: "hunting_stand_column", position: Vec(6.48, -10.54) },
+            { idString: "hunting_stand_column", position: Vec(-6.85, 10.26) },
+            { idString: "hunting_stand_column", position: Vec(6.48, 10.26) },
+            { idString: "box", position: Vec(-3.1, 4.3) },
+            { idString: { box: 1, grenade_box: 0.35 }, position: Vec(1.89, 6.12) },
+            { idString: "regular_crate", position: Vec(-0.5, -4.07) }
+        ]
+    },
+    {
+        idString: "hunting_stand_top",
+        name: "Hunting Stand (Top)",
+        defType: DefinitionType.Building,
+        material: "stone",
+        particle: "hunting_stand_particle",
+        collideWithLayers: Layers.Adjacent,
+        hitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(2.01, 21.34, Vec(8.62, 0.17)),
+            RectangleHitbox.fromRect(2.01, 21.23, Vec(-8.67, 0.07)),
+            RectangleHitbox.fromRect(15.08, 2, Vec(0.02, -11.64)),
+            RectangleHitbox.fromRect(2.57, 2, Vec(5.86, 11.86)),
+            RectangleHitbox.fromRect(2.57, 2, Vec(-6.29, 11.75))
+        ),
+        spawnHitbox: RectangleHitbox.fromRect(24.22, 30.14),
+        ceilingHitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(15.29, 21.49, Vec(-0.01, 0.09)),
+            RectangleHitbox.fromRect(9.58, 2.84, Vec(-0.21, 11.87))
+        ),
+        floors: [{
+            type: FloorNames.Wood,
+            hitbox: RectangleHitbox.fromRect(21.27, 27.59)
+        }],
+        floorImages: [{
+            key: "hunting_stand_floor",
+            position: Vec(0, 0)
+        }],
+        ceilingImages: [{
+            key: "hunting_stand_ceiling",
+            position: Vec(0, 0),
+            scale: Vec(2, 2)
+        }],
+        obstacles: [
+            { idString: "gun_locker", position: Vec(-0.02, -7.47), rotation: 0 },
+            { idString: "box", position: Vec(3.01, -1.47) },
+            { idString: "box", position: Vec(4.17, 3.64) },
+            { idString: "hunting_stand_column", position: Vec(-8.59, -11.7) },
+            { idString: "hunting_stand_column", position: Vec(8.63, -11.7) },
+            { idString: "hunting_stand_column", position: Vec(-8.73, 11.8) },
+            { idString: "hunting_stand_column", position: Vec(8.54, 11.88) }
+        ]
+    },
+    {
+        idString: "hunting_stand",
+        name: "Hunting Stand",
+        defType: DefinitionType.Building,
+        spawnHitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(24.6, 31, Vec(0.23, -5.57)),
+            RectangleHitbox.fromRect(13.97, 14, Vec(-0.2, 13.47))
+        ),
+        floors: [{
+            type: FloorNames.Metal,
+            hitbox: RectangleHitbox.fromRect(7.13, 9.85, Vec(-0.28, 13.17)),
+            layer: Layer.ToUpstairs
+        }],
+        obstacles: [{
+            idString: "blue_stair_collider",
+            position: Vec(-0.28, 13.27),
+            layer: Layer.ToUpstairs,
+            rotation: 2
+        }],
+        subBuildings: [
+            { idString: "blue_stair", position: Vec(-0.31, 13.66) },
+            { idString: "hunting_stand_bottom", position: Vec(0, -5.4) },
+            { idString: "hunting_stand_top", position: Vec(0, -5.33), layer: Layer.Upstairs }
         ]
     }
 ]);
