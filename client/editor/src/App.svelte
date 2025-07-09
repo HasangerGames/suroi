@@ -318,7 +318,7 @@
         hitboxes = hitboxes;
         selected = hitboxes[0];
     }
-    const bgImage = loadImage("/img/game/hunted/buildings/hunting_stand_2r.svg");
+    const bgImage = loadImage("/img/game/hunted/buildings/tavern_secret_ceiling.svg");
 
     function handleKeydown(e: KeyboardEvent) {
         let moved = false;

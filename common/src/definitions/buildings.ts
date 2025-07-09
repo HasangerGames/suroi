@@ -12819,6 +12819,26 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "couch", position: Vec(-50.82, 5.93), rotation: 3 },
             { idString: "gun_mount_m3k", position: Vec(-14.35, -29.39), rotation: 0 },
             { idString: "tavern_bottle_table", position: Vec(29.95, 12.03), rotation: 0 }
+        ],
+        subBuildings: [
+            { idString: "tavern_secret_ceiling", position: Vec(39.85, 3.2) }
         ]
+    },
+    {
+        idString: "tavern_secret_ceiling",
+        name: "Tavern Secret Ceiling",
+        defType: DefinitionType.Building,
+        ceilingZIndex: ZIndexes.BuildingsCeiling - 1,
+        ceilingHiddenAlpha: 0.45,
+        spawnHitbox: RectangleHitbox.fromRect(19.39, 40.15, Vec(0.24, -0.09)),
+        ceilingHitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(12.5, 24.01, Vec(0.97, -4.62)),
+            RectangleHitbox.fromRect(14.45, 15.77, Vec(0, 8.73))
+        ),
+        ceilingImages: [{
+            key: "tavern_secret_ceiling",
+            position: Vec(0, 0),
+            scale: Vec(4.05, 4.05)
+        }]
     }
 ]);
