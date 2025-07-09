@@ -1,0 +1,2316 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="157.95627"
+   height="155.77805"
+   viewBox="0 0 41.792597 41.216273"
+   version="1.1"
+   id="svg1"
+   xml:space="preserve"
+   sodipodi:docname="logo-lmroy-public.svg"
+   inkscape:version="1.4 (86a8ad7, 2024-10-11)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"><sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#999999"
+     borderopacity="1"
+     inkscape:showpageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     showguides="true"
+     inkscape:zoom="1.6819304"
+     inkscape:cx="177.17737"
+     inkscape:cy="184.01475"
+     inkscape:window-width="1472"
+     inkscape:window-height="891"
+     inkscape:window-x="0"
+     inkscape:window-y="37"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="layer1" /><defs
+     id="defs1"><linearGradient
+       xlink:href="#a"
+       id="b"
+       x1="112.28"
+       y1="85.870003"
+       x2="96.735001"
+       y2="54.828999"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.40778,0,0,0.40778,75.861059,139.49669)" /><linearGradient
+       id="a"><stop
+         style="stop-color:#008cff;stop-opacity:1"
+         offset=".538"
+         id="stop1" /><stop
+         style="stop-color:#a5d9ff;stop-opacity:1"
+         offset="1"
+         id="stop2" /></linearGradient><linearGradient
+       id="swatch68"
+       inkscape:swatch="solid"><stop
+         style="stop-color:#2a291d;stop-opacity:1;"
+         offset="0"
+         id="stop68" /></linearGradient><style
+       type="text/css"
+       id="style1">
+   <![CDATA[
+    .fil5 {fill:#1F1A17}
+    .fil3 {fill:#72706F}
+    .fil2 {fill:#838281}
+    .fil0 {fill:#AAA9A9}
+    .fil1 {fill:#C2C1C1}
+    .fil4 {fill:black}
+   ]]>
+  </style><style
+       id="style1-6">
+      .cls-1, .cls-2, .cls-3, .cls-4, .cls-5, .cls-6, .cls-7 {
+        fill: none;
+      }
+
+      .cls-8 {
+        fill: #31343a;
+      }
+
+      .cls-8, .cls-9, .cls-10 {
+        stroke: #2e3036;
+      }
+
+      .cls-8, .cls-9, .cls-10, .cls-11, .cls-12, .cls-13, .cls-14, .cls-15, .cls-16, .cls-17, .cls-18, .cls-19, .cls-5, .cls-6, .cls-7 {
+        stroke-width: 8px;
+      }
+
+      .cls-8, .cls-9, .cls-10, .cls-11, .cls-12, .cls-13, .cls-14, .cls-2, .cls-3 {
+        stroke-linecap: round;
+      }
+
+      .cls-9 {
+        fill: #3d424a;
+      }
+
+      .cls-10 {
+        fill: #33363d;
+      }
+
+      .cls-11 {
+        fill: #323438;
+        stroke: #2e2f33;
+      }
+
+      .cls-12 {
+        fill: #32343b;
+        stroke: #2b2d33;
+      }
+
+      .cls-13, .cls-20 {
+        fill: #43444c;
+      }
+
+      .cls-13, .cls-17, .cls-4, .cls-7 {
+        stroke: #303035;
+      }
+
+      .cls-21 {
+        clip-path: url(#clippath);
+      }
+
+      .cls-22 {
+        fill: #6b6c6d;
+      }
+
+      .cls-23 {
+        fill: #8a8a86;
+      }
+
+      .cls-24 {
+        fill: #303035;
+      }
+
+      .cls-25 {
+        fill: #cfcfcc;
+      }
+
+      .cls-26 {
+        fill: #242424;
+      }
+
+      .cls-27 {
+        fill: #1e1e1f;
+      }
+
+      .cls-28 {
+        fill: #232429;
+      }
+
+      .cls-29 {
+        fill: #262624;
+      }
+
+      .cls-30 {
+        fill: #2e2e31;
+      }
+
+      .cls-31 {
+        fill: #656565;
+        stroke: #333;
+      }
+
+      .cls-31, .cls-32, .cls-15, .cls-16, .cls-17, .cls-18, .cls-19, .cls-2, .cls-3, .cls-4, .cls-5, .cls-6, .cls-7 {
+        stroke-miterlimit: 10;
+      }
+
+      .cls-31, .cls-32, .cls-2, .cls-3, .cls-4 {
+        stroke-width: 4px;
+      }
+
+      .cls-14 {
+        stroke-linejoin: round;
+      }
+
+      .cls-14, .cls-18 {
+        fill: #39393d;
+      }
+
+      .cls-14, .cls-18, .cls-5 {
+        stroke: #2e2e30;
+      }
+
+      .cls-32 {
+        fill: #4a4a4f;
+        stroke: #3d3d40;
+      }
+
+      .cls-15 {
+        fill: #2b2b2e;
+        stroke: #292929;
+      }
+
+      .cls-16 {
+        fill: #353a3b;
+      }
+
+      .cls-16, .cls-6 {
+        stroke: #2c3030;
+      }
+
+      .cls-17 {
+        fill: #333332;
+      }
+
+      .cls-19 {
+        fill: #888c9e;
+        stroke: #2e2f36;
+      }
+
+      .cls-2 {
+        stroke: #515159;
+      }
+
+      .cls-3 {
+        stroke: #cfcfcc;
+      }
+    </style><style
+       id="style1-4">
+      .cls-1 {
+        fill: #171717;
+      }
+
+      .cls-2 {
+        fill: #1a1a1a;
+      }
+
+      .cls-3 {
+        fill: #505050;
+        stroke-width: 1.5px;
+      }
+
+      .cls-3, .cls-4, .cls-5, .cls-6, .cls-7 {
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+
+      .cls-3, .cls-4, .cls-5, .cls-7 {
+        stroke: #171717;
+      }
+
+      .cls-4 {
+        fill: #3c3c3c;
+      }
+
+      .cls-4, .cls-5, .cls-6, .cls-7 {
+        stroke-width: 3px;
+      }
+
+      .cls-5 {
+        fill: #434343;
+      }
+
+      .cls-6 {
+        fill: #7d521b;
+        stroke: #261a08;
+      }
+
+      .cls-7 {
+        fill: none;
+      }
+    </style><style
+       type="text/css"
+       id="style1-9">
+   <![CDATA[
+    .fil5 {fill:#1F1A17}
+    .fil3 {fill:#72706F}
+    .fil2 {fill:#838281}
+    .fil0 {fill:#AAA9A9}
+    .fil1 {fill:#C2C1C1}
+    .fil4 {fill:black}
+   ]]>
+  </style><style
+       id="style1-6-8">
+      .cls-1, .cls-2, .cls-3, .cls-4, .cls-5, .cls-6, .cls-7 {
+        fill: none;
+      }
+
+      .cls-8 {
+        fill: #31343a;
+      }
+
+      .cls-8, .cls-9, .cls-10 {
+        stroke: #2e3036;
+      }
+
+      .cls-8, .cls-9, .cls-10, .cls-11, .cls-12, .cls-13, .cls-14, .cls-15, .cls-16, .cls-17, .cls-18, .cls-19, .cls-5, .cls-6, .cls-7 {
+        stroke-width: 8px;
+      }
+
+      .cls-8, .cls-9, .cls-10, .cls-11, .cls-12, .cls-13, .cls-14, .cls-2, .cls-3 {
+        stroke-linecap: round;
+      }
+
+      .cls-9 {
+        fill: #3d424a;
+      }
+
+      .cls-10 {
+        fill: #33363d;
+      }
+
+      .cls-11 {
+        fill: #323438;
+        stroke: #2e2f33;
+      }
+
+      .cls-12 {
+        fill: #32343b;
+        stroke: #2b2d33;
+      }
+
+      .cls-13, .cls-20 {
+        fill: #43444c;
+      }
+
+      .cls-13, .cls-17, .cls-4, .cls-7 {
+        stroke: #303035;
+      }
+
+      .cls-21 {
+        clip-path: url(#clippath);
+      }
+
+      .cls-22 {
+        fill: #6b6c6d;
+      }
+
+      .cls-23 {
+        fill: #8a8a86;
+      }
+
+      .cls-24 {
+        fill: #303035;
+      }
+
+      .cls-25 {
+        fill: #cfcfcc;
+      }
+
+      .cls-26 {
+        fill: #242424;
+      }
+
+      .cls-27 {
+        fill: #1e1e1f;
+      }
+
+      .cls-28 {
+        fill: #232429;
+      }
+
+      .cls-29 {
+        fill: #262624;
+      }
+
+      .cls-30 {
+        fill: #2e2e31;
+      }
+
+      .cls-31 {
+        fill: #656565;
+        stroke: #333;
+      }
+
+      .cls-31, .cls-32, .cls-15, .cls-16, .cls-17, .cls-18, .cls-19, .cls-2, .cls-3, .cls-4, .cls-5, .cls-6, .cls-7 {
+        stroke-miterlimit: 10;
+      }
+
+      .cls-31, .cls-32, .cls-2, .cls-3, .cls-4 {
+        stroke-width: 4px;
+      }
+
+      .cls-14 {
+        stroke-linejoin: round;
+      }
+
+      .cls-14, .cls-18 {
+        fill: #39393d;
+      }
+
+      .cls-14, .cls-18, .cls-5 {
+        stroke: #2e2e30;
+      }
+
+      .cls-32 {
+        fill: #4a4a4f;
+        stroke: #3d3d40;
+      }
+
+      .cls-15 {
+        fill: #2b2b2e;
+        stroke: #292929;
+      }
+
+      .cls-16 {
+        fill: #353a3b;
+      }
+
+      .cls-16, .cls-6 {
+        stroke: #2c3030;
+      }
+
+      .cls-17 {
+        fill: #333332;
+      }
+
+      .cls-19 {
+        fill: #888c9e;
+        stroke: #2e2f36;
+      }
+
+      .cls-2 {
+        stroke: #515159;
+      }
+
+      .cls-3 {
+        stroke: #cfcfcc;
+      }
+    </style><style
+       id="style1-4-4">
+      .cls-1 {
+        fill: #171717;
+      }
+
+      .cls-2 {
+        fill: #1a1a1a;
+      }
+
+      .cls-3 {
+        fill: #505050;
+        stroke-width: 1.5px;
+      }
+
+      .cls-3, .cls-4, .cls-5, .cls-6, .cls-7 {
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+
+      .cls-3, .cls-4, .cls-5, .cls-7 {
+        stroke: #171717;
+      }
+
+      .cls-4 {
+        fill: #3c3c3c;
+      }
+
+      .cls-4, .cls-5, .cls-6, .cls-7 {
+        stroke-width: 3px;
+      }
+
+      .cls-5 {
+        fill: #434343;
+      }
+
+      .cls-6 {
+        fill: #7d521b;
+        stroke: #261a08;
+      }
+
+      .cls-7 {
+        fill: none;
+      }
+    </style><style
+       id="style1-1">
+      .cls-1, .cls-2, .cls-3, .cls-4, .cls-5, .cls-6, .cls-7 {
+        fill: none;
+      }
+
+      .cls-8 {
+        fill: #31343a;
+      }
+
+      .cls-8, .cls-9, .cls-10 {
+        stroke: #2e3036;
+      }
+
+      .cls-8, .cls-9, .cls-10, .cls-11, .cls-12, .cls-13, .cls-14, .cls-15, .cls-16, .cls-17, .cls-18, .cls-19, .cls-5, .cls-6, .cls-7 {
+        stroke-width: 8px;
+      }
+
+      .cls-8, .cls-9, .cls-10, .cls-11, .cls-12, .cls-13, .cls-14, .cls-2, .cls-3 {
+        stroke-linecap: round;
+      }
+
+      .cls-9 {
+        fill: #3d424a;
+      }
+
+      .cls-10 {
+        fill: #33363d;
+      }
+
+      .cls-11 {
+        fill: #323438;
+        stroke: #2e2f33;
+      }
+
+      .cls-12 {
+        fill: #32343b;
+        stroke: #2b2d33;
+      }
+
+      .cls-13, .cls-20 {
+        fill: #43444c;
+      }
+
+      .cls-13, .cls-17, .cls-4, .cls-7 {
+        stroke: #303035;
+      }
+
+      .cls-21 {
+        clip-path: url(#clippath);
+      }
+
+      .cls-22 {
+        fill: #6b6c6d;
+      }
+
+      .cls-23 {
+        fill: #8a8a86;
+      }
+
+      .cls-24 {
+        fill: #303035;
+      }
+
+      .cls-25 {
+        fill: #cfcfcc;
+      }
+
+      .cls-26 {
+        fill: #242424;
+      }
+
+      .cls-27 {
+        fill: #1e1e1f;
+      }
+
+      .cls-28 {
+        fill: #232429;
+      }
+
+      .cls-29 {
+        fill: #262624;
+      }
+
+      .cls-30 {
+        fill: #2e2e31;
+      }
+
+      .cls-31 {
+        fill: #656565;
+        stroke: #333;
+      }
+
+      .cls-31, .cls-32, .cls-15, .cls-16, .cls-17, .cls-18, .cls-19, .cls-2, .cls-3, .cls-4, .cls-5, .cls-6, .cls-7 {
+        stroke-miterlimit: 10;
+      }
+
+      .cls-31, .cls-32, .cls-2, .cls-3, .cls-4 {
+        stroke-width: 4px;
+      }
+
+      .cls-14 {
+        stroke-linejoin: round;
+      }
+
+      .cls-14, .cls-18 {
+        fill: #39393d;
+      }
+
+      .cls-14, .cls-18, .cls-5 {
+        stroke: #2e2e30;
+      }
+
+      .cls-32 {
+        fill: #4a4a4f;
+        stroke: #3d3d40;
+      }
+
+      .cls-15 {
+        fill: #2b2b2e;
+        stroke: #292929;
+      }
+
+      .cls-16 {
+        fill: #353a3b;
+      }
+
+      .cls-16, .cls-6 {
+        stroke: #2c3030;
+      }
+
+      .cls-17 {
+        fill: #333332;
+      }
+
+      .cls-19 {
+        fill: #888c9e;
+        stroke: #2e2f36;
+      }
+
+      .cls-2 {
+        stroke: #515159;
+      }
+
+      .cls-3 {
+        stroke: #cfcfcc;
+      }
+    </style><style
+       id="style1-4-0">
+      .cls-1 {
+        fill: #171717;
+      }
+
+      .cls-2 {
+        fill: #1a1a1a;
+      }
+
+      .cls-3 {
+        fill: #505050;
+        stroke-width: 1.5px;
+      }
+
+      .cls-3, .cls-4, .cls-5, .cls-6, .cls-7 {
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+
+      .cls-3, .cls-4, .cls-5, .cls-7 {
+        stroke: #171717;
+      }
+
+      .cls-4 {
+        fill: #3c3c3c;
+      }
+
+      .cls-4, .cls-5, .cls-6, .cls-7 {
+        stroke-width: 3px;
+      }
+
+      .cls-5 {
+        fill: #434343;
+      }
+
+      .cls-6 {
+        fill: #7d521b;
+        stroke: #261a08;
+      }
+
+      .cls-7 {
+        fill: none;
+      }
+    </style><style
+       id="style2">
+      .cls-1 {
+        fill: #bababa;
+      }
+
+      .cls-1, .cls-2, .cls-3 {
+        isolation: isolate;
+        opacity: .997;
+        stroke: #303030;
+        stroke-linecap: round;
+        stroke-miterlimit: 15.1181;
+        stroke-width: 5px;
+      }
+
+      .cls-2 {
+        fill: #5a70e0;
+      }
+
+      .cls-3 {
+        fill: #3f3fe0;
+      }
+
+      .cls-4 {
+        opacity: .9;
+      }
+    </style><style
+       id="style2-3">
+      .cls-1 {
+        fill: #bababa;
+      }
+
+      .cls-1, .cls-2, .cls-3 {
+        isolation: isolate;
+        opacity: .997;
+        stroke: #303030;
+        stroke-linecap: round;
+        stroke-miterlimit: 15.1181;
+        stroke-width: 5px;
+      }
+
+      .cls-2 {
+        fill: #5a70e0;
+      }
+
+      .cls-3 {
+        fill: #3f3fe0;
+      }
+
+      .cls-4 {
+        opacity: .9;
+      }
+    </style><style
+       id="style1-5">
+      .cls-1 {
+        fill: #171717;
+      }
+
+      .cls-2 {
+        fill: #1a1a1a;
+      }
+
+      .cls-3 {
+        fill: #7d521b;
+        stroke: #261a08;
+      }
+
+      .cls-3, .cls-4, .cls-5, .cls-6 {
+        stroke-width: 3px;
+      }
+
+      .cls-3, .cls-4, .cls-5, .cls-6, .cls-7, .cls-8 {
+        stroke-linecap: round;
+      }
+
+      .cls-4 {
+        fill: #434343;
+      }
+
+      .cls-4, .cls-5, .cls-6, .cls-7 {
+        stroke: #171717;
+      }
+
+      .cls-5 {
+        fill: #3c3c3c;
+      }
+
+      .cls-6, .cls-8 {
+        fill: none;
+      }
+
+      .cls-7 {
+        fill: #505050;
+      }
+
+      .cls-7, .cls-8 {
+        stroke-width: 1.5px;
+      }
+
+      .cls-8 {
+        stroke: #1a1a1a;
+      }
+    </style><style
+       id="style1-66">
+      .cls-1 {
+        fill: #434343;
+        stroke-width: 1.5px;
+      }
+
+      .cls-1, .cls-2, .cls-3, .cls-4, .cls-5, .cls-6 {
+        stroke-miterlimit: 12.06;
+      }
+
+      .cls-1, .cls-4, .cls-6 {
+        stroke: #171717;
+      }
+
+      .cls-2 {
+        stroke: #1d1d13;
+      }
+
+      .cls-2, .cls-3 {
+        fill: #74744e;
+      }
+
+      .cls-2, .cls-3, .cls-4, .cls-5, .cls-6 {
+        stroke-width: 3px;
+      }
+
+      .cls-3 {
+        stroke: #1c1c12;
+      }
+
+      .cls-4, .cls-5 {
+        fill: #515151;
+      }
+
+      .cls-5 {
+        stroke: #181818;
+      }
+
+      .cls-7 {
+        fill: #2b2b2b;
+      }
+
+      .cls-6 {
+        fill: none;
+      }
+    </style><style
+       id="style1-2">
+      .cls-1 {
+        fill: #171717;
+      }
+
+      .cls-2 {
+        fill: #5c342b;
+      }
+
+      .cls-3 {
+        fill: #5e3d2c;
+      }
+
+      .cls-4 {
+        fill: #595959;
+        stroke: #171717;
+      }
+
+      .cls-4, .cls-5 {
+        stroke-width: 3px;
+      }
+
+      .cls-5 {
+        fill: none;
+        stroke: #1f120f;
+      }
+    </style><style
+       id="style1-28">
+      .cls-1 {
+        fill: #434343;
+        stroke-width: 1.5px;
+      }
+
+      .cls-1, .cls-2, .cls-3, .cls-4, .cls-5, .cls-6 {
+        stroke-miterlimit: 12.06;
+      }
+
+      .cls-1, .cls-4, .cls-6 {
+        stroke: #171717;
+      }
+
+      .cls-2 {
+        stroke: #1d1d13;
+      }
+
+      .cls-2, .cls-3 {
+        fill: #74744e;
+      }
+
+      .cls-2, .cls-3, .cls-4, .cls-5, .cls-6 {
+        stroke-width: 3px;
+      }
+
+      .cls-3 {
+        stroke: #1c1c12;
+      }
+
+      .cls-4, .cls-5 {
+        fill: #515151;
+      }
+
+      .cls-5 {
+        stroke: #181818;
+      }
+
+      .cls-7 {
+        fill: #2b2b2b;
+      }
+
+      .cls-6 {
+        fill: none;
+      }
+    </style><style
+       id="style1-17">
+      .cls-1 {
+        fill: #171717;
+      }
+
+      .cls-2 {
+        fill: #1a1a1a;
+      }
+
+      .cls-3 {
+        fill: #7d521b;
+        stroke: #261a08;
+      }
+
+      .cls-3, .cls-4, .cls-5, .cls-6 {
+        stroke-width: 3px;
+      }
+
+      .cls-3, .cls-4, .cls-5, .cls-6, .cls-7, .cls-8 {
+        stroke-linecap: round;
+      }
+
+      .cls-4 {
+        fill: #434343;
+      }
+
+      .cls-4, .cls-5, .cls-6, .cls-7 {
+        stroke: #171717;
+      }
+
+      .cls-5 {
+        fill: #3c3c3c;
+      }
+
+      .cls-6, .cls-8 {
+        fill: none;
+      }
+
+      .cls-7 {
+        fill: #505050;
+      }
+
+      .cls-7, .cls-8 {
+        stroke-width: 1.5px;
+      }
+
+      .cls-8 {
+        stroke: #1a1a1a;
+      }
+    </style><style
+       id="style1-96">
+      .cls-1 {
+        fill: #434343;
+        stroke-width: 1.5px;
+      }
+
+      .cls-1, .cls-2, .cls-3, .cls-4, .cls-5, .cls-6 {
+        stroke-miterlimit: 12.06;
+      }
+
+      .cls-1, .cls-4, .cls-6 {
+        stroke: #171717;
+      }
+
+      .cls-2 {
+        stroke: #1d1d13;
+      }
+
+      .cls-2, .cls-3 {
+        fill: #74744e;
+      }
+
+      .cls-2, .cls-3, .cls-4, .cls-5, .cls-6 {
+        stroke-width: 3px;
+      }
+
+      .cls-3 {
+        stroke: #1c1c12;
+      }
+
+      .cls-4, .cls-5 {
+        fill: #515151;
+      }
+
+      .cls-5 {
+        stroke: #181818;
+      }
+
+      .cls-7 {
+        fill: #2b2b2b;
+      }
+
+      .cls-6 {
+        fill: none;
+      }
+    </style><style
+       id="style2-4">
+      .cls-1, .cls-2, .cls-3, .cls-4, .cls-5, .cls-6, .cls-7 {
+        fill: none;
+      }
+
+      .cls-8 {
+        fill: #31343a;
+      }
+
+      .cls-8, .cls-9, .cls-10 {
+        stroke: #2e3036;
+      }
+
+      .cls-8, .cls-9, .cls-10, .cls-11, .cls-12, .cls-13, .cls-14, .cls-15, .cls-16, .cls-17, .cls-18, .cls-19, .cls-5, .cls-6, .cls-7 {
+        stroke-width: 8px;
+      }
+
+      .cls-8, .cls-9, .cls-10, .cls-11, .cls-12, .cls-13, .cls-14, .cls-2, .cls-3 {
+        stroke-linecap: round;
+      }
+
+      .cls-9 {
+        fill: #3d424a;
+      }
+
+      .cls-10 {
+        fill: #33363d;
+      }
+
+      .cls-11 {
+        fill: #323438;
+        stroke: #2e2f33;
+      }
+
+      .cls-12 {
+        fill: #32343b;
+        stroke: #2b2d33;
+      }
+
+      .cls-13, .cls-20 {
+        fill: #43444c;
+      }
+
+      .cls-13, .cls-17, .cls-4, .cls-7 {
+        stroke: #303035;
+      }
+
+      .cls-21 {
+        clip-path: url(#clippath);
+      }
+
+      .cls-22 {
+        fill: #6b6c6d;
+      }
+
+      .cls-23 {
+        fill: #8a8a86;
+      }
+
+      .cls-24 {
+        fill: #303035;
+      }
+
+      .cls-25 {
+        fill: #cfcfcc;
+      }
+
+      .cls-26 {
+        fill: #242424;
+      }
+
+      .cls-27 {
+        fill: #1e1e1f;
+      }
+
+      .cls-28 {
+        fill: #232429;
+      }
+
+      .cls-29 {
+        fill: #262624;
+      }
+
+      .cls-30 {
+        fill: #2e2e31;
+      }
+
+      .cls-31 {
+        fill: #656565;
+        stroke: #333;
+      }
+
+      .cls-31, .cls-32, .cls-15, .cls-16, .cls-17, .cls-18, .cls-19, .cls-2, .cls-3, .cls-4, .cls-5, .cls-6, .cls-7 {
+        stroke-miterlimit: 10;
+      }
+
+      .cls-31, .cls-32, .cls-2, .cls-3, .cls-4 {
+        stroke-width: 4px;
+      }
+
+      .cls-14 {
+        stroke-linejoin: round;
+      }
+
+      .cls-14, .cls-18 {
+        fill: #39393d;
+      }
+
+      .cls-14, .cls-18, .cls-5 {
+        stroke: #2e2e30;
+      }
+
+      .cls-32 {
+        fill: #4a4a4f;
+        stroke: #3d3d40;
+      }
+
+      .cls-15 {
+        fill: #2b2b2e;
+        stroke: #292929;
+      }
+
+      .cls-16 {
+        fill: #353a3b;
+      }
+
+      .cls-16, .cls-6 {
+        stroke: #2c3030;
+      }
+
+      .cls-17 {
+        fill: #333332;
+      }
+
+      .cls-19 {
+        fill: #888c9e;
+        stroke: #2e2f36;
+      }
+
+      .cls-2 {
+        stroke: #515159;
+      }
+
+      .cls-3 {
+        stroke: #cfcfcc;
+      }
+    </style><style
+       type="text/css"
+       id="style1-58">
+   <![CDATA[
+    .fil5 {fill:#1F1A17}
+    .fil3 {fill:#72706F}
+    .fil2 {fill:#838281}
+    .fil0 {fill:#AAA9A9}
+    .fil1 {fill:#C2C1C1}
+    .fil4 {fill:black}
+   ]]>
+  </style><style
+       id="style1-6-3">
+      .cls-1, .cls-2, .cls-3, .cls-4, .cls-5, .cls-6, .cls-7 {
+        fill: none;
+      }
+
+      .cls-8 {
+        fill: #31343a;
+      }
+
+      .cls-8, .cls-9, .cls-10 {
+        stroke: #2e3036;
+      }
+
+      .cls-8, .cls-9, .cls-10, .cls-11, .cls-12, .cls-13, .cls-14, .cls-15, .cls-16, .cls-17, .cls-18, .cls-19, .cls-5, .cls-6, .cls-7 {
+        stroke-width: 8px;
+      }
+
+      .cls-8, .cls-9, .cls-10, .cls-11, .cls-12, .cls-13, .cls-14, .cls-2, .cls-3 {
+        stroke-linecap: round;
+      }
+
+      .cls-9 {
+        fill: #3d424a;
+      }
+
+      .cls-10 {
+        fill: #33363d;
+      }
+
+      .cls-11 {
+        fill: #323438;
+        stroke: #2e2f33;
+      }
+
+      .cls-12 {
+        fill: #32343b;
+        stroke: #2b2d33;
+      }
+
+      .cls-13, .cls-20 {
+        fill: #43444c;
+      }
+
+      .cls-13, .cls-17, .cls-4, .cls-7 {
+        stroke: #303035;
+      }
+
+      .cls-21 {
+        clip-path: url(#clippath);
+      }
+
+      .cls-22 {
+        fill: #6b6c6d;
+      }
+
+      .cls-23 {
+        fill: #8a8a86;
+      }
+
+      .cls-24 {
+        fill: #303035;
+      }
+
+      .cls-25 {
+        fill: #cfcfcc;
+      }
+
+      .cls-26 {
+        fill: #242424;
+      }
+
+      .cls-27 {
+        fill: #1e1e1f;
+      }
+
+      .cls-28 {
+        fill: #232429;
+      }
+
+      .cls-29 {
+        fill: #262624;
+      }
+
+      .cls-30 {
+        fill: #2e2e31;
+      }
+
+      .cls-31 {
+        fill: #656565;
+        stroke: #333;
+      }
+
+      .cls-31, .cls-32, .cls-15, .cls-16, .cls-17, .cls-18, .cls-19, .cls-2, .cls-3, .cls-4, .cls-5, .cls-6, .cls-7 {
+        stroke-miterlimit: 10;
+      }
+
+      .cls-31, .cls-32, .cls-2, .cls-3, .cls-4 {
+        stroke-width: 4px;
+      }
+
+      .cls-14 {
+        stroke-linejoin: round;
+      }
+
+      .cls-14, .cls-18 {
+        fill: #39393d;
+      }
+
+      .cls-14, .cls-18, .cls-5 {
+        stroke: #2e2e30;
+      }
+
+      .cls-32 {
+        fill: #4a4a4f;
+        stroke: #3d3d40;
+      }
+
+      .cls-15 {
+        fill: #2b2b2e;
+        stroke: #292929;
+      }
+
+      .cls-16 {
+        fill: #353a3b;
+      }
+
+      .cls-16, .cls-6 {
+        stroke: #2c3030;
+      }
+
+      .cls-17 {
+        fill: #333332;
+      }
+
+      .cls-19 {
+        fill: #888c9e;
+        stroke: #2e2f36;
+      }
+
+      .cls-2 {
+        stroke: #515159;
+      }
+
+      .cls-3 {
+        stroke: #cfcfcc;
+      }
+    </style><style
+       id="style1-4-06">
+      .cls-1 {
+        fill: #171717;
+      }
+
+      .cls-2 {
+        fill: #1a1a1a;
+      }
+
+      .cls-3 {
+        fill: #505050;
+        stroke-width: 1.5px;
+      }
+
+      .cls-3, .cls-4, .cls-5, .cls-6, .cls-7 {
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+
+      .cls-3, .cls-4, .cls-5, .cls-7 {
+        stroke: #171717;
+      }
+
+      .cls-4 {
+        fill: #3c3c3c;
+      }
+
+      .cls-4, .cls-5, .cls-6, .cls-7 {
+        stroke-width: 3px;
+      }
+
+      .cls-5 {
+        fill: #434343;
+      }
+
+      .cls-6 {
+        fill: #7d521b;
+        stroke: #261a08;
+      }
+
+      .cls-7 {
+        fill: none;
+      }
+    </style><style
+       type="text/css"
+       id="style1-9-2">
+   <![CDATA[
+    .fil5 {fill:#1F1A17}
+    .fil3 {fill:#72706F}
+    .fil2 {fill:#838281}
+    .fil0 {fill:#AAA9A9}
+    .fil1 {fill:#C2C1C1}
+    .fil4 {fill:black}
+   ]]>
+  </style><style
+       id="style1-6-8-2">
+      .cls-1, .cls-2, .cls-3, .cls-4, .cls-5, .cls-6, .cls-7 {
+        fill: none;
+      }
+
+      .cls-8 {
+        fill: #31343a;
+      }
+
+      .cls-8, .cls-9, .cls-10 {
+        stroke: #2e3036;
+      }
+
+      .cls-8, .cls-9, .cls-10, .cls-11, .cls-12, .cls-13, .cls-14, .cls-15, .cls-16, .cls-17, .cls-18, .cls-19, .cls-5, .cls-6, .cls-7 {
+        stroke-width: 8px;
+      }
+
+      .cls-8, .cls-9, .cls-10, .cls-11, .cls-12, .cls-13, .cls-14, .cls-2, .cls-3 {
+        stroke-linecap: round;
+      }
+
+      .cls-9 {
+        fill: #3d424a;
+      }
+
+      .cls-10 {
+        fill: #33363d;
+      }
+
+      .cls-11 {
+        fill: #323438;
+        stroke: #2e2f33;
+      }
+
+      .cls-12 {
+        fill: #32343b;
+        stroke: #2b2d33;
+      }
+
+      .cls-13, .cls-20 {
+        fill: #43444c;
+      }
+
+      .cls-13, .cls-17, .cls-4, .cls-7 {
+        stroke: #303035;
+      }
+
+      .cls-21 {
+        clip-path: url(#clippath);
+      }
+
+      .cls-22 {
+        fill: #6b6c6d;
+      }
+
+      .cls-23 {
+        fill: #8a8a86;
+      }
+
+      .cls-24 {
+        fill: #303035;
+      }
+
+      .cls-25 {
+        fill: #cfcfcc;
+      }
+
+      .cls-26 {
+        fill: #242424;
+      }
+
+      .cls-27 {
+        fill: #1e1e1f;
+      }
+
+      .cls-28 {
+        fill: #232429;
+      }
+
+      .cls-29 {
+        fill: #262624;
+      }
+
+      .cls-30 {
+        fill: #2e2e31;
+      }
+
+      .cls-31 {
+        fill: #656565;
+        stroke: #333;
+      }
+
+      .cls-31, .cls-32, .cls-15, .cls-16, .cls-17, .cls-18, .cls-19, .cls-2, .cls-3, .cls-4, .cls-5, .cls-6, .cls-7 {
+        stroke-miterlimit: 10;
+      }
+
+      .cls-31, .cls-32, .cls-2, .cls-3, .cls-4 {
+        stroke-width: 4px;
+      }
+
+      .cls-14 {
+        stroke-linejoin: round;
+      }
+
+      .cls-14, .cls-18 {
+        fill: #39393d;
+      }
+
+      .cls-14, .cls-18, .cls-5 {
+        stroke: #2e2e30;
+      }
+
+      .cls-32 {
+        fill: #4a4a4f;
+        stroke: #3d3d40;
+      }
+
+      .cls-15 {
+        fill: #2b2b2e;
+        stroke: #292929;
+      }
+
+      .cls-16 {
+        fill: #353a3b;
+      }
+
+      .cls-16, .cls-6 {
+        stroke: #2c3030;
+      }
+
+      .cls-17 {
+        fill: #333332;
+      }
+
+      .cls-19 {
+        fill: #888c9e;
+        stroke: #2e2f36;
+      }
+
+      .cls-2 {
+        stroke: #515159;
+      }
+
+      .cls-3 {
+        stroke: #cfcfcc;
+      }
+    </style><style
+       id="style1-4-4-5">
+      .cls-1 {
+        fill: #171717;
+      }
+
+      .cls-2 {
+        fill: #1a1a1a;
+      }
+
+      .cls-3 {
+        fill: #505050;
+        stroke-width: 1.5px;
+      }
+
+      .cls-3, .cls-4, .cls-5, .cls-6, .cls-7 {
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+
+      .cls-3, .cls-4, .cls-5, .cls-7 {
+        stroke: #171717;
+      }
+
+      .cls-4 {
+        fill: #3c3c3c;
+      }
+
+      .cls-4, .cls-5, .cls-6, .cls-7 {
+        stroke-width: 3px;
+      }
+
+      .cls-5 {
+        fill: #434343;
+      }
+
+      .cls-6 {
+        fill: #7d521b;
+        stroke: #261a08;
+      }
+
+      .cls-7 {
+        fill: none;
+      }
+    </style><style
+       id="style1-1-2">
+      .cls-1, .cls-2, .cls-3, .cls-4, .cls-5, .cls-6, .cls-7 {
+        fill: none;
+      }
+
+      .cls-8 {
+        fill: #31343a;
+      }
+
+      .cls-8, .cls-9, .cls-10 {
+        stroke: #2e3036;
+      }
+
+      .cls-8, .cls-9, .cls-10, .cls-11, .cls-12, .cls-13, .cls-14, .cls-15, .cls-16, .cls-17, .cls-18, .cls-19, .cls-5, .cls-6, .cls-7 {
+        stroke-width: 8px;
+      }
+
+      .cls-8, .cls-9, .cls-10, .cls-11, .cls-12, .cls-13, .cls-14, .cls-2, .cls-3 {
+        stroke-linecap: round;
+      }
+
+      .cls-9 {
+        fill: #3d424a;
+      }
+
+      .cls-10 {
+        fill: #33363d;
+      }
+
+      .cls-11 {
+        fill: #323438;
+        stroke: #2e2f33;
+      }
+
+      .cls-12 {
+        fill: #32343b;
+        stroke: #2b2d33;
+      }
+
+      .cls-13, .cls-20 {
+        fill: #43444c;
+      }
+
+      .cls-13, .cls-17, .cls-4, .cls-7 {
+        stroke: #303035;
+      }
+
+      .cls-21 {
+        clip-path: url(#clippath);
+      }
+
+      .cls-22 {
+        fill: #6b6c6d;
+      }
+
+      .cls-23 {
+        fill: #8a8a86;
+      }
+
+      .cls-24 {
+        fill: #303035;
+      }
+
+      .cls-25 {
+        fill: #cfcfcc;
+      }
+
+      .cls-26 {
+        fill: #242424;
+      }
+
+      .cls-27 {
+        fill: #1e1e1f;
+      }
+
+      .cls-28 {
+        fill: #232429;
+      }
+
+      .cls-29 {
+        fill: #262624;
+      }
+
+      .cls-30 {
+        fill: #2e2e31;
+      }
+
+      .cls-31 {
+        fill: #656565;
+        stroke: #333;
+      }
+
+      .cls-31, .cls-32, .cls-15, .cls-16, .cls-17, .cls-18, .cls-19, .cls-2, .cls-3, .cls-4, .cls-5, .cls-6, .cls-7 {
+        stroke-miterlimit: 10;
+      }
+
+      .cls-31, .cls-32, .cls-2, .cls-3, .cls-4 {
+        stroke-width: 4px;
+      }
+
+      .cls-14 {
+        stroke-linejoin: round;
+      }
+
+      .cls-14, .cls-18 {
+        fill: #39393d;
+      }
+
+      .cls-14, .cls-18, .cls-5 {
+        stroke: #2e2e30;
+      }
+
+      .cls-32 {
+        fill: #4a4a4f;
+        stroke: #3d3d40;
+      }
+
+      .cls-15 {
+        fill: #2b2b2e;
+        stroke: #292929;
+      }
+
+      .cls-16 {
+        fill: #353a3b;
+      }
+
+      .cls-16, .cls-6 {
+        stroke: #2c3030;
+      }
+
+      .cls-17 {
+        fill: #333332;
+      }
+
+      .cls-19 {
+        fill: #888c9e;
+        stroke: #2e2f36;
+      }
+
+      .cls-2 {
+        stroke: #515159;
+      }
+
+      .cls-3 {
+        stroke: #cfcfcc;
+      }
+    </style><style
+       id="style1-4-0-2">
+      .cls-1 {
+        fill: #171717;
+      }
+
+      .cls-2 {
+        fill: #1a1a1a;
+      }
+
+      .cls-3 {
+        fill: #505050;
+        stroke-width: 1.5px;
+      }
+
+      .cls-3, .cls-4, .cls-5, .cls-6, .cls-7 {
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+
+      .cls-3, .cls-4, .cls-5, .cls-7 {
+        stroke: #171717;
+      }
+
+      .cls-4 {
+        fill: #3c3c3c;
+      }
+
+      .cls-4, .cls-5, .cls-6, .cls-7 {
+        stroke-width: 3px;
+      }
+
+      .cls-5 {
+        fill: #434343;
+      }
+
+      .cls-6 {
+        fill: #7d521b;
+        stroke: #261a08;
+      }
+
+      .cls-7 {
+        fill: none;
+      }
+    </style><style
+       id="style2-7">
+      .cls-1 {
+        fill: #bababa;
+      }
+
+      .cls-1, .cls-2, .cls-3 {
+        isolation: isolate;
+        opacity: .997;
+        stroke: #303030;
+        stroke-linecap: round;
+        stroke-miterlimit: 15.1181;
+        stroke-width: 5px;
+      }
+
+      .cls-2 {
+        fill: #5a70e0;
+      }
+
+      .cls-3 {
+        fill: #3f3fe0;
+      }
+
+      .cls-4 {
+        opacity: .9;
+      }
+    </style><style
+       id="style2-3-1">
+      .cls-1 {
+        fill: #bababa;
+      }
+
+      .cls-1, .cls-2, .cls-3 {
+        isolation: isolate;
+        opacity: .997;
+        stroke: #303030;
+        stroke-linecap: round;
+        stroke-miterlimit: 15.1181;
+        stroke-width: 5px;
+      }
+
+      .cls-2 {
+        fill: #5a70e0;
+      }
+
+      .cls-3 {
+        fill: #3f3fe0;
+      }
+
+      .cls-4 {
+        opacity: .9;
+      }
+    </style><style
+       id="style1-5-5">
+      .cls-1 {
+        fill: #171717;
+      }
+
+      .cls-2 {
+        fill: #1a1a1a;
+      }
+
+      .cls-3 {
+        fill: #7d521b;
+        stroke: #261a08;
+      }
+
+      .cls-3, .cls-4, .cls-5, .cls-6 {
+        stroke-width: 3px;
+      }
+
+      .cls-3, .cls-4, .cls-5, .cls-6, .cls-7, .cls-8 {
+        stroke-linecap: round;
+      }
+
+      .cls-4 {
+        fill: #434343;
+      }
+
+      .cls-4, .cls-5, .cls-6, .cls-7 {
+        stroke: #171717;
+      }
+
+      .cls-5 {
+        fill: #3c3c3c;
+      }
+
+      .cls-6, .cls-8 {
+        fill: none;
+      }
+
+      .cls-7 {
+        fill: #505050;
+      }
+
+      .cls-7, .cls-8 {
+        stroke-width: 1.5px;
+      }
+
+      .cls-8 {
+        stroke: #1a1a1a;
+      }
+    </style><style
+       id="style1-66-2">
+      .cls-1 {
+        fill: #434343;
+        stroke-width: 1.5px;
+      }
+
+      .cls-1, .cls-2, .cls-3, .cls-4, .cls-5, .cls-6 {
+        stroke-miterlimit: 12.06;
+      }
+
+      .cls-1, .cls-4, .cls-6 {
+        stroke: #171717;
+      }
+
+      .cls-2 {
+        stroke: #1d1d13;
+      }
+
+      .cls-2, .cls-3 {
+        fill: #74744e;
+      }
+
+      .cls-2, .cls-3, .cls-4, .cls-5, .cls-6 {
+        stroke-width: 3px;
+      }
+
+      .cls-3 {
+        stroke: #1c1c12;
+      }
+
+      .cls-4, .cls-5 {
+        fill: #515151;
+      }
+
+      .cls-5 {
+        stroke: #181818;
+      }
+
+      .cls-7 {
+        fill: #2b2b2b;
+      }
+
+      .cls-6 {
+        fill: none;
+      }
+    </style><style
+       id="style1-2-1">
+      .cls-1 {
+        fill: #171717;
+      }
+
+      .cls-2 {
+        fill: #5c342b;
+      }
+
+      .cls-3 {
+        fill: #5e3d2c;
+      }
+
+      .cls-4 {
+        fill: #595959;
+        stroke: #171717;
+      }
+
+      .cls-4, .cls-5 {
+        stroke-width: 3px;
+      }
+
+      .cls-5 {
+        fill: none;
+        stroke: #1f120f;
+      }
+    </style><style
+       id="style1-28-1">
+      .cls-1 {
+        fill: #434343;
+        stroke-width: 1.5px;
+      }
+
+      .cls-1, .cls-2, .cls-3, .cls-4, .cls-5, .cls-6 {
+        stroke-miterlimit: 12.06;
+      }
+
+      .cls-1, .cls-4, .cls-6 {
+        stroke: #171717;
+      }
+
+      .cls-2 {
+        stroke: #1d1d13;
+      }
+
+      .cls-2, .cls-3 {
+        fill: #74744e;
+      }
+
+      .cls-2, .cls-3, .cls-4, .cls-5, .cls-6 {
+        stroke-width: 3px;
+      }
+
+      .cls-3 {
+        stroke: #1c1c12;
+      }
+
+      .cls-4, .cls-5 {
+        fill: #515151;
+      }
+
+      .cls-5 {
+        stroke: #181818;
+      }
+
+      .cls-7 {
+        fill: #2b2b2b;
+      }
+
+      .cls-6 {
+        fill: none;
+      }
+    </style><style
+       id="style1-17-0">
+      .cls-1 {
+        fill: #171717;
+      }
+
+      .cls-2 {
+        fill: #1a1a1a;
+      }
+
+      .cls-3 {
+        fill: #7d521b;
+        stroke: #261a08;
+      }
+
+      .cls-3, .cls-4, .cls-5, .cls-6 {
+        stroke-width: 3px;
+      }
+
+      .cls-3, .cls-4, .cls-5, .cls-6, .cls-7, .cls-8 {
+        stroke-linecap: round;
+      }
+
+      .cls-4 {
+        fill: #434343;
+      }
+
+      .cls-4, .cls-5, .cls-6, .cls-7 {
+        stroke: #171717;
+      }
+
+      .cls-5 {
+        fill: #3c3c3c;
+      }
+
+      .cls-6, .cls-8 {
+        fill: none;
+      }
+
+      .cls-7 {
+        fill: #505050;
+      }
+
+      .cls-7, .cls-8 {
+        stroke-width: 1.5px;
+      }
+
+      .cls-8 {
+        stroke: #1a1a1a;
+      }
+    </style><style
+       id="style1-96-1">
+      .cls-1 {
+        fill: #434343;
+        stroke-width: 1.5px;
+      }
+
+      .cls-1, .cls-2, .cls-3, .cls-4, .cls-5, .cls-6 {
+        stroke-miterlimit: 12.06;
+      }
+
+      .cls-1, .cls-4, .cls-6 {
+        stroke: #171717;
+      }
+
+      .cls-2 {
+        stroke: #1d1d13;
+      }
+
+      .cls-2, .cls-3 {
+        fill: #74744e;
+      }
+
+      .cls-2, .cls-3, .cls-4, .cls-5, .cls-6 {
+        stroke-width: 3px;
+      }
+
+      .cls-3 {
+        stroke: #1c1c12;
+      }
+
+      .cls-4, .cls-5 {
+        fill: #515151;
+      }
+
+      .cls-5 {
+        stroke: #181818;
+      }
+
+      .cls-7 {
+        fill: #2b2b2b;
+      }
+
+      .cls-6 {
+        fill: none;
+      }
+    </style><style
+       id="style2-4-8">
+      .cls-1, .cls-2, .cls-3, .cls-4, .cls-5, .cls-6, .cls-7 {
+        fill: none;
+      }
+
+      .cls-8 {
+        fill: #31343a;
+      }
+
+      .cls-8, .cls-9, .cls-10 {
+        stroke: #2e3036;
+      }
+
+      .cls-8, .cls-9, .cls-10, .cls-11, .cls-12, .cls-13, .cls-14, .cls-15, .cls-16, .cls-17, .cls-18, .cls-19, .cls-5, .cls-6, .cls-7 {
+        stroke-width: 8px;
+      }
+
+      .cls-8, .cls-9, .cls-10, .cls-11, .cls-12, .cls-13, .cls-14, .cls-2, .cls-3 {
+        stroke-linecap: round;
+      }
+
+      .cls-9 {
+        fill: #3d424a;
+      }
+
+      .cls-10 {
+        fill: #33363d;
+      }
+
+      .cls-11 {
+        fill: #323438;
+        stroke: #2e2f33;
+      }
+
+      .cls-12 {
+        fill: #32343b;
+        stroke: #2b2d33;
+      }
+
+      .cls-13, .cls-20 {
+        fill: #43444c;
+      }
+
+      .cls-13, .cls-17, .cls-4, .cls-7 {
+        stroke: #303035;
+      }
+
+      .cls-21 {
+        clip-path: url(#clippath);
+      }
+
+      .cls-22 {
+        fill: #6b6c6d;
+      }
+
+      .cls-23 {
+        fill: #8a8a86;
+      }
+
+      .cls-24 {
+        fill: #303035;
+      }
+
+      .cls-25 {
+        fill: #cfcfcc;
+      }
+
+      .cls-26 {
+        fill: #242424;
+      }
+
+      .cls-27 {
+        fill: #1e1e1f;
+      }
+
+      .cls-28 {
+        fill: #232429;
+      }
+
+      .cls-29 {
+        fill: #262624;
+      }
+
+      .cls-30 {
+        fill: #2e2e31;
+      }
+
+      .cls-31 {
+        fill: #656565;
+        stroke: #333;
+      }
+
+      .cls-31, .cls-32, .cls-15, .cls-16, .cls-17, .cls-18, .cls-19, .cls-2, .cls-3, .cls-4, .cls-5, .cls-6, .cls-7 {
+        stroke-miterlimit: 10;
+      }
+
+      .cls-31, .cls-32, .cls-2, .cls-3, .cls-4 {
+        stroke-width: 4px;
+      }
+
+      .cls-14 {
+        stroke-linejoin: round;
+      }
+
+      .cls-14, .cls-18 {
+        fill: #39393d;
+      }
+
+      .cls-14, .cls-18, .cls-5 {
+        stroke: #2e2e30;
+      }
+
+      .cls-32 {
+        fill: #4a4a4f;
+        stroke: #3d3d40;
+      }
+
+      .cls-15 {
+        fill: #2b2b2e;
+        stroke: #292929;
+      }
+
+      .cls-16 {
+        fill: #353a3b;
+      }
+
+      .cls-16, .cls-6 {
+        stroke: #2c3030;
+      }
+
+      .cls-17 {
+        fill: #333332;
+      }
+
+      .cls-19 {
+        fill: #888c9e;
+        stroke: #2e2f36;
+      }
+
+      .cls-2 {
+        stroke: #515159;
+      }
+
+      .cls-3 {
+        stroke: #cfcfcc;
+      }
+    </style></defs><g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-44.078879,-55.182169)"><g
+       id="g21-7"
+       transform="matrix(0.32333051,0,0,0.31415513,-119.21161,-34.034049)"
+       style="fill:#21bd4a;fill-opacity:1"
+       inkscape:export-filename="logo-lmroy.png"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96"><path
+         id="path5-3-2-7-7"
+         style="fill:#21bd4a;fill-opacity:1;stroke:none;stroke-width:0.371946px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         d="m 505.02654,289.13067 c 8.50931,16.13894 18.30367,32.87376 25.69972,59.04033 l 7.2347,-7.23419 c 2.97502,4.20504 5.84399,8.59603 8.57364,13.11393 l 10.33063,-12.31243 c 3.78656,-4.53211 7.17961,-8.78339 10.37767,-12.75839 -3.56662,-2.22786 -7.04952,-4.53629 -10.41074,-6.91431 l 7.23419,-7.2347 c -26.16657,-7.39604 -42.90087,-17.19093 -59.03981,-25.70024 z m 70.26341,44.63139 c -3.37299,4.17829 -7.06812,8.82824 -11.31714,13.91388 l -0.004,0.004 -12.53309,14.93708 c 0.46709,0.86362 0.93517,1.72598 1.38958,2.59674 l 25.02948,-30.02866 c -0.85883,-0.46863 -1.71364,-0.94225 -2.5647,-1.42265 z m 11.00088,5.7645 -29.01528,34.8108 c 5.02474,11.03857 8.8907,22.45691 10.95592,33.74626 l 22.64513,-22.64513 29.74598,29.7465 10.45776,-10.45776 -29.7465,-29.74598 22.64513,-22.64513 c -12.63958,-2.31221 -25.44026,-6.88046 -37.68814,-12.80956 z" /><g
+         id="g19-3"
+         style="fill:#21bd4a;fill-opacity:1"><path
+           id="path5-2"
+           style="color:#000000;fill:#21bd4a;fill-opacity:1;stroke-width:3.80131;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:5;-inkscape-stroke:none;paint-order:fill markers stroke"
+           d="m 592.41495,301.91892 c -0.77358,-0.64902 -2.32223,-1.00635 -3.09977,-0.3621 -6.71367,8.00104 -4.66642,13.69812 -13.86086,24.65562 -4.20227,5.00807 -9.28593,11.61416 -15.03496,18.49516 l -33.63082,40.07964 c -2.56005,3.05096 -17.49389,22.26074 -19.40121,29.44448 l 23.82104,-2.93168 c 0,0 -4.26751,-7.80074 4.56662,-18.39928 l 66.58023,-79.87769 c 0.75899,-0.88088 0.65094,-2.21251 -0.23816,-2.96183 z"
+           sodipodi:nodetypes="cccccccsccc" /><path
+           id="path14-5"
+           style="color:#000000;fill:#21bd4a;fill-opacity:1;stroke-width:3.80131;stroke-linecap:round;stroke-miterlimit:5;-inkscape-stroke:none;paint-order:fill markers stroke"
+           d="m 634.28312,310.21452 -12.77499,-6.69768 -23.27383,-19.52906 -14.40787,17.17063 23.10316,19.38585 8.98496,11.56108 1.46098,-0.58635 c 0,0 6.37534,-2.48129 10.80916,-7.76513 4.43389,-5.28393 5.77468,-11.99873 5.77468,-11.99873 z"
+           sodipodi:nodetypes="cccccccscc" /></g></g></g><style
+     type="text/css"
+     id="style1-88">
+	.st0{fill:#323232;stroke:#323232;stroke-width:24.5669;stroke-linecap:round;stroke-miterlimit:15.1181;}
+	
+		.st1{opacity:0.997;fill:#656565;stroke:#3F4040;stroke-width:12.647;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:15.1181;stroke-opacity:0.9718;enable-background:new    ;}
+	
+		.st2{opacity:0.997;fill:#656565;stroke:#3F4040;stroke-width:11.3839;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:15.1181;stroke-opacity:0.9718;enable-background:new    ;}
+	
+		.st3{opacity:0.997;fill:#09301C;stroke:#323232;stroke-width:11.3839;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:15.1181;enable-background:new    ;}
+	.st4{fill:none;stroke:#404040;stroke-width:19.4867;stroke-linecap:round;stroke-miterlimit:15.1181;}
+	.st5{fill:none;stroke:#42AD44;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:15.1181;}
+	.st6{fill:#09301C;stroke:#323232;stroke-width:11.3839;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:15.1181;}
+</style><style
+     type="text/css"
+     id="style1-8">
+	.st0{fill:#323232;stroke:#323232;stroke-width:24.5669;stroke-linecap:round;stroke-miterlimit:15.1181;}
+	
+		.st1{opacity:0.997;fill:#656565;stroke:#3F4040;stroke-width:12.647;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:15.1181;stroke-opacity:0.9718;enable-background:new    ;}
+	
+		.st2{opacity:0.997;fill:#656565;stroke:#3F4040;stroke-width:11.3839;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:15.1181;stroke-opacity:0.9718;enable-background:new    ;}
+	
+		.st3{opacity:0.997;fill:#09301C;stroke:#323232;stroke-width:11.3839;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:15.1181;enable-background:new    ;}
+	.st4{fill:none;stroke:#404040;stroke-width:19.4867;stroke-linecap:round;stroke-miterlimit:15.1181;}
+	.st5{fill:none;stroke:#42AD44;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:15.1181;}
+	.st6{fill:#09301C;stroke:#323232;stroke-width:11.3839;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:15.1181;}
+</style><style
+     type="text/css"
+     id="style1-4-5">
+	.st0{fill:#323232;stroke:#323232;stroke-width:24.5669;stroke-linecap:round;stroke-miterlimit:15.1181;}
+	
+		.st1{opacity:0.997;fill:#656565;stroke:#3F4040;stroke-width:12.647;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:15.1181;stroke-opacity:0.9718;enable-background:new    ;}
+	
+		.st2{opacity:0.997;fill:#656565;stroke:#3F4040;stroke-width:11.3839;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:15.1181;stroke-opacity:0.9718;enable-background:new    ;}
+	
+		.st3{opacity:0.997;fill:#09301C;stroke:#323232;stroke-width:11.3839;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:15.1181;enable-background:new    ;}
+	.st4{fill:none;stroke:#404040;stroke-width:19.4867;stroke-linecap:round;stroke-miterlimit:15.1181;}
+	.st5{fill:none;stroke:#42AD44;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:15.1181;}
+	.st6{fill:#09301C;stroke:#323232;stroke-width:11.3839;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:15.1181;}
+</style><style
+     type="text/css"
+     id="style1-8-8">
+	.st0{fill:#323232;stroke:#323232;stroke-width:24.5669;stroke-linecap:round;stroke-miterlimit:15.1181;}
+	
+		.st1{opacity:0.997;fill:#656565;stroke:#3F4040;stroke-width:12.647;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:15.1181;stroke-opacity:0.9718;enable-background:new    ;}
+	
+		.st2{opacity:0.997;fill:#656565;stroke:#3F4040;stroke-width:11.3839;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:15.1181;stroke-opacity:0.9718;enable-background:new    ;}
+	
+		.st3{opacity:0.997;fill:#09301C;stroke:#323232;stroke-width:11.3839;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:15.1181;enable-background:new    ;}
+	.st4{fill:none;stroke:#404040;stroke-width:19.4867;stroke-linecap:round;stroke-miterlimit:15.1181;}
+	.st5{fill:none;stroke:#42AD44;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:15.1181;}
+	.st6{fill:#09301C;stroke:#323232;stroke-width:11.3839;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:15.1181;}
+</style><style
+     type="text/css"
+     id="style2-8">
+	.st0{fill:#A0ABB8;stroke:#000000;stroke-width:25;stroke-miterlimit:10;}
+	.st1{fill:#C4C4C4;}
+	.st2{fill:#FF7300;}
+	.st3{fill:#FFFFFF;}
+</style><style
+     type="text/css"
+     id="style1-88-9">
+	.st0{fill:#323232;stroke:#323232;stroke-width:24.5669;stroke-linecap:round;stroke-miterlimit:15.1181;}
+	
+		.st1{opacity:0.997;fill:#656565;stroke:#3F4040;stroke-width:12.647;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:15.1181;stroke-opacity:0.9718;enable-background:new    ;}
+	
+		.st2{opacity:0.997;fill:#656565;stroke:#3F4040;stroke-width:11.3839;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:15.1181;stroke-opacity:0.9718;enable-background:new    ;}
+	
+		.st3{opacity:0.997;fill:#09301C;stroke:#323232;stroke-width:11.3839;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:15.1181;enable-background:new    ;}
+	.st4{fill:none;stroke:#404040;stroke-width:19.4867;stroke-linecap:round;stroke-miterlimit:15.1181;}
+	.st5{fill:none;stroke:#42AD44;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:15.1181;}
+	.st6{fill:#09301C;stroke:#323232;stroke-width:11.3839;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:15.1181;}
+</style><style
+     type="text/css"
+     id="style1-8-5">
+	.st0{fill:#323232;stroke:#323232;stroke-width:24.5669;stroke-linecap:round;stroke-miterlimit:15.1181;}
+	
+		.st1{opacity:0.997;fill:#656565;stroke:#3F4040;stroke-width:12.647;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:15.1181;stroke-opacity:0.9718;enable-background:new    ;}
+	
+		.st2{opacity:0.997;fill:#656565;stroke:#3F4040;stroke-width:11.3839;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:15.1181;stroke-opacity:0.9718;enable-background:new    ;}
+	
+		.st3{opacity:0.997;fill:#09301C;stroke:#323232;stroke-width:11.3839;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:15.1181;enable-background:new    ;}
+	.st4{fill:none;stroke:#404040;stroke-width:19.4867;stroke-linecap:round;stroke-miterlimit:15.1181;}
+	.st5{fill:none;stroke:#42AD44;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:15.1181;}
+	.st6{fill:#09301C;stroke:#323232;stroke-width:11.3839;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:15.1181;}
+</style><style
+     type="text/css"
+     id="style1-4-5-6">
+	.st0{fill:#323232;stroke:#323232;stroke-width:24.5669;stroke-linecap:round;stroke-miterlimit:15.1181;}
+	
+		.st1{opacity:0.997;fill:#656565;stroke:#3F4040;stroke-width:12.647;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:15.1181;stroke-opacity:0.9718;enable-background:new    ;}
+	
+		.st2{opacity:0.997;fill:#656565;stroke:#3F4040;stroke-width:11.3839;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:15.1181;stroke-opacity:0.9718;enable-background:new    ;}
+	
+		.st3{opacity:0.997;fill:#09301C;stroke:#323232;stroke-width:11.3839;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:15.1181;enable-background:new    ;}
+	.st4{fill:none;stroke:#404040;stroke-width:19.4867;stroke-linecap:round;stroke-miterlimit:15.1181;}
+	.st5{fill:none;stroke:#42AD44;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:15.1181;}
+	.st6{fill:#09301C;stroke:#323232;stroke-width:11.3839;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:15.1181;}
+</style><style
+     type="text/css"
+     id="style1-8-8-2">
+	.st0{fill:#323232;stroke:#323232;stroke-width:24.5669;stroke-linecap:round;stroke-miterlimit:15.1181;}
+	
+		.st1{opacity:0.997;fill:#656565;stroke:#3F4040;stroke-width:12.647;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:15.1181;stroke-opacity:0.9718;enable-background:new    ;}
+	
+		.st2{opacity:0.997;fill:#656565;stroke:#3F4040;stroke-width:11.3839;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:15.1181;stroke-opacity:0.9718;enable-background:new    ;}
+	
+		.st3{opacity:0.997;fill:#09301C;stroke:#323232;stroke-width:11.3839;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:15.1181;enable-background:new    ;}
+	.st4{fill:none;stroke:#404040;stroke-width:19.4867;stroke-linecap:round;stroke-miterlimit:15.1181;}
+	.st5{fill:none;stroke:#42AD44;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:15.1181;}
+	.st6{fill:#09301C;stroke:#323232;stroke-width:11.3839;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:15.1181;}
+</style><style
+     type="text/css"
+     id="style2-8-8">
+	.st0{fill:#A0ABB8;stroke:#000000;stroke-width:25;stroke-miterlimit:10;}
+	.st1{fill:#C4C4C4;}
+	.st2{fill:#FF7300;}
+	.st3{fill:#FFFFFF;}
+</style></svg>

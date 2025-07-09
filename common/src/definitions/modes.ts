@@ -127,7 +127,8 @@ export const Modes: Record<ModeName, ModeDefinition> = {
         },
         ambience: "wind_ambience",
         spriteSheets: ["shared", "hunted"],
-        unlockStage: 3 // do not touch
+        unlockStage: 3, // do not touch
+        playButtonImage: "./img/logos/lansiraami_logo.svg"
     },
     birthday: { // copy of normal
         colors: {
