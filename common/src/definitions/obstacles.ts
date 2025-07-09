@@ -264,9 +264,10 @@ const aidrTint = 0x4059bf; // GameConstants.modeName as string === "winter" ? 0x
 export const TintedParticles: Record<string, { readonly base: string, readonly tint: number, readonly variants?: number }> = {
     _glow_: { base: "_glow_", tint: 0xffffff },
 
-    cabin_wall_particle: { base: "wood_particle", tint: 0x5D4622 },
+    cabin_wall_particle: { base: "wood_particle", tint: 0x5d4622 },
     cabin_particle: { base: "wood_particle", tint: 0x49371d },
     metal_particle: { base: "metal_particle_1", tint: 0x5f5f5f },
+    wine_barrel_particle: { base: "metal_particle_1", tint: 0x5d482f },
     cargo_ship_particle: { base: "metal_particle_1", tint: 0x273140 },
     metal_column_particle: { base: "metal_particle_1", tint: 0x8f8f8f },
     super_barrel_particle: { base: "metal_particle_1", tint: 0xce2b29 },
@@ -420,7 +421,10 @@ export const TintedParticles: Record<string, { readonly base: string, readonly t
     sawmill_warehouse_wall_particle: { base: "wood_particle", tint: 0x764423 },
 
     warehouse_hunted_particle: { base: "wood_particle", tint: 0x6e4f32 },
-    hunting_stand_particle: { base: "wood_particle", tint: 0x764423 }
+    hunting_stand_particle: { base: "wood_particle", tint: 0x764423 },
+
+    tavern_bar_particle: { base: "wood_particle", tint: 0x603b26 },
+    tavern_wall_particle: { base: "wood_particle", tint: 0x72572a }
 };
 
 const houseWall = (
@@ -743,6 +747,30 @@ const bigTentWall = (
     },
     tint: TentTints[color],
     isWall: true
+});
+
+const tavernWall = (
+    lengthNumber: number,
+    hitbox: RectangleHitbox
+): RawObstacleDefinition => ({
+    idString: `tavern_wall_${lengthNumber}`,
+    name: `Tavern Wall ${lengthNumber}`,
+    defType: DefinitionType.Obstacle,
+    material: "wood",
+    hideOnMap: true,
+    noResidue: true,
+    health: 200,
+    hitbox,
+    rotationMode: RotationMode.Limited,
+    allowFlyover: FlyoverPref.Never,
+    frames: {
+        particle: "tavern_wall_particle"
+    },
+    isWall: true,
+    wall: {
+        borderColor: 0x251b0e,
+        color: 0x72572a
+    }
 });
 
 const gunMount = (
@@ -2481,6 +2509,13 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
 
     huntingStandWall(1, RectangleHitbox.fromRect(10.77, 2)),
 
+    tavernWall(1, RectangleHitbox.fromRect(39.27, 2.02)),
+    tavernWall(2, RectangleHitbox.fromRect(2.02, 19.8)),
+    tavernWall(3, RectangleHitbox.fromRect(21.83, 2.02)),
+    tavernWall(4, RectangleHitbox.fromRect(2.02, 25.61)),
+    tavernWall(5, RectangleHitbox.fromRect(24.52, 2.02)),
+    tavernWall(6, RectangleHitbox.fromRect(2.02, 5.67)),
+
     {
         idString: "fridge",
         name: "Fridge",
@@ -4047,6 +4082,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     gunMount("sks", "gun"),
     gunMount("m590m", "gun"),
     gunMount("svu", "gun"),
+    gunMount("m3k", "gun"),
     gunMount(
         "maul",
         "melee",
@@ -4450,7 +4486,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         ),
         rotationMode: RotationMode.None,
         allowFlyover: FlyoverPref.Never,
-        tint: 0x5a4320,
+        tint: 0x5d4622,
         frames: {
             base: "column",
             particle: "cabin_wall_particle"
@@ -4571,6 +4607,30 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         frames: {
             base: "column",
             particle: "hunting_stand_particle"
+        },
+        isWall: true
+    },
+    {
+        idString: "tavern_column",
+        name: "Tavern Column",
+        defType: DefinitionType.Obstacle,
+        material: "stone",
+        indestructible: true,
+        health: 340,
+        scale: {
+            spawnMin: 1,
+            spawnMax: 1,
+            destroy: 0.95
+        },
+        hitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(3, 3)
+        ),
+        rotationMode: RotationMode.None,
+        allowFlyover: FlyoverPref.Never,
+        tint: 0x5a4320,
+        frames: {
+            base: "column",
+            particle: "cabin_wall_particle"
         },
         isWall: true
     },
@@ -6343,6 +6403,89 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         },
         rotationMode: RotationMode.Limited,
         zIndex: ZIndexes.ObstaclesLayer2
+    },
+    {
+        idString: "tavern_bar_collider",
+        name: "Tavern Bar Collider",
+        defType: DefinitionType.Obstacle,
+        material: "wood",
+        health: 1000,
+        indestructible: true,
+        invisible: true,
+        hitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(19.2, 10.25, Vec(8.12, -9.77)),
+            RectangleHitbox.fromRect(11.06, 31.91, Vec(4.05, 10.61))
+        ),
+        frames: {
+            particle: "tavern_bar_particle"
+        },
+        rotationMode: RotationMode.Limited,
+        allowFlyover: FlyoverPref.Always
+    },
+    {
+        idString: "tavern_table_collider",
+        name: "Tavern Table Collider",
+        defType: DefinitionType.Obstacle,
+        material: "wood",
+        health: 1000,
+        indestructible: true,
+        invisible: true,
+        hitbox: RectangleHitbox.fromRect(38.21, 9.91, Vec(-5.81, -58.96)),
+        frames: {
+            particle: "tavern_bar_particle"
+        },
+        rotationMode: RotationMode.Limited,
+        allowFlyover: FlyoverPref.Always
+    },
+    {
+        idString: "tavern_bottle_table",
+        name: "Tavern Bottle Table",
+        defType: DefinitionType.Obstacle,
+        material: "wood",
+        health: 1000,
+        indestructible: true,
+        hitbox: RectangleHitbox.fromRect(5.3, 16.02),
+        frames: {
+            particle: "tavern_bar_particle"
+        },
+        rotationMode: RotationMode.Limited,
+        allowFlyover: FlyoverPref.Always
+    },
+    {
+        idString: "wine_barrel",
+        name: "Wine Barrel",
+        defType: DefinitionType.Obstacle,
+        material: "wood",
+        health: 161,
+        scale: {
+            spawnMin: 1,
+            spawnMax: 1,
+            destroy: 0.5
+        },
+        hitbox: new CircleHitbox(3.75),
+        rotationMode: RotationMode.Full,
+        noResidue: true,
+        frames: {
+            particle: "wine_barrel_particle"
+        }
+    },
+    {
+        idString: "bar_seat",
+        name: "Seat",
+        defType: DefinitionType.Obstacle,
+        material: "fence",
+        health: 180,
+        scale: {
+            spawnMin: 1,
+            spawnMax: 1,
+            destroy: 0.6
+        },
+        hitbox: new CircleHitbox(3.02),
+        rotationMode: RotationMode.Limited,
+        noResidue: true,
+        frames: {
+            particle: "wine_barrel_particle"
+        }
     }
 ] satisfies readonly RawObstacleDefinition[] as readonly RawObstacleDefinition[]).flatMap((def: Mutable<RawObstacleDefinition>) => {
     if (def.variations !== undefined) (def as Mutable<ObstacleDefinition>).variationBits = Math.ceil(Math.log2(def.variations));

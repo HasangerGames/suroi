@@ -768,14 +768,17 @@ const maps = {
             panther_bunker: 1,
             tiger_bunker: 1,
             lion_bunker: 1,
-            cabin: 1
+            cabin: 1,
+            tavern: 1
         },
         quadBuildingLimit: {
             panther_bunker: 1,
             tiger_bunker: 1,
             lion_bunker: 1,
-            cabin: 1
+            cabin: 1,
+            tavern: 1
         },
+        majorBuildings: ["tavern", "cabin", "sawmill"],
         obstacles: {
             oil_tank: 12,
             pine_tree: 60,

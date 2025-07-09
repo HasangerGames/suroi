@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="150.0753"
+   height="150.0753"
+   viewBox="0 0 39.707423 39.707423"
+   version="1.1"
+   id="svg1"
+   inkscape:version="1.4 (86a8ad7, 2024-10-11)"
+   sodipodi:docname="wine_barrel.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     inkscape:zoom="0.68862935"
+     inkscape:cx="46.46912"
+     inkscape:cy="273.73216"
+     inkscape:window-width="1920"
+     inkscape:window-height="991"
+     inkscape:window-x="-9"
+     inkscape:window-y="-9"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs1" />
+  <g
+     inkscape:label="Στρώση 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-92.603994,-76.199882)">
+    <g
+       id="g2-47-7-5-3"
+       transform="matrix(-0.47512756,0.80115053,-0.80115053,-0.47512756,892.4065,-917.1432)"
+       style="stroke-width:1.0736">
+      <ellipse
+         style="fill:#5d482f;fill-opacity:1;stroke:#2a2a2a;stroke-width:2.41449;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         id="path5240-3-8-2-5-83-8-0-4"
+         transform="rotate(44.999997)"
+         ry="20.104628"
+         rx="20.10463"
+         cy="-846.68091"
+         cx="1080.526" />
+      <circle
+         style="fill:none;fill-opacity:1;stroke:#73583a;stroke-width:2.55651;stroke-linecap:square;stroke-dasharray:none;stroke-opacity:1;stop-color:#000000"
+         id="path8836-0-2-4-2-51-3-7-0"
+         cx="1080.6238"
+         cy="-846.68115"
+         transform="rotate(45)"
+         r="17.703068" />
+      <circle
+         style="fill:#2a2a2a;fill-opacity:1;stroke:#191919;stroke-width:1.42029;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         id="path5350-9-0-7-1-2-8-6-8"
+         cx="1088.28"
+         cy="-838.92682"
+         transform="rotate(45)"
+         r="3.6674829" />
+    </g>
+  </g>
+</svg>
