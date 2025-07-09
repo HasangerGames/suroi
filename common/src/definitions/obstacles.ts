@@ -77,11 +77,12 @@ type CommonObstacleDefinition = ObjectDefinition & {
     }
     readonly requiresPower?: boolean
 
+    readonly damage?: number
+
     readonly animationFrames?: string[]
 
     readonly interactionDelay?: number
     readonly regenerateAfterDestroyed?: number
-    readonly damageOtherObstacles?: boolean
 
     readonly applyPerkOnDestroy?: {
         readonly mode?: ModeName
@@ -6331,17 +6332,17 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         material: "metal_light",
         animationFrames: ["saw_1", "saw_1", "saw_2"],
         health: 1000,
+        damage: 20,
         isActivatable: true,
         indestructible: true,
-        hitbox: RectangleHitbox.fromRect(1.99, 16.71),
+        hitbox: RectangleHitbox.fromRect(3, 18), // RectangleHitbox.fromRect(1.99, 16.71),
         reflectBullets: true,
         frames: {
             particle: "metal_particle",
             base: "saw_1"
         },
         rotationMode: RotationMode.Limited,
-        zIndex: ZIndexes.ObstaclesLayer2,
-        damageOtherObstacles: true
+        zIndex: ZIndexes.ObstaclesLayer2
     }
 ] satisfies readonly RawObstacleDefinition[] as readonly RawObstacleDefinition[]).flatMap((def: Mutable<RawObstacleDefinition>) => {
     if (def.variations !== undefined) (def as Mutable<ObstacleDefinition>).variationBits = Math.ceil(Math.log2(def.variations));

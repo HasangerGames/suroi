@@ -328,7 +328,7 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
     }
 
     canInteract(player?: Player): boolean {
-        return !this.dead && !(this.definition.damageOtherObstacles !== undefined && this.definition.damageOtherObstacles)
+        return !this.dead && !this.definition?.damage
             && (
                 player === undefined
                 || this.definition.interactOnlyFromSide === undefined

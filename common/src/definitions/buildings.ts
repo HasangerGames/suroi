@@ -11208,7 +11208,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "metal_column", position: Vec(47.91, -229.06) },
             { idString: "metal_column", position: Vec(113.75, -228.47) },
             { idString: "metal_column", position: Vec(142.1, -228.47) },
-            { idString: "metal_column", position: Vec(141.72, -169) },
+            { idString: "metal_column", position: Vec(141.72, -170.15) },
             { idString: "metal_column", position: Vec(49.91, -128.23) },
             { idString: "metal_column", position: Vec(141.72, -128.19) },
             { idString: "metal_column", position: Vec(141.71, -96.16) },

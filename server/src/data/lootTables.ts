@@ -104,7 +104,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             min: 1,
             max: 1,
             loot: [
-                { item: "death_ray", weight: 1 }
+                { item: "g19", weight: 1 }
             ]
         },
         dumpster: {

@@ -30,6 +30,8 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
     scale!: number;
     variation?: Variation;
 
+    animationFrame?: number;
+
     /**
      * `undefined` if this obstacle hasn't been updated yet, or if it's not a door obstacle
      */
@@ -752,7 +754,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
             && (this.definition as DoorDef).openOnce
             && !this._door.locked
             && !((this.definition as DoorDef).openOnce && this._door.offset === 0)) return false;
-        return !this.dead
+        return !this.dead && !this.definition?.damage
             && (
                 this.definition.interactOnlyFromSide === undefined
                 || this.definition.interactOnlyFromSide === (this.hitbox as RectangleHitbox).getSide(player.position)

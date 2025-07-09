@@ -1196,6 +1196,10 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                     } else {
                         collided = true;
                         this._hitbox.resolveCollision(potential.hitbox);
+
+                        if (isObstacle && potential.activated && potential.definition.damage) {
+                            this.damage({ amount: potential.definition.damage, source: potential });
+                        }
                     }
                 }
             }
