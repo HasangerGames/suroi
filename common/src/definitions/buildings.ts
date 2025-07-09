@@ -12596,6 +12596,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         defType: DefinitionType.Building,
         material: "stone",
         particle: "cabin_wall_particle",
+        // bunkerSpawnHitbox: RectangleHitbox.fromRect(106.29, 130.73, Vec(-0.95, 0.37)),
         hitbox: new GroupHitbox(
             RectangleHitbox.fromRect(2.01, 52.82, Vec(-75.92, -26.65)),
             RectangleHitbox.fromRect(37.57, 2.01, Vec(-57.14, -52.06)),
@@ -12840,5 +12841,117 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             position: Vec(0, 0),
             scale: Vec(4.05, 4.05)
         }]
+    },
+    {
+        idString: "tavern_basement",
+        name: "Tavern Basement",
+        defType: DefinitionType.Building,
+        material: "metal_heavy",
+        particle: "bunker_particle",
+        reflectBullets: true,
+        hitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(2.06, 19.23, Vec(4.33, 49.24)),
+            RectangleHitbox.fromRect(2.06, 19.23, Vec(-10.2, 49.25)),
+            RectangleHitbox.fromRect(91.13, 2.01, Vec(-0.13, 58.77)),
+            RectangleHitbox.fromRect(2, 83.14, Vec(45.35, 18.21)),
+            RectangleHitbox.fromRect(25.08, 38.7, Vec(33.84, -40.55)),
+            RectangleHitbox.fromRect(23.86, 38.53, Vec(-34.44, -40.5)),
+            RectangleHitbox.fromRect(2, 82.57, Vec(-45.35, 18.49)),
+            RectangleHitbox.fromRect(11.1, 2.02, Vec(15.77, -22.23)),
+            RectangleHitbox.fromRect(11.1, 2.02, Vec(-17.01, -22.23)),
+            RectangleHitbox.fromRect(44.87, 2.02, Vec(-0.29, -58.78))
+        ),
+        spawnHitbox: RectangleHitbox.fromRect(106.29, 130.73, Vec(-0.95, 0.37)),
+        ceilingHitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(88.75, 79.01, Vec(0.01, 18.28)),
+            RectangleHitbox.fromRect(43.87, 38.85, Vec(-0.6, -38.38))
+        ),
+        puzzle: {
+            triggerOnSolve: "bulletproof_automatic_glass_door",
+            delay: 500
+        },
+        floors: [
+            {
+                type: FloorNames.Wood,
+                hitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(39.12, 79.07, Vec(24.86, 18.26)),
+                    RectangleHitbox.fromRect(33.3, 79.19, Vec(-27.72, 18.2)),
+                    RectangleHitbox.fromRect(23.83, 63.4, Vec(-1.5, 8.49))
+                )
+            },
+            {
+                type: FloorNames.Stone,
+                hitbox: RectangleHitbox.fromRect(43.87, 36.23, Vec(-0.6, -39.69))
+            }
+        ],
+        floorImages: [
+            {
+                key: "tavern_basement_floor_1",
+                position: Vec(-0.02, 18.33)
+            },
+            {
+                key: "tavern_basement_floor_2",
+                position: Vec(-0.7, -40.8)
+            },
+            {
+                key: "tavern_basement",
+                position: Vec(0, 0),
+                alpha: 0.75
+            }
+        ],
+        obstacles: [
+            // TODO: 5.45mm AN-94 gun mount, repair floor pattern & floor image placement (probably !), connect to tavern via stair
+
+            { idString: "tavern_basement_table_collider_1", position: Vec(0, 0), rotation: 0 },
+            { idString: "tavern_basement_table_collider_2", position: Vec(0, 0), rotation: 0 },
+
+            { idString: "bulletproof_automatic_glass_door", position: Vec(-6.03, -22.36), rotation: 0 },
+            { idString: "bulletproof_automatic_glass_door", position: Vec(4.76, -22.36), rotation: 2 },
+
+            { idString: "tavern_wall_7", position: Vec(-37.7, -2.09), rotation: 0 },
+            { idString: "tavern_wall_7", position: Vec(-37.7, 22.32), rotation: 0 },
+            { idString: "tavern_wall_8", position: Vec(-32.81, 40.42), rotation: 0 },
+
+            { idString: "wine_barrel", position: Vec(39.05, -4.78) },
+            { idString: "wine_barrel", position: Vec(39.14, 25.79) },
+            { idString: "wine_barrel", position: Vec(39.21, 34.81) },
+            { idString: "wine_barrel", position: Vec(13.04, 20.53) },
+            { idString: "wine_barrel", position: Vec(5.3, 23.01) },
+            { idString: "wine_barrel", position: Vec(-33.42, 34.95) },
+            { idString: "wine_barrel", position: Vec(-39.11, 27.66) },
+            { idString: "wine_barrel", position: Vec(-31.77, 3.85) },
+
+            { idString: "box", position: Vec(-1.07, 2.01) },
+            { idString: "box", position: Vec(-40.76, 35.3) }, // huh
+            { idString: "box", position: Vec(30.72, 53.61) },
+            { idString: "box", position: Vec(39.97, 15.15) },
+            { idString: "box", position: Vec(16.04, -26.31) },
+            { idString: "box", position: Vec(17.43, -31.63) },
+
+            { idString: "tavern_column", position: Vec(-29.66, 22.3) },
+            { idString: "tavern_column", position: Vec(-29.66, -2.12) },
+
+            { idString: "small_drawer", position: Vec(-39.49, 45.81), rotation: 1 },
+            { idString: "small_drawer", position: Vec(-40.16, 4.08), rotation: 0 },
+
+            { idString: "chair", position: Vec(18.63, 51.74), rotation: 1 },
+            { idString: "chair", position: Vec(12.36, 46.92), rotation: 2 },
+
+            { idString: "trash_can", position: Vec(-19.29, -54.61) },
+            { idString: "trash_can", position: Vec(-14.11, 54.64) },
+
+            { idString: "lamp", position: Vec(19.84, -41.61), rotation: 1, variation: 2 },
+            { idString: "lamp", position: Vec(-21.15, -41.46), rotation: 3, variation: 2 },
+
+            { idString: "small_table", position: Vec(12.36, 51.59), rotation: 1, variation: 2 },
+            { idString: "large_drawer", position: Vec(-39.7, -12.17), rotation: 1 },
+            { idString: "small_bed", position: Vec(-35.84, 53.63), rotation: 1 },
+            { idString: "nsd_crate", position: Vec(38.03, 6.64) },
+            { idString: "regular_crate", position: Vec(38.55, 51.38) },
+            { idString: "button", position: Vec(-14.73, -20.44), rotation: 0, variation: 0, puzzlePiece: true },
+            { idString: "potted_plant", position: Vec(19.68, -17.44), rotation: 0 },
+            { idString: "door", position: Vec(-16.75, 40.32), rotation: 2 },
+            { idString: "rare_wine_case", position: Vec(-0.73, -41.54), rotation: 0 }
+        ]
     }
 ]);

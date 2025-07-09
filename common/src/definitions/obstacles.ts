@@ -2515,6 +2515,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     tavernWall(4, RectangleHitbox.fromRect(2.02, 25.61)),
     tavernWall(5, RectangleHitbox.fromRect(24.52, 2.02)),
     tavernWall(6, RectangleHitbox.fromRect(2.02, 5.67)),
+    tavernWall(7, RectangleHitbox.fromRect(13.3, 2.02)),
+    tavernWall(8, RectangleHitbox.fromRect(23.05, 2.02)),
 
     {
         idString: "fridge",
@@ -6485,6 +6487,76 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         noResidue: true,
         frames: {
             particle: "wine_barrel_particle"
+        }
+    },
+    {
+        idString: "tavern_basement_table_collider_1",
+        name: "Tavern Basement Table Collider 1",
+        defType: DefinitionType.Obstacle,
+        material: "wood",
+        health: 1000,
+        indestructible: true,
+        invisible: true,
+        hitbox: RectangleHitbox.fromRect(38.22, 10.83, Vec(3.17, 10.5)),
+        frames: {
+            particle: "tavern_bar_particle"
+        },
+        rotationMode: RotationMode.Limited,
+        allowFlyover: FlyoverPref.Always
+    },
+    {
+        idString: "tavern_basement_table_collider_2",
+        name: "Tavern Basement Table Collider 2",
+        defType: DefinitionType.Obstacle,
+        material: "wood",
+        health: 1000,
+        indestructible: true,
+        invisible: true,
+        hitbox: RectangleHitbox.fromRect(20.53, 10.87, Vec(34.15, -15.81)),
+        frames: {
+            particle: "tavern_bar_particle"
+        },
+        rotationMode: RotationMode.Limited,
+        allowFlyover: FlyoverPref.Always
+    },
+    {
+        idString: "bulletproof_automatic_glass_door",
+        name: "Bullet-proof Automatic Door",
+        defType: DefinitionType.Obstacle,
+        material: "glass",
+        doorSound: "metal_auto_door",
+        locked: true,
+        openOnce: true,
+        indestructible: true,
+        reflectBullets: true,
+        health: 100,
+        hitbox: RectangleHitbox.fromRect(10.87, 1.6),
+        rotationMode: RotationMode.Limited,
+        isDoor: true,
+        hideWhenOpen: true,
+        operationStyle: "slide",
+        slideFactor: 0.9,
+        animationDuration: 400,
+        frames: {
+            particle: "window_particle"
+        }
+    },
+    {
+        idString: "rare_wine_case",
+        name: "Rare Wine Case",
+        defType: DefinitionType.Obstacle,
+        material: "glass",
+        health: 200,
+        scale: {
+            spawnMin: 1,
+            spawnMax: 1,
+            destroy: 0.7
+        },
+        hitbox: RectangleHitbox.fromRect(8.43, 8.43),
+        rotationMode: RotationMode.Limited,
+        noResidue: true,
+        frames: {
+            particle: "window_particle"
         }
     }
 ] satisfies readonly RawObstacleDefinition[] as readonly RawObstacleDefinition[]).flatMap((def: Mutable<RawObstacleDefinition>) => {
