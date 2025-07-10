@@ -6579,7 +6579,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
             spawnMax: 1,
             destroy: 0.7
         },
-        hitbox: RectangleHitbox.fromRect(8.43, 8.43),
+        hitbox: RectangleHitbox.fromRect(8.43, 8.2),
         rotationMode: RotationMode.Limited,
         noResidue: true,
         frames: {

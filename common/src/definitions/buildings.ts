@@ -12634,7 +12634,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         sounds: {
             normal: "tavern_music",
             solved: "recorder_buzz",
-            position: Vec(0, 0),
+            position: Vec(17.25, 6.59),
             falloff: 1,
             maxRange: 200
         },
@@ -12911,6 +12911,10 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 key: "tavern_basement_floor_2",
                 position: Vec(-0.7, -41),
                 scale: Vec(2, 2)
+            },
+            {
+                key: "regular_crate_residue",
+                position: Vec(17.45, -53.97)
             }
         ],
         obstacles: [
@@ -12962,10 +12966,28 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "small_bed", position: Vec(-35.84, 53.63), rotation: 1 },
             { idString: "nsd_crate", position: Vec(38.03, 6.64) },
             { idString: "regular_crate", position: Vec(38.55, 51.38) },
+            { idString: "regular_crate", position: Vec(-17.5, -28.18) },
             { idString: "button", position: Vec(-14.73, -20.5), rotation: 0, variation: 0, puzzlePiece: true },
             { idString: "potted_plant", position: Vec(19.68, -17.44), rotation: 0 },
             { idString: "door", position: Vec(-16.75, 40.32), rotation: 2 },
             { idString: "rare_wine_case", position: Vec(-0.73, -41.54), rotation: 0 }
-        ]
+        ],
+        subBuildings: [{
+            idString: "tavern_basement_vault_ceiling",
+            position: Vec(-0.55, -40.6)
+        }]
+    },
+    {
+        idString: "tavern_basement_vault_ceiling",
+        name: "Tavern Basement Vault Ceiling",
+        defType: DefinitionType.Building,
+        ceilingHiddenAlpha: 0.5,
+        spawnHitbox: RectangleHitbox.fromRect(50.85, 43.97),
+        ceilingHitbox: RectangleHitbox.fromRect(43.81, 34.55),
+        ceilingImages: [{
+            key: "tavern_basement_vault_ceiling",
+            position: Vec(0, 0),
+            scale: Vec(4.05, 4.075)
+        }]
     }
 ]);

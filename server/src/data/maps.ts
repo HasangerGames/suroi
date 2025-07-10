@@ -772,6 +772,8 @@ const maps = {
             tavern: 1
         },
         quadBuildingLimit: {
+            hunting_stand: 2,
+            warehouse_hunted: 1,
             panther_bunker: 1,
             tiger_bunker: 1,
             lion_bunker: 1,
@@ -787,7 +789,8 @@ const maps = {
             oak_tree: 10,
             loot_tree: 1,
             regular_crate: 160,
-            nsd_crate: 10,
+            nsd_crate: 6,
+            lansiraami_crate: 6,
             grenade_crate: 35,
             rock: 150,
             river_chest: 1,
