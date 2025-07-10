@@ -3101,7 +3101,7 @@ logger.indent("Validating obstacles", () => {
                                     obj: obstacle,
                                     field: "slideFactor",
                                     min: 0,
-                                    max: 1,
+                                    max: 1.5,
                                     includeMin: true,
                                     includeMax: true,
                                     baseErrorPath: errorPath

@@ -6435,7 +6435,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         invisible: true,
         hitbox: new GroupHitbox(
             RectangleHitbox.fromRect(19.2, 10.25, Vec(8.12, -9.77)),
-            RectangleHitbox.fromRect(11.06, 31.91, Vec(4.05, 10.61))
+            RectangleHitbox.fromRect(10.05, 31.91, Vec(3.6, 10.61))
         ),
         frames: {
             particle: "tavern_bar_particle"
@@ -6465,12 +6465,19 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         material: "wood",
         health: 1000,
         indestructible: true,
-        hitbox: RectangleHitbox.fromRect(5.3, 16.02),
+        hitbox: RectangleHitbox.fromRect(16.02, 5.3),
         frames: {
             particle: "tavern_bar_particle"
         },
         rotationMode: RotationMode.Limited,
-        allowFlyover: FlyoverPref.Always
+        allowFlyover: FlyoverPref.Always,
+        damage: 0, // to remove interact message
+        doorSound: "monument_slide",
+        isDoor: true,
+        openOnce: true,
+        operationStyle: "slide",
+        slideFactor: 1.1,
+        animationDuration: 6000
     },
     {
         idString: "wine_barrel",

@@ -12625,6 +12625,19 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             RectangleHitbox.fromRect(56.83, 19.14, Vec(3.1, 46.75)),
             RectangleHitbox.fromRect(23.56, 5.38, Vec(-12.95, 56.4))
         ),
+        // puzzle: { -TODO
+        //     triggerOnSolve: "tavern_bottle_table",
+        //     delay: 1000,
+        //     order: ["1", "2", "3"],
+        //     solvedSound: true
+        // },
+        sounds: {
+            normal: "tavern_music",
+            solved: "recorder_buzz",
+            position: Vec(0, 0),
+            falloff: 1,
+            maxRange: 200
+        },
         floors: [
             {
                 type: FloorNames.Carpet,
@@ -12822,7 +12835,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "fireplace", position: Vec(-51.19, 33.42), rotation: 2 },
             { idString: "couch", position: Vec(-50.82, 5.93), rotation: 3 },
             { idString: "gun_mount_m3k", position: Vec(-14.35, -29.45), rotation: 0 },
-            { idString: "tavern_bottle_table", position: Vec(29.95, 12.03), rotation: 0 }
+            { idString: "tavern_bottle_table", position: Vec(29.95, 12.03), rotation: 1 }
         ],
         subBuildings: [
             { idString: "tavern_secret_ceiling", position: Vec(39.85, 3.2) },
