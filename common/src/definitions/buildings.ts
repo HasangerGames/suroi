@@ -12597,7 +12597,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         material: "stone",
         particle: "cabin_wall_particle",
         collideWithLayers: Layers.Equal,
-        bunkerSpawnHitbox: RectangleHitbox.fromRect(106.29, 130.73, Vec(42.71, -54.54)),
+        bunkerSpawnHitbox: RectangleHitbox.fromRect(106.29, 130.73, Vec(42.71, -53.34)),
         hitbox: new GroupHitbox(
             RectangleHitbox.fromRect(2.01, 52.82, Vec(-75.92, -26.65)),
             RectangleHitbox.fromRect(37.57, 2.01, Vec(-57.14, -52.06)),
@@ -12742,8 +12742,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         obstacles: [
             { idString: "tavern_bar_collider", position: Vec(0, 0), rotation: 0 }, // might be turned into an obstacle for recording
             { idString: "tavern_table_collider", position: Vec(0, 0), rotation: 0 },
-            { idString: "tavern_basement_collider_hack", position: Vec(43.66, -54.91), rotation: 0, layer: Layer.ToBasement },
-            { idString: "tavern_stair", position: Vec(40.82, -6.5), rotation: 0, layer: Layer.ToBasement },
+            { idString: "tavern_basement_collider_hack", position: Vec(43.66, -53.7), rotation: 0, layer: Layer.ToBasement },
+            { idString: "tavern_stair", position: Vec(40.82, -5), rotation: 0, layer: Layer.ToBasement },
 
             { idString: "tavern_wall_1", position: Vec(-18.725, -32.3), rotation: 0 },
             { idString: "tavern_wall_2", position: Vec(-39.42, -41.21), rotation: 0 },
@@ -12839,7 +12839,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         ],
         subBuildings: [
             { idString: "tavern_secret_ceiling", position: Vec(39.85, 3.2) },
-            { idString: "tavern_basement", position: Vec(43.66, -54.91), layer: Layer.Basement }
+            { idString: "tavern_basement", position: Vec(43.66, -53.7), layer: Layer.Basement }
         ]
     },
     {

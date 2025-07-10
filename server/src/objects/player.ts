@@ -25,7 +25,7 @@ import { type SpectateData } from "@common/packets/spectatePacket";
 import { UpdatePacket, type PlayerData, type UpdateDataCommon } from "@common/packets/updatePacket";
 import { PlayerModifiers } from "@common/typings";
 import { CircleHitbox, RectangleHitbox, type Hitbox } from "@common/utils/hitbox";
-import { adjacentOrEqualLayer, equalLayer } from "@common/utils/layer";
+import { adjacentOrEqualLayer } from "@common/utils/layer";
 import { Angle, Collision, Geometry, Numeric } from "@common/utils/math";
 import { removeFrom, type SDeepMutable, type Timeout } from "@common/utils/misc";
 import { DefinitionType, type EventModifiers, type ExtendedWearerAttributes, type ReferenceTo, type ReifiableDef, type WearerAttributes } from "@common/utils/objectDefinitions";
@@ -2484,7 +2484,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             && !this.beingRevivedBy
             && this !== player
             && this.teamID === player.teamID
-            && equalLayer(this.layer, player.layer);
+            && adjacentOrEqualLayer(this.layer, player.layer);
     }
 
     interact(reviver: Player): void {
