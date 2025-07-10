@@ -6475,6 +6475,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         doorSound: "monument_slide",
         isDoor: true,
         openOnce: true,
+        locked: true,
         operationStyle: "slide",
         slideFactor: 1.1,
         animationDuration: 6000
