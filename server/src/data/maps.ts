@@ -774,9 +774,6 @@ const maps = {
         quadBuildingLimit: {
             hunting_stand: 2,
             warehouse_hunted: 1,
-            panther_bunker: 1,
-            tiger_bunker: 1,
-            lion_bunker: 1,
             cabin: 1,
             tavern: 1
         },

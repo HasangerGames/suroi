@@ -12636,7 +12636,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             solved: "recorder_buzz",
             position: Vec(17.25, 6.59),
             falloff: 1,
-            maxRange: 200
+            maxRange: 150
         },
         floors: [
             {
