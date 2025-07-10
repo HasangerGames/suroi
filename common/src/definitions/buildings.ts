@@ -10506,6 +10506,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         idString: "tiger_bunker",
         name: "tiger Bunker",
         defType: DefinitionType.Building,
+        bunkerSpawnHitbox: RectangleHitbox.fromRect(83.74, 83.74),
         spawnHitbox: new GroupHitbox(
             RectangleHitbox.fromRect(15, 18, Vec(30.78, -28.42)),
             RectangleHitbox.fromRect(15, 18, Vec(-30.71, 28.2))
@@ -10541,7 +10542,6 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         collideWithLayers: Layers.Equal,
         reflectBullets: true,
         spawnHitbox: RectangleHitbox.fromRect(83.74, 83.74),
-        bunkerSpawnHitbox: RectangleHitbox.fromRect(83.74, 83.74),
         ceilingHitbox: RectangleHitbox.fromRect(69.85, 69.85),
         hitbox: new GroupHitbox(
             RectangleHitbox.fromRect(5.08, 5.1, Vec(11.91, -11.83)),

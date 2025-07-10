@@ -27,15 +27,15 @@
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
-     inkscape:zoom="0.68862936"
-     inkscape:cx="746.41023"
-     inkscape:cy="397.16576"
+     inkscape:zoom="0.48693449"
+     inkscape:cx="309.07648"
+     inkscape:cy="245.41289"
      inkscape:window-width="1920"
      inkscape:window-height="991"
      inkscape:window-x="-9"
      inkscape:window-y="-9"
      inkscape:window-maximized="1"
-     inkscape:current-layer="g12" />
+     inkscape:current-layer="g2" />
   <defs
      id="defs1">
     <pattern
@@ -1009,38 +1009,6 @@
              cy="328.19159"
              r="4.4481745" />
         </g>
-        <rect
-           style="fill:#ccc9b8;fill-opacity:1;stroke:#828282;stroke-width:1.32303;stroke-linecap:butt;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1"
-           id="rect424"
-           width="37.71339"
-           height="16.218693"
-           x="5436.8999"
-           y="2372.0769"
-           transform="matrix(0.9267811,0.37560192,-0.39273649,0.91965105,0,0)" />
-        <ellipse
-           style="fill:#8c1e1e;fill-opacity:1;stroke:#541212;stroke-width:2;stroke-dasharray:none;stroke-opacity:1"
-           id="path326"
-           cx="4186.0249"
-           cy="4159.4951"
-           rx="3.4106445"
-           ry="3.7079284"
-           transform="rotate(1.025688)" />
-        <ellipse
-           style="fill:#261e8c;fill-opacity:1;stroke:#171254;stroke-width:2;stroke-dasharray:none;stroke-opacity:1"
-           id="path326-2"
-           cx="4196.1606"
-           cy="4163.6167"
-           rx="3.4106445"
-           ry="3.7079284"
-           transform="rotate(1.025688)" />
-        <ellipse
-           style="fill:#318c1e;fill-opacity:1;stroke:#1d5412;stroke-width:2;stroke-dasharray:none;stroke-opacity:1"
-           id="path326-2-7"
-           cx="4206.2964"
-           cy="4168.0327"
-           rx="3.4106445"
-           ry="3.7079284"
-           transform="rotate(1.025688)" />
       </g>
       <path
          style="fill:#2d2110;fill-opacity:1;stroke:#3b2b17;stroke-width:10.5833;stroke-dasharray:none;stroke-opacity:1"
