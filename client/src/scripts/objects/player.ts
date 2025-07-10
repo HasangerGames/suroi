@@ -12,7 +12,7 @@ import { Loots, type WeaponDefinition } from "@common/definitions/loots";
 import { MaterialSounds, type ObstacleDefinition } from "@common/definitions/obstacles";
 import { SpectatePacket } from "@common/packets/spectatePacket";
 import { CircleHitbox } from "@common/utils/hitbox";
-import { adjacentOrEquivLayer } from "@common/utils/layer";
+import { adjacentOrEquivLayer, equalLayer } from "@common/utils/layer";
 import { Angle, EaseFunctions, Geometry, Numeric } from "@common/utils/math";
 import { removeFrom, type Timeout } from "@common/utils/misc";
 import { DefinitionType, type ReferenceTo } from "@common/utils/objectDefinitions";
@@ -1283,7 +1283,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             && this.downed
             && !this.beingRevived
             && this !== player
-            && this.teamID === player.teamID;
+            && this.teamID === player.teamID
+            && equalLayer(this.layer, player.layer);
     }
 
     showEmote(emote: EmoteDefinition): void {

@@ -25,7 +25,7 @@ import { type SpectateData } from "@common/packets/spectatePacket";
 import { UpdatePacket, type PlayerData, type UpdateDataCommon } from "@common/packets/updatePacket";
 import { PlayerModifiers } from "@common/typings";
 import { CircleHitbox, RectangleHitbox, type Hitbox } from "@common/utils/hitbox";
-import { adjacentOrEqualLayer } from "@common/utils/layer";
+import { adjacentOrEqualLayer, equalLayer } from "@common/utils/layer";
 import { Angle, Collision, Geometry, Numeric } from "@common/utils/math";
 import { removeFrom, type SDeepMutable, type Timeout } from "@common/utils/misc";
 import { DefinitionType, type EventModifiers, type ExtendedWearerAttributes, type ReferenceTo, type ReifiableDef, type WearerAttributes } from "@common/utils/objectDefinitions";
@@ -2483,7 +2483,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             && this.downed
             && !this.beingRevivedBy
             && this !== player
-            && this.teamID === player.teamID;
+            && this.teamID === player.teamID
+            && equalLayer(this.layer, player.layer);
     }
 
     interact(reviver: Player): void {
@@ -2611,7 +2612,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                         dist: Number.MAX_VALUE
                     };
                     const detectionHitbox = new CircleHitbox(3 * this._sizeMod, this.position);
-                    const nearObjects = this.game.grid.intersectsHitbox(detectionHitbox);
+                    const nearObjects = this.game.grid.intersectsHitbox(detectionHitbox, this.layer);
 
                     for (const object of nearObjects) {
                         const { isLoot, isObstacle, isPlayer } = object;
@@ -2620,7 +2621,6 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                         if (
                             (isLoot || (type === InputActions.Interact && isInteractable))
                             && object.hitbox?.collidesWith(detectionHitbox)
-                            && adjacentOrEqualLayer(this.layer, object.layer)
                             && !(isLoot && [DefinitionType.Throwable, DefinitionType.Gun].includes(object.definition.defType) && this.perks.hasItem(PerkIds.Lycanthropy))
                         ) {
                             const dist = Geometry.distanceSquared(object.position, this.position);
@@ -2648,7 +2648,6 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                                     && !object.door?.locked
                                     && object !== interactable.object
                                     && object.hitbox.collidesWith(detectionHitbox)
-                                    && adjacentOrEqualLayer(this.layer, object.layer)
                                 ) {
                                     object.interact(this);
                                 }

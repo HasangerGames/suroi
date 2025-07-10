@@ -12,7 +12,7 @@ import { PacketType, type DataSplit, type PacketDataIn, type PacketDataOut } fro
 import { PacketStream } from "@common/packets/packetStream";
 import { type UpdateDataOut } from "@common/packets/updatePacket";
 import { CircleHitbox } from "@common/utils/hitbox";
-import { adjacentOrEqualLayer, equalLayer } from "@common/utils/layer";
+import { adjacentOrEquivLayer, equalLayer } from "@common/utils/layer";
 import { EaseFunctions, Geometry, Numeric } from "@common/utils/math";
 import { Timeout } from "@common/utils/misc";
 import { DefinitionType } from "@common/utils/objectDefinitions";
@@ -1023,7 +1023,7 @@ export const Game = new (class Game {
                 if (
                     (isLoot || isInteractable)
                     && object.hitbox.collidesWith(detectionHitbox)
-                    && adjacentOrEqualLayer(object.layer, player.layer)
+                    && adjacentOrEquivLayer(object, player.layer)
                 ) {
                     const dist = Geometry.distanceSquared(object.position, player.position);
                     if (isInteractable) {
