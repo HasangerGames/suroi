@@ -3,8 +3,8 @@
 
 <svg
    width="1854.381"
-   height="1659.7377"
-   viewBox="0 0 490.63829 439.13892"
+   height="1662.2789"
+   viewBox="0 0 490.63829 439.81129"
    version="1.1"
    id="svg1"
    sodipodi:docname="tavern_basement_floor_1.svg"
@@ -24,15 +24,15 @@
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
-     inkscape:zoom="0.34431467"
-     inkscape:cx="874.20032"
-     inkscape:cy="849.5136"
+     inkscape:zoom="1"
+     inkscape:cx="861"
+     inkscape:cy="-15.5"
      inkscape:window-width="1920"
      inkscape:window-height="991"
      inkscape:window-x="-9"
      inkscape:window-y="-9"
      inkscape:window-maximized="1"
-     inkscape:current-layer="layer1" />
+     inkscape:current-layer="g6" />
   <defs
      id="defs1">
     <pattern
@@ -153,7 +153,7 @@
        xlink:href="#pattern30-5-1-4"
        preserveAspectRatio="xMidYMid"
        id="pattern378-2"
-       patternTransform="matrix(0.3,0,0,0.3,-925.65074,-3235.1973)"
+       patternTransform="matrix(0.3,0,0,0.30173757,-925.65074,-3258.3703)"
        x="0"
        y="0" />
     <pattern
@@ -539,17 +539,17 @@
      inkscape:label="Στρώση 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(140.4938,-25.60732)">
+     transform="translate(140.4938,-24.934926)">
     <g
        id="g6"
-       transform="translate(-4565.5809,-396.01513)">
+       transform="matrix(1,0,0,1.0015311,-4565.5809,-397.33307)">
       <rect
-         style="fill:url(#pattern378-2);fill-opacity:1;stroke:none;stroke-width:10.5833;stroke-dasharray:none;stroke-opacity:1"
+         style="fill:url(#pattern378-2);fill-opacity:1;stroke:none;stroke-width:10.6135;stroke-dasharray:none;stroke-opacity:1"
          id="rect363-6"
          width="473.54041"
-         height="342.08887"
+         height="344.07022"
          x="4435.6704"
-         y="423.64291" />
+         y="421.66156" />
       <rect
          style="fill:url(#pattern47);fill-opacity:1;stroke:#543d2b;stroke-width:3;stroke-linecap:butt;stroke-dasharray:none;stroke-opacity:1;paint-order:markers fill stroke"
          id="rect46"

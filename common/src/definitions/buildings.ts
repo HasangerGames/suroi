@@ -12596,6 +12596,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         defType: DefinitionType.Building,
         material: "stone",
         particle: "cabin_wall_particle",
+        collideWithLayers: Layers.Equal,
         // bunkerSpawnHitbox: RectangleHitbox.fromRect(106.29, 130.73, Vec(-0.95, 0.37)),
         hitbox: new GroupHitbox(
             RectangleHitbox.fromRect(2.01, 52.82, Vec(-75.92, -26.65)),
@@ -12677,11 +12678,11 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             },
             {
                 key: "tavern_stair",
-                position: Vec(34.96, 46.41)
+                position: Vec(34.96, 46.45)
             },
             {
                 key: "tavern_stair",
-                position: Vec(-13.42, 62.5),
+                position: Vec(-13.42, 62.47),
                 rotation: Math.PI / 2,
                 scale: Vec(1, 1.65)
             }
@@ -12689,7 +12690,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         ceilingImages: [
             {
                 key: "tavern_ceiling_2",
-                position: Vec(-2.86, -58.32),
+                position: Vec(-2.65, -58.32),
                 scale: Vec(2, 2)
             },
             {
@@ -12728,6 +12729,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         obstacles: [
             { idString: "tavern_bar_collider", position: Vec(0, 0), rotation: 0 }, // might be turned into an obstacle for recording
             { idString: "tavern_table_collider", position: Vec(0, 0), rotation: 0 },
+            { idString: "tavern_basement_collider_hack", position: Vec(43.66, -54.91), rotation: 0, layer: Layer.ToBasement },
+            { idString: "tavern_stair", position: Vec(40.82, -6.5), rotation: 0, layer: Layer.ToBasement },
 
             { idString: "tavern_wall_1", position: Vec(-18.725, -32.3), rotation: 0 },
             { idString: "tavern_wall_2", position: Vec(-39.42, -41.21), rotation: 0 },
@@ -12748,7 +12751,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "door", position: Vec(-39.39, -57.67), rotation: 3 },
             { idString: "door", position: Vec(33.48, -20.79), rotation: 1 },
             { idString: "door", position: Vec(70.47, -46.36), rotation: 1 },
-            { idString: "door", position: Vec(70.46, 32.07), rotation: 1 },
+            { idString: "door", position: Vec(70.4, 32.07), rotation: 1 },
             { idString: "door", position: Vec(-8.82, 38.81), rotation: 2 },
             { idString: "door", position: Vec(-18.01, 38.81), rotation: 0 },
             { idString: "door", position: Vec(-75.91, 32.12), rotation: 1 },
@@ -12818,11 +12821,12 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "sink2", position: Vec(-44.48, -46.31), rotation: 3 },
             { idString: "fireplace", position: Vec(-51.19, 33.42), rotation: 2 },
             { idString: "couch", position: Vec(-50.82, 5.93), rotation: 3 },
-            { idString: "gun_mount_m3k", position: Vec(-14.35, -29.39), rotation: 0 },
+            { idString: "gun_mount_m3k", position: Vec(-14.35, -29.45), rotation: 0 },
             { idString: "tavern_bottle_table", position: Vec(29.95, 12.03), rotation: 0 }
         ],
         subBuildings: [
-            { idString: "tavern_secret_ceiling", position: Vec(39.85, 3.2) }
+            { idString: "tavern_secret_ceiling", position: Vec(39.85, 3.2) },
+            { idString: "tavern_basement", position: Vec(43.66, -54.91), layer: Layer.Basement }
         ]
     },
     {
@@ -12849,6 +12853,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         material: "metal_heavy",
         particle: "bunker_particle",
         reflectBullets: true,
+        collideWithLayers: Layers.Equal,
         hitbox: new GroupHitbox(
             RectangleHitbox.fromRect(2.06, 19.23, Vec(4.33, 49.24)),
             RectangleHitbox.fromRect(2.06, 19.23, Vec(-10.2, 49.25)),
@@ -12891,16 +12896,12 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             },
             {
                 key: "tavern_basement_floor_2",
-                position: Vec(-0.7, -40.8)
-            },
-            {
-                key: "tavern_basement",
-                position: Vec(0, 0),
-                alpha: 0.75
+                position: Vec(-0.7, -41),
+                scale: Vec(2, 2)
             }
         ],
         obstacles: [
-            // TODO: 5.45mm AN-94 gun mount, repair floor pattern & floor image placement (probably !), connect to tavern via stair
+            // TODO: 5.45mm AN-94 gun mount, repair floor pattern
 
             { idString: "tavern_basement_table_collider_1", position: Vec(0, 0), rotation: 0 },
             { idString: "tavern_basement_table_collider_2", position: Vec(0, 0), rotation: 0 },
@@ -12948,7 +12949,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "small_bed", position: Vec(-35.84, 53.63), rotation: 1 },
             { idString: "nsd_crate", position: Vec(38.03, 6.64) },
             { idString: "regular_crate", position: Vec(38.55, 51.38) },
-            { idString: "button", position: Vec(-14.73, -20.44), rotation: 0, variation: 0, puzzlePiece: true },
+            { idString: "button", position: Vec(-14.73, -20.5), rotation: 0, variation: 0, puzzlePiece: true },
             { idString: "potted_plant", position: Vec(19.68, -17.44), rotation: 0 },
             { idString: "door", position: Vec(-16.75, 40.32), rotation: 2 },
             { idString: "rare_wine_case", position: Vec(-0.73, -41.54), rotation: 0 }

@@ -303,6 +303,17 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
                             }
                         }
                     }
+
+                    if (object.isObstacle && object.definition.gunMount) {
+                        const detectionHitbox_ = new CircleHitbox(2, object.position);
+                        if (this.hitbox.collidesWith(detectionHitbox_)) {
+                            object.damage({
+                                amount: Infinity,
+                                source,
+                                weaponUsed
+                            });
+                        }
+                    }
                 }
             }
 

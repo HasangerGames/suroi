@@ -5637,6 +5637,25 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         collideWithLayers: Layers.Equal
     },
     {
+        idString: "tavern_basement_collider_hack",
+        name: "Tavern Basement Collider Hack",
+        defType: DefinitionType.Obstacle,
+        material: "metal_heavy",
+        health: 1000,
+        indestructible: true,
+        invisible: true,
+        hitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(2.06, 19.23, Vec(4.33, 49.24)),
+            RectangleHitbox.fromRect(2.06, 19.23, Vec(-10.2, 49.25))
+        ),
+        reflectBullets: true,
+        frames: {
+            particle: "bunker_particle"
+        },
+        rotationMode: RotationMode.Limited,
+        collideWithLayers: Layers.Equal
+    },
+    {
         idString: "fire_exit_railing",
         name: "Fire exit railing",
         defType: DefinitionType.Obstacle,
@@ -6484,9 +6503,9 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         },
         hitbox: new CircleHitbox(3.02),
         rotationMode: RotationMode.Limited,
-        noResidue: true,
         frames: {
-            particle: "wine_barrel_particle"
+            particle: "wine_barrel_particle",
+            residue: "chair_residue"
         }
     },
     {
@@ -6558,6 +6577,26 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         frames: {
             particle: "window_particle"
         }
+    },
+    {
+        idString: "tavern_stair",
+        name: "Tavern Stair",
+        defType: DefinitionType.Obstacle,
+        material: "metal_heavy",
+        health: 1000,
+        indestructible: true,
+        isStair: true,
+        activeEdges: {
+            high: 2,
+            low: 0
+        },
+        invisible: true,
+        hitbox: RectangleHitbox.fromRect(12.47, 14.5),
+        frames: {
+            particle: "metal_particle"
+        },
+        rotationMode: RotationMode.Limited,
+        zIndex: ZIndexes.BuildingsFloor
     }
 ] satisfies readonly RawObstacleDefinition[] as readonly RawObstacleDefinition[]).flatMap((def: Mutable<RawObstacleDefinition>) => {
     if (def.variations !== undefined) (def as Mutable<ObstacleDefinition>).variationBits = Math.ceil(Math.log2(def.variations));

@@ -27,9 +27,9 @@
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
-     inkscape:zoom="0.48693448"
-     inkscape:cx="217.68843"
-     inkscape:cy="277.24469"
+     inkscape:zoom="2"
+     inkscape:cx="1159.75"
+     inkscape:cy="182.75"
      inkscape:window-width="1920"
      inkscape:window-height="991"
      inkscape:window-x="-9"
@@ -182,7 +182,7 @@
        xlink:href="#pattern15-84-9"
        preserveAspectRatio="xMidYMid"
        id="pattern117"
-       patternTransform="matrix(0,0.3,-0.27209449,0,391.18699,-1726.7021)"
+       patternTransform="matrix(0,0.29781649,-0.27076189,0,409.82955,-1679.5895)"
        x="0"
        y="0" />
     <pattern
@@ -671,12 +671,12 @@
          x="4362.4932"
          y="4265.2808" />
       <rect
-         style="fill:url(#pattern117);fill-opacity:1;stroke-width:3.96899"
+         style="fill:url(#pattern117);fill-opacity:1;stroke:#4e3a1c;stroke-width:1.66097;stroke-dasharray:none;stroke-opacity:1"
          id="rect116"
-         width="314.97293"
-         height="109.19131"
-         x="4042.5146"
-         y="4746.7905" />
+         width="313.4303"
+         height="108.39657"
+         x="4043.2749"
+         y="4746.7861" />
       <rect
          style="fill:url(#pattern375);fill-opacity:1;stroke:none;stroke-width:10.5833;stroke-dasharray:none;stroke-opacity:1"
          id="rect324"
@@ -818,9 +818,19 @@
          y="-4347.6489"
          rx="0"
          ry="0"
-         style="display:inline;fill:#5d4622;fill-opacity:1;stroke:#2d2110;stroke-width:3.99998;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1;paint-order:markers stroke fill;stop-color:#000000"
+         style="display:inline;fill:#5d4622;fill-opacity:1;stroke:#2d2110;stroke-width:4;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1;paint-order:normal;stop-color:#000000"
          transform="rotate(90)"
          id="rect2226-6-1-4-97-5-8-8" />
+      <rect
+         width="1.2381839"
+         height="147.25339"
+         x="4844.2788"
+         y="-4346.2759"
+         rx="0"
+         ry="0"
+         style="display:inline;fill:#5d4622;fill-opacity:1;fill-rule:nonzero;stroke:#5d4622;stroke-width:2.75822;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1;paint-order:normal;stop-color:#000000"
+         id="rect2226-6-1-4-97-5-8-8-9-1-7"
+         transform="rotate(90)" />
       <rect
          width="4"
          height="95.862999"
@@ -828,7 +838,7 @@
          y="4749.6167"
          rx="0"
          ry="0"
-         style="display:inline;fill:#5d4622;fill-opacity:1;stroke:#2d2110;stroke-width:3.99998;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1;paint-order:markers stroke fill;stop-color:#000000"
+         style="display:inline;fill:#5d4622;fill-opacity:1;stroke:#2d2110;stroke-width:4;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1;paint-order:normal;stop-color:#000000;fill-rule:nonzero"
          id="rect2226-6-1-4-97-5-8-8-9" />
       <g
          id="g118-6"
@@ -2085,6 +2095,15 @@
              ry="0" />
         </g>
       </g>
+      <rect
+         width="1.5599374"
+         height="90.155235"
+         x="4052.521"
+         y="4754.1133"
+         rx="0"
+         ry="0"
+         style="display:inline;fill:#5d4622;fill-opacity:1;fill-rule:nonzero;stroke:#5d4622;stroke-width:2.42243;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1;paint-order:normal;stop-color:#000000"
+         id="rect2226-6-1-4-97-5-8-8-9-1" />
     </g>
   </g>
 </svg>

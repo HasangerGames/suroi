@@ -2,8 +2,8 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="955.87085"
-   height="758.80859"
+   width="477.935425"
+   height="379.404295"
    viewBox="0 0 252.90749 200.7681"
    version="1.1"
    id="svg1"
@@ -24,9 +24,9 @@
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
-     inkscape:zoom="0.34431467"
-     inkscape:cx="438.55232"
-     inkscape:cy="634.59392"
+     inkscape:zoom="2.7545174"
+     inkscape:cx="269.37568"
+     inkscape:cy="339.26088"
      inkscape:window-width="1920"
      inkscape:window-height="991"
      inkscape:window-x="-9"
@@ -35,6 +35,14 @@
      inkscape:current-layer="g6" />
   <defs
      id="defs1">
+    <pattern
+       inkscape:collect="always"
+       xlink:href="#pattern2"
+       preserveAspectRatio="xMidYMid"
+       id="pattern5"
+       patternTransform="matrix(0.3,0,0,0.3,793.70079,1355.53)"
+       x="0"
+       y="0" />
     <pattern
        xlink:href="#pattern242-0-4-7"
        preserveAspectRatio="xMidYMid"
@@ -87,7 +95,8 @@
        patternTransform="translate(793.70079,1355.53)"
        preserveAspectRatio="xMidYMid"
        id="pattern2"
-       style="fill:#000000">
+       style="fill:#000000"
+       inkscape:label="pattern2">
       <g
          id="g2"
          transform="matrix(3.7795276,0,0,3.7795276,-793.70079,-1355.53)">
@@ -545,17 +554,17 @@
        transform="translate(-4565.5809,-396.01513)">
       <g
          id="g376-1"
-         transform="matrix(1,0,0,0.94522229,-574.6332,-3643.6087)"
-         style="fill:url(#pattern683-2);fill-opacity:1;stroke-width:1.03541">
+         transform="matrix(1,0,0,0.9299124,-574.6332,-3578.6857)"
+         style="fill:url(#pattern5);fill-opacity:1;stroke-width:1.03541">
         <rect
-           style="fill:url(#pattern683-2);fill-opacity:1;stroke:none;stroke-width:10.958;stroke-dasharray:none;stroke-opacity:1"
+           style="fill:url(#pattern5);fill-opacity:1;stroke:none;stroke-width:10.958;stroke-dasharray:none;stroke-opacity:1"
            id="rect370-9"
            width="242.32491"
            height="200.76816"
            x="5120.5498"
            y="4102.3384" />
         <rect
-           style="fill:url(#pattern683-2);fill-opacity:1;stroke:none;stroke-width:10.958;stroke-dasharray:none;stroke-opacity:1"
+           style="fill:url(#pattern5);fill-opacity:1;stroke:none;stroke-width:10.958;stroke-dasharray:none;stroke-opacity:1"
            id="rect371-8"
            width="242.32491"
            height="200.76816"
@@ -563,20 +572,20 @@
            y="4102.3384" />
       </g>
       <path
-         style="fill:#4e2020;fill-opacity:1;stroke:#171717;stroke-width:10.5833;stroke-dasharray:none;stroke-opacity:1"
-         d="M 4546.0556,423.6198 V 228.2693"
+         style="fill:#4e2020;fill-opacity:1;stroke:#171717;stroke-width:10.6274;stroke-dasharray:none;stroke-opacity:1"
+         d="M 4546.0556,425.25231 V 228.2693"
          id="path368-6-2-2-5" />
       <path
-         style="fill:#4e2020;fill-opacity:1;stroke:#171717;stroke-width:10.5833;stroke-dasharray:none;stroke-opacity:1"
-         d="M 4788.2412,429.0374 V 228.2694"
+         style="fill:#4e2020;fill-opacity:1;stroke:#171717;stroke-width:10.5042;stroke-dasharray:none;stroke-opacity:1"
+         d="M 4788.2412,424.99056 V 227.21107"
          id="path368-6-2-2-4-8" />
       <path
          style="fill:#4e2020;fill-opacity:1;stroke:#171717;stroke-width:10.5833;stroke-dasharray:none;stroke-opacity:1"
          d="M 4793.5329,233.5611 H 4540.6254"
          id="path368-6-2-2-4-4-2" />
       <path
-         style="fill:#4e2020;fill-opacity:1;stroke:#262626;stroke-width:6.08541;stroke-dasharray:none;stroke-opacity:1"
-         d="M 4546.0556,424.4466 V 230.5184"
+         style="fill:#4e2020;fill-opacity:1;stroke:#262626;stroke-width:6.15658;stroke-dasharray:none;stroke-opacity:1"
+         d="M 4546.0556,429.00918 V 230.5184"
          id="path696-6" />
       <path
          style="fill:#4e2020;fill-opacity:1;stroke:#262626;stroke-width:6.08542;stroke-dasharray:none;stroke-opacity:1"
