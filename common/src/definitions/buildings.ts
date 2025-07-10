@@ -12597,7 +12597,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         material: "stone",
         particle: "cabin_wall_particle",
         collideWithLayers: Layers.Equal,
-        // bunkerSpawnHitbox: RectangleHitbox.fromRect(106.29, 130.73, Vec(-0.95, 0.37)),
+        bunkerSpawnHitbox: RectangleHitbox.fromRect(106.29, 130.73, Vec(42.71, -54.54)),
         hitbox: new GroupHitbox(
             RectangleHitbox.fromRect(2.01, 52.82, Vec(-75.92, -26.65)),
             RectangleHitbox.fromRect(37.57, 2.01, Vec(-57.14, -52.06)),
