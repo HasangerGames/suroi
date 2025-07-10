@@ -1304,7 +1304,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `emote_man_face` is not a valid key
 - Key `emote_satisfied_face` is not a valid key
 - Key `emote_hot_face` is not a valid key
-- Key `emote_blind_walking` is not a valid key
+- Key `emote_blindfolded` is not a valid key
 - Key `emote_melting_face` is not a valid key
 - Key `emote_grimacing_face` is not a valid key
 - Key `emote_vomiting_face` is not a valid key
@@ -2357,7 +2357,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `emote_man_face` is not a valid key
 - Key `emote_satisfied_face` is not a valid key
 - Key `emote_hot_face` is not a valid key
-- Key `emote_blind_walking` is not a valid key
+- Key `emote_blindfolded` is not a valid key
 - Key `emote_melting_face` is not a valid key
 - Key `emote_grimacing_face` is not a valid key
 - Key `emote_vomiting_face` is not a valid key
