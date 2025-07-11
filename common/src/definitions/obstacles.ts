@@ -1030,7 +1030,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         spawnHitbox: new CircleHitbox(8.5),
         rotationMode: RotationMode.Full,
         allowFlyover: FlyoverPref.Never,
-        zIndex: ZIndexes.ObstaclesLayer4,
+        zIndex: ZIndexes.ObstaclesLayer5,
         frames: {
             base: "spruce_tree_trunk",
             leaves: "spruce_tree_leaves",
@@ -6605,11 +6605,12 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
             spawnMax: 1,
             destroy: 0.5
         },
-        hitbox: new CircleHitbox(3.75),
+        hitbox: new CircleHitbox(3.6),
         rotationMode: RotationMode.Full,
-        noResidue: true,
+        explosion: "barrel_explosion",
         frames: {
-            particle: "wine_barrel_particle"
+            particle: "wine_barrel_particle",
+            residue: "explosion_decal"
         }
     }
 ] satisfies readonly RawObstacleDefinition[] as readonly RawObstacleDefinition[]).flatMap((def: Mutable<RawObstacleDefinition>) => {
