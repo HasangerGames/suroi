@@ -11,7 +11,7 @@ import "../utils/isClient";
 
 declare const IS_CLIENT: boolean;
 
-interface BuildingObstacle {
+export interface BuildingObstacle {
     readonly idString: ReferenceOrRandom<ObstacleDefinition>
     readonly position: Vector
     readonly rotation?: number
@@ -25,6 +25,7 @@ interface BuildingObstacle {
     readonly activated?: boolean
     readonly outdoors?: boolean
     readonly waterOverlay?: boolean
+    readonly replaceableBy?: ReferenceOrRandom<ObstacleDefinition>
 }
 
 interface LootSpawner {
@@ -12625,12 +12626,12 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             RectangleHitbox.fromRect(56.83, 19.14, Vec(3.1, 46.75)),
             RectangleHitbox.fromRect(23.56, 5.38, Vec(-12.95, 56.4))
         ),
-        // puzzle: { -TODO
-        //     triggerOnSolve: "tavern_bottle_table",
-        //     delay: 1000,
-        //     order: ["1", "2", "3"],
-        //     solvedSound: true
-        // },
+        puzzle: {
+            triggerOnSolve: "tavern_bottle_table",
+            delay: 2500,
+            solvedSound: true,
+            setSolvedImmediately: true
+        },
         sounds: {
             normal: "tavern_music",
             solved: "recorder_buzz",
@@ -12674,6 +12675,11 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 type: FloorNames.Metal,
                 hitbox: RectangleHitbox.fromRect(12.47, 17.59, Vec(40.76, -4.55)),
                 layer: Layer.ToBasement
+            },
+            {
+                type: FloorNames.Metal,
+                hitbox: RectangleHitbox.fromRect(12.47, 17.59, Vec(40.76, -4.55)),
+                layer: Layer.Basement
             }
         ],
         floorImages: [
@@ -12752,9 +12758,9 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "tavern_wall_5", position: Vec(-52.66, -32.3), rotation: 0 },
             { idString: "tavern_wall_6", position: Vec(33.51, 34.79), rotation: 0 },
 
-            { idString: "wine_barrel", position: Vec(48.66, -19.7) },
-            { idString: "wine_barrel", position: Vec(65.17, -32.77) },
-            { idString: "wine_barrel", position: Vec(9.73, -49.31) },
+            { idString: "wine_barrel", position: Vec(48.66, -19.7), replaceableBy: "special_wine_barrel" },
+            { idString: "wine_barrel", position: Vec(65.17, -32.77), replaceableBy: "special_wine_barrel" },
+            { idString: "wine_barrel", position: Vec(9.73, -49.31), replaceableBy: "special_wine_barrel" },
 
             { idString: "bar_seat", position: Vec(-5.05, -3.84), rotation: 0 },
             { idString: "bar_seat", position: Vec(-5.13, 8.42), rotation: 0 },
@@ -12835,7 +12841,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "fireplace", position: Vec(-51.19, 33.42), rotation: 2 },
             { idString: "couch", position: Vec(-50.82, 5.93), rotation: 3 },
             { idString: "gun_mount_m3k", position: Vec(-14.35, -29.45), rotation: 0 },
-            { idString: "tavern_bottle_table", position: Vec(29.95, 12.03), rotation: 1 }
+            { idString: "tavern_bottle_table", position: Vec(29.95, 11.85), rotation: 1 }
         ],
         subBuildings: [
             { idString: "tavern_secret_ceiling", position: Vec(39.85, 3.2) },
@@ -12920,8 +12926,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         obstacles: [
             // TODO: 5.45mm AN-94 gun mount, repair floor pattern
 
-            { idString: "tavern_basement_table_collider_1", position: Vec(0, 0), rotation: 0 },
-            { idString: "tavern_basement_table_collider_2", position: Vec(0, 0), rotation: 0 },
+            { idString: "tavern_basement_table_colliders", position: Vec(0, 0), rotation: 0 },
 
             { idString: "bulletproof_automatic_glass_door", position: Vec(-6.03, -22.36), rotation: 0 },
             { idString: "bulletproof_automatic_glass_door", position: Vec(4.76, -22.36), rotation: 2 },

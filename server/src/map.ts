@@ -1,5 +1,5 @@
 import { GameConstants, Layer, MapObjectSpawnMode, ObjectCategory, RotationMode } from "@common/constants";
-import { Buildings, type BuildingDefinition } from "@common/definitions/buildings";
+import { BuildingObstacle, Buildings, type BuildingDefinition } from "@common/definitions/buildings";
 import { Obstacles, type ObstacleDefinition } from "@common/definitions/obstacles";
 import { MapPacket, type MapData } from "@common/packets/mapPacket";
 import { PacketStream } from "@common/packets/packetStream";
@@ -585,12 +585,43 @@ export class GameMap {
 
         const building = new Building(this.game, definition, Vec.clone(position), orientation, layer);
 
-        for (const obstacleData of definition.obstacles ?? []) {
+        const obstacleDefinitionData = definition.obstacles ?? [];
+
+        // ---------------------------------------------------------------------------
+        // Stage 1: Collect all replaceable obstacles.
+        // ---------------------------------------------------------------------------
+        const replaceableObstacles: BuildingObstacle[] = [];
+        for (const obstacleData of obstacleDefinitionData) {
+            if (obstacleData.replaceableBy !== undefined) {
+                replaceableObstacles.push(obstacleData);
+            }
+        }
+        // ---------------------------------------------------------------------------
+
+        // ---------------------------------------------------------------------------
+        // Stage 2: Pick Random
+        // ---------------------------------------------------------------------------
+        const chosenReplaceableObstacle = pickRandomInArray(replaceableObstacles);
+        // ---------------------------------------------------------------------------
+
+        for (const obstacleData of obstacleDefinitionData) {
             let idString = getRandomIDString<ObstacleDefinition>(obstacleData.idString);
             if (idString === NullString) continue;
             if (obstacleData.outdoors && this.game.mode.obstacleVariants) {
                 idString = `${idString}_${this.game.modeName}`;
             }
+
+            // ------------------------------------------------------------------------------------------------
+            // Stage 3: Find it and then replace it by changing the idString before generation.
+            // ------------------------------------------------------------------------------------------------
+            let isChosenObstacle = false;
+            if (obstacleData.replaceableBy !== undefined) {
+                isChosenObstacle = idString === chosenReplaceableObstacle.idString && Vec.equals(obstacleData.position, chosenReplaceableObstacle.position);
+                if (isChosenObstacle) {
+                    idString = chosenReplaceableObstacle.replaceableBy as ReferenceTo<ObstacleDefinition>;
+                }
+            }
+            // ------------------------------------------------------------------------------------------------
 
             const obstacleDef = Obstacles.fromString(idString);
             let obstacleRotation = obstacleData.rotation ?? GameMap.getRandomRotation(obstacleDef.rotationMode);
@@ -613,7 +644,7 @@ export class GameMap {
                     variation: obstacleData.variation,
                     lootSpawnOffset,
                     parentBuilding: building,
-                    puzzlePiece: obstacleData.puzzlePiece,
+                    puzzlePiece: isChosenObstacle ? isChosenObstacle : obstacleData.puzzlePiece,
                     locked: obstacleData.locked,
                     activated: obstacleData.activated,
                     waterOverlay: obstacleData.waterOverlay

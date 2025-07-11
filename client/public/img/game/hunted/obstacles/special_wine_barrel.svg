@@ -8,7 +8,7 @@
    version="1.1"
    id="svg1"
    inkscape:version="1.4 (86a8ad7, 2024-10-11)"
-   sodipodi:docname="wine_barrel.svg"
+   sodipodi:docname="special_wine_barrel.svg"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
@@ -24,8 +24,8 @@
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
      inkscape:zoom="3.8954759"
-     inkscape:cx="66.102322"
-     inkscape:cy="96.137164"
+     inkscape:cx="38.634561"
+     inkscape:cy="113.59331"
      inkscape:window-width="1920"
      inkscape:window-height="991"
      inkscape:window-x="-9"
@@ -68,14 +68,15 @@
     </g>
     <text
        xml:space="preserve"
-       style="font-size:3.175px;text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;opacity:0.75;fill:#926b34;stroke:#5d4622;stroke-width:0.966;stroke-linejoin:bevel;stroke-dasharray:none"
-       x="104.52407"
-       y="98.579742"
-       id="text1"><tspan
+       style="font-size:6.07674px;text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;opacity:0.75;fill:#926b34;stroke:#5d4622;stroke-width:1.84886;stroke-linejoin:bevel;stroke-dasharray:none"
+       x="143.63791"
+       y="71.892418"
+       id="text1"
+       transform="scale(0.70806776,1.4122942)"><tspan
          sodipodi:role="line"
          id="tspan1"
-         style="fill:none;fill-opacity:1;stroke:none;stroke-width:0.966;stroke-dasharray:none;stroke-opacity:1"
-         x="104.52407"
-         y="98.579742">puzzle shit</tspan></text>
+         style="fill:#ea0707;fill-opacity:1;stroke:none;stroke-width:1.84886;stroke-dasharray:none;stroke-opacity:1"
+         x="143.63791"
+         y="71.892418">puzzle shit</tspan></text>
   </g>
 </svg>

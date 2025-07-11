@@ -260,6 +260,8 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
                 this.game.addSyncedParticles(definition.particlesOnDestroy, this.position, this.layer);
             }
 
+            if (this.puzzlePiece) this.parentBuilding?.solvePuzzle();
+
             const lootSpawnPosition = position ?? (source as { readonly position?: Vector } | undefined)?.position ?? this.position;
             for (const item of this.loot) {
                 this.game.addLoot(

@@ -6477,7 +6477,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         openOnce: true,
         locked: true,
         operationStyle: "slide",
-        slideFactor: 1.1,
+        slideFactor: 1.11,
         animationDuration: 6000
     },
     {
@@ -6517,29 +6517,17 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         }
     },
     {
-        idString: "tavern_basement_table_collider_1",
-        name: "Tavern Basement Table Collider 1",
+        idString: "tavern_basement_table_colliders",
+        name: "Tavern Basement Table Colliders",
         defType: DefinitionType.Obstacle,
         material: "wood",
         health: 1000,
         indestructible: true,
         invisible: true,
-        hitbox: RectangleHitbox.fromRect(38.22, 10.83, Vec(3.17, 10.5)),
-        frames: {
-            particle: "tavern_bar_particle"
-        },
-        rotationMode: RotationMode.Limited,
-        allowFlyover: FlyoverPref.Always
-    },
-    {
-        idString: "tavern_basement_table_collider_2",
-        name: "Tavern Basement Table Collider 2",
-        defType: DefinitionType.Obstacle,
-        material: "wood",
-        health: 1000,
-        indestructible: true,
-        invisible: true,
-        hitbox: RectangleHitbox.fromRect(20.53, 10.87, Vec(34.15, -15.81)),
+        hitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(38.22, 10.83, Vec(3.17, 10.5)),
+            RectangleHitbox.fromRect(20.53, 10.87, Vec(34.15, -15.81))
+        ),
         frames: {
             particle: "tavern_bar_particle"
         },
@@ -6605,6 +6593,24 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         },
         rotationMode: RotationMode.Limited,
         zIndex: ZIndexes.BuildingsFloor
+    },
+    {
+        idString: "special_wine_barrel",
+        name: "Wine Barrel",
+        defType: DefinitionType.Obstacle,
+        material: "wood",
+        health: 161,
+        scale: {
+            spawnMin: 1,
+            spawnMax: 1,
+            destroy: 0.5
+        },
+        hitbox: new CircleHitbox(3.75),
+        rotationMode: RotationMode.Full,
+        noResidue: true,
+        frames: {
+            particle: "wine_barrel_particle"
+        }
     }
 ] satisfies readonly RawObstacleDefinition[] as readonly RawObstacleDefinition[]).flatMap((def: Mutable<RawObstacleDefinition>) => {
     if (def.variations !== undefined) (def as Mutable<ObstacleDefinition>).variationBits = Math.ceil(Math.log2(def.variations));
