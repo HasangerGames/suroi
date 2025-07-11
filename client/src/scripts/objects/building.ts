@@ -115,7 +115,6 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
                             || ("isWindow" in definition && definition.isWindow)
                             || !equivLayer({ layer, definition }, player)
                             || !hitbox?.intersectsLine(rayStart, rayCeilingIntersection)
-                            || !this.isObstacle
                         ) continue;
 
                         collided = true;
