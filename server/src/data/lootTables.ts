@@ -1673,6 +1673,64 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
         rsh_case_single: [{ item: "seedshot", weight: 1 }],
         rsh_case_dual: [{ item: "seedshot", weight: 1 }]
     },
-    hunted: {}, // TODO
+    hunted: {
+        ammo: [
+            { item: "12g", count: 10, weight: 0.75 },
+            { item: "556mm", count: 60, weight: 1 },
+            { item: "762mm", count: 60, weight: 1 },
+            { item: "9mm", count: 60, weight: 1 },
+            { item: "545mm", count: 40, weight: 0.5 },
+            { item: "50cal", count: 20, weight: 0.05 }
+        ],
+
+        ammo_crate: [
+            [{ table: "ammo", weight: 1 }],
+            [{ table: "ammo", weight: 1 }],
+            [
+                { item: NullString, weight: 1 },
+                { item: "50cal", count: 20, weight: 0.3 },
+                { item: "338lap", count: 6, weight: 0.1 },
+                { item: "545mm", count: 40, weight: 0.5 }
+            ]
+        ],
+
+        guns: [
+            { item: "g19", weight: 2 },
+            { item: "m1895", weight: 1.75 },
+            { item: "mpx", weight: 1.7 },
+            { item: "saf200", weight: 1.5 },
+            { item: "cz75a", weight: 1.5 },
+            { item: "hp18", weight: 1.25 },
+            { item: "micro_uzi", weight: 1 },
+            { item: "ak47", weight: 1 },
+            { item: "model_37", weight: 0.95 },
+            { item: "mp5k", weight: 0.85 },
+            { item: "aug", weight: 0.7 },
+            { item: "sks", weight: 0.7 },
+            { item: "m3k", weight: 0.3 },
+            { item: "m16a2", weight: 0.1 },
+            { item: "arx160", weight: 0.1 },
+            { item: "badlander", weight: 0.1 },
+            { item: "fn_fal", weight: 0.05 },
+            { item: "cz600", weight: 0.04 },
+            { item: "vss", weight: 0.02 },
+            { item: "mg36", weight: 0.015 },
+            { item: "sr25", weight: 0.01 },
+            { item: "mini14", weight: 0.01 },
+            { item: "mcx_spear", weight: 0.01 },
+            { item: "vepr12", weight: 0.008 },
+            { item: "stoner_63", weight: 0.005 },
+            { item: "flare", weight: 0.005 },
+            { item: "mosin_nagant", weight: 0.005 },
+            { item: "vector", weight: 0.004 },
+            { item: "deagle", weight: 0.004 },
+            { item: "model_89", weight: 0.003 },
+            { item: "vks", weight: 0.003 },
+            { item: "negev", weight: 0.003 },
+            { item: "mg5", weight: 0.003 },
+            { item: "tango_51", weight: 0.002 },
+            { item: "dual_deagle", weight: 0.001 }
+        ]
+    }, // TODO
     birthday: {}
 };

@@ -4085,6 +4085,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     gunMount("m590m", "gun"),
     gunMount("svu", "gun"),
     gunMount("m3k", "gun"),
+    gunMount("an94", "gun"),
     gunMount(
         "maul",
         "melee",
@@ -6543,7 +6544,6 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         locked: true,
         openOnce: true,
         indestructible: true,
-        reflectBullets: true,
         health: 100,
         hitbox: RectangleHitbox.fromRect(10.87, 1.6),
         rotationMode: RotationMode.Limited,

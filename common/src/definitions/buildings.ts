@@ -12924,8 +12924,6 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             }
         ],
         obstacles: [
-            // TODO: 5.45mm AN-94 gun mount, repair floor pattern
-
             { idString: "tavern_basement_table_colliders", position: Vec(0, 0), rotation: 0 },
 
             { idString: "bulletproof_automatic_glass_door", position: Vec(-6.03, -22.36), rotation: 0 },
@@ -12975,7 +12973,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "button", position: Vec(-14.73, -20.5), rotation: 0, variation: 0, puzzlePiece: true },
             { idString: "potted_plant", position: Vec(19.68, -17.44), rotation: 0 },
             { idString: "door", position: Vec(-16.75, 40.32), rotation: 2 },
-            { idString: "rare_wine_case", position: Vec(-0.73, -41.54), rotation: 0 }
+            { idString: "rare_wine_case", position: Vec(-0.73, -41.54), rotation: 0 },
+            { idString: "gun_mount_an94", position: Vec(-0.73, -56.17), rotation: 0 }
         ],
         subBuildings: [{
             idString: "tavern_basement_vault_ceiling",
