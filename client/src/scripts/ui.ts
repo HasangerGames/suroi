@@ -402,6 +402,14 @@ export async function setUpUI(): Promise<void> {
         })();
     }
 
+    // Switch languages with the ?language="name" Search Parameter
+    if (params.has("language")) {
+        const language = params.get("language");
+        params.delete("language");
+        if (language === null || !TRANSLATIONS.translations[language]) return;
+        GameConsole.setBuiltInCVar("cv_language", language);
+    }
+
     // Load news
     ui.newsPosts.html((posts as NewsPost[]).slice(0, 5).map(post => `
         <article class="splash-news-entry">
