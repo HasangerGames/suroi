@@ -10744,7 +10744,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "kitchen_unit_3", position: Vec(55.19, 23.67), rotation: 3 },
             { idString: "small_stove", position: Vec(42.1, 30.8), rotation: 2 },
             { idString: "fridge", position: Vec(33.71, 30.86), rotation: 2 },
-            { idString: "flint_crate", position: Vec(23.46, 5.43) },
+            { idString: "nsd_crate", position: Vec(23.46, 5.43) },
             { idString: "couch", position: Vec(49.98, 4.67), rotation: 3 },
             { idString: "fence", position: Vec(40.12, 4.81), rotation: 1 },
             { idString: "gun_case", position: Vec(13.4, -5.64), rotation: 3 },
