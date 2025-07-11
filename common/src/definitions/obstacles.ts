@@ -5594,7 +5594,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
             high: 0,
             low: 2
         },
-        hitbox: RectangleHitbox.fromRect(7.5, 9),
+        hitbox: RectangleHitbox.fromRect(7.5, 7),
         frames: {
             particle: "metal_particle"
         },

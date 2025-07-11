@@ -10396,8 +10396,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "hunted_bunker_collider_hack", position: Vec(-10.02, -28.57), rotation: 0, layer: Layer.ToBasement },
             { idString: "hunted_bunker_entrance", position: Vec(-14.31, 27.75), rotation: 0 },
             { idString: "hunted_bunker_entrance", position: Vec(-14.49, -27.97), rotation: 2 },
-            { idString: "hunted_bunker_stair", position: Vec(-14.2, 29.5), rotation: 2, layer: Layer.ToBasement },
-            { idString: "hunted_bunker_stair", position: Vec(-14.5, -29.5), rotation: 0, layer: Layer.ToBasement }
+            { idString: "hunted_bunker_stair", position: Vec(-14.2, 27), rotation: 2, layer: Layer.ToBasement },
+            { idString: "hunted_bunker_stair", position: Vec(-14.5, -27), rotation: 0, layer: Layer.ToBasement }
         ],
         subBuildings: IS_CLIENT ? undefined : [
             { idString: "panther_bunker_main", position: Vec(0, 0), layer: Layer.Basement }
@@ -10462,7 +10462,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             }
         ],
         obstacles: IS_CLIENT ? undefined : [
-            { idString: "small_lamp_thingy", position: Vec(18.18, -0.51) },
+            { idString: "small_lamp_thingy", position: Vec(18.18, 0) },
 
             { idString: "control_panel_small", position: Vec(-14.36, 11.22), rotation: 0 },
             { idString: "control_panel_small", position: Vec(-14.36, -9.22), rotation: 2 },
@@ -10527,8 +10527,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "hunted_bunker_collider_hack", position: Vec(35.35, -29.41), rotation: 0, layer: Layer.ToBasement },
             { idString: "hunted_bunker_entrance", position: Vec(-30.71, 28.2), rotation: 0 },
             { idString: "hunted_bunker_entrance", position: Vec(30.78, -28.42), rotation: 2 },
-            { idString: "hunted_bunker_stair", position: Vec(30.72, -29.94), rotation: 0, layer: Layer.ToBasement },
-            { idString: "hunted_bunker_stair", position: Vec(-30.72, 29.94), rotation: 2, layer: Layer.ToBasement }
+            { idString: "hunted_bunker_stair", position: Vec(30.72, -27.6), rotation: 0, layer: Layer.ToBasement },
+            { idString: "hunted_bunker_stair", position: Vec(-30.72, 27.5), rotation: 2, layer: Layer.ToBasement }
         ],
         subBuildings: IS_CLIENT ? undefined : [
             { idString: "tiger_bunker_main", position: Vec(0, 0), layer: Layer.Basement }
@@ -10661,8 +10661,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "hunted_bunker_collider_hack", position: Vec(4.66, 28.71), rotation: 0, layer: Layer.ToBasement },
             { idString: "hunted_bunker_collider_hack", position: Vec(52.7, -9.67), rotation: 1, layer: Layer.ToBasement },
             { idString: "hunted_bunker_collider_hack", position: Vec(52.7, -0.55), rotation: 1, layer: Layer.ToBasement },
-            { idString: "hunted_bunker_stair", position: Vec(54.36, -5.14), rotation: 3, layer: Layer.ToBasement },
-            { idString: "hunted_bunker_stair", position: Vec(0, 30.11), rotation: 2, layer: Layer.ToBasement },
+            { idString: "hunted_bunker_stair", position: Vec(51.7, -5.14), rotation: 3, layer: Layer.ToBasement },
+            { idString: "hunted_bunker_stair", position: Vec(0, 27.5), rotation: 2, layer: Layer.ToBasement },
             { idString: "hunted_bunker_entrance", position: Vec(0, 28.3), rotation: 0 },
             { idString: "hunted_bunker_entrance", position: Vec(52.54, -5.11), rotation: 1 }
         ],

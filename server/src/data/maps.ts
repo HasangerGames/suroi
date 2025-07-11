@@ -763,7 +763,8 @@ const maps = {
             tugboat_red: 1,
             tugboat_white: 5,
             buoy: 12,
-            hunting_stand: 12,
+            hunting_stand: 6,
+            outhouse: 6,
             warehouse_hunted: 5,
             panther_bunker: 1,
             tiger_bunker: 1,
@@ -772,22 +773,22 @@ const maps = {
             tavern: 1
         },
         quadBuildingLimit: {
-            hunting_stand: 2,
-            warehouse_hunted: 1,
+            hunting_stand: 1, // can't have two of these next to eachother
+            warehouse_hunted: 2,
+            outhouse: 3,
             cabin: 1,
             tavern: 1
         },
-        majorBuildings: ["tavern", "cabin", "sawmill"],
+        majorBuildings: ["cabin", "tavern", "sawmill"],
         obstacles: {
-            oil_tank: 12,
-            pine_tree: 60,
-            spruce_tree: 50,
-            dead_pine_tree: 30,
-            oak_tree: 10,
-            loot_tree: 1,
-            regular_crate: 160,
-            nsd_crate: 6,
-            lansiraami_crate: 6,
+            clearing_boulder: 15,
+            pine_tree: 70,
+            spruce_tree: 55,
+            dead_pine_tree: 35,
+            oak_tree: 35,
+            regular_crate: 140,
+            nsd_crate: 9,
+            lansiraami_crate: 3,
             grenade_crate: 35,
             rock: 150,
             river_chest: 1,
@@ -799,11 +800,12 @@ const maps = {
             melee_crate: 1,
             gold_rock: 1,
             loot_barrel: 1,
+            loot_tree: 1,
             flint_lockbox: 1
         },
         obstacleClumps: [
             {
-                clumpAmount: 75,
+                clumpAmount: 65,
                 clump: {
                     minAmount: 2,
                     maxAmount: 3,
@@ -823,7 +825,7 @@ const maps = {
                 }
             },
             {
-                clumpAmount: 15,
+                clumpAmount: 12,
                 clump: {
                     minAmount: 2,
                     maxAmount: 3,
@@ -837,12 +839,12 @@ const maps = {
             ground_loot: 60
         },
         places: [
-            { name: "Banana", position: Vec(0.23, 0.2) },
+            { name: "Apple", position: Vec(0.23, 0.2) },
             { name: "Takedown", position: Vec(0.23, 0.8) },
             { name: "Lavlandet", position: Vec(0.75, 0.2) },
             { name: "Noskin Narrows", position: Vec(0.72, 0.8) },
-            { name: "Mt. Sanger", position: Vec(0.5, 0.35) },
-            { name: "Deepwood", position: Vec(0.5, 0.65) }
+            { name: "Meetup", position: Vec(0.5, 0.35) },
+            { name: "Lightwood", position: Vec(0.5, 0.65) }
         ]
     },
     winter: {
