@@ -406,7 +406,11 @@ export async function setUpUI(): Promise<void> {
     if (params.has("language")) {
         const language = params.get("language");
         params.delete("language");
-        if (language === null || !TRANSLATIONS.translations[language]) return;
+        if (
+            language === GameConsole.getBuiltInCVar("cv_language")
+            || language === null
+            || !TRANSLATIONS.translations[language]
+        ) return;
         GameConsole.setBuiltInCVar("cv_language", language);
     }
 
