@@ -33,6 +33,12 @@ export const Config = {
             gameAddress: "wss://as.suroi.io/game/<gameID>",
             offset: 1
         },
+        ea: {
+            name: "East Asia",
+            mainAddress: "https://ea.suroi.io",
+            gameAddress: "wss://ea.suroi.io/game/<gameID>",
+            offset: 1
+        },
         oc: {
             name: "Oceania",
             mainAddress: "https://oc.suroi.io",
