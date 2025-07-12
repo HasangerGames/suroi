@@ -46,6 +46,8 @@ export interface RiverDefinition {
      * you should use `MapDefinition.obstacles`
      */
     readonly obstacles: Record<ReferenceTo<ObstacleDefinition>, number>
+    /** Locks the river to a straight horizontal/vertical through the center of the map */
+    readonly centered?: boolean
 }
 
 export interface MapDefinition {
@@ -739,62 +741,61 @@ const maps = {
         ]
     },
     hunted: { // WIP
-        width: 1632,
-        height: 1632,
+        width: 1924,
+        height: 1924,
         oceanSize: 128,
         beachSize: 32,
         rivers: {
-            minAmount: 2,
-            maxAmount: 3,
-            maxWideAmount: 1,
-            wideChance: 0.35,
-            minWidth: 12,
-            maxWidth: 18,
-            minWideWidth: 25,
-            maxWideWidth: 30,
+            minAmount: 1,
+            maxAmount: 1,
+            maxWideAmount: 0,
+            wideChance: 0,
+            minWidth: 18,
+            maxWidth: 22,
+            minWideWidth: 0,
+            maxWideWidth: 0,
             obstacles: {
                 river_rock: 16,
                 lily_pad: 6
-            }
+            },
+            centered: true
         },
         buildings: {
+            sawmill: 1,
             small_bridge: Infinity,
             lighthouse_aged: 1,
-            tugboat_red: 1,
-            tugboat_white: 5,
-            buoy: 12,
-            hunting_stand: 6,
             outhouse: 6,
+            buoy: 12,
+            tavern: 1,
+            cabin: 8,
             warehouse_hunted: 5,
             panther_bunker: 1,
             tiger_bunker: 1,
-            lion_bunker: 1,
-            cabin: 1,
-            tavern: 1
+            lion_bunker: 1
         },
         quadBuildingLimit: {
-            hunting_stand: 1, // can't have two of these next to eachother
+            hunting_stand: 3,
             warehouse_hunted: 2,
             outhouse: 3,
-            cabin: 1,
+            cabin: 3,
             tavern: 1
         },
-        majorBuildings: ["cabin", "tavern", "sawmill"],
+        majorBuildings: ["tavern", "sawmill"],
         obstacles: {
             clearing_boulder: 15,
-            pine_tree: 70,
-            spruce_tree: 55,
-            dead_pine_tree: 35,
-            oak_tree: 35,
-            regular_crate: 140,
-            nsd_crate: 9,
-            lansiraami_crate: 3,
+            pine_tree: 90,
+            spruce_tree: 80,
+            dead_pine_tree: 50,
+            oak_tree: 15,
+            regular_crate: 110,
+            nsd_crate: 6,
+            lansiraami_crate: 6,
             grenade_crate: 35,
-            rock: 150,
+            rock: 175,
             river_chest: 1,
-            bush: 110,
-            blueberry_bush: 30,
-            barrel: 80,
+            bush: 175,
+            blueberry_bush: 40,
+            barrel: 150,
             viking_chest: 1,
             super_barrel: 30,
             melee_crate: 1,
@@ -805,27 +806,17 @@ const maps = {
         },
         obstacleClumps: [
             {
-                clumpAmount: 65,
+                clumpAmount: 45,
                 clump: {
-                    minAmount: 2,
-                    maxAmount: 3,
-                    jitter: 5,
-                    obstacles: ["pine_tree"],
-                    radius: 12
+                    minAmount: 10,
+                    maxAmount: 15,
+                    jitter: 30,
+                    obstacles: ["pine_tree", "spruce_tree"],
+                    radius: 30
                 }
             },
             {
-                clumpAmount: 50,
-                clump: {
-                    minAmount: 2,
-                    maxAmount: 3,
-                    jitter: 5,
-                    obstacles: ["spruce_tree"],
-                    radius: 12
-                }
-            },
-            {
-                clumpAmount: 12,
+                clumpAmount: 25,
                 clump: {
                     minAmount: 2,
                     maxAmount: 3,
@@ -836,7 +827,7 @@ const maps = {
             }
         ],
         loots: {
-            ground_loot: 60
+            ground_loot: 100
         },
         places: [
             { name: "Apple", position: Vec(0.23, 0.2) },

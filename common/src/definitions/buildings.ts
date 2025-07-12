@@ -97,6 +97,8 @@ export interface BuildingDefinition extends ObjectDefinition {
     readonly spawnMode?: MapObjectSpawnMode
     readonly spawnOrientation?: Orientation
     readonly spawnOffset?: Vector
+    /** used by MapObjectSpawnMode.Ring */
+    readonly spawnRadius?: number
 
     readonly bridgeHitbox?: Hitbox
     readonly bridgeMinRiverWidth?: number
@@ -10377,6 +10379,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         idString: "panther_bunker",
         name: "Panther Bunker",
         defType: DefinitionType.Building,
+        spawnMode: MapObjectSpawnMode.Ring,
+        spawnRadius: 300,
         spawnHitbox: new GroupHitbox(
             RectangleHitbox.fromRect(15, 18, Vec(-14.49, -27.97)),
             RectangleHitbox.fromRect(15, 18, Vec(-14.31, 27.75))
@@ -10508,11 +10512,13 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         idString: "tiger_bunker",
         name: "tiger Bunker",
         defType: DefinitionType.Building,
-        bunkerSpawnHitbox: RectangleHitbox.fromRect(83.74, 83.74),
+        spawnMode: MapObjectSpawnMode.Ring,
+        spawnRadius: 300,
         spawnHitbox: new GroupHitbox(
             RectangleHitbox.fromRect(15, 18, Vec(30.78, -28.42)),
             RectangleHitbox.fromRect(15, 18, Vec(-30.71, 28.2))
         ),
+        bunkerSpawnHitbox: RectangleHitbox.fromRect(83.74, 83.74),
         ceilingHitbox: new GroupHitbox(
             RectangleHitbox.fromRect(7.5, 10, Vec(30.78, -29.6)),
             RectangleHitbox.fromRect(7.5, 10, Vec(-30.71, 29.42))
@@ -10642,6 +10648,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         idString: "lion_bunker",
         name: "Lion Bunker",
         defType: DefinitionType.Building,
+        spawnMode: MapObjectSpawnMode.Ring,
+        spawnRadius: 300,
         material: "metal_heavy",
         particle: "bunker_particle",
         spawnHitbox: new GroupHitbox(
@@ -10781,6 +10789,12 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         idString: "sawmill",
         name: "sawmill",
         defType: DefinitionType.Building,
+        spawnMode: MapObjectSpawnMode.River,
+        bridgeHitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(292.05, 217.69, Vec(-0.25, 125.76)),
+            RectangleHitbox.fromRect(250.43, 148.3, Vec(20.37, -160.65))
+        ),
+        spawnOffset: Vec(13.74, 34.62),
         spawnHitbox: new GroupHitbox(
             RectangleHitbox.fromRect(208.03, 113.63, Vec(13.83, -32.27)),
             RectangleHitbox.fromRect(308.65, 230.96, Vec(-0.02, 126.46)),

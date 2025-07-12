@@ -193,7 +193,8 @@ export enum MapObjectSpawnMode {
     GrassAndSand,
     River,
     Beach,
-    Trail
+    Trail,
+    Ring
 }
 
 export enum RotationMode {

@@ -19,7 +19,9 @@
 
     let hitboxes: HitboxJSON[] = [
         ...new GroupHitbox(
-            RectangleHitbox.fromRect(10, 10)
+            RectangleHitbox.fromRect(208.03, 113.63, Vec(13.83, -32.27)),
+            RectangleHitbox.fromRect(308.65, 230.96, Vec(-0.02, 126.46)),
+            RectangleHitbox.fromRect(304.3, 175.6, Vec(24.02, -159.72))
         ).toJSON().hitboxes
     ];
 
@@ -318,7 +320,7 @@
         hitboxes = hitboxes;
         selected = hitboxes[0];
     }
-    const bgImage = loadImage("/img/game/hunted/buildings/tavern_basement.png");
+    const bgImage = loadImage("/img/game/hunted/buildings/sawmil_noalpha.png");
 
     function handleKeydown(e: KeyboardEvent) {
         let moved = false;
