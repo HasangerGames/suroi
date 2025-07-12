@@ -449,6 +449,9 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
         flint_lockbox: [
             { table: "gold_airdrop_guns", weight: 1 }
         ],
+        reinforced_crate: [
+            { table: "gold_airdrop_guns", weight: 1 }
+        ],
         christmas_tree: {
             min: 4,
             max: 5,

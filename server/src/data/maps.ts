@@ -801,7 +801,7 @@ const maps = {
             gold_rock: 1,
             loot_barrel: 1,
             nsd_rock: 1,
-            flint_lockbox: 1
+            reinforced_crate: 1
         },
         obstacleClumps: [
             {

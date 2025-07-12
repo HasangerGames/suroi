@@ -297,6 +297,7 @@ export const TintedParticles: Record<string, { readonly base: string, readonly t
     flint_crate_particle: { base: "wood_particle", tint: 0xda6a0b },
     nsd_crate_particle: { base: "wood_particle", tint: 0x3d6336 },
     lansiraami_crate_particle: { base: "wood_particle", tint: 0x725940 },
+    reinforced_crate_particle: { base: "metal_particle_1", tint: 0x2e2e2e },
     furniture_particle: { base: "wood_particle", tint: 0x785a2e },
     couch_part_particle: { base: "wood_particle", tint: 0x6a330b },
     grenade_crate_particle: { base: "wood_particle", tint: 0x4c4823 },
@@ -6633,6 +6634,28 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         frames: {
             particle: "rock_particle",
             residue: "rock_residue"
+        }
+    },
+    {
+        idString: "reinforced_crate",
+        name: "Reinforced NSD Crate",
+        defType: DefinitionType.Obstacle,
+        material: "appliance",
+        health: 200,
+        hardness: 5,
+        scale: {
+            spawnMin: 1,
+            spawnMax: 1,
+            destroy: 0.5
+        },
+        spawnMode: MapObjectSpawnMode.GrassAndSand,
+        rotationMode: RotationMode.Binary,
+        hitbox: RectangleHitbox.fromRect(10, 10),
+        hasLoot: true,
+        noResidue: true, // todo; residue
+        impenetrable: true,
+        frames: {
+            particle: "reinforced_crate_particle"
         }
     },
 ] satisfies readonly RawObstacleDefinition[] as readonly RawObstacleDefinition[]).flatMap((def: Mutable<RawObstacleDefinition>) => {
