@@ -104,7 +104,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             min: 1,
             max: 1,
             loot: [
-                { item: "g19", weight: 1 }
+                { item: "rpk16", weight: 1 }
             ]
         },
         dumpster: {
@@ -1896,15 +1896,15 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             ]
         },
 
-        loot_tree: [
+        nsd_rock: [
             [
                 { item: "stoner_63", weight: 1 },
                 { item: "fn_fal", weight: 1 },
-                { item: "pk61", weight: 0.2 },
+                { item: "rgs", weight: 1 },
                 { item: "rpk74", weight: 0.2 }
             ],
             [{ item: "hatchet", weight: 1 }],
-            [{ item: "lumberjack", weight: 1 }],
+            [{ item: "one_at_nsd", weight: 1 }],
             [{ item: "basic_helmet", weight: 1 }],
             [{ item: "basic_pack", weight: 1 }],
             [{ table: "ammo", weight: 1 }]

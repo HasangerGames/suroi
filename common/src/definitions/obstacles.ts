@@ -6612,7 +6612,29 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
             particle: "wine_barrel_particle",
             residue: "explosion_decal"
         }
-    }
+    },
+    {
+        idString: "nsd_rock",
+        name: "NSD Rock",
+        defType: DefinitionType.Obstacle,
+        material: "stone",
+        hideOnMap: true,
+        health: 250,
+        scale: {
+            spawnMin: 0.9,
+            spawnMax: 1.1,
+            destroy: 0.3
+        },
+        hitbox: new CircleHitbox(4),
+        spawnHitbox: new CircleHitbox(4.5),
+        particleVariations: 2,
+        rotationMode: RotationMode.Full,
+        hasLoot: true,
+        frames: {
+            particle: "rock_particle",
+            residue: "rock_residue"
+        }
+    },
 ] satisfies readonly RawObstacleDefinition[] as readonly RawObstacleDefinition[]).flatMap((def: Mutable<RawObstacleDefinition>) => {
     if (def.variations !== undefined) (def as Mutable<ObstacleDefinition>).variationBits = Math.ceil(Math.log2(def.variations));
     if (def.allowFlyover === undefined) def.allowFlyover = FlyoverPref.Sometimes;
