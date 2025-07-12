@@ -2173,12 +2173,10 @@
             }
 
             @media screen and (max-width: variables.$screen-large) {
-                @media screen and (max-height: variables.$screen_medium) {
-                    transform: translate(0%, 45%) rotate(15deg);
-                    width: 150px;
-                    height: 150px;
-                    position: absolute;
-                }
+                transform: translate(0%, 45%) rotate(15deg);
+                width: 150px;
+                height: 150px;
+                position: absolute;
             }
         }
 
