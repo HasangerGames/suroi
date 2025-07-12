@@ -355,6 +355,7 @@
 "region_eu": "Europe"
 "region_sa": "South America"
 "region_as": "Asia"
+"region_ea": "East Asia"
 "region_oc": "Oceania"
 "vaccine_syringe": "Vaccine Syringe"
 "vaccine_syringe_desc": "Restores 50 adrenaline, also removes infection"
