@@ -759,7 +759,7 @@ const maps = {
         },
         buildings: {
             small_bridge: Infinity,
-            lighthouse: 1,
+            lighthouse_aged: 1,
             tugboat_red: 1,
             tugboat_white: 5,
             buoy: 12,

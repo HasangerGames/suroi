@@ -5594,6 +5594,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             }
         ],
         obstacles: IS_CLIENT ? undefined : [
+            { idString: "small_lamp_thingy", position: Vec(-0.12, -22.2), rotation: 0 },
             { idString: "window", position: Vec(20.47, 11.8), rotation: 0 },
             { idString: "door", position: Vec(-0.02, 38), rotation: 0 },
             { idString: "small_stove", position: Vec(15.64, 33.27), rotation: 3 },
@@ -12993,5 +12994,176 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             position: Vec(0, 0),
             scale: Vec(4.05, 4.075)
         }]
+    },
+    {
+        idString: "lighthouse_aged",
+        name: "Aged Lighthouse",
+        defType: DefinitionType.Building,
+        material: "stone",
+        particle: "rock_particle",
+        particleVariations: 2,
+        // there's a reason we tend to avoid curved walls
+        hitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(1.94, 20.04, Vec(20.45, 27.42)),
+            RectangleHitbox.fromRect(1.94, 59.32, Vec(-21.46, 8.34)),
+            RectangleHitbox.fromRect(1.94, 27.68, Vec(20.45, -7.48)),
+            RectangleHitbox.fromRect(16.87, 1.98, Vec(12.99, 37.89)),
+            RectangleHitbox.fromRect(16.96, 1.98, Vec(-13.96, 37.89)),
+            RectangleHitbox.fromRect(15.26, 1.99, Vec(-13.18, -11.24)),
+            RectangleHitbox.fromRect(10.37, 1.99, Vec(14.91, -11.24)),
+            RectangleHitbox.fromRect(2.98, 2.97, Vec(8.6, -11.24)),
+            RectangleHitbox.fromRect(2.98, 2.97, Vec(-4.38, -11.24)),
+            RectangleHitbox.fromRect(2.98, 2.98, Vec(-4.37, 12.89)),
+            new CircleHitbox(1.02, Vec(18.56, -31.24)),
+            new CircleHitbox(1.02, Vec(16.48, -34.94)),
+            new CircleHitbox(1.02, Vec(18.09, -32.25)),
+            new CircleHitbox(1.02, Vec(19.44, -28.84)),
+            new CircleHitbox(1.01, Vec(19.76, -27.67)),
+            new CircleHitbox(0.98, Vec(20.44, -21.4)),
+            new CircleHitbox(0.98, Vec(20.44, -22.1)),
+            new CircleHitbox(0.98, Vec(20.43, -22.79)),
+            new CircleHitbox(0.98, Vec(20.38, -23.63)),
+            new CircleHitbox(0.98, Vec(20.31, -24.47)),
+            new CircleHitbox(1, Vec(20.01, -26.49)),
+            new CircleHitbox(1.03, Vec(19.04, -30.05)),
+            new CircleHitbox(1.03, Vec(17.09, -34.04)),
+            new CircleHitbox(1.02, Vec(15.8, -35.83)),
+            new CircleHitbox(1, Vec(14.17, -37.56)),
+            new CircleHitbox(1, Vec(13.36, -38.26)),
+            new CircleHitbox(0.98, Vec(20.18, -25.45)),
+            new CircleHitbox(0.99, Vec(10.37, -40.24)),
+            new CircleHitbox(0.98, Vec(11.34, -39.69)),
+            new CircleHitbox(0.99, Vec(12.38, -39.01)),
+            new CircleHitbox(1.01, Vec(15.07, -36.65)),
+            new CircleHitbox(1.02, Vec(17.64, -33.1)),
+            new CircleHitbox(0.99, Vec(-2.99, -42.56)),
+            new CircleHitbox(1, Vec(-1.61, -42.65)),
+            new CircleHitbox(1, Vec(-0.26, -42.67)),
+            new CircleHitbox(1, Vec(1.04, -42.63)),
+            new CircleHitbox(1, Vec(2.3, -42.54)),
+            new CircleHitbox(0.99, Vec(3.44, -42.4)),
+            new CircleHitbox(0.99, Vec(4.6, -42.22)),
+            new CircleHitbox(0.99, Vec(5.74, -41.97)),
+            new CircleHitbox(0.99, Vec(6.94, -41.65)),
+            new CircleHitbox(0.99, Vec(8.16, -41.23)),
+            new CircleHitbox(0.99, Vec(9.3, -40.76)),
+            new CircleHitbox(1, Vec(-18.27, -33.72)),
+            new CircleHitbox(1.01, Vec(-18.88, -32.65)),
+            new CircleHitbox(1.02, Vec(-19.5, -31.39)),
+            new CircleHitbox(1.01, Vec(-19.98, -30.2)),
+            new CircleHitbox(1.02, Vec(-20.45, -28.82)),
+            new CircleHitbox(1.01, Vec(-20.81, -27.46)),
+            new CircleHitbox(1.01, Vec(-21.09, -26.16)),
+            new CircleHitbox(0.99, Vec(-21.28, -24.84)),
+            new CircleHitbox(0.97, Vec(-21.39, -23.62)),
+            new CircleHitbox(0.98, Vec(-21.44, -22.41)),
+            new CircleHitbox(0.97, Vec(-21.44, -21.44)),
+            new CircleHitbox(0.98, Vec(-5.66, -42.19)),
+            new CircleHitbox(0.96, Vec(-14.12, -38.42)),
+            new CircleHitbox(0.97, Vec(-15.13, -37.55)),
+            new CircleHitbox(0.98, Vec(-15.99, -36.71)),
+            new CircleHitbox(0.98, Vec(-16.78, -35.81)),
+            new CircleHitbox(0.99, Vec(-17.57, -34.78)),
+            new CircleHitbox(0.99, Vec(-4.36, -42.41)),
+            new CircleHitbox(0.98, Vec(-8.38, -41.49)),
+            new CircleHitbox(0.96, Vec(-9.65, -41.02)),
+            new CircleHitbox(0.96, Vec(-10.87, -40.47)),
+            new CircleHitbox(0.96, Vec(-12, -39.87)),
+            new CircleHitbox(0.96, Vec(-13.08, -39.18)),
+            new CircleHitbox(0.98, Vec(-7.51, -41.75)),
+            new CircleHitbox(0.98, Vec(-6.62, -41.98))
+        ),
+        spawnHitbox: RectangleHitbox.fromRect(65, 98, Vec(0, 0)),
+        ceilingHitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(42.73, 63.65, Vec(-0.53, 6.93)),
+            RectangleHitbox.fromRect(18.84, 17.4, Vec(-0.76, -33.11)),
+            RectangleHitbox.fromRect(4.1, 15.7, Vec(-11.07, -32.01)),
+            RectangleHitbox.fromRect(3.81, 7.72, Vec(12.34, -34.62)),
+            RectangleHitbox.fromRect(9.24, 6.57, Vec(-16, -26.84)),
+            RectangleHitbox.fromRect(6.35, 5.5, Vec(14.84, -31.57)),
+            RectangleHitbox.fromRect(3.37, 2.92, Vec(-13.83, -36.83)),
+            RectangleHitbox.fromRect(9.24, 6.57, Vec(15.22, -27.24)),
+            RectangleHitbox.fromRect(4.1, 15.7, Vec(9.79, -32.37)),
+            RectangleHitbox.fromRect(8.27, 5.07, Vec(-15.14, -31.09)),
+            RectangleHitbox.fromRect(5.19, 2.6, Vec(-14.9, -34.74)),
+            RectangleHitbox.fromRect(3.37, 2.92, Vec(14.6, -35.05))
+        ),
+        spawnMode: MapObjectSpawnMode.Beach,
+        spawnOffset: Vec(-15, 0),
+        floorImages: [
+            {
+                key: "lighthouse_floor_1",
+                position: Vec(0, -21.82)
+            },
+            {
+                key: "lighthouse_floor_2",
+                position: Vec(0, 21.82)
+            },
+            {
+                key: "barrel_residue",
+                position: Vec(25.8, 32.27)
+            }
+        ],
+        ceilingImages: [{
+            key: "lighthouse_ceiling",
+            position: Vec(-1, -3.5),
+            scale: Vec(2, 2)
+        }],
+        ceilingZIndex: ZIndexes.BuildingsCeiling + 1,
+        floors: [
+            {
+                type: FloorNames.Wood,
+                hitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(42.73, 63.65, Vec(-0.53, 6.93)),
+                    RectangleHitbox.fromRect(18.84, 17.4, Vec(-0.76, -33.11)),
+                    RectangleHitbox.fromRect(4.1, 15.7, Vec(-11.07, -32.01)),
+                    RectangleHitbox.fromRect(3.81, 7.72, Vec(12.34, -34.62)),
+                    RectangleHitbox.fromRect(9.24, 6.57, Vec(-16.35, -26.84)),
+                    RectangleHitbox.fromRect(6.35, 5.5, Vec(14.84, -31.57)),
+                    RectangleHitbox.fromRect(3.37, 2.92, Vec(-13.83, -36.83)),
+                    RectangleHitbox.fromRect(9.24, 6.57, Vec(15.22, -27.24)),
+                    RectangleHitbox.fromRect(4.1, 15.7, Vec(9.79, -32.37)),
+                    RectangleHitbox.fromRect(8.27, 5.07, Vec(-15.14, -31.09)),
+                    RectangleHitbox.fromRect(5.19, 2.6, Vec(-14.9, -34.74)),
+                    RectangleHitbox.fromRect(3.37, 2.92, Vec(14.6, -35.05))
+                )
+            },
+            {
+                type: FloorNames.Stone,
+                hitbox: RectangleHitbox.fromRect(10.37, 4.91, Vec(-0.47, 41.23))
+            }
+        ],
+        obstacles: IS_CLIENT ? undefined : [
+            { idString: "small_lamp_thingy", position: Vec(-0.12, -22.2), rotation: 0 },
+            { idString: "window", position: Vec(20.47, 11.8), rotation: 0 },
+            { idString: "door", position: Vec(-0.02, 38), rotation: 0 },
+            { idString: "small_stove", position: Vec(15.64, 33.27), rotation: 3 },
+            { idString: "sink", position: Vec(15.44, 24.82), rotation: 3 },
+            { idString: "small_table", position: Vec(14.99, 11.88), rotation: 0 },
+            { idString: "chair", position: Vec(10.61, 12.15), rotation: 3 },
+            { idString: "gun_case", position: Vec(-15.12, 33.96), rotation: 2 },
+            { idString: "nsd_crate", position: Vec(14.54, -5.34) },
+            { idString: "control_panel_small", position: Vec(15.2, -16.15), rotation: 3 },
+            { idString: "control_panel_small", position: Vec(-16.24, -16.15), rotation: 1 },
+            { idString: "door", position: Vec(2.57, -11.24), rotation: 0 },
+            { idString: "lighthouse_wall_3", position: Vec(-4.39, 0.86), rotation: 0 },
+            { idString: "lighthouse_wall_1", position: Vec(-8.15, 12.89), rotation: 0 },
+            { idString: "door", position: Vec(-15.09, 12.93), rotation: 0 },
+            { idString: "small_bed", position: Vec(-9.2, -1.96), rotation: 0 },
+            { idString: "small_drawer", position: Vec(-17.11, -6.47), rotation: 0 },
+            { idString: "lighthouse_crate", position: Vec(0, -37) },
+            { idString: "sandbags", position: Vec(11.66, 43.03), rotation: 0 },
+            { idString: "sandbags", position: Vec(-12.55, 43.03), rotation: 0 },
+            { idString: "sandbags", position: Vec(-27, 32.27), rotation: 1 },
+            { idString: "propane_tank", position: Vec(20.43, 40.97) },
+            { idString: "propane_tank", position: Vec(20.43, 45.02) }
+        ],
+        subBuildings: IS_CLIENT ? undefined : [
+            { idString: "lighthouse_lighting", position: Vec(0, -36.2) }
+        ],
+        lootSpawners: [
+            { table: "ground_loot", position: Vec(-17, 8) },
+            { table: "lighthouse_skin", position: Vec(-1, 20) }
+        ]
     }
 ]);
