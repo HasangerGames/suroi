@@ -1750,6 +1750,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { item: "mcx_spear", weight: 0.074 },
             { item: "m16a2", weight: 0.074 },
             { item: "ak47", weight: 0.074 },
+            { item: "blr", weight: 0.074 },
 
             // 15%
             { item: "sks", weight: 0.075 },
@@ -1760,13 +1761,13 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { item: "vss", weight: 0.033 },
             { item: "sr25", weight: 0.033 },
             { item: "mini14", weight: 0.033 },
-            { item: "deagle", weight: 0.033 },
 
             // 5%
             { item: "rpk74", weight: 0.0125 },
             { item: "stoner_63", weight: 0.0125 },
             { item: "mg36", weight: 0.0125 },
             { item: "model_89", weight: 0.0125 },
+            { item: "rgs", weight: 0.0125 },
             { item: "rsh12", weight: 0.0125 },
             { item: "pk61", weight: 0.0125 },
 
@@ -1796,11 +1797,12 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { item: "m16a2", weight: 0.032 },
             { item: "fn_fal", weight: 0.032 },
             { item: "mcx_spear", weight: 0.032 },
-            { item: "deagle", weight: 0.032 },
+            { item: "blr", weight: 0.032 },
 
             // 4%
             { item: "vss", weight: 0.0133 },
             { item: "model_89", weight: 0.0133 },
+            { item: "rgs", weight: 0.0133 },
             { item: "sr25", weight: 0.0133 },
             { item: "mini14", weight: 0.0133 },
             { item: "mg36", weight: 0.0133 },
@@ -1876,7 +1878,6 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
                 { item: "dual_ots23", weight: 0.1083 },
 
                 // 20%
-                { item: "deagle", weight: 0.066 },
                 { item: "vss", weight: 0.066 },
                 { item: "sr25", weight: 0.066 },
                 { item: "mini14", weight: 0.066 },
@@ -1888,6 +1889,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
 
                 // 5%
                 { item: "tango_51", weight: 0.01 },
+                { item: "rgs", weight: 0.01 },
                 { item: "mosin_nagant", weight: 0.01 },
                 { item: "vks", weight: 0.01 },
                 { item: "model_89", weight: 0.01 }
