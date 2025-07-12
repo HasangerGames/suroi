@@ -1250,7 +1250,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
         capacity: 45,
         extendedCapacity: 80,
         reloadTime: 2.5,
-        fireDelay: 50, // original was 74, tweaked for testing purposes
+        fireDelay: 50,
         burstProperties: {
             shotsPerBurst: 2,
             burstCooldown: 250
@@ -1277,7 +1277,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
         ballistics: {
             damage: 24,
             obstacleMultiplier: 1.5,
-            speed: 0.26,
+            speed: 0.32,
             range: 160
         }
     },
