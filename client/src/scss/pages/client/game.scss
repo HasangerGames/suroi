@@ -1750,9 +1750,10 @@
     }
 
     @media screen and (max-height: 465px) and (max-width: variables.$screen_large) {
-        bottom: 215px;
+        bottom: 210px;
         right: 5px;
     }
+
 
     /* @media screen and (max-width: variables.$screen_medium) and (max-height: 500px) { <- danger
         transform: scale(60%);
