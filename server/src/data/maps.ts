@@ -768,13 +768,14 @@ const maps = {
             buoy: 12,
             tavern: 1,
             cabin: 8,
+            hunting_stand: 4,
             warehouse_hunted: 5,
             panther_bunker: 1,
             tiger_bunker: 1,
             lion_bunker: 1
         },
         quadBuildingLimit: {
-            hunting_stand: 3,
+            hunting_stand: 1,
             warehouse_hunted: 2,
             outhouse: 3,
             cabin: 3,

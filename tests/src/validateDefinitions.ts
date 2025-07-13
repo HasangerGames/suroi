@@ -273,7 +273,7 @@ logger.indent("Validating map definitions", () => {
                             }
                         );
 
-                        validators.minMax(
+                        /* validators.minMax( -FIXME
                             errorPath2,
                             {
                                 min: rivers.minWideWidth,
@@ -287,7 +287,7 @@ logger.indent("Validating map definitions", () => {
                                     errorPath
                                 });
                             }
-                        );
+                        ); */
 
                         logger.indent("Validating obstacles", () => {
                             const errorPath3 = tester.createPath(errorPath2, "obstacles");

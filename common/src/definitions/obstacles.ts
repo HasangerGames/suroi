@@ -2442,6 +2442,22 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     cabinWall("3", 18.79),
     cabinWall("4", 19.68),
     cabinWall("5", 26.35),
+    {
+        idString: "cabin_secret_wall",
+        name: "Cabin Secret Wall",
+        defType: DefinitionType.Obstacle,
+        material: "wood",
+        hideOnMap: true,
+        noResidue: true,
+        health: 100,
+        hitbox: RectangleHitbox.fromRect(17.62, 1.91),
+        rotationMode: RotationMode.Limited,
+        allowFlyover: FlyoverPref.Never,
+        frames: {
+            particle: "lodge_wall_particle"
+        },
+        isWall: true
+    },
 
     lodgeWall("1", 9.15),
     lodgeWall("2", 9.7),
@@ -3253,9 +3269,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         idString: "cabin_fence",
         name: "Cabin Fence",
         defType: DefinitionType.Obstacle,
-        material: "stone",
-        health: 50,
-        indestructible: true,
+        material: "wood",
+        health: 80,
         hitbox: RectangleHitbox.fromRect(21.92, 1.52),
         rotationMode: RotationMode.Limited,
         frames: {
@@ -3263,6 +3278,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         },
         isWall: true,
         hideOnMap: true,
+        noResidue: true,
+        zIndex: ZIndexes.BuildingsFloor,
         wall: {
             borderColor: 0x342512,
             color: 0x6b5431
@@ -6640,7 +6657,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         idString: "reinforced_crate",
         name: "Reinforced NSD Crate",
         defType: DefinitionType.Obstacle,
-        material: "appliance",
+        material: "iron",
+        reflectBullets: true,
         health: 200,
         hardness: 5,
         scale: {
@@ -6657,7 +6675,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         frames: {
             particle: "reinforced_crate_particle"
         }
-    },
+    }
 ] satisfies readonly RawObstacleDefinition[] as readonly RawObstacleDefinition[]).flatMap((def: Mutable<RawObstacleDefinition>) => {
     if (def.variations !== undefined) (def as Mutable<ObstacleDefinition>).variationBits = Math.ceil(Math.log2(def.variations));
     if (def.allowFlyover === undefined) def.allowFlyover = FlyoverPref.Sometimes;

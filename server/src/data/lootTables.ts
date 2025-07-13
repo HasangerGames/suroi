@@ -471,6 +471,19 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
                 { table: "special_guns", weight: 1 }
             ]
         },
+        nsd_rock: [
+            [
+                { item: "stoner_63", weight: 1 },
+                { item: "fn_fal", weight: 1 },
+                { item: "rgs", weight: 1 },
+                { item: "rpk74", weight: 0.2 }
+            ],
+            [{ item: "hatchet", weight: 1 }],
+            [{ item: "one_at_nsd", weight: 1 }],
+            [{ item: "basic_helmet", weight: 1 }],
+            [{ item: "basic_pack", weight: 1 }],
+            [{ table: "ammo", weight: 1 }]
+        ],
         gun_locker: {
             min: 1,
             max: 2,
@@ -1897,21 +1910,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
                 { item: "vks", weight: 0.01 },
                 { item: "model_89", weight: 0.01 }
             ]
-        },
-
-        nsd_rock: [
-            [
-                { item: "stoner_63", weight: 1 },
-                { item: "fn_fal", weight: 1 },
-                { item: "rgs", weight: 1 },
-                { item: "rpk74", weight: 0.2 }
-            ],
-            [{ item: "hatchet", weight: 1 }],
-            [{ item: "one_at_nsd", weight: 1 }],
-            [{ item: "basic_helmet", weight: 1 }],
-            [{ item: "basic_pack", weight: 1 }],
-            [{ table: "ammo", weight: 1 }]
-        ]
+        }
     },
     birthday: {}
 };

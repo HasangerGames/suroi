@@ -11737,7 +11737,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             RectangleHitbox.fromRect(1.9, 33.33, Vec(-26.6, 20.25)),
             RectangleHitbox.fromRect(19.41, 1.91, Vec(-17.86, -32.39)),
             RectangleHitbox.fromRect(35.21, 1.9, Vec(-9.95, 35.96)),
-            RectangleHitbox.fromRect(48.58, 1.91, Vec(27.23, -32.38)),
+            RectangleHitbox.fromRect(11.97, 1.91, Vec(45.5, -32.38)),
+            RectangleHitbox.fromRect(23, 1.91, Vec(14.1, -32.38)),
             RectangleHitbox.fromRect(1.51, 5.28, Vec(6.91, 39.55)),
             new CircleHitbox(1.04, Vec(6.91, 43.22)),
             RectangleHitbox.fromRect(13.09, 1.9, Vec(24.24, 35.97)),
@@ -11859,6 +11860,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "potted_plant", position: Vec(44.87, -26.73), rotation: 2 },
             { idString: "trash_can", position: Vec(46.23, 11.33), rotation: 0 },
             { idString: "large_drawer", position: Vec(45.37, 28.18), rotation: 3 },
+            { idString: "cabin_secret_wall", position: Vec(33.25, -32.327), rotation: 0 },
 
             { idString: "cabin_wall_2", position: Vec(27.2, 7.13), rotation: 0 },
             { idString: "cabin_wall_3", position: Vec(-16.25, -10.17), rotation: 0 },

@@ -19,9 +19,7 @@
 
     let hitboxes: HitboxJSON[] = [
         ...new GroupHitbox(
-            RectangleHitbox.fromRect(208.03, 113.63, Vec(13.83, -32.27)),
-            RectangleHitbox.fromRect(308.65, 230.96, Vec(-0.02, 126.46)),
-            RectangleHitbox.fromRect(304.3, 175.6, Vec(24.02, -159.72))
+            RectangleHitbox.fromRect(10, 10, Vec(0, 0))
         ).toJSON().hitboxes
     ];
 
