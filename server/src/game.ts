@@ -1092,12 +1092,12 @@ export class Game implements GameData {
         this.updateObjects = true;
     }
 
-    summonAirdrop(position: Vector): void {
+    summonAirdrop(position: Vector, forceGold = false): void {
         if (this.pluginManager.emit("airdrop_will_summon", { position })) return;
 
         const paddingFactor = 1.25;
 
-        const crateDef = Obstacles.fromString("airdrop_crate_locked");
+        const crateDef = Obstacles.fromString(`airdrop_crate_locked${forceGold ? "_force" : ""}`);
         const crateHitbox = (crateDef.spawnHitbox ?? crateDef.hitbox).clone();
         let thisHitbox = crateHitbox.clone();
 

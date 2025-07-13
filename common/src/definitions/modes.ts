@@ -43,6 +43,7 @@ export interface ModeDefinition {
     readonly weaponSwap?: boolean
     readonly plumpkinGrenades?: boolean
     readonly unlockStage?: number // Used for hunted mode bunkers
+    readonly forcedGoldAirdropStage?: number
 }
 
 export const Modes: Record<ModeName, ModeDefinition> = {
@@ -128,6 +129,7 @@ export const Modes: Record<ModeName, ModeDefinition> = {
         ambience: "wind_ambience",
         spriteSheets: ["shared", "hunted"],
         unlockStage: 3, // do not touch
+        forcedGoldAirdropStage: 5,
         playButtonImage: "./img/logos/lansiraami_logo.svg"
     },
     birthday: { // copy of normal

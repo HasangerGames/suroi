@@ -1188,7 +1188,7 @@ export const Game = new (class Game {
                         switch (true) {
                             case object?.isObstacle: {
                                 if (object.definition.isActivatable || object.definition.customInteractMessage) {
-                                    text = getTranslatedString(`interact_${object.definition.idString}` as TranslationKeys);
+                                    text = getTranslatedString(`interact_${object.definition.interactObstacleIdString ?? object.definition.idString}` as TranslationKeys);
                                 } else if (object.definition.isDoor) {
                                     text = object.door?.offset === 0
                                         ? getTranslatedString("action_open_door")

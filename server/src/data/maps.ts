@@ -740,10 +740,10 @@ const maps = {
             { name: "Decayedwood", position: Vec(0.5, 0.65) }
         ]
     },
-    hunted: { // WIP
+    hunted: {
         width: 1924,
         height: 1924,
-        oceanSize: 128,
+        oceanSize: 66,
         beachSize: 32,
         rivers: {
             minAmount: 1,
@@ -765,7 +765,7 @@ const maps = {
             small_bridge: Infinity,
             lighthouse_aged: 1,
             outhouse: 6,
-            buoy: 12,
+            buoy_hunted: 12,
             tavern: 1,
             cabin: 8,
             hunting_stand: 4,
@@ -832,11 +832,10 @@ const maps = {
         },
         places: [
             { name: "Apple", position: Vec(0.23, 0.2) },
-            { name: "Takedown", position: Vec(0.23, 0.8) },
-            { name: "Lavlandet", position: Vec(0.75, 0.2) },
-            { name: "Noskin Narrows", position: Vec(0.72, 0.8) },
-            { name: "Meetup", position: Vec(0.5, 0.35) },
-            { name: "Lightwood", position: Vec(0.5, 0.65) }
+            { name: "Lightwood", position: Vec(0.23, 0.8) },
+            { name: "Barrier", position: Vec(0.75, 0.2) },
+            { name: "Finnish Lands", position: Vec(0.72, 0.8) },
+            { name: "Meetup", position: Vec(0.5, 0.5) }
         ]
     },
     winter: {

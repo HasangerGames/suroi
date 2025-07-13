@@ -104,7 +104,8 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             min: 1,
             max: 1,
             loot: [
-                { item: "rpk16", weight: 1 }
+                { item: "rpk16", weight: 1 },
+                { item: "pk61", weight: 1 }
             ]
         },
         dumpster: {
@@ -1785,13 +1786,13 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { item: "model_89", weight: 0.0125 },
             { item: "rgs", weight: 0.0125 },
             { item: "rsh12", weight: 0.0125 },
-            { item: "pk61", weight: 0.0125 },
 
             // 1%
             { item: "tango_51", weight: 0.002 },
             { item: "mosin_nagant", weight: 0.002 },
             { item: "vks", weight: 0.002 },
-            { item: "flare", weight: 0.002 }
+            { item: "flare", weight: 0.002 },
+            { item: "pk61", weight: 0.002 }
         ],
 
         guns: [
@@ -1876,6 +1877,30 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { item: "mp153", weight: 0.85 },
             { item: "dual_rsh12", weight: 0.8 },
             { item: "g19", weight: 0.0005 }
+        ],
+
+        airdrop_melee: [
+            { item: NullString, weight: 1 },
+            { item: "crowbar", weight: 0.12 },
+            { item: "hatchet", weight: 0.12 },
+            { item: "sickle", weight: 0.12 },
+            { item: "maul", weight: 0.12 },
+            { item: "pan", weight: 0.075 }
+        ],
+
+        airdrop_crate: [
+            [{ table: "airdrop_equipment", weight: 1 }],
+            [{ table: "airdrop_scopes", weight: 1 }],
+            [{ table: "airdrop_healing_items", weight: 1 }],
+            [{ table: "airdrop_skins", weight: 1 }],
+            [{ table: "airdrop_melee", weight: 1 }],
+            [{ table: "ammo", weight: 1 }],
+            [{ table: "ammo", weight: 1 }],
+            [{ table: "airdrop_guns", weight: 1 }],
+            [
+                { item: "frag_grenade", count: 3, weight: 2 },
+                { item: NullString, weight: 1 }
+            ]
         ],
 
         gun_locker: {

@@ -201,9 +201,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
                         else this.playSound(definition.sound.name, definition.sound);
                     }
 
-                    // :martletdeadass:
-                    // FIXME idString check, hard coded behavior
-                    if (this.definition.idString === "airdrop_crate_locked") {
+                    if (this.definition.airdropUnlock) {
                         const options = (minSpeed: number, maxSpeed: number): Partial<ParticleOptions> => ({
                             zIndex: Numeric.max((this.definition.zIndex ?? ZIndexes.Players) + 1, 4),
                             lifetime: 1000,

@@ -113,6 +113,19 @@ export class Gas {
             }
         }
 
+        if (this.game.mode.forcedGoldAirdropStage !== undefined && this.stage === this.game.mode.forcedGoldAirdropStage) {
+            this.game.summonAirdrop(
+                this.game.map.getRandomPosition(
+                    new CircleHitbox(15),
+                    {
+                        maxAttempts: 500,
+                        spawnMode: MapObjectSpawnMode.GrassAndSand,
+                        collides: position => Geometry.distanceSquared(position, this.currentPosition) >= this.newRadius ** 2
+                    }
+                ) ?? this.newPosition, true
+            );
+        }
+
         if (currentStage.state === GasState.Waiting) {
             this.oldPosition = Vec.clone(this.newPosition);
             if (currentStage.newRadius !== 0) {

@@ -37,6 +37,8 @@ type CommonObstacleDefinition = ObjectDefinition & {
     readonly rotationMode: RotationMode // for obstacles with a role, this cannot be RotationMode.Full
     readonly particleVariations?: number
     readonly zIndex?: ZIndexes
+    readonly airdropUnlock?: boolean
+    readonly interactObstacleIdString?: ReferenceTo<ObstacleDefinition>
     readonly spawnWithWaterOverlay?: boolean
     readonly waterOverlay?: {
         readonly scaleX: number
@@ -2211,7 +2213,39 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         noResidue: true,
         frames: {
             particle: "metal_particle"
-        }
+        },
+        airdropUnlock: true
+    },
+    {
+        idString: "airdrop_crate_locked_force",
+        name: "Airdrop",
+        defType: DefinitionType.Obstacle,
+        material: "metal_light",
+        health: 10000,
+        indestructible: true,
+        reflectBullets: true,
+        interactObstacleIdString: "airdrop_crate_locked",
+        hitbox: RectangleHitbox.fromRect(8.7, 8.7),
+        spawnHitbox: RectangleHitbox.fromRect(10, 10),
+        rotationMode: RotationMode.None,
+        hideOnMap: true,
+        isActivatable: true,
+        zIndex: ZIndexes.ObstaclesLayer2,
+        sound: {
+            name: "airdrop_unlock",
+            maxRange: 64,
+            falloff: 0.3
+        },
+        replaceWith: {
+            idString: "gold_airdrop_crate",
+            delay: 800
+        },
+        noResidue: true,
+        frames: {
+            base: "airdrop_crate_locked",
+            particle: "metal_particle"
+        },
+        airdropUnlock: true
     },
     {
         idString: "airdrop_crate",
