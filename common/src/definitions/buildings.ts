@@ -11098,10 +11098,10 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
 
             { idString: "large_logs_pile_2", position: Vec(6.04, 93.4), rotation: 0, variation: 2 },
             { idString: "large_logs_pile_2", position: Vec(-7.61, 89.32), rotation: 1, variation: 1 },
-            { idString: "large_logs_pile_2", position: Vec(-122.89, 146.31), rotation: 0, variation: 1 },
-            { idString: "large_logs_pile_2", position: Vec(-125.21, 170.94), rotation: 1, variation: 2 },
-            { idString: "large_logs_pile_2", position: Vec(-130.91, 184.79), rotation: 2, variation: 2 },
-            { idString: "large_logs_pile_2", position: Vec(22.94, 197.88), rotation: 1, variation: 2 },
+            { idString: "large_logs_pile_2", position: Vec(-122.89, 146.31), rotation: 0, variation: 2 },
+            { idString: "large_logs_pile_2", position: Vec(-125.21, 170.94), rotation: 1, variation: 1 },
+            { idString: "large_logs_pile_2", position: Vec(-130.91, 184.79), rotation: 2, variation: 1 },
+            { idString: "large_logs_pile_2", position: Vec(22.94, 197.88), rotation: 1, variation: 1 },
 
             { idString: "pine_tree", position: Vec(7.32, 197.02) },
             { idString: "pine_tree", position: Vec(7.83, 140.01) },
@@ -11950,6 +11950,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         obstacles: [
             { idString: "sawmill_storage_column", position: Vec(-15.64, 20.24) },
             { idString: "sawmill_storage_column", position: Vec(16.85, 20.24) },
+            { idString: "forklift", position: Vec(0.09, 20.22), rotation: 2 },
             { idString: "door", position: Vec(-43.9, -20.43), rotation: 0 },
             { idString: "cobweb", position: Vec(44.62, -14.63), rotation: 3 },
             { idString: "box", position: Vec(-36.77, 0.8) },

@@ -4356,7 +4356,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
             RectangleHitbox.fromRect(8.15, 17.3, Vec(0, -3.8)),
             RectangleHitbox.fromRect(9.45, 10.6, Vec(0, -4.9))
         ),
-        zIndex: ZIndexes.ObstaclesLayer1 - 3,
+        zIndex: ZIndexes.ObstaclesLayer1 - 4,
         rotationMode: RotationMode.Limited,
         winterVariations: 1
     },
