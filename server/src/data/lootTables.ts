@@ -1847,7 +1847,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { item: NullString, weight: 1 },
             { item: "one_at_nsd", weight: 0.2 },
             { item: "sky", weight: 0.7 },
-            { item: "stardust", weight: 0.5 },
+            { item: "military_camo", weight: 0.5 },
             { item: "ghillie_suit", weight: 0.1 },
             { item: "ancestral_garb", weight: 0.001 }
         ],
