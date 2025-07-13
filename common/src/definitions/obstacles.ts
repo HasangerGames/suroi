@@ -6701,7 +6701,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
             destroy: 0.5
         },
         spawnMode: MapObjectSpawnMode.GrassAndSand,
-        rotationMode: RotationMode.Binary,
+        rotationMode: RotationMode.None,
         hitbox: RectangleHitbox.fromRect(10, 10),
         hasLoot: true,
         noResidue: true, // todo; residue
