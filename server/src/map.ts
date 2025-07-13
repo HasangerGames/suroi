@@ -1,5 +1,5 @@
 import { GameConstants, Layer, MapObjectSpawnMode, ObjectCategory, RotationMode } from "@common/constants";
-import { BuildingObstacle, Buildings, type BuildingDefinition } from "@common/definitions/buildings";
+import { BuildingObstacle, Buildings, SubBuilding, type BuildingDefinition } from "@common/definitions/buildings";
 import { Obstacles, type ObstacleDefinition } from "@common/definitions/obstacles";
 import { MapPacket, type MapData } from "@common/packets/mapPacket";
 import { PacketStream } from "@common/packets/packetStream";
@@ -634,8 +634,8 @@ export class GameMap {
             let isChosenObstacle = false;
             if (obstacleData.replaceableBy !== undefined) {
                 isChosenObstacle = idString === chosenReplaceableObstacle.idString && Vec.equals(obstacleData.position, chosenReplaceableObstacle.position);
-                if (isChosenObstacle) {
-                    idString = chosenReplaceableObstacle.replaceableBy as ReferenceTo<ObstacleDefinition>;
+                if (isChosenObstacle && chosenReplaceableObstacle.replaceableBy !== undefined) {
+                    idString = chosenReplaceableObstacle.replaceableBy;
                 }
             }
             // ------------------------------------------------------------------------------------------------
@@ -690,10 +690,29 @@ export class GameMap {
             }
         }
 
-        for (const subBuilding of definition.subBuildings ?? []) {
-            const idString = getRandomIDString<BuildingDefinition>(subBuilding.idString);
+        const subBuildingsData = definition.subBuildings ?? [];
+
+        const replaceableSubBuildings: SubBuilding[] = [];
+        for (const subBuilding of subBuildingsData) {
+            if (subBuilding.replaceableBy !== undefined) {
+                replaceableSubBuildings.push(subBuilding);
+            }
+        }
+
+        const chosenReplaceableSubBuilding = pickRandomInArray(replaceableSubBuildings);
+
+        for (const subBuilding of subBuildingsData) {
+            let idString = getRandomIDString<BuildingDefinition>(subBuilding.idString);
 
             if (idString === NullString) continue;
+
+            let isChosenSubBuilding = false;
+            if (subBuilding.replaceableBy !== undefined) {
+                isChosenSubBuilding = idString === chosenReplaceableSubBuilding.idString && Vec.equals(subBuilding.position, chosenReplaceableSubBuilding.position);
+                if (isChosenSubBuilding && chosenReplaceableSubBuilding.replaceableBy !== undefined) {
+                    idString = chosenReplaceableSubBuilding.replaceableBy;
+                }
+            }
 
             const finalOrientation = Numeric.addOrientations(orientation, subBuilding.orientation ?? 0);
             this.generateBuilding(

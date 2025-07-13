@@ -232,7 +232,8 @@ export abstract class InventoryItemBase<Type extends WeaponTypes = WeaponTypes> 
                 adrenDrain: this._modifiers.adrenDrain !== newModifiers.adrenDrain,
 
                 baseSpeed: this._modifiers.baseSpeed !== newModifiers.baseSpeed,
-                hpRegen: this._modifiers.hpRegen !== newModifiers.hpRegen
+                hpRegen: this._modifiers.hpRegen !== newModifiers.hpRegen,
+                maxShield: this._modifiers.maxShield !== newModifiers.maxShield
             };
 
             if (Object.values(diff).some(v => v)) {

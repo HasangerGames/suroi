@@ -25,7 +25,7 @@ export interface BuildingObstacle {
     readonly activated?: boolean
     readonly outdoors?: boolean
     readonly waterOverlay?: boolean
-    readonly replaceableBy?: ReferenceOrRandom<ObstacleDefinition>
+    readonly replaceableBy?: ReferenceTo<ObstacleDefinition>
 }
 
 interface LootSpawner {
@@ -33,12 +33,13 @@ interface LootSpawner {
     readonly table: string
 }
 
-interface SubBuilding {
+export interface SubBuilding {
     readonly idString: ReferenceOrRandom<BuildingDefinition>
     readonly position: Vector
     readonly orientation?: Orientation
     // specified as an _offset_ relative to the layer of the building in which this building appears
     readonly layer?: Layer
+    readonly replaceableBy?: ReferenceTo<BuildingDefinition>
 }
 
 export interface BuildingImageDefinition {
@@ -4600,10 +4601,10 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             // container distance Y = 28.55
             // ----------------------------------
             { idString: randomPortOpenContainerOneSide, position: Vec(10.75, -75.60) },
-            { idString: "container_21", position: Vec(10.75, -104.15) },
+            { idString: "container_20", position: Vec(10.75, -104.15), replaceableBy: "container_21" },
             { idString: randomPortOpenContainerTwoSide, position: Vec(-43.49, -5.3) },
             { idString: randomPortDamagedContainerReversed, position: Vec(29.19, 5.3), orientation: 2 },
-            { idString: "container_20", position: Vec(-14.89, -5.3) },
+            { idString: "container_20", position: Vec(-14.89, -5.3), replaceableBy: "container_21" },
 
             { idString: randomPortOpenContainerOneSide, position: Vec(43.49, -36.25), orientation: 2 },
             { idString: randomPortOpenContainerOneSide, position: Vec(29.19, -36.25), orientation: 2 },
@@ -4612,9 +4613,9 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
 
             { idString: randomPortOpenContainerOneSide, position: Vec(39.25, 65.25) },
             { idString: randomPortOpenContainerOneSide, position: Vec(-24.95, -65.25), orientation: 2 },
-            { idString: "container_20", position: Vec(10.65, 65.25) },
+            { idString: "container_20", position: Vec(10.65, 65.25), replaceableBy: "container_21" },
 
-            { idString: "container_20", position: Vec(135.95, -33.5), orientation: 3 }
+            { idString: "container_20", position: Vec(135.95, -33.5), orientation: 3, replaceableBy: "container_21" }
         ]
     },
     {
