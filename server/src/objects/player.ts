@@ -208,6 +208,36 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         this._normalizedAdrenaline = Numeric.remap(this.adrenaline, this.minAdrenaline, this.maxAdrenaline, 0, 1);
     }
 
+    private _maxShield = GameConstants.player.maxShield;
+
+    private _normalizedShield = 0;
+    get normalizedShield(): number { return this._normalizedShield; }
+
+    get maxShield(): number { return this._maxShield; }
+    set maxShield(maxShield: number) {
+        if (this._maxShield === maxShield) return;
+        this._maxShield = maxShield;
+        this.dirty.maxMinStats = true;
+
+        if (this._shield < this._maxShield) {
+            this._normalizedShield = Numeric.remap(this.shield, 0, this.maxShield, 0, 1);
+            this.dirty.shield = true;
+        } else {
+            this.shield = this._shield;
+        }
+    }
+
+    private _shield = 100;
+    get shield(): number { return this._shield; }
+    set shield(shield: number) {
+        const clamped = Numeric.clamp(shield, 0, this._maxShield);
+        if (this._shield === clamped) return;
+
+        this._shield = clamped;
+        this.dirty.shield = true;
+        this._normalizedShield = Numeric.remap(this.shield, 0, this.maxShield, 0, 1);
+    }
+
     private _sizeMod = 1;
     get sizeMod(): number { return this._sizeMod; }
     set sizeMod(size: number) {
@@ -290,6 +320,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         health: true,
         maxMinStats: true,
         adrenaline: true,
+        shield: true,
         size: true,
         weapons: true,
         slotLocks: true,
@@ -1479,6 +1510,10 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             playerData.adrenaline = player._normalizedAdrenaline;
         }
 
+        if (player.dirty.shield || forceInclude) {
+            playerData.shield = player._normalizedShield;
+        }
+
         if (player.dirty.zoom || forceInclude) {
             playerData.zoom = player._scope.zoomLevel;
         }
@@ -1878,12 +1913,14 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             weaponUsed
         });
 
-        // Reductions are merged additively
-        amount *= 1 - (
-            (this.inventory.helmet?.damageReduction ?? 0) + (this.inventory.vest?.damageReduction ?? 0)
-        );
+        if (!this.shield) {
+            // Reductions are merged additively
+            amount *= 1 - (
+                (this.inventory.helmet?.damageReduction ?? 0) + (this.inventory.vest?.damageReduction ?? 0)
+            );
 
-        amount = this._clampDamageAmount(amount);
+            amount = this._clampDamageAmount(amount);
+        }
 
         this.piercingDamage({
             amount,
@@ -1941,7 +1978,11 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         const oldStats = canTrackStats ? { ...weaponUsed.stats } : undefined;
 
         // Decrease health; update damage done and damage taken
-        this.health -= amount;
+        if (this.shield) {
+            this.shield -= amount;
+        } else {
+            this.health -= amount;
+        }
         if (amount > 0) {
             this.damageTaken += amount;
 
@@ -2134,11 +2175,13 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             maxHealth,
             maxAdrenaline,
             minAdrenaline,
+            maxShield,
             size
         } = this._modifiers = this._calculateModifiers();
 
         this.maxHealth = GameConstants.player.defaultHealth * maxHealth;
         this.maxAdrenaline = GameConstants.player.maxAdrenaline * maxAdrenaline;
+        this.maxShield = GameConstants.player.maxShield * maxShield;
         this.minAdrenaline = minAdrenaline;
         this.sizeMod = size;
     }

@@ -19,6 +19,7 @@ export const GameConstants = {
         baseSpeed: 0.03,
         defaultHealth: 100,
         maxAdrenaline: 100,
+        maxShield: 100,
         inventorySlotTypings,
         maxWeapons: inventorySlotTypings.length,
         nameMaxLength: 16,
@@ -37,6 +38,7 @@ export const GameConstants = {
         defaultModifiers: (): PlayerModifiers => ({
             maxHealth: 1,
             maxAdrenaline: 1,
+            maxShield: 1,
             baseSpeed: 1,
             size: 1,
             adrenDrain: 1,

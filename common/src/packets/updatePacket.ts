@@ -22,6 +22,7 @@ function serializePlayerData(
         minMax,
         health,
         adrenaline,
+        shield,
         zoom,
         layer,
         id,
@@ -39,6 +40,7 @@ function serializePlayerData(
     const hasMinMax      = minMax !== undefined;
     const hasHealth      = health !== undefined;
     const hasAdrenaline  = adrenaline !== undefined;
+    const hasShield      = shield !== undefined;
     const hasZoom        = zoom !== undefined;
     const hasLayer       = layer !== undefined;
     const hasId          = id !== undefined;
@@ -55,6 +57,7 @@ function serializePlayerData(
         hasMinMax,
         hasHealth,
         hasAdrenaline,
+        hasShield,
         hasZoom,
         hasLayer,
         hasId,
@@ -83,6 +86,10 @@ function serializePlayerData(
 
     if (hasAdrenaline) {
         strm.writeFloat(adrenaline, 0, 1, 2);
+    }
+
+    if (hasShield) {
+        strm.writeFloat(shield, 0, 1, 2);
     }
 
     if (hasZoom) {
@@ -260,6 +267,7 @@ function deserializePlayerData(strm: SuroiByteStream): PlayerData {
         hasMinMax,
         hasHealth,
         hasAdrenaline,
+        hasShield,
         hasZoom,
         hasLayer,
         hasId,
@@ -292,6 +300,10 @@ function deserializePlayerData(strm: SuroiByteStream): PlayerData {
 
     if (hasAdrenaline) {
         data.adrenaline = strm.readFloat(0, 1, 2);
+    }
+
+    if (hasShield) {
+        data.shield = strm.readFloat(0, 1, 2);
     }
 
     if (hasZoom) {
@@ -497,6 +509,7 @@ export interface PlayerData {
     }
     health?: number
     adrenaline?: number
+    shield?: number
     zoom?: number
     layer?: number
     id?: {

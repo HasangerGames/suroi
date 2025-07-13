@@ -5,6 +5,7 @@ export interface PlayerModifiers {
     // Multiplicative
     maxHealth: number
     maxAdrenaline: number
+    maxShield: number
     baseSpeed: number
     size: number
     adrenDrain: number

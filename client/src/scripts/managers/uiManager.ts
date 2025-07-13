@@ -176,6 +176,8 @@ class UIManagerClass {
         minAdrenBar: $<HTMLDivElement>("#adrenaline-bar-min"),
         adrenalineBarAmount: $<HTMLSpanElement>("#adrenaline-bar-amount"),
 
+        shieldBar: $<HTMLDivElement>("#shield-bar"),
+
         killFeed: $<HTMLDivElement>("#kill-feed"),
 
         gameUi: $<HTMLDivElement>("#game-ui"),
@@ -602,6 +604,7 @@ class UIManagerClass {
             minMax,
             health,
             adrenaline,
+            shield,
             zoom,
             id,
             teammates,
@@ -787,6 +790,10 @@ class UIManagerClass {
             this.ui.adrenalineBarAmount
                 .text(safeRound(this.adrenaline))
                 .css("color", this.adrenaline < 7 ? "#ffffff" : "#000000");
+        }
+
+        if (shield !== undefined) {
+            this.ui.shieldBar.css("clip-path", `inset(0 ${(1 - shield) * 100}% 0 0)`);
         }
 
         if (inventory?.weapons) {
