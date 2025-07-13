@@ -10467,6 +10467,14 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                     RectangleHitbox.fromRect(7.68, 10.82, Vec(-14.32, 28.84))
                 ),
                 layer: Layer.ToBasement
+            },
+            { // stairs
+                type: FloorNames.Metal,
+                hitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(7.68, 10.82, Vec(-14.63, -28.85)),
+                    RectangleHitbox.fromRect(7.68, 10.82, Vec(-14.32, 28.84))
+                ),
+                layer: Layer.Ground
             }
         ],
         floorImages: [
@@ -10597,6 +10605,14 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                     RectangleHitbox.fromRect(7.76, 10.89, Vec(-30.81, 29.35))
                 ),
                 layer: Layer.ToBasement
+            },
+            {
+                type: FloorNames.Metal,
+                hitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(7.76, 10.89, Vec(30.77, -29.39)),
+                    RectangleHitbox.fromRect(7.76, 10.89, Vec(-30.81, 29.35))
+                ),
+                layer: Layer.Ground
             }
         ],
         floorImages: [{
@@ -10689,7 +10705,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "hunted_bunker_entrance", position: Vec(52.54, -5.11), rotation: 1 }
         ],
         subBuildings: IS_CLIENT ? undefined : [
-            { idString: "lion_bunker_main", position: Vec(0, 0), layer: -2 }
+            { idString: "lion_bunker_main", position: Vec(0, 0), layer: Layer.Basement }
         ]
     },
     {
@@ -10732,7 +10748,15 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                     RectangleHitbox.fromRect(7.51, 10.68, Vec(0, 29.33)),
                     RectangleHitbox.fromRect(10.68, 7.51, Vec(53.58, -5.12))
                 ),
-                layer: -1
+                layer: Layer.ToBasement
+            },
+            { // stairs
+                type: FloorNames.Metal,
+                hitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(7.51, 10.68, Vec(0, 29.33)),
+                    RectangleHitbox.fromRect(10.68, 7.51, Vec(53.58, -5.12))
+                ),
+                layer: Layer.Ground
             }
         ],
         floorImages: [{
@@ -10997,7 +11021,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { key: "barricade_line_large", position: Vec(-53.67, -34.83) },
             { key: "barricade_line_large", position: Vec(81.92, -34.83) }
         ],
-        obstacles: [
+        obstacles: IS_CLIENT ? undefined : [
             // Bottom
 
             ...Array.from(
@@ -11313,7 +11337,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "saw", position: Vec(5.88, -10.22), rotation: 0 },
             { idString: "headquarters_security_desk", position: Vec(85.04, 118.94), rotation: 2, puzzlePiece: true }
         ],
-        subBuildings: [
+        subBuildings: IS_CLIENT ? undefined : [
             { idString: randomPallet, position: Vec(-70.25, 64.65) }, // P3
             { idString: randomPallet, position: Vec(-71.27, 219.63) }, // P5
             { idString: randomPallet, position: Vec(130.72, -172.72) }, // P11
@@ -11385,7 +11409,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 position: Vec(-0.85, 2.9)
             }
         ],
-        obstacles: [
+        obstacles: IS_CLIENT ? undefined : [
             { idString: "abandoned_warehouse_metal_collider", position: Vec(0, 0), rotation: 0 },
             { idString: "grenade_crate", position: Vec(19.68, 8.05) },
             { idString: "barrel", position: Vec(-2.98, -8.19) },
@@ -11475,7 +11499,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 )
             }
         ],
-        obstacles: [
+        obstacles: IS_CLIENT ? undefined : [
             { idString: "sawmill_center_warehouse_table_collider", position: Vec(0, 0), rotation: 0 },
 
             { idString: "solid_crate", position: Vec(-7.89, 33.12) },
@@ -11620,7 +11644,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 )
             }
         ],
-        obstacles: [
+        obstacles: IS_CLIENT ? undefined : [
             // { idString: "headquarters_security_desk", position: Vec(-11.33, -17.63), rotation: 2, activated: true },
             { idString: "gun_mount_hatchet", position: Vec(10.05, -0.99), rotation: 2 },
             { idString: randomToilet, position: Vec(-20.58, -46.84), rotation: 1 },
@@ -11724,7 +11748,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             key: "sawmill_office_floor",
             position: Vec(0.07, 0.32)
         }],
-        obstacles: [
+        obstacles: IS_CLIENT ? undefined : [
             { idString: "door", position: Vec(-22.11, 13.43), rotation: 2 },
             { idString: "door", position: Vec(21.37, -12.75), rotation: 2 },
             { idString: "cobweb", position: Vec(-21.95, -6.99), rotation: 0 },
@@ -11762,7 +11786,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             RectangleHitbox.fromRect(9.62, 1.89, Vec(46.71, 35.97))
         ),
         spawnHitbox: RectangleHitbox.fromRect(108.61, 134.94, Vec(3.16, 3.27)),
-        subBuildings: [
+        subBuildings: IS_CLIENT ? undefined : [
             { idString: "outhouse", position: Vec(-42.87, -32.12), orientation: 3 }
         ],
         ceilingHitbox: new GroupHitbox(
@@ -11846,7 +11870,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 scale: Vec(2, 2.015)
             }
         ],
-        obstacles: [
+        obstacles: IS_CLIENT ? undefined : [
             { idString: "window", position: Vec(-2.66, -32.41), rotation: 1 },
             { idString: "window", position: Vec(50.63, -8.23), rotation: 0 },
             { idString: "window", position: Vec(36.2, 36), rotation: 1 },
@@ -11960,7 +11984,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             type: FloorNames.Stone,
             hitbox: RectangleHitbox.fromRect(100.32, 41.74, Vec(-0.09, -0.13))
         }],
-        obstacles: [
+        obstacles: IS_CLIENT ? undefined : [
             { idString: "sawmill_storage_column", position: Vec(-15.64, 20.24) },
             { idString: "sawmill_storage_column", position: Vec(16.85, 20.24) },
             { idString: "forklift", position: Vec(0.09, 20.22), rotation: 2 },
@@ -12480,7 +12504,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             position: Vec(-10.42, -8.06),
             scale: Vec(2, 1.8)
         }],
-        obstacles: [
+        obstacles: IS_CLIENT ? undefined : [
             { idString: "door", position: Vec(-45.51, 2.91), rotation: 3 },
             { idString: "ammo_crate", position: Vec(-39.02, -18.68) },
             { idString: "lansiraami_crate", position: Vec(43.7, 18.73) },
@@ -12543,7 +12567,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             color: 0x34513e,
             hitbox: RectangleHitbox.fromRect(20.77, 27.13)
         }],
-        obstacles: [
+        obstacles: IS_CLIENT ? undefined : [
             { idString: "hunting_stand_wall_1", position: Vec(-0.19, -10.54), rotation: 0 },
             { idString: "hunting_stand_wall_1", position: Vec(-0.19, 10.26), rotation: 0 },
             { idString: "hunting_stand_column", position: Vec(-6.86, -10.54) },
@@ -12587,7 +12611,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             position: Vec(0, 0),
             scale: Vec(2, 2)
         }],
-        obstacles: [
+        obstacles: IS_CLIENT ? undefined : [
             { idString: "gun_locker", position: Vec(-0.02, -7.47), rotation: 0 },
             { idString: "box", position: Vec(3.01, -1.47) },
             { idString: "box", position: Vec(4.17, 3.64) },
@@ -12610,13 +12634,13 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             hitbox: RectangleHitbox.fromRect(7.13, 9.85, Vec(-0.28, 13.17)),
             layer: Layer.ToUpstairs
         }],
-        obstacles: [{
+        obstacles: IS_CLIENT ? undefined : [{
             idString: "blue_stair_collider",
             position: Vec(-0.28, 13.27),
             layer: Layer.ToUpstairs,
             rotation: 2
         }],
-        subBuildings: [
+        subBuildings: IS_CLIENT ? undefined : [
             { idString: "blue_stair", position: Vec(-0.31, 13.66) },
             { idString: "hunting_stand_bottom", position: Vec(0, -5.4) },
             { idString: "hunting_stand_top", position: Vec(0, -5.33), layer: Layer.Upstairs }
@@ -12776,7 +12800,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 )
             }
         ],
-        obstacles: [
+        obstacles: IS_CLIENT ? undefined : [
             { idString: "tavern_bar_collider", position: Vec(0, 0), rotation: 0 }, // might be turned into an obstacle for recording
             { idString: "tavern_table_collider", position: Vec(0, 0), rotation: 0 },
             { idString: "tavern_basement_collider_hack", position: Vec(43.66, -53.7), rotation: 0, layer: Layer.ToBasement },
@@ -12874,7 +12898,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "gun_mount_ak47", position: Vec(-14.35, -29.45), rotation: 0 },
             { idString: "tavern_bottle_table", position: Vec(29.95, 11.85), rotation: 1 }
         ],
-        subBuildings: [
+        subBuildings: IS_CLIENT ? undefined : [
             { idString: "tavern_secret_ceiling", position: Vec(39.85, 3.2) },
             { idString: "tavern_basement", position: Vec(43.66, -53.7), layer: Layer.Basement }
         ]
@@ -12954,7 +12978,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 position: Vec(17.45, -53.97)
             }
         ],
-        obstacles: [
+        obstacles: IS_CLIENT ? undefined : [
             { idString: "tavern_basement_table_colliders", position: Vec(0, 0), rotation: 0 },
 
             { idString: "bulletproof_automatic_glass_door", position: Vec(-6.03, -22.36), rotation: 0 },
@@ -13007,7 +13031,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "rare_wine_case", position: Vec(-0.73, -41.54), rotation: 0 },
             { idString: "gun_mount_an94", position: Vec(-0.73, -56.17), rotation: 0 }
         ],
-        subBuildings: [{
+        subBuildings: IS_CLIENT ? undefined : [{
             idString: "tavern_basement_vault_ceiling",
             position: Vec(-0.55, -40.6)
         }]
