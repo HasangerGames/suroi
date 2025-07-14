@@ -763,7 +763,6 @@ const maps = {
         buildings: {
             sawmill: 1,
             small_bridge: Infinity,
-            lighthouse_aged: 1,
             outhouse: 6,
             buoy_hunted: 12,
             tavern: 1,
