@@ -67,6 +67,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
     infected = false;
 
+    hasBubble = false;
+
     private _oldItem = this.activeItem;
 
     equipment: {
@@ -121,6 +123,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         readonly waterOverlay: SuroiSprite
         readonly blood: Container
         readonly backMeleeSprite: SuroiSprite
+        readonly bubbleSprite: SuroiSprite
         disguiseSprite?: SuroiSprite
     };
 
@@ -186,7 +189,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             muzzleFlash: new SuroiSprite("muzzle_flash").setVisible(false).setZIndex(7).setAnchor(Vec(0, 0.5)),
             waterOverlay: new SuroiSprite("water_overlay").setVisible(false).setTint(Game.colors.water),
             blood: new Container(),
-            backMeleeSprite: new SuroiSprite()
+            backMeleeSprite: new SuroiSprite(),
+            bubbleSprite: new SuroiSprite().setFrame("shield").setVisible(false).setZIndex(7)
         };
 
         if (Game.isTeamMode) {
@@ -223,7 +227,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             this.images.muzzleFlash,
             this.images.waterOverlay,
             this.images.blood,
-            this.images.backMeleeSprite
+            this.images.backMeleeSprite,
+            this.images.bubbleSprite
         );
 
         this.container.zIndex = ZIndexes.Players;
@@ -544,7 +549,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     halloweenThrowableSkin,
                     activeDisguise,
                     infected,
-                    backEquippedMelee
+                    backEquippedMelee,
+                    hasBubble
                 }
             } = data;
 
@@ -742,6 +748,39 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 if (!isNew) {
                     if (infected) this.playSound("infected");
                     else this.playSound("cured");
+                }
+            }
+
+            if (hasBubble !== this.hasBubble) {
+                this.hasBubble = hasBubble;
+                const bubbleSprite = this.images.bubbleSprite;
+                bubbleSprite.setVisible(this.hasBubble);
+                if (!isNew) {
+                    if (!hasBubble) {
+                        this.playSound("glass_destroyed");
+                        ParticleManager.spawnParticles(10, () => ({
+                            frames: "window_particle",
+                            position: this.hitbox.randomPoint(),
+                            layer: this.layer,
+                            zIndex: ZIndexes.Players + 0.5,
+                            lifetime: 1500,
+                            rotation: {
+                                start: randomRotation(),
+                                end: randomRotation()
+                            },
+                            scale: {
+                                start: randomFloat(0.85, 0.95),
+                                end: 0,
+                                ease: EaseFunctions.quarticIn
+                            },
+                            alpha: {
+                                start: 1,
+                                end: 0,
+                                ease: EaseFunctions.sexticIn
+                            },
+                            speed: Vec.fromPolar(randomRotation(), randomFloat(4, 9))
+                        }));
+                    }
                 }
             }
 

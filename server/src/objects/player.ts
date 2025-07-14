@@ -236,6 +236,12 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         this._shield = clamped;
         this.dirty.shield = true;
         this._normalizedShield = Numeric.remap(this.shield, 0, this.maxShield, 0, 1);
+
+        const hasBubble = this.shield > 0;
+        if (this.hasBubble !== hasBubble) {
+            this.hasBubble = hasBubble;
+            this.setDirty();
+        }
     }
 
     private _sizeMod = 1;
@@ -492,6 +498,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     c4s = new Set<Projectile>();
 
     backEquippedMelee?: MeleeDefinition;
+
+    hasBubble = false;
 
     readonly perks = new ServerPerkManager(this, []);
     perkUpdateMap?: Map<UpdatablePerkDefinition, number>; // key = perk, value = last updated
@@ -2767,7 +2775,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 halloweenThrowableSkin: this.halloweenThrowableSkin,
                 activeDisguise: this.activeDisguise,
                 infected: this.perks.hasItem(PerkIds.Infected),
-                backEquippedMelee: this.backEquippedMelee
+                backEquippedMelee: this.backEquippedMelee,
+                hasBubble: this.hasBubble
             }
         };
 

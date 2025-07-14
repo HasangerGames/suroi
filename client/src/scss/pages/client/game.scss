@@ -815,7 +815,7 @@
         position: absolute;
         top: 0;
         left: 0;
-        border-radius: 4px;
+        border-radius: 2px;
         height: 100%;
         width: 100%;
     }
@@ -833,8 +833,8 @@
         transition: clip-path ease-in-out 50ms;
 
         @media screen and (max-width: variables.$screen_large) {
-            width: calc(100% + 5px);
-            height: calc(100% + 5px);
+            width: calc(100% + 9px);
+            height: calc(100% + 9px);
             left: -5px;
         }
     }
