@@ -44,6 +44,7 @@ export interface ModeDefinition {
     readonly plumpkinGrenades?: boolean
     readonly unlockStage?: number // Used for hunted mode bunkers
     readonly forcedGoldAirdropStage?: number
+    readonly overrideUpstairsFunctioanlity?: boolean // hunting stand hunting stand hunting stand hunting stand hunting stand
 }
 
 export const Modes: Record<ModeName, ModeDefinition> = {
@@ -130,6 +131,7 @@ export const Modes: Record<ModeName, ModeDefinition> = {
         spriteSheets: ["shared", "hunted"],
         unlockStage: 3, // do not touch
         forcedGoldAirdropStage: 5,
+        overrideUpstairsFunctioanlity: true,
         playButtonImage: "./img/logos/lansiraami_logo.svg"
     },
     birthday: { // copy of normal

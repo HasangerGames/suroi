@@ -12567,6 +12567,11 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             color: 0x34513e,
             hitbox: RectangleHitbox.fromRect(20.77, 27.13)
         }],
+        ceilingImages: [{
+            key: "hunting_stand_ceiling",
+            position: Vec(0, 0),
+            scale: Vec(2, 2)
+        }],
         obstacles: IS_CLIENT ? undefined : [
             { idString: "hunting_stand_wall_1", position: Vec(-0.19, -10.54), rotation: 0 },
             { idString: "hunting_stand_wall_1", position: Vec(-0.19, 10.26), rotation: 0 },
@@ -12626,7 +12631,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         name: "Hunting Stand",
         defType: DefinitionType.Building,
         spawnHitbox: new GroupHitbox(
-            RectangleHitbox.fromRect(24.6, 31, Vec(0.23, -5.57)),
+            RectangleHitbox.fromRect(30, 36, Vec(0.23, -5.57)),
             RectangleHitbox.fromRect(13.97, 14, Vec(-0.2, 13.47))
         ),
         floors: [{
@@ -12636,12 +12641,12 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         }],
         obstacles: IS_CLIENT ? undefined : [{
             idString: "blue_stair_collider",
-            position: Vec(-0.28, 13.27),
+            position: Vec(0, 13.27),
             layer: Layer.ToUpstairs,
             rotation: 2
         }],
         subBuildings: IS_CLIENT ? undefined : [
-            { idString: "blue_stair", position: Vec(-0.31, 13.66) },
+            { idString: "blue_stair", position: Vec(0, 13.66) },
             { idString: "hunting_stand_bottom", position: Vec(0, -5.4) },
             { idString: "hunting_stand_top", position: Vec(0, -5.33), layer: Layer.Upstairs }
         ]
