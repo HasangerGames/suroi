@@ -779,7 +779,10 @@ const maps = {
             warehouse_hunted: 2,
             outhouse: 3,
             cabin: 3,
-            tavern: 1
+            tavern: 1,
+            tiger_bunker: 1,
+            lion_bunker: 1,
+            panther_bunker: 1
         },
         majorBuildings: ["tavern", "sawmill"],
         obstacles: {
@@ -831,7 +834,7 @@ const maps = {
             ground_loot: 100
         },
         places: [
-            { name: "Apple", position: Vec(0.23, 0.2) },
+            { name: "Sawdust Bay", position: Vec(0.23, 0.2) },
             { name: "Lightwood", position: Vec(0.23, 0.8) },
             { name: "Barrier", position: Vec(0.75, 0.2) },
             { name: "Finnish Lands", position: Vec(0.72, 0.8) },
