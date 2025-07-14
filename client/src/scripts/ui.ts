@@ -18,7 +18,7 @@ import $ from "jquery";
 import { Color, isWebGLSupported, isWebGPUSupported } from "pixi.js";
 import { posts } from "virtual:news-posts";
 import type { NewsPost } from "../../vite/plugins/news-posts-plugin";
-import { Config, type ServerInfo } from "./config";
+import { Config, type Region, type ServerInfo } from "./config";
 import { GameConsole } from "./console/gameConsole";
 import { defaultClientCVars, type CVarTypeMapping } from "./console/variables";
 import { Game } from "./game";
@@ -45,11 +45,7 @@ import type { TranslationKeys } from "./utils/translations/typings";
     `@stylistic/indent`: can eslint stop [expletive redacted] at indenting stuff
 */
 
-interface RegionInfo {
-    readonly name: string
-    readonly mainAddress: string
-    readonly gameAddress: string
-    readonly offset: number
+interface RegionInfo extends Region {
     readonly playerCount?: number
 
     readonly teamMode?: TeamMode
@@ -139,11 +135,11 @@ export async function fetchServerData(): Promise<void> {
     // Load server list
     const regionUICache: Record<string, JQuery<HTMLLIElement>> = {};
 
-    for (const [regionID] of regionMap) {
+    for (const [regionID, { flag }] of regionMap) {
         serverList.append(
             regionUICache[regionID] = $<HTMLLIElement>(`
                 <li class="server-list-item" data-region="${regionID}">
-                    <span class="server-name">${getTranslatedString(`region_${regionID}` as TranslationKeys)}</span>
+                    <span class="server-name">${flag ?? ""}${getTranslatedString(`region_${regionID}` as TranslationKeys)}</span>
                     <span style="margin-left: auto">
                       <img src="./img/misc/player_icon.svg" width="16" height="16" alt="Player count">
                       <span class="server-player-count">-</span>
@@ -253,12 +249,8 @@ export async function fetchServerData(): Promise<void> {
 
         Game.modeName = selectedRegion.mode ?? GameConstants.defaultMode;
 
-        const region = getTranslatedString(`region_${GameConsole.getBuiltInCVar("cv_region")}` as TranslationKeys);
-        if (region === "region_") {
-            serverName.text(selectedRegion.name); // this for now until we find a way to selectedRegion.id
-        } else {
-            serverName.text(region);
-        }
+        const region = GameConsole.getBuiltInCVar("cv_region") || Config.defaultRegion;
+        serverName.text(`${selectedRegion.flag ?? ""}${getTranslatedString(`region_${region}` as TranslationKeys)}`);
         playerCount.text(selectedRegion.playerCount ?? "-");
         // $("#server-ping").text(selectedRegion.ping && selectedRegion.ping > 0 ? selectedRegion.ping : "-");
         updateSwitchTime();
