@@ -124,8 +124,8 @@ const maps = {
         oceanSize: 128,
         beachSize: 32,
         rivers: {
-            minAmount: 2,
-            maxAmount: 3,
+            minAmount: 1,
+            maxAmount: 2,
             maxWideAmount: 1,
             wideChance: 0.35,
             minWidth: 12,
