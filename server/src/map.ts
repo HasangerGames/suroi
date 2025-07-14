@@ -512,10 +512,17 @@ export class GameMap {
                 }
             }
         } else {
-            const { bridgeHitbox, bridgeMinRiverWidth, spawnHitbox, spawnOffset } = buildingDef;
+            const {
+                bridgeHitbox,
+                bridgeMinRiverWidth,
+                bridgeSpawnRanges,
+                asymmetricalBridgeHitbox,
+                spawnHitbox,
+                spawnOffset
+            } = buildingDef;
             let spawnedCount = 0;
 
-            const generateBridge = (river: River, start: number, end: number): void => {
+            const generateBridge = (river: River, [start, end]: [number, number]): void => {
                 if (spawnedCount >= count) return;
 
                 let shortestDistance = Number.MAX_VALUE;
@@ -529,7 +536,7 @@ export class GameMap {
 
                     // Find the best orientation
                     const direction = Vec.direction(river.getTangent(pos));
-                    for (const orientation of [0, 1] as readonly Orientation[]) {
+                    for (const orientation of (asymmetricalBridgeHitbox ? [0, 1, 2, 3] : [0, 1]) as readonly Orientation[]) {
                         const distance = Math.abs(Angle.minimize(direction, CARDINAL_DIRECTIONS[orientation]));
                         if (distance >= shortestDistance) continue;
 
@@ -563,17 +570,21 @@ export class GameMap {
                 if (!bestPosition || !realPosition) return;
 
                 this.occupiedBridgePositions.push(bestPosition);
-                const finalOrientation: Orientation = bestOrientation === 0
-                    ? randomBoolean() ? 0 : 2
-                    : randomBoolean() ? 1 : 3;
+                const finalOrientation: Orientation = asymmetricalBridgeHitbox
+                    ? bestOrientation
+                    : bestOrientation === 0
+                        ? randomBoolean() ? 0 : 2
+                        : randomBoolean() ? 1 : 3;
                 this.generateBuilding(buildingDef, realPosition, finalOrientation);
                 spawnedCount++;
             };
 
             for (const river of this.terrain.rivers) {
                 if (river.isTrail || river.width < (bridgeMinRiverWidth ?? 0)) continue;
-                generateBridge(river, 0.1, 0.4);
-                generateBridge(river, 0.6, 0.9);
+
+                for (const range of bridgeSpawnRanges ?? [[0.1, 0.4], [0.6, 0.9]]) {
+                    generateBridge(river, range);
+                }
             }
         }
     }

@@ -102,7 +102,10 @@ export interface BuildingDefinition extends ObjectDefinition {
     readonly spawnRadius?: number
 
     readonly bridgeHitbox?: Hitbox
+    /** If true, the hitbox will be tested in more orientations */
+    readonly asymmetricalBridgeHitbox?: boolean
     readonly bridgeMinRiverWidth?: number
+    readonly bridgeSpawnRanges?: Array<[number, number]>
 
     readonly noCeilingScopeEffect?: boolean
     readonly hasSecondFloor?: boolean
@@ -10826,6 +10829,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         name: "sawmill",
         defType: DefinitionType.Building,
         spawnMode: MapObjectSpawnMode.River,
+        bridgeSpawnRanges: [[0.4, 0.6]],
+        asymmetricalBridgeHitbox: true,
         bridgeHitbox: new GroupHitbox(
             RectangleHitbox.fromRect(292.05, 217.69, Vec(-0.25, 125.76)),
             RectangleHitbox.fromRect(250.43, 148.3, Vec(20.37, -160.65))
