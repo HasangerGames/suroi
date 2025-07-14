@@ -25,7 +25,7 @@
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
      inkscape:zoom="1"
-     inkscape:cx="861"
+     inkscape:cx="860.5"
      inkscape:cy="-15.5"
      inkscape:window-width="1920"
      inkscape:window-height="991"
@@ -398,7 +398,7 @@
        id="Strips1_3-2"
        style="fill:#899636">
       <rect
-         style="stroke:none"
+         style="stroke:none;fill:#899636"
          x="0"
          y="-0.5"
          width="1"

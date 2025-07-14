@@ -24,15 +24,15 @@
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
-     inkscape:zoom="0.34431468"
-     inkscape:cx="975.85152"
-     inkscape:cy="469.04768"
+     inkscape:zoom="0.97386898"
+     inkscape:cx="931.8502"
+     inkscape:cy="253.11413"
      inkscape:window-width="1920"
      inkscape:window-height="991"
      inkscape:window-x="-9"
      inkscape:window-y="-9"
      inkscape:window-maximized="1"
-     inkscape:current-layer="g2" />
+     inkscape:current-layer="g1" />
   <defs
      id="defs1">
     <pattern
@@ -75,7 +75,7 @@
        style="fill:#3d2b1d">
       <path
          id="path206-0-7"
-         style="stroke-width:5;stroke-miterlimit:10"
+         style="stroke-width:5;stroke-miterlimit:10;fill:#3d2b1d"
          d="M 0,0 V 1 H 15 V 15 H 0 v 1 44 0.5 0.5 14 1 h 30 v 14 h 1 V 76 h 14 v 14 h 1 V 61 h 14 v 29 h 1 V 46 h 14 v 29 0.5 0.5 14 h 1 V 76 H 90 V 75 H 76 V 31 H 90 V 30 H 75 46 V 16 H 61 90 V 15 H 61 V 1 H 90 V 0 H 61 60 V 0.5 15 H 46 V 0 H 45 V 15 15.5 16 30 H 31 V 0 H 30 15 Z M 16,1 H 30 V 30 30.5 31 45 H 16 V 16 15 Z M 1,16 H 15 V 45 45.5 46 60 H 1 Z M 31,31 H 46 75 V 45 H 61 31 Z M 16,46 H 31 60 V 60 H 46 16 Z M 1,61 H 16 45 V 75 H 31 1 Z" />
     </pattern>
     <pattern

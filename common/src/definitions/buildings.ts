@@ -4645,7 +4645,6 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         material: "metal_heavy",
         particle: "cargo_ship_particle",
         reflectBullets: true,
-        // visibleFromLayers: Layers.All, - TODO
         collideWithLayers: Layers.Adjacent,
         ceilingHitbox: new GroupHitbox(// -0.55, -6
             RectangleHitbox.fromRect(15.2, 11.27, Vec(25.6, -34.18)),
@@ -10913,22 +10912,6 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                     RectangleHitbox.fromRect(2.02, 31.78, Vec(55.53, -184.88))
                 )
             },
-
-            // ------------------------------------
-            // for yellow barricade lines
-            // SOMEONE FIX BARRICADE LINES PLS :sob:
-            // ------------------------------------
-            // {
-            //     color: 0xd5a244,
-            //     hitbox: new PolygonHitbox([
-            //         Vec(70.32, -174.35),
-            //         Vec(70.33, -176.43),
-            //         Vec(66.96, -171.04),
-            //         Vec(64.89, -171.04)
-            //     ])
-            // },
-            // ------------------------------------
-
             // bottom forklift park
             {
                 color: 0x473827,
@@ -10965,13 +10948,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 RectangleHitbox.fromRect(249.63, 148.34, Vec(20.4, -160.65))
             )
         }],
-        floorImages: [ // todo: repair barricade line svgs, pattern is broken (doesn't work with colors)
-            {
-                key: "sawmil_noalpha",
-                position: Vec(0, 0),
-                alpha: 0.75
-            },
-
+        floorImages: [
             // Mud/ground cracks (decals)
             // Top
             { key: "mud_decal_1", position: Vec(-38.22, -161.23) },
@@ -11008,18 +10985,19 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { key: "sawmill_main_logo", position: Vec(6, 75.25), scale: Vec(2, 2) },
 
             // Tinted
-            { key: "barricade_line", position: Vec(24.8, -226.65), tint: 0xd5a244, rotation: Math.PI / 2 }, // Top Center Road Line
-            { key: "barricade_line", position: Vec(-139.59, 92.45), tint: 0xd5a244 }, // Bottom Left Road Line
-            { key: "barricade_line", position: Vec(-106.59, 187.4), tint: 0xd5a244 }, // Bottom Left, entrance
-            { key: "barricade_line", position: Vec(47.11, 168.19), tint: 0xd5a244 }, // Bottom Right, entrance
+            { key: "barricade_line", position: Vec(24.8, -226.65), tint: 0xd5a244, rotation: Math.PI / 2, scale: Vec(2, 2) }, // Top Center Road Line
+            { key: "barricade_line", position: Vec(-139.59, 92.45), tint: 0xd5a244, scale: Vec(2, 2) }, // Bottom Left Road Line
+            { key: "barricade_line", position: Vec(-106.59, 187.5), tint: 0xd5a244, scale: Vec(2, 2) }, // Bottom Left, entrance
+            { key: "barricade_line", position: Vec(47.11, 168.19), tint: 0xd5a244, scale: Vec(2, 2) }, // Bottom Right, entrance
 
             // Barriers (NOT tinted)
-            { key: "barricade_line_small", position: Vec(-77.6, -89.7), rotation: Math.PI / 2 },
-            { key: "barricade_line_small2", position: Vec(112.16, 20.1), rotation: Math.PI / 2 },
-            { key: "barricade_line_small2", position: Vec(112.17, -90.4), rotation: Math.PI / 2 },
-            { key: "barricade_line_medium", position: Vec(-98.3, 20.31), rotation: Math.PI / 2 },
-            { key: "barricade_line_large", position: Vec(-53.67, -34.83) },
-            { key: "barricade_line_large", position: Vec(81.92, -34.83) }
+            { key: "barricade_line_yellow", position: Vec(63.51, -184.87), scale: Vec(2, 2) },
+            { key: "barricade_line_small", position: Vec(-77.6, -89.7), rotation: Math.PI / 2, scale: Vec(2, 2) },
+            { key: "barricade_line_small2", position: Vec(112.25, 20.1), rotation: Math.PI / 2, scale: Vec(1, 1.005) },
+            { key: "barricade_line_small2", position: Vec(112.09, -89), rotation: Math.PI / 2 },
+            { key: "barricade_line_medium", position: Vec(-98.255, 20.31), rotation: Math.PI / 2, scale: Vec(2, 1.999) },
+            { key: "barricade_line_large", position: Vec(-53.6, -34.83), scale: Vec(2, 2) },
+            { key: "barricade_line_large", position: Vec(81.97, -34.83), scale: Vec(2, 2) }
         ],
         obstacles: IS_CLIENT ? undefined : [
             // Bottom

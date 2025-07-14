@@ -28,14 +28,14 @@
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
      inkscape:zoom="0.48693449"
-     inkscape:cx="309.07648"
-     inkscape:cy="245.41289"
+     inkscape:cx="937.49777"
+     inkscape:cy="403.54504"
      inkscape:window-width="1920"
      inkscape:window-height="991"
      inkscape:window-x="-9"
      inkscape:window-y="-9"
      inkscape:window-maximized="1"
-     inkscape:current-layer="g2" />
+     inkscape:current-layer="layer1" />
   <defs
      id="defs1">
     <pattern
@@ -317,16 +317,16 @@
       <g
          id="g63950-5">
         <rect
-           style="fill-opacity:1;stroke:none;stroke-width:1;stroke-dasharray:none"
+           style="fill-opacity:0.5;stroke:#5f4a30;stroke-width:1;stroke-dasharray:none"
            id="rect62492-2"
-           width="1"
+           width="0.5"
            height="20"
            x="9.5"
            y="0" />
         <rect
-           style="fill-opacity:1;stroke:none;stroke-width:1;stroke-dasharray:none"
+           style="fill-opacity:1;stroke:#5f4a30;stroke-width:1;stroke-dasharray:none"
            id="rect63583-4"
-           width="1"
+           width="0.5"
            height="20"
            x="-10.5"
            y="0"

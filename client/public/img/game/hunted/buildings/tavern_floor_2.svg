@@ -27,15 +27,15 @@
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
-     inkscape:zoom="2.7545174"
-     inkscape:cx="161.5528"
-     inkscape:cy="-13.06944"
+     inkscape:zoom="0.97386897"
+     inkscape:cx="614.55906"
+     inkscape:cy="1341.5563"
      inkscape:window-width="1920"
      inkscape:window-height="991"
      inkscape:window-x="-9"
      inkscape:window-y="-9"
      inkscape:window-maximized="1"
-     inkscape:current-layer="g12" />
+     inkscape:current-layer="layer1" />
   <defs
      id="defs1">
     <pattern
@@ -317,16 +317,16 @@
       <g
          id="g63950-5">
         <rect
-           style="fill-opacity:1;stroke:none;stroke-width:1;stroke-dasharray:none"
+           style="fill-opacity:1;stroke:#5f4a30;stroke-width:1;stroke-dasharray:none"
            id="rect62492-2"
-           width="1"
+           width="0.5"
            height="20"
            x="9.5"
            y="0" />
         <rect
-           style="fill-opacity:1;stroke:none;stroke-width:1;stroke-dasharray:none"
+           style="fill-opacity:1;stroke:#5f4a30;stroke-width:1;stroke-dasharray:none"
            id="rect63583-4"
-           width="1"
+           width="0.5"
            height="20"
            x="-10.5"
            y="0"
@@ -637,7 +637,7 @@
        id="pattern351">
       <path
          id="path350"
-         style="stroke:none;stroke-width:4.8561;stroke-linecap:square;paint-order:stroke markers fill;stop-color:#000000"
+         style="stroke:none;stroke-width:4.8561;stroke-linecap:square;paint-order:stroke markers fill;stop-color:#000000;fill:#391818"
          d="m 5,5 c 0,3 2,5 5,5 C 10,7 8,5 5,5 Z M 0,10 C 0,7 2,5 5,5 5,8 3,10 0,10 Z M 5,5 C 5,2 7,0 10,0 10,3 8,5 5,5 Z M 0,0 C 0,3 2,5 5,5 5,2 3,0 0,0 Z" />
     </pattern>
   </defs>
