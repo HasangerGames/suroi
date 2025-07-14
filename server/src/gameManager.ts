@@ -208,7 +208,7 @@ if (!Cluster.isPrimary) {
             }
 
             const { role, isDev, nameColor } = parseRole(searchParams);
-            res.upgrade(
+            res.cork(() => res.upgrade(
                 {
                     ip,
                     teamID: searchParams.get("teamID") ?? undefined,
@@ -223,7 +223,7 @@ if (!Cluster.isPrimary) {
                 webSocketProtocol,
                 webSocketExtensions,
                 context
-            );
+            ));
         },
 
         open(socket: WebSocket<PlayerSocketData>) {
