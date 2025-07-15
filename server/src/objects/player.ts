@@ -501,7 +501,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
     hasBubble = false;
 
-    readonly perks = new ServerPerkManager(this, []);
+    readonly perks = new ServerPerkManager(this);
+
     perkUpdateMap?: Map<UpdatablePerkDefinition, number>; // key = perk, value = last updated
 
     private _pingSeq = 0;
@@ -727,7 +728,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     }
 
     swapWeaponRandomly(item: InventoryItem = this.activeItem, force = false, modeRestricted?: boolean, weighted?: boolean): void {
-        if (item.definition.noSwap || this.perks.hasItem(PerkIds.Lycanthropy)) return; // womp womp
+        if (item.definition.noSwap || this.perks.has(PerkIds.Lycanthropy)) return; // womp womp
 
         let slot = item === this.activeItem
             ? this.activeItemIndex
@@ -1064,9 +1065,9 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                                 !player.isPlayer
                                 || !player.hitbox.collidesWith(detectionHitbox)
                                 || Math.random() > perk.infectionChance
-                                || player.perks.hasItem(PerkIds.Immunity)
+                                || player.perks.has(PerkIds.Immunity)
                             ) continue;
-                            player.perks.addItem(Perks.fromString(PerkIds.Infected));
+                            player.perks.add(Perks.fromString(PerkIds.Infected));
                             player.setDirty();
                         }
                         break;
@@ -1302,7 +1303,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             toRegen += adrenRegen * this.mapPerkOrDefault(
                 PerkIds.LacedStimulants,
                 ({ healDmgRate, lowerHpLimit }) => (this.health <= lowerHpLimit ? 1 : -healDmgRate),
-                (this.adrenaline > 0 || (this.normalizedHealth < 0.3 && !this.perks.hasItem(PerkIds.Infected))) && !this.downed ? 1 : 0
+                (this.adrenaline > 0 || (this.normalizedHealth < 0.3 && !this.perks.has(PerkIds.Infected))) && !this.downed ? 1 : 0
             );
 
             // Drain adrenaline
@@ -1705,25 +1706,25 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     }
 
     hasPerk(perk: PerkIds | PerkDefinition): boolean {
-        return this.perks.hasItem(perk);
+        return this.perks.has(perk);
     }
 
-    ifPerkPresent<Name extends PerkIds>(
-        perk: Name | PerkDefinition & { readonly idString: Name },
-        cb: (data: PerkDefinition & { readonly idString: Name }) => void
+    ifPerkPresent<Name extends ReferenceTo<PerkDefinition>>(
+        perk: Name | (PerkDefinition & { readonly idString: Name }),
+        cb: (def: PerkDefinition & { readonly idString: Name }) => void
     ): void {
         return this.perks.ifPresent<Name>(perk, cb);
     }
 
-    mapPerk<Name extends PerkIds, U>(
-        perk: Name | PerkDefinition & { readonly idString: Name },
+    mapPerk<Name extends ReferenceTo<PerkDefinition>, U>(
+        perk: Name | (PerkDefinition & { readonly idString: Name }),
         mapper: (data: PerkDefinition & { readonly idString: Name }) => U
     ): U | undefined {
         return this.perks.map<Name, U>(perk, mapper);
     }
 
-    mapPerkOrDefault<Name extends PerkIds, U>(
-        perk: Name | PerkDefinition & { readonly idString: Name },
+    mapPerkOrDefault<Name extends ReferenceTo<PerkDefinition>, U>(
+        perk: Name | (PerkDefinition & { readonly idString: Name }),
         mapper: (data: PerkDefinition & { readonly idString: Name }) => U,
         defaultValue: U
     ): U {
@@ -2104,12 +2105,12 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         for (const perk of this.perks) {
             switch (perk.idString) {
                 case PerkIds.PlumpkinGamble: { // AW DANG IT
-                    this.perks.removeItem(perk);
+                    this.perks.delete(perk);
 
                     const halloweenPerks = Perks.definitions.filter(perkDef => {
                         return !perkDef.plumpkinGambleIgnore && perkDef.category === PerkCategories.Halloween;
                     });
-                    this.perks.addItem(pickRandomInArray(halloweenPerks));
+                    this.perks.add(pickRandomInArray(halloweenPerks));
                     break;
                 }
                 case PerkIds.Lycanthropy: {
@@ -2679,7 +2680,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                         if (
                             (isLoot || (type === InputActions.Interact && isInteractable))
                             && object.hitbox?.collidesWith(detectionHitbox)
-                            && !(isLoot && [DefinitionType.Throwable, DefinitionType.Gun].includes(object.definition.defType) && this.perks.hasItem(PerkIds.Lycanthropy))
+                            && !(isLoot && [DefinitionType.Throwable, DefinitionType.Gun].includes(object.definition.defType) && this.perks.has(PerkIds.Lycanthropy))
                         ) {
                             const dist = Geometry.distanceSquared(object.position, this.position);
                             if (isInteractable) {
@@ -2781,7 +2782,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 backpack: this.inventory.backpack,
                 halloweenThrowableSkin: this.halloweenThrowableSkin,
                 activeDisguise: this.activeDisguise,
-                infected: this.perks.hasItem(PerkIds.Infected),
+                infected: this.perks.has(PerkIds.Infected),
                 backEquippedMelee: this.backEquippedMelee,
                 hasBubble: this.hasBubble
             }

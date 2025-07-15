@@ -2,33 +2,25 @@ import { GameConstants, PlayerActions } from "@common/constants";
 import { Obstacles } from "@common/definitions/obstacles";
 import { PerkData, PerkIds, Perks, type PerkDefinition } from "@common/definitions/items/perks";
 import { Skins } from "@common/definitions/items/skins";
-import { PerkManager } from "@common/utils/perkManager";
 import { weightedRandom } from "@common/utils/random";
 import { type Player } from "../objects/player";
-import type { ReifiableDef } from "@common/utils/objectDefinitions";
+import type { ReferenceTo, ReifiableDef } from "@common/utils/objectDefinitions";
 
 export type UpdatablePerkDefinition = PerkDefinition & { readonly updateInterval: number };
 
-export class ServerPerkManager extends PerkManager {
+export class ServerPerkManager extends Set<PerkDefinition> {
     private readonly _selfData: Record<string, unknown> = {};
 
-    constructor(
-        readonly owner: Player,
-        perks?: number | readonly PerkDefinition[]
-    ) {
-        super(perks);
+    constructor(readonly owner: Player) {
+        super();
     }
 
-    /**
-     * Adds a perk to this manager
-     * @param perk The perk to add
-     * @returns Whether the perk was already present (and thus nothing has changed)
-     */
-    override addItem(perk: PerkDefinition): boolean {
+    override add(perk: PerkDefinition): this {
         const idString = perk.idString;
         const owner = this.owner;
-        const absent = super.addItem(perk);
+        const absent = !this.has(perk);
 
+        super.add(perk);
         this._addToMap(perk);
 
         if (absent) {
@@ -106,31 +98,21 @@ export class ServerPerkManager extends PerkManager {
 
         owner.updateAndApplyModifiers();
         owner.dirty.perks = true;
-        return absent;
+        return this;
     }
 
-    override toggleItem(item: ReifiableDef<PerkDefinition>): boolean {
-        const res = super.toggleItem(item);
-
-        if (res) this._addToMap(item);
-        else this._removeFromMap(item);
-
-        return res;
+    override has(perk: ReifiableDef<PerkDefinition>): boolean {
+        return super.has(Perks.reify(perk));
     }
 
-    /**
-     * Removes a perk from this manager
-     * @param perk The perk to remove
-     * @returns Whether the perk was present (and therefore removed, as opposed
-     * to not being removed due to not being present to begin with)
-     */
-    override removeItem(perk: PerkDefinition): boolean {
+    override delete(perk: PerkDefinition): boolean {
         const idString = perk.idString;
         const owner = this.owner;
 
-        const has = super.removeItem(perk);
+        const has = this.has(perk);
 
         if (has) {
+            this.delete(perk);
             this._removeFromMap(perk);
 
             // ! evil starts here
@@ -182,9 +164,9 @@ export class ServerPerkManager extends PerkManager {
                 }
                 case PerkIds.Infected: { // evil
                     const immunity = PerkData[PerkIds.Immunity];
-                    owner.perks.addItem(immunity);
+                    owner.perks.add(immunity);
                     owner.immunityTimeout?.kill();
-                    owner.immunityTimeout = owner.game.addTimeout(() => owner.perks.removeItem(immunity), immunity.duration);
+                    owner.immunityTimeout = owner.game.addTimeout(() => owner.perks.delete(immunity), immunity.duration);
                     owner.setDirty();
                     break;
                 }
@@ -196,6 +178,39 @@ export class ServerPerkManager extends PerkManager {
 
         owner.dirty.perks ||= has;
         return has;
+    }
+
+    ifPresent<Name extends ReferenceTo<PerkDefinition>>(
+        perk: Name | (PerkDefinition & { readonly idString: Name }),
+        cb: (def: PerkDefinition & { readonly idString: Name }) => void
+    ): void {
+        const def = Perks.reify(perk);
+        if (this.has(def)) {
+            cb(def as PerkDefinition & { readonly idString: Name });
+        }
+    }
+
+    map<Name extends ReferenceTo<PerkDefinition>, U>(
+        perk: Name | (PerkDefinition & { readonly idString: Name }),
+        mapper: (data: PerkDefinition & { readonly idString: Name }) => U
+    ): U | undefined {
+        const def = Perks.reify(perk);
+        if (this.has(def)) {
+            return mapper(def as PerkDefinition & { readonly idString: Name });
+        }
+    }
+
+    mapOrDefault<Name extends ReferenceTo<PerkDefinition>, U>(
+        perk: Name | (PerkDefinition & { readonly idString: Name }),
+        mapper: (data: PerkDefinition & { readonly idString: Name }) => U,
+        defaultValue: U
+    ): U {
+        const def = Perks.reify(perk);
+        if (this.has(def)) {
+            return mapper(def as PerkDefinition & { readonly idString: Name });
+        }
+
+        return defaultValue;
     }
 
     protected _addToMap(perk: ReifiableDef<PerkDefinition>): void {
