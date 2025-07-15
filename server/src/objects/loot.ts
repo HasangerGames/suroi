@@ -263,7 +263,7 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
                 return !player.loadout.skin.noSwap && (player.loadout.skin !== definition || InventoryMessages.ItemAlreadyEquipped);
             }
             case DefinitionType.Perk: {
-                return !player.perks.asList()[0]?.noSwap && (!(player.hasPerk(definition) && !definition.alwaysAllowSwap) || InventoryMessages.ItemAlreadyEquipped);
+                return !Array.from(player.perks)[0]?.noSwap && (!(player.hasPerk(definition) && !definition.alwaysAllowSwap) || InventoryMessages.ItemAlreadyEquipped);
             }
         }
     }
@@ -471,7 +471,7 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
 
             // This seems to work server-side, but it breaks client-side perk display..
             case DefinitionType.Perk: {
-                const currentPerks = player.perks.asList();
+                const currentPerks = Array.from(player.perks);
                 // const perksLength = currentPerks.length;
 
                 const isHalloweenPerk = definition.category === PerkCategories.Halloween;
@@ -491,11 +491,11 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
                     if (!perkToRemove.noDrop) {
                         createNewItem({ type: perkToRemove, count: 1 });
                     }
-                    player.perks.removeItem(perkToRemove);
+                    player.perks.delete(perkToRemove);
                 }
 
                 // Add the new perk
-                player.perks.addItem(definition);
+                player.perks.add(definition);
                 break;
             }
 

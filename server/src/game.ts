@@ -405,12 +405,12 @@ export class Game implements GameData {
             }
 
             if (object.isPlayer && removePerk) {
-                object.perks.removeItem(Perks.fromString(removePerk));
+                object.perks.delete(Perks.fromString(removePerk));
                 if (removePerk === PerkIds.Infected) { // evil
                     const immunity = PerkData[PerkIds.Immunity];
-                    object.perks.addItem(immunity);
+                    object.perks.add(immunity);
                     object.immunityTimeout?.kill();
-                    object.immunityTimeout = this.addTimeout(() => object.perks.removeItem(immunity), immunity.duration);
+                    object.immunityTimeout = this.addTimeout(() => object.perks.delete(immunity), immunity.duration);
                     object.setDirty();
                 }
             }

@@ -163,7 +163,7 @@ export class HealingAction extends Action {
                     });
                 }
                 if (this.item.effect?.removePerk !== undefined) {
-                    this.player.perks.removeItem(Perks.fromString(this.item.effect.removePerk));
+                    this.player.perks.delete(Perks.fromString(this.item.effect.removePerk));
                 }
                 break;
         }
