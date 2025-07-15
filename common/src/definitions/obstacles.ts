@@ -3333,8 +3333,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         hitbox: RectangleHitbox.fromRect(6.2, 6, Vec(0, -0.4)),
         rotationMode: RotationMode.Limited,
         reflectBullets: true,
-        allowFlyover: FlyoverPref.Always
-        //   hasLoot: true
+        allowFlyover: FlyoverPref.Always,
+        hasLoot: true
     },
     {
         idString: "large_drawer",

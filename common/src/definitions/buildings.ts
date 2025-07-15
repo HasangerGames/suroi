@@ -10943,6 +10943,18 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                     RectangleHitbox.fromRect(19.94, 19.98, Vec(7.32, 197.02)),
                     RectangleHitbox.fromRect(19.94, 19.98, Vec(7.83, 140.01))
                 )
+            },
+            // for warehouse entrance "step" at bottom right
+            { // stroke
+                color: 0x4d4d4d,
+                hitbox: RectangleHitbox.fromRect(10, 7, Vec(136.21, 199.4))
+            },
+            { // fill
+                color: 0x666666,
+                hitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(4, 3.7, Vec(133.93, 200.41)),
+                    RectangleHitbox.fromRect(4, 3.7, Vec(138.43, 200.41))
+                )
             }
         ],
         floors: [{
@@ -10990,10 +11002,10 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { key: "sawmill_main_logo", position: Vec(6, 75.25), scale: Vec(2, 2) },
 
             // Tinted
-            { key: "barricade_line", position: Vec(24.8, -226.65), tint: 0xd5a244, rotation: Math.PI / 2, scale: Vec(2, 2) }, // Top Center Road Line
+            { key: "barricade_line", position: Vec(24.775, -226.65), tint: 0xd5a244, rotation: Math.PI / 2, scale: Vec(2, 2.007) }, // Top Center Road Line
             { key: "barricade_line", position: Vec(-139.59, 92.45), tint: 0xd5a244, scale: Vec(2, 2) }, // Bottom Left Road Line
             { key: "barricade_line", position: Vec(-106.59, 187.5), tint: 0xd5a244, scale: Vec(2, 2) }, // Bottom Left, entrance
-            { key: "barricade_line", position: Vec(47.11, 168.19), tint: 0xd5a244, scale: Vec(2, 2) }, // Bottom Right, entrance
+            { key: "barricade_line", position: Vec(47.5, 168.19), tint: 0xd5a244, scale: Vec(2, 2) }, // Bottom Right, entrance
 
             // Barriers (NOT tinted)
             { key: "barricade_line_yellow", position: Vec(63.51, -184.87), scale: Vec(2, 2) },
@@ -11106,7 +11118,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "log", position: Vec(-88.48, 216.96), rotation: 0, variation: 2 },
 
             { idString: "small_moldy_logs", position: Vec(-78.92, 68.79), rotation: 0 },
-            { idString: "small_moldy_logs", position: Vec(138.02, 216.19), rotation: 1 },
+            { idString: "small_moldy_logs", position: Vec(136.5, 216.19), rotation: 1 },
             { idString: "small_moldy_logs", position: Vec(-68.77, 74.2), rotation: 3 },
 
             { idString: "small_logs_pile_2", position: Vec(-17.61, 69.07), rotation: 0, variation: 2 },
@@ -11584,7 +11596,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                     RectangleHitbox.fromRect(61.36, 57.91, Vec(-15.01, 31.49)),
                     RectangleHitbox.fromRect(31.59, 45.54, Vec(29.08, 37.91)),
                     RectangleHitbox.fromRect(24.83, 17.01, Vec(-12.88, -46.14)),
-                    RectangleHitbox.fromRect(36.45, 7.85, Vec(10.25, -58.66))
+                    RectangleHitbox.fromRect(36.45, 7.85, Vec(10.25, -58.66)),
+                    RectangleHitbox.fromRect(10, 7, Vec(39.78, 62.8))
                 )
             },
             {

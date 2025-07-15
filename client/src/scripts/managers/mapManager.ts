@@ -455,8 +455,7 @@ class MapManagerClass {
             );
             text.alpha = 0.7;
             text.anchor.set(0.5);
-            text.position.x = place.position.x;
-            text.position.y = place.position.y;
+            text.position.copyFrom(place.position);
 
             this.placesContainer.addChild(text);
         }

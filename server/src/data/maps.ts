@@ -833,11 +833,11 @@ const maps = {
             ground_loot: 100
         },
         places: [
-            { name: "Sawdust Bay", position: Vec(0.23, 0.2) },
-            { name: "Lightwood", position: Vec(0.23, 0.8) },
-            { name: "Barrier", position: Vec(0.75, 0.2) },
-            { name: "Finnish Lands", position: Vec(0.72, 0.8) },
-            { name: "Meetup", position: Vec(0.5, 0.5) }
+            { name: "Sahanpurulahti", position: Vec(0.23, 0.2) },
+            { name: "Kreupelhout", position: Vec(0.24, 0.8) },
+            { name: "Reuna", position: Vec(0.75, 0.2) },
+            { name: "Metsä", position: Vec(0.72, 0.8) },
+            { name: "Saha", position: Vec(0.5, 0.45) }
         ]
     },
     winter: {
