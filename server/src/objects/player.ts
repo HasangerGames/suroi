@@ -1987,7 +1987,14 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
         // Decrease health; update damage done and damage taken
         if (this.shield) {
+            const tmp = this.shield;
             this.shield -= amount;
+
+            // If the shield broke, account for leftover damage
+            if (this.shield <= 0) {
+                const diff = amount - tmp;
+                this.health -= diff;
+            }
         } else {
             this.health -= amount;
         }
