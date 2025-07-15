@@ -1237,8 +1237,7 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### Invalid Keys
 
-- Key `flues` is not a valid key
-- Key `mp40` is not a valid key
+- Key ``"kf_were_finally_killed"` is not a valid key
 - Key `12g` is not a valid key
 - Key `556mm` is not a valid key
 - Key `762mm` is not a valid key
@@ -1316,7 +1315,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `emote_man_face` is not a valid key
 - Key `emote_satisfied_face` is not a valid key
 - Key `emote_hot_face` is not a valid key
-- Key `emote_blindfolded` is not a valid key
+- Key `emote_blind_walking` is not a valid key
 - Key `emote_melting_face` is not a valid key
 - Key `emote_grimacing_face` is not a valid key
 - Key `emote_vomiting_face` is not a valid key
@@ -1397,7 +1396,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `armadillo` is not a valid key
 - Key `ashfall` is not a valid key
 - Key `aurora` is not a valid key
-- Key `basic_outfit` is not a valid key
 - Key `beacon` is not a valid key
 - Key `bee` is not a valid key
 - Key `bloodlust` is not a valid key
@@ -1494,7 +1492,7 @@ This file is a report of all errors and missing keys in the translation files of
 ### Undefined Keys
 
 - Key `interact_recorder_interactable` is not defined
-- Key `region_ea` is not defined
+- Key `kf_were_finally_killed` is not defined
 
 ## 🇱🇹 Lietuvių (66% Complete) - lt.hjson
 
