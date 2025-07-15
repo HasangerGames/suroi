@@ -69,6 +69,7 @@ type CommonObstacleDefinition = ObjectDefinition & {
     readonly noInteractMessage?: boolean
     readonly unlockableWithStage?: boolean
     readonly customInteractMessage?: boolean
+    readonly wallAttached?: boolean
     readonly interactOnlyFromSide?: Orientation
     readonly weaponSwap?: {
         // whether the weapon swap will utilize gun tiers to determine chances for each weapon
@@ -812,7 +813,8 @@ const gunMount = (
             type: weaponType,
             weapon: `${gunID}${weaponType === "gun" ? "_world" : ""}`
         }
-        : undefined
+        : undefined,
+    wallAttached: true
 } as const);
 
 const kitchenUnit = (id: string, hitbox: RectangleHitbox, residue?: string): RawObstacleDefinition => ({
@@ -2810,6 +2812,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         frames: {
             particle: "furniture_particle"
         }
+        // wallAttached: true
     },
     {
         idString: "barn_door",
@@ -3534,6 +3537,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         hideOnMap: true,
         hitbox: RectangleHitbox.fromRect(1.1, 15.1, Vec(-0.25, 0)),
         rotationMode: RotationMode.Limited,
+        wallAttached: true,
         zIndex: ZIndexes.ObstaclesLayer3 + 0.5 // needs to be above table
     },
     {
