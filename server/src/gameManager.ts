@@ -175,7 +175,8 @@ if (!Cluster.isPrimary) {
 
     App().ws("/play", {
         async upgrade(res, req, context) {
-            res.onAborted(() => { /* no-op */ });
+            let aborted = false;
+            res.onAborted(() => aborted = true);
 
             if (!game?.allowJoin) {
                 forbidden(res);
@@ -202,7 +203,11 @@ if (!Cluster.isPrimary) {
             }
             joinAttempts?.increment(ip);
 
-            if (await getPunishment(ip)) {
+            const punishment = await getPunishment(ip);
+
+            if (aborted) return;
+
+            if (punishment) {
                 forbidden(res);
                 return;
             }
