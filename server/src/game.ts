@@ -770,7 +770,7 @@ export class Game implements GameData {
                 this.addTimeout(() => {
                     this.log("Preventing new players from joining");
                     this.setGameData({ allowJoin: false });
-                }, GAME_SPAWN_WINDOW * 1000);
+                }, (GAME_SPAWN_WINDOW * 1000) - 3000);
             }, 3000);
         }
 
