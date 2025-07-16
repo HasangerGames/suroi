@@ -1,5 +1,5 @@
 import { FlyoverPref, ObjectCategory, RotationMode } from "@common/constants";
-import { PerkIds, Perks } from "@common/definitions/items/perks";
+import { PerkIds } from "@common/definitions/items/perks";
 import { Obstacles, type ObstacleDefinition } from "@common/definitions/obstacles";
 import { type Orientation, type Variation } from "@common/typings";
 import { CircleHitbox, RectangleHitbox, type Hitbox } from "@common/utils/hitbox";
@@ -235,7 +235,7 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
             if (source instanceof BaseGameObject && source.isPlayer) {
                 // Plumpkin Bomb
                 if (
-                    source.perks.hasItem(PerkIds.PlumpkinBomb)
+                    source.hasPerk(PerkIds.PlumpkinBomb)
                     && definition.material === "pumpkin"
                 ) {
                     this.playMaterialDestroyedSound = false;
@@ -247,9 +247,9 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
                     definition.applyPerkOnDestroy
                     && definition.applyPerkOnDestroy.mode === this.game.modeName
                     && definition.applyPerkOnDestroy.chance > Math.random()
-                    && !(definition.applyPerkOnDestroy.perk === PerkIds.Infected && source.perks.hasItem(PerkIds.Immunity)) // evil
+                    && !(definition.applyPerkOnDestroy.perk === PerkIds.Infected && source.hasPerk(PerkIds.Immunity)) // evil
                 ) {
-                    source.perks.addItem(Perks.fromString(definition.applyPerkOnDestroy.perk));
+                    source.addPerk(definition.applyPerkOnDestroy.perk);
                     if (definition.applyPerkOnDestroy.perk === PerkIds.Infected) { // evil
                         source.setDirty();
                     }

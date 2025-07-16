@@ -2,7 +2,7 @@ import { GameConstants, Layer, MapObjectSpawnMode, ObjectCategory, TeamMode } fr
 import { Bullets, type BulletDefinition } from "@common/definitions/bullets";
 import { type ExplosionDefinition } from "@common/definitions/explosions";
 import type { SingleGunNarrowing } from "@common/definitions/items/guns";
-import { PerkData, PerkIds, Perks } from "@common/definitions/items/perks";
+import { PerkData, PerkIds } from "@common/definitions/items/perks";
 import { Loots, type LootDefinition } from "@common/definitions/loots";
 import { MapPings, type MapPing } from "@common/definitions/mapPings";
 import { ModeDefinition, ModeName, Modes } from "@common/definitions/modes";
@@ -38,6 +38,7 @@ import { type Emote } from "./objects/emote";
 import { Explosion } from "./objects/explosion";
 import { type BaseGameObject, type GameObject } from "./objects/gameObject";
 import { Loot, type ItemData } from "./objects/loot";
+import { Obstacle } from "./objects/obstacle";
 import { Parachute } from "./objects/parachute";
 import { Player, type PlayerSocketData } from "./objects/player";
 import { Projectile, ProjectileParams } from "./objects/projectile";
@@ -49,7 +50,6 @@ import { Grid } from "./utils/grid";
 import { IDAllocator } from "./utils/idAllocator";
 import { Cache, getAllLoots, getSpawnableLoots, ItemRegistry } from "./utils/lootHelpers";
 import { cleanUsername, modeFromMap } from "./utils/misc";
-import { Obstacle } from "./objects/obstacle";
 
 export class Game implements GameData {
     public readonly id: number;
@@ -405,12 +405,12 @@ export class Game implements GameData {
             }
 
             if (object.isPlayer && removePerk) {
-                object.perks.removeItem(Perks.fromString(removePerk));
+                object.removePerk(removePerk);
                 if (removePerk === PerkIds.Infected) { // evil
                     const immunity = PerkData[PerkIds.Immunity];
-                    object.perks.addItem(immunity);
+                    object.addPerk(immunity);
                     object.immunityTimeout?.kill();
-                    object.immunityTimeout = this.addTimeout(() => object.perks.removeItem(immunity), immunity.duration);
+                    object.immunityTimeout = this.addTimeout(() => object.removePerk(immunity), immunity.duration);
                     object.setDirty();
                 }
             }

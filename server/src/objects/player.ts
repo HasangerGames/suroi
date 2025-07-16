@@ -9,7 +9,7 @@ import { HealingItems } from "@common/definitions/items/healingItems";
 import { Melees, type MeleeDefinition } from "@common/definitions/items/melees";
 import { PerkCategories, PerkData, PerkIds, Perks, type PerkDefinition } from "@common/definitions/items/perks";
 import { DEFAULT_SCOPE, Scopes, type ScopeDefinition } from "@common/definitions/items/scopes";
-import { type SkinDefinition } from "@common/definitions/items/skins";
+import { Skins, type SkinDefinition } from "@common/definitions/items/skins";
 import { Throwables, type ThrowableDefinition } from "@common/definitions/items/throwables";
 import { Loots, type WeaponDefinition } from "@common/definitions/loots";
 import { type PlayerPing } from "@common/definitions/mapPings";
@@ -36,16 +36,15 @@ import { FloorNames, FloorTypes } from "@common/utils/terrain";
 import { Vec, type Vector } from "@common/utils/vector";
 import { randomBytes } from "crypto";
 import { WebSocket } from "uWebSockets.js";
-import { Config } from "../utils/config";
 import { type Game } from "../game";
 import { HealingAction, ReloadAction, ReviveAction, type Action } from "../inventory/action";
 import { GunItem } from "../inventory/gunItem";
 import { Inventory, type InventoryItem } from "../inventory/inventory";
 import { CountableInventoryItem, InventoryItemBase } from "../inventory/inventoryItem";
 import { MeleeItem } from "../inventory/meleeItem";
-import { ServerPerkManager, UpdatablePerkDefinition } from "../inventory/perkManager";
 import { ThrowableItem } from "../inventory/throwableItem";
 import { type Team } from "../team";
+import { Config } from "../utils/config";
 import { DeathMarker } from "./deathMarker";
 import { Emote } from "./emote";
 import { Explosion } from "./explosion";
@@ -501,8 +500,11 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
     hasBubble = false;
 
-    readonly perks = new ServerPerkManager(this, []);
-    perkUpdateMap?: Map<UpdatablePerkDefinition, number>; // key = perk, value = last updated
+    readonly perks: PerkDefinition[] = [];
+
+    perkUpdateMap?: Map<PerkDefinition, number>; // key = perk, value = last updated
+
+    private readonly _perkData: Record<string, unknown> = {};
 
     private _pingSeq = 0;
 
@@ -727,7 +729,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     }
 
     swapWeaponRandomly(item: InventoryItem = this.activeItem, force = false, modeRestricted?: boolean, weighted?: boolean): void {
-        if (item.definition.noSwap || this.perks.hasItem(PerkIds.Lycanthropy)) return; // womp womp
+        if (item.definition.noSwap || this.hasPerk(PerkIds.Lycanthropy)) return; // womp womp
 
         let slot = item === this.activeItem
             ? this.activeItemIndex
@@ -992,7 +994,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         // Perks
         if (this.perkUpdateMap !== undefined) {
             for (const [perk, lastUpdated] of this.perkUpdateMap.entries()) {
-                if (this.game.now - lastUpdated <= perk.updateInterval) continue;
+                if (this.game.now - lastUpdated <= (perk.updateInterval ?? 1000)) continue;
 
                 this.perkUpdateMap.set(perk, this.game.now);
                 // ! evil starts here
@@ -1064,9 +1066,9 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                                 !player.isPlayer
                                 || !player.hitbox.collidesWith(detectionHitbox)
                                 || Math.random() > perk.infectionChance
-                                || player.perks.hasItem(PerkIds.Immunity)
+                                || player.hasPerk(PerkIds.Immunity)
                             ) continue;
-                            player.perks.addItem(Perks.fromString(PerkIds.Infected));
+                            player.addPerk(Perks.fromString(PerkIds.Infected));
                             player.setDirty();
                         }
                         break;
@@ -1302,7 +1304,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             toRegen += adrenRegen * this.mapPerkOrDefault(
                 PerkIds.LacedStimulants,
                 ({ healDmgRate, lowerHpLimit }) => (this.health <= lowerHpLimit ? 1 : -healDmgRate),
-                (this.adrenaline > 0 || (this.normalizedHealth < 0.3 && !this.perks.hasItem(PerkIds.Infected))) && !this.downed ? 1 : 0
+                (this.adrenaline > 0 || (this.normalizedHealth < 0.3 && !this.hasPerk(PerkIds.Infected))) && !this.downed ? 1 : 0
             );
 
             // Drain adrenaline
@@ -1704,30 +1706,194 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         this._action.dirty = false;
     }
 
-    hasPerk(perk: PerkIds | PerkDefinition): boolean {
-        return this.perks.hasItem(perk);
+    addPerk(perk: ReifiableDef<PerkDefinition>): void {
+        const perkDef = Perks.reify(perk);
+        if (this.perks.includes(perkDef)) return;
+
+        this.perks.push(perkDef);
+
+        if ("updateInterval" in perkDef) {
+            (this.perkUpdateMap ??= new Map<PerkDefinition, number>())
+                .set(perkDef, this.game.now);
+        }
+
+        // ! evil starts here
+        // some perks need to perform setup when added
+        switch (perkDef.idString) {
+            case PerkIds.Costumed: {
+                const { choices } = PerkData[PerkIds.Costumed];
+
+                this.activeDisguise = Obstacles.fromString(
+                    weightedRandom(
+                        Object.keys(choices),
+                        Object.values(choices)
+                    )
+                );
+                this.setDirty();
+                break;
+            }
+            case PerkIds.PlumpkinBomb: {
+                this.halloweenThrowableSkin = true;
+                this.setDirty();
+                break;
+            }
+            case PerkIds.Lycanthropy: {
+                [this._perkData["Lycanthropy::old_skin"], this.loadout.skin] = [this.loadout.skin, Skins.fromString("werewolf")];
+                this.setDirty();
+                this.action?.cancel();
+                const inventory = this.inventory;
+                inventory.dropWeapon(0, true)?.destroy();
+                inventory.dropWeapon(1, true)?.destroy();
+                inventory.dropWeapon(2, true)?.destroy();
+
+                // Drop all throwables
+                while (inventory.getWeapon(3)) {
+                    inventory.dropWeapon(3, true)?.destroy();
+                }
+
+                inventory.lockAllSlots();
+
+                /* TODO: continue crying */
+                break;
+            }
+            case PerkIds.ExtendedMags: {
+                const weapons = this.inventory.weapons;
+                const maxWeapons = GameConstants.player.maxWeapons;
+                for (let i = 0; i < maxWeapons; i++) {
+                    const weapon = weapons[i];
+
+                    if (!weapon?.isGun) continue;
+
+                    const def = weapon.definition;
+
+                    if (def.extendedCapacity === undefined) continue;
+
+                    const extra = weapon.ammo - def.extendedCapacity;
+                    if (extra > 0) {
+                        // firepower is anti-boosting this weapon, we need to shave the extra rounds off
+                        weapon.ammo = def.extendedCapacity;
+                        this.inventory.giveItem(def.ammoType, extra);
+                    }
+                }
+                break;
+            }
+            case PerkIds.CombatExpert: {
+                if (this.action?.type === PlayerActions.Reload) this.action?.cancel();
+                break;
+            }
+            case PerkIds.PrecisionRecycling: {
+                this.bulletTargetHitCount = 0;
+                break;
+            }
+        }
+        // ! evil ends here
+
+        this.updateAndApplyModifiers();
+        this.dirty.perks = true;
     }
 
-    ifPerkPresent<Name extends PerkIds>(
-        perk: Name | PerkDefinition & { readonly idString: Name },
-        cb: (data: PerkDefinition & { readonly idString: Name }) => void
-    ): void {
-        return this.perks.ifPresent<Name>(perk, cb);
+    hasPerk(perk: ReifiableDef<PerkDefinition>): boolean {
+        return this.perks.includes(Perks.reify(perk));
     }
 
-    mapPerk<Name extends PerkIds, U>(
-        perk: Name | PerkDefinition & { readonly idString: Name },
+    removePerk(perk: ReifiableDef<PerkDefinition>): void {
+        const perkDef = Perks.reify(perk);
+        if (!this.perks.includes(perkDef)) return;
+
+        removeFrom(this.perks, perkDef);
+
+        const perkUpdateMap = this.perkUpdateMap;
+        if ("updateInterval" in perkDef && perkUpdateMap !== undefined) {
+            perkUpdateMap?.delete(perkDef);
+
+            if (perkUpdateMap?.size === 0) {
+                this.perkUpdateMap = undefined;
+            }
+        }
+
+        // ! evil starts here
+        // some perks need to perform cleanup on removal
+        switch (perkDef.idString) {
+            case PerkIds.Lycanthropy: {
+                this.loadout.skin = Skins.fromStringSafe(this._perkData["Lycanthropy::old_skin"] as string) ?? Skins.fromString("hazel_jumpsuit");
+                this.inventory.unlockAllSlots();
+                this.setDirty();
+                break;
+            }
+            case PerkIds.ExtendedMags: {
+                const weapons = this.inventory.weapons;
+                const maxWeapons = GameConstants.player.maxWeapons;
+                for (let i = 0; i < maxWeapons; i++) {
+                    const weapon = weapons[i];
+
+                    if (!weapon?.isGun) continue;
+
+                    const def = weapon.definition;
+                    const extra = weapon.ammo - def.capacity;
+                    if (extra > 0) {
+                        // firepower boosted this weapon, we need to shave the extra rounds off
+                        weapon.ammo = def.capacity;
+                        this.inventory.giveItem(def.ammoType, extra);
+                    }
+                }
+                break;
+            }
+            case PerkIds.PlumpkinBomb: {
+                this.halloweenThrowableSkin = false;
+                this.setDirty();
+                break;
+            }
+            case PerkIds.Costumed: {
+                this.activeDisguise = undefined;
+                this.setDirty();
+                break;
+            }
+            case PerkIds.CombatExpert: {
+                if (this.action?.type === PlayerActions.Reload) this.action?.cancel();
+                break;
+            }
+            case PerkIds.PrecisionRecycling: {
+                this.bulletTargetHitCount = 0;
+                this.targetHitCountExpiration?.kill();
+                this.targetHitCountExpiration = undefined;
+                break;
+            }
+            case PerkIds.Infected: { // evil
+                const immunity = PerkData[PerkIds.Immunity];
+                this.addPerk(immunity);
+                this.immunityTimeout?.kill();
+                this.immunityTimeout = this.game.addTimeout(() => this.removePerk(immunity), immunity.duration);
+                this.setDirty();
+                break;
+            }
+        }
+        // ! evil ends here
+
+        this.updateAndApplyModifiers();
+        this.dirty.perks = true;
+    }
+
+    mapPerk<Name extends ReferenceTo<PerkDefinition>, U>(
+        perk: Name | (PerkDefinition & { readonly idString: Name }),
         mapper: (data: PerkDefinition & { readonly idString: Name }) => U
     ): U | undefined {
-        return this.perks.map<Name, U>(perk, mapper);
+        const def = Perks.reify(perk);
+        if (this.perks.includes(def)) {
+            return mapper(def as PerkDefinition & { readonly idString: Name });
+        }
     }
 
-    mapPerkOrDefault<Name extends PerkIds, U>(
-        perk: Name | PerkDefinition & { readonly idString: Name },
+    mapPerkOrDefault<Name extends ReferenceTo<PerkDefinition>, U>(
+        perk: Name | (PerkDefinition & { readonly idString: Name }),
         mapper: (data: PerkDefinition & { readonly idString: Name }) => U,
         defaultValue: U
     ): U {
-        return this.perks.mapOrDefault<Name, U>(perk, mapper, defaultValue);
+        const def = Perks.reify(perk);
+        if (this.perks.includes(def)) {
+            return mapper(def as PerkDefinition & { readonly idString: Name });
+        }
+
+        return defaultValue;
     }
 
     spectate(packet: SpectateData): void {
@@ -2104,12 +2270,12 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         for (const perk of this.perks) {
             switch (perk.idString) {
                 case PerkIds.PlumpkinGamble: { // AW DANG IT
-                    this.perks.removeItem(perk);
+                    this.removePerk(perk);
 
-                    const halloweenPerks = Perks.definitions.filter(perkDef => {
-                        return !perkDef.plumpkinGambleIgnore && perkDef.category === PerkCategories.Halloween;
-                    });
-                    this.perks.addItem(pickRandomInArray(halloweenPerks));
+                    const halloweenPerks = Perks.definitions.filter(perkDef =>
+                        !perkDef.plumpkinGambleIgnore && perkDef.category === PerkCategories.Halloween
+                    );
+                    this.addPerk(pickRandomInArray(halloweenPerks));
                     break;
                 }
                 case PerkIds.Lycanthropy: {
@@ -2679,7 +2845,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                         if (
                             (isLoot || (type === InputActions.Interact && isInteractable))
                             && object.hitbox?.collidesWith(detectionHitbox)
-                            && !(isLoot && [DefinitionType.Throwable, DefinitionType.Gun].includes(object.definition.defType) && this.perks.hasItem(PerkIds.Lycanthropy))
+                            && !(isLoot && [DefinitionType.Throwable, DefinitionType.Gun].includes(object.definition.defType) && this.hasPerk(PerkIds.Lycanthropy))
                         ) {
                             const dist = Geometry.distanceSquared(object.position, this.position);
                             if (isInteractable) {
@@ -2781,7 +2947,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 backpack: this.inventory.backpack,
                 halloweenThrowableSkin: this.halloweenThrowableSkin,
                 activeDisguise: this.activeDisguise,
-                infected: this.perks.hasItem(PerkIds.Infected),
+                infected: this.hasPerk(PerkIds.Infected),
                 backEquippedMelee: this.backEquippedMelee,
                 hasBubble: this.hasBubble
             }

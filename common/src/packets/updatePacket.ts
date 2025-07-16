@@ -10,7 +10,6 @@ import { MapPings, type MapPing, type PlayerPing } from "../definitions/mapPings
 import { BaseBullet, type BulletOptions } from "../utils/baseBullet";
 import { type SDeepMutable } from "../utils/misc";
 import { ObjectSerializations, type FullData, type ObjectsNetData } from "../utils/objectsSerializations";
-import type { PerkCollection } from "../utils/perkManager";
 import { type SuroiByteStream } from "../utils/suroiByteStream";
 import { Vec, type Vector } from "../utils/vector";
 import { DataSplitTypes, getSplitTypeForCategory, Packet, PacketType } from "./packet";
@@ -243,18 +242,7 @@ function serializePlayerData(
     }
 
     if (hasPerks) {
-        let bitfield = perks.asBitfield();
-
-        /*
-            let n = Perks.definitions.length;
-            this is a bit field, so there are n bits to write => ceil(n / 8) bytes to write
-        */
-        const bytes = Math.ceil(Perks.definitions.length / 8);
-        for (let i = 0; i < bytes; i++) {
-            // now write the bitfield in chunks of 8
-            strm.writeUint8(bitfield); // no need to do '& 255', only the 8 LSB's are taken anyways
-            bitfield >>= 8;
-        }
+        strm.writeArray(perks, perk => Perks.writeToStream(strm, perk));
     }
 
     if (hasTeamID) {
@@ -423,19 +411,7 @@ function deserializePlayerData(strm: SuroiByteStream): PlayerData {
     }
 
     if (hasPerks) {
-        const bytes = Math.ceil(Perks.definitions.length / 8);
-
-        let bitfield = 0;
-        for (let i = 0; i < bytes; i++) {
-            // append new chunks "leftwards"
-            bitfield += strm.readUint8() << (8 * i);
-        }
-
-        let list: PerkDefinition[] | undefined;
-        data.perks = {
-            asBitfield: () => bitfield,
-            asList: () => Array.from(list ??= Perks.definitions.filter((_, i) => (bitfield & (1 << i)) !== 0))
-        };
+        data.perks = strm.readArray(() => Perks.readFromStream(strm));
     }
 
     if (hasTeamID) {
@@ -540,7 +516,7 @@ export interface PlayerData {
         readonly scope: ScopeDefinition
     }
     activeC4s?: boolean
-    perks?: PerkCollection
+    perks?: PerkDefinition[]
     teamID?: number
 }
 
@@ -796,7 +772,7 @@ export const UpdatePacket = new Packet<UpdateDataIn, UpdateDataOut>(PacketType.U
         const idx = strm.index;
         strm.index = flagsIdx;
         strm.writeUint16(flags);
-        // restore steam index
+        // restore stream index
         strm.index = idx;
     },
 

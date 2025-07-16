@@ -28,7 +28,7 @@ import { CameraManager } from "../managers/cameraManager";
 import { InputManager } from "../managers/inputManager";
 import { MapManager } from "../managers/mapManager";
 import { ParticleManager, type Particle, type ParticleEmitter, type ParticleOptions } from "../managers/particleManager";
-import { ClientPerkManager } from "../managers/perkManager";
+import { PerkManager } from "../managers/perkManager";
 import { SoundManager, type GameSound } from "../managers/soundManager";
 import { UIManager } from "../managers/uiManager";
 import { BULLET_WHIZ_SCALE, DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS, PIXI_SCALE, TEAMMATE_COLORS, UI_DEBUG_MODE } from "../utils/constants";
@@ -835,7 +835,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     if (this.isActivePlayer) {
                         UIManager.animateAction(
                             getTranslatedString("action_reloading"),
-                            (reloadFullClip ? weaponDef.fullReloadTime : weaponDef.reloadTime) / (ClientPerkManager.mapOrDefault(PerkIds.CombatExpert, ({ reloadMod }) => reloadMod, 1))
+                            (reloadFullClip ? weaponDef.fullReloadTime : weaponDef.reloadTime) / (PerkManager.mapOrDefault(PerkIds.CombatExpert, ({ reloadMod }) => reloadMod, 1))
                         );
                     }
 
@@ -851,7 +851,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                                 `action_${itemDef.idString}_use` as TranslationKeys,
                                 { item: getTranslatedString(itemDef.idString as TranslationKeys) }
                             ),
-                            itemDef.useTime / ClientPerkManager.mapOrDefault(PerkIds.FieldMedic, ({ usageMod }) => usageMod, 1)
+                            itemDef.useTime / PerkManager.mapOrDefault(PerkIds.FieldMedic, ({ usageMod }) => usageMod, 1)
                         );
                     }
                     break;
@@ -860,7 +860,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     if (this.isActivePlayer) {
                         UIManager.animateAction(
                             getTranslatedString("action_reviving"),
-                            GameConstants.player.reviveTime / ClientPerkManager.mapOrDefault(PerkIds.FieldMedic, ({ usageMod }) => usageMod, 1)
+                            GameConstants.player.reviveTime / PerkManager.mapOrDefault(PerkIds.FieldMedic, ({ usageMod }) => usageMod, 1)
                         );
                     }
                     break;
@@ -869,9 +869,9 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
             if (actionSoundName) {
                 let speed = 1;
-                if (ClientPerkManager.hasItem(PerkIds.CombatExpert) && action.type === PlayerActions.Reload) {
+                if (PerkManager.has(PerkIds.CombatExpert) && action.type === PlayerActions.Reload) {
                     speed = PerkData[PerkIds.CombatExpert].reloadMod;
-                } else if (ClientPerkManager.hasItem(PerkIds.FieldMedic) && actionSoundName === action.item?.idString) {
+                } else if (PerkManager.has(PerkIds.FieldMedic) && actionSoundName === action.item?.idString) {
                     speed = PerkData[PerkIds.FieldMedic].usageMod;
                 }
                 this.actionSound = this.playSound(
