@@ -128,7 +128,7 @@ if (Cluster.isPrimary && require.main === module) {
             writeCorsHeaders(res);
             res.writeHeader("Content-Type", "application/json").end(JSON.stringify({
                 protocolVersion: GameConstants.protocolVersion,
-                playerCount: games.reduce((a, b) => (a + (b?.aliveCount ?? 0)), 0),
+                playerCount: games.filter(g => !g?.stopped).reduce((a, b) => (a + (b?.aliveCount ?? 0)), 0),
                 teamMode: teamMode.current,
                 nextTeamMode: teamMode.next,
                 teamModeSwitchTime: teamMode.nextSwitch ? teamMode.nextSwitch - Date.now() : undefined,
