@@ -2,7 +2,7 @@
 
 This file is a report of all errors and missing keys in the translation files of this game.
 
-## 🇦🇱 Shqip (63% Complete) - ab.hjson
+## 🇦🇱 Shqip (62% Complete) - ab.hjson
 
 ### Invalid Keys
 
@@ -142,10 +142,12 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `infected_desc` is not defined
 - Key `immunity` is not defined
 - Key `immunity_desc` is not defined
+- Key `hollow_points` is not defined
+- Key `hollow_points_desc` is not defined
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇧🇷 Português (Brasil) (95% Complete) - br.hjson
+## 🇧🇷 Português (Brasil) (94% Complete) - br.hjson
 
 ### Invalid Keys
 
@@ -171,8 +173,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `region_oc` is not defined
 - Key `vaccine_syringe` is not defined
 - Key `vaccine_syringe_desc` is not defined
+- Key `hollow_points` is not defined
+- Key `hollow_points_desc` is not defined
 
-## 🇨🇿 Čeština (66% Complete) - cz.hjson
+## 🇨🇿 Čeština (65% Complete) - cz.hjson
 
 ### Invalid Keys
 
@@ -301,6 +305,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `infected_desc` is not defined
 - Key `immunity` is not defined
 - Key `immunity_desc` is not defined
+- Key `hollow_points` is not defined
+- Key `hollow_points_desc` is not defined
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
@@ -402,6 +408,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `infected_desc` is not defined
 - Key `immunity` is not defined
 - Key `immunity_desc` is not defined
+- Key `hollow_points` is not defined
+- Key `hollow_points_desc` is not defined
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
@@ -524,10 +532,12 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `infected_desc` is not defined
 - Key `immunity` is not defined
 - Key `immunity_desc` is not defined
+- Key `hollow_points` is not defined
+- Key `hollow_points_desc` is not defined
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇪🇪 eesti (99% Complete) - et.hjson
+## 🇪🇪 eesti (98% Complete) - et.hjson
 
 ### Invalid Keys
 
@@ -693,6 +703,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `kf_were_finally_killed` is not defined
 - Key `m16a4` is not defined
 - Key `baby_plumpkin_pie_desc` is not defined
+- Key `hollow_points` is not defined
+- Key `hollow_points_desc` is not defined
 
 ## 🇫🇮 suomi (69% Complete) - fi.hjson
 
@@ -812,6 +824,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `infected_desc` is not defined
 - Key `immunity` is not defined
 - Key `immunity_desc` is not defined
+- Key `hollow_points` is not defined
+- Key `hollow_points_desc` is not defined
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
@@ -833,8 +847,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `vaccine_syringe` is not defined
 - Key `vaccine_syringe_desc` is not defined
 - Key `baby_plumpkin_pie_desc` is not defined
+- Key `hollow_points` is not defined
+- Key `hollow_points_desc` is not defined
 
-## 🇬🇷 Ελληνικά (76% Complete) - gr.hjson
+## 🇬🇷 Ελληνικά (75% Complete) - gr.hjson
 
 ### Invalid Keys
 
@@ -928,10 +944,12 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `infected_desc` is not defined
 - Key `immunity` is not defined
 - Key `immunity_desc` is not defined
+- Key `hollow_points` is not defined
+- Key `hollow_points_desc` is not defined
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇭🇰 🇲🇴 廣東話(香港/澳門) (65% Complete) - hk_mo.hjson
+## 🇭🇰 🇲🇴 廣東話(香港/澳門) (64% Complete) - hk_mo.hjson
 
 ### Invalid Keys
 
@@ -1064,6 +1082,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `infected_desc` is not defined
 - Key `immunity` is not defined
 - Key `immunity_desc` is not defined
+- Key `hollow_points` is not defined
+- Key `hollow_points_desc` is not defined
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
@@ -1077,6 +1097,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `interact_recorder_interactable` is not defined
 - Key `kf_were_finally_killed` is not defined
 - Key `baby_plumpkin_pie_desc` is not defined
+- Key `hollow_points` is not defined
+- Key `hollow_points_desc` is not defined
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
@@ -1228,6 +1250,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `infected_desc` is not defined
 - Key `immunity` is not defined
 - Key `immunity_desc` is not defined
+- Key `hollow_points` is not defined
+- Key `hollow_points_desc` is not defined
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
@@ -1493,8 +1517,10 @@ This file is a report of all errors and missing keys in the translation files of
 
 - Key `interact_recorder_interactable` is not defined
 - Key `baby_plumpkin_pie_desc` is not defined
+- Key `hollow_points` is not defined
+- Key `hollow_points_desc` is not defined
 
-## 🇱🇹 Lietuvių (66% Complete) - lt.hjson
+## 🇱🇹 Lietuvių (65% Complete) - lt.hjson
 
 ### Invalid Keys
 
@@ -1623,10 +1649,12 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `infected_desc` is not defined
 - Key `immunity` is not defined
 - Key `immunity_desc` is not defined
+- Key `hollow_points` is not defined
+- Key `hollow_points_desc` is not defined
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇱🇻 Latviešu (66% Complete) - lv.hjson
+## 🇱🇻 Latviešu (65% Complete) - lv.hjson
 
 ### Invalid Keys
 
@@ -1755,6 +1783,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `infected_desc` is not defined
 - Key `immunity` is not defined
 - Key `immunity_desc` is not defined
+- Key `hollow_points` is not defined
+- Key `hollow_points_desc` is not defined
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
@@ -1770,6 +1800,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `vaccine_syringe` is not defined
 - Key `vaccine_syringe_desc` is not defined
 - Key `baby_plumpkin_pie_desc` is not defined
+- Key `hollow_points` is not defined
+- Key `hollow_points_desc` is not defined
 
 ## 🇵🇱 Polski (69% Complete) - pl.hjson
 
@@ -1889,6 +1921,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `infected_desc` is not defined
 - Key `immunity` is not defined
 - Key `immunity_desc` is not defined
+- Key `hollow_points` is not defined
+- Key `hollow_points_desc` is not defined
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
@@ -1995,6 +2029,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `infected_desc` is not defined
 - Key `immunity` is not defined
 - Key `immunity_desc` is not defined
+- Key `hollow_points` is not defined
+- Key `hollow_points_desc` is not defined
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
@@ -2012,8 +2048,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `vaccine_syringe` is not defined
 - Key `vaccine_syringe_desc` is not defined
 - Key `baby_plumpkin_pie_desc` is not defined
+- Key `hollow_points` is not defined
+- Key `hollow_points_desc` is not defined
 
-## 🇷🇺 Русский (98% Complete) - ru.hjson
+## 🇷🇺 Русский (97% Complete) - ru.hjson
 
 ### Invalid Keys
 
@@ -2029,8 +2067,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `vaccine_syringe` is not defined
 - Key `vaccine_syringe_desc` is not defined
 - Key `baby_plumpkin_pie_desc` is not defined
+- Key `hollow_points` is not defined
+- Key `hollow_points_desc` is not defined
 
-## 🇮🇳 தமிழ் (77% Complete) - ta.hjson
+## 🇮🇳 தமிழ் (76% Complete) - ta.hjson
 
 ### Invalid Keys
 
@@ -2120,10 +2160,12 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `infected_desc` is not defined
 - Key `immunity` is not defined
 - Key `immunity_desc` is not defined
+- Key `hollow_points` is not defined
+- Key `hollow_points_desc` is not defined
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇹🇷 Turkısh (81% Complete) - tr.hjson
+## 🇹🇷 Turkısh (80% Complete) - tr.hjson
 
 ### Invalid Keys
 
@@ -2200,10 +2242,12 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `infected_desc` is not defined
 - Key `immunity` is not defined
 - Key `immunity_desc` is not defined
+- Key `hollow_points` is not defined
+- Key `hollow_points_desc` is not defined
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇹🇼 中文（繁體） (77% Complete) - tw.hjson
+## 🇹🇼 中文（繁體） (76% Complete) - tw.hjson
 
 ### Invalid Keys
 
@@ -2293,6 +2337,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `infected_desc` is not defined
 - Key `immunity` is not defined
 - Key `immunity_desc` is not defined
+- Key `hollow_points` is not defined
+- Key `hollow_points_desc` is not defined
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
@@ -2307,6 +2353,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `interact_recorder_interactable` is not defined
 - Key `kf_were_finally_killed` is not defined
 - Key `baby_plumpkin_pie_desc` is not defined
+- Key `hollow_points` is not defined
+- Key `hollow_points_desc` is not defined
 
 ## 🇨🇳 中文（简体） (99% Complete) - zh.hjson
 
@@ -2562,4 +2610,6 @@ This file is a report of all errors and missing keys in the translation files of
 
 - Key `interact_recorder_interactable` is not defined
 - Key `m16a4` is not defined
+- Key `hollow_points` is not defined
+- Key `hollow_points_desc` is not defined
 

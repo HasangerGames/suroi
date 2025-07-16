@@ -24,7 +24,7 @@ export class ByteStream {
     }
 
     /**
-     * @returns An integer in `[0, 256[`
+     * @returns An integer in `[0, 256]`
      */
     readUint8(): number {
         const val = this._view.getUint8(this.index);
@@ -33,7 +33,7 @@ export class ByteStream {
     }
 
     /**
-     * @param value An integer in range `[0, 256[` to write. The following cause undefined behavior:
+     * @param value An integer in range `[0, 256]` to write. The following cause undefined behavior:
      * - `value` being `NaN`
      * - `value` being infinite
      * Negative values cause underflow, and decimals are truncated.
@@ -47,7 +47,7 @@ export class ByteStream {
     }
 
     /**
-     * @returns An integer in `[0, 65536[`
+     * @returns An integer in `[0, 65536]`
      */
     readUint16(): number {
         const val = this._view.getUint16(this.index);
@@ -56,7 +56,7 @@ export class ByteStream {
     }
 
     /**
-     * @param value An integer in range `[0, 65536[` to write. The following cause undefined behavior:
+     * @param value An integer in range `[0, 65536]` to write. The following cause undefined behavior:
      * - `value` being `NaN`
      * - `value` being infinite
      * Negative values cause underflow, and decimals are truncated.
@@ -71,7 +71,7 @@ export class ByteStream {
 
     /**
      * **Warning**: This is not a native DataView method
-     * @returns An integer in `[0, 16777216[`
+     * @returns An integer in `[0, 16777216]`
      */
     readUint24(): number {
         const val = (this._view.getUint16(this.index) << 8) + this._view.getUint8(this.index + 2);
@@ -81,7 +81,7 @@ export class ByteStream {
 
     /**
      * **Warning**: This is not a native DataView method
-     * @param value An integer in range `[0, 16777216[` to write. The following cause undefined behavior:
+     * @param value An integer in range `[0, 16777216]` to write. The following cause undefined behavior:
      * - `value` being `NaN`
      * - `value` being infinite
      * Negative values cause underflow, and decimals are truncated.
@@ -96,7 +96,7 @@ export class ByteStream {
     }
 
     /**
-     * @returns An integer in `[0, 4294967296[`
+     * @returns An integer in `[0, 4294967296]`
      */
     readUint32(): number {
         const val = this._view.getUint32(this.index);
@@ -105,7 +105,7 @@ export class ByteStream {
     }
 
     /**
-     * @param value An integer in range `[0, 4294967296[` to write. The following cause undefined behavior:
+     * @param value An integer in range `[0, 4294967296]` to write. The following cause undefined behavior:
      * - `value` being `NaN`
      * - `value` being infinite
      * Negative values cause underflow, and decimals are truncated.
@@ -119,7 +119,7 @@ export class ByteStream {
     }
 
     /**
-     * @returns An integer in `[0, 18446744073709551616[`
+     * @returns An integer in `[0, 18446744073709551616]`
      */
     readUint64(): bigint {
         const val = this._view.getBigUint64(this.index);
@@ -128,7 +128,7 @@ export class ByteStream {
     }
 
     /**
-     * @param value An integer in range `[0, 18446744073709551616[` to write. `value` being negative
+     * @param value An integer in range `[0, 18446744073709551616]` to write. `value` being negative
      * causes underflow
      *
      * Integers larger than 18446744073709551615 have their 8 least significant bytes written
@@ -140,7 +140,7 @@ export class ByteStream {
     }
 
     /**
-     * @returns An integer in `[-128, 128[`
+     * @returns An integer in `[-128, 128]`
      */
     readInt8(): number {
         const val = this._view.getInt8(this.index);
@@ -149,7 +149,7 @@ export class ByteStream {
     }
 
     /**
-     * @param value An integer in range `[-128, 128[` to write. The following cause undefined behavior:
+     * @param value An integer in range `[-128, 128]` to write. The following cause undefined behavior:
      * - `value` being `NaN`
      * - `value` being infinite
      * - `value` not being an integer
@@ -162,7 +162,7 @@ export class ByteStream {
     }
 
     /**
-     * @returns An integer in `[-32768, 32768[`
+     * @returns An integer in `[-32768, 32768]`
      */
     readInt16(): number {
         const val = this._view.getInt16(this.index);
@@ -171,7 +171,7 @@ export class ByteStream {
     }
 
     /**
-     * @param value An integer in range `[-32768, 32768[` to write. The following cause undefined behavior:
+     * @param value An integer in range `[-32768, 32768]` to write. The following cause undefined behavior:
      * - `value` being `NaN`
      * - `value` being infinite
      * - `value` being negative
@@ -185,7 +185,7 @@ export class ByteStream {
     }
 
     /**
-     * @returns An integer in `[-2147483648, 2147483648[`
+     * @returns An integer in `[-2147483648, 2147483648]`
      */
     readInt32(): number {
         const val = this._view.getInt32(this.index);
@@ -194,7 +194,7 @@ export class ByteStream {
     }
 
     /**
-     * @param value An integer in range `[-2147483648, 2147483648[` to write. The following cause undefined behavior:
+     * @param value An integer in range `[-2147483648, 2147483648]` to write. The following cause undefined behavior:
      * - `value` being `NaN`
      * - `value` being infinite
      * - `value` being negative
@@ -208,7 +208,7 @@ export class ByteStream {
     }
 
     /**
-     * @returns An integer in `[-9223372036854775808, 9223372036854775808[`
+     * @returns An integer in `[-9223372036854775808, 9223372036854775808]`
      */
     readInt64(): bigint {
         const val = this._view.getBigInt64(this.index);
@@ -217,7 +217,7 @@ export class ByteStream {
     }
 
     /**
-     * @param value An integer in range `[-9223372036854775808, 9223372036854775808[` to write. `value` being out-of-range
+     * @param value An integer in range `[-9223372036854775808, 9223372036854775808]` to write. `value` being out-of-range
      * leads to undefined behavior
      */
     writeInt64(value: bigint): this {

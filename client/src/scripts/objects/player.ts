@@ -1576,20 +1576,17 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 break;
             }
             case AnimationType.GunFire:
-            case AnimationType.GunFireAlt:
-            case AnimationType.LastShot: {
+            case AnimationType.GunFireAlt: {
                 if (this.activeItem.defType !== DefinitionType.Gun) {
                     const name = ({
                         [AnimationType.GunFire]: "GunFire",
-                        [AnimationType.GunFireAlt]: "GunFireAlt",
-                        [AnimationType.LastShot]: "LastShot"
+                        [AnimationType.GunFireAlt]: "GunFireAlt"
                     })[anim];
                     console.warn(`Attempted to play gun animation (${name}) with non-gun item '${this.activeItem.idString}'`);
                     return;
                 }
                 const weaponDef = this.activeItem;
                 const {
-                    idString,
                     image: { position: { x: imgX } }
                 } = this._getItemReference() as SingleGunNarrowing;
                 const {
@@ -1598,22 +1595,6 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                         right: { x: rightFistX }
                     }
                 } = weaponDef;
-
-                if (anim === AnimationType.LastShot) {
-                    this.playSound(
-                        `${idString}_fire_last`,
-                        {
-                            falloff: 0.5
-                        }
-                    );
-                } else {
-                    this.playSound(
-                        `${idString}_fire`,
-                        {
-                            falloff: 0.5
-                        }
-                    );
-                }
 
                 const isAltFire = weaponDef.isDual
                     ? anim === AnimationType.GunFireAlt

@@ -81,7 +81,10 @@ export const enum PerkIds {
     // Infection
     //
     Infected = "infected",
-    Immunity = "immunity"
+    Immunity = "immunity",
+
+    // H.U.N.T.E.D.
+    HollowPoints = "hollow_points"
 }
 
 const perks = [
@@ -452,6 +455,14 @@ const perks = [
         duration: 15000,
         noDrop: true,
         plumpkinGambleIgnore: true
+    },
+    {
+        idString: PerkIds.HollowPoints,
+        name: "Hollow Points",
+        defType: DefinitionType.Perk,
+        category: PerkCategories.Normal,
+        damageMod: 1.1,
+        soundMod: 75
     }
 ] as const satisfies ReadonlyArray<BasePerkDefinition & Record<string, unknown>>;
 

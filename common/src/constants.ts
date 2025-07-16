@@ -228,7 +228,6 @@ export const enum AnimationType {
     GunFire,
     GunFireAlt,
     GunClick,
-    LastShot,
     Revive
 }
 

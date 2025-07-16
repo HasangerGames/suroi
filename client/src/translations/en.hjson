@@ -416,5 +416,7 @@
 "infected_desc": "Increased speed and damage, but health drops and adrenaline decays fast. Infect nearby players."
 "immunity": "Immunity"
 "immunity_desc": "Immune to infection for 15 seconds."
+"hollow_points": "Hollow Points"
+"hollow_points_desc": "Gun-type weapons deal 10% more damage. Does not apply to non-slug shotguns."
 "partners": "Partners"
 "username_placeholder": "Enter a nickname"

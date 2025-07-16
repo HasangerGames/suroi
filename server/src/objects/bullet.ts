@@ -35,6 +35,8 @@ export interface ServerBulletOptions {
     readonly saturate?: boolean
     readonly thin?: boolean
     readonly modifiers?: BulletOptions["modifiers"]
+    readonly shotFX?: boolean
+    readonly lastShot?: boolean
 }
 
 export class Bullet extends BaseBullet {
@@ -74,6 +76,10 @@ export class Bullet extends BaseBullet {
         this.layer = options.layer ?? shooter.layer;
 
         this.finalPosition = Vec.add(this.position, Vec.scale(this.direction, this.maxDistance));
+
+        this.shotFX = options.shotFX ?? false;
+
+        this.lastShot = options.lastShot ?? false;
     }
 
     update(): DamageRecord[] {
@@ -209,7 +215,8 @@ export class Bullet extends BaseBullet {
                 modifiers: this.modifiers,
                 rangeOverride: this.clipDistance,
                 saturate: this.saturate,
-                thin: this.thin
+                thin: this.thin,
+                shotFX: false
             }
         );
     }

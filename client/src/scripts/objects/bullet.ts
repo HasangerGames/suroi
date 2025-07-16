@@ -13,7 +13,7 @@ import { Game } from "../game";
 import { CameraManager } from "../managers/cameraManager";
 import { ParticleManager } from "../managers/particleManager";
 import { SoundManager } from "../managers/soundManager";
-import { PIXI_SCALE } from "../utils/constants";
+import { PIXI_SCALE, SATURATION_SOUND_SPEED, THIN_SOUND_SPEED } from "../utils/constants";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 import type { Building } from "./building";
 import { type Obstacle } from "./obstacle";
@@ -82,6 +82,37 @@ export class Bullet extends BaseBullet {
         this._playBulletWhiz = !Game.activePlayer?.bulletWhizHitbox.isPointInside(this.initialPosition);
 
         this.updateLayer();
+
+        // Gun Sounds (shotFX basically makes it so that the sound is played once)
+        if (this.shotFX) {
+            const gunIdString = this.definition.idString.slice(0, -7);
+
+            let soundSpeed: number;
+            switch (true) {
+                case this.saturate: {
+                    soundSpeed = SATURATION_SOUND_SPEED;
+                    break;
+                }
+
+                case this.thin: {
+                    soundSpeed = THIN_SOUND_SPEED;
+                    break;
+                }
+
+                default: {
+                    soundSpeed = 1;
+                }
+            }
+
+            SoundManager.play(
+                `${gunIdString}_fire${this.lastShot ? "_last" : ""}`,
+                {
+                    position: this.position,
+                    layer: this.layer,
+                    speed: soundSpeed
+                }
+            );
+        }
     }
 
     update(delta: number): void {
