@@ -115,6 +115,7 @@ export interface BulletOptions {
     }
     readonly saturate?: boolean
     readonly thin?: boolean
+    readonly split?: boolean
     readonly sourceID: number
     readonly reflectionCount?: number
     readonly variance?: number
@@ -178,6 +179,7 @@ export class BaseBullet {
 
     readonly saturate: boolean;
     readonly thin: boolean;
+    readonly split: boolean;
 
     constructor(options: BulletOptions) {
         this.initialPosition = Vec.clone(options.position);
@@ -214,6 +216,7 @@ export class BaseBullet {
 
         this.saturate = options.saturate ?? false;
         this.thin = options.thin ?? false;
+        this.split = options.split ?? false;
 
         this.shotFX = options.shotFX ?? false;
 
@@ -367,6 +370,7 @@ export class BaseBullet {
             traceLengthMod,
             this.saturate,
             this.thin,
+            this.split,
             this.shotFX,
             this.lastShot
         );
@@ -422,6 +426,7 @@ export class BaseBullet {
             traceLengthMod,
             saturate,
             thin,
+            split,
             shotFX,
             lastShot
         ] = stream.readBooleanGroup2();
@@ -460,6 +465,7 @@ export class BaseBullet {
             modifiers,
             saturate,
             thin,
+            split,
             shotFX,
             lastShot
         };

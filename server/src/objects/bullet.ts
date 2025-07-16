@@ -34,6 +34,7 @@ export interface ServerBulletOptions {
     readonly rangeOverride?: number
     readonly saturate?: boolean
     readonly thin?: boolean
+    readonly split?: boolean
     readonly modifiers?: BulletOptions["modifiers"]
     readonly shotFX?: boolean
     readonly lastShot?: boolean

@@ -263,7 +263,7 @@ export class GunItem extends InventoryItemBase.derive(DefinitionType.Gun) {
             )
             : (_: Vector) => owner.layer;
 
-        const spawn = (position: Vector, spread: number, shotFX: boolean): void => {
+        const spawn = (position: Vector, spread: number, shotFX: boolean, split = false): void => {
             owner.game.addBullet(
                 this,
                 owner,
@@ -275,6 +275,7 @@ export class GunItem extends InventoryItemBase.derive(DefinitionType.Gun) {
                     modifiers: modifiersModified ? modifiers : undefined,
                     saturate,
                     thin,
+                    split,
                     shotFX: shotFX,
                     lastShot: this.definition.ballistics.lastShotFX && this.ammo === 1
                 }
@@ -316,10 +317,12 @@ export class GunItem extends InventoryItemBase.derive(DefinitionType.Gun) {
             const dev = Angle.degreesToRadians(deviation);
 
             for (let j = 0; j < split; j++) {
+                const isFirstSplinterBullet = isFirstBullet && j === 0;
                 spawn(
                     finalSpawnPosition,
                     (8 * (j / sM1 - 0.5) ** 3) * dev + rotation,
-                    isFirstBullet && j === 0
+                    isFirstSplinterBullet,
+                    isFirstSplinterBullet
                 );
             }
         }

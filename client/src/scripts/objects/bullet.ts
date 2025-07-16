@@ -13,7 +13,7 @@ import { Game } from "../game";
 import { CameraManager } from "../managers/cameraManager";
 import { ParticleManager } from "../managers/particleManager";
 import { SoundManager } from "../managers/soundManager";
-import { PIXI_SCALE, SATURATION_SOUND_SPEED, THIN_SOUND_SPEED } from "../utils/constants";
+import { PIXI_SCALE, SATURATION_SOUND_SPEED, SPLIT_SOUND_SPEED, THIN_SOUND_SPEED } from "../utils/constants";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 import type { Building } from "./building";
 import { type Obstacle } from "./obstacle";
@@ -89,6 +89,11 @@ export class Bullet extends BaseBullet {
 
             let soundSpeed: number;
             switch (true) {
+                case this.split: {
+                    soundSpeed = SPLIT_SOUND_SPEED;
+                    break;
+                }
+
                 case this.saturate: {
                     soundSpeed = SATURATION_SOUND_SPEED;
                     break;
