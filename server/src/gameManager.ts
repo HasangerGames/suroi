@@ -116,7 +116,13 @@ export async function newGame(id: number | undefined, teamMode: TeamMode, map: s
             const maxGames = Config.maxGames;
             for (let i = 0; i < maxGames; i++) {
                 const game = games[i];
-                serverLog("Game", i, "exists:", !!game, "stopped:", game?.stopped);
+                serverLog(
+                    "Game", i,
+                    "exists:", !!game,
+                    "stopped:", game?.stopped,
+                    "runtime:", `${Math.round((Date.now() - (game?.startedTime ?? 0)) / 1000)}s`,
+                    "aliveCount:", game?.aliveCount
+                );
                 if (!game || game.stopped) {
                     void newGame(i, teamMode, map).then(resolve);
                     return;
