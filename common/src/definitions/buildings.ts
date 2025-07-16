@@ -10908,13 +10908,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                     RectangleHitbox.fromRect(2.09, 30.94, Vec(138.71, -184.28)),
                     RectangleHitbox.fromRect(2.09, 30.94, Vec(87.29, -184.3)),
                     RectangleHitbox.fromRect(2.09, 30.94, Vec(105.05, -184.31)),
-                    RectangleHitbox.fromRect(2.09, 30.94, Vec(121.87, -184.31)),
-
-                    // big barricade (border)
-                    RectangleHitbox.fromRect(2.02, 31.78, Vec(71.36, -184.88)),
-                    RectangleHitbox.fromRect(17.21, 2.03, Vec(63.43, -199.75)),
-                    RectangleHitbox.fromRect(17.21, 2.03, Vec(63.78, -170)),
-                    RectangleHitbox.fromRect(2.02, 31.78, Vec(55.53, -184.88))
+                    RectangleHitbox.fromRect(2.09, 30.94, Vec(121.87, -184.31))
                 )
             },
             // bottom forklift park
@@ -10954,6 +10948,59 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 hitbox: new GroupHitbox(
                     RectangleHitbox.fromRect(4, 3.7, Vec(133.93, 200.41)),
                     RectangleHitbox.fromRect(4, 3.7, Vec(138.43, 200.41))
+                )
+            },
+            // for the warehouse main entrance "step" at bottom right
+            { // stroke
+                color: 0x343434,
+                hitbox: RectangleHitbox.fromRect(36.37, 6.98, Vec(106.68, 77.55))
+            },
+            { // fill
+                color: 0x4c4c4c,
+                hitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(16.93, 6.17, Vec(115.62, 77.88)),
+                    RectangleHitbox.fromRect(16.98, 6.17, Vec(97.78, 77.92))
+                )
+            },
+            // for the sawmill storage entrance "step" Vec(-51.47, -212.03
+            { // stroke
+                color: 0x484848,
+                hitbox: RectangleHitbox.fromRect(10.25, 5, Vec(-96.07, -234.56))
+            },
+            { // fill
+                color: 0x6a6a6a,
+                hitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(4.1, 3.56, Vec(-93.67, -234.56)),
+                    RectangleHitbox.fromRect(3.99, 3.56, Vec(-98.47, -234.56))
+                )
+            }
+        ],
+        // i have no idea on how to fix the zindex of ground graphics its really messed up so we use "hacky" method
+        graphicsZIndex: ZIndexes.BuildingsFloor + 0.1,
+        graphics: [
+        // small office entrance "steps" (2)
+            { // stroke
+                color: 0x4d4d4d,
+                hitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(10.37, 4.02, Vec(-136.78, 65.70)),
+                    RectangleHitbox.fromRect(10.38, 4.77, Vec(-93.37, 34.07)),
+                    RectangleHitbox.fromRect(10.37, 4.02, Vec(61.82, -200.08)),
+                    RectangleHitbox.fromRect(10.38, 4.77, Vec(105.23, -231.70))
+                )
+            },
+            { // fill
+                color: 0x666666,
+                hitbox: new GroupHitbox(
+
+                    RectangleHitbox.fromRect(4.65, 3.59, Vec(64.36, -200.07)),
+                    RectangleHitbox.fromRect(4.65, 3.59, Vec(59.19, -200.08)),
+                    RectangleHitbox.fromRect(4.66, 4.38, Vec(107.78, -231.62)),
+                    RectangleHitbox.fromRect(4.66, 4.38, Vec(102.62, -231.63)),
+
+                    RectangleHitbox.fromRect(4.65, 3.59, Vec(-134.24, 65.71)),
+                    RectangleHitbox.fromRect(4.65, 3.59, Vec(-139.41, 65.70)),
+                    RectangleHitbox.fromRect(4.66, 4.38, Vec(-90.82, 34.16)),
+                    RectangleHitbox.fromRect(4.66, 4.38, Vec(-95.98, 34.15))
                 )
             }
         ],
@@ -11003,12 +11050,12 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
 
             // Tinted
             { key: "barricade_line", position: Vec(24.775, -226.65), tint: 0xd5a244, rotation: Math.PI / 2, scale: Vec(2, 2.007) }, // Top Center Road Line
-            { key: "barricade_line", position: Vec(-139.59, 92.45), tint: 0xd5a244, scale: Vec(2, 2) }, // Bottom Left Road Line
+            { key: "barricade_line", position: Vec(-139.59, 92.45), tint: 0xd5a244, scale: Vec(2, 2.007) }, // Bottom Left Road Line
             { key: "barricade_line", position: Vec(-106.59, 187.5), tint: 0xd5a244, scale: Vec(2, 2) }, // Bottom Left, entrance
             { key: "barricade_line", position: Vec(47.5, 168.19), tint: 0xd5a244, scale: Vec(2, 2) }, // Bottom Right, entrance
 
             // Barriers (NOT tinted)
-            { key: "barricade_line_yellow", position: Vec(63.51, -184.87), scale: Vec(2, 2) },
+            { key: "barricade_line_yellow", position: Vec(63.51, -185), scale: Vec(2, 2) },
             { key: "barricade_line_small", position: Vec(-77.6, -89.7), rotation: Math.PI / 2, scale: Vec(2, 2) },
             { key: "barricade_line_small2", position: Vec(112.25, 20.1), rotation: Math.PI / 2, scale: Vec(1, 1.005) },
             { key: "barricade_line_small2", position: Vec(112.09, -89), rotation: Math.PI / 2 },
@@ -11332,7 +11379,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "saw", position: Vec(5.88, -10.22), rotation: 0 },
             { idString: "headquarters_security_desk", position: Vec(85.04, 118.94), rotation: 2, puzzlePiece: true }
         ],
-        subBuildings: IS_CLIENT ? undefined : [
+        subBuildings: [
             { idString: randomPallet, position: Vec(-70.25, 64.65) }, // P3
             { idString: randomPallet, position: Vec(-71.27, 219.63) }, // P5
             { idString: randomPallet, position: Vec(130.72, -172.72) }, // P11
@@ -11628,6 +11675,17 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             }
         ],
         groundGraphics: [
+            { // stroke
+                color: 0x4d4d4d,
+                hitbox: RectangleHitbox.fromRect(10, 7, Vec(39.78, 62.79))
+            },
+            { // fill
+                color: 0x666666,
+                hitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(4, 3.7, Vec(37.5, 63.8)),
+                    RectangleHitbox.fromRect(4, 3.7, Vec(42, 63.8))
+                )
+            },
             { // stroke
                 color: 0x343434,
                 hitbox: RectangleHitbox.fromRect(36.37, 6.98, Vec(10.25, -59.06))
@@ -11976,9 +12034,25 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             position: Vec(0, 0),
             scale: Vec(2, 2)
         }],
+        groundGraphics: [
+            { // stroke
+                color: 0x484848,
+                hitbox: RectangleHitbox.fromRect(10.25, 5, Vec(-44.6, -22.53))
+            },
+            { // fill
+                color: 0x6a6a6a,
+                hitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(4.1, 3.56, Vec(-42.2, -22.53)),
+                    RectangleHitbox.fromRect(3.99, 3.56, Vec(-47, -22.53))
+                )
+            }
+        ],
         floors: [{
             type: FloorNames.Stone,
-            hitbox: RectangleHitbox.fromRect(100.32, 41.74, Vec(-0.09, -0.13))
+            hitbox: new GroupHitbox(
+                RectangleHitbox.fromRect(100.32, 41.74, Vec(-0.09, -0.13)),
+                RectangleHitbox.fromRect(10.25, 5.14, Vec(-44.6, -22.53))
+            )
         }],
         obstacles: IS_CLIENT ? undefined : [
             { idString: "sawmill_storage_column", position: Vec(-15.64, 20.24) },
