@@ -124,6 +124,7 @@ export const Emotes = new ObjectDefinitions<EmoteDefinition>([
         ],
         [EmoteCategory.Misc]: [
             "Fire",
+            "Heart",
             "Penguin",
             "Squid",
             "Eagle",
