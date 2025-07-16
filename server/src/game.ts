@@ -248,8 +248,6 @@ export class Game implements GameData {
         this.map = new GameMap(this, map);
         this.gas = new Gas(this);
 
-        this.setGameData({ allowJoin: true });
-
         this.pluginManager.emit("game_created", this);
         this.log(`Created in ${Date.now() - this._start} ms`);
 

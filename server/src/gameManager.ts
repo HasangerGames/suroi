@@ -155,6 +155,7 @@ if (!Cluster.isPrimary) {
             }
             case WorkerMessages.NewGame: {
                 game = new Game(id, teamMode, map);
+                game.setGameData({ allowJoin: true });
                 break;
             }
         }
@@ -255,6 +256,7 @@ if (!Cluster.isPrimary) {
             if (ip) simultaneousConnections?.decrement(ip);
         }
     }).listen(Config.hostname, Config.port + id + 1, () => {
+        game.setGameData({ allowJoin: true });
         game.log(`Listening on ${Config.hostname}:${Config.port + id + 1}`);
     });
 }
