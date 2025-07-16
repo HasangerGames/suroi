@@ -56,7 +56,7 @@ export const Emotes = new ObjectDefinitions<EmoteDefinition>([
             "Man Face",
             "Satisfied Face",
             "Hot Face",
-            "Blindfolded",
+            "Blindfolded Face",
             "Melting Face",
             "Grimacing Face",
             "Vomiting Face",
