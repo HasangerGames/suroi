@@ -127,6 +127,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `engorged` is not defined
 - Key `engorged_desc` is not defined
 - Key `baby_plumpkin_pie` is not defined
+- Key `baby_plumpkin_pie_desc` is not defined
 - Key `costumed` is not defined
 - Key `costumed_desc` is not defined
 - Key `torn_pockets` is not defined
@@ -149,7 +150,6 @@ This file is a report of all errors and missing keys in the translation files of
 ### Invalid Keys
 
 - Key `create_team_waiting` is not a valid key
-- Key `baby_plumpkin_pie_desc` is not a valid key
 
 ### Undefined Keys
 
@@ -286,6 +286,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `engorged` is not defined
 - Key `engorged_desc` is not defined
 - Key `baby_plumpkin_pie` is not defined
+- Key `baby_plumpkin_pie_desc` is not defined
 - Key `costumed` is not defined
 - Key `costumed_desc` is not defined
 - Key `torn_pockets` is not defined
@@ -303,7 +304,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇩🇪 Deutsch (75% Complete) - de.hjson
+## 🇩🇪 Deutsch (74% Complete) - de.hjson
 
 ### Invalid Keys
 
@@ -386,6 +387,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `engorged` is not defined
 - Key `engorged_desc` is not defined
 - Key `baby_plumpkin_pie` is not defined
+- Key `baby_plumpkin_pie_desc` is not defined
 - Key `costumed` is not defined
 - Key `costumed_desc` is not defined
 - Key `torn_pockets` is not defined
@@ -507,6 +509,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `engorged` is not defined
 - Key `engorged_desc` is not defined
 - Key `baby_plumpkin_pie` is not defined
+- Key `baby_plumpkin_pie_desc` is not defined
 - Key `costumed` is not defined
 - Key `costumed_desc` is not defined
 - Key `torn_pockets` is not defined
@@ -689,6 +692,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `kf_suicide_finished_off` is not defined
 - Key `kf_were_finally_killed` is not defined
 - Key `m16a4` is not defined
+- Key `baby_plumpkin_pie_desc` is not defined
 
 ## 🇫🇮 suomi (69% Complete) - fi.hjson
 
@@ -793,6 +797,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `engorged` is not defined
 - Key `engorged_desc` is not defined
 - Key `baby_plumpkin_pie` is not defined
+- Key `baby_plumpkin_pie_desc` is not defined
 - Key `costumed` is not defined
 - Key `costumed_desc` is not defined
 - Key `torn_pockets` is not defined
@@ -810,7 +815,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇫🇷 Français (99% Complete) - fr.hjson
+## 🇫🇷 Français (98% Complete) - fr.hjson
 
 ### Invalid Keys
 
@@ -827,6 +832,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `tt_desc` is not defined
 - Key `vaccine_syringe` is not defined
 - Key `vaccine_syringe_desc` is not defined
+- Key `baby_plumpkin_pie_desc` is not defined
 
 ## 🇬🇷 Ελληνικά (76% Complete) - gr.hjson
 
@@ -907,6 +913,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `engorged` is not defined
 - Key `engorged_desc` is not defined
 - Key `baby_plumpkin_pie` is not defined
+- Key `baby_plumpkin_pie_desc` is not defined
 - Key `costumed` is not defined
 - Key `costumed_desc` is not defined
 - Key `torn_pockets` is not defined
@@ -1042,6 +1049,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `engorged` is not defined
 - Key `engorged_desc` is not defined
 - Key `baby_plumpkin_pie` is not defined
+- Key `baby_plumpkin_pie_desc` is not defined
 - Key `costumed` is not defined
 - Key `costumed_desc` is not defined
 - Key `torn_pockets` is not defined
@@ -1059,7 +1067,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇭🇺 Magyar (99% Complete) - hu.hjson
+## 🇭🇺 Magyar (98% Complete) - hu.hjson
 
 ### (No Invalid Keys)
 
@@ -1068,6 +1076,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_cannot_use_flare` is not defined
 - Key `interact_recorder_interactable` is not defined
 - Key `kf_were_finally_killed` is not defined
+- Key `baby_plumpkin_pie_desc` is not defined
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
@@ -1204,6 +1213,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `engorged` is not defined
 - Key `engorged_desc` is not defined
 - Key `baby_plumpkin_pie` is not defined
+- Key `baby_plumpkin_pie_desc` is not defined
 - Key `costumed` is not defined
 - Key `costumed_desc` is not defined
 - Key `torn_pockets` is not defined
@@ -1221,7 +1231,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇯🇵 日本語 (100% Complete) - jp.hjson
+## 🇯🇵 日本語 (99% Complete) - jp.hjson
 
 ### Invalid Keys
 
@@ -1482,6 +1492,7 @@ This file is a report of all errors and missing keys in the translation files of
 ### Undefined Keys
 
 - Key `interact_recorder_interactable` is not defined
+- Key `baby_plumpkin_pie_desc` is not defined
 
 ## 🇱🇹 Lietuvių (66% Complete) - lt.hjson
 
@@ -1597,6 +1608,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `engorged` is not defined
 - Key `engorged_desc` is not defined
 - Key `baby_plumpkin_pie` is not defined
+- Key `baby_plumpkin_pie_desc` is not defined
 - Key `costumed` is not defined
 - Key `costumed_desc` is not defined
 - Key `torn_pockets` is not defined
@@ -1728,6 +1740,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `engorged` is not defined
 - Key `engorged_desc` is not defined
 - Key `baby_plumpkin_pie` is not defined
+- Key `baby_plumpkin_pie_desc` is not defined
 - Key `costumed` is not defined
 - Key `costumed_desc` is not defined
 - Key `torn_pockets` is not defined
@@ -1745,7 +1758,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇳🇱 Nederlands (99% Complete) - nl.hjson
+## 🇳🇱 Nederlands (98% Complete) - nl.hjson
 
 ### (No Invalid Keys)
 
@@ -1756,6 +1769,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `tt_desc` is not defined
 - Key `vaccine_syringe` is not defined
 - Key `vaccine_syringe_desc` is not defined
+- Key `baby_plumpkin_pie_desc` is not defined
 
 ## 🇵🇱 Polski (69% Complete) - pl.hjson
 
@@ -1860,6 +1874,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `engorged` is not defined
 - Key `engorged_desc` is not defined
 - Key `baby_plumpkin_pie` is not defined
+- Key `baby_plumpkin_pie_desc` is not defined
 - Key `costumed` is not defined
 - Key `costumed_desc` is not defined
 - Key `torn_pockets` is not defined
@@ -1965,6 +1980,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `engorged` is not defined
 - Key `engorged_desc` is not defined
 - Key `baby_plumpkin_pie` is not defined
+- Key `baby_plumpkin_pie_desc` is not defined
 - Key `costumed` is not defined
 - Key `costumed_desc` is not defined
 - Key `torn_pockets` is not defined
@@ -1982,7 +1998,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇷🇴 Română (99% Complete) - ro.hjson
+## 🇷🇴 Română (98% Complete) - ro.hjson
 
 ### Invalid Keys
 
@@ -1995,6 +2011,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `tt_desc` is not defined
 - Key `vaccine_syringe` is not defined
 - Key `vaccine_syringe_desc` is not defined
+- Key `baby_plumpkin_pie_desc` is not defined
 
 ## 🇷🇺 Русский (98% Complete) - ru.hjson
 
@@ -2011,6 +2028,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `m16a4` is not defined
 - Key `vaccine_syringe` is not defined
 - Key `vaccine_syringe_desc` is not defined
+- Key `baby_plumpkin_pie_desc` is not defined
 
 ## 🇮🇳 தமிழ் (77% Complete) - ta.hjson
 
@@ -2087,6 +2105,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `engorged` is not defined
 - Key `engorged_desc` is not defined
 - Key `baby_plumpkin_pie` is not defined
+- Key `baby_plumpkin_pie_desc` is not defined
 - Key `costumed` is not defined
 - Key `costumed_desc` is not defined
 - Key `torn_pockets` is not defined
@@ -2166,6 +2185,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `engorged` is not defined
 - Key `engorged_desc` is not defined
 - Key `baby_plumpkin_pie` is not defined
+- Key `baby_plumpkin_pie_desc` is not defined
 - Key `costumed` is not defined
 - Key `costumed_desc` is not defined
 - Key `torn_pockets` is not defined
@@ -2258,6 +2278,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `engorged` is not defined
 - Key `engorged_desc` is not defined
 - Key `baby_plumpkin_pie` is not defined
+- Key `baby_plumpkin_pie_desc` is not defined
 - Key `costumed` is not defined
 - Key `costumed_desc` is not defined
 - Key `torn_pockets` is not defined
@@ -2285,6 +2306,7 @@ This file is a report of all errors and missing keys in the translation files of
 
 - Key `interact_recorder_interactable` is not defined
 - Key `kf_were_finally_killed` is not defined
+- Key `baby_plumpkin_pie_desc` is not defined
 
 ## 🇨🇳 中文（简体） (99% Complete) - zh.hjson
 
@@ -2535,7 +2557,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `special_weapon_preset_title` is not a valid key
 - Key `time_minute` is not a valid key
 - Key `time_second` is not a valid key
-- Key `baby_plumpkin_pie_desc` is not a valid key
 
 ### Undefined Keys
 

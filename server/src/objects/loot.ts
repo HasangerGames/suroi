@@ -2,7 +2,6 @@ import { GameConstants, InventoryMessages, Layer, ObjectCategory, PlayerActions 
 import { ArmorType } from "@common/definitions/items/armors";
 import { type GunDefinition } from "@common/definitions/items/guns";
 import { Loots, type LootDefinition } from "@common/definitions/loots";
-import { PerkCategories, type PerkDefinition } from "@common/definitions/items/perks";
 import { PickupPacket } from "@common/packets/pickupPacket";
 import { CircleHitbox } from "@common/utils/hitbox";
 import { adjacentOrEqualLayer } from "@common/utils/layer";
@@ -263,7 +262,7 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
                 return !player.loadout.skin.noSwap && (player.loadout.skin !== definition || InventoryMessages.ItemAlreadyEquipped);
             }
             case DefinitionType.Perk: {
-                return !Array.from(player.perks)[0]?.noSwap && (!(player.hasPerk(definition) && !definition.alwaysAllowSwap) || InventoryMessages.ItemAlreadyEquipped);
+                return !player.perks[0]?.noSwap && (!(player.hasPerk(definition) && !definition.alwaysAllowSwap) || InventoryMessages.ItemAlreadyEquipped);
             }
         }
     }
@@ -469,51 +468,19 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
                 break;
             }
 
-            // This seems to work server-side, but it breaks client-side perk display..
             case DefinitionType.Perk: {
-                const currentPerks = Array.from(player.perks);
-                // const perksLength = currentPerks.length;
+                const perkToRemove = player.perks.find(perk => perk.category === definition.category);
 
-                const isHalloweenPerk = definition.category === PerkCategories.Halloween;
-                const isNormalPerk = definition.category === PerkCategories.Normal;
-
-                // Variable to track which perk to remove
-                let perkToRemove: PerkDefinition | undefined;
-
-                if (isHalloweenPerk) {
-                    perkToRemove = currentPerks.find(perk => perk.category === PerkCategories.Halloween);
-                } else if (isNormalPerk) {
-                    perkToRemove = currentPerks.find(perk => perk.category === PerkCategories.Normal);
-                }
-
-                // If a perk to remove has been identified, remove it
                 if (perkToRemove !== undefined) {
                     if (!perkToRemove.noDrop) {
                         createNewItem({ type: perkToRemove, count: 1 });
                     }
-                    player.perks.delete(perkToRemove);
+                    player.removePerk(perkToRemove);
                 }
 
-                // Add the new perk
-                player.perks.add(definition);
+                player.addPerk(definition);
                 break;
             }
-
-            // case DefinitionType.Perk: {
-            //     const currentPerks = player.perks.asList();
-            //     const perksLength = currentPerks.length;
-
-            //     if (perksLength === GameConstants.player.maxPerkCount) {
-            //         // remove the old perk
-            //         const equippedPerk = currentPerks[0];
-            //         if (!equippedPerk.noDrop) createNewItem({ type: equippedPerk, count: 1 });
-            //         player.perks.removePerk(equippedPerk);
-            //     }
-
-            //     player.perks.addPerk(definition);
-            //     player.updateAndApplyModifiers();
-            //     break;
-            // }
         }
         this._count -= countToRemove;
 

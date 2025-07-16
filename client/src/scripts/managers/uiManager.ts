@@ -32,7 +32,7 @@ import { CameraManager } from "./cameraManager";
 import { MapPingWheelManager } from "./emoteWheelManager";
 import { InputManager } from "./inputManager";
 import { MapManager } from "./mapManager";
-import { ClientPerkManager } from "./perkManager";
+import { PerkManager } from "./perkManager";
 import { ScreenRecordManager } from "./screenRecordManager";
 import { SoundManager } from "./soundManager";
 
@@ -822,11 +822,10 @@ class UIManagerClass {
         }
 
         if (perks) {
-            const oldPerks = ClientPerkManager.asList();
-            ClientPerkManager.overwrite(perks);
-            const newPerks = ClientPerkManager.asList();
+            const oldPerks = Array.from(PerkManager.perks);
+            PerkManager.perks = perks;
             for (let i = 0; i < 3; i++) { // TODO make a constant for max perks
-                const newPerk = newPerks[i];
+                const newPerk = perks[i];
                 if (newPerk === undefined) {
                     this.resetPerkSlot(i);
                     continue;
@@ -871,7 +870,7 @@ class UIManagerClass {
             let showReserve = false;
             if (activeWeapon.definition.defType === DefinitionType.Gun) {
                 const ammoType = activeWeapon.definition.ammoType;
-                let totalAmmo: number | string = ClientPerkManager.hasItem(PerkIds.InfiniteAmmo)
+                let totalAmmo: number | string = PerkManager.has(PerkIds.InfiniteAmmo)
                     ? "∞"
                     : this.inventory.items[ammoType];
 
@@ -1005,7 +1004,7 @@ class UIManagerClass {
                     } else {
                         let frame = definition.idString;
                         if (
-                            ClientPerkManager.hasItem(PerkIds.PlumpkinBomb)
+                            PerkManager.has(PerkIds.PlumpkinBomb)
                             && definition.defType === DefinitionType.Throwable
                             && !definition.noSkin
                         ) {
@@ -1074,7 +1073,7 @@ class UIManagerClass {
         container.attr("data-idString", perkDef.idString);
         container.children(".item-tooltip").html(`<strong>${getTranslatedString(perkDef.idString as unknown as TranslationKeys)}</strong><br>${getTranslatedString(`${perkDef.idString}_desc` as TranslationKeys)}`);
         container.children(".item-image").attr("src", `./img/game/${perkDef.category === PerkCategories.Halloween ? "halloween" : "shared"}/perks/${perkDef.idString}.svg`);
-        container.css("visibility", ClientPerkManager.hasItem(perkDef.idString) ? "visible" : "hidden");
+        container.css("visibility", PerkManager.has(perkDef) ? "visible" : "hidden");
 
         container.css("outline", !perkDef.noDrop ? "" : "none");
 

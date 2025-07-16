@@ -640,7 +640,7 @@ export class Inventory {
 
             case DefinitionType.Perk: {
                 if (!this.owner.hasPerk(definition)) return;
-                this.owner.perks.delete(definition);
+                this.owner.removePerk(definition);
                 this._dropItem(definition);
                 this.owner.dirty.perks = true;
                 break;
@@ -796,7 +796,7 @@ export class Inventory {
                     ) || (
                         definition.healType === HealType.Special
                         && definition.effect?.removePerk !== undefined
-                        && !this.owner.perks.has(definition.effect?.removePerk)
+                        && !this.owner.hasPerk(definition.effect?.removePerk)
                     )
                 ) return;
 

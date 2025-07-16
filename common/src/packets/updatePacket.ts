@@ -242,7 +242,7 @@ function serializePlayerData(
     }
 
     if (hasPerks) {
-        strm.writeSet(perks as Set<PerkDefinition>, perk => Perks.writeToStream(strm, perk));
+        strm.writeArray(perks, perk => Perks.writeToStream(strm, perk));
     }
 
     if (hasTeamID) {
@@ -516,7 +516,7 @@ export interface PlayerData {
         readonly scope: ScopeDefinition
     }
     activeC4s?: boolean
-    perks?: PerkDefinition[] | Set<PerkDefinition>
+    perks?: PerkDefinition[]
     teamID?: number
 }
 
@@ -772,7 +772,7 @@ export const UpdatePacket = new Packet<UpdateDataIn, UpdateDataOut>(PacketType.U
         const idx = strm.index;
         strm.index = flagsIdx;
         strm.writeUint16(flags);
-        // restore steam index
+        // restore stream index
         strm.index = idx;
     },
 
