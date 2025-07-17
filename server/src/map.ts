@@ -577,10 +577,16 @@ export class GameMap {
                 spawnedCount++;
             };
 
+            const ranges = (bridgeSpawnRanges ?? [[0.1, 0.4], [0.6, 0.9]])
+                // shuffle array: https://stackoverflow.com/a/46545530/5905216
+                .map(value => ({ value, sort: Math.random() }))
+                .sort((a, b) => a.sort - b.sort)
+                .map(({ value }) => value);
+
             for (const river of this.terrain.rivers) {
                 if (river.isTrail || river.width < (bridgeMinRiverWidth ?? 0)) continue;
 
-                for (const range of bridgeSpawnRanges ?? [[0.1, 0.4], [0.6, 0.9]]) {
+                for (const range of ranges) {
                     generateBridge(river, range);
                 }
             }
