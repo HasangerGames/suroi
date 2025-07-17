@@ -1244,8 +1244,11 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 image.setFrame(`${def.idString}_world`).setVisible(true);
 
                 if (type === "helmet") {
+                    const posOverride = (def as ArmorDefinition).positionOverride;
+                    const posOverrideDowned = (def as ArmorDefinition).positionOverrideDowned;
+
                     image.setPos(
-                        this.downed ? 10 : -8,
+                        this.downed ? (posOverrideDowned ?? 10) : (posOverride ?? -8),
                         0
                     );
                 }

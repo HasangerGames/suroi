@@ -6,6 +6,8 @@ export type ArmorDefinition = ItemDefinition & {
     readonly level: number
     readonly damageReduction: number
     readonly perk?: ReferenceTo<PerkDefinition>
+    readonly positionOverride?: number
+    readonly positionOverrideDowned?: number
 } & (
     | {
         readonly armorType: ArmorType.Helmet
@@ -48,6 +50,17 @@ export const Armors = new ObjectDefinitions<ArmorDefinition>([
         armorType: ArmorType.Helmet,
         level: 3,
         damageReduction: 0.2
+    },
+    {
+        idString: "power_helmet",
+        name: "Power Helmet",
+        defType: DefinitionType.Armor,
+        armorType: ArmorType.Helmet,
+        level: 5,
+        damageReduction: 0.25,
+        positionOverride: 6,
+        positionOverrideDowned: 7
+        // perk: "thermal_goggles" <-- TODO
     },
 
     //

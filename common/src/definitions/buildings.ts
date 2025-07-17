@@ -4602,10 +4602,11 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: randomPortDamagedContainerReversed, position: Vec(-101.24, 0.44), orientation: 2 },
 
             {
-                idString: {
-                    cargo_ship_bottom_floor_vault: 1,
-                    cargo_ship_bottom_floor_vault_special: 0.1
-                },
+                /* idString: {
+                    cargo_ship_bottom_floor_vault: 1
+                    // cargo_ship_bottom_floor_vault_special: 0.1
+                }, */
+                idString: "cargo_ship_bottom_floor_vault",
                 position: Vec(-32.38, 89.75),
                 orientation: 2
             },
