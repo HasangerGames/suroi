@@ -7,7 +7,7 @@
    viewBox="0 0 209.32222 186.30743"
    version="1.1"
    id="svg1"
-   inkscape:version="1.4 (86a8ad7, 2024-10-11)"
+   inkscape:version="1.4.2 (1:1.4.2+202505120737+ebf0e940d0)"
    sodipodi:docname="cabin_ceiling_1.svg"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
@@ -23,13 +23,13 @@
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
-     inkscape:zoom="0.68862935"
-     inkscape:cx="132.14656"
-     inkscape:cy="655.65024"
-     inkscape:window-width="1920"
-     inkscape:window-height="991"
-     inkscape:window-x="-9"
-     inkscape:window-y="-9"
+     inkscape:zoom="0.48693448"
+     inkscape:cx="115.0052"
+     inkscape:cy="335.77412"
+     inkscape:window-width="2560"
+     inkscape:window-height="1368"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
      inkscape:window-maximized="1"
      inkscape:current-layer="layer1" />
   <defs
@@ -490,11 +490,6 @@
          x="-984.61383"
          y="-3936.9141"
          transform="scale(-1)" />
-      <path
-         id="rect365-1-5-14-1-8"
-         style="fill:#6f513b;fill-opacity:1;stroke:#38291e;stroke-width:3.09101;stroke-dasharray:none;stroke-opacity:1"
-         d="m -3061.0252,-1939.2527 -1.901,-15.7601 -256.594,30.9773 -4e-4,-256.3433 h -15.8659 l 2e-4,258.2589 -255.995,30.9048 1.9006,15.7598 254.0943,-30.6753 v 258.3138 h 15.8659 l 1e-4,-260.2293 z"
-         transform="matrix(-0.66499422,-0.7468485,0.74967242,-0.66180909,0,0)" />
       <rect
          style="fill:#987052;fill-opacity:1;stroke:#38291e;stroke-width:1.72349;stroke-dasharray:none;stroke-opacity:1"
          id="rect137"
@@ -502,6 +497,14 @@
          height="3.9778335"
          x="574.0094"
          y="3572.8359" />
+      <rect
+         style="fill:#987052;fill-opacity:1;stroke:#38291e;stroke-width:1.62005;stroke-dasharray:none;stroke-opacity:1"
+         id="rect137-5-3"
+         width="358.80743"
+         height="3.9735534"
+         x="-3931.6433"
+         y="574.0094"
+         transform="rotate(-90)" />
       <rect
          style="fill:#987052;fill-opacity:1;stroke:#38291e;stroke-width:1.71703;stroke-dasharray:none;stroke-opacity:1"
          id="rect137-1"
@@ -517,14 +520,11 @@
          x="-3931.6453"
          y="975.68585"
          transform="rotate(-90)" />
-      <rect
-         style="fill:#987052;fill-opacity:1;stroke:#38291e;stroke-width:1.62005;stroke-dasharray:none;stroke-opacity:1"
-         id="rect137-5-3"
-         width="358.80743"
-         height="3.9735534"
-         x="-3931.6433"
-         y="574.0094"
-         transform="rotate(-90)" />
+      <path
+         id="rect365-1-5-14-1-8"
+         style="fill:#6f513b;fill-opacity:1;stroke:#38291e;stroke-width:3.09101;stroke-dasharray:none;stroke-opacity:1"
+         d="m -3061.0252,-1939.2527 -1.901,-15.7601 -256.594,30.9773 -4e-4,-256.3433 h -15.8659 l 2e-4,258.2589 -255.995,30.9048 1.9006,15.7598 254.0943,-30.6753 v 258.3138 h 15.8659 l 1e-4,-260.2293 z"
+         transform="matrix(-0.66499422,-0.7468485,0.74967242,-0.66180909,0,0)" />
       <path
          id="rect137-5-2-9"
          style="fill:#987052;fill-opacity:1;stroke:#38291e;stroke-width:1.62005;stroke-dasharray:none;stroke-opacity:1"
