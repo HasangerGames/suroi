@@ -4219,7 +4219,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     },
     {
         idString: "cargo_ship",
-        name: "Cargo Ship",
+        name: "Hyperion",
         defType: DefinitionType.Building,
         spawnHitbox: RectangleHitbox.fromRect(180, 400, Vec(-1.5, -1.8)),
         puzzle: {
@@ -4258,7 +4258,19 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         ],
         subBuildings: IS_CLIENT ? undefined : [
             { idString: "cargo_ship_top_floor", position: Vec(-0.55, -6), layer: Layer.Upstairs },
-            { idString: "cargo_ship_bottom_floor", position: Vec(1.8, 0) }
+            { idString: "cargo_ship_bottom_floor", position: Vec(1.8, 0) },
+
+            // Top
+            { idString: "container_20", position: Vec(27.75, 75.2), orientation: 2, replaceableBy: "container_21", layer: Layer.Upstairs },
+            { idString: "container_20", position: Vec(26.65, -103.75), replaceableBy: "container_21", layer: Layer.Upstairs },
+            { idString: "container_20", position: Vec(-27.55, -5), replaceableBy: "container_21", layer: Layer.Upstairs },
+            { idString: "container_20", position: Vec(12.32, 65.8), replaceableBy: "container_21", layer: Layer.Upstairs },
+
+            // Bottom
+            { idString: "container_20", position: Vec(12.45, 65.25), replaceableBy: "container_21" },
+            { idString: "container_20", position: Vec(12.55, -104.15), replaceableBy: "container_21" },
+            { idString: "container_20", position: Vec(-13.09, -5.3), replaceableBy: "container_21" },
+            { idString: "container_20", position: Vec(135.95, -35.3), orientation: 3, replaceableBy: "container_21" }
         ]
     },
     {
@@ -4604,10 +4616,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             // container distance Y = 28.55
             // ----------------------------------
             { idString: randomPortOpenContainerOneSide, position: Vec(10.75, -75.60) },
-            { idString: "container_20", position: Vec(10.75, -104.15), replaceableBy: "container_21" },
             { idString: randomPortOpenContainerTwoSide, position: Vec(-43.49, -5.3) },
             { idString: randomPortDamagedContainerReversed, position: Vec(29.19, 5.3), orientation: 2 },
-            { idString: "container_20", position: Vec(-14.89, -5.3), replaceableBy: "container_21" },
 
             { idString: randomPortOpenContainerOneSide, position: Vec(43.49, -36.25), orientation: 2 },
             { idString: randomPortOpenContainerOneSide, position: Vec(29.19, -36.25), orientation: 2 },
@@ -4615,10 +4625,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: randomPortOpenContainerOneSide, position: Vec(-43.49, 64.8) },
 
             { idString: randomPortOpenContainerOneSide, position: Vec(39.25, 65.25) },
-            { idString: randomPortOpenContainerOneSide, position: Vec(-24.95, -65.25), orientation: 2 },
-            { idString: "container_20", position: Vec(10.65, 65.25), replaceableBy: "container_21" },
-
-            { idString: "container_20", position: Vec(135.95, -33.5), orientation: 3, replaceableBy: "container_21" }
+            { idString: randomPortOpenContainerOneSide, position: Vec(-24.95, -65.25), orientation: 2 }
         ]
     },
     {
@@ -4926,16 +4933,13 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: randomPortOpenContainerOneSide, position: Vec(41.5, 97.75), orientation: 2 },
             { idString: randomPortOpenContainerOneSide, position: Vec(27.2, 97.75), orientation: 2 },
             { idString: randomPortOpenContainerOneSide, position: Vec(-41.5, -69.2) },
-            { idString: "container_20", position: Vec(27.2, 69.2), orientation: 2 },
 
             { idString: randomPortOpenContainerOneSide, position: Vec(-41.5, 97.75), orientation: 2 },
-            { idString: "container_20", position: Vec(27.2, -97.75) },
             { idString: randomPortOpenContainerOneSide, position: Vec(41.5, -69.2) },
             { idString: randomPortDamagedContainerReversed, position: Vec(27.2, -69.2) },
             { idString: randomPortDamagedContainerReversed, position: Vec(-12.9, 69.2), orientation: 2 },
 
             { idString: randomPortOpenContainerOneSide, position: Vec(-12.7, 1) },
-            { idString: "container_20", position: Vec(-27, 1) },
             { idString: randomPortOpenContainerOneSide, position: Vec(12.7, 27.55), orientation: 2 },
             { idString: randomPortOpenContainerOneSide, position: Vec(27, 27.55), orientation: 2 },
             { idString: randomPortOpenContainerTwoSide, position: Vec(-41.3, -27.55) },
@@ -4950,7 +4954,6 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: randomPortDamagedContainer, position: Vec(-27.07, 71.05) },
 
             { idString: randomPortOpenContainerTwoSide, position: Vec(27.17, 71.8) },
-            { idString: "container_20", position: Vec(12.87, 71.8) },
             { idString: randomPortOpenContainerOneSide, position: Vec(-41.47, -71.8), orientation: 2 },
             { idString: randomPortDamagedContainer, position: Vec(-27.17, -100.35), orientation: 2 },
             { idString: randomPortOpenContainerOneSide, position: Vec(41.47, 100.35) }
