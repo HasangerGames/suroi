@@ -59,8 +59,8 @@ export const Armors = new ObjectDefinitions<ArmorDefinition>([
         level: 4,
         damageReduction: 0.25,
         positionOverride: 6,
-        positionOverrideDowned: 7
-        // perk: "thermal_goggles" <-- TODO
+        positionOverrideDowned: 7,
+        perk: PerkIds.ThermalGoggles
     },
 
     //

@@ -147,10 +147,12 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `hollow_points_desc` is not defined
 - Key `experimental_forcefield` is not defined
 - Key `experimental_forcefield_desc` is not defined
+- Key `thermal_goggles` is not defined
+- Key `thermal_goggles_desc` is not defined
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇧🇷 Português (Brasil) (94% Complete) - br.hjson
+## 🇧🇷 Português (Brasil) (93% Complete) - br.hjson
 
 ### Invalid Keys
 
@@ -181,6 +183,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `hollow_points_desc` is not defined
 - Key `experimental_forcefield` is not defined
 - Key `experimental_forcefield_desc` is not defined
+- Key `thermal_goggles` is not defined
+- Key `thermal_goggles_desc` is not defined
 
 ## 🇨🇿 Čeština (65% Complete) - cz.hjson
 
@@ -316,6 +320,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `hollow_points_desc` is not defined
 - Key `experimental_forcefield` is not defined
 - Key `experimental_forcefield_desc` is not defined
+- Key `thermal_goggles` is not defined
+- Key `thermal_goggles_desc` is not defined
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
@@ -422,6 +428,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `hollow_points_desc` is not defined
 - Key `experimental_forcefield` is not defined
 - Key `experimental_forcefield_desc` is not defined
+- Key `thermal_goggles` is not defined
+- Key `thermal_goggles_desc` is not defined
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
@@ -549,6 +557,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `hollow_points_desc` is not defined
 - Key `experimental_forcefield` is not defined
 - Key `experimental_forcefield_desc` is not defined
+- Key `thermal_goggles` is not defined
+- Key `thermal_goggles_desc` is not defined
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
@@ -723,6 +733,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `hollow_points_desc` is not defined
 - Key `experimental_forcefield` is not defined
 - Key `experimental_forcefield_desc` is not defined
+- Key `thermal_goggles` is not defined
+- Key `thermal_goggles_desc` is not defined
 
 ## 🇫🇮 suomi (68% Complete) - fi.hjson
 
@@ -847,10 +859,12 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `hollow_points_desc` is not defined
 - Key `experimental_forcefield` is not defined
 - Key `experimental_forcefield_desc` is not defined
+- Key `thermal_goggles` is not defined
+- Key `thermal_goggles_desc` is not defined
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇫🇷 Français (97% Complete) - fr.hjson
+## 🇫🇷 Français (96% Complete) - fr.hjson
 
 ### Invalid Keys
 
@@ -873,8 +887,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `hollow_points_desc` is not defined
 - Key `experimental_forcefield` is not defined
 - Key `experimental_forcefield_desc` is not defined
+- Key `thermal_goggles` is not defined
+- Key `thermal_goggles_desc` is not defined
 
-## 🇬🇷 Ελληνικά (75% Complete) - gr.hjson
+## 🇬🇷 Ελληνικά (74% Complete) - gr.hjson
 
 ### Invalid Keys
 
@@ -973,10 +989,12 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `hollow_points_desc` is not defined
 - Key `experimental_forcefield` is not defined
 - Key `experimental_forcefield_desc` is not defined
+- Key `thermal_goggles` is not defined
+- Key `thermal_goggles_desc` is not defined
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇭🇰 🇲🇴 廣東話(香港/澳門) (64% Complete) - hk_mo.hjson
+## 🇭🇰 🇲🇴 廣東話(香港/澳門) (63% Complete) - hk_mo.hjson
 
 ### Invalid Keys
 
@@ -1114,10 +1132,12 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `hollow_points_desc` is not defined
 - Key `experimental_forcefield` is not defined
 - Key `experimental_forcefield_desc` is not defined
+- Key `thermal_goggles` is not defined
+- Key `thermal_goggles_desc` is not defined
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇭🇺 Magyar (97% Complete) - hu.hjson
+## 🇭🇺 Magyar (96% Complete) - hu.hjson
 
 ### (No Invalid Keys)
 
@@ -1132,6 +1152,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `hollow_points_desc` is not defined
 - Key `experimental_forcefield` is not defined
 - Key `experimental_forcefield_desc` is not defined
+- Key `thermal_goggles` is not defined
+- Key `thermal_goggles_desc` is not defined
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
@@ -1288,6 +1310,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `hollow_points_desc` is not defined
 - Key `experimental_forcefield` is not defined
 - Key `experimental_forcefield_desc` is not defined
+- Key `thermal_goggles` is not defined
+- Key `thermal_goggles_desc` is not defined
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
@@ -1558,6 +1582,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `hollow_points_desc` is not defined
 - Key `experimental_forcefield` is not defined
 - Key `experimental_forcefield_desc` is not defined
+- Key `thermal_goggles` is not defined
+- Key `thermal_goggles_desc` is not defined
 
 ## 🇱🇹 Lietuvių (65% Complete) - lt.hjson
 
@@ -1693,6 +1719,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `hollow_points_desc` is not defined
 - Key `experimental_forcefield` is not defined
 - Key `experimental_forcefield_desc` is not defined
+- Key `thermal_goggles` is not defined
+- Key `thermal_goggles_desc` is not defined
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
@@ -1830,10 +1858,12 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `hollow_points_desc` is not defined
 - Key `experimental_forcefield` is not defined
 - Key `experimental_forcefield_desc` is not defined
+- Key `thermal_goggles` is not defined
+- Key `thermal_goggles_desc` is not defined
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇳🇱 Nederlands (97% Complete) - nl.hjson
+## 🇳🇱 Nederlands (96% Complete) - nl.hjson
 
 ### (No Invalid Keys)
 
@@ -1850,6 +1880,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `hollow_points_desc` is not defined
 - Key `experimental_forcefield` is not defined
 - Key `experimental_forcefield_desc` is not defined
+- Key `thermal_goggles` is not defined
+- Key `thermal_goggles_desc` is not defined
 
 ## 🇵🇱 Polski (68% Complete) - pl.hjson
 
@@ -1974,6 +2006,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `hollow_points_desc` is not defined
 - Key `experimental_forcefield` is not defined
 - Key `experimental_forcefield_desc` is not defined
+- Key `thermal_goggles` is not defined
+- Key `thermal_goggles_desc` is not defined
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
@@ -2085,10 +2119,12 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `hollow_points_desc` is not defined
 - Key `experimental_forcefield` is not defined
 - Key `experimental_forcefield_desc` is not defined
+- Key `thermal_goggles` is not defined
+- Key `thermal_goggles_desc` is not defined
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇷🇴 Română (97% Complete) - ro.hjson
+## 🇷🇴 Română (96% Complete) - ro.hjson
 
 ### Invalid Keys
 
@@ -2107,6 +2143,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `hollow_points_desc` is not defined
 - Key `experimental_forcefield` is not defined
 - Key `experimental_forcefield_desc` is not defined
+- Key `thermal_goggles` is not defined
+- Key `thermal_goggles_desc` is not defined
 
 ## 🇷🇺 Русский (96% Complete) - ru.hjson
 
@@ -2129,8 +2167,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `hollow_points_desc` is not defined
 - Key `experimental_forcefield` is not defined
 - Key `experimental_forcefield_desc` is not defined
+- Key `thermal_goggles` is not defined
+- Key `thermal_goggles_desc` is not defined
 
-## 🇮🇳 தமிழ் (76% Complete) - ta.hjson
+## 🇮🇳 தமிழ் (75% Complete) - ta.hjson
 
 ### Invalid Keys
 
@@ -2225,6 +2265,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `hollow_points_desc` is not defined
 - Key `experimental_forcefield` is not defined
 - Key `experimental_forcefield_desc` is not defined
+- Key `thermal_goggles` is not defined
+- Key `thermal_goggles_desc` is not defined
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
@@ -2310,10 +2352,12 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `hollow_points_desc` is not defined
 - Key `experimental_forcefield` is not defined
 - Key `experimental_forcefield_desc` is not defined
+- Key `thermal_goggles` is not defined
+- Key `thermal_goggles_desc` is not defined
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇹🇼 中文（繁體） (76% Complete) - tw.hjson
+## 🇹🇼 中文（繁體） (75% Complete) - tw.hjson
 
 ### Invalid Keys
 
@@ -2408,10 +2452,12 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `hollow_points_desc` is not defined
 - Key `experimental_forcefield` is not defined
 - Key `experimental_forcefield_desc` is not defined
+- Key `thermal_goggles` is not defined
+- Key `thermal_goggles_desc` is not defined
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇻🇳 Tiếng Việt (98% Complete) - vi.hjson
+## 🇻🇳 Tiếng Việt (97% Complete) - vi.hjson
 
 ### Invalid Keys
 
@@ -2427,6 +2473,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `hollow_points_desc` is not defined
 - Key `experimental_forcefield` is not defined
 - Key `experimental_forcefield_desc` is not defined
+- Key `thermal_goggles` is not defined
+- Key `thermal_goggles_desc` is not defined
 
 ## 🇨🇳 中文（简体） (98% Complete) - zh.hjson
 
@@ -2687,4 +2735,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `hollow_points_desc` is not defined
 - Key `experimental_forcefield` is not defined
 - Key `experimental_forcefield_desc` is not defined
+- Key `thermal_goggles` is not defined
+- Key `thermal_goggles_desc` is not defined
 

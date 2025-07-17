@@ -421,5 +421,7 @@
 "hollow_points_desc": "Gun-type weapons deal 10% more damage. Does not apply to non-slug shotguns."
 "experimental_forcefield": "Experimental Forcefield"
 "experimental_forcefield_desc": "Gain a shield that blocks damage. The shield regenerates and respawns every 20 seconds."
+"thermal_goggles": "Thermal Goggles"
+"thermal_goggles_desc": "Reveals nearby players' healthbars."
 "partners": "Partners"
 "username_placeholder": "Enter a nickname"
