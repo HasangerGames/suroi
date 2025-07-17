@@ -471,6 +471,7 @@ export class Game implements GameData {
                     ? this.aliveCount <= (this.teamMode as number) && new Set([...this.livingPlayers].map(p => p.teamID)).size <= 1
                     : this.aliveCount <= 1
             )
+            && this.now - this.startedTime > 5000
         ) {
             for (const player of this.livingPlayers) {
                 const { movement } = player;
