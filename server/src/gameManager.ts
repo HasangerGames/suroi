@@ -143,7 +143,10 @@ if (!Cluster.isPrimary) {
 
     let game = new Game(id, teamMode, map);
 
-    process.on("uncaughtException", e => game.error("An unhandled error occurred. Details:", e));
+    process.on("uncaughtException", e => {
+        game.error("An unhandled error occurred. Details:", e);
+        game.kill();
+    });
 
     process.on("message", (message: WorkerMessage) => {
         switch (message.type) {
