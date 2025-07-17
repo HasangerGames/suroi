@@ -179,13 +179,13 @@ export class Game implements GameData {
     }
 
     private _started = false;
+    private _stopped = false;
 
     // #region GameData interface members
 
     startedTime = Number.MAX_VALUE; // Default of Number.MAX_VALUE makes it so games that haven't started yet are joined first
     allowJoin = false;
     over = false;
-    stopped = false;
 
     get aliveCount(): number {
         return this.livingPlayers.size;
@@ -235,7 +235,6 @@ export class Game implements GameData {
             aliveCount: 0,
             allowJoin: false,
             over: false,
-            stopped: false,
             startedTime: Number.MAX_VALUE // Makes it so games that haven't started yet are joined first
         });
 
@@ -491,7 +490,7 @@ export class Game implements GameData {
                 for (const player of this.connectedPlayers) {
                     player.disconnect("Game ended");
                 }
-                this.setGameData({ stopped: true });
+                this._stopped = true;
                 this.log("Ended");
             }, 1000);
         }
@@ -511,7 +510,7 @@ export class Game implements GameData {
 
         this.pluginManager.emit("game_tick", this);
 
-        if (!this.stopped) {
+        if (!this._stopped) {
             setTimeout(this.tick.bind(this), this.idealDt - (Date.now() - now));
         }
     }
@@ -530,14 +529,14 @@ export class Game implements GameData {
 
     kill(): void {
         for (const player of this.connectedPlayers) {
-            player.disconnect("Server killed");
+            player.disconnect("Game killed");
         }
 
         this.setGameData({
             allowJoin: false,
-            over: true,
-            stopped: true
+            over: true
         });
+        this._stopped = true;
 
         this.log("Killed");
     }

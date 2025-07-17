@@ -30,7 +30,6 @@ export interface GameData {
     aliveCount: number
     allowJoin: boolean
     over: boolean
-    stopped: boolean
     startedTime: number
 }
 
@@ -43,14 +42,12 @@ export class GameContainer {
         aliveCount: 0,
         allowJoin: false,
         over: false,
-        stopped: false,
         startedTime: -1
     };
 
     get aliveCount(): number { return this._data.aliveCount; }
     get allowJoin(): boolean { return this._data.allowJoin; }
     get over(): boolean { return this._data.over; }
-    get stopped(): boolean { return this._data.stopped; }
     get startedTime(): number { return this._data.startedTime; }
 
     constructor(
@@ -104,7 +101,7 @@ export async function newGame(id: number | undefined, teamMode: TeamMode, map: s
             const game = games[id];
             if (!game) {
                 creating = games[id] = new GameContainer(id, teamMode, map, resolve);
-            } else if (game.stopped) {
+            } else if (game.over) {
                 game.promiseCallbacks.push(resolve);
                 game.sendMessage({ type: WorkerMessages.NewGame });
                 creating = game;
@@ -119,11 +116,11 @@ export async function newGame(id: number | undefined, teamMode: TeamMode, map: s
                 serverLog(
                     "Game", i,
                     "exists:", !!game,
-                    "stopped:", game?.stopped,
-                    "runtime:", `${Math.round((Date.now() - (game?.startedTime ?? 0)) / 1000)}s`,
-                    "aliveCount:", game?.aliveCount
+                    "over:", game?.over ?? "-",
+                    "runtime:", game ? `${Math.round((Date.now() - (game.startedTime ?? 0)) / 1000)}s` : "-",
+                    "aliveCount:", game?.aliveCount ?? "-"
                 );
-                if (!game || game.stopped) {
+                if (!game || game.over) {
                     void newGame(i, teamMode, map).then(resolve);
                     return;
                 }
@@ -160,6 +157,7 @@ if (!Cluster.isPrimary) {
                 break;
             }
             case WorkerMessages.NewGame: {
+                game.kill();
                 game = new Game(id, teamMode, map);
                 game.setGameData({ allowJoin: true });
                 break;
