@@ -151,7 +151,6 @@ export const Backpacks = new ObjectDefinitions<BackpackDefinition>([
             "c4": 12,
             "confetti_grenade": 20
         },
-        defaultTint: 0x3f3f3f,
         perk: PerkIds.HollowPoints
     }
 ]);

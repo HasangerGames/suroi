@@ -86,7 +86,8 @@ export const enum PerkIds {
 
     // H.U.N.T.E.D.
     HollowPoints = "hollow_points",
-    ExperimentalForcefield = "experimental_forcefield"
+    ExperimentalForcefield = "experimental_forcefield",
+    ThermalGoggles = "thermal_goggles"
 }
 
 const perks = [
@@ -478,6 +479,13 @@ const perks = [
 
         shieldDestroyedSound: "glass_destroyed",
         shieldHitSound: "glass" // "_hit_1/2" is added by the client
+    },
+    { // TODO
+        idString: PerkIds.ThermalGoggles,
+        name: "Thermal Goggles",
+        defType: DefinitionType.Perk,
+        category: PerkCategories.Hunted,
+        noDrop: true
     }
 ] as const satisfies ReadonlyArray<BasePerkDefinition & Record<string, unknown>>;
 
