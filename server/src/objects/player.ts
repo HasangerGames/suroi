@@ -89,6 +89,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     teamID?: number;
     colorIndex = 0; // Assigned in the team.ts file.
 
+    hadShield = false;
+
     // Rate Limiting: Team Pings & Emotes.
     emoteCount = 0;
     lastRateLimitUpdate = 0;
@@ -226,7 +228,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         }
     }
 
-    private _shield = 100;
+    private _shield = 0;
     get shield(): number { return this._shield; }
     set shield(shield: number) {
         const clamped = Numeric.clamp(shield, 0, this._maxShield);
@@ -512,6 +514,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     stuckProjectiles: Map<Projectile, number> | undefined;
 
     immunityTimeout: Timeout | undefined;
+
+    shieldTimeout: Timeout | undefined;
 
     constructor(game: Game, socket: WebSocket<PlayerSocketData> | undefined, position: Vector, layer?: Layer, team?: Team) {
         super(game, position);
@@ -1312,6 +1316,12 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         }
         this.health += dt / 1000 * toRegen;
 
+        // Shield regen
+        if (this.hasBubble) {
+            const _toRegen = this._modifiers.shieldRegen;
+            this.shield += dt / 1000 * _toRegen;
+        }
+
         // Shoot gun/use item
         if (this.startedAttacking && this.game.pluginManager.emit("player_start_attacking", this) === undefined) {
             this.startedAttacking = false;
@@ -1785,6 +1795,17 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 this.bulletTargetHitCount = 0;
                 break;
             }
+            case PerkIds.ExperimentalForcefield: {
+                const hadShield = this.shieldTimeout !== undefined;
+                this.shieldTimeout?.kill();
+
+                if (!this.hadShield && !hadShield) {
+                    this.hadShield = false;
+                    this.shield = 100;
+                    this.setDirty();
+                }
+                break;
+            }
         }
         // ! evil ends here
 
@@ -1863,6 +1884,13 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 this.addPerk(immunity);
                 this.immunityTimeout?.kill();
                 this.immunityTimeout = this.game.addTimeout(() => this.removePerk(immunity), immunity.duration);
+                this.setDirty();
+                break;
+            }
+            case PerkIds.ExperimentalForcefield: {
+                this.hadShield = true;
+                this.shieldTimeout?.kill();
+                this.shield = 0;
                 this.setDirty();
                 break;
             }
@@ -2316,6 +2344,17 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                     newModifiers.baseSpeed *= perk.speedMod;
                     newModifiers.maxHealth *= perk.healthMod;
                     newModifiers.adrenDrain *= perk.adrenDrainMod;
+                    break;
+                }
+                case PerkIds.ExperimentalForcefield: {
+                    newModifiers.shieldRegen += perk.shieldRegenRate;
+                    if (!this.hasBubble) {
+                        this.shieldTimeout?.kill();
+                        this.shieldTimeout = this.game.addTimeout(() => {
+                            this.shield = 100;
+                            this.setDirty();
+                        }, perk.shieldRespawnTime);
+                    }
                     break;
                 }
             }

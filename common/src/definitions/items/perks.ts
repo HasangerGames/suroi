@@ -31,7 +31,8 @@ export type PerkDefinition = LoosenNumerics<typeof perks[number]> & BasePerkDefi
 
 export const enum PerkCategories {
     Normal,
-    Halloween
+    Halloween,
+    Hunted
 }
 
 export const enum PerkQualities {
@@ -84,7 +85,8 @@ export const enum PerkIds {
     Immunity = "immunity",
 
     // H.U.N.T.E.D.
-    HollowPoints = "hollow_points"
+    HollowPoints = "hollow_points",
+    ExperimentalForcefield = "experimental_forcefield"
 }
 
 const perks = [
@@ -460,9 +462,21 @@ const perks = [
         idString: PerkIds.HollowPoints,
         name: "Hollow Points",
         defType: DefinitionType.Perk,
-        category: PerkCategories.Normal,
+        category: PerkCategories.Hunted,
         damageMod: 1.1,
         soundMod: 75
+    },
+    {
+        idString: PerkIds.ExperimentalForcefield,
+        name: "Experimental Forcefield",
+        defType: DefinitionType.Perk,
+        category: PerkCategories.Hunted,
+        noDrop: true,
+        shieldRegenRate: 1,
+        shieldRespawnTime: 20e3, // seconds
+
+        shieldDestroyedSound: "glass_destroyed",
+        shieldHitSound: "glass" // "_hit_1/2" is added by the client
     }
 ] as const satisfies ReadonlyArray<BasePerkDefinition & Record<string, unknown>>;
 

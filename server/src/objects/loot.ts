@@ -436,6 +436,10 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
                         player.inventory.vest = definition;
                 }
 
+                if (definition.perk !== undefined) {
+                    player.addPerk(definition.perk);
+                }
+
                 player.setDirty();
                 break;
             }

@@ -24,7 +24,7 @@
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
      inkscape:zoom="2.7545174"
-     inkscape:cx="63.532"
+     inkscape:cx="63.71352"
      inkscape:cy="130.87592"
      inkscape:window-width="1920"
      inkscape:window-height="991"
@@ -43,7 +43,7 @@
        id="g1-11-1-0"
        transform="translate(63.0479,-133.5023)">
       <rect
-         style="fill:#725940;fill-opacity:1;fill-rule:evenodd;stroke:#3e3220;stroke-width:1.96189;stroke-linejoin:round;stroke-miterlimit:30;stroke-dasharray:none;stroke-opacity:1;paint-order:normal"
+         style="fill:#725940;fill-opacity:1;fill-rule:evenodd;stroke:#241f16;stroke-width:1.96189;stroke-linejoin:round;stroke-miterlimit:30;stroke-dasharray:none;stroke-opacity:1;paint-order:normal"
          id="rect43-38-3-7"
          width="7.7351084"
          height="46.986"
@@ -95,11 +95,11 @@
          r="1.622"
          id="circle7-9-6-9" />
       <path
-         style="fill:none;fill-opacity:1;stroke:#3e3220;stroke-width:1.962;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         style="fill:none;fill-opacity:1;stroke:#241f16;stroke-width:1.962;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          d="m 7.6152509,222.02922 v -7.927 H 54.601248 v 46.986 H 7.6152509 v -7.927"
          id="path8-3-6-1-7" />
       <path
-         style="fill:none;stroke:#3e3220;stroke-width:1.96165;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         style="fill:none;stroke:#241f16;stroke-width:1.96165;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          d="m 46.674248,222.02922 h 7.846 m -7.846,31.132 h 7.846 m -46.8239971,0 h 7.8460011 m -7.8460011,-31.132 h 7.8460011"
          id="path9-9-9-8-3" />
       <path
@@ -121,7 +121,7 @@
          d="m 46.674248,240.65581 -21.145933,3.89321 3.392651,0.94549 -3.281417,1.11235 3.726356,0.72302 -2.892097,1.50167 1.83537,0.0556 -1.223581,1.66852 19.588651,-2.61401 z"
          id="path45-9-3-0" />
       <path
-         style="fill:none;fill-opacity:1;stroke:#3e3220;stroke-width:1.96165;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         style="fill:none;fill-opacity:1;stroke:#241f16;stroke-width:1.96165;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          d="m 13.339921,222.02922 h 33.334327 v 31.132 H 15.043089 Z"
          id="path7-8-8-4-7-1" />
       <path

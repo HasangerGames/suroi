@@ -757,7 +757,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 bubbleSprite.setVisible(this.hasBubble);
                 if (!isNew) {
                     if (!hasBubble) {
-                        this.playSound("glass_destroyed");
+                        this.playSound(PerkData[PerkIds.ExperimentalForcefield].shieldDestroyedSound);
                         ParticleManager.spawnParticles(10, () => ({
                             frames: "window_particle",
                             position: this.hitbox.randomPoint(),
@@ -1269,6 +1269,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         if (def && def.level > 0) {
             container.children(".item-name").text(`Lvl. ${def.level}`);
             container.children(".item-image").attr("src", `./img/game/shared/loot/${def.idString}.svg`);
+            container.children(".item-name").attr("style", `color: ${def.level > 3 ? "#ff9900" : "#ffffff"};`);
 
             let itemTooltip = getTranslatedString(def.idString as TranslationKeys);
             if (def.defType === DefinitionType.Armor) {
@@ -1936,7 +1937,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 sound ?? `${
                     this.activeDisguise
                         ? MaterialSounds[this.activeDisguise.material]?.hit ?? this.activeDisguise.material
-                        : "player"
+                        : this.hasBubble ? PerkData[PerkIds.ExperimentalForcefield].shieldHitSound : "player"
                 }_hit_${randomBoolean() ? "1" : "2"}`,
                 {
                     position,

@@ -1,9 +1,11 @@
-import { DefinitionType, ObjectDefinitions, type ItemDefinition } from "../../utils/objectDefinitions";
+import { DefinitionType, ObjectDefinitions, ReferenceTo, type ItemDefinition } from "../../utils/objectDefinitions";
+import { PerkDefinition, PerkIds } from "./perks";
 
 export type ArmorDefinition = ItemDefinition & {
     readonly defType: DefinitionType.Armor
     readonly level: number
     readonly damageReduction: number
+    readonly perk?: ReferenceTo<PerkDefinition>
 } & (
     | {
         readonly armorType: ArmorType.Helmet
@@ -77,6 +79,16 @@ export const Armors = new ObjectDefinitions<ArmorDefinition>([
         level: 3,
         damageReduction: 0.45,
         color: 0x0d0d0d
+    },
+    {
+        idString: "power_vest",
+        name: "Power Vest",
+        defType: DefinitionType.Armor,
+        armorType: ArmorType.Vest,
+        level: 5,
+        damageReduction: 0.5,
+        color: 0x303030,
+        perk: PerkIds.ExperimentalForcefield
     },
     {
         idString: "developr_vest",

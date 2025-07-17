@@ -967,7 +967,8 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
         ],
         pan_stove: [{ item: "pan", weight: 1 }],
         small_pan_stove: [{ item: "pan", weight: 1 }],
-        ducktub: [{ table: "gold_airdrop_guns", weight: 1 }]
+        ducktub: [{ table: "gold_airdrop_guns", weight: 1 }],
+        special_table_vest: [{ item: "power_vest", weight: 1 }]
     },
 
     halloween: {

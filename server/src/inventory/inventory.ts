@@ -631,6 +631,11 @@ export class Inventory {
                         break;
                     }
                 }
+
+                if (definition.perk !== undefined) {
+                    this.owner.removePerk(definition.perk);
+                }
+
                 this._dropItem(definition);
                 break;
             }

@@ -13,6 +13,7 @@ export interface PlayerModifiers {
     // Additive
     minAdrenaline: number
     hpRegen: number
+    shieldRegen: number
 }
 
 export interface PunishmentMessage {

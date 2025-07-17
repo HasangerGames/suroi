@@ -44,7 +44,8 @@ export const GameConstants = {
             adrenDrain: 1,
 
             minAdrenaline: 0,
-            hpRegen: 0
+            hpRegen: 0,
+            shieldRegen: 0
         })
     },
     gas: {
