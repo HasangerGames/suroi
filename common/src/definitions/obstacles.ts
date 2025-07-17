@@ -6286,8 +6286,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         },
         zIndex: ZIndexes.ObstaclesLayer3,
         noCollisions: true,
-        noResidue: true
-        // hasLoot: true - TODO!!
+        noResidue: true,
+        hasLoot: true
     },
     {
         idString: "small_lamp_thingy",

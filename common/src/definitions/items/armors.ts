@@ -56,7 +56,7 @@ export const Armors = new ObjectDefinitions<ArmorDefinition>([
         name: "Power Helmet",
         defType: DefinitionType.Armor,
         armorType: ArmorType.Helmet,
-        level: 5,
+        level: 4,
         damageReduction: 0.25,
         positionOverride: 6,
         positionOverrideDowned: 7
@@ -98,7 +98,7 @@ export const Armors = new ObjectDefinitions<ArmorDefinition>([
         name: "Power Vest",
         defType: DefinitionType.Armor,
         armorType: ArmorType.Vest,
-        level: 5,
+        level: 4,
         damageReduction: 0.5,
         color: 0x303030,
         perk: PerkIds.ExperimentalForcefield

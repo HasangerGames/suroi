@@ -447,6 +447,10 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
                 if (player.inventory.backpack.level > 0) createNewItem({ type: player.inventory.backpack, count: 1 });
                 player.inventory.backpack = definition;
 
+                if (definition.perk !== undefined) {
+                    player.addPerk(definition.perk);
+                }
+
                 player.setDirty();
                 break;
             }
