@@ -2440,12 +2440,14 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `emote_chicken_dinner` is not a valid key
 - Key `emote_trophy` is not a valid key
 - Key `emote_fire` is not a valid key
+- Key `emote_heart` is not a valid key
 - Key `emote_penguin` is not a valid key
 - Key `emote_squid` is not a valid key
 - Key `emote_eagle` is not a valid key
 - Key `emote_whale` is not a valid key
 - Key `emote_carrot` is not a valid key
 - Key `emote_egg` is not a valid key
+- Key `emote_wilted_rose` is not a valid key
 - Key `emote_plumpkin` is not a valid key
 - Key `emote_leek` is not a valid key
 - Key `emote_tomato` is not a valid key
