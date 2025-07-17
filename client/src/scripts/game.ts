@@ -604,6 +604,7 @@ export const Game = new (class Game {
         emotes.push(...emotes.splice(0, (1 % len + len) % len)); // rotates the array so emotes appear in the correct order
         EmoteWheelManager.setupSlots();
         UIManager.updateRequestableItems();
+        MapManager.resize();
 
         const ui = UIManager.ui;
 
