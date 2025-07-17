@@ -10833,7 +10833,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         name: "sawmill",
         defType: DefinitionType.Building,
         spawnMode: MapObjectSpawnMode.River,
-        bridgeSpawnRanges: [[0.4, 0.6]],
+        bridgeSpawnRanges: [[0, 0.3], [0.7, 1]],
         asymmetricalBridgeHitbox: true,
         bridgeHitbox: new GroupHitbox(
             RectangleHitbox.fromRect(292.05, 217.69, Vec(-0.25, 125.76)),
