@@ -2,12 +2,14 @@ import { DefinitionType, ObjectDefinitions, type ItemDefinition, type ReferenceT
 import { type HealingItemDefinition } from "./healingItems";
 import { type AmmoDefinition } from "./ammos";
 import { type ThrowableDefinition } from "./throwables";
+import { PerkDefinition, PerkIds } from "./perks";
 
 export interface BackpackDefinition extends ItemDefinition {
     readonly defType: DefinitionType.Backpack
     readonly level: number
     readonly defaultTint?: number
     readonly maxCapacity: Record<ReferenceTo<HealingItemDefinition | AmmoDefinition | ThrowableDefinition>, number>
+    readonly perk?: ReferenceTo<PerkDefinition>
 }
 
 export const Backpacks = new ObjectDefinitions<BackpackDefinition>([
@@ -122,5 +124,34 @@ export const Backpacks = new ObjectDefinitions<BackpackDefinition>([
             "confetti_grenade": 16
         },
         defaultTint: 0x3f3f3f
+    },
+    {
+        idString: "power_pack",
+        name: "Power Pack",
+        defType: DefinitionType.Backpack,
+        level: 4,
+        maxCapacity: {
+            "gauze": 35,
+            "medikit": 5,
+            "vaccine_syringe": 5,
+            "cola": 18,
+            "tablets": 5,
+            "12g": 100,
+            "556mm": 350,
+            "762mm": 350,
+            "9mm": 470,
+            "50cal": 150,
+            "338lap": 60,
+            "545mm": 350,
+            "power_cell": Infinity,
+            "flare": 5,
+            "firework_rocket": 50,
+            "frag_grenade": 16,
+            "smoke_grenade": 16,
+            "c4": 12,
+            "confetti_grenade": 20
+        },
+        defaultTint: 0x3f3f3f,
+        perk: PerkIds.HollowPoints
     }
 ]);

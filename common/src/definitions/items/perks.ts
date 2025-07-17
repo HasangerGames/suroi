@@ -464,7 +464,8 @@ const perks = [
         defType: DefinitionType.Perk,
         category: PerkCategories.Hunted,
         damageMod: 1.1,
-        soundMod: 75
+        soundMod: 75,
+        noDrop: true
     },
     {
         idString: PerkIds.ExperimentalForcefield,
