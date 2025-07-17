@@ -54,6 +54,7 @@ import { type Loot } from "./loot";
 import { type Obstacle } from "./obstacle";
 import { Projectile } from "./projectile";
 import { type SyncedParticle } from "./syncedParticle";
+import { serverWarn } from "../utils/serverHelpers";
 
 export interface PlayerSocketData {
     player?: Player
@@ -694,11 +695,15 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             ? this.activeItemIndex
             : this.inventory.weapons.findIndex(i => i === item);
 
+        // this happens if the item to be swapped isn't currently in the inventory
+        // in that case, we just take the first slot matching that item's type
         if (slot === -1) {
-            // this happens if the item to be swapped isn't currently in the inventory
-            // in that case, we just take the first slot matching that item's type
-            slot = GameConstants.player.inventorySlotTypings.filter(slot => slot === item.definition.defType)?.[0] ?? 0;
-            // and if we somehow don't have any matching slots, then someone's probably messing with us… fallback to slot 0 lol
+            slot = GameConstants.player.inventorySlotTypings.findIndex(slot => slot === item.definition.defType);
+        }
+
+        if (slot === -1) {
+            serverWarn(`Attempted to swap an item of invalid type ${DefinitionType[item.definition.defType]}`);
+            return;
         }
 
         const allWeapons = this.game.allLoots;
