@@ -304,7 +304,7 @@ export class GameMap {
             angle = (lockAngle ? startAngle : angle) + randomGenerator.get(
                 -randomGenerator.get(minDeviation, maxDeviation),
                 randomGenerator.get(minDeviation, maxDeviation)
-            );
+            ) * (lockAngle ? 0.5 : 1);
 
             const pos = Vec.add(lastPoint, Vec.fromPolar(angle, randomGenerator.getInt(30, 80)));
 
