@@ -86,7 +86,6 @@ export const GameConstants = {
         }
     },
     explosionMaxDistSquared: 128 ** 2,
-    riverPadding: 64,
     trailPadding: 384,
     explosionRayDistance: 2
 };

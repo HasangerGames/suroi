@@ -221,7 +221,7 @@ export class GameMap {
         const halfHeight = this.height / 2;
         const center = Vec(halfWidth, halfHeight);
 
-        const padding = isTrail ? GameConstants.trailPadding : GameConstants.riverPadding;
+        const padding = isTrail ? GameConstants.trailPadding : this.oceanSize / 2;
         const width = this.width - padding;
         const height = this.height - padding;
         const bounds = new RectangleHitbox(
@@ -296,17 +296,15 @@ export class GameMap {
             const lastPoint = riverPoints[i - 1];
             const center = Vec(this.width / 2, this.height / 2);
 
-            if (!lockAngle) {
-                const distFactor = Geometry.distance(lastPoint, center) / (this.width / 2);
+            const distFactor = Geometry.distance(lastPoint, center) / (this.width / 2);
 
-                const maxDeviation = Numeric.lerp(0.8, 0.1, distFactor);
-                const minDeviation = Numeric.lerp(0.3, 0.1, distFactor);
+            const maxDeviation = Numeric.lerp(0.8, 0.1, distFactor);
+            const minDeviation = Numeric.lerp(0.3, 0.1, distFactor);
 
-                angle = angle + randomGenerator.get(
-                    -randomGenerator.get(minDeviation, maxDeviation),
-                    randomGenerator.get(minDeviation, maxDeviation)
-                );
-            }
+            angle = (lockAngle ? startAngle : angle) + randomGenerator.get(
+                -randomGenerator.get(minDeviation, maxDeviation),
+                randomGenerator.get(minDeviation, maxDeviation)
+            );
 
             const pos = Vec.add(lastPoint, Vec.fromPolar(angle, randomGenerator.getInt(30, 80)));
 
