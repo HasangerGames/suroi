@@ -1625,8 +1625,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
             tracer: {
                 width: 1.1,
                 length: 1.4
-            },
-            lastShotFX: true
+            }
         }
     },
     {

@@ -154,6 +154,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         muzzleFlashFade?: Tween<SuroiSprite>
         muzzleFlashRecoil?: Tween<SuroiSprite>
         waterOverlay?: Tween<SuroiSprite>
+        sizeMod?: Tween<ObservablePoint>
     } = {};
 
     private _emoteHideTimeout?: Timeout;
@@ -693,9 +694,23 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 ?.setFrame(fistFrame)
                 .setTint(fistTint);
 
-            if (sizeMod !== undefined) {
-                this.sizeMod = this.container.scale = sizeMod;
-                this._hitbox = new CircleHitbox(GameConstants.player.radius * sizeMod, this._hitbox.position);
+            if (sizeMod !== undefined && this.sizeMod !== sizeMod) {
+                // reset the size modifier before tweening
+                this.sizeMod = GameConstants.player.defaultModifiers().size;
+                this._hitbox = new CircleHitbox(GameConstants.player.radius, this._hitbox.position);
+
+                this.anims.sizeMod?.kill();
+                this.anims.sizeMod = Game.addTween({
+                    target: this.container.scale,
+                    to: { x: sizeMod, y: sizeMod },
+                    duration: 300,
+                    ease: EaseFunctions.backOut,
+                    onComplete: () => {
+                        this.anims.sizeMod = undefined;
+                        this.sizeMod = this.container.scale = sizeMod;
+                        this._hitbox = new CircleHitbox(GameConstants.player.radius * sizeMod, this._hitbox.position);
+                    }
+                });
             }
 
             const { hideEquipment, helmetLevel, vestLevel, backpackLevel } = this;
