@@ -477,7 +477,8 @@ const perks = [
         shieldRegenRate: 1,
         shieldRespawnTime: 20e3, // seconds
 
-        shieldDestroyedSound: "glass_destroyed",
+        shieldObtainSound: "shield_obtained",
+        shieldDestroySound: "shield_destroyed",
         shieldHitSound: "glass" // "_hit_1/2" is added by the client
     },
     { // TODO

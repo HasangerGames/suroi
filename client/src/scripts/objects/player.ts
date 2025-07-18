@@ -155,6 +155,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         muzzleFlashRecoil?: Tween<SuroiSprite>
         waterOverlay?: Tween<SuroiSprite>
         sizeMod?: Tween<ObservablePoint>
+        shieldScale?: Tween<ObservablePoint>
     } = {};
 
     private _emoteHideTimeout?: Timeout;
@@ -772,7 +773,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 bubbleSprite.setVisible(this.hasBubble);
                 if (!isNew) {
                     if (!hasBubble) {
-                        this.playSound(PerkData[PerkIds.ExperimentalForcefield].shieldDestroyedSound);
+                        this.playSound(PerkData[PerkIds.ExperimentalForcefield].shieldDestroySound);
                         ParticleManager.spawnParticles(10, () => ({
                             frames: "window_particle",
                             position: this.hitbox.randomPoint(),
@@ -795,6 +796,19 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                             },
                             speed: Vec.fromPolar(randomRotation(), randomFloat(4, 9))
                         }));
+                    } else {
+                        this.anims.shieldScale?.kill();
+                        this.playSound(PerkData[PerkIds.ExperimentalForcefield].shieldObtainSound);
+                        this.images.bubbleSprite.setScale(0.25);
+                        this.anims.sizeMod = Game.addTween({
+                            target: this.images.bubbleSprite.scale,
+                            to: { x: 1, y: 1 },
+                            duration: 800,
+                            ease: EaseFunctions.backOut,
+                            onComplete: () => {
+                                this.anims.shieldScale = undefined;
+                            }
+                        });
                     }
                 }
             }

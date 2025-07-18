@@ -64,7 +64,7 @@ Guns:
   PSM & Dual PSM (Reload, Fire sounds) - "freesound_community" from Pixabay: https://pixabay.com/users/freesound_community-46691455/
 
   AKs-74u (Reload, Switch): modified by Teardrop, main sound is Gamebanana
-  AN-94 (Reload, Switch) - modified by Teardrop, main sound is Gamebanana
+  AN-94 (Fire, Reload, Switch) - modified by Teardrop, main sound is Gamebanana
   RPK-74 (Reload, Switch) - modified by Teardrop, main sound is Gamebanana
   RPK-16 (Fire, Reload, Switch) - modified by Teardrop, main sound is from Gamebanana
 
@@ -158,3 +158,7 @@ Ambience:
 
 Default switch sound - "Jump Landing" from Pixabay: https://pixabay.com/sound-effects/jump-landing-30946/
 Generic pickup sound - Katloo
+
+Shield (Bubble) Sounds
+  - Destroyed Sound: alien_tripod_debris_glass_falling by Alien Tripod, BluezoneCorp - https://sonniss.com/product/alien-tripod
+  - Equip/Obtain Sound: bluezone_BC0303_futuristic_user_interface_transition_006 by Futuristic User Interface, BluezoneCorp - https://sonniss.com/product/futuristic-user-interface
