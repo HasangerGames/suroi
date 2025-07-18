@@ -11508,7 +11508,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         floorImages: [
             {
                 key: "sawmill_center_warehouse_floor_2",
-                position: Vec(44.76, 0.84)
+                position: Vec(44.76, 0.92)
             },
             {
                 key: "sawmill_center_warehouse_floor_1",
