@@ -710,7 +710,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 ?? this.equipment.backpack?.defaultTint
                 ?? 0xffffff;
 
-            this.images.backpack.setTint(backpackTint);
+            this.images.backpack.setTint(!this.equipment.backpack.noTint ? backpackTint : 0xffffff);
 
             if (
                 hideEquipment !== this.hideEquipment

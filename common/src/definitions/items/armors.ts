@@ -58,8 +58,8 @@ export const Armors = new ObjectDefinitions<ArmorDefinition>([
         armorType: ArmorType.Helmet,
         level: 4,
         damageReduction: 0.25,
-        positionOverride: 6,
-        positionOverrideDowned: 7,
+        positionOverride: 0,
+        positionOverrideDowned: 0,
         perk: PerkIds.ThermalGoggles
     },
 

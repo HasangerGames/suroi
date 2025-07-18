@@ -15,7 +15,7 @@ Loot:
   Level 3 Helmet (Loot Image): Slapdap, modified by Skullboi249 and hasanger
   Level 3 Helmet (World Image): Slapdap, modified by Leia, Skullboi249 and hasanger
 
-  Power Armor/Level 5 Armor (Helmet Images, Vest Loot Image): hugh jass
+  Power Armor/Level 4 Armor (Helmet Images, Backpack Images, Vest Loot Image): hugh jass
 
   1x, 2x, 4x, 8x, 16x Scopes: Winter
 

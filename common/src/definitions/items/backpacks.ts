@@ -10,6 +10,7 @@ export interface BackpackDefinition extends ItemDefinition {
     readonly defaultTint?: number
     readonly maxCapacity: Record<ReferenceTo<HealingItemDefinition | AmmoDefinition | ThrowableDefinition>, number>
     readonly perk?: ReferenceTo<PerkDefinition>
+    readonly noTint?: boolean
 }
 
 export const Backpacks = new ObjectDefinitions<BackpackDefinition>([
@@ -151,6 +152,7 @@ export const Backpacks = new ObjectDefinitions<BackpackDefinition>([
             "c4": 12,
             "confetti_grenade": 20
         },
+        noTint: true,
         perk: PerkIds.HollowPoints
     }
 ]);
