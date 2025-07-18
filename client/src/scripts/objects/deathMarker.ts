@@ -10,6 +10,7 @@ import { DebugRenderer } from "../utils/debugRenderer";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { type Tween } from "../utils/tween";
 import { GameObject } from "./gameObject";
+import { getBadgeIdString } from "@common/definitions/emotes";
 
 export class DeathMarker extends GameObject.derive(ObjectCategory.DeathMarker) {
     playerName!: string;
@@ -65,7 +66,7 @@ export class DeathMarker extends GameObject.derive(ObjectCategory.DeathMarker) {
             this.playerNameText.text = this.playerName;
 
             if (player.badge) {
-                const badgeSprite = new SuroiSprite(player.badge.idString);
+                const badgeSprite = new SuroiSprite(getBadgeIdString(player.badge));
 
                 const oldWidth = badgeSprite.width;
                 badgeSprite.width = this.playerNameText.height / 1.25;

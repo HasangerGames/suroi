@@ -1,6 +1,6 @@
 import { GameConstants, InputActions, ObjectCategory, SpectateActions, TeamMode } from "@common/constants";
 import { Badges, type BadgeDefinition } from "@common/definitions/badges";
-import { EmoteCategory, Emotes, type EmoteDefinition } from "@common/definitions/emotes";
+import { EmoteCategory, Emotes, getBadgeIdString, isEmoteBadge, type EmoteDefinition } from "@common/definitions/emotes";
 import { Ammos, type AmmoDefinition } from "@common/definitions/items/ammos";
 import { type ArmorDefinition } from "@common/definitions/items/armors";
 import { HealType, HealingItems, type HealingItemDefinition } from "@common/definitions/items/healingItems";
@@ -607,7 +607,7 @@ export async function setUpUI(): Promise<void> {
                                     ${renderSkin(skin)}
                                     <div class="create-team-player-name-container">
                                         <span class="create-team-player-name"${nameColor ? ` style="color: ${new Color(nameColor).toHex()}"` : ""}>${name}</span>
-                                        ${badge ? `<img class="create-team-player-badge" draggable="false" src="./img/game/shared/badges/${badge}.svg" />` : ""}
+                                        ${badge ? `<img class="create-team-player-badge" draggable="false" src="./img/game/shared/${isEmoteBadge(badge) ? "emotes" : "badges"}/${getBadgeIdString(badge)}.svg" />` : ""}
                                     </div>
                                 </div>
                                 `
@@ -1394,7 +1394,7 @@ export async function setUpUI(): Promise<void> {
                 const badgeItem = badgeUiCache[idString] = $<HTMLDivElement>(
                     `<div id="badge-${idString}" class="badges-list-item-container${idString === activeBadge ? " selected" : ""}">\
                         <div class="badges-list-item">\
-                            <div style="background-image: url('./img/game/shared/badges/${idString}.svg')"></div>\
+                            <div style="background-image: url('./img/game/shared/${isEmoteBadge(idString) ? "emotes" : "badges"}/${getBadgeIdString(idString)}.svg')"></div>\
                         </div>\
                         <span class="badge-name">${getTranslatedString(idString as TranslationKeys)}</span>\
                     </div>`

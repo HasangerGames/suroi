@@ -1,7 +1,7 @@
 import { GameConstants, ObjectCategory } from "@common/constants";
 import { DEFAULT_INVENTORY } from "@common/defaultInventory";
 import { type BadgeDefinition } from "@common/definitions/badges";
-import { type EmoteDefinition } from "@common/definitions/emotes";
+import { getBadgeIdString, isEmoteBadge, type EmoteDefinition } from "@common/definitions/emotes";
 import { Ammos } from "@common/definitions/items/ammos";
 import { HealingItems } from "@common/definitions/items/healingItems";
 import { PerkCategories, PerkIds, type PerkDefinition } from "@common/definitions/items/perks";
@@ -518,7 +518,7 @@ class UIManagerClass {
                 : "";
 
             const badgeHTML = badge
-                ? html`<img class="badge-icon" src="./img/game/shared/badges/${badge.idString}.svg" alt="${badge.name} badge">`
+                ? html`<img class="badge-icon" src="./img/game/shared/${isEmoteBadge(badge) ? "emotes" : "badges"}/${getBadgeIdString(badge)}.svg" alt="${badge.name} badge">`
                 : "";
 
             const card = html`
@@ -640,7 +640,7 @@ class UIManagerClass {
             if (spectating) {
                 const playerName = this.getPlayerData(id.id).name;
                 const badge = this.getPlayerData(id.id).badge;
-                const badgeText = badge ? html`<img class="badge-icon" src="./img/game/shared/badges/${badge.idString}.svg" alt="${badge.name} badge">` : "";
+                const badgeText = badge ? html`<img class="badge-icon" src="./img/game/shared/${isEmoteBadge(badge) ? "emotes" : "badges"}/${getBadgeIdString(badge)}.svg" alt="${badge.name} badge">` : "";
 
                 this.ui.gameOverOverlay.fadeOut();
                 this.ui.spectatingMsgPlayer.html(playerName + badgeText);
@@ -1218,7 +1218,8 @@ class UIManagerClass {
         if (id === undefined) return "";
 
         const { name, badge } = this.getPlayerData(id);
-        return `${name}${badge ? html`<img class="badge-icon" src="./img/game/shared/badges/${badge.idString}.svg" alt="${badge.name} badge">` : ""}`;
+
+        return `${name}${badge ? html`<img class="badge-icon" src="./img/game/shared/${isEmoteBadge(badge) ? "emotes" : "badges"}/${getBadgeIdString(badge)}.svg" alt="${badge.name} badge">` : ""}`;
     }
 
     processKillPacket(data: KillData): void {
@@ -1937,7 +1938,7 @@ class TeammateIndicatorUI {
             const teammate = Game.playerNames.get(id);
 
             if (teammate?.badge) {
-                const src = `./img/game/shared/badges/${teammate.badge.idString}.svg`;
+                const src = `./img/game/shared/${isEmoteBadge(teammate.badge) ? "emotes" : "badges"}/${getBadgeIdString(teammate.badge)}.svg`;
 
                 if (this.badgeImage.attr("src") !== src) {
                     this.badgeImage

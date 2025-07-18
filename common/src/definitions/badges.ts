@@ -31,8 +31,9 @@ export const Badges = new ObjectDefinitions<BadgeDefinition>([
     badge("Froog"),
     badge("AEGIS Logo"),
     badge("Flint Logo"),
-    badge("Duel"),
+    badge("NSD Logo"),
     badge("Suroi Logo"),
+    badge("Duel"),
     badge("Fire"),
     badge("Colon Three"),
     badge("Suroi General Chat")

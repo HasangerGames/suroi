@@ -1,5 +1,5 @@
 import { AnimationType, GameConstants, InputActions, Layer, ObjectCategory, PlayerActions, SpectateActions, ZIndexes } from "@common/constants";
-import { type EmoteDefinition } from "@common/definitions/emotes";
+import { getBadgeIdString, type EmoteDefinition } from "@common/definitions/emotes";
 import { Ammos } from "@common/definitions/items/ammos";
 import { type ArmorDefinition } from "@common/definitions/items/armors";
 import { type BackpackDefinition } from "@common/definitions/items/backpacks";
@@ -1015,7 +1015,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     }
                 }
             });
-            const badge = name?.badge ? new SuroiSprite(name.badge.idString) : undefined;
+            const badge = name?.badge ? new SuroiSprite(getBadgeIdString(name.badge)) : undefined;
             const container = new Container();
             this.teammateName = { text, badge, container };
 
