@@ -63,11 +63,10 @@ Guns:
 
   PSM & Dual PSM (Reload, Fire sounds) - "freesound_community" from Pixabay: https://pixabay.com/users/freesound_community-46691455/
 
-  AKs-74u (Reload, Switch) - "jigokukarano_sisya" from Pixabay: https://pixabay.com/users/jigokukarano_sisya-39731529/
-
-  AN-94 (Reload, Switch) - "bunny_cube98" (https://pixabay.com/users/bunny_cube98-49455455/), "u_96j4yp891e" (https://pixabay.com/users/u_96j4yp891e-50955250/) & "jigokukarano_sisya" (https://pixabay.com/users/jigokukarano_sisya-39731529/) from Pixabay
-
-  RPK-16 (Reload, Switch) - "Red_Army_Soviet" from Pixabay: https://pixabay.com/users/red_army_soviet-46121007/
+  AKs-74u (Reload, Switch): modified by Teardrop, main sound is Gamebanana
+  AN-94 (Reload, Switch) - modified by Teardrop, main sound is Gamebanana
+  RPK-74 (Reload, Switch) - modified by Teardrop, main sound is Gamebanana
+  RPK-16 (Fire, Reload, Switch) - modified by Teardrop, main sound is from Gamebanana
 
   Other gun sound effects - Surviv.io Custom Sounds & Textures Resource Pack: https://github.com/humphreygaming/survivcustomsoundsandtextures
 
