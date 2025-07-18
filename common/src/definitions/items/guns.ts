@@ -1591,7 +1591,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
         idString: "rpk74",
         name: "RPK-74",
         defType: DefinitionType.Gun,
-        tier: Tier.A,
+        tier: Tier.C,
         ammoType: "545mm",
         ammoSpawnAmount: 150,
         capacity: 45,
@@ -1618,7 +1618,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
         }],
         gasParticles: gasParticlePresets.automatic,
         ballistics: {
-            damage: 20,
+            damage: 14,
             obstacleMultiplier: 2,
             speed: 0.28,
             range: 180,

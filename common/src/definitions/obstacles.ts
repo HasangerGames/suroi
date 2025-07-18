@@ -4142,6 +4142,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     gunMount("svu", "gun"),
     gunMount("ak47", "gun"),
     gunMount("an94", "gun"),
+    gunMount("rpk74", "gun"),
     gunMount(
         "maul",
         "melee",

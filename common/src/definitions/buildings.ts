@@ -13108,7 +13108,15 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "potted_plant", position: Vec(19.68, -17.44), rotation: 0 },
             { idString: "door", position: Vec(-16.75, 40.32), rotation: 2 },
             { idString: "rare_wine_case", position: Vec(-0.73, -41.54), rotation: 0 },
-            { idString: "gun_mount_an94", position: Vec(-0.73, -56.17), rotation: 0 }
+            {
+                idString: {
+                    gun_mount_svu: 0.3,
+                    gun_mount_an94: 0.2,
+                    gun_mount_rpk74: 0.5
+                },
+                position: Vec(-0.73, -56.17),
+                rotation: 0
+            }
         ],
         subBuildings: IS_CLIENT ? undefined : [{
             idString: "tavern_basement_vault_ceiling",
