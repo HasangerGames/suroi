@@ -697,7 +697,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             if (sizeMod !== undefined && this.sizeMod !== sizeMod) {
                 // reset the size modifier before tweening
                 this.sizeMod = GameConstants.player.defaultModifiers().size;
-                this._hitbox = new CircleHitbox(GameConstants.player.radius, this._hitbox.position);
+                this._hitbox = new CircleHitbox(GameConstants.player.radius * this.sizeMod, this._hitbox.position);
 
                 this.anims.sizeMod?.kill();
                 this.anims.sizeMod = Game.addTween({
