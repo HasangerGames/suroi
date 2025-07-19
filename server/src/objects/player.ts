@@ -2706,6 +2706,10 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             c4.damage({ amount: Infinity });
         }
 
+        if (this.mapIndicator) {
+            this.mapIndicator.dead = true;
+        }
+
         if (!this.disconnected) {
             this.sendGameOverPacket();
         }
