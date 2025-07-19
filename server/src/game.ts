@@ -12,7 +12,7 @@ import { type JoinData } from "@common/packets/joinPacket";
 import { JoinedPacket } from "@common/packets/joinedPacket";
 import { PacketDataIn, PacketType } from "@common/packets/packet";
 import { PacketStream } from "@common/packets/packetStream";
-import { type PingSerialization } from "@common/packets/updatePacket";
+import { MapIndicatorSerialization, type PingSerialization } from "@common/packets/updatePacket";
 import { CircleHitbox, type Hitbox } from "@common/utils/hitbox";
 import { ColorStyles, Logger, styleText } from "@common/utils/logging";
 import { Angle, Geometry, Numeric, Statistics } from "@common/utils/math";
@@ -155,6 +155,11 @@ export class Game implements GameData {
      */
     readonly mapPings: PingSerialization[] = [];
 
+    private _nextMapIndicatorID = -1;
+    get nextMapIndicatorID(): number { return ++this._nextMapIndicatorID; }
+
+    readonly mapIndicators: MapIndicatorSerialization[] = [];
+
     killLeader: Player | undefined;
     killLeaderDirty = false;
 
@@ -197,13 +202,16 @@ export class Game implements GameData {
 
     // #endregion
 
-    startTimeout?: Timeout;
-
     /**
      * The value of `Date.now()`, as of the start of the tick.
      */
     private _now = Date.now();
     get now(): number { return this._now; }
+
+    startTimeout?: Timeout;
+
+    private readonly _start = this._now;
+    get start(): number { return this._start; }
 
     private readonly idealDt = 1000 / (Config.tps ?? GameConstants.tps);
 
@@ -216,9 +224,6 @@ export class Game implements GameData {
     private readonly _tickTimes: number[] = [];
 
     private readonly _idAllocator = new IDAllocator(16);
-
-    private readonly _start = this._now;
-    get start(): number { return this._start; }
 
     /**
      * **Warning**: This is a getter _with side effects_! Make
@@ -446,6 +451,15 @@ export class Game implements GameData {
         // Third loop over players: clean up after all packets have been sent
         for (const player of this.connectedPlayers) {
             player.postPacket();
+        }
+
+        for (const indicator of this.mapIndicators) {
+            if (indicator.dead) {
+                removeFrom(this.mapIndicators, indicator);
+                continue;
+            }
+            indicator.positionDirty = false;
+            indicator.definitionDirty = false;
         }
 
         // Reset everything
@@ -964,6 +978,7 @@ export class Game implements GameData {
 
     removeLoot(loot: Loot): void {
         loot.dead = true;
+        if (loot.mapIndicator) loot.mapIndicator.dead = true;
         this.removeObject(loot);
     }
 

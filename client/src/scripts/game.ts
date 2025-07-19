@@ -880,6 +880,10 @@ export const Game = new (class Game {
             MapManager.addMapPing(ping);
         }
 
+        for (const indicator of updateData.mapIndicators ?? []) {
+            MapManager.updateMapIndicator(indicator);
+        }
+
         if (updateData.killLeader) {
             UIManager.updateKillLeader(updateData.killLeader);
         }

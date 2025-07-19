@@ -60,7 +60,8 @@ export const Armors = new ObjectDefinitions<ArmorDefinition>([
         damageReduction: 0.25,
         positionOverride: 0,
         positionOverrideDowned: 0,
-        perk: PerkIds.ThermalGoggles
+        perk: PerkIds.ThermalGoggles,
+        mapIndicator: "helmet_indicator"
     },
 
     //
@@ -101,7 +102,8 @@ export const Armors = new ObjectDefinitions<ArmorDefinition>([
         level: 4,
         damageReduction: 0.5,
         color: 0x303030,
-        perk: PerkIds.ExperimentalForcefield
+        perk: PerkIds.ExperimentalForcefield,
+        mapIndicator: "vest_indicator"
     },
     {
         idString: "developr_vest",

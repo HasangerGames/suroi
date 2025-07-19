@@ -652,6 +652,10 @@ export class Inventory {
             }
         }
 
+        if (definition.mapIndicator) {
+            this.owner.updateMapIndicator();
+        }
+
         this.owner.setDirty();
         this.owner.dirty.items = true;
     }

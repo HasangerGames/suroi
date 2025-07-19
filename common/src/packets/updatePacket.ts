@@ -6,6 +6,7 @@ import { Explosions, type ExplosionDefinition } from "../definitions/explosions"
 import { Perks, type PerkDefinition } from "../definitions/items/perks";
 import { Scopes, type ScopeDefinition } from "../definitions/items/scopes";
 import { Loots, type WeaponDefinition } from "../definitions/loots";
+import { MapIndicatorDefinition, MapIndicators } from "../definitions/mapIndicators";
 import { MapPings, type MapPing, type PlayerPing } from "../definitions/mapPings";
 import { BaseBullet, type BulletOptions } from "../utils/baseBullet";
 import { type SDeepMutable } from "../utils/misc";
@@ -436,7 +437,8 @@ export const enum UpdateFlags {
     AliveCount = 1 << 11,
     Planes = 1 << 12,
     MapPings = 1 << 13,
-    KillLeader = 1 << 14
+    MapIndicators = 1 << 14,
+    KillLeader = 1 << 15
 }
 
 export interface MapPingSerialization {
@@ -451,6 +453,15 @@ export interface PlayerPingSerialization {
 }
 
 export type PingSerialization = MapPingSerialization | PlayerPingSerialization;
+
+export interface MapIndicatorSerialization {
+    id: number
+    dead: boolean
+    positionDirty: boolean
+    position?: Vector
+    definitionDirty: boolean
+    definition?: MapIndicatorDefinition
+}
 
 export interface ExplosionSerialization {
     readonly definition: ExplosionDefinition
@@ -555,6 +566,7 @@ export interface UpdateDataCommon {
         readonly direction: number
     }>
     readonly mapPings?: readonly PingSerialization[]
+    readonly mapIndicators?: readonly MapIndicatorSerialization[]
     readonly killLeader?: {
         id: number
         kills: number
@@ -749,18 +761,37 @@ export const UpdatePacket = new Packet<UpdateDataIn, UpdateDataOut>(PacketType.U
         }
 
         if (data.mapPings?.length) {
-            strm.writeArray(
-                data.mapPings,
-                ping => {
-                    MapPings.writeToStream(strm, ping.definition);
-                    strm.writePosition(ping.position);
-                    if (ping.definition.isPlayerPing) {
-                        strm.writeObjectId((ping as PlayerPingSerialization).playerId);
-                    }
-                },
-                1
-            );
+            strm.writeArray(data.mapPings, ping => {
+                MapPings.writeToStream(strm, ping.definition);
+                strm.writePosition(ping.position);
+                if (ping.definition.isPlayerPing) {
+                    strm.writeObjectId((ping as PlayerPingSerialization).playerId);
+                }
+            });
             flags |= UpdateFlags.MapPings;
+        }
+
+        if (data.mapIndicators?.length) {
+            strm.writeArray(data.mapIndicators, indicator => {
+                let data = indicator.id;
+                if (indicator.positionDirty) data += 32;
+                if (indicator.definitionDirty) data += 64;
+                if (indicator.dead) data += 128;
+                strm.writeUint8(data);
+
+                if (indicator.positionDirty) {
+                    // can't be undefined on server
+                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                    strm.writePosition(indicator.position!);
+                }
+
+                if (indicator.definitionDirty) {
+                    // also can't be undefined on server
+                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                    MapIndicators.writeToStream(strm, indicator.definition!);
+                }
+            });
+            flags |= UpdateFlags.MapIndicators;
         }
 
         if (data.killLeader) {
@@ -917,6 +948,28 @@ export const UpdatePacket = new Packet<UpdateDataIn, UpdateDataOut>(PacketType.U
                     ...(definition.isPlayerPing ? { playerId: stream.readObjectId() } : {})
                 } as MapPingSerialization;
             }, 1);
+        }
+
+        if ((flags & UpdateFlags.MapIndicators) !== 0) {
+            data.mapIndicators = stream.readArray(() => {
+                const indicator = {} as MapIndicatorSerialization;
+
+                const data = stream.readUint8();
+                indicator.id = data & 0b0001_1111; // ignore 3 MSB
+                indicator.positionDirty = (data & 32) !== 0;
+                indicator.definitionDirty = (data & 64) !== 0;
+                indicator.dead = (data & 128) !== 0;
+
+                if (indicator.positionDirty) {
+                    indicator.position = stream.readPosition();
+                }
+
+                if (indicator.definitionDirty) {
+                    indicator.definition = MapIndicators.readFromStream(stream);
+                }
+
+                return indicator;
+            });
         }
 
         if ((flags & UpdateFlags.KillLeader) !== 0) {

@@ -14,6 +14,7 @@ import { Vec, type Vector } from "@common/utils/vector";
 import { type Game } from "../game";
 import { GunItem } from "../inventory/gunItem";
 import { BaseGameObject } from "./gameObject";
+import { MapIndicator } from "./mapIndicator";
 import { type Player } from "./player";
 
 export type DataMap = Record<DefinitionType, unknown> & {
@@ -54,6 +55,8 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
 
     private _oldPosition = Vec(0, 0);
 
+    mapIndicator?: MapIndicator;
+
     constructor(
         game: Game,
         basis: ReifiableDef<Def>,
@@ -77,8 +80,11 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
             throw new RangeError("Loot 'count' cannot be less than or equal to 0");
         }
 
-        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-        pushVel && this.push(randomRotation(), pushVel);
+        if (pushVel) this.push(randomRotation(), pushVel);
+
+        if (this.definition.mapIndicator) {
+            this.game.mapIndicators.push(this.mapIndicator = new MapIndicator(this.game, this.definition.mapIndicator, this.position));
+        }
 
         this.game.addTimeout(() => {
             this.isNew = false;
@@ -167,6 +173,8 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
                 object.velocity.y += speed * vecCollisionNorm.y;
             }
         }
+
+        if (this.mapIndicator) this.mapIndicator.updatePosition(this.position);
 
         if (!Vec.equals(this._oldPosition, this.position)) {
             this.setPartialDirty();
@@ -520,6 +528,14 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
             && idString === activeWeapon.definition.ammoType
         ) {
             activeWeapon.reload();
+        }
+
+        if (definition.mapIndicator !== undefined) {
+            player.updateMapIndicator();
+        }
+
+        if (this.mapIndicator) {
+            this.mapIndicator.dead = true;
         }
     }
 

@@ -1,7 +1,7 @@
 import { GameConstants, GasState, Layer, ObjectCategory, ZIndexes, Z_INDEX_COUNT } from "@common/constants";
 import { type MapPingDefinition } from "@common/definitions/mapPings";
 import { type MapData } from "@common/packets/mapPacket";
-import { type PingSerialization, type PlayerPingSerialization } from "@common/packets/updatePacket";
+import { type MapIndicatorSerialization, type PingSerialization, type PlayerPingSerialization } from "@common/packets/updatePacket";
 import { RectangleHitbox } from "@common/utils/hitbox";
 import { Collision, Numeric } from "@common/utils/math";
 import { FloorTypes, River, Terrain } from "@common/utils/terrain";
@@ -88,6 +88,9 @@ class MapManagerClass {
     readonly pingsContainer = new Container();
     readonly pingGraphics = new Graphics();
 
+    readonly indicators = new Map<number, SuroiSprite>();
+    readonly indicatorsContainer = new Container();
+
     readonly terrainGraphics = new Graphics();
 
     private _objects: MapData["objects"] = [];
@@ -111,6 +114,7 @@ class MapManagerClass {
         this.container.addChild(this._border);
 
         this.safeZone.zIndex = 997;
+        this.indicatorsContainer.zIndex = 997.5;
         this.pingsContainer.zIndex = 998;
         this.teammateIndicatorContainer.zIndex = 999;
 
@@ -125,6 +129,7 @@ class MapManagerClass {
             this.safeZone,
             this.pingGraphics,
             this.pingsContainer,
+            this.indicatorsContainer,
             this.indicator,
             this.teammateIndicatorContainer
         ).sortChildren();
@@ -822,11 +827,33 @@ class MapManagerClass {
         }
     }
 
+    updateMapIndicator(data: MapIndicatorSerialization): void {
+        const id = data.id;
+
+        let indicator = this.indicators.get(id);
+        if (indicator) {
+            if (data.dead) {
+                this.indicatorsContainer.removeChild(indicator);
+                this.indicators.delete(id);
+            } else {
+                if (data.position) indicator.setVPos(data.position);
+                if (data.definition) indicator.setFrame(data.definition.idString);
+            }
+        } else if (!data.dead) {
+            indicator = new SuroiSprite(data.definition?.idString)
+                .setVPos(data.position ?? Vec(0, 0));
+            this.indicatorsContainer.addChild(indicator);
+            this.indicators.set(id, indicator);
+        }
+    }
+
     reset(): void {
         this.safeZone.clear();
         this.pingGraphics.clear();
         this.pings.clear();
         this.pingsContainer.removeChildren();
+        this.indicators.clear();
+        this.indicatorsContainer.removeChildren();
         this.teammateIndicators.clear();
         this.teammateIndicatorContainer.removeChildren();
     }

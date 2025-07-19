@@ -12,6 +12,7 @@ import { DEFAULT_SCOPE, Scopes, type ScopeDefinition } from "@common/definitions
 import { Skins, type SkinDefinition } from "@common/definitions/items/skins";
 import { Throwables, type ThrowableDefinition } from "@common/definitions/items/throwables";
 import { Loots, type WeaponDefinition } from "@common/definitions/loots";
+import { MapIndicators } from "@common/definitions/mapIndicators";
 import { type PlayerPing } from "@common/definitions/mapPings";
 import { Obstacles, type ObstacleDefinition } from "@common/definitions/obstacles";
 import { type SyncedParticleDefinition } from "@common/definitions/syncedParticles";
@@ -50,6 +51,7 @@ import { Emote } from "./emote";
 import { Explosion } from "./explosion";
 import { BaseGameObject, type DamageParams, type GameObject } from "./gameObject";
 import { type Loot } from "./loot";
+import { MapIndicator } from "./mapIndicator";
 import { type Obstacle } from "./obstacle";
 import { Projectile } from "./projectile";
 import { type SyncedParticle } from "./syncedParticle";
@@ -516,6 +518,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     immunityTimeout: Timeout | undefined;
 
     shieldTimeout: Timeout | undefined;
+
+    mapIndicator?: MapIndicator;
 
     constructor(game: Game, socket: WebSocket<PlayerSocketData> | undefined, position: Vector, layer?: Layer, team?: Team) {
         super(game, position);
@@ -1193,6 +1197,10 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             Vec.scale(this.movementVector, dt)
         );
 
+        if (this.mapIndicator) {
+            this.mapIndicator.updatePosition(this.position);
+        }
+
         // Cancel reviving when out of range
         if (this.action instanceof ReviveAction) {
             if (
@@ -1677,6 +1685,10 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         packet.mapPings = [...game.mapPings, ...this._mapPings];
         this._mapPings.length = 0;
 
+        packet.mapIndicators = this._firstPacket
+            ? game.mapIndicators.map(indicator => ({ ...indicator, positionDirty: true, definitionDirty: true }))
+            : game.mapIndicators.filter(indicator => indicator.positionDirty || indicator.definitionDirty || indicator.dead);
+
         if (game.killLeaderDirty || this._firstPacket) {
             packet.killLeader = {
                 id: game.killLeader?.id ?? -1,
@@ -1922,6 +1934,41 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         }
 
         return defaultValue;
+    }
+
+    updateMapIndicator(): void {
+        const { helmet, vest, backpack } = this.inventory;
+        const helmetIndicator = helmet?.mapIndicator;
+        const vestIndicator = vest?.mapIndicator;
+        const backpackIndicator = backpack.mapIndicator;
+        const specialEquipmentCount = [helmetIndicator, vestIndicator, backpackIndicator].filter(i => i !== undefined).length;
+        let indicator: string | undefined;
+        switch (specialEquipmentCount) {
+            case 0:
+                break;
+            case 1:
+                if (helmetIndicator) indicator = helmetIndicator;
+                else if (vestIndicator) indicator = vestIndicator;
+                else if (backpackIndicator) indicator = backpackIndicator;
+                break;
+            case 2:
+            case 3:
+            default:
+                indicator = "juggernaut_indicator";
+                break;
+        }
+
+        if (indicator) {
+            if (this.mapIndicator) {
+                this.mapIndicator.definition = MapIndicators.fromString(indicator);
+                this.mapIndicator.definitionDirty = true;
+            } else {
+                this.mapIndicator = new MapIndicator(this.game, indicator, this.position);
+            }
+        } else if (this.mapIndicator) {
+            this.mapIndicator.dead = true;
+            this.mapIndicator = undefined;
+        }
     }
 
     spectate(packet: SpectateData): void {
