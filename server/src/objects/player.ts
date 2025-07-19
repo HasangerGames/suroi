@@ -2494,6 +2494,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         this.canDespawn = false;
         this._team?.setDirty();
 
+        if (this.mapIndicator) this.mapIndicator.dead = true;
+
         const action = this.beingRevivedBy?.action;
         if (action instanceof ReviveAction) {
             action.cancel();
