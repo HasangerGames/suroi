@@ -2398,8 +2398,10 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                     if (!this.hasBubble) {
                         this.shieldTimeout?.kill();
                         this.shieldTimeout = this.game.addTimeout(() => {
-                            this.shield = 100;
-                            this.setDirty();
+                            if (!this.dead) {
+                                this.shield = 100;
+                                this.setDirty();
+                            }
                         }, perk.shieldRespawnTime);
                     }
                     break;

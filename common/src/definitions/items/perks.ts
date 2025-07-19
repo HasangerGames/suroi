@@ -479,7 +479,8 @@ const perks = [
 
         shieldObtainSound: "shield_obtained",
         shieldDestroySound: "shield_destroyed",
-        shieldHitSound: "glass" // "_hit_1/2" is added by the client
+        shieldHitSound: "glass", // "_hit_1/2" is added by the client
+        shieldParticle: "window_particle"
     },
     { // TODO
         idString: PerkIds.ThermalGoggles,
