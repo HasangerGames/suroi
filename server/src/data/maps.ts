@@ -763,6 +763,7 @@ const maps = {
         buildings: {
             sawmill: 1,
             small_bridge: Infinity,
+            docks: 8,
             outhouse: 6,
             buoy_hunted: 12,
             tavern: 1,
@@ -776,6 +777,7 @@ const maps = {
         quadBuildingLimit: {
             hunting_stand: 3,
             warehouse_hunted: 2,
+            docks: 2,
             outhouse: 3,
             cabin: 3,
             tavern: 1,
