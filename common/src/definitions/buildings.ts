@@ -13135,5 +13135,81 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             position: Vec(0, 0),
             scale: Vec(4.05, 4.075)
         }]
+    },
+    {
+        idString: "docks",
+        name: "Docks",
+        defType: DefinitionType.Building,
+        spawnHitbox: RectangleHitbox.fromRect(87.43, 70.21, Vec(0.47, -0.4)),
+        spawnMode: MapObjectSpawnMode.Beach,
+        material: "metal_heavy",
+        particle: "metal_particle",
+        reflectBullets: true,
+        spawnOrientation: 3,
+        spawnOffset: Vec(28, 0),
+        allowFlyover: FlyoverPref.Always,
+        hitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(1.35, 17.14, Vec(38.34, 18.02)),
+            RectangleHitbox.fromRect(1.35, 17.14, Vec(-38.27, 17.65)),
+            RectangleHitbox.fromRect(18, 1.33, Vec(28.71, 26.89)),
+            RectangleHitbox.fromRect(18, 1.33, Vec(-28.66, 26.61)),
+            RectangleHitbox.fromRect(3.82, 2.39, Vec(-5.93, 9.64)),
+            RectangleHitbox.fromRect(3.82, 2.39, Vec(-22.81, 9.64)),
+            new CircleHitbox(1.28, Vec(38.32, 26.8)),
+            new CircleHitbox(1.28, Vec(-38.32, 8.83)),
+            new CircleHitbox(1.28, Vec(-38.28, 26.62)),
+            new CircleHitbox(1.28, Vec(-18.78, 26.62)),
+            new CircleHitbox(1.28, Vec(-5.93, 8.77)),
+            new CircleHitbox(1.28, Vec(18.91, 26.89)),
+            new CircleHitbox(1.28, Vec(38.31, 8.95)),
+            new CircleHitbox(1.28, Vec(21.87, 10.12)),
+            new CircleHitbox(1.28, Vec(-22.8, 8.76)),
+            new CircleHitbox(1.28, Vec(7.37, -29.2)),
+            new CircleHitbox(1.28, Vec(7.38, 10.11)),
+            new CircleHitbox(1.28, Vec(7.36, -9.32)),
+            new CircleHitbox(1.28, Vec(21.88, -9.25)),
+            new CircleHitbox(1.28, Vec(21.88, -29.19))
+        ),
+        floors: [{
+            type: FloorNames.Wood,
+            hitbox: new GroupHitbox(
+                RectangleHitbox.fromRect(14.81, 53.52, Vec(14.67, -2.73)),
+                RectangleHitbox.fromRect(77.29, 20.14, Vec(-0.06, 16.98)),
+                RectangleHitbox.fromRect(37.93, 5.13, Vec(0.17, 27.93))
+            )
+        }],
+        groundGraphics: [
+            { // stroke
+                color: 0x423a30,
+                hitbox: RectangleHitbox.fromRect(37.92, 3.8, Vec(0.15, 28.58))
+            },
+            // filling
+            { // 1
+                color: 0x5b4f43,
+                hitbox: RectangleHitbox.fromRect(37.2, 1.36, Vec(0.17, 27.73))
+            },
+            { // 2
+                color: 0x5b4c42,
+                hitbox: RectangleHitbox.fromRect(37.2, 1.36, Vec(0.17, 29.45))
+            }
+        ],
+        floorImages: [
+            {
+                key: "docks_floor_1",
+                position: Vec(0.04, 17.55)
+            },
+            {
+                key: "docks_floor_2",
+                position: Vec(14.71, -9.2)
+            }
+        ],
+        obstacles: [
+            { idString: "trash_can", position: Vec(27.53, 22.36) },
+            { idString: "box", position: Vec(-23.82, 22.38) },
+            { idString: { box: 1, grenade_box: 0.35 }, position: Vec(33.26, 23.11) },
+            { idString: "box", position: Vec(34.57, 17.93) },
+            { idString: "nsd_crate", position: Vec(14.67, -22.46) },
+            { idString: "regular_crate", position: Vec(-31.57, 19.99) }
+        ]
     }
 ]);

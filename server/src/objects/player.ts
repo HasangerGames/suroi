@@ -2398,8 +2398,10 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                     if (!this.hasBubble) {
                         this.shieldTimeout?.kill();
                         this.shieldTimeout = this.game.addTimeout(() => {
-                            this.shield = 100;
-                            this.setDirty();
+                            if (!this.dead) {
+                                this.shield = 100;
+                                this.setDirty();
+                            }
                         }, perk.shieldRespawnTime);
                     }
                     break;
@@ -2491,6 +2493,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         this.downed = false;
         this.canDespawn = false;
         this._team?.setDirty();
+
+        if (this.mapIndicator) this.mapIndicator.dead = true;
 
         const action = this.beingRevivedBy?.action;
         if (action instanceof ReviveAction) {

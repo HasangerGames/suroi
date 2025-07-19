@@ -775,7 +775,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     if (!hasBubble) {
                         this.playSound(PerkData[PerkIds.ExperimentalForcefield].shieldDestroySound);
                         ParticleManager.spawnParticles(10, () => ({
-                            frames: "window_particle",
+                            frames: PerkData[PerkIds.ExperimentalForcefield].shieldParticle,
                             position: this.hitbox.randomPoint(),
                             layer: this.layer,
                             zIndex: ZIndexes.Players + 0.5,
@@ -1980,7 +1980,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             );
         }
 
-        let particle = this.activeDisguise ? (this.activeDisguise.frames?.particle ?? `${this.activeDisguise.idString}_particle`) : "blood_particle";
+        let particle = this.activeDisguise ? (this.activeDisguise.frames?.particle ?? `${this.activeDisguise.idString}_particle`) : this.hasBubble ? PerkData[PerkIds.ExperimentalForcefield].shieldParticle : "blood_particle";
 
         if (this.activeDisguise?.particleVariations) particle += `_${random(1, this.activeDisguise.particleVariations)}`;
 
