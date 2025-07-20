@@ -779,17 +779,17 @@ class UIManagerClass {
 
         if (highlightedPlayers) {
             for (const { id, normalizedHealth } of highlightedPlayers) {
-                const player = Game.objects.get(id);
-                if (!player) {
+                const object = Game.objects.get(id);
+                if (!object) {
                     console.warn(`Attempted to update health of nonexistent player with ID ${id}`);
                     continue;
                 }
-                if (!(player instanceof Player)) {
+                if (!object.isPlayer) {
                     console.warn(`Attempted to update health of non-player object with ID ${id}`);
                     continue;
                 }
 
-                player.updateHealthBar(normalizedHealth);
+                object.updateHealthBar(normalizedHealth);
             }
         }
 
