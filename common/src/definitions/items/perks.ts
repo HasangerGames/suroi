@@ -482,14 +482,14 @@ const perks = [
         shieldHitSound: "glass", // "_hit_1/2" is added by the client
         shieldParticle: "window_particle"
     },
-    { // TODO
+    {
         idString: PerkIds.ThermalGoggles,
         name: "Thermal Goggles",
         defType: DefinitionType.Perk,
         category: PerkCategories.Hunted,
         noDrop: true,
-        updateInterval: 100,
-        detectionRadius: 20
+        updateInterval: 0,
+        detectionRadius: 100
     }
 ] as const satisfies ReadonlyArray<BasePerkDefinition & Record<string, unknown>>;
 

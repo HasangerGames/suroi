@@ -1090,8 +1090,10 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                         for (const player of this.game.grid.intersectsHitbox(detectionHitbox)) {
                             if (
                                 !player.isPlayer
+                                || player === this
+                                || player.dead
+                                || (this.game.isTeamMode && player.teamID === this.teamID)
                                 || !player.hitbox.collidesWith(detectionHitbox)
-                                || (player.isPlayer && (player.id === this.id || player.teamID === this.teamID))
                             ) continue;
                             this.highlightedPlayers.push(player);
                         }

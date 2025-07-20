@@ -648,7 +648,13 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             }
 
             if (this.dead) {
-                if (this.teammateName !== undefined) this.teammateName.container.visible = false;
+                if (this.teammateName) this.teammateName.container.visible = false;
+                if (this.images.healthBar) {
+                    this.healthBarFadeTimeout?.kill();
+                    this.healthBarTween?.kill();
+                    this.images.healthBar.destroy();
+                    this.images.healthBar = undefined;
+                }
             }
 
             this._oldItem = this.activeItem;
@@ -774,9 +780,10 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 bubbleSprite.setVisible(this.hasBubble);
                 if (!isNew) {
                     if (!hasBubble) {
-                        this.playSound(PerkData[PerkIds.ExperimentalForcefield].shieldDestroySound);
+                        const perkDef = PerkData[PerkIds.ExperimentalForcefield];
+                        this.playSound(perkDef.shieldDestroySound);
                         ParticleManager.spawnParticles(10, () => ({
-                            frames: PerkData[PerkIds.ExperimentalForcefield].shieldParticle,
+                            frames: perkDef.shieldParticle,
                             position: this.hitbox.randomPoint(),
                             layer: this.layer,
                             zIndex: ZIndexes.Players + 0.5,
@@ -1103,7 +1110,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         this.healthBarTween = Game.addTween({
             target: healthBar,
             to: { alpha: 1 },
-            duration: 250
+            duration: 100
         });
 
         this.healthBarFadeTimeout = Game.addTimeout(() => {
@@ -1111,10 +1118,10 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             this.healthBarTween = Game.addTween({
                 target: healthBar,
                 to: { alpha: 0 },
-                duration: 250,
+                duration: 100,
                 onComplete: () => healthBar.visible = false
             });
-        }, 1000);
+        }, 100);
 
         healthBar
             .clear()
@@ -2102,6 +2109,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         images.waterOverlay.destroy();
         images.blood.destroy();
         images.disguiseSprite?.destroy();
+        this.healthBarFadeTimeout?.kill();
+        this.healthBarTween?.kill();
         images.healthBar?.destroy();
 
         emote.image.destroy();
@@ -2120,6 +2129,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         anims.weapon?.kill();
         anims.muzzleFlashFade?.kill();
         anims.muzzleFlashRecoil?.kill();
+        anims.sizeMod?.kill();
 
         images.backMeleeSprite?.destroy();
 
