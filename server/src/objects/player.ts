@@ -1088,7 +1088,11 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                         const detectionHitbox = new CircleHitbox(perk.detectionRadius, this.position);
                         this.highlightedPlayers = [];
                         for (const player of this.game.grid.intersectsHitbox(detectionHitbox)) {
-                            if (!player.isPlayer || !player.hitbox.collidesWith(detectionHitbox)) continue;
+                            if (
+                                !player.isPlayer
+                                || !player.hitbox.collidesWith(detectionHitbox)
+                                || (player.isPlayer && (player.id === this.id || player.teamID === this.teamID))
+                            ) continue;
                             this.highlightedPlayers.push(player);
                         }
                         this.dirty.highlightedPlayers = true;
