@@ -326,6 +326,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     readonly dirty = {
         id: true,
         teammates: true,
+        highlightedPlayers: true,
         health: true,
         maxMinStats: true,
         adrenaline: true,
@@ -521,6 +522,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
     mapIndicator?: MapIndicator;
 
+    highlightedPlayers?: Player[];
+
     constructor(game: Game, socket: WebSocket<PlayerSocketData> | undefined, position: Vector, layer?: Layer, team?: Team) {
         super(game, position);
 
@@ -653,6 +656,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         this.dirty.weapons = true;
 
         this.updateAndApplyModifiers();
+        this.game.addLoot(Loots.fromString("power_helmet"), this.position, 0);
     }
 
     giveGun(idString: ReferenceTo<GunDefinition>): void {
@@ -1079,6 +1083,16 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                             player.addPerk(Perks.fromString(PerkIds.Infected));
                             player.setDirty();
                         }
+                        break;
+                    }
+                    case PerkIds.ThermalGoggles: {
+                        const detectionHitbox = new CircleHitbox(perk.detectionRadius, this.position);
+                        this.highlightedPlayers = [];
+                        for (const player of this.game.grid.intersectsHitbox(detectionHitbox)) {
+                            if (!player.isPlayer || !player.hitbox.collidesWith(detectionHitbox)) continue;
+                            this.highlightedPlayers.push(player);
+                        }
+                        this.dirty.highlightedPlayers = true;
                         break;
                     }
                 }
@@ -1555,6 +1569,10 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
         if ((player.dirty.teammates || forceInclude) && player._team) {
             playerData.teammates = player._team.players as Player[];
+        }
+
+        if (player.dirty.highlightedPlayers || forceInclude) {
+            playerData.highlightedPlayers = this.highlightedPlayers;
         }
 
         if (player.dirty.weapons || forceInclude) {

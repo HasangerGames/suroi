@@ -125,6 +125,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         readonly backMeleeSprite: SuroiSprite
         readonly bubbleSprite: SuroiSprite
         disguiseSprite?: SuroiSprite
+        healthBar?: Graphics
     };
 
     readonly emote: {
@@ -299,10 +300,9 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
         if (this.destroyed) return;
 
-        this.emote.container.position = Vec.addComponent(this.container.position, 0, -175);
-        if (this.teammateName) {
-            this.teammateName.container.position = Vec.addComponent(this.container.position, 0, 95);
-        }
+        this.emote.container.position.copyFrom(Vec.addComponent(this.container.position, 0, -175));
+        this.teammateName?.container.position.copyFrom(Vec.addComponent(this.container.position, 0, 95));
+        this.images.healthBar?.position.copyFrom(Vec.addComponent(this.container.position, 0, -90));
     }
 
     override update(): void { /* bleh */ }
@@ -525,6 +525,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             this.container.position.copyFrom(toPixiCoords(this.position));
             this.emote.container.position.copyFrom(Vec.addComponent(toPixiCoords(this.position), 0, -175));
             this.teammateName?.container.position.copyFrom(Vec.addComponent(toPixiCoords(this.position), 0, 95));
+            this.images.healthBar?.position.copyFrom(Vec.addComponent(toPixiCoords(this.position), 0, -90));
         }
 
         if (data.animation !== undefined) {
@@ -1080,6 +1081,47 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             this.teammateName = undefined;
             removeFrom(this.containers, container);
         }
+    }
+
+    healthBarTween?: Tween<Graphics>;
+    healthBarFadeTimeout?: Timeout;
+
+    updateHealthBar(normalizedHealth: number): void {
+        this.healthBarFadeTimeout?.kill();
+
+        let healthBar = this.images.healthBar;
+        if (!healthBar) {
+            healthBar = this.images.healthBar = new Graphics();
+            healthBar.position = Vec.addComponent(this.container.position, 0, -90);
+            healthBar.zIndex = 999;
+            healthBar.alpha = 0;
+            this.containers.push(healthBar);
+            this.updateLayer(true);
+        }
+
+        healthBar.visible = true;
+        this.healthBarTween = Game.addTween({
+            target: healthBar,
+            to: { alpha: 1 },
+            duration: 250
+        });
+
+        this.healthBarFadeTimeout = Game.addTimeout(() => {
+            if (!healthBar) return;
+            this.healthBarTween = Game.addTween({
+                target: healthBar,
+                to: { alpha: 0 },
+                duration: 250,
+                onComplete: () => healthBar.visible = false
+            });
+        }, 1000);
+
+        healthBar
+            .clear()
+            .roundRect(-82.5, -17.5, 165, 35, 3)
+            .fill({ color: 0x000000, alpha: 0.45 })
+            .roundRect(-75, -10, 150 * normalizedHealth, 20, 2)
+            .fill(UIManager.getHealthColor(normalizedHealth));
     }
 
     updateFistsPosition(anim: boolean): void {
@@ -2060,6 +2102,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         images.waterOverlay.destroy();
         images.blood.destroy();
         images.disguiseSprite?.destroy();
+        images.healthBar?.destroy();
 
         emote.image.destroy();
         emote.background.destroy();

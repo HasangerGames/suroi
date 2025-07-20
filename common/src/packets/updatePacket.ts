@@ -27,6 +27,7 @@ function serializePlayerData(
         layer,
         id,
         teammates,
+        highlightedPlayers,
         inventory,
         lockedSlots,
         items,
@@ -37,20 +38,21 @@ function serializePlayerData(
     }: PlayerData
 ): void {
     /* eslint-disable @stylistic/no-multi-spaces */
-    const hasMinMax      = minMax !== undefined;
-    const hasHealth      = health !== undefined;
-    const hasAdrenaline  = adrenaline !== undefined;
-    const hasShield      = shield !== undefined;
-    const hasZoom        = zoom !== undefined;
-    const hasLayer       = layer !== undefined;
-    const hasId          = id !== undefined;
-    const hasTeammates   = teammates !== undefined;
-    const hasInventory   = inventory !== undefined;
-    const hasLockedSlots = lockedSlots !== undefined;
-    const hasItems       = items !== undefined;
-    const hasActiveC4s   = activeC4s !== undefined;
-    const hasPerks       = perks !== undefined;
-    const hasTeamID      = teamID !== undefined;
+    const hasMinMax             = minMax !== undefined;
+    const hasHealth             = health !== undefined;
+    const hasAdrenaline         = adrenaline !== undefined;
+    const hasShield             = shield !== undefined;
+    const hasZoom               = zoom !== undefined;
+    const hasLayer              = layer !== undefined;
+    const hasId                 = id !== undefined;
+    const hasTeammates          = teammates !== undefined;
+    const hasHighlightedPlayers = highlightedPlayers !== undefined;
+    const hasInventory          = inventory !== undefined;
+    const hasLockedSlots        = lockedSlots !== undefined;
+    const hasItems              = items !== undefined;
+    const hasActiveC4s          = activeC4s !== undefined;
+    const hasPerks              = perks !== undefined;
+    const hasTeamID             = teamID !== undefined;
     /* eslint-enable @stylistic/no-multi-spaces */
 
     strm.writeBooleanGroup2(
@@ -62,6 +64,7 @@ function serializePlayerData(
         hasLayer,
         hasId,
         hasTeammates,
+        hasHighlightedPlayers,
         hasInventory,
         hasLockedSlots,
         hasItems,
@@ -124,9 +127,15 @@ function serializePlayerData(
                     .writePosition(position ?? Vec(0, 0))
                     .writeFloat(normalizedHealth, 0, 1, 1)
                     .writeUint8(colorIndex);
-            },
-            1
+            }
         );
+    }
+
+    if (hasHighlightedPlayers) {
+        strm.writeArray(highlightedPlayers, ({ id, normalizedHealth }) => {
+            strm.writeObjectId(id);
+            strm.writeFloat(normalizedHealth, 0, 1, 1);
+        });
     }
 
     if (hasInventory) {
@@ -261,6 +270,7 @@ function deserializePlayerData(strm: SuroiByteStream): PlayerData {
         hasLayer,
         hasId,
         hasTeammates,
+        hasHighlightedPlayers,
         hasInventory,
         hasLockedSlots,
         hasItems,
@@ -311,20 +321,24 @@ function deserializePlayerData(strm: SuroiByteStream): PlayerData {
     }
 
     if (hasTeammates) {
-        data.teammates = strm.readArray(
-            () => {
-                const status = strm.readUint8();
-                return {
-                    id: strm.readObjectId(),
-                    position: strm.readPosition(),
-                    normalizedHealth: strm.readFloat(0, 1, 1),
-                    downed: (status & 2) !== 0,
-                    disconnected: (status & 1) !== 0,
-                    colorIndex: strm.readUint8()
-                };
-            },
-            1
-        );
+        data.teammates = strm.readArray(() => {
+            const status = strm.readUint8();
+            return {
+                id: strm.readObjectId(),
+                position: strm.readPosition(),
+                normalizedHealth: strm.readFloat(0, 1, 1),
+                downed: (status & 2) !== 0,
+                disconnected: (status & 1) !== 0,
+                colorIndex: strm.readUint8()
+            };
+        });
+    }
+
+    if (hasHighlightedPlayers) {
+        data.highlightedPlayers = strm.readArray(() => ({
+            id: strm.readObjectId(),
+            normalizedHealth: strm.readFloat(0, 1, 1)
+        }));
     }
 
     if (hasInventory) {
@@ -510,6 +524,10 @@ export interface PlayerData {
         readonly downed: boolean
         readonly disconnected: boolean
         readonly colorIndex: number
+    }>
+    highlightedPlayers?: Array<{
+        readonly id: number
+        readonly normalizedHealth: number
     }>
     inventory?: {
         readonly activeWeaponIndex: number

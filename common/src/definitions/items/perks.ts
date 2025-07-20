@@ -487,7 +487,9 @@ const perks = [
         name: "Thermal Goggles",
         defType: DefinitionType.Perk,
         category: PerkCategories.Hunted,
-        noDrop: true
+        noDrop: true,
+        updateInterval: 100,
+        detectionRadius: 20
     }
 ] as const satisfies ReadonlyArray<BasePerkDefinition & Record<string, unknown>>;
 

@@ -608,6 +608,7 @@ class UIManagerClass {
             zoom,
             id,
             teammates,
+            highlightedPlayers,
             inventory,
             lockedSlots,
             items,
@@ -773,6 +774,22 @@ class UIManagerClass {
                 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 _teammateDataCache.get(outdated)!.destroy();
                 _teammateDataCache.delete(outdated);
+            }
+        }
+
+        if (highlightedPlayers) {
+            for (const { id, normalizedHealth } of highlightedPlayers) {
+                const player = Game.objects.get(id);
+                if (!player) {
+                    console.warn(`Attempted to update health of nonexistent player with ID ${id}`);
+                    continue;
+                }
+                if (!(player instanceof Player)) {
+                    console.warn(`Attempted to update health of non-player object with ID ${id}`);
+                    continue;
+                }
+
+                player.updateHealthBar(normalizedHealth);
             }
         }
 
