@@ -11299,7 +11299,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 })
             ),
 
-            { idString: "fence", position: Vec(51.35, -228.95), rotation: 0 },
+            { idString: "fence", position: Vec(51.35, -228.95), rotation: 0, scale: 0.75 },
             { idString: "fence", position: Vec(50.08, -115.07), rotation: 1 },
             { idString: "fence", position: Vec(50.07, -122.38), rotation: 1 },
 

@@ -4481,7 +4481,6 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         hitbox: RectangleHitbox.fromRect(8.45, 1.6),
         rotationMode: RotationMode.Limited,
         noResidue: true,
-        zIndex: ZIndexes.BuildingsFloor - 0.5,
         frames: {
             particle: "fence_particle"
         }
