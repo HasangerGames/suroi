@@ -7,8 +7,8 @@
    viewBox="0 0 56.750174 66.712946"
    version="1.1"
    id="svg1"
-   inkscape:version="1.4.2 (1:1.4.2+202505120737+ebf0e940d0)"
-   sodipodi:docname="bunker_entrance_ceiling.svg"
+   inkscape:version="1.4 (86a8ad7, 2024-10-11)"
+   sodipodi:docname="hunted_bunker_entrance_ceiling.svg"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
@@ -23,13 +23,13 @@
      inkscape:pagecheckerboard="1"
      inkscape:deskcolor="#505050"
      inkscape:document-units="px"
-     inkscape:zoom="1.0592242"
-     inkscape:cx="-52.396839"
-     inkscape:cy="-24.074223"
-     inkscape:window-width="2560"
-     inkscape:window-height="1368"
-     inkscape:window-x="0"
-     inkscape:window-y="0"
+     inkscape:zoom="2.1184484"
+     inkscape:cx="114.47057"
+     inkscape:cy="150.34589"
+     inkscape:window-width="1920"
+     inkscape:window-height="991"
+     inkscape:window-x="-9"
+     inkscape:window-y="-9"
      inkscape:window-maximized="1"
      inkscape:current-layer="g3" />
   <defs
@@ -72,7 +72,7 @@
            sodipodi:nodetypes="ccccccc" />
         <path
            id="rect4-1-7-0-6-6-2"
-           style="display:inline;fill:#3d3d3d;fill-opacity:1;stroke:#14141f;stroke-width:2.13112;stroke-linecap:round;stroke-dasharray:none;stroke-opacity:1"
+           style="display:inline;fill:#2e2e2e;fill-opacity:1;stroke:#14141f;stroke-width:2.13112;stroke-linecap:round;stroke-dasharray:none;stroke-opacity:1"
            d="m 63.973049,112.3639 h 39.317341 v 45.55802 H 63.972937 Z"
            sodipodi:nodetypes="ccccc" />
         <path
@@ -92,6 +92,26 @@
            style="fill:#14141f;fill-opacity:1;stroke:#14141f;stroke-width:1.88199;stroke-dasharray:none;stroke-opacity:1"
            d="m 63.972937,157.92192 -14.728966,10.924"
            id="path4" />
+        <g
+           style="fill:#14141f;fill-opacity:1;stroke-width:2.52018;stroke-dasharray:none"
+           id="g3-3"
+           transform="matrix(0.19264692,0,0,1.0479134,48.485158,105.4165)">
+          <path
+             d="m 11.659,95.057 v -2.982 h 73.429 v 2.982 z m 0,26.13 v -2.983 h 73.429 v 2.983 z"
+             style="fill:#14141f;fill-opacity:1;stroke-width:2.52018;stroke-linecap:round;stroke-dasharray:none"
+             transform="matrix(1.08332,0,0,0.82411,-12.202,-60.58)"
+             id="path3-1" />
+        </g>
+        <g
+           style="fill:#14141f;fill-opacity:1;stroke-width:2.52018;stroke-dasharray:none"
+           id="g3-3-5"
+           transform="matrix(0.19264692,0,0,1.0479134,102.96345,105.43509)">
+          <path
+             d="m 11.659,95.057 v -2.982 h 73.429 v 2.982 z m 0,26.13 v -2.983 h 73.429 v 2.983 z"
+             style="fill:#14141f;fill-opacity:1;stroke-width:2.52018;stroke-linecap:round;stroke-dasharray:none"
+             transform="matrix(1.08332,0,0,0.82411,-12.202,-60.58)"
+             id="path3-1-0" />
+        </g>
       </g>
     </g>
   </g>

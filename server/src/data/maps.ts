@@ -770,9 +770,9 @@ const maps = {
             cabin: 8,
             hunting_stand: 12,
             warehouse_hunted: 5,
-            panther_bunker: 1,
-            tiger_bunker: 1,
-            lion_bunker: 1
+            fox_bunker: 1,
+            moose_bunker: 1,
+            bear_bunker: 1
         },
         quadBuildingLimit: {
             hunting_stand: 3,
@@ -781,9 +781,9 @@ const maps = {
             outhouse: 3,
             cabin: 3,
             tavern: 1,
-            tiger_bunker: 1,
-            lion_bunker: 1,
-            panther_bunker: 1
+            moose_bunker: 1,
+            bear_bunker: 1,
+            fox_bunker: 1
         },
         majorBuildings: ["tavern", "sawmill"],
         obstacles: {

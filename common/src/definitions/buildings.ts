@@ -10395,7 +10395,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         }]
     },
     {
-        idString: "panther_bunker",
+        idString: "fox_bunker",
         name: "Panther Bunker",
         defType: DefinitionType.Building,
         spawnMode: MapObjectSpawnMode.Ring,
@@ -10411,7 +10411,9 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         ),
         ceilingImages: [
             { key: "hunted_bunker_entrance_ceiling", position: Vec(-14.49, -27.97), rotation: Math.PI },
-            { key: "hunted_bunker_entrance_ceiling", position: Vec(-14.31, 27.75) }
+            { key: "hunted_bunker_entrance_ceiling", position: Vec(-14.31, 27.75) },
+            { key: "fox_logo", position: Vec(-14.49, -27.97), rotation: Math.PI },
+            { key: "fox_logo", position: Vec(-14.31, 27.75) }
         ],
         obstacles: IS_CLIENT ? undefined : [
             { idString: "hunted_bunker_collider_hack", position: Vec(-18.83, 28.2), rotation: 0, layer: Layer.ToBasement },
@@ -10424,11 +10426,11 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "hunted_bunker_stair", position: Vec(-14.5, -27), rotation: 0, layer: Layer.ToBasement }
         ],
         subBuildings: IS_CLIENT ? undefined : [
-            { idString: "panther_bunker_main", position: Vec(0, 0), layer: Layer.Basement }
+            { idString: "fox_bunker_main", position: Vec(0, 0), layer: Layer.Basement }
         ]
     },
     {
-        idString: "panther_bunker_main",
+        idString: "fox_bunker_main",
         name: "Panther Bunker",
         defType: DefinitionType.Building,
         spawnHitbox: RectangleHitbox.fromRect(80, 80),
@@ -10485,11 +10487,11 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         ],
         floorImages: [
             {
-                key: "panther_bunker_floor_2",
+                key: "fox_bunker_floor_2",
                 position: Vec(22.25, 0)
             },
             {
-                key: "panther_bunker_floor_1",
+                key: "fox_bunker_floor_1",
                 position: Vec(-14.4, 0)
             }
         ],
@@ -10518,13 +10520,13 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "pink_metal_auto_door", position: Vec(7.65, 1.55), rotation: 1, locked: true }
         ],
         subBuildings: IS_CLIENT ? undefined : [{
-            idString: "panther_bunker_vault",
+            idString: "fox_bunker_vault",
             position: Vec(0, 22),
             orientation: 1
         }]
     },
     {
-        idString: "panther_bunker_vault",
+        idString: "fox_bunker_vault",
         name: "Panther Bunker Vault",
         defType: DefinitionType.Building,
         spawnHitbox: RectangleHitbox.fromRect(34.05, 28),
@@ -10532,12 +10534,12 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         ceilingImages: [{
             key: "vault_ceiling",
             position: Vec(0, 0),
-            scale: Vec(2.67, 2.16)
+            scale: Vec(2.68, 2.16)
         }]
     },
     {
-        idString: "tiger_bunker",
-        name: "tiger Bunker",
+        idString: "moose_bunker",
+        name: "Moose Bunker",
         defType: DefinitionType.Building,
         spawnMode: MapObjectSpawnMode.Ring,
         spawnRadius: 300,
@@ -10552,7 +10554,9 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         ),
         ceilingImages: [
             { key: "hunted_bunker_entrance_ceiling", position: Vec(30.78, -28.42), rotation: Math.PI },
-            { key: "hunted_bunker_entrance_ceiling", position: Vec(-30.71, 28.2) }
+            { key: "hunted_bunker_entrance_ceiling", position: Vec(-30.71, 28.2) },
+            { key: "moose_logo", position: Vec(30.78, -28.42), rotation: Math.PI },
+            { key: "moose_logo", position: Vec(-30.71, 28.2) }
         ],
         obstacles: IS_CLIENT ? undefined : [
             { idString: "hunted_bunker_collider_hack", position: Vec(-26.19, 28.76), rotation: 0, layer: Layer.ToBasement },
@@ -10565,11 +10569,11 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "hunted_bunker_stair", position: Vec(-30.72, 27.5), rotation: 2, layer: Layer.ToBasement }
         ],
         subBuildings: IS_CLIENT ? undefined : [
-            { idString: "tiger_bunker_main", position: Vec(0, 0), layer: Layer.Basement }
+            { idString: "moose_bunker_main", position: Vec(0, 0), layer: Layer.Basement }
         ]
     },
     {
-        idString: "tiger_bunker_main",
+        idString: "moose_bunker_main",
         name: "Tiger Bunker",
         defType: DefinitionType.Building,
         material: "metal_heavy",
@@ -10622,7 +10626,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             }
         ],
         floorImages: [{
-            key: "tiger_bunker_floor",
+            key: "moose_bunker_floor",
             position: Vec(0, 0)
         }],
         obstacles: IS_CLIENT ? undefined : [
@@ -10663,25 +10667,25 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             }
         ],
         subBuildings: IS_CLIENT ? undefined : [{
-            idString: "tiger_bunker_vault",
+            idString: "moose_bunker_vault",
             position: Vec(0, 0)
         }]
     },
     {
-        idString: "tiger_bunker_vault",
+        idString: "moose_bunker_vault",
         name: "Tiger Bunker Vault",
         defType: DefinitionType.Building,
         spawnHitbox: RectangleHitbox.fromRect(25, 25),
         ceilingHitbox: RectangleHitbox.fromRect(22, 22),
         ceilingImages: [{
-            key: "tiger_bunker_vault_ceiling",
+            key: "moose_bunker_vault_ceiling",
             position: Vec(0, 0),
             scale: Vec(2, 2)
         }]
     },
     {
-        idString: "lion_bunker",
-        name: "Lion Bunker",
+        idString: "bear_bunker",
+        name: "Bear Bunker",
         defType: DefinitionType.Building,
         spawnMode: MapObjectSpawnMode.Ring,
         spawnRadius: 300,
@@ -10698,7 +10702,9 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         bunkerSpawnHitbox: RectangleHitbox.fromRect(130, 80),
         ceilingImages: [
             { key: "hunted_bunker_entrance_ceiling", position: Vec(52.54, -5.11), rotation: -Math.PI / 2 },
-            { key: "hunted_bunker_entrance_ceiling", position: Vec(0, 28.3) }
+            { key: "hunted_bunker_entrance_ceiling", position: Vec(0, 28.3) },
+            { key: "bear_logo", position: Vec(52.54, -5.11), rotation: -Math.PI / 2 },
+            { key: "bear_logo", position: Vec(0, 28.3) }
         ],
         obstacles: IS_CLIENT ? undefined : [
             { idString: "hunted_bunker_collider_hack", position: Vec(-4.57, 28.71), rotation: 0, layer: Layer.ToBasement },
@@ -10711,11 +10717,11 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "hunted_bunker_entrance", position: Vec(52.54, -5.11), rotation: 1 }
         ],
         subBuildings: IS_CLIENT ? undefined : [
-            { idString: "lion_bunker_main", position: Vec(0, 0), layer: Layer.Basement }
+            { idString: "bear_bunker_main", position: Vec(0, 0), layer: Layer.Basement }
         ]
     },
     {
-        idString: "lion_bunker_main",
+        idString: "bear_bunker_main",
         name: "Lion Bunker",
         defType: DefinitionType.Building,
         spawnHitbox: RectangleHitbox.fromRect(130, 80),
@@ -10766,7 +10772,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             }
         ],
         floorImages: [{
-            key: "lion_bunker_floor",
+            key: "bear_bunker_floor",
             position: Vec(0, 0)
         }],
         obstacles: IS_CLIENT ? undefined : [
@@ -10812,12 +10818,12 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "metal_door", position: Vec(-17.39, 29.16), rotation: 1 }
         ],
         subBuildings: IS_CLIENT ? undefined : [{
-            idString: "lion_bunker_vault",
+            idString: "bear_bunker_vault",
             position: Vec(0.1, -23.8)
         }]
     },
     {
-        idString: "lion_bunker_vault",
+        idString: "bear_bunker_vault",
         name: "Lion Bunker Vault",
         defType: DefinitionType.Building,
         spawnHitbox: RectangleHitbox.fromRect(25, 25),
