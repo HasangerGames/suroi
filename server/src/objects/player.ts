@@ -656,7 +656,6 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         this.dirty.weapons = true;
 
         this.updateAndApplyModifiers();
-        this.game.addLoot(Loots.fromString("power_helmet"), this.position, 0);
     }
 
     giveGun(idString: ReferenceTo<GunDefinition>): void {
