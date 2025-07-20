@@ -709,7 +709,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     ease: EaseFunctions.backOut,
                     onComplete: () => {
                         this.anims.sizeMod = undefined;
-                        this.sizeMod = this.container.scale = sizeMod;
+                        this.sizeMod = sizeMod;
                         this._hitbox = new CircleHitbox(GameConstants.player.radius * sizeMod, this._hitbox.position);
                     }
                 });
