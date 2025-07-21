@@ -1091,6 +1091,7 @@ class UIManagerClass {
         container.children(".item-tooltip").html(`<strong>${getTranslatedString(perkDef.idString as unknown as TranslationKeys)}</strong><br>${getTranslatedString(`${perkDef.idString}_desc` as TranslationKeys)}`);
         container.children(".item-image").attr("src", `./img/game/${perkDef.category === PerkCategories.Halloween ? "halloween" : "shared"}/perks/${perkDef.idString}.svg`);
         container.css("visibility", PerkManager.has(perkDef) ? "visible" : "hidden");
+        if (container.hasClass("deactivated")) container.toggleClass("deactivated");
 
         container.css("outline", !perkDef.noDrop ? "" : "none");
 
