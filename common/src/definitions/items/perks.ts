@@ -504,8 +504,8 @@ const perks = [
         particle: "charged_particle",
         activatedSound: "overdrive",
         requiredKills: 2, // its actually 3 i know but code works with 2 (it takes it as 3)
-        speedMod: 1.5,
-        speedBoostDuration: 2e3, // msec
+        speedMod: 1.25,
+        speedBoostDuration: 10e3, // msec
         sizeMod: 1.05,
         healBonus: 25,
         adrenalineBonus: 25,

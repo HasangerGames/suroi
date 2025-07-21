@@ -1182,9 +1182,14 @@
         visibility: hidden;
     }
 
+    #coordinates-hud {
+        height: 50px;
+        font-size: 17px;
+    }
+
     @media screen and (max-height: variables.$screen-large) and (max-width: variables.$screen_large) {
         position: absolute;
-        bottom: 35px;
+        bottom: 40px;
         left: 135px;
         display: block;
         padding: 5px;
@@ -1192,6 +1197,10 @@
         #gas-timer {
             width: 65px;
             font-size: 15px;
+        }
+
+        #coordinates-hud {
+            font-size: 14px;
         }
     }
 }
