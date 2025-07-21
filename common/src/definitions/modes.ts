@@ -120,7 +120,7 @@ export const Modes: Record<ModeName, ModeDefinition> = {
         colors: {
             grass: "hsl(140, 22%, 30%)",
             water: "hsl(190, 63%, 25%)",
-            border: "hsl(211, 63%, 30%)",
+            border: "hsl(190, 63%, 17%)",
             beach: "hsl(40, 39%, 44%)",
             riverBank: "hsl(39, 47%, 25%)",
             trail: "hsl(35, 50%, 40%)",
