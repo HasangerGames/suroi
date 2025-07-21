@@ -2,7 +2,7 @@
 
 This file is a report of all errors and missing keys in the translation files of this game.
 
-## 🇦🇱 Shqip (62% Complete) - ab.hjson
+## 🇦🇱 Shqip (61% Complete) - ab.hjson
 
 ### Invalid Keys
 
@@ -149,6 +149,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `experimental_forcefield_desc` is not defined
 - Key `thermal_goggles` is not defined
 - Key `thermal_goggles_desc` is not defined
+- Key `overdrive` is not defined
+- Key `overdrive_desc` is not defined
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
@@ -185,8 +187,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `experimental_forcefield_desc` is not defined
 - Key `thermal_goggles` is not defined
 - Key `thermal_goggles_desc` is not defined
+- Key `overdrive` is not defined
+- Key `overdrive_desc` is not defined
 
-## 🇨🇿 Čeština (65% Complete) - cz.hjson
+## 🇨🇿 Čeština (64% Complete) - cz.hjson
 
 ### Invalid Keys
 
@@ -322,6 +326,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `experimental_forcefield_desc` is not defined
 - Key `thermal_goggles` is not defined
 - Key `thermal_goggles_desc` is not defined
+- Key `overdrive` is not defined
+- Key `overdrive_desc` is not defined
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
@@ -430,6 +436,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `experimental_forcefield_desc` is not defined
 - Key `thermal_goggles` is not defined
 - Key `thermal_goggles_desc` is not defined
+- Key `overdrive` is not defined
+- Key `overdrive_desc` is not defined
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
@@ -559,10 +567,12 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `experimental_forcefield_desc` is not defined
 - Key `thermal_goggles` is not defined
 - Key `thermal_goggles_desc` is not defined
+- Key `overdrive` is not defined
+- Key `overdrive_desc` is not defined
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇪🇪 eesti (97% Complete) - et.hjson
+## 🇪🇪 eesti (96% Complete) - et.hjson
 
 ### Invalid Keys
 
@@ -735,8 +745,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `experimental_forcefield_desc` is not defined
 - Key `thermal_goggles` is not defined
 - Key `thermal_goggles_desc` is not defined
+- Key `overdrive` is not defined
+- Key `overdrive_desc` is not defined
 
-## 🇫🇮 suomi (68% Complete) - fi.hjson
+## 🇫🇮 suomi (67% Complete) - fi.hjson
 
 ### Invalid Keys
 
@@ -861,6 +873,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `experimental_forcefield_desc` is not defined
 - Key `thermal_goggles` is not defined
 - Key `thermal_goggles_desc` is not defined
+- Key `overdrive` is not defined
+- Key `overdrive_desc` is not defined
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
@@ -889,6 +903,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `experimental_forcefield_desc` is not defined
 - Key `thermal_goggles` is not defined
 - Key `thermal_goggles_desc` is not defined
+- Key `overdrive` is not defined
+- Key `overdrive_desc` is not defined
 
 ## 🇬🇷 Ελληνικά (74% Complete) - gr.hjson
 
@@ -991,6 +1007,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `experimental_forcefield_desc` is not defined
 - Key `thermal_goggles` is not defined
 - Key `thermal_goggles_desc` is not defined
+- Key `overdrive` is not defined
+- Key `overdrive_desc` is not defined
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
@@ -1134,6 +1152,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `experimental_forcefield_desc` is not defined
 - Key `thermal_goggles` is not defined
 - Key `thermal_goggles_desc` is not defined
+- Key `overdrive` is not defined
+- Key `overdrive_desc` is not defined
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
@@ -1154,6 +1174,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `experimental_forcefield_desc` is not defined
 - Key `thermal_goggles` is not defined
 - Key `thermal_goggles_desc` is not defined
+- Key `overdrive` is not defined
+- Key `overdrive_desc` is not defined
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
@@ -1312,10 +1334,12 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `experimental_forcefield_desc` is not defined
 - Key `thermal_goggles` is not defined
 - Key `thermal_goggles_desc` is not defined
+- Key `overdrive` is not defined
+- Key `overdrive_desc` is not defined
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇯🇵 日本語 (98% Complete) - jp.hjson
+## 🇯🇵 日本語 (97% Complete) - jp.hjson
 
 ### Invalid Keys
 
@@ -1584,8 +1608,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `experimental_forcefield_desc` is not defined
 - Key `thermal_goggles` is not defined
 - Key `thermal_goggles_desc` is not defined
+- Key `overdrive` is not defined
+- Key `overdrive_desc` is not defined
 
-## 🇱🇹 Lietuvių (65% Complete) - lt.hjson
+## 🇱🇹 Lietuvių (64% Complete) - lt.hjson
 
 ### Invalid Keys
 
@@ -1721,10 +1747,12 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `experimental_forcefield_desc` is not defined
 - Key `thermal_goggles` is not defined
 - Key `thermal_goggles_desc` is not defined
+- Key `overdrive` is not defined
+- Key `overdrive_desc` is not defined
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇱🇻 Latviešu (65% Complete) - lv.hjson
+## 🇱🇻 Latviešu (64% Complete) - lv.hjson
 
 ### Invalid Keys
 
@@ -1860,6 +1888,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `experimental_forcefield_desc` is not defined
 - Key `thermal_goggles` is not defined
 - Key `thermal_goggles_desc` is not defined
+- Key `overdrive` is not defined
+- Key `overdrive_desc` is not defined
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
@@ -1882,8 +1912,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `experimental_forcefield_desc` is not defined
 - Key `thermal_goggles` is not defined
 - Key `thermal_goggles_desc` is not defined
+- Key `overdrive` is not defined
+- Key `overdrive_desc` is not defined
 
-## 🇵🇱 Polski (68% Complete) - pl.hjson
+## 🇵🇱 Polski (67% Complete) - pl.hjson
 
 ### Invalid Keys
 
@@ -2008,10 +2040,12 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `experimental_forcefield_desc` is not defined
 - Key `thermal_goggles` is not defined
 - Key `thermal_goggles_desc` is not defined
+- Key `overdrive` is not defined
+- Key `overdrive_desc` is not defined
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🎀 Cute Engwish (72% Complete) - qen.hjson
+## 🎀 Cute Engwish (71% Complete) - qen.hjson
 
 ### Invalid Keys
 
@@ -2121,6 +2155,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `experimental_forcefield_desc` is not defined
 - Key `thermal_goggles` is not defined
 - Key `thermal_goggles_desc` is not defined
+- Key `overdrive` is not defined
+- Key `overdrive_desc` is not defined
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
@@ -2145,8 +2181,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `experimental_forcefield_desc` is not defined
 - Key `thermal_goggles` is not defined
 - Key `thermal_goggles_desc` is not defined
+- Key `overdrive` is not defined
+- Key `overdrive_desc` is not defined
 
-## 🇷🇺 Русский (96% Complete) - ru.hjson
+## 🇷🇺 Русский (95% Complete) - ru.hjson
 
 ### Invalid Keys
 
@@ -2169,6 +2207,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `experimental_forcefield_desc` is not defined
 - Key `thermal_goggles` is not defined
 - Key `thermal_goggles_desc` is not defined
+- Key `overdrive` is not defined
+- Key `overdrive_desc` is not defined
 
 ## 🇮🇳 தமிழ் (75% Complete) - ta.hjson
 
@@ -2267,6 +2307,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `experimental_forcefield_desc` is not defined
 - Key `thermal_goggles` is not defined
 - Key `thermal_goggles_desc` is not defined
+- Key `overdrive` is not defined
+- Key `overdrive_desc` is not defined
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
@@ -2354,6 +2396,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `experimental_forcefield_desc` is not defined
 - Key `thermal_goggles` is not defined
 - Key `thermal_goggles_desc` is not defined
+- Key `overdrive` is not defined
+- Key `overdrive_desc` is not defined
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
@@ -2454,6 +2498,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `experimental_forcefield_desc` is not defined
 - Key `thermal_goggles` is not defined
 - Key `thermal_goggles_desc` is not defined
+- Key `overdrive` is not defined
+- Key `overdrive_desc` is not defined
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
@@ -2475,8 +2521,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `experimental_forcefield_desc` is not defined
 - Key `thermal_goggles` is not defined
 - Key `thermal_goggles_desc` is not defined
+- Key `overdrive` is not defined
+- Key `overdrive_desc` is not defined
 
-## 🇨🇳 中文（简体） (98% Complete) - zh.hjson
+## 🇨🇳 中文（简体） (97% Complete) - zh.hjson
 
 ### Invalid Keys
 
@@ -2737,4 +2785,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `experimental_forcefield_desc` is not defined
 - Key `thermal_goggles` is not defined
 - Key `thermal_goggles_desc` is not defined
+- Key `overdrive` is not defined
+- Key `overdrive_desc` is not defined
 

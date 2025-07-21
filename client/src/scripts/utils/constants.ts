@@ -1,4 +1,4 @@
-import { Layer } from "@common/constants";
+import { Layer, ZIndexes } from "@common/constants";
 import { Color } from "pixi.js";
 
 export const FORCE_MOBILE = false;
@@ -12,6 +12,8 @@ export const SPLIT_SOUND_SPEED = 1.25;
 
 export const LAYER_TRANSITION_DELAY = 200;
 export const SOUND_FILTER_FOR_LAYERS = true; // TODO: test this, unsure if it glitches the sound manager. From testing in test server most of the times the sound would cut off and glitch.
+
+export const PLAYER_PARTICLE_ZINDEX = ZIndexes.Players + 0.5;
 
 export const HITBOX_COLORS = {
     obstacle: new Color("red"),

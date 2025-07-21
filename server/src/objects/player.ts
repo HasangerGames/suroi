@@ -88,6 +88,10 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     bulletTargetHitCount = 0;
     targetHitCountExpiration?: Timeout;
 
+    overdriveTimeout?: Timeout;
+    activeOverdrive = false;
+    overdriveKills = 0;
+
     teamID?: number;
     colorIndex = 0; // Assigned in the team.ts file.
 
@@ -1841,6 +1845,11 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 }
                 break;
             }
+            case PerkIds.Overdrive: {
+                this.overdriveTimeout?.kill();
+                this.overdriveKills = 0;
+                break;
+            }
         }
         // ! evil ends here
 
@@ -1927,6 +1936,11 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 this.shieldTimeout?.kill();
                 this.shield = 0;
                 this.setDirty();
+                break;
+            }
+            case PerkIds.Overdrive: {
+                this.overdriveTimeout?.kill();
+                this.overdriveKills = 0;
                 break;
             }
         }
@@ -2429,6 +2443,14 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                     }
                     break;
                 }
+                case PerkIds.Overdrive: {
+                    newModifiers.size *= perk.sizeMod;
+                    if (this.overdriveTimeout !== undefined) break;
+                    this.overdriveTimeout = this.game.addTimeout(() => {
+                        this.overdriveKills = 0;
+                    }, perk.achieveTime);
+                    break;
+                }
             }
         }
         // ! evil ends here
@@ -2607,6 +2629,26 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                             source.baseSpeed /= perk.speedMod;
                             source.activeBloodthirstEffect = false;
                         }, perk.speedBoostDuration);
+                        break;
+                    }
+
+                    case PerkIds.Overdrive: {
+                        if (source.activeOverdrive) break;
+
+                        if (source.overdriveKills++ >= perk.requiredKills) {
+                            source.overdriveKills = 0;
+                            source.health += perk.healBonus;
+                            source.adrenaline += perk.adrenalineBonus;
+                            source.baseSpeed *= perk.speedMod;
+                            source.activeOverdrive = true;
+                            source.setDirty();
+
+                            this.game.addTimeout(() => {
+                                source.baseSpeed /= perk.speedMod;
+                                source.activeOverdrive = false;
+                                source.setDirty();
+                            }, perk.speedBoostDuration);
+                        }
                         break;
                     }
                 }
@@ -3066,7 +3108,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 activeDisguise: this.activeDisguise,
                 infected: this.hasPerk(PerkIds.Infected),
                 backEquippedMelee: this.backEquippedMelee,
-                hasBubble: this.hasBubble
+                hasBubble: this.hasBubble,
+                activeOverdrive: this.activeOverdrive
             }
         };
 

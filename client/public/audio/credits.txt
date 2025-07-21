@@ -162,3 +162,5 @@ Generic pickup sound - Katloo
 Shield (Bubble) Sounds
   - Destroyed Sound: alien_tripod_debris_glass_falling by Alien Tripod, BluezoneCorp - https://sonniss.com/product/alien-tripod
   - Equip/Obtain Sound: bluezone_BC0303_futuristic_user_interface_transition_006 by Futuristic User Interface, BluezoneCorp - https://sonniss.com/product/futuristic-user-interface
+
+Overdrive Sound: "Boost" by freesound_community on PixaBay - https://pixabay.com/users/freesound_community-46691455/

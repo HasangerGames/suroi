@@ -841,7 +841,7 @@ class UIManagerClass {
         if (perks) {
             const oldPerks = Array.from(PerkManager.perks);
             PerkManager.perks = perks;
-            for (let i = 0; i < 3; i++) { // TODO make a constant for max perks
+            for (let i = 0; i < GameConstants.player.maxPerks; i++) {
                 const newPerk = perks[i];
                 if (newPerk === undefined) {
                     this.resetPerkSlot(i);
@@ -1083,7 +1083,7 @@ class UIManagerClass {
     private readonly _perkSlots: Array<JQuery<HTMLDivElement> | undefined> = [];
     private readonly _animationTimeouts: Array<number | undefined> = [];
     updatePerkSlot(perkDef: PerkDefinition, index: number): void {
-        if (index > 3) index = 0; // overwrite stuff ig?
+        if (index > GameConstants.player.maxPerks) index = 0; // overwrite stuff ig?
         // no, write a hud that can handle it
 
         const container = this._perkSlots[index] ??= $<HTMLDivElement>(`#perk-slot-${index}`);

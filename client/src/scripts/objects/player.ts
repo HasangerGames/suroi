@@ -31,7 +31,7 @@ import { ParticleManager, type Particle, type ParticleEmitter, type ParticleOpti
 import { PerkManager } from "../managers/perkManager";
 import { SoundManager, type GameSound } from "../managers/soundManager";
 import { UIManager } from "../managers/uiManager";
-import { BULLET_WHIZ_SCALE, DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS, PIXI_SCALE, TEAMMATE_COLORS, UI_DEBUG_MODE } from "../utils/constants";
+import { BULLET_WHIZ_SCALE, DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS, PIXI_SCALE, PLAYER_PARTICLE_ZINDEX, TEAMMATE_COLORS, UI_DEBUG_MODE } from "../utils/constants";
 import { DebugRenderer } from "../utils/debugRenderer";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { getTranslatedString } from "../utils/translations/translations";
@@ -68,6 +68,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
     infected = false;
 
     hasBubble = false;
+
+    activeOverdrive = false;
 
     private _oldItem = this.activeItem;
 
@@ -553,7 +555,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     activeDisguise,
                     infected,
                     backEquippedMelee,
-                    hasBubble
+                    hasBubble,
+                    activeOverdrive
                 }
             } = data;
 
@@ -774,6 +777,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 }
             }
 
+            // Shield
             if (hasBubble !== this.hasBubble) {
                 this.hasBubble = hasBubble;
                 const bubbleSprite = this.images.bubbleSprite;
@@ -786,7 +790,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                             frames: perkDef.shieldParticle,
                             position: this.hitbox.randomPoint(),
                             layer: this.layer,
-                            zIndex: ZIndexes.Players + 0.5,
+                            zIndex: PLAYER_PARTICLE_ZINDEX,
                             lifetime: 1500,
                             rotation: {
                                 start: randomRotation(),
@@ -832,6 +836,41 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 const { onBack } = backMelee;
                 backMeleeSprite.setPos(onBack.position.x, onBack.position.y);
                 backMeleeSprite.setAngle(onBack.angle);
+            }
+
+            // Overdrive
+            if (activeOverdrive !== this.activeOverdrive) {
+                this.activeOverdrive = activeOverdrive;
+
+                this.container.tint = activeOverdrive ? 0xff0000 : 0xffffff;
+                if (!isNew) {
+                    if (activeOverdrive) {
+                        const perkDef = PerkData[PerkIds.Overdrive];
+                        this.playSound(perkDef.activatedSound);
+                        ParticleManager.spawnParticles(10, () => ({
+                            frames: perkDef.particle,
+                            position: this.hitbox.randomPoint(),
+                            layer: this.layer,
+                            zIndex: PLAYER_PARTICLE_ZINDEX,
+                            lifetime: 5000,
+                            rotation: {
+                                start: randomRotation(),
+                                end: randomRotation()
+                            },
+                            scale: {
+                                start: randomFloat(0.85, 0.95),
+                                end: 0,
+                                ease: EaseFunctions.quarticIn
+                            },
+                            alpha: {
+                                start: 1,
+                                end: 0,
+                                ease: EaseFunctions.sexticIn
+                            },
+                            speed: Vec.fromPolar(randomRotation(), 5)
+                        }));
+                    }
+                }
             }
         }
 
@@ -2035,7 +2074,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
         ParticleManager.spawnParticle({
             frames: particle,
-            zIndex: ZIndexes.Players + 0.5,
+            zIndex: PLAYER_PARTICLE_ZINDEX,
             layer: this.layer,
             position,
             lifetime: 1000,

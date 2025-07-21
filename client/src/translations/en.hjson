@@ -423,5 +423,7 @@
 "experimental_forcefield_desc": "Gain a shield that blocks damage. The shield regenerates and respawns every 20 seconds."
 "thermal_goggles": "Thermal Goggles"
 "thermal_goggles_desc": "Reveals nearby players' healthbars."
+"overdrive": "Overdrive"
+"overdrive_desc": "Gain a speed boost, healthpoints and adrenaline every 3 kills. Those 3 kills MUST be achieved in LESS than 30 seconds due to overcharge."
 "partners": "Partners"
 "username_placeholder": "Enter a nickname"
