@@ -2662,7 +2662,6 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                                 this.overdriveCooldown?.kill();
                                 this.overdriveCooldown = this.game.addTimeout(() => {
                                     source.canUseOverdrive = true;
-                                    console.log("cooldown over!");
                                 }, perk.cooldown);
                             }, perk.speedBoostDuration);
                         }
