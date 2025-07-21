@@ -91,6 +91,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     overdriveTimeout?: Timeout;
     activeOverdrive = false;
     overdriveKills = 0;
+    overdriveCooldown?: Timeout;
+    canUseOverdrive = true;
 
     teamID?: number;
     colorIndex = 0; // Assigned in the team.ts file.
@@ -1766,6 +1768,10 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 .set(perkDef, this.game.now);
         }
 
+        if (this.hasPerk(PerkIds.HollowPoints) && this.hasPerk(PerkIds.ExperimentalForcefield) && this.hasPerk(PerkIds.ThermalGoggles)) {
+            this.addPerk(PerkIds.Overdrive);
+        }
+
         // ! evil starts here
         // some perks need to perform setup when added
         switch (perkDef.idString) {
@@ -1866,6 +1872,10 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         if (!this.perks.includes(perkDef)) return;
 
         removeFrom(this.perks, perkDef);
+
+        if (this.hasPerk(PerkIds.Overdrive)) {
+            this.removePerk(PerkIds.Overdrive);
+        }
 
         const perkUpdateMap = this.perkUpdateMap;
         if ("updateInterval" in perkDef && perkUpdateMap !== undefined) {
@@ -2633,13 +2643,14 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                     }
 
                     case PerkIds.Overdrive: {
-                        if (source.activeOverdrive) break;
+                        if (source.activeOverdrive || !source.canUseOverdrive) break;
 
                         if (source.overdriveKills++ >= perk.requiredKills) {
                             source.overdriveKills = 0;
                             source.health += perk.healBonus;
                             source.adrenaline += perk.adrenalineBonus;
                             source.baseSpeed *= perk.speedMod;
+                            source.canUseOverdrive = false;
                             source.activeOverdrive = true;
                             source.setDirty();
 
@@ -2647,6 +2658,12 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                                 source.baseSpeed /= perk.speedMod;
                                 source.activeOverdrive = false;
                                 source.setDirty();
+
+                                this.overdriveCooldown?.kill();
+                                this.overdriveCooldown = this.game.addTimeout(() => {
+                                    source.canUseOverdrive = true;
+                                    console.log("cooldown over!");
+                                }, perk.cooldown);
                             }, perk.speedBoostDuration);
                         }
                         break;

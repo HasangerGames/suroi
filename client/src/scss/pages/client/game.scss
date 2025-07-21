@@ -1816,8 +1816,18 @@
     bottom: 10px;
     left: 75%;
     transform: translateX(-75%);
-    flex-direction: row;
+    flex-direction: column-reverse;
     z-index: 1002; /* idk what z-index to put here but it needs it because of joysticks-container */
+
+    .perk-set {
+        display: flex;
+        margin: 0;
+
+        .inventory-slot {
+            visibility: hidden;
+            margin: 2px;
+        }
+    }
 
     @media screen and (max-width: variables.$screen_large) {
         bottom: 5px;
@@ -1825,7 +1835,6 @@
     }
 
     @media screen and (max-width: variables.$screen_medium) {
-        flex-direction: row;
         left: 135px;
         transform: none;
         width: fit-content;
@@ -1871,7 +1880,6 @@
 
             .item-tooltip {
                 bottom: 40px;
-                left: -15px;
             }
         }
 
