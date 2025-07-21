@@ -82,7 +82,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
         ],
         nsd_crate: {
             min: 3,
-            max: 5,
+            max: 4,
             loot: [
                 { table: "special_guns", weight: 1 },
                 { table: "special_equipment", weight: 0.75 },
@@ -92,7 +92,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
         },
         lansiraami_crate: {
             min: 3,
-            max: 5,
+            max: 4,
             loot: [
                 { table: "special_guns", weight: 1 },
                 { table: "special_equipment", weight: 0.75 },
