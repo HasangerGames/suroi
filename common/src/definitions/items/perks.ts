@@ -510,7 +510,7 @@ const perks = [
         healBonus: 25,
         adrenalineBonus: 25,
         achieveTime: 30e3, // msec
-        cooldown: 30e3 // msec
+        cooldown: 20e3 // msec
     }
 ] as const satisfies ReadonlyArray<BasePerkDefinition & Record<string, unknown>>;
 

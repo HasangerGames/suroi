@@ -70,6 +70,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
     hasBubble = false;
 
     activeOverdrive = false;
+    overdriveCooldown?: Timeout;
 
     private _oldItem = this.activeItem;
 
@@ -843,10 +844,16 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 this.activeOverdrive = activeOverdrive;
 
                 this.container.tint = activeOverdrive ? 0xff0000 : 0xffffff;
+
                 if (!isNew) {
-                    if (activeOverdrive) {
-                        const perkDef = PerkData[PerkIds.Overdrive];
-                        this.playSound(perkDef.activatedSound);
+                    const perkDef = PerkData[PerkIds.Overdrive];
+
+                    const perkSlot = UIManager._perkSlots.find(element => {
+                        return element?.attr("data-idString") === perkDef.idString;
+                    });
+
+                    const spawnParticles = (): void => {
+                        if (perkSlot) perkSlot.toggleClass("deactivated");
                         ParticleManager.spawnParticles(10, () => ({
                             frames: perkDef.particle,
                             position: this.hitbox.randomPoint(),
@@ -869,6 +876,16 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                             },
                             speed: Vec.fromPolar(randomRotation(), 5)
                         }));
+                        this.playSound(perkDef.activatedSound);
+                    };
+
+                    if (activeOverdrive) {
+                        spawnParticles();
+                    } else {
+                        this.overdriveCooldown?.kill();
+                        this.overdriveCooldown = Game.addTimeout(() => {
+                            spawnParticles();
+                        }, perkDef.cooldown);
                     }
                 }
             }

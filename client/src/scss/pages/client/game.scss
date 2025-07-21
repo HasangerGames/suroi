@@ -1811,6 +1811,12 @@
     }
 }
 
+.deactivated {
+    background: rgb(55, 55, 55) !important;
+    filter: grayscale(100%);
+    opacity: 0.75;
+}
+
 #perk-container {
     position: absolute;
     bottom: 10px;
@@ -1848,7 +1854,6 @@
         width: 55px;
         height: 55px;
         transition-property: width height;
-
         cursor: crosshair;
 
         &.has-item {

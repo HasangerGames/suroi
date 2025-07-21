@@ -1080,7 +1080,7 @@ class UIManagerClass {
         container.off("pointerdown");
     }
 
-    private readonly _perkSlots: Array<JQuery<HTMLDivElement> | undefined> = [];
+    readonly _perkSlots: Array<JQuery<HTMLDivElement> | undefined> = [];
     private readonly _animationTimeouts: Array<number | undefined> = [];
     updatePerkSlot(perkDef: PerkDefinition, index: number): void {
         if (index > GameConstants.player.maxPerks) index = 0; // overwrite stuff ig?
