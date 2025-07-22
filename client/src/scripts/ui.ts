@@ -2171,7 +2171,7 @@ export async function setUpUI(): Promise<void> {
         });
     }
 
-    for (const perkSlot of ["#perk-slot-0", "#perk-slot-1", "#perk-slot-2"]) {
+    for (const perkSlot of ["#perk-slot-0", "#perk-slot-1", "#perk-slot-2", "#perk-slot-3"]) {
         $(perkSlot)[0].addEventListener("pointerdown", function(e: PointerEvent): void {
             e.stopImmediatePropagation();
             if (e.button !== 2) return;

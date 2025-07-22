@@ -1182,9 +1182,14 @@
         visibility: hidden;
     }
 
+    #coordinates-hud {
+        height: 50px;
+        font-size: 17px;
+    }
+
     @media screen and (max-height: variables.$screen-large) and (max-width: variables.$screen_large) {
         position: absolute;
-        bottom: 35px;
+        bottom: 40px;
         left: 135px;
         display: block;
         padding: 5px;
@@ -1192,6 +1197,10 @@
         #gas-timer {
             width: 65px;
             font-size: 15px;
+        }
+
+        #coordinates-hud {
+            font-size: 14px;
         }
     }
 }
@@ -1802,13 +1811,29 @@
     }
 }
 
+.deactivated {
+    background: rgb(55, 55, 55) !important;
+    filter: grayscale(100%);
+    opacity: 0.75;
+}
+
 #perk-container {
     position: absolute;
     bottom: 10px;
     left: 75%;
     transform: translateX(-75%);
-    flex-direction: row;
+    flex-direction: column-reverse;
     z-index: 1002; /* idk what z-index to put here but it needs it because of joysticks-container */
+
+    .perk-set {
+        display: flex;
+        margin: 0;
+
+        .inventory-slot {
+            visibility: hidden;
+            margin: 2px;
+        }
+    }
 
     @media screen and (max-width: variables.$screen_large) {
         bottom: 5px;
@@ -1816,7 +1841,6 @@
     }
 
     @media screen and (max-width: variables.$screen_medium) {
-        flex-direction: row;
         left: 135px;
         transform: none;
         width: fit-content;
@@ -1830,7 +1854,6 @@
         width: 55px;
         height: 55px;
         transition-property: width height;
-
         cursor: crosshair;
 
         &.has-item {
@@ -1862,7 +1885,6 @@
 
             .item-tooltip {
                 bottom: 40px;
-                left: -15px;
             }
         }
 

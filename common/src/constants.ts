@@ -31,6 +31,7 @@ export const GameConstants = {
         maxReviveDist: 5,
         bleedOutDPMs: 0.002, // === 2 dps
         maxPerkCount: 1,
+        maxPerks: 4,
         buildingVisionSize: 20,
         rateLimitPunishmentTrigger: 10,
         emotePunishmentTime: 5000, // ms

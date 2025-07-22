@@ -87,7 +87,8 @@ export const enum PerkIds {
     // H.U.N.T.E.D.
     HollowPoints = "hollow_points",
     ExperimentalForcefield = "experimental_forcefield",
-    ThermalGoggles = "thermal_goggles"
+    ThermalGoggles = "thermal_goggles",
+    Overdrive = "overdrive"
 }
 
 const perks = [
@@ -490,6 +491,26 @@ const perks = [
         noDrop: true,
         updateInterval: 0,
         detectionRadius: 100
+    },
+    {
+        idString: PerkIds.Overdrive,
+        name: "Overdrive",
+        defType: DefinitionType.Perk,
+        category: PerkCategories.Hunted,
+        quality: PerkQualities.Negative,
+        plumpkinGambleIgnore: true,
+        noDrop: true,
+
+        particle: "charged_particle",
+        activatedSound: "overdrive",
+        requiredKills: 2, // its actually 3 i know but code works with 2 (it takes it as 3)
+        speedMod: 1.25,
+        speedBoostDuration: 10e3, // msec
+        sizeMod: 1.05,
+        healBonus: 25,
+        adrenalineBonus: 25,
+        achieveTime: 30e3, // msec
+        cooldown: 20e3 // msec
     }
 ] as const satisfies ReadonlyArray<BasePerkDefinition & Record<string, unknown>>;
 

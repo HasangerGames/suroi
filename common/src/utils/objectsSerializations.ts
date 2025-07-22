@@ -59,6 +59,7 @@ export interface ObjectsNetData extends BaseObjectsNetData {
             readonly infected: boolean
             readonly backEquippedMelee?: MeleeDefinition
             readonly hasBubble: boolean
+            readonly activeOverdrive: boolean
         }
     }
     //
@@ -251,7 +252,8 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 activeDisguise,
                 infected,
                 backEquippedMelee,
-                hasBubble
+                hasBubble,
+                activeOverdrive
             } }
         ): void {
             stream.writeLayer(layer);
@@ -273,7 +275,8 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 hasDisguise,
                 infected,
                 hasBackEquippedMelee,
-                hasBubble
+                hasBubble,
+                activeOverdrive
             );
             stream.writeUint8(teamID);
             Loots.writeToStream(stream, activeItem);
@@ -333,7 +336,8 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 hasDisguise,
                 infected,
                 hasBackEquippedMelee,
-                hasBubble
+                hasBubble,
+                activeOverdrive
             ] = stream.readBooleanGroup2();
 
             return {
@@ -353,7 +357,8 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 activeDisguise: hasDisguise ? Obstacles.readFromStream(stream) : undefined,
                 infected,
                 backEquippedMelee: hasBackEquippedMelee ? Melees.readFromStream(stream) : undefined,
-                hasBubble
+                hasBubble,
+                activeOverdrive
             };
         }
     },
