@@ -937,7 +937,7 @@ export class GameMap {
             collides?: (position: Vector) => boolean
             collidableObjects?: Partial<Record<ObjectCategory, boolean>>
             spawnMode?: MapObjectSpawnMode
-            spawnOffset?: Vector
+            spawnOffset?: Vector | { min: Vector, max: Vector }
             /** used by MapObjectSpawnMode.Ring */
             spawnRadius?: number
             bunkerHitbox?: Hitbox
@@ -1011,14 +1011,35 @@ export class GameMap {
                             }
                             case 0:
                             case 2: {
-                                beachRect.min.y += width;
+                                beachRect.min.y += height;
                                 beachRect.max.y -= height;
                                 break;
                             }
                         }
 
-                        const point = beachRect.randomPoint();
-                        return params?.spawnOffset ? Vec.addAdjust(point, params.spawnOffset, orientation) : point;
+                        let spawnOffset = params?.spawnOffset;
+                        let point: Vector;
+                        if (spawnOffset && "min" in spawnOffset) {
+                            const { min, max } = spawnOffset;
+                            spawnOffset = randomVector(min.x, max.x, min.y, max.y);
+
+                            switch (orientation) {
+                                case 1:
+                                case 3: {
+                                    point = Vec(randomFloat(beachRect.min.x, beachRect.max.x), beachRect.getCenter().y);
+                                    break;
+                                }
+                                case 0:
+                                case 2: {
+                                    point = Vec(beachRect.getCenter().x, randomFloat(beachRect.min.y, beachRect.max.y));
+                                    break;
+                                }
+                            }
+                        } else {
+                            point = beachRect.randomPoint();
+                        }
+
+                        return spawnOffset ? Vec.addAdjust(point, spawnOffset, orientation) : point;
                     };
                 }
                 case MapObjectSpawnMode.Trail: {

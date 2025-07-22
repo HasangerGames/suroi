@@ -779,11 +779,7 @@ const maps = {
             warehouse_hunted: 2,
             docks: 2,
             outhouse: 3,
-            cabin: 3,
-            tavern: 1,
-            moose_bunker: 1,
-            bear_bunker: 1,
-            fox_bunker: 1
+            cabin: 3
         },
         majorBuildings: ["tavern", "sawmill"],
         obstacles: {

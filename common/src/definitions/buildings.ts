@@ -97,7 +97,7 @@ export interface BuildingDefinition extends ObjectDefinition {
      */
     readonly spawnMode?: MapObjectSpawnMode
     readonly spawnOrientation?: Orientation
-    readonly spawnOffset?: Vector
+    readonly spawnOffset?: Vector | { min: Vector, max: Vector }
     /** used by MapObjectSpawnMode.Ring */
     readonly spawnRadius?: number
 
@@ -13152,7 +13152,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         particle: "metal_particle",
         reflectBullets: true,
         spawnOrientation: 3,
-        spawnOffset: Vec(28, 0),
+        spawnOffset: { min: Vec(35, 0), max: Vec(45, 0) },
         allowFlyover: FlyoverPref.Always,
         hitbox: new GroupHitbox(
             RectangleHitbox.fromRect(1.35, 17.14, Vec(38.34, 18.02)),
