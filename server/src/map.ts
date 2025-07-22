@@ -520,6 +520,10 @@ export class GameMap {
             } = buildingDef;
             let spawnedCount = 0;
 
+            if (spawnOffset && "min" in spawnOffset) {
+                throw new Error("min/max spawnOffset unsupported for bridges");
+            }
+
             const generateBridge = (river: River, [start, end]: [number, number]): void => {
                 if (spawnedCount >= count) return;
 
