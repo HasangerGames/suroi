@@ -1696,7 +1696,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
     },
     hunted: {
         ground_loot: [
-            { table: "equipment", weight: 1 },
+            { table: "equipment", weight: 1.05 },
             { table: "healing_items", weight: 0.9 },
             { table: "ammo", weight: 0.9 },
             { table: "guns", weight: 0.9 },

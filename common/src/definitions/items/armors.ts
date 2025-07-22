@@ -100,7 +100,7 @@ export const Armors = new ObjectDefinitions<ArmorDefinition>([
         defType: DefinitionType.Armor,
         armorType: ArmorType.Vest,
         level: 4,
-        damageReduction: 0.5,
+        damageReduction: 0.47,
         color: 0x303030,
         perk: PerkIds.ExperimentalForcefield,
         mapIndicator: "vest_indicator"
