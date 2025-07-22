@@ -1,7 +1,7 @@
-import * as svgParser from "svg-parser";
-import * as fs from "node:fs";
 import { ColorStyles, styleText } from "@common/utils/logging";
 import { readDirectory } from "@common/utils/readDirectory";
+import * as fs from "node:fs";
+import * as svgParser from "svg-parser";
 
 const MAX_SIZES: Record<string, number> = {
     buildings: 300_000,
@@ -62,6 +62,8 @@ const fileSizes: Record<string, {
     biggest: number
 }> = {};
 
+const unminifiedFiles: string[] | undefined = process.argv.includes("--fix") ? [] : undefined;
+
 const svgPaths = [
     ...readDirectory("../client/public/img/game", /\.(svg)$/i),
     ...readDirectory("../client/public/img/killfeed", /\.(svg)$/i)
@@ -72,8 +74,6 @@ function checkNode(path: string, node: svgParser.ElementNode): void {
 
     switch (node.tagName) {
         case "svg": {
-            /* TODO: renable this after i fix all files that trigger it
-
             if (!node.properties) break;
             const { width, height } = node.properties;
 
@@ -83,7 +83,6 @@ function checkNode(path: string, node: svgParser.ElementNode): void {
                     `Root element sizes are not integers; width: ${width}, height: ${height}`
                 );
             }
-            */
             break;
         }
         case "path": {
@@ -146,6 +145,7 @@ for (const path of svgPaths) {
 
     if (content.split("\n").length > 1) {
         addError(path, "Unminified svg");
+        unminifiedFiles?.push(path);
     }
 
     const rootNode = svgParser.parse(content);
@@ -185,6 +185,10 @@ for (const file in fileErrors) {
     for (const error of errors) {
         console.log(` - ${error} `);
     }
+}
+
+if (unminifiedFiles?.length) {
+    console.log(`Command to fix: svgo ${unminifiedFiles.join(" ")}`);
 }
 
 if (errorsFound) {
