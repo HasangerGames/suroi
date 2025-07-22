@@ -132,6 +132,7 @@ export const Modes: Record<ModeName, ModeDefinition> = {
         unlockStage: 3, // do not touch
         forcedGoldAirdropStage: 5,
         overrideUpstairsFunctionality: true,
+        replaceMenuMusic: true,
         playButtonImage: "./img/logos/lansiraami_logo.svg"
     },
     birthday: { // copy of normal
