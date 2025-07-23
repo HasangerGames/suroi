@@ -39,6 +39,7 @@ type CommonObstacleDefinition = ObjectDefinition & {
     readonly zIndex?: ZIndexes
     readonly airdropUnlock?: boolean
     readonly interactObstacleIdString?: ReferenceTo<ObstacleDefinition>
+    readonly reduceParentBuildingVolumeOnActivateBecauseThereIsNoOtherWayToFixThisCrapHasangerIsVerySigma?: boolean
     readonly spawnWithWaterOverlay?: boolean
     readonly waterOverlay?: {
         readonly scaleX: number
@@ -140,6 +141,7 @@ type CommonObstacleDefinition = ObjectDefinition & {
     readonly sound?: ({ readonly name: string } | { readonly names: string[] }) & {
         readonly maxRange?: number
         readonly falloff?: number
+        readonly dynamic?: boolean
     }
 } & (
     & TreeMixin
@@ -6713,7 +6715,33 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         frames: {
             particle: "reinforced_crate_particle"
         }
-    }
+    },
+    {
+        idString: "tavern_recorder_systems_disabled",
+        name: "Tavern Recorder Systems",
+        defType: DefinitionType.Obstacle,
+        material: "wood",
+        health: 1000,
+        indestructible: true,
+        noCollisions: true,
+        noBulletCollision: true,
+        noMeleeCollision: true,
+        isActivatable: true,
+        reduceParentBuildingVolumeOnActivateBecauseThereIsNoOtherWayToFixThisCrapHasangerIsVerySigma: true,
+        interactObstacleIdString: "recorder_interactable",
+        hitbox: new CircleHitbox(4),
+        frames: {
+            particle: "tavern_bar_particle",
+            activated: "tavern_recorder_systems_activated"
+        },
+        sound: {
+            name: "tavern_recording",
+            maxRange: 80,
+            falloff: 0.5,
+            dynamic: true
+        },
+        rotationMode: RotationMode.Limited
+    },
 ] satisfies readonly RawObstacleDefinition[] as readonly RawObstacleDefinition[]).flatMap((def: Mutable<RawObstacleDefinition>) => {
     if (def.variations !== undefined) (def as Mutable<ObstacleDefinition>).variationBits = Math.ceil(Math.log2(def.variations));
     if (def.allowFlyover === undefined) def.allowFlyover = FlyoverPref.Sometimes;

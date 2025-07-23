@@ -12886,10 +12886,11 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             }
         ],
         obstacles: IS_CLIENT ? undefined : [
-            { idString: "tavern_bar_collider", position: Vec(0, 0), rotation: 0 }, // might be turned into an obstacle for recording
+            { idString: "tavern_bar_collider", position: Vec(0, 0), rotation: 0 },
             { idString: "tavern_table_collider", position: Vec(0, 0), rotation: 0 },
             { idString: "tavern_basement_collider_hack", position: Vec(43.66, -53.7), rotation: 0, layer: Layer.ToBasement },
             { idString: "tavern_stair", position: Vec(40.82, -5), rotation: 0, layer: Layer.ToBasement },
+            { idString: "tavern_recorder_systems_disabled", position: Vec(6.77, -0.26), rotation: 0 },
 
             { idString: "tavern_wall_1", position: Vec(-18.725, -32.3), rotation: 0 },
             { idString: "tavern_wall_2", position: Vec(-39.42, -41.21), rotation: 0 },
