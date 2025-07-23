@@ -155,8 +155,8 @@ export class Game implements GameData {
      */
     readonly mapPings: PingSerialization[] = [];
 
-    private _nextMapIndicatorID = -1;
-    get nextMapIndicatorID(): number { return ++this._nextMapIndicatorID; }
+    private readonly _mapIndicatorIDAllocator = new IDAllocator(5);
+    get nextMapIndicatorID(): number { return this._mapIndicatorIDAllocator.takeNext(); }
 
     readonly mapIndicators: MapIndicatorSerialization[] = [];
 
@@ -455,6 +455,7 @@ export class Game implements GameData {
 
         for (const indicator of this.mapIndicators) {
             if (indicator.dead) {
+                this._mapIndicatorIDAllocator.give(indicator.id);
                 removeFrom(this.mapIndicators, indicator);
                 continue;
             }
