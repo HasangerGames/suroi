@@ -16,7 +16,7 @@ export function setUpNetGraph() {
     const bytes = makeFormatter(["kB", "B"], 100);
     const time = makeFormatter(["s", "ms"]);
 
-    const anchor = Vec.create(5, 300);
+    const anchor = Vec(5, 300);
 
     const receiving = new SegmentedBarGraph({
         ...anchor,
@@ -36,7 +36,7 @@ export function setUpNetGraph() {
         ).map(([name, color]) => ({ name, color, alpha: 0.5 }))
     });
 
-    const sendGraphOffset = Vec.create(0, 135);
+    const sendGraphOffset = Vec(0, 135);
     const sending = new SingleGraph({
         ...Vec.add(anchor, sendGraphOffset),
         height: 30,
@@ -45,7 +45,7 @@ export function setUpNetGraph() {
         background: { stroke: { color: "transparent" } }
     });
 
-    const pingGraphOffset = Vec.create(0, 205);
+    const pingGraphOffset = Vec(0, 205);
     const ping = new SingleGraph({
         ...Vec.add(anchor, pingGraphOffset),
         height: 15,
@@ -54,7 +54,7 @@ export function setUpNetGraph() {
         background: { stroke: { color: "transparent" } }
     });
 
-    const fpsGraphOffset = Vec.create(0, 225);
+    const fpsGraphOffset = Vec(0, 225);
     const fps = new SingleGraph({
         ...Vec.add(anchor, fpsGraphOffset),
         height: 15,

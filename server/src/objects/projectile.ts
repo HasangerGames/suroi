@@ -13,6 +13,7 @@ import type { ThrowableItem } from "../inventory/throwableItem";
 import { BaseGameObject, DamageParams, GameObject } from "./gameObject";
 import { Obstacle } from "./obstacle";
 import { randomFloat } from "@common/utils/random";
+import { Building } from "./building";
 
 export interface ProjectileParams {
     readonly position: Vector
@@ -58,7 +59,7 @@ export class Projectile extends BaseGameObject.derive(ObjectCategory.Projectile)
 
     private _angularVelocity: number;
     private _fuseTime: number;
-    private readonly _obstaclesBelow = new Set<Obstacle>();
+    private readonly _obstaclesBelow = new Set<Obstacle | Building>();
 
     constructor(game: Game, params: ProjectileParams) {
         super(game, params.position);
@@ -177,8 +178,8 @@ export class Projectile extends BaseGameObject.derive(ObjectCategory.Projectile)
             const { object } = collision;
             if (!object.hitbox) continue;
 
-            if (object.isObstacle) {
-                if (object.definition.isStair) {
+            if (object.isObstacle || object.isBuilding) {
+                if (object.isObstacle && object.definition.isStair) {
                     object.handleStairInteraction(this);
                     continue;
                 }
@@ -216,7 +217,7 @@ export class Projectile extends BaseGameObject.derive(ObjectCategory.Projectile)
         let sittingOnObstacle = false;
         // find obstacle with highest height
         for (const obstacle of this._obstaclesBelow) {
-            if (!obstacle.hitbox.collidesWith(this.hitbox) || obstacle.dead) {
+            if (!obstacle.hitbox?.collidesWith(this.hitbox) || obstacle.dead) {
                 this._obstaclesBelow.delete(obstacle);
                 continue;
             }
@@ -313,7 +314,7 @@ export class Projectile extends BaseGameObject.derive(ObjectCategory.Projectile)
     }
 
     private _reflect(normal: Vector): void {
-        const length = Vec.length(this._velocity);
+        const length = Vec.len(this._velocity);
         const direction = Vec.scale(this._velocity, 1 / length);
         const dot = Vec.dotProduct(direction, normal);
         const newDir = Vec.add(Vec.scale(normal, dot * -2), direction);

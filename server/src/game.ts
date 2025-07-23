@@ -179,13 +179,13 @@ export class Game implements GameData {
     }
 
     private _started = false;
+    private _stopped = false;
 
     // #region GameData interface members
 
     startedTime = Number.MAX_VALUE; // Default of Number.MAX_VALUE makes it so games that haven't started yet are joined first
     allowJoin = false;
     over = false;
-    stopped = false;
 
     get aliveCount(): number {
         return this.livingPlayers.size;
@@ -235,7 +235,6 @@ export class Game implements GameData {
             aliveCount: 0,
             allowJoin: false,
             over: false,
-            stopped: false,
             startedTime: Number.MAX_VALUE // Makes it so games that haven't started yet are joined first
         });
 
@@ -247,8 +246,6 @@ export class Game implements GameData {
         this.grid = new Grid(this, width, height);
         this.map = new GameMap(this, map);
         this.gas = new Gas(this);
-
-        this.setGameData({ allowJoin: true });
 
         this.pluginManager.emit("game_created", this);
         this.log(`Created in ${Date.now() - this._start} ms`);
@@ -381,7 +378,7 @@ export class Game implements GameData {
                     position,
                     definition: onHitProjectile,
                     height: 0,
-                    velocity: Vec.create(0, 0),
+                    velocity: Vec(0, 0),
                     layer: object.layer,
                     rotation: randomRotation()
                 });
@@ -473,6 +470,7 @@ export class Game implements GameData {
                     ? this.aliveCount <= (this.teamMode as number) && new Set([...this.livingPlayers].map(p => p.teamID)).size <= 1
                     : this.aliveCount <= 1
             )
+            && this.now - this.startedTime > 5000
         ) {
             for (const player of this.livingPlayers) {
                 const { movement } = player;
@@ -492,7 +490,7 @@ export class Game implements GameData {
                 for (const player of this.connectedPlayers) {
                     player.disconnect("Game ended");
                 }
-                this.setGameData({ stopped: true });
+                this._stopped = true;
                 this.log("Ended");
             }, 1000);
         }
@@ -512,7 +510,7 @@ export class Game implements GameData {
 
         this.pluginManager.emit("game_tick", this);
 
-        if (!this.stopped) {
+        if (!this._stopped) {
             setTimeout(this.tick.bind(this), this.idealDt - (Date.now() - now));
         }
     }
@@ -531,14 +529,14 @@ export class Game implements GameData {
 
     kill(): void {
         for (const player of this.connectedPlayers) {
-            player.disconnect("Server killed");
+            player.disconnect("Game killed");
         }
 
         this.setGameData({
             allowJoin: false,
-            over: true,
-            stopped: true
+            over: true
         });
+        this._stopped = true;
 
         this.log("Killed");
     }
@@ -671,7 +669,7 @@ export class Game implements GameData {
             default: {
                 const [x, y, layer] = spawnOptions?.position ?? [];
 
-                const position = Vec.create(
+                const position = Vec(
                     x ?? this.map.width / 2,
                     y ?? this.map.height / 2
                 );
@@ -688,7 +686,7 @@ export class Game implements GameData {
         }
 
         // this should never happen
-        spawnPosition ??= Vec.create(0, 0);
+        spawnPosition ??= Vec(0, 0);
 
         // Player is added to the players array when a JoinPacket is received from the client
         const player = new Player(this, socket, spawnPosition, spawnLayer, team);
@@ -770,7 +768,7 @@ export class Game implements GameData {
                 this.addTimeout(() => {
                     this.log("Preventing new players from joining");
                     this.setGameData({ allowJoin: false });
-                }, GAME_SPAWN_WINDOW * 1000);
+                }, (GAME_SPAWN_WINDOW * 1000) - 3000);
             }, 3000);
         }
 
@@ -865,7 +863,7 @@ export class Game implements GameData {
     // ! the generic Def as never for calls resembling addLoot(SomeSchema.fromString("some_string"), …)
     // !
     // ! For anyone reading this, try removing the two overloads, and test if the code
-    // ! this.addLoot(HealingItems.fromString("cola"), Vec.create(0, 0), Layer.Ground) does two things:
+    // ! this.addLoot(HealingItems.fromString("cola"), Vec(0, 0), Layer.Ground) does two things:
     // ! a) it does not raise type errors
     // ! b) Def is inferred as HealingItemDefinition
     addLoot<Def extends LootDefinition = LootDefinition>(
@@ -940,7 +938,7 @@ export class Game implements GameData {
             jitterSpawn
                 ? Vec.add(
                     position,
-                    randomPointInsideCircle(Vec.create(0, 0), GameConstants.lootSpawnMaxJitter)
+                    randomPointInsideCircle(Vec(0, 0), GameConstants.lootSpawnMaxJitter)
                 )
                 : position,
             layer,
@@ -981,8 +979,7 @@ export class Game implements GameData {
         if (def.allowRangeOverride && options.rangeOverride !== undefined) {
             range = Numeric.clamp(options.rangeOverride, 0, range);
         }
-
-        if (range <= 0) return;
+        if (range < 0) return;
 
         const bullet = new Bullet(
             this,

@@ -54,6 +54,7 @@ import { type Loot } from "./loot";
 import { type Obstacle } from "./obstacle";
 import { Projectile } from "./projectile";
 import { type SyncedParticle } from "./syncedParticle";
+import { serverWarn } from "../utils/serverHelpers";
 
 export interface PlayerSocketData {
     player?: Player
@@ -451,10 +452,10 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
     baseSpeed = GameConstants.player.baseSpeed;
 
-    private _movementVector = Vec.create(0, 0);
+    private _movementVector = Vec(0, 0);
     get movementVector(): Vector { return Vec.clone(this._movementVector); }
 
-    spawnPosition: Vector = Vec.create(this.game.map.width / 2, this.game.map.height / 2);
+    spawnPosition: Vector = Vec(this.game.map.width / 2, this.game.map.height / 2);
 
     private readonly _mapPings: Game["mapPings"] = [];
 
@@ -694,11 +695,15 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             ? this.activeItemIndex
             : this.inventory.weapons.findIndex(i => i === item);
 
+        // this happens if the item to be swapped isn't currently in the inventory
+        // in that case, we just take the first slot matching that item's type
         if (slot === -1) {
-            // this happens if the item to be swapped isn't currently in the inventory
-            // in that case, we just take the first slot matching that item's type
-            slot = GameConstants.player.inventorySlotTypings.filter(slot => slot === item.definition.defType)?.[0] ?? 0;
-            // and if we somehow don't have any matching slots, then someone's probably messing with us… fallback to slot 0 lol
+            slot = GameConstants.player.inventorySlotTypings.findIndex(slot => slot === item.definition.defType);
+        }
+
+        if (slot === -1) {
+            serverWarn(`Attempted to swap an item of invalid type ${DefinitionType[item.definition.defType]}`);
+            return;
         }
 
         const allWeapons = this.game.allLoots;
@@ -941,7 +946,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 y *= Math.SQRT1_2;
             }
 
-            movement = Vec.create(x, y);
+            movement = Vec(x, y);
         }
 
         // Rate Limiting: Team Pings & Emotes
@@ -1151,7 +1156,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         // Cancel reviving when out of range
         if (this.action instanceof ReviveAction) {
             if (
-                Vec.squaredLength(
+                Vec.squaredLen(
                     Vec.sub(
                         this.position,
                         this.action.target.position

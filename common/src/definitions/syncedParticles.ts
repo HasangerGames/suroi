@@ -91,7 +91,7 @@ export function resolveVectorSpecifier(vectorSpecifier: VectorSpecifier): Vector
     if ("x" in vectorSpecifier) return vectorSpecifier;
 
     const { min, max } = vectorSpecifier;
-    return Vec.create(
+    return Vec(
         randomFloat(min.x, max.x),
         randomFloat(min.y, max.y)
     );

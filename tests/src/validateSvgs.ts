@@ -142,9 +142,13 @@ for (const path of svgPaths) {
     fileSizes[baseDir].size += stats.size;
     fileSizes[baseDir].count++;
 
-    const content = fs.readFileSync(path).toString();
-    const rootNode = svgParser.parse(content);
+    const content = fs.readFileSync(path, "utf8");
 
+    if (content.split("\n").length > 1) {
+        addError(path, "Unminified svg");
+    }
+
+    const rootNode = svgParser.parse(content);
     for (const node of rootNode.children) {
         if (typeof node === "string") continue;
         if (node.type === "text") continue;

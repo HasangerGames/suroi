@@ -579,7 +579,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { item: "m16a2", weight: 0.1 },
             { item: "arx160", weight: 0.1 },
             { item: "badlander", weight: 0.1 },
-            { item: "lewis_gun", weight: 0.05 },
+            { item: "fn_fal", weight: 0.05 },
             { item: "cz600", weight: 0.04 },
             { item: "vss", weight: 0.02 },
             { item: "mg36", weight: 0.015 },
@@ -650,7 +650,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { item: "saf200", weight: 0.75 },
             { item: "cz75a", weight: 0.75 },
             { item: "m16a2", weight: 0.5 },
-            { item: "lewis_gun", weight: 0.5 },
+            { item: "fn_fal", weight: 0.5 },
             { item: "g19", weight: 0.45 },
             { item: "m1895", weight: 0.45 },
             { item: "cz600", weight: 0.4 },
@@ -785,7 +785,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { item: "mg36", weight: 0.725 },
             { item: "cz600", weight: 0.7 },
             { item: "vepr12", weight: 0.6 },
-            { item: "lewis_gun", weight: 0.6 },
+            { item: "fn_fal", weight: 0.6 },
             { item: "mosin_nagant", weight: 0.5 },
             { item: "vector", weight: 0.4 },
             { item: "stoner_63", weight: 0.15 },
@@ -871,7 +871,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
         blue_gift: [
             [
                 { item: "arx160", weight: 0.5 },
-                { item: "lewis_gun", weight: 0.4 },
+                { item: "fn_fal", weight: 0.4 },
                 { item: "mosin_nagant", weight: 0.05 },
                 { item: "sr25", weight: 0.04 },
                 { item: "m1_garand", weight: 0.01 },
@@ -1583,14 +1583,14 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
         ],
         equipment: [
             { item: "regular_helmet", weight: 1 },
-            { item: "tactical_helmet", weight: 0.2 },
+            { item: "tactical_helmet", weight: 0.08 },
 
             { item: "regular_vest", weight: 1 },
-            { item: "tactical_vest", weight: 0.2 },
+            { item: "tactical_vest", weight: 0.08 },
 
             { item: "basic_pack", weight: 0.9 },
-            { item: "regular_pack", weight: 0.2 },
-            { item: "tactical_pack", weight: 0.07 }
+            { item: "regular_pack", weight: 0.13 },
+            { item: "tactical_pack", weight: 0.05 }
         ],
         special_equipment: [
             { item: "regular_helmet", weight: 1 },

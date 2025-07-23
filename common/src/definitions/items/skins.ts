@@ -46,7 +46,6 @@ export const Skins = new ObjectDefinitions<SkinDefinition>([
     // Dev funny skins
     skin("Hasanger", undefined, undefined, 0x640000, ["hasanger"]),
     skin("Pap",      undefined, undefined, 0x00366b, ["pap"]),
-    skin("Zedaes",   undefined, undefined, 0x052105, ["zedaes"]),
 
     // Role skins
     skin("Developr Swag",      undefined, undefined, 0x007a7f, ["developr", "pap"]),

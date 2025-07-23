@@ -19,7 +19,7 @@ export abstract class GameObject<Cat extends ObjectCategory = ObjectCategory> ex
 
     private _oldPosition?: Vector;
     private _lastPositionChange?: number;
-    private _position = Vec.create(0, 0);
+    private _position = Vec(0, 0);
     private _positionManuallySet = false;
     get position(): Vector { return this._position; }
     set position(position: Vector) {

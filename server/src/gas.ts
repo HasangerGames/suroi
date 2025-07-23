@@ -44,7 +44,7 @@ export class Gas {
         this.newRadius = firstStage.newRadius * this.mapSize;
         this.currentRadius = firstStage.oldRadius * this.mapSize;
 
-        this.oldPosition = Vec.create(game.map.width / 2, game.map.height / 2);
+        this.oldPosition = Vec(game.map.width / 2, game.map.height / 2);
         this.newPosition = Vec.clone(this.oldPosition);
         this.currentPosition = Vec.clone(this.oldPosition);
         this._lastDamageTimestamp = this.game.now;
@@ -98,7 +98,7 @@ export class Gas {
                 const { width, height } = this.game.map;
                 if (gas?.forcePosition) {
                     const [x, y] = typeof gas.forcePosition === "boolean" ? [width / 2, height / 2] : gas.forcePosition;
-                    this.newPosition = Vec.create(x, y);
+                    this.newPosition = Vec(x, y);
                 } else {
                     const { oldRadius, newRadius } = currentStage;
                     const { x, y } = randomPointInsideCircle(
@@ -106,7 +106,7 @@ export class Gas {
                         (oldRadius - newRadius) * this.mapSize
                     );
                     const radius = newRadius * 0.75; // ensure at least 75% of the safe zone will be inside map bounds
-                    this.newPosition = Vec.create(
+                    this.newPosition = Vec(
                         Numeric.clamp(x, radius, width - radius),
                         Numeric.clamp(y, radius, height - radius)
                     );

@@ -183,7 +183,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             helmet: new SuroiSprite().setVisible(false).setPos(-8, 0).setZIndex(6),
             weapon: new SuroiSprite().setZIndex(3),
             altWeapon: new SuroiSprite().setZIndex(3),
-            muzzleFlash: new SuroiSprite("muzzle_flash").setVisible(false).setZIndex(7).setAnchor(Vec.create(0, 0.5)),
+            muzzleFlash: new SuroiSprite("muzzle_flash").setVisible(false).setZIndex(7).setAnchor(Vec(0, 0.5)),
             waterOverlay: new SuroiSprite("water_overlay").setVisible(false).setTint(Game.colors.water),
             blood: new Container(),
             backMeleeSprite: new SuroiSprite()
@@ -268,7 +268,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                         start: 1,
                         end: 1.5
                     },
-                    speed: Vec.create(randomFloat(-1, 1), -3)
+                    speed: Vec(randomFloat(-1, 1), -3)
                 };
             }
         });
@@ -409,7 +409,14 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
         const noMovementSmoothing = !GameConsole.getBuiltInCVar("cv_movement_smoothing");
 
-        if (noMovementSmoothing || isNew) this.container.rotation = this.rotation;
+        if (
+            (
+                noMovementSmoothing
+                && !(this.isActivePlayer && GameConsole.getBuiltInCVar("cv_responsive_rotation"))
+            ) || isNew
+        ) {
+            this.container.rotation = this.rotation;
+        }
 
         if (this.isActivePlayer) {
             SoundManager.position = this.position;
@@ -468,14 +475,14 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
                 this.distSinceLastFootstep = 0;
 
-                if (FloorTypes[floorType].particles && this.layer >= Layer.Ground) {
+                if (FloorTypes[floorType].particles) {
                     const options = {
                         frames: "ripple_particle",
-                        zIndex: ZIndexes.Ground + 0.9,
+                        zIndex: ZIndexes.BuildingsFloor + 0.9,
                         position: this._hitbox.randomPoint(),
                         lifetime: 1000,
                         layer: this.layer,
-                        speed: Vec.create(0, 0)
+                        speed: Vec(0, 0)
                     };
 
                     // outer
@@ -585,7 +592,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                         start: randomFloat(0.8, 1.6),
                         end: 0
                     },
-                    speed: randomPointInsideCircle(Vec.create(0, 0), 4),
+                    speed: randomPointInsideCircle(Vec(0, 0), 4),
                     zIndex: ZIndexes.Players + 1
                 }));
             }
@@ -873,7 +880,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
                 const start = Vec.add(this.position,
                     Vec.scale(
-                        Vec.rotate(Vec.create(0, offset), this.rotation),
+                        Vec.rotate(Vec(0, offset), this.rotation),
                         this.sizeMod
                     ));
 
@@ -979,7 +986,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 const oldWidth = badge.width;
                 badge.width = text.height / 1.25;
                 badge.height *= badge.width / oldWidth;
-                badge.position = Vec.create(
+                badge.position = Vec(
                     text.width / 2 + 20,
                     0
                 );
@@ -1104,7 +1111,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 .setFrame(frame)
                 .setPos(pX, pY + offset)
                 .setAngle(angle)
-                .setPivot(reference.image && "pivot" in reference.image && reference.image.pivot ? reference.image.pivot : Vec.create(0, 0));
+                .setPivot(reference.image && "pivot" in reference.image && reference.image.pivot ? reference.image.pivot : Vec(0, 0));
 
             if (isDualGun) {
                 this.images.altWeapon
@@ -1589,7 +1596,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
                     const position = Vec.add(
                         this.position,
-                        Vec.scale(Vec.rotate(Vec.create(weaponDef.length, offset), this.rotation), this.sizeMod)
+                        Vec.scale(Vec.rotate(Vec(weaponDef.length, offset), this.rotation), this.sizeMod)
                     );
 
                     const gas = weaponDef.gasParticles;
@@ -1625,7 +1632,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     muzzleFlash.y = (isAltFire ? -1 : 1) * this._getOffset();
                     muzzleFlash.setVisible(true);
                     muzzleFlash.alpha = 0.95;
-                    muzzleFlash.scale = Vec.create(
+                    muzzleFlash.scale = Vec(
                         randomFloat(0.75, 1.25),
                         randomFloat(0.5, 1.5) * (randomBoolean() ? 1 : -1)
                     );
@@ -1738,7 +1745,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                                 target: pinImage,
                                 duration: def.cookTime / 2,
                                 to: {
-                                    ...Vec.add(Vec.scale(def.animation.cook.leftFist, PIXI_SCALE), Vec.create(15, 0))
+                                    ...Vec.add(Vec.scale(def.animation.cook.leftFist, PIXI_SCALE), Vec(15, 0))
                                 },
                                 onComplete: () => {
                                     this.anims.pin = undefined;
@@ -1758,7 +1765,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                         ),
                         layer: this.layer,
                         zIndex: ZIndexes.Players + 1,
-                        speed: Vec.rotate(Vec.create(8, 8), this.rotation),
+                        speed: Vec.rotate(Vec(8, 8), this.rotation),
                         rotation: this.rotation,
                         alpha: {
                             start: 1,
@@ -1832,7 +1839,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                             Vec.scale(def.animation.cook.rightFist, this.sizeMod)
                         ),
                         zIndex: ZIndexes.Players + 1,
-                        speed: Vec.rotate(Vec.create(8, 8), this.rotation),
+                        speed: Vec.rotate(Vec(8, 8), this.rotation),
                         rotation: this.rotation,
                         alpha: {
                             start: 1,
@@ -1880,7 +1887,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 this.images.rightFist.setZIndex(4);
                 this.anims.leftFist = Game.addTween({
                     target: this.images.leftFist,
-                    to: Vec.create(28, -45),
+                    to: Vec(28, -45),
                     duration: 100,
                     onComplete: () => {
                         this.anims.leftFist = undefined;
@@ -1888,7 +1895,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 });
                 this.anims.rightFist = Game.addTween({
                     target: this.images.rightFist,
-                    to: Vec.create(58, 48),
+                    to: Vec(58, 48),
                     duration: 100,
                     onComplete: () => {
                         this.anims.rightFist = undefined;
@@ -1955,7 +1962,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                         end: 0,
                         ease: EaseFunctions.expoIn
                     },
-                    speed: Vec.create(0, 0),
+                    speed: Vec(0, 0),
                     tint: isOnWater ? 0xaaffff : 0xeeeeee,
                     onDeath: self => {
                         this._bloodDecals.delete(self);
@@ -1967,7 +1974,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
             const bodyBlood = new SuroiSprite("blood_particle");
 
-            bodyBlood.position = randomPointInsideCircle(Vec.create(0, 0), 45);
+            bodyBlood.position = randomPointInsideCircle(Vec(0, 0), 45);
             bodyBlood.rotation = randomRotation();
             bodyBlood.scale = randomFloat(0.4, 0.8);
 

@@ -48,12 +48,12 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
     get count(): number { return this._count; }
 
     isNew = true;
-    velocity = Vec.create(0, 0);
+    velocity = Vec(0, 0);
 
     get position(): Vector { return this.hitbox.position; }
     set position(pos: Vector) { this.hitbox.position = pos; }
 
-    private _oldPosition = Vec.create(0, 0);
+    private _oldPosition = Vec(0, 0);
 
     constructor(
         game: Game,
@@ -116,7 +116,7 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
 
         const calculateSafeDisplacement = (): Vector => {
             let displacement = Vec.scale(this.velocity, halfDt);
-            if (Vec.squaredLength(displacement) >= 1) {
+            if (Vec.squaredLen(displacement) >= 1) {
                 displacement = Vec.normalizeSafe(displacement);
             }
 
@@ -154,9 +154,9 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
                 }
 
                 const dist = Numeric.max(Geometry.distance(object.position, this.position), 1);
-                const vecCollision = Vec.create(object.position.x - this.position.x, object.position.y - this.position.y);
-                const vecCollisionNorm = Vec.create(vecCollision.x / dist, vecCollision.y / dist);
-                const vRelativeVelocity = Vec.create(this.velocity.x - object.velocity.x, this.velocity.y - object.velocity.y);
+                const vecCollision = Vec(object.position.x - this.position.x, object.position.y - this.position.y);
+                const vecCollisionNorm = Vec(vecCollision.x / dist, vecCollision.y / dist);
+                const vRelativeVelocity = Vec(this.velocity.x - object.velocity.x, this.velocity.y - object.velocity.y);
 
                 const speed = (vRelativeVelocity.x * vecCollisionNorm.x + vRelativeVelocity.y * vecCollisionNorm.y) * 0.5;
 

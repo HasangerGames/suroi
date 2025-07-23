@@ -108,13 +108,14 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
                     if (!rayCeilingIntersection) continue;
 
                     let collided = false;
-                    for (const { damageable, dead, isBuilding, definition, layer, hitbox } of potentials) {
+                    for (const { damageable, dead, isBuilding, definition, layer, hitbox, isObstacle } of potentials) {
                         if (
                             !damageable
                             || (dead && !(isBuilding && definition.hasDamagedCeiling))
                             || ("isWindow" in definition && definition.isWindow)
                             || !equivLayer({ layer, definition }, player)
                             || !hitbox?.intersectsLine(rayStart, rayCeilingIntersection)
+                            || (isObstacle && definition.noCollisions)
                         ) continue;
 
                         collided = true;
@@ -235,7 +236,7 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
         if (definition.sounds) {
             const { sounds } = definition;
             const soundOptions = {
-                position: Vec.add(Vec.rotate(sounds.position ?? Vec.create(0, 0), this.rotation), this.position),
+                position: Vec.add(Vec.rotate(sounds.position ?? Vec(0, 0), this.rotation), this.position),
                 layer: this.layer,
                 fallOff: sounds.falloff,
                 maxRange: sounds.maxRange,

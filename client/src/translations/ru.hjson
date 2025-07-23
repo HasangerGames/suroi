@@ -253,6 +253,7 @@
 "kf_finally_died": "<player> наконец-то умер"
 "kf_finally_ended_themselves": "<player> наконец-то покончил с собой"
 "kf_finally_killed": "<player> был наконец-то убит"
+"kf_were_finally_killed": "<player> были наконец-то убиты"
 "kf_finally_down": "<player> был наконец-то сбит с ног"
 "kf_gas_kill": "<player> жалостливо умер в газе"
 "kf_gas_down": "<player> сбился с ног в газу"
@@ -391,7 +392,6 @@
 
 "m1895": "Наган"
 "mosin_nagant": "Винтовка Мосина"
-"lewis_gun": "Пулемет Льюиса"
 "ak47": "Автомат Калашникова"
 
 "rsh12": "РШ-12"
