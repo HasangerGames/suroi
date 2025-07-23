@@ -64,6 +64,10 @@ interface RegionInfo {
     readonly retrievedTime?: number
 }
 
+enum hideUnlessPresent {
+    zh_tw = '🇹🇼'
+}
+
 let selectedRegion: RegionInfo | undefined;
 
 const regionInfo: Record<string, RegionInfo> = Config.regions;
@@ -378,7 +382,7 @@ export async function setUpUI(): Promise<void> {
         const isSelected = GameConsole.getBuiltInCVar("cv_language") === language;
         languageFieldset.append(html`
            <a id="language-${language}" ${isSelected ? 'class="selected"' : ""}>
-              ${languageInfo.flag} <strong>${languageInfo.name}</strong> [${!isSelected ? TRANSLATIONS.translations[language].percentage : languageInfo.percentage}]
+              ${Object.values(hideUnlessPresent).includes(languageInfo.flag as hideUnlessPresent) && isSelected == false ? "" : languageInfo.flag} <strong>${languageInfo.name}</strong> [${!isSelected ? TRANSLATIONS.translations[language].percentage : languageInfo.percentage}]
            </a>
         `);
 
