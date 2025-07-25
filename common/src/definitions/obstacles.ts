@@ -6739,7 +6739,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
             dynamic: true
         },
         rotationMode: RotationMode.Limited
-    },
+    }
 ] satisfies readonly RawObstacleDefinition[] as readonly RawObstacleDefinition[]).flatMap((def: Mutable<RawObstacleDefinition>) => {
     if (def.variations !== undefined) (def as Mutable<ObstacleDefinition>).variationBits = Math.ceil(Math.log2(def.variations));
     if (def.allowFlyover === undefined) def.allowFlyover = FlyoverPref.Sometimes;
