@@ -131,7 +131,7 @@ export interface BuildingDefinition extends ObjectDefinition {
 
     readonly sounds?: {
         readonly normal?: string
-        readonly solved?: string
+        readonly solved?: string | null
         readonly position?: Vector
         readonly maxRange: number
         readonly falloff: number
@@ -12732,6 +12732,23 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         ]
     },
     {
+        idString: "tavern_recording_puzzle",
+        name: "Tavern Recording Puzzle",
+        defType: DefinitionType.Building,
+        spawnHitbox: RectangleHitbox.fromRect(178.2, 147.94, Vec(2.31, -0.89)),
+        puzzle: { delay: 0 },
+        sounds: {
+            normal: "tavern_music",
+            solved: null,
+            position: Vec(17.25, 6.59),
+            falloff: 1,
+            maxRange: 150
+        },
+        obstacles: [
+            { idString: "tavern_recorder", position: Vec(6.77, -0.26), rotation: 0, puzzlePiece: true }
+        ]
+    },
+    {
         idString: "tavern",
         name: "Tavern",
         defType: DefinitionType.Building,
@@ -12771,13 +12788,6 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             delay: 2500,
             solvedSound: true,
             setSolvedImmediately: true
-        },
-        sounds: {
-            normal: "tavern_music",
-            solved: "recorder_buzz",
-            position: Vec(17.25, 6.59),
-            falloff: 1,
-            maxRange: 150
         },
         floors: [
             {
@@ -12890,7 +12900,6 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "tavern_table_collider", position: Vec(0, 0), rotation: 0 },
             { idString: "tavern_basement_collider_hack", position: Vec(43.66, -53.7), rotation: 0, layer: Layer.ToBasement },
             { idString: "tavern_stair", position: Vec(40.82, -5), rotation: 0, layer: Layer.ToBasement },
-            { idString: "tavern_recorder_systems_disabled", position: Vec(6.77, -0.26), rotation: 0 },
 
             { idString: "tavern_wall_1", position: Vec(-18.725, -32.3), rotation: 0 },
             { idString: "tavern_wall_2", position: Vec(-39.42, -41.21), rotation: 0 },
@@ -12986,7 +12995,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         ],
         subBuildings: IS_CLIENT ? undefined : [
             { idString: "tavern_secret_ceiling", position: Vec(39.85, 3.2) },
-            { idString: "tavern_basement", position: Vec(43.66, -53.7), layer: Layer.Basement }
+            { idString: "tavern_basement", position: Vec(43.66, -53.7), layer: Layer.Basement },
+            { idString: "tavern_recording_puzzle", position: Vec(0, 0) }
         ]
     },
     {

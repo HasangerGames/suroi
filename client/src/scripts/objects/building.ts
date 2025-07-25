@@ -245,7 +245,7 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
             };
 
             if (
-                sounds.normal
+                sounds.normal !== undefined
                 && !data.puzzle?.solved
                 && this.sound?.name !== sounds.normal
             ) {
@@ -254,12 +254,12 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
             }
 
             if (
-                sounds.solved
+                sounds.solved !== undefined
                 && data.puzzle?.solved
                 && this.sound?.name !== sounds.solved
             ) {
                 this.sound?.stop();
-                this.sound = SoundManager.play(sounds.solved, soundOptions);
+                if (sounds.solved !== null) this.sound = SoundManager.play(sounds.solved, soundOptions);
             }
         }
 

@@ -39,7 +39,6 @@ type CommonObstacleDefinition = ObjectDefinition & {
     readonly zIndex?: ZIndexes
     readonly airdropUnlock?: boolean
     readonly interactObstacleIdString?: ReferenceTo<ObstacleDefinition>
-    readonly reduceParentBuildingVolumeOnActivateBecauseThereIsNoOtherWayToFixThisCrapHasangerIsVerySigma?: boolean
     readonly spawnWithWaterOverlay?: boolean
     readonly waterOverlay?: {
         readonly scaleX: number
@@ -6717,8 +6716,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         }
     },
     {
-        idString: "tavern_recorder_systems_disabled",
-        name: "Tavern Recorder Systems",
+        idString: "tavern_recorder",
+        name: "Tavern Recorder",
         defType: DefinitionType.Obstacle,
         material: "wood",
         health: 1000,
@@ -6727,12 +6726,11 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         noBulletCollision: true,
         noMeleeCollision: true,
         isActivatable: true,
-        reduceParentBuildingVolumeOnActivateBecauseThereIsNoOtherWayToFixThisCrapHasangerIsVerySigma: true,
         interactObstacleIdString: "recorder_interactable",
         hitbox: new CircleHitbox(4),
         frames: {
-            particle: "tavern_bar_particle",
-            activated: "tavern_recorder_systems_activated"
+            activated: "tavern_recorder_activated",
+            particle: "tavern_bar_particle"
         },
         sound: {
             name: "tavern_recording",
