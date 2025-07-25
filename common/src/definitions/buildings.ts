@@ -12741,7 +12741,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             normal: "tavern_music",
             solved: null,
             position: Vec(17.25, 6.59),
-            falloff: 1,
+            falloff: 0.75,
             maxRange: 150
         },
         obstacles: [

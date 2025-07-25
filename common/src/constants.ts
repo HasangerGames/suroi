@@ -13,7 +13,7 @@ export const GameConstants = {
     maxPosition: 1924,
     objectMinScale: 0.15,
     objectMaxScale: 3,
-    defaultMode: "hunted" satisfies ModeName as ModeName,
+    defaultMode: "normal" satisfies ModeName as ModeName,
     player: {
         radius: 2.25,
         baseSpeed: 0.03,
