@@ -12723,10 +12723,10 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     },
     huntingStandLayout(1, [
         { idString: "box", position: Vec(3.01, -1.47) },
-        { idString: "box", position: Vec(4.17, 3.64) },
+        { idString: "box", position: Vec(4.17, 3.64) }
     ]),
     huntingStandLayout(2, [
-        { idString: "box", position: Vec(-4.33, 7.91) },
+        { idString: "box", position: Vec(-4.33, 7.91) }
     ], [{
         table: "ground_loot",
         position: Vec(0, 0)
