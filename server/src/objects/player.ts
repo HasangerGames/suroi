@@ -662,6 +662,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         this.dirty.weapons = true;
 
         this.updateAndApplyModifiers();
+        this.game.addLoot("power_vest", this.position, 0);
     }
 
     giveGun(idString: ReferenceTo<GunDefinition>): void {
@@ -2209,7 +2210,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             weaponUsed
         });
 
-        if (!this.shield) {
+        if (this.shield <= 0) {
             // Reductions are merged additively
             amount *= 1 - (
                 (this.inventory.helmet?.damageReduction ?? 0) + (this.inventory.vest?.damageReduction ?? 0)
@@ -2247,7 +2248,9 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             return this.heal(-amount);
         }
 
-        amount = this._clampDamageAmount(amount);
+        if (this.shield <= 0) {
+            amount = this._clampDamageAmount(amount);
+        }
 
         if (
             this.game.pluginManager.emit("player_will_piercing_damaged", {
@@ -2274,17 +2277,17 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         const oldStats = canTrackStats ? { ...weaponUsed.stats } : undefined;
 
         // Decrease health; update damage done and damage taken
-        if (this.shield) {
-            const tmp = this.shield;
+        if (this.shield <= 0) {
+            this.health -= amount;
+        } else {
+            const initialShield = this.shield;
             this.shield -= amount;
 
-            // If the shield broke, account for leftover damage
-            if (this.shield <= 0) {
-                const diff = amount - tmp;
-                this.health -= diff;
+            // If the shield broke, account for remaining damage
+            const remainingDamage = amount - initialShield;
+            if (remainingDamage > 0) {
+                this.damage({ ...params, amount: remainingDamage });
             }
-        } else {
-            this.health -= amount;
         }
         if (amount > 0) {
             this.damageTaken += amount;
