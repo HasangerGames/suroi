@@ -445,6 +445,15 @@ const warehouseLayout = (id: number, obstacles: readonly BuildingObstacle[]): Bu
     obstacles
 });
 
+const huntingStandLayout = (id: number, obstacles: readonly BuildingObstacle[], lootSpawners_?: readonly LootSpawner[]): BuildingDefinition => ({
+    idString: `hunting_stand_layout_${id}`,
+    name: "Hunting Stand Layout",
+    defType: DefinitionType.Building,
+    spawnHitbox: RectangleHitbox.fromRect(63.07, 114),
+    obstacles,
+    lootSpawners: lootSpawners_ ?? undefined
+});
+
 const container = (
     id: number,
     color: keyof typeof ContainerTints,
@@ -12698,14 +12707,35 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         }],
         obstacles: IS_CLIENT ? undefined : [
             { idString: "gun_locker", position: Vec(-0.02, -7.47), rotation: 0 },
-            { idString: "box", position: Vec(3.01, -1.47) },
-            { idString: "box", position: Vec(4.17, 3.64) },
             { idString: "hunting_stand_column", position: Vec(-8.59, -11.7) },
             { idString: "hunting_stand_column", position: Vec(8.63, -11.7) },
             { idString: "hunting_stand_column", position: Vec(-8.73, 11.8) },
             { idString: "hunting_stand_column", position: Vec(8.54, 11.88) }
-        ]
+        ],
+        subBuildings: IS_CLIENT ? undefined : [{
+            idString: {
+                hunting_stand_layout_1: 1,
+                hunting_stand_layout_2: 1,
+                hunting_stand_layout_3: 1
+            },
+            position: Vec(0, 0)
+        }]
     },
+    huntingStandLayout(1, [
+        { idString: "box", position: Vec(3.01, -1.47) },
+        { idString: "box", position: Vec(4.17, 3.64) }
+    ]),
+    huntingStandLayout(2, [
+        { idString: "box", position: Vec(-4.33, 7.91) }
+    ], [{
+        table: "ground_loot",
+        position: Vec(0, 0)
+    }]),
+    huntingStandLayout(3, [
+        { idString: "box", position: Vec(-4.89, -2.17) },
+        { idString: "box", position: Vec(4.17, 3.64) },
+        { idString: "box", position: Vec(-4.91, 8.03) }
+    ]),
     {
         idString: "hunting_stand",
         name: "Hunting Stand",
