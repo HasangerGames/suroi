@@ -322,6 +322,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { item: "flamingo", weight: 1 },
             { item: "verified", weight: 0.5 },
             { item: "no_kil_pls", weight: 0.5 },
+            { item: "lobotomy", weight: 0.25 },
             { item: "ghillie_suit", weight: 0.15 },
             { item: "ancestral_garb", weight: 0.05 }
         ],
