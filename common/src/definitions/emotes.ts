@@ -94,6 +94,7 @@ export const Emotes = new ObjectDefinitions<EmoteDefinition>([
             "Sighing Face",
             "Yawning Face",
             "Frustrated Face",
+            "Thousand Yard Stare",
             "Weary Face",
             "Pensive Face",
             "Zipper Mouth Face",
