@@ -11398,7 +11398,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "saw", position: Vec(5.88, -10.22), rotation: 0 },
             { idString: "headquarters_security_desk", position: Vec(85.04, 118.94), rotation: 2, puzzlePiece: true }
         ],
-        subBuildings: [
+        subBuildings: IS_CLIENT ? undefined : [
             { idString: randomPallet, position: Vec(-70.25, 64.65) }, // P3
             { idString: randomPallet, position: Vec(-71.27, 219.63) }, // P5
             { idString: randomPallet, position: Vec(130.72, -172.72) }, // P11
@@ -12774,7 +12774,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             falloff: 0.75,
             maxRange: 150
         },
-        obstacles: [
+        obstacles: IS_CLIENT ? undefined : [
             { idString: "tavern_recorder", position: Vec(6.77, -0.26), rotation: 0, puzzlePiece: true }
         ]
     },
@@ -13250,13 +13250,774 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 position: Vec(14.71, -9.2)
             }
         ],
-        obstacles: [
+        obstacles: IS_CLIENT ? undefined : [
             { idString: "trash_can", position: Vec(27.53, 22.36) },
             { idString: "box", position: Vec(-23.82, 22.38) },
             { idString: { box: 1, grenade_box: 0.35 }, position: Vec(33.26, 23.11) },
             { idString: "box", position: Vec(34.57, 17.93) },
             { idString: "nsd_crate", position: Vec(14.67, -22.46) },
             { idString: "regular_crate", position: Vec(-31.57, 19.99) }
+        ]
+    },
+    {
+        idString: "shooting_range",
+        name: "Shooting Range",
+        defType: DefinitionType.Building,
+        spawnHitbox: RectangleHitbox.fromRect(214.75, 183.47, Vec(0.55, 1.27)),
+        groundGraphics: [
+            {
+                color: 0x365440,
+                hitbox: RectangleHitbox.fromRect(194.67, 159.24, Vec(0.23, 1.21))
+            },
+            {
+                color: 0x2b4232,
+                hitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(42.8, 2.05, Vec(-70.84, 63.28)),
+                    RectangleHitbox.fromRect(42.8, 2.05, Vec(-71.04, 12.38)),
+                    RectangleHitbox.fromRect(42.8, 2.05, Vec(-70.92, 37.8))
+                )
+            },
+            // sand
+            {
+                color: 0x5a4731,
+                hitbox: new PolygonHitbox([
+                    Vec(-3.4, 7.29),
+                    Vec(-2.44, 7.15),
+                    Vec(-1.44, 7.26),
+                    Vec(-0.49, 7.41),
+                    Vec(0.54, 7.66),
+                    Vec(1.28, 7.82),
+                    Vec(2.21, 7.73),
+                    Vec(9.17, 6.97),
+                    Vec(12.69, 8.75),
+                    Vec(14.17, 9.76),
+                    Vec(14.98, 11.11),
+                    Vec(16.14, 13.72),
+                    Vec(16.89, 14.99),
+                    Vec(17.68, 15.82),
+                    Vec(18.4, 16.03),
+                    Vec(18.65, 16.56),
+                    Vec(18.31, 17.01),
+                    Vec(17.52, 17.37),
+                    Vec(16.36, 17.59),
+                    Vec(6.83, 18.09),
+                    Vec(2.66, 18.17),
+                    Vec(-0.12, 18.54),
+                    Vec(-1.01, 18.9),
+                    Vec(-1.49, 20.41),
+                    Vec(-1.3, 22.4),
+                    Vec(-2, 24.43),
+                    Vec(-4.33, 25.75),
+                    Vec(-6.27, 26.42),
+                    Vec(-8, 26.66),
+                    Vec(-9.28, 26.5),
+                    Vec(-10.02, 25.6),
+                    Vec(-10.6, 23.87),
+                    Vec(-10.88, 21.86),
+                    Vec(-11.2, 20.26),
+                    Vec(-11.87, 18.52),
+                    Vec(-12.42, 16.34),
+                    Vec(-12.48, 14.68),
+                    Vec(-12.44, 13.27),
+                    Vec(-12.08, 11.84),
+                    Vec(-11.45, 10.63),
+                    Vec(-10.5, 9.73),
+                    Vec(-9.3, 9.12)
+                ])
+            },
+            {
+                color: 0x5a4731,
+                hitbox: new PolygonHitbox([
+                    Vec(61.62, 11.29),
+                    Vec(63.04, 10.16),
+                    Vec(64.78, 9.78),
+                    Vec(67.21, 9.59),
+                    Vec(71.9, 9.14),
+                    Vec(73.88, 9.2),
+                    Vec(74.81, 9.18),
+                    Vec(76.32, 8.93),
+                    Vec(78.52, 8.52),
+                    Vec(80.68, 8.24),
+                    Vec(82.38, 8.07),
+                    Vec(83.26, 8.1),
+                    Vec(84.59, 8.7),
+                    Vec(87.28, 10.57),
+                    Vec(87.75, 11.27),
+                    Vec(88, 12),
+                    Vec(89.62, 13.67),
+                    Vec(88.05, 14.78),
+                    Vec(84.59, 15.67),
+                    Vec(81.15, 16.03),
+                    Vec(79.61, 16.53),
+                    Vec(78.52, 16.73),
+                    Vec(77.6, 16.56),
+                    Vec(76.4, 16),
+                    Vec(75.71, 15.48),
+                    Vec(74.92, 15.03),
+                    Vec(74.26, 15.58),
+                    Vec(73.59, 16.19),
+                    Vec(72.61, 16.6),
+                    Vec(71.47, 16.5),
+                    Vec(70.51, 16.22),
+                    Vec(70.13, 15.56),
+                    Vec(68.79, 15),
+                    Vec(61.31, 13.75),
+                    Vec(60.39, 13.51),
+                    Vec(60.79, 12.57)
+                ])
+            },
+            {
+                color: 0x5a4731,
+                hitbox: new PolygonHitbox([
+                    Vec(-36.53, -9.87),
+                    Vec(-34.47, -12.77),
+                    Vec(-33.44, -14.74),
+                    Vec(-28.14, -25.33),
+                    Vec(-28.01, -27.19),
+                    Vec(-28.22, -29.6),
+                    Vec(-29.24, -38.47),
+                    Vec(-29.68, -39.14),
+                    Vec(-31.09, -40.57),
+                    Vec(-34.55, -43.18),
+                    Vec(-35.38, -42.31),
+                    Vec(-40.69, -27.73),
+                    Vec(-41.82, -27.2),
+                    Vec(-42.27, -26.42),
+                    Vec(-42.26, -25.24),
+                    Vec(-41.81, -24.26),
+                    Vec(-41.12, -23.53),
+                    Vec(-40.78, -23.05),
+                    Vec(-41.16, -21.93),
+                    Vec(-41.92, -20.41),
+                    Vec(-42.26, -19.58),
+                    Vec(-42.26, -18.79),
+                    Vec(-41.81, -17.45),
+                    Vec(-41.47, -16.47),
+                    Vec(-40.44, -9.74),
+                    Vec(-39.95, -8.62),
+                    Vec(-39.53, -8.24),
+                    Vec(-38.61, -8.62),
+                    Vec(-38, -9.39),
+                    Vec(-37.43, -9.59)
+                ])
+            },
+            { // stroke
+                color: 0x3d3d3d,
+                hitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(5.88, 24.6, Vec(-37.98, -7.57)),
+                    RectangleHitbox.fromRect(5.88, 24.6, Vec(-38.01, -39.59)),
+                    RectangleHitbox.fromRect(24.63, 6.23, Vec(43.96, -14.88))
+                )
+            },
+            { // fill
+                color: 0x5e5e5e,
+                hitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(4.74, 11.25, Vec(-38.15, -1.60)),
+                    RectangleHitbox.fromRect(4.74, 11.25, Vec(-38.17, -45.57)),
+                    RectangleHitbox.fromRect(4.74, 11.25, Vec(-38.17, -33.66)),
+                    RectangleHitbox.fromRect(4.74, 11.25, Vec(-38.17, -13.53)),
+                    RectangleHitbox.fromRect(11.21, 5.03, Vec(49.94, -15.01)),
+                    RectangleHitbox.fromRect(11.21, 5.03, Vec(38.01, -15.04))
+                )
+            }
+        ],
+        floors: [
+            {
+                type: FloorNames.Sand,
+                hitbox: new PolygonHitbox([
+                    Vec(-3.4, 7.29),
+                    Vec(-2.44, 7.15),
+                    Vec(-1.44, 7.26),
+                    Vec(-0.49, 7.41),
+                    Vec(0.54, 7.66),
+                    Vec(1.28, 7.82),
+                    Vec(2.21, 7.73),
+                    Vec(9.17, 6.97),
+                    Vec(12.69, 8.75),
+                    Vec(14.17, 9.76),
+                    Vec(14.98, 11.11),
+                    Vec(16.14, 13.72),
+                    Vec(16.89, 14.99),
+                    Vec(17.68, 15.82),
+                    Vec(18.4, 16.03),
+                    Vec(18.65, 16.56),
+                    Vec(18.31, 17.01),
+                    Vec(17.52, 17.37),
+                    Vec(16.36, 17.59),
+                    Vec(6.83, 18.09),
+                    Vec(2.66, 18.17),
+                    Vec(-0.12, 18.54),
+                    Vec(-1.01, 18.9),
+                    Vec(-1.49, 20.41),
+                    Vec(-1.3, 22.4),
+                    Vec(-2, 24.43),
+                    Vec(-4.33, 25.75),
+                    Vec(-6.27, 26.42),
+                    Vec(-8, 26.66),
+                    Vec(-9.28, 26.5),
+                    Vec(-10.02, 25.6),
+                    Vec(-10.6, 23.87),
+                    Vec(-10.88, 21.86),
+                    Vec(-11.2, 20.26),
+                    Vec(-11.87, 18.52),
+                    Vec(-12.42, 16.34),
+                    Vec(-12.48, 14.68),
+                    Vec(-12.44, 13.27),
+                    Vec(-12.08, 11.84),
+                    Vec(-11.45, 10.63),
+                    Vec(-10.5, 9.73),
+                    Vec(-9.3, 9.12)
+                ])
+            },
+            {
+                type: FloorNames.Sand,
+                hitbox: new PolygonHitbox([
+                    Vec(61.62, 11.29),
+                    Vec(63.04, 10.16),
+                    Vec(64.78, 9.78),
+                    Vec(67.21, 9.59),
+                    Vec(71.9, 9.14),
+                    Vec(73.88, 9.2),
+                    Vec(74.81, 9.18),
+                    Vec(76.32, 8.93),
+                    Vec(78.52, 8.52),
+                    Vec(80.68, 8.24),
+                    Vec(82.38, 8.07),
+                    Vec(83.26, 8.1),
+                    Vec(84.59, 8.7),
+                    Vec(87.28, 10.57),
+                    Vec(87.75, 11.27),
+                    Vec(88, 12),
+                    Vec(89.62, 13.67),
+                    Vec(88.05, 14.78),
+                    Vec(84.59, 15.67),
+                    Vec(81.15, 16.03),
+                    Vec(79.61, 16.53),
+                    Vec(78.52, 16.73),
+                    Vec(77.6, 16.56),
+                    Vec(76.4, 16),
+                    Vec(75.71, 15.48),
+                    Vec(74.92, 15.03),
+                    Vec(74.26, 15.58),
+                    Vec(73.59, 16.19),
+                    Vec(72.61, 16.6),
+                    Vec(71.47, 16.5),
+                    Vec(70.51, 16.22),
+                    Vec(70.13, 15.56),
+                    Vec(68.79, 15),
+                    Vec(61.31, 13.75),
+                    Vec(60.39, 13.51),
+                    Vec(60.79, 12.57)
+                ])
+            },
+            {
+                type: FloorNames.Sand,
+                hitbox: new PolygonHitbox([
+                    Vec(61.62, 11.29),
+                    Vec(63.04, 10.16),
+                    Vec(64.78, 9.78),
+                    Vec(67.21, 9.59),
+                    Vec(71.9, 9.14),
+                    Vec(73.88, 9.2),
+                    Vec(74.81, 9.18),
+                    Vec(76.32, 8.93),
+                    Vec(78.52, 8.52),
+                    Vec(80.68, 8.24),
+                    Vec(82.38, 8.07),
+                    Vec(83.26, 8.1),
+                    Vec(84.59, 8.7),
+                    Vec(87.28, 10.57),
+                    Vec(87.75, 11.27),
+                    Vec(88, 12),
+                    Vec(89.62, 13.67),
+                    Vec(88.05, 14.78),
+                    Vec(84.59, 15.67),
+                    Vec(81.15, 16.03),
+                    Vec(79.61, 16.53),
+                    Vec(78.52, 16.73),
+                    Vec(77.6, 16.56),
+                    Vec(76.4, 16),
+                    Vec(75.71, 15.48),
+                    Vec(74.92, 15.03),
+                    Vec(74.26, 15.58),
+                    Vec(73.59, 16.19),
+                    Vec(72.61, 16.6),
+                    Vec(71.47, 16.5),
+                    Vec(70.51, 16.22),
+                    Vec(70.13, 15.56),
+                    Vec(68.79, 15),
+                    Vec(61.31, 13.75),
+                    Vec(60.39, 13.51),
+                    Vec(60.79, 12.57)
+                ])
+            },
+            {
+                type: FloorNames.Sand,
+                hitbox: new PolygonHitbox([
+                    Vec(-36.53, -9.87),
+                    Vec(-34.47, -12.77),
+                    Vec(-33.44, -14.74),
+                    Vec(-28.14, -25.33),
+                    Vec(-28.01, -27.19),
+                    Vec(-28.22, -29.6),
+                    Vec(-29.24, -38.47),
+                    Vec(-29.68, -39.14),
+                    Vec(-31.09, -40.57),
+                    Vec(-34.55, -43.18),
+                    Vec(-35.38, -42.31),
+                    Vec(-40.69, -27.73),
+                    Vec(-41.82, -27.2),
+                    Vec(-42.27, -26.42),
+                    Vec(-42.26, -25.24),
+                    Vec(-41.81, -24.26),
+                    Vec(-41.12, -23.53),
+                    Vec(-40.78, -23.05),
+                    Vec(-41.16, -21.93),
+                    Vec(-41.92, -20.41),
+                    Vec(-42.26, -19.58),
+                    Vec(-42.26, -18.79),
+                    Vec(-41.81, -17.45),
+                    Vec(-41.47, -16.47),
+                    Vec(-40.44, -9.74),
+                    Vec(-39.95, -8.62),
+                    Vec(-39.53, -8.24),
+                    Vec(-38.61, -8.62),
+                    Vec(-38, -9.39),
+                    Vec(-37.43, -9.59)
+                ])
+            }
+        ],
+        obstacles: IS_CLIENT ? undefined : [
+            { idString: "humvee", position: Vec(-70.59, 25.15), rotation: 0 },
+            { idString: "humvee", position: Vec(6.04, -43.11), rotation: 3 },
+            { idString: "nsd_crate", position: Vec(-22.25, -4.09) },
+            { idString: "pallet", position: Vec(-22.25, -4.09), rotation: 0 },
+            { idString: "regular_crate", position: Vec(-77.85, 45.14) },
+            { idString: "pallet", position: Vec(-74.84, 72.48), rotation: 0 },
+            { idString: "super_barrel", position: Vec(-74.84, 72.48) },
+            { idString: "ammo_crate", position: Vec(-63.33, 72.56) },
+            { idString: "forklift", position: Vec(-22.3, 7.44), rotation: 2 },
+            { idString: "grenade_crate", position: Vec(-84.53, 72.04) },
+            { idString: "barrel", position: Vec(-9.31, -43.42) },
+            { idString: "box", position: Vec(-9.38, -36.83) },
+            { idString: "box", position: Vec(92.01, 9.94) },
+            { idString: "sandbags", position: Vec(41.6, 7.96), rotation: 0 },
+            { idString: "smaller_sandbags", position: Vec(72.33, -14.7), rotation: 1 },
+            { idString: "regular_crate", position: Vec(53.82, 6.92) },
+            { idString: "grenade_crate", position: Vec(79.34, -15.03) },
+            { idString: "lansiraami_log", position: Vec(81.81, -23.05), rotation: 0 },
+
+            // fence system
+            { idString: "fence", position: Vec(-12.65, 80), rotation: 0 },
+            { idString: "fence", position: Vec(96.27, 8.86), rotation: 1 },
+            { idString: "fence", position: Vec(96.35, -23.8), rotation: 1 },
+            { idString: "fence", position: Vec(15, -77.62), rotation: 0 },
+            { idString: "fence", position: Vec(6.4, -77.62), rotation: 0 },
+            { idString: "fence", position: Vec(-35.33, -77.33), rotation: 0 },
+
+            ...Array.from(
+                { length: 8 },
+                (_, i) => ({
+                    idString: "fence",
+                    position: Vec(-96.19, 14.2 + 8.6 * i),
+                    rotation: 1
+                })
+            ),
+
+            ...Array.from(
+                { length: 5 },
+                (_, i) => ({
+                    idString: "fence",
+                    position: Vec(-90.22 + 8.6 * i, 80),
+                    rotation: 0
+                })
+            ),
+
+            { idString: "metal_column", position: Vec(-96.16, 80) },
+            { idString: "metal_column", position: Vec(-50.22, 80) },
+            { idString: "metal_column", position: Vec(-18.65, 80) },
+            { idString: "metal_column", position: Vec(96.24, 2.94) },
+            { idString: "metal_column", position: Vec(96.31, -17.96) },
+            { idString: "metal_column", position: Vec(0.58, -77.58) },
+            { idString: "metal_column", position: Vec(-29.5, -77.29) }
+        ],
+        subBuildings: IS_CLIENT ? undefined : [
+            { idString: randomPallet, position: Vec(-67.63, 45.4) },
+            { idString: "shooting_range_garage", position: Vec(-65.8, -33.92) },
+            { idString: "shooting_range_practice", position: Vec(42.12, 45.81) },
+            { idString: "shooting_range_office", position: Vec(59.93, -46.62) }
+        ]
+    },
+    {
+        idString: "shooting_range_garage",
+        name: "Shooting Range Garage",
+        defType: DefinitionType.Building,
+        spawnHitbox: RectangleHitbox.fromRect(80, 97.82, Vec(-1, 0.08)),
+        ceilingHitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(54.3, 83.98, Vec(-2.94, -0.24)),
+            RectangleHitbox.fromRect(9.74, 66, Vec(28.31, 10.19))
+        ),
+        material: "stone",
+        particle: "abandoned_warehouse_1_particle",
+        particleVariations: 2,
+        hitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(56.96, 2.02, Vec(-2.91, -43.22)),
+            RectangleHitbox.fromRect(2.03, 28.06, Vec(24.98, -30.19)),
+            RectangleHitbox.fromRect(2.08, 10.41, Vec(24.97, 10.72)),
+            RectangleHitbox.fromRect(3.06, 3.02, Vec(24.96, 42.71)),
+            RectangleHitbox.fromRect(3.06, 3, Vec(24.98, 10.7)),
+            RectangleHitbox.fromRect(3.06, 3, Vec(24.96, -21.32)),
+            RectangleHitbox.fromRect(2.07, 3.7, Vec(24.99, 39.4)),
+            RectangleHitbox.fromRect(2.07, 63.74, Vec(-30.37, -0.22)),
+            RectangleHitbox.fromRect(55.03, 2.04, Vec(-3.86, 42.73))
+        ),
+        floorImages: [{
+            key: "shooting_range_garage_floor",
+            position: Vec(-2.29, 0)
+        }],
+        ceilingImages: [
+            {
+                key: "shooting_range_garage_ceiling_2",
+                position: Vec(29.26, 10.18),
+                scale: Vec(2, 2)
+            },
+            {
+                key: "shooting_range_garage_ceiling_1",
+                position: Vec(-2.57, -0.2),
+                scale: Vec(2, 2)
+            }
+        ],
+        groundGraphics: [
+            { // stroke
+                color: 0x3d3d3d,
+                hitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(4.72, 11.65, Vec(-32.45, 36.68)),
+                    RectangleHitbox.fromRect(4.72, 11.65, Vec(-32.3, -37.16)),
+                    RectangleHitbox.fromRect(5.88, 24.6, Vec(27.82, 26.35)),
+                    RectangleHitbox.fromRect(5.88, 24.6, Vec(27.79, -5.67))
+                )
+            },
+            { // fill
+                color: 0x5e5e5e,
+                hitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(4.74, 11.25, Vec(27.65, 32.32)),
+                    RectangleHitbox.fromRect(4.74, 11.25, Vec(27.63, -11.65)),
+                    RectangleHitbox.fromRect(4.74, 11.25, Vec(27.63, 0.26)),
+                    RectangleHitbox.fromRect(4.74, 11.25, Vec(27.63, 20.39)),
+                    RectangleHitbox.fromRect(3.36, 5, Vec(-32.57, 39.43)),
+                    RectangleHitbox.fromRect(3.36, 5, Vec(-32.41, -39.91)),
+                    RectangleHitbox.fromRect(3.36, 5, Vec(-32.4, -34.39)),
+                    RectangleHitbox.fromRect(3.36, 5, Vec(-32.57, 33.92))
+                )
+            }
+        ],
+        floors: [
+            {
+                type: FloorNames.Stone,
+                hitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(4.72, 11.65, Vec(-32.45, 36.68)),
+                    RectangleHitbox.fromRect(4.72, 11.65, Vec(-32.3, -37.16)),
+                    RectangleHitbox.fromRect(5.88, 24.6, Vec(27.82, 26.35)),
+                    RectangleHitbox.fromRect(5.88, 24.6, Vec(27.79, -5.67)),
+                    RectangleHitbox.fromRect(21.31, 85.23, Vec(-20.77, -0.49)),
+                    RectangleHitbox.fromRect(37.05, 64.35, Vec(5.93, 9.92)),
+                    RectangleHitbox.fromRect(35.05, 1.32, Vec(6.5, -41.72)),
+                    RectangleHitbox.fromRect(1.03, 20.32, Vec(23.52, -32.05))
+                )
+            },
+            {
+                type: FloorNames.Sand,
+                hitbox: RectangleHitbox.fromRect(33.36, 19.11, Vec(6.52, -31.75))
+            }
+        ],
+        obstacles: IS_CLIENT ? undefined : [
+            { idString: "sandbags", position: Vec(-0.9, -35.36), rotation: 1 },
+            { idString: "smaller_sandbags", position: Vec(-7.85, -35.51), rotation: 1 },
+            { idString: "smaller_sandbags", position: Vec(-1.15, -25.58), rotation: 0 },
+            { idString: "forklift", position: Vec(-0.21, 4.19), rotation: 0 },
+            { idString: "gun_case", position: Vec(7.51, 38.49), rotation: 2 },
+            { idString: "gun_case", position: Vec(-18.45, -10.74), rotation: 1 },
+            { idString: "box", position: Vec(-18.27, -2.34) },
+            { idString: "box", position: Vec(-19.14, 2.77) },
+            { idString: { box: 1, grenade_box: 0.35 }, position: Vec(15.64, 38.77) },
+            { idString: "trash_can", position: Vec(-8.19, 38.61) },
+            { idString: "toolbox", position: Vec(-24.9, 17.4), rotation: 1 },
+            { idString: "research_desk", position: Vec(-25.39, -4.69), rotation: 3 },
+            { idString: "garage_door", position: Vec(25.33, -5.25), rotation: 1 },
+            { idString: "garage_door", position: Vec(25.34, 26.74), rotation: 1 },
+            { idString: "small_lansiraami_log", position: Vec(12.59, -21.3), rotation: 0 },
+            { idString: "small_lansiraami_log", position: Vec(-1.4, 33.83), rotation: 1 },
+            { idString: "door", position: Vec(-30.28, -37.57), rotation: 1 },
+            { idString: "door", position: Vec(-30.28, 36.16), rotation: 1 },
+            { idString: "cobweb", position: Vec(19.21, -37.46), rotation: 3 },
+            { idString: "abandoned_bunker_entrance", position: Vec(12.21, -32.42), rotation: 3 }
+        ]
+    },
+    {
+        idString: "shooting_range_practice",
+        name: "Shooting Range Practice",
+        defType: DefinitionType.Building,
+        material: "stone",
+        particle: "abandoned_warehouse_1_particle",
+        particleVariations: 2,
+        hitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(2.01, 17.18, Vec(-49.49, 26.45)),
+            RectangleHitbox.fromRect(2.01, 17.18, Vec(-49.45, -23.7)),
+            RectangleHitbox.fromRect(70.27, 2.03, Vec(19.36, -31.47)),
+            RectangleHitbox.fromRect(25.74, 2.03, Vec(-37.59, -31.46)),
+            RectangleHitbox.fromRect(2.01, 37.05, Vec(54.15, 16.09)),
+            RectangleHitbox.fromRect(2.01, 21.17, Vec(54.15, -21.9)),
+            RectangleHitbox.fromRect(56.66, 2.01, Vec(-22.17, 34.22)),
+            RectangleHitbox.fromRect(40.11, 2.06, Vec(35.1, 34.2))
+        ),
+        spawnHitbox: RectangleHitbox.fromRect(118.88, 77.79, Vec(0.87, 1.34)),
+        ceilingHitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(101.64, 63.75, Vec(2.33, 1.32)),
+            RectangleHitbox.fromRect(1.72, 33.01, Vec(-49.28, 1.39))
+        ),
+        floors: [
+            {
+                type: FloorNames.Sand,
+                hitbox: RectangleHitbox.fromRect(34.17, 16.91, Vec(35.27, -21.44))
+            },
+            {
+                type: FloorNames.Metal,
+                hitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(73.07, 34.33, Vec(16.67, 16.03)),
+                    RectangleHitbox.fromRect(8.98, 2.64, Vec(10.63, 33.9))
+                )
+            },
+            {
+                type: FloorNames.Stone,
+                hitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(29.02, 63.93, Vec(-33.98, 1.36)),
+                    RectangleHitbox.fromRect(73.31, 30.11, Vec(16.56, -15.53)),
+                    RectangleHitbox.fromRect(2.06, 9.01, Vec(54.12, -6.88)),
+                    RectangleHitbox.fromRect(9.02, 1.95, Vec(-20.28, -31.52)),
+                    RectangleHitbox.fromRect(1.92, 33.88, Vec(-49.34, 0.88))
+                )
+            }
+        ],
+        ceilingImages: [{
+            key: "shooting_range_practice_ceiling",
+            position: Vec(2.37, 1.3),
+            scale: Vec(2, 2)
+        }],
+        floorImages: [
+            {
+                key: "shooting_range_practice_floor",
+                position: Vec(2.37, 1.3)
+            },
+            {
+                key: "barricade_line_shooting_range",
+                position: Vec(-51.86, 1.26)
+            },
+            {
+                key: "explosion_decal",
+                position: Vec(-20.38, -31.31),
+                zIndex: ZIndexes.Decals,
+                scale: Vec(1.7, 1.7),
+                alpha: 0.5
+            }
+        ],
+        obstacles: IS_CLIENT ? undefined : [
+            { idString: "sandbags", position: Vec(42.54, -21.38), rotation: 1 },
+            { idString: "sandbags", position: Vec(48.66, 12.02), rotation: 1 },
+            { idString: "sandbags", position: Vec(48.66, 25.92), rotation: 1 },
+            { idString: "sandbags", position: Vec(-34.02, 28.89), rotation: 0 },
+            { idString: "smaller_sandbags", position: Vec(-22.57, 9.07), rotation: 1 },
+            { idString: "smaller_sandbags", position: Vec(48.66, 1.77), rotation: 0 },
+            { idString: "cobweb", position: Vec(-43.6, -25.64), rotation: 0 },
+            { idString: "cobweb", position: Vec(48.36, 28.38), rotation: 2 },
+            { idString: "box", position: Vec(-33.91, -27.14) },
+            { idString: "box", position: Vec(-32.6, -21.96) },
+            { idString: { box: 1, grenade_box: 0.3 }, position: Vec(9.64, -17.22) },
+            { idString: "gun_case", position: Vec(-5.18, 29.85), rotation: 2 },
+            { idString: "gun_case", position: Vec(-23.1, 27.59), rotation: 3 },
+            { idString: "regular_crate", position: Vec(-42.3, -24.59) },
+            { idString: "nsd_crate", position: Vec(7.1, -24.87) },
+            { idString: "small_drawer", position: Vec(-44.61, 29.09), rotation: 2 },
+            { idString: "barrel", position: Vec(18.87, 28.62) },
+            { idString: "small_lansiraami_log", position: Vec(15.92, -21.66), rotation: 3 },
+            { idString: "abandoned_bunker_entrance", position: Vec(28.98, -21.75), rotation: 1 },
+            { idString: "nsd_wall", position: Vec(54.19, -7.01), rotation: 1 },
+            { idString: "nsd_wall", position: Vec(-20.25, -31.55), rotation: 2 },
+            { idString: "nsd_wall", position: Vec(10.66, 34.11), rotation: 0 },
+            { idString: "shooting_range_practice_log", position: Vec(-14.38, 16.46), rotation: 0 },
+            { idString: "dummy", position: Vec(38.48, 7.64), rotation: 3 },
+            { idString: "dummy", position: Vec(38.48, 17.04), rotation: 3 },
+            { idString: "dummy", position: Vec(38.48, 26.15), rotation: 3 }
+        ]
+    },
+    {
+        idString: "shooting_range_office",
+        name: "Shooting Range Office",
+        defType: DefinitionType.Building,
+        spawnHitbox: RectangleHitbox.fromRect(89.01, 75.58, Vec(-0.32, 1.66)),
+        ceilingHitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(74.36, 46.33, Vec(-1.44, -6.92)),
+            RectangleHitbox.fromRect(45.03, 12.55, Vec(-16.1, 21.92))
+        ),
+        material: "stone",
+        particle: "abandoned_warehouse_1_particle",
+        particleVariations: 2,
+        hitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(2, 61.68, Vec(-39.57, -1.16)),
+            RectangleHitbox.fromRect(13.62, 2.06, Vec(0.92, 28.78)),
+            RectangleHitbox.fromRect(14.57, 2.06, Vec(-33.3, 28.78)),
+            RectangleHitbox.fromRect(2.03, 49.56, Vec(7.29, 5.03)),
+            RectangleHitbox.fromRect(28.74, 1.95, Vec(22.46, 17.23)),
+            RectangleHitbox.fromRect(2.11, 12.59, Vec(36.32, 11.91)),
+            RectangleHitbox.fromRect(2.03, 26.7, Vec(36.35, -17.79)),
+            RectangleHitbox.fromRect(39.06, 2.03, Vec(17.84, -31.01)),
+            RectangleHitbox.fromRect(28.08, 2, Vec(-24.64, -31))
+        ),
+        groundGraphics: [
+            { // stroke
+                color: 0x3d3d3d,
+                hitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(24.63, 6.23, Vec(-15.97, 31.74)),
+                    RectangleHitbox.fromRect(4.39, 11.66, Vec(38.38, 0.58))
+                )
+            },
+            { // fill
+                color: 0x5e5e5e,
+                hitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(11.21, 5.03, Vec(-9.99, 31.61)),
+                    RectangleHitbox.fromRect(11.21, 5.03, Vec(-21.92, 31.58)),
+                    RectangleHitbox.fromRect(3.34, 4.98, Vec(38.36, 3.34)),
+                    RectangleHitbox.fromRect(3.34, 4.98, Vec(38.35, -2.17))
+                )
+            }
+        ],
+        floors: [
+            {
+                type: FloorNames.Wood,
+                hitbox: RectangleHitbox.fromRect(45.73, 59.38, Vec(-15.82, -0.33))
+            },
+            {
+                type: FloorNames.Metal,
+                hitbox: RectangleHitbox.fromRect(29.93, 46.41, Vec(21.46, -6.81))
+            },
+            {
+                type: FloorNames.Stone,
+                hitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(24.63, 6.23, Vec(-15.97, 31.74)),
+                    RectangleHitbox.fromRect(4.39, 11.66, Vec(38.38, 0.58))
+                )
+            }
+        ],
+        floorImages: [
+            {
+                key: "shooting_range_office_floor_2",
+                position: Vec(22.49, -6.9)
+            },
+            {
+                key: "shooting_range_office_floor_1",
+                position: Vec(-16.03, -1.11)
+            },
+            {
+                key: "explosion_decal",
+                position: Vec(-6.17, -30.63),
+                zIndex: ZIndexes.Decals,
+                scale: Vec(1.7, 1.7),
+                alpha: 0.5
+            }
+        ],
+        ceilingImages: [
+            {
+                key: "shooting_range_office_ceiling_2",
+                position: Vec(-16.1, 23.75),
+                scale: Vec(2, 2)
+            },
+            {
+                key: "shooting_range_office_ceiling_1",
+                position: Vec(-1.66, -6.89),
+                scale: Vec(2, 2)
+            }
+        ],
+        puzzle: {
+            triggerOnSolve: "blue_metal_auto_door",
+            solvedSound: true,
+            soundPosition: Vec(-19.16, -10.9),
+            setSolvedImmediately: true,
+            delay: 1000
+        },
+        obstacles: IS_CLIENT ? undefined : [
+            { idString: "shooting_range_server_colliders", position: Vec(0, 0), rotation: 0 },
+            { idString: "server_interactor", position: Vec(14.74, 9.81), rotation: 0, puzzlePiece: true },
+            { idString: "blue_metal_auto_door", position: Vec(-19.15, -10.9), rotation: 3 },
+            { idString: "small_desk", position: Vec(3.27, 8.44), rotation: 1 },
+            { idString: "small_desk", position: Vec(3.27, 21.18), rotation: 1 },
+            { idString: "desk_left", position: Vec(-28.63, 4.79), rotation: 0 },
+            { idString: "small_drawer", position: Vec(-14.65, -26.07), rotation: 0 },
+            { idString: "small_drawer", position: Vec(-34.66, 24.37), rotation: 1 },
+            { idString: "grey_office_chair", position: Vec(-26.02, 11.13), rotation: 2 },
+            { idString: "door", position: Vec(36.31, 1.11), rotation: 3 },
+            { idString: "door", position: Vec(7.3, -24.55), rotation: 3 },
+            { idString: "door", position: Vec(-20.5, 28.82), rotation: 0 },
+            { idString: "door", position: Vec(-11.31, 28.74), rotation: 2 },
+            { idString: "potted_plant", position: Vec(2.29, -7.62), rotation: 0 },
+            { idString: "trash_can", position: Vec(23.62, -26.9) },
+            { idString: "smaller_sandbags", position: Vec(11.45, -11.84), rotation: 1 },
+            { idString: "box", position: Vec(11.08, -5.11) },
+            { idString: "sawmill_warehouse_wall_8", position: Vec(-28.37, -2.57), rotation: 0 },
+            { idString: "sawmill_warehouse_wall_9", position: Vec(2.34, -2.57), rotation: 0 },
+            { idString: "sawmill_warehouse_column", position: Vec(-16.57, -2.57) },
+            { idString: "sawmill_warehouse_column", position: Vec(-3.14, -2.57) },
+            { idString: "nsd_wall", position: Vec(-6.16, -30.99), rotation: 2 },
+            { idString: "cobweb", position: Vec(1.62, 23.08), rotation: 2 }
+        ],
+        subBuildings: IS_CLIENT ? undefined : [{
+            idString: "shooting_range_office_vault",
+            position: Vec(-28.36, -16.8)
+        }]
+    },
+    {
+        idString: "shooting_range_office_vault",
+        name: "Shooting Range Office Vault",
+        defType: DefinitionType.Building,
+        spawnHitbox: RectangleHitbox.fromRect(22.75, 28.56, Vec(0.03, 0)),
+        floorZIndex: ZIndexes.BuildingsFloor + 0.5,
+        ceilingZIndex: ZIndexes.BuildingsCeiling - 0.5,
+        ceilingHitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(16.36, 22.6, Vec(-0.07, 0)),
+            RectangleHitbox.fromRect(1.61, 10.7, Vec(8.76, 5.94))
+        ),
+        particle: "metal_particle",
+        reflectBullets: true,
+        material: "metal_heavy",
+        hitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(2.01, 26.34, Vec(-9.22, -0.13)),
+            RectangleHitbox.fromRect(20.44, 2, Vec(-0.01, 12.28)),
+            RectangleHitbox.fromRect(17.56, 2, Vec(0.49, -12.3)),
+            RectangleHitbox.fromRect(2.01, 13.89, Vec(9.09, -6.35))
+        ),
+        floorImages: [{
+            key: "shooting_range_office_vault_floor",
+            position: Vec(0, 0)
+        }],
+        ceilingImages: [{
+            key: "shooting_range_office_vault_ceiling",
+            position: Vec(0, 0),
+            scale: Vec(2, 2)
+        }],
+        floors: [{
+            type: FloorNames.Metal,
+            hitbox: RectangleHitbox.fromRect(17.85, 22.75, Vec(0.68, -0.03))
+        }],
+        obstacles: IS_CLIENT ? undefined : [
+            {
+                idString: {
+                    gun_mount_stoner_63: 0.25,
+                    gun_mount_fn_fal: 0.25,
+                    gun_mount_rpk74: 0.25,
+                    gun_mount_mcx_spear: 0.25
+                },
+                position: Vec(-0.14, -9.45),
+                rotation: 0
+            },
+            { idString: "box", position: Vec(-5.42, 8.6) }
         ]
     }
 ]);

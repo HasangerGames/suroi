@@ -1,4 +1,4 @@
-import { FlyoverPref, Layers, MapObjectSpawnMode, RotationMode, ZIndexes } from "../constants";
+import { FlyoverPref, GameConstants, Layers, MapObjectSpawnMode, RotationMode, ZIndexes } from "../constants";
 import { Orientation, type Variation } from "../typings";
 import { CircleHitbox, GroupHitbox, RectangleHitbox, type Hitbox } from "../utils/hitbox";
 import { type Mutable } from "../utils/misc";
@@ -429,7 +429,14 @@ export const TintedParticles: Record<string, { readonly base: string, readonly t
     hunting_stand_particle: { base: "wood_particle", tint: 0x764423 },
 
     tavern_bar_particle: { base: "wood_particle", tint: 0x603b26 },
-    tavern_wall_particle: { base: "wood_particle", tint: 0x72572a }
+    tavern_wall_particle: { base: "wood_particle", tint: 0x72572a },
+
+    humvee_particle: { base: "metal_particle_1", tint: 0x425b3e },
+    lansiraami_log_particle: { base: "stone_particle_1", tint: 0x6c543d },
+    toolbox_particle: { base: "metal_particle_1", tint: 0x2f4b88 },
+    garage_door_particle: { base: "metal_particle_1", tint: 0xa29e99 },
+    research_desk_particle: { base: "wood_particle", tint: 0x88642f },
+    nsd_wall_particle: { base: "wood_particle", tint: 0x3e5130 }
 };
 
 const houseWall = (
@@ -2558,6 +2565,10 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     sawmillWarehouseWall(6, RectangleHitbox.fromRect(2.02, 15.75)),
     sawmillWarehouseWall(7, RectangleHitbox.fromRect(23.01, 2.02)),
 
+    // SHOOTING RANGE OFFICE
+    sawmillWarehouseWall(8, RectangleHitbox.fromRect(20.64, 2.03)),
+    sawmillWarehouseWall(9, RectangleHitbox.fromRect(8.02, 2.03)),
+
     warehouseHuntedWall(1, RectangleHitbox.fromRect(2.01, 12.31)),
     warehouseHuntedWall(2, RectangleHitbox.fromRect(2.01, 16.78)),
 
@@ -4144,6 +4155,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     gunMount("ak47", "gun"),
     gunMount("an94", "gun"),
     gunMount("rpk74", "gun"),
+    gunMount("fn_fal", "gun"),
     gunMount(
         "maul",
         "melee",
@@ -4396,7 +4408,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
             RectangleHitbox.fromRect(8.15, 17.3, Vec(0, -3.8)),
             RectangleHitbox.fromRect(9.45, 10.6, Vec(0, -4.9))
         ),
-        zIndex: ZIndexes.ObstaclesLayer1 - 4,
+        zIndex: ZIndexes.Decals - 0.1,
         rotationMode: RotationMode.Limited,
         winterVariations: 1
     },
@@ -6739,6 +6751,207 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
             dynamic: true
         },
         rotationMode: RotationMode.Limited
+    },
+    {
+        idString: "humvee",
+        name: "Humvee",
+        defType: DefinitionType.Obstacle,
+        rotationMode: RotationMode.Limited,
+        health: 100,
+        indestructible: true,
+        reflectBullets: true,
+        material: "metal_heavy",
+        hitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(39.36, 19.32, Vec(-0.68, 0.02)),
+            new CircleHitbox(2.02, Vec(18.39, 7.71)),
+            new CircleHitbox(2.02, Vec(18.39, -7.69)),
+            RectangleHitbox.fromRect(2.87, 15.29, Vec(18.96, 0.03)),
+            RectangleHitbox.fromRect(8.31, 20.63, Vec(15.6, 0.01)),
+            RectangleHitbox.fromRect(8.31, 20.63, Vec(-13.96, 0)),
+            RectangleHitbox.fromRect(1.19, 23.26, Vec(8.62, 0))
+        )
+    },
+    {
+        idString: "lansiraami_log",
+        name: "Lansiraami Log",
+        defType: DefinitionType.Obstacle,
+        material: "tree",
+        health: 250,
+        scale: {
+            spawnMin: 1,
+            spawnMax: 1,
+            destroy: 0.7
+        },
+        hitbox: RectangleHitbox.fromRect(25.58, 7.46),
+        rotationMode: RotationMode.Limited,
+        allowFlyover: FlyoverPref.Always,
+        noResidue: true
+    },
+    {
+        idString: "small_lansiraami_log",
+        name: "Small Lansiraami Log",
+        defType: DefinitionType.Obstacle,
+        material: "tree",
+        health: 150,
+        scale: {
+            spawnMin: 1,
+            spawnMax: 1,
+            destroy: 0.7
+        },
+        frames: {
+            particle: "lansiraami_log_particle"
+        },
+        hitbox: RectangleHitbox.fromRect(15.82, 6.5),
+        rotationMode: RotationMode.Limited,
+        allowFlyover: FlyoverPref.Always,
+        noResidue: true
+    },
+    {
+        idString: "toolbox",
+        name: "Toolbox",
+        defType: DefinitionType.Obstacle,
+        material: "iron",
+        health: 110,
+        reflectBullets: true,
+        scale: {
+            spawnMin: 1,
+            spawnMax: 1,
+            destroy: 0.8
+        },
+        hitbox: RectangleHitbox.fromRect(18.93, 6.44, Vec(-0.01, -0.38)),
+        rotationMode: RotationMode.Limited,
+        hasLoot: true
+    },
+    {
+        idString: "garage_door",
+        name: "Garage Door",
+        defType: DefinitionType.Obstacle,
+        material: "appliance",
+        health: 300,
+        noResidue: true,
+        reflectBullets: true,
+        hitbox: RectangleHitbox.fromRect(21.76, 1.51, Vec(0, -0.42)),
+        rotationMode: RotationMode.Limited
+    },
+    {
+        idString: "research_desk",
+        name: "Research Desk",
+        defType: DefinitionType.Obstacle,
+        material: "wood",
+        health: 100,
+        scale: {
+            spawnMin: 1,
+            spawnMax: 1,
+            destroy: 0.8
+        },
+        hitbox: RectangleHitbox.fromRect(24.12, 6.61),
+        rotationMode: RotationMode.Limited,
+        hasLoot: true
+    },
+    {
+        idString: "abandoned_bunker_entrance",
+        name: "Abandoned Bunker Entrance",
+        defType: DefinitionType.Obstacle,
+        material: "metal_heavy",
+        health: 100,
+        indestructible: true,
+        noResidue: true,
+        reflectBullets: true,
+        hitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(14.61, 13.15, Vec(0, -2.19)),
+            RectangleHitbox.fromRect(1.94, 4.93, Vec(6.33, 6.34)),
+            RectangleHitbox.fromRect(1.94, 4.93, Vec(-6.33, 6.34))
+        ),
+        rotationMode: RotationMode.Limited,
+        frames: {
+            particle: "metal_particle"
+        }
+    },
+    {
+        idString: "nsd_wall",
+        name: "NSD Wall",
+        defType: DefinitionType.Obstacle,
+        material: "wood",
+        health: 170,
+        hideOnMap: true,
+        isWall: true,
+        noResidue: true,
+        hitbox: RectangleHitbox.fromRect(8.96, 2),
+        rotationMode: RotationMode.Limited
+    },
+    {
+        idString: "shooting_range_practice_log",
+        name: "Shooting Range Practice Log",
+        defType: DefinitionType.Obstacle,
+        material: "tree",
+        health: 300,
+        scale: {
+            spawnMin: 1,
+            spawnMax: 1,
+            destroy: 0.7
+        },
+        frames: {
+            particle: "lansiraami_log_particle"
+        },
+        zIndex: ZIndexes.Players + 0.1,
+        hitbox: RectangleHitbox.fromRect(7.48, 33.36, Vec(-0.67, 0.01)),
+        rotationMode: RotationMode.Limited,
+        allowFlyover: FlyoverPref.Always,
+        noResidue: true,
+        hasLoot: true
+    },
+    {
+        idString: "dummy",
+        name: "Dummy",
+        defType: DefinitionType.Obstacle,
+        hitbox: new CircleHitbox(GameConstants.player.radius),
+        rotationMode: RotationMode.Limited,
+        material: "trash_bag",
+        health: 100,
+        scale: {
+            spawnMin: 1,
+            spawnMax: 1,
+            destroy: 0.75
+        }
+    },
+    {
+        idString: "server_interactor",
+        name: "Server",
+        defType: DefinitionType.Obstacle,
+        material: "metal_heavy",
+        health: 1000,
+        indestructible: true,
+        noCollisions: true,
+        noBulletCollision: true,
+        noMeleeCollision: true,
+        isActivatable: true,
+        hideOnMap: true,
+        interactObstacleIdString: "server",
+        hitbox: new CircleHitbox(3),
+        rotationMode: RotationMode.Limited,
+        invisible: true,
+        sound: {
+            name: "button_press"
+        }
+    },
+    {
+        idString: "shooting_range_server_colliders",
+        name: "Server",
+        defType: DefinitionType.Obstacle,
+        material: "metal_heavy",
+        health: 100,
+        invisible: true,
+        indestructible: true,
+        reflectBullets: true,
+        hideOnMap: true,
+        rotationMode: RotationMode.Limited,
+        hitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(8.56, 23.45, Vec(31.06, -18.23)),
+            RectangleHitbox.fromRect(27.15, 8.52, Vec(21.8, 11.95))
+        ),
+        frames: {
+            particle: "bunker_particle"
+        }
     }
 ] satisfies readonly RawObstacleDefinition[] as readonly RawObstacleDefinition[]).flatMap((def: Mutable<RawObstacleDefinition>) => {
     if (def.variations !== undefined) (def as Mutable<ObstacleDefinition>).variationBits = Math.ceil(Math.log2(def.variations));

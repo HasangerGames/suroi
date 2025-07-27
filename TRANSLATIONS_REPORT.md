@@ -42,6 +42,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `final_gas_waiting` is not defined
 - Key `final_gas_advancing` is not defined
 - Key `action_vaccine_syringe_use` is not defined
+- Key `interact_server` is not defined
 - Key `interact_speaker` is not defined
 - Key `interact_monument` is not defined
 - Key `interact_recorder_interactable` is not defined
@@ -154,7 +155,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇧🇷 Português (Brasil) (93% Complete) - br.hjson
+## 🇧🇷 Português (Brasil) (92% Complete) - br.hjson
 
 ### Invalid Keys
 
@@ -172,6 +173,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_normal_joystick_info` is not defined
 - Key `settings_switched_joystick_info` is not defined
 - Key `action_vaccine_syringe_use` is not defined
+- Key `interact_server` is not defined
 - Key `interact_monument` is not defined
 - Key `interact_recorder_interactable` is not defined
 - Key `bindings_screen_record` is not defined
@@ -232,6 +234,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `final_gas_waiting` is not defined
 - Key `final_gas_advancing` is not defined
 - Key `action_vaccine_syringe_use` is not defined
+- Key `interact_server` is not defined
 - Key `interact_speaker` is not defined
 - Key `interact_monument` is not defined
 - Key `interact_recorder_interactable` is not defined
@@ -331,7 +334,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇩🇪 Deutsch (73% Complete) - de.hjson
+## 🇩🇪 Deutsch (72% Complete) - de.hjson
 
 ### Invalid Keys
 
@@ -360,6 +363,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `final_gas_waiting` is not defined
 - Key `final_gas_advancing` is not defined
 - Key `action_vaccine_syringe_use` is not defined
+- Key `interact_server` is not defined
 - Key `interact_monument` is not defined
 - Key `interact_recorder_interactable` is not defined
 - Key `loading_fetching_data_failed` is not defined
@@ -447,7 +451,7 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### (No Undefined Keys)
 
-## 🇪🇸 Español (69% Complete) - es.hjson
+## 🇪🇸 Español (68% Complete) - es.hjson
 
 ### Invalid Keys
 
@@ -476,6 +480,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `final_gas_waiting` is not defined
 - Key `final_gas_advancing` is not defined
 - Key `action_vaccine_syringe_use` is not defined
+- Key `interact_server` is not defined
 - Key `interact_monument` is not defined
 - Key `interact_recorder_interactable` is not defined
 - Key `loading_fetching_data_failed` is not defined
@@ -733,6 +738,7 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### Undefined Keys
 
+- Key `interact_server` is not defined
 - Key `interact_recorder_interactable` is not defined
 - Key `kf_suicide_finished_off` is not defined
 - Key `kf_were_finally_killed` is not defined
@@ -782,6 +788,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `final_gas_waiting` is not defined
 - Key `final_gas_advancing` is not defined
 - Key `action_vaccine_syringe_use` is not defined
+- Key `interact_server` is not defined
 - Key `interact_monument` is not defined
 - Key `interact_recorder_interactable` is not defined
 - Key `loading_fetching_data_failed` is not defined
@@ -891,6 +898,7 @@ This file is a report of all errors and missing keys in the translation files of
 ### Undefined Keys
 
 - Key `action_vaccine_syringe_use` is not defined
+- Key `interact_server` is not defined
 - Key `interact_recorder_interactable` is not defined
 - Key `tt_desc` is not defined
 - Key `power_vest` is not defined
@@ -932,6 +940,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `final_gas_waiting` is not defined
 - Key `final_gas_advancing` is not defined
 - Key `action_vaccine_syringe_use` is not defined
+- Key `interact_server` is not defined
 - Key `interact_monument` is not defined
 - Key `interact_recorder_interactable` is not defined
 - Key `bindings_screen_record` is not defined
@@ -1056,6 +1065,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `final_gas_waiting` is not defined
 - Key `final_gas_advancing` is not defined
 - Key `action_vaccine_syringe_use` is not defined
+- Key `interact_server` is not defined
 - Key `interact_speaker` is not defined
 - Key `interact_monument` is not defined
 - Key `interact_recorder_interactable` is not defined
@@ -1164,6 +1174,7 @@ This file is a report of all errors and missing keys in the translation files of
 ### Undefined Keys
 
 - Key `msg_cannot_use_flare` is not defined
+- Key `interact_server` is not defined
 - Key `interact_recorder_interactable` is not defined
 - Key `kf_were_finally_killed` is not defined
 - Key `power_vest` is not defined
@@ -1179,7 +1190,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇮🇹 Italiano (62% Complete) - it.hjson
+## 🇮🇹 Italiano (61% Complete) - it.hjson
 
 ### Invalid Keys
 
@@ -1236,6 +1247,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `final_gas_waiting` is not defined
 - Key `final_gas_advancing` is not defined
 - Key `action_vaccine_syringe_use` is not defined
+- Key `interact_server` is not defined
 - Key `interact_headquarters_security_desk` is not defined
 - Key `interact_speaker` is not defined
 - Key `interact_monument` is not defined
@@ -1599,6 +1611,7 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### Undefined Keys
 
+- Key `interact_server` is not defined
 - Key `interact_recorder_interactable` is not defined
 - Key `power_vest` is not defined
 - Key `baby_plumpkin_pie_desc` is not defined
@@ -1653,6 +1666,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `final_gas_waiting` is not defined
 - Key `final_gas_advancing` is not defined
 - Key `action_vaccine_syringe_use` is not defined
+- Key `interact_server` is not defined
 - Key `interact_speaker` is not defined
 - Key `interact_monument` is not defined
 - Key `interact_recorder_interactable` is not defined
@@ -1794,6 +1808,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `final_gas_waiting` is not defined
 - Key `final_gas_advancing` is not defined
 - Key `action_vaccine_syringe_use` is not defined
+- Key `interact_server` is not defined
 - Key `interact_speaker` is not defined
 - Key `interact_monument` is not defined
 - Key `interact_recorder_interactable` is not defined
@@ -1900,6 +1915,7 @@ This file is a report of all errors and missing keys in the translation files of
 ### Undefined Keys
 
 - Key `action_vaccine_syringe_use` is not defined
+- Key `interact_server` is not defined
 - Key `interact_recorder_interactable` is not defined
 - Key `tt_desc` is not defined
 - Key `power_vest` is not defined
@@ -1949,6 +1965,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `final_gas_waiting` is not defined
 - Key `final_gas_advancing` is not defined
 - Key `action_vaccine_syringe_use` is not defined
+- Key `interact_server` is not defined
 - Key `interact_monument` is not defined
 - Key `interact_recorder_interactable` is not defined
 - Key `loading_fetching_data_failed` is not defined
@@ -2066,6 +2083,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_switched_joystick_info` is not defined
 - Key `msg_cannot_use_flare` is not defined
 - Key `action_vaccine_syringe_use` is not defined
+- Key `interact_server` is not defined
 - Key `interact_monument` is not defined
 - Key `interact_recorder_interactable` is not defined
 - Key `bindings_explode_c4` is not defined
@@ -2169,6 +2187,7 @@ This file is a report of all errors and missing keys in the translation files of
 ### Undefined Keys
 
 - Key `action_vaccine_syringe_use` is not defined
+- Key `interact_server` is not defined
 - Key `interact_recorder_interactable` is not defined
 - Key `tt_desc` is not defined
 - Key `power_vest` is not defined
@@ -2194,6 +2213,7 @@ This file is a report of all errors and missing keys in the translation files of
 
 - Key `settings_show_inout` is not defined
 - Key `action_vaccine_syringe_use` is not defined
+- Key `interact_server` is not defined
 - Key `interact_recorder_interactable` is not defined
 - Key `tt_desc` is not defined
 - Key `power_vest` is not defined
@@ -2222,6 +2242,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_alt_texture_loading` is not defined
 - Key `msg_cannot_use_flare` is not defined
 - Key `action_vaccine_syringe_use` is not defined
+- Key `interact_server` is not defined
 - Key `interact_recorder_interactable` is not defined
 - Key `kf_suicide_finished_off` is not defined
 - Key `kf_were_finally_killed` is not defined
@@ -2312,7 +2333,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇹🇷 Turkısh (79% Complete) - tr.hjson
+## 🇹🇷 Turkısh (78% Complete) - tr.hjson
 
 ### Invalid Keys
 
@@ -2324,6 +2345,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_error_kicked_team` is not defined
 - Key `msg_cannot_use_flare` is not defined
 - Key `action_vaccine_syringe_use` is not defined
+- Key `interact_server` is not defined
 - Key `interact_recorder_interactable` is not defined
 - Key `kf_were_finally_killed` is not defined
 - Key `tt_desc` is not defined
@@ -2413,6 +2435,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_alt_texture_loading` is not defined
 - Key `msg_cannot_use_flare` is not defined
 - Key `action_vaccine_syringe_use` is not defined
+- Key `interact_server` is not defined
 - Key `interact_recorder_interactable` is not defined
 - Key `kf_suicide_finished_off` is not defined
 - Key `kf_were_finally_killed` is not defined
@@ -2503,7 +2526,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇻🇳 Tiếng Việt (97% Complete) - vi.hjson
+## 🇻🇳 Tiếng Việt (96% Complete) - vi.hjson
 
 ### Invalid Keys
 
@@ -2511,6 +2534,7 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### Undefined Keys
 
+- Key `interact_server` is not defined
 - Key `interact_recorder_interactable` is not defined
 - Key `kf_were_finally_killed` is not defined
 - Key `power_vest` is not defined
@@ -2776,6 +2800,7 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### Undefined Keys
 
+- Key `interact_server` is not defined
 - Key `interact_recorder_interactable` is not defined
 - Key `power_vest` is not defined
 - Key `m16a4` is not defined

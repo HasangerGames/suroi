@@ -972,7 +972,30 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
         ducktub: [{ table: "gold_airdrop_guns", weight: 1 }],
         special_table_vest: [{ item: "power_vest", weight: 1 }],
         special_table_helmet: [{ item: "power_helmet", weight: 1 }],
-        special_table_pack: [{ item: "power_pack", weight: 1 }]
+        special_table_pack: [{ item: "power_pack", weight: 1 }],
+        toolbox: [
+            [
+                { table: "equipment", weight: 1 },
+                { table: "healing_items", weight: 1 },
+                { table: "ammo", weight: 1 }
+            ],
+            [{ table: "scopes", weight: 1 }],
+            [{ table: "guns", weight: 1 }],
+            [{ item: "crowbar", weight: 1 }]
+        ],
+        research_desk: [
+            [
+                { table: "equipment", weight: 1 },
+                { table: "guns", weight: 0.65 },
+                { table: "scopes", weight: 0.3 }
+            ],
+            [
+                { table: "ammo", weight: 1 },
+                { table: "healing_items", weight: 0.8 },
+                { table: "guns", weight: 0.3 }
+            ]
+        ],
+        shooting_range_practice_log: [{ item: "ak47", weight: 1, count: 3, spawnSeparately: true }]
     },
 
     halloween: {

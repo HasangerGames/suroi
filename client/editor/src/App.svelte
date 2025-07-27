@@ -318,7 +318,7 @@
         hitboxes = hitboxes;
         selected = hitboxes[0];
     }
-    const bgImage = loadImage("/img/game/hunted/buildings/sawmil_noalpha.png");
+    const bgImage = loadImage("/img/game/hunted/buildings/shooting_range_office.png");
 
     function handleKeydown(e: KeyboardEvent) {
         let moved = false;

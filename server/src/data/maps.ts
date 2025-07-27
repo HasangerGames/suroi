@@ -772,7 +772,8 @@ const maps = {
             warehouse_hunted: 5,
             fox_bunker: 1,
             moose_bunker: 1,
-            bear_bunker: 1
+            bear_bunker: 1,
+            shooting_range: 1
         },
         quadBuildingLimit: {
             hunting_stand: 3,
@@ -781,7 +782,7 @@ const maps = {
             outhouse: 3,
             cabin: 3
         },
-        majorBuildings: ["tavern", "sawmill"],
+        majorBuildings: ["tavern", "sawmill", "shooting_range"],
         obstacles: {
             clearing_boulder: 18,
             pine_tree: 95,
