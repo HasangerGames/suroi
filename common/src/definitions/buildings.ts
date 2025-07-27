@@ -14031,25 +14031,77 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         idString: "carport",
         name: "Carport",
         defType: DefinitionType.Building,
-        spawnHitbox: RectangleHitbox.fromRect(75, 75),
+        spawnHitbox: RectangleHitbox.fromRect(116.99, 112.22, Vec(-0.39, 0.4)),
+        ceilingHitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(91.03, 92.07, Vec(-6.29, -4.11)),
+            RectangleHitbox.fromRect(32.45, 2.47, Vec(8.42, 42.56)),
+            RectangleHitbox.fromRect(2.21, 32.45, Vec(40.03, -26.67))
+        ),
+        material: "stone",
+        particleVariations: 2,
+        particle: "carport_particle",
+        hitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(2.01, 95.8, Vec(-52.72, -4.1)),
+            RectangleHitbox.fromRect(93.65, 1.94, Vec(-6.54, -51.04)),
+            RectangleHitbox.fromRect(1.95, 9.18, Vec(40.17, -47.42)),
+            RectangleHitbox.fromRect(45.24, 1.92, Vec(-30.39, 42.83)),
+            RectangleHitbox.fromRect(15.74, 1.94, Vec(32.46, 42.84)),
+            RectangleHitbox.fromRect(1.97, 54.28, Vec(40.17, 16.67))
+        ),
+        floors: [{
+            type: FloorNames.Stone,
+            hitbox: new GroupHitbox(
+                RectangleHitbox.fromRect(91.03, 92.77, Vec(-6.26, -3.73)),
+                RectangleHitbox.fromRect(7.92, 32.48, Vec(42.85, -26.67)),
+                RectangleHitbox.fromRect(32.49, 7.53, Vec(8.39, 45.81))
+            )
+        }],
+        ceilingImages: [{
+            key: "carport_ceiling",
+            position: Vec(-6.27, -4.2),
+            scale: Vec(2, 2)
+        }],
         floorImages: [
-            { // TEMPORARY
-                key: "carport_floor_decal",
-                position: Vec(0, 0)
-            },
             {
                 key: "carport_floor",
-                position: Vec(-6.27, -4.08)
+                position: Vec(-6.27, -4)
             },
             {
-                key: "barrier_floor",
-                position: Vec(8.32, 46.68)
+                key: "barricade_line_carport",
+                position: Vec(43.91, -26.63)
             },
             {
-                key: "barrier_floor",
-                position: Vec(43.92, -26.64),
+                key: "barricade_line_carport",
+                position: Vec(8.48, 46.67),
                 rotation: Math.PI / 2
             }
+        ],
+        obstacles: [
+            { idString: "pickup_truck", position: Vec(-24.01, -5.02), rotation: 2 },
+            { idString: "regular_crate", position: Vec(-23.63, -31.09) },
+            { idString: "regular_crate", position: Vec(-35, -24.02) },
+            { idString: "regular_crate", position: Vec(23.56, -44.73) },
+            { idString: "regular_crate", position: Vec(46.6, 12.09) },
+            { idString: "ammo_crate", position: Vec(-23.66, -20.29) },
+            { idString: "ammo_crate", position: Vec(-31.54, 35.82) },
+            { idString: "ammo_crate", position: Vec(47.72, 22.77) },
+            { idString: "tire", position: Vec(-11.62, -47.49), rotation: 1 },
+            { idString: "tire", position: Vec(-2.72, -47.86), rotation: 1 },
+            { idString: "tire", position: Vec(-9.29, -43.7), rotation: 1 },
+            { idString: "barrel", position: Vec(-46.09, -44.96) },
+            { idString: "barrel", position: Vec(33.02, -44.09) },
+            { idString: "barrel", position: Vec(-20.66, 37.81) },
+            { idString: "barrel", position: Vec(-12.53, 34.75) },
+            { idString: "box", position: Vec(45.21, 34.56) },
+            { idString: "box", position: Vec(51.7, 30.91) },
+            { idString: "sandbags", position: Vec(-18.36, 49.36), rotation: 0 },
+            { idString: "generator", position: Vec(7.89, -45.55), rotation: 0 },
+            { idString: "forklift", position: Vec(32.7, 17.99), rotation: 2 },
+            { idString: "toolbox", position: Vec(-30.12, -45.72), rotation: 0 }
+        ],
+        subBuildings: [
+            { idString: randomPallet, position: Vec(32.65, 6.72) },
+            { idString: randomPallet, position: Vec(-43.58, 35.45) }
         ]
     }
 ]);

@@ -318,7 +318,7 @@
         hitboxes = hitboxes;
         selected = hitboxes[0];
     }
-    const bgImage = loadImage("/img/game/hunted/buildings/shooting_range_office.png");
+    const bgImage = loadImage("/img/game/hunted/obstacles/pickup_truck.svg");
 
     function handleKeydown(e: KeyboardEvent) {
         let moved = false;

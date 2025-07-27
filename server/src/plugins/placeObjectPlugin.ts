@@ -12,7 +12,7 @@ import { GamePlugin } from "../pluginManager";
  * Plugin to help place objects when developing buildings
  */
 export default class PlaceObjectPlugin extends GamePlugin {
-    readonly obstacleToPlace: ReferenceTo<ObstacleDefinition> = "barrier_floor";
+    readonly obstacleToPlace: ReferenceTo<ObstacleDefinition> = "house_column";
     private readonly _playerToObstacle = new ExtendedMap<Player, Obstacle>();
 
     protected override initListeners(): void {

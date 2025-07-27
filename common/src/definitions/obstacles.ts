@@ -436,7 +436,10 @@ export const TintedParticles: Record<string, { readonly base: string, readonly t
     toolbox_particle: { base: "metal_particle_1", tint: 0x2f4b88 },
     garage_door_particle: { base: "metal_particle_1", tint: 0xa29e99 },
     research_desk_particle: { base: "wood_particle", tint: 0x88642f },
-    nsd_wall_particle: { base: "wood_particle", tint: 0x3e5130 }
+    nsd_wall_particle: { base: "wood_particle", tint: 0x3e5130 },
+    carport_particle_1: { base: "stone_particle_1", tint: 0xafafaf },
+    carport_particle_2: { base: "stone_particle_2", tint: 0xafafaf },
+    pickup_truck_particle: { base: "metal_particle_1", tint: 0x733226 }
 };
 
 const houseWall = (
@@ -6952,6 +6955,18 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         frames: {
             particle: "bunker_particle"
         }
+    },
+    {
+        idString: "pickup_truck",
+        name: "Big Ol' Chuck",
+        defType: DefinitionType.Obstacle,
+        rotationMode: RotationMode.Limited,
+        health: 100,
+        indestructible: true,
+        reflectBullets: true,
+        material: "metal_heavy",
+        hitbox: RectangleHitbox.fromRect(34.6, 14.23)
+        // chuck will make sure to go vroom vroom on u if u dare to touch his definition
     }
 ] satisfies readonly RawObstacleDefinition[] as readonly RawObstacleDefinition[]).flatMap((def: Mutable<RawObstacleDefinition>) => {
     if (def.variations !== undefined) (def as Mutable<ObstacleDefinition>).variationBits = Math.ceil(Math.log2(def.variations));
