@@ -13687,7 +13687,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 scale: Vec(2, 2)
             }
         ],
-        groundGraphics: [
+        graphics: [
             { // stroke
                 color: 0x3d3d3d,
                 hitbox: new GroupHitbox(
@@ -13711,6 +13711,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 )
             }
         ],
+        graphicsZIndex: ZIndexes.BuildingsFloor - 0.1,
         floors: [
             {
                 type: FloorNames.Stone,
