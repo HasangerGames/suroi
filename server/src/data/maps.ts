@@ -834,11 +834,12 @@ const maps = {
             ground_loot: 100
         },
         places: [
-            { name: "Sahanpurulahti", position: Vec(0.23, 0.2) },
-            { name: "Kreupelhout", position: Vec(0.24, 0.8) },
-            { name: "Reuna", position: Vec(0.75, 0.2) },
-            { name: "Metsä", position: Vec(0.72, 0.8) },
-            { name: "Saha", position: Vec(0.5, 0.45) }
+            { name: "Pine Cone", position: Vec(0.23, 0.2) },
+            { name: "Gunpoint", position: Vec(0.23, 0.8) },
+            { name: "Kuolema", position: Vec(0.75, 0.2) },
+            { name: "Switchback", position: Vec(0.72, 0.8) },
+            { name: "Black Hill", position: Vec(0.5, 0.35) },
+            { name: "The Grove", position: Vec(0.5, 0.65) }
         ]
     },
     winter: {
