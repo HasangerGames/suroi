@@ -286,10 +286,14 @@ export async function fetchServerData(): Promise<void> {
         updateServerSelectors();
     });
 
-    if (window.location.hash) {
-        teamID = window.location.hash.slice(1);
-        $("#btn-join-team").trigger("click");
-    }
+    const joinTeam = (): void => {
+        if (window.location.hash) {
+            teamID = window.location.hash.slice(1);
+            $("#btn-join-team").trigger("click");
+        }
+    };
+    joinTeam();
+    window.addEventListener("hashchange", joinTeam);
 }
 
 // Take the stuff that needs fetchServerData out of setUpUI and put it here
