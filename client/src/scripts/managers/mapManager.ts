@@ -21,12 +21,12 @@ import { UIManager } from "./uiManager";
 
 class MapManagerClass {
     private _expanded = false;
-    get expanded(): boolean { return this._expanded; }
+    get expanded(): boolean {return this._expanded; }
     set expanded(expand: boolean) {
         if (this._expanded === expand) return;
 
-        if (this._expanded = expand){ this.switchToBigMap();}
-        else {this.switchToSmallMap(); this.toggleMinimap(); this.toggleMinimap(); }
+        if (this._expanded = expand){this.switchToBigMap();}
+        else {this.switchToSmallMap(); this.toggleMinimap(); this.toggleMinimap();}
     }
 
     toggle(): void { this.expanded = !this._expanded;}
@@ -34,14 +34,19 @@ class MapManagerClass {
     private _visible = true;
     get visible(): boolean { return this._visible; }
     set visible(visible: boolean) {
+        if (this._expanded) {
+            return;
+        }
         this._visible = visible;
-
         this.switchToSmallMap();
+
         this.container.visible = visible;
         this._borderContainer.toggle(visible);
     }
 
     toggleMinimap(): void {this.visible = !this._visible;}
+
+
 
     private _position = Vec(0, 0);
     private _lastPosition = Vec(0, 0);
@@ -711,12 +716,15 @@ class MapManagerClass {
             this._objectsContainer.position.set(-this._width / 2, 0);
             return;
         }
-        const pos = Vec.clone(this._position);
-        pos.x -= (this._minimapWidth / 2 + this.margins.x) / this.container.scale.x;
-        pos.y -= (this._minimapHeight / 2 + this.margins.y) / this.container.scale.y;
+        else
+        {
+            const pos = Vec.clone(this._position);
+            pos.x -= (this._minimapWidth / 2 + this.margins.x) / this.container.scale.x;
+            pos.y -= (this._minimapHeight / 2 + this.margins.y) / this.container.scale.y;
 
-        this.container.position.set(0, 0);
-        this._objectsContainer.position.copyFrom(Vec.scale(pos, -1));
+            this.container.position.set(0, 0);
+            this._objectsContainer.position.copyFrom(Vec.scale(pos, -1));
+        }
     }
 
     private readonly _uiCache = Object.freeze({
@@ -729,7 +737,6 @@ class MapManagerClass {
 
     switchToBigMap(): void {
         this._expanded = true;
-
         const ui = UIManager.ui;
         this.container.visible = true;
         this._borderContainer.hide();
@@ -747,9 +754,7 @@ class MapManagerClass {
     }
 
     switchToSmallMap(): void {
-
         this._expanded = false;
-
         const ui = UIManager.ui;
 
         this._uiCache.closeMinimap.hide();
@@ -777,8 +782,8 @@ class MapManagerClass {
 
         this._borderContainer.show();
         this.resize();
-    }
 
+    }
     updateTransparency(): void {
         this.container.alpha = GameConsole.getBuiltInCVar(
             this._expanded
