@@ -12884,6 +12884,12 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 position: Vec(-13.42, 62.47),
                 rotation: Math.PI / 2,
                 scale: Vec(1, 1.65)
+            },
+            {
+                key: "chair_residue",
+                position: Vec(35, 27.29),
+                zIndex: ZIndexes.Decals,
+                rotation: Math.PI / 2
             }
         ],
         ceilingImages: [
@@ -12955,7 +12961,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "door", position: Vec(-18.01, 38.81), rotation: 0 },
             { idString: "door", position: Vec(-75.91, 32.12), rotation: 1 },
             { idString: "door", position: Vec(-69.41, -32.2), rotation: 0 },
-            { idString: "door", position: Vec(33.54, 27.29), rotation: 3 },
+            // { idString: "door", position: Vec(33.54, 27.29), rotation: 3 },
 
             { idString: "cabin_column", position: Vec(-25.95, 56.99) },
             { idString: "cabin_column", position: Vec(0.24, 57.02) },
