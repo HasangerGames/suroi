@@ -14020,5 +14020,30 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             },
             { idString: "box", position: Vec(-5.42, 8.6) }
         ]
+    },
+    {
+        idString: "carport",
+        name: "Carport",
+        defType: DefinitionType.Building,
+        spawnHitbox: RectangleHitbox.fromRect(75, 75),
+        floorImages: [
+            { // TEMPORARY
+                key: "carport_floor_decal",
+                position: Vec(0, 0)
+            },
+            {
+                key: "carport_floor",
+                position: Vec(-6.27, -4.08)
+            },
+            {
+                key: "barrier_floor",
+                position: Vec(8.32, 46.68)
+            },
+            {
+                key: "barrier_floor",
+                position: Vec(43.92, -26.64),
+                rotation: Math.PI / 2
+            }
+        ]
     }
 ]);
