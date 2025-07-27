@@ -13593,6 +13593,27 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 ])
             }
         ],
+        floorImages: [
+            {
+                key: "mud_decal_3",
+                position: Vec(-19.69, -65.34),
+                zIndex: ZIndexes.Decals,
+                alpha: 0.25,
+                rotation: Math.PI
+            },
+            {
+                key: "mud_decal_2",
+                position: Vec(-0.9, -7.77),
+                zIndex: ZIndexes.Decals,
+                alpha: 0.25
+            },
+            {
+                key: "mud_decal_1",
+                position: Vec(-34.77, 49.64),
+                zIndex: ZIndexes.Decals,
+                alpha: 0.25
+            }
+        ],
         obstacles: IS_CLIENT ? undefined : [
             { idString: "humvee", position: Vec(-70.59, 25.15), rotation: 0 },
             { idString: "humvee", position: Vec(6.04, -43.11), rotation: 3 },
@@ -13652,6 +13673,10 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "shooting_range_garage", position: Vec(-65.8, -33.92) },
             { idString: "shooting_range_practice", position: Vec(42.12, 45.81) },
             { idString: "shooting_range_office", position: Vec(59.93, -46.62) }
+        ],
+        lootSpawners: IS_CLIENT ? undefined : [
+            { table: "ground_loot", position: Vec(-35.78, 49.5) },
+            { table: "ground_loot", position: Vec(-20.5, -62.69) }
         ]
     },
     {

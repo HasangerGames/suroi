@@ -768,6 +768,7 @@ const maps = {
             buoy_hunted: 12,
             tavern: 1,
             cabin: 8,
+            carport: 2,
             hunting_stand: 12,
             warehouse_hunted: 5,
             fox_bunker: 1,
@@ -776,6 +777,7 @@ const maps = {
             shooting_range: 1
         },
         quadBuildingLimit: {
+            carport: 1,
             hunting_stand: 3,
             warehouse_hunted: 2,
             docks: 2,

@@ -370,6 +370,7 @@ class MapManagerClass {
                             .setZIndex(image.zIndex ?? 0)
                             .setTint(image.beachTinted ? Game.colors.beach : 0xffffff);
 
+                        if (image.alpha !== undefined) sprite.setAlpha(image.alpha);
                         if (image.tint !== undefined) sprite.setTint(image.tint);
                         sprite.scale = Vec.scale(image.scale ?? Vec(1, 1), 1 / PIXI_SCALE);
                         floorContainer.addChild(sprite);
