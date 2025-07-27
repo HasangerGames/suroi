@@ -25,11 +25,11 @@ class MapManagerClass {
     set expanded(expand: boolean) {
         if (this._expanded === expand) return;
 
-        if (this._expanded = expand) this.switchToBigMap();
-        else this.switchToSmallMap();
+        if (this._expanded = expand){ this.switchToBigMap();}
+        else {this.switchToSmallMap(); this.toggleMinimap(); this.toggleMinimap(); }
     }
 
-    toggle(): void { this.expanded = !this._expanded; }
+    toggle(): void { this.expanded = !this._expanded;}
 
     private _visible = true;
     get visible(): boolean { return this._visible; }
@@ -41,7 +41,7 @@ class MapManagerClass {
         this._borderContainer.toggle(visible);
     }
 
-    toggleMinimap(): void { this.visible = !this._visible; }
+    toggleMinimap(): void {this.visible = !this._visible;}
 
     private _position = Vec(0, 0);
     private _lastPosition = Vec(0, 0);
@@ -747,6 +747,7 @@ class MapManagerClass {
     }
 
     switchToSmallMap(): void {
+
         this._expanded = false;
 
         const ui = UIManager.ui;
