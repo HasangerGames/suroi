@@ -13156,6 +13156,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                     gun_mount_rpk74: 0.5
                 },
                 position: Vec(-0.73, -56.17),
+                lootSpawnOffset: Vec(0, 5),
                 rotation: 0
             }
         ],
