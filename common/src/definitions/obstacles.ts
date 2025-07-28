@@ -4582,6 +4582,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         rotationMode: RotationMode.Limited,
         allowFlyover: FlyoverPref.Never,
         tint: 0x8f8f8f,
+        zIndex: ZIndexes.ObstaclesLayer1 + 0.1,
         frames: {
             base: "column",
             particle: "metal_column_particle"
@@ -6814,7 +6815,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         name: "Toolbox",
         defType: DefinitionType.Obstacle,
         material: "iron",
-        health: 110,
+        health: 150,
         reflectBullets: true,
         scale: {
             spawnMin: 1,

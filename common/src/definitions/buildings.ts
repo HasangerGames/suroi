@@ -11304,7 +11304,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
 
             { idString: "fence", position: Vec(51.35, -228.95), rotation: 0, scale: 0.75 },
             { idString: "fence", position: Vec(50.08, -115.07), rotation: 1 },
-            { idString: "fence", position: Vec(50.07, -122.38), rotation: 1 },
+            { idString: "fence", position: Vec(50.07, -123.5), rotation: 1 },
 
             { idString: "metal_column", position: Vec(1.48, -228.82) },
             { idString: "metal_column", position: Vec(47.91, -229.06) },
@@ -13156,6 +13156,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                     gun_mount_rpk74: 0.5
                 },
                 position: Vec(-0.73, -56.17),
+                lootSpawnOffset: Vec(0, 5),
                 rotation: 0
             }
         ],

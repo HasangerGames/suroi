@@ -116,25 +116,6 @@ export const Modes: Record<ModeName, ModeDefinition> = {
         playButtonImage: "./img/game/shared/perks/infected.svg",
         weaponSwap: true
     },
-    hunted: {
-        colors: {
-            grass: "hsl(140, 22%, 30%)",
-            water: "hsl(190, 63%, 25%)",
-            border: "hsl(190, 63%, 17%)",
-            beach: "hsl(40, 39%, 44%)",
-            riverBank: "hsl(39, 47%, 25%)",
-            trail: "hsl(35, 50%, 40%)",
-            gas: "hsla(17, 100%, 50%, 0.55)",
-            void: "hsl(25, 80%, 6%)"
-        },
-        ambience: "wind_ambience",
-        spriteSheets: ["shared", "hunted"],
-        unlockStage: 3, // do not touch
-        forcedGoldAirdropStage: 5,
-        overrideUpstairsFunctionality: true,
-        replaceMenuMusic: true,
-        playButtonImage: "./img/logos/lansiraami_logo.svg"
-    },
     birthday: { // copy of normal
         colors: {
             grass: "hsl(95, 41%, 38%)",
@@ -172,5 +153,28 @@ export const Modes: Record<ModeName, ModeDefinition> = {
         obstacleVariants: true,
         specialLogo: true,
         playButtonImage: "./img/game/winter/obstacles/red_gift.svg"
+    },
+    hunted: {
+        colors: {
+            grass: "hsl(140, 22%, 30%)",
+            water: "hsl(190, 63%, 25%)",
+            border: "hsl(190, 63%, 17%)",
+            beach: "hsl(40, 39%, 44%)",
+            riverBank: "hsl(39, 47%, 25%)",
+            trail: "hsl(35, 50%, 40%)",
+            gas: "hsla(17, 100%, 50%, 0.55)",
+            void: "hsl(25, 80%, 6%)"
+        },
+        ambience: "wind_ambience",
+        spriteSheets: ["shared", "hunted"],
+        unlockStage: 3, // do not touch
+        forcedGoldAirdropStage: 5,
+        overrideUpstairsFunctionality: true,
+        replaceMenuMusic: true,
+        playButtonImage: "./img/logos/lansiraami_logo.svg",
+        particleEffects: {
+            frames: ["bush_particle_1", "bush_particle_2", "dead_pine_tree_particle", "pine_tree_particle"],
+            delay: 1000
+        }
     }
 };

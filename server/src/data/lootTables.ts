@@ -980,8 +980,8 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
                 { table: "ammo", weight: 1 }
             ],
             [{ table: "scopes", weight: 1 }],
-            [{ table: "guns", weight: 1 }],
-            [{ item: "crowbar", weight: 1 }]
+            [{ table: "guns", weight: 1 }]
+            // [{ item: "crowbar", weight: 1 }]
         ],
         research_desk: [
             [
@@ -1796,30 +1796,31 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { item: "rpk74", weight: 0.074 },
             { item: "m16a2", weight: 0.074 },
             { item: "ak47", weight: 0.074 },
-            { item: "blr", weight: 0.074 },
 
             // 15%
-            { item: "sks", weight: 0.075 },
             { item: "psm", weight: 0.075 },
             { item: "g19", weight: 0.075 },
 
             // 10%
-            { item: "vss", weight: 0.033 },
-            { item: "sr25", weight: 0.033 },
-            { item: "mini14", weight: 0.033 },
+            { item: "stoner_63", weight: 0.033 },
+            { item: "mg36", weight: 0.033 },
+            { item: "rsh12", weight: 0.033 },
 
             // 5%
-            { item: "stoner_63", weight: 0.0125 },
-            { item: "mg36", weight: 0.0125 },
+            { item: "vss", weight: 0.0125 },
+            { item: "sr25", weight: 0.0125 },
+            { item: "mini14", weight: 0.0125 },
+            { item: "tango_51", weight: 0.0125 },
+            { item: "mosin_nagant", weight: 0.0125 },
+            { item: "vks", weight: 0.0125 },
             { item: "model_89", weight: 0.0125 },
             { item: "rgs", weight: 0.0125 },
-            { item: "rsh12", weight: 0.0125 },
 
             // 1%
-            { item: "tango_51", weight: 0.002 },
-            { item: "mosin_nagant", weight: 0.002 },
-            { item: "vks", weight: 0.002 },
             { item: "flare", weight: 0.002 },
+            { item: "mg5", weight: 0.002 },
+            { item: "svu", weight: 0.002 },
+            { item: "shak12", weight: 0.002 },
             { item: "pk61", weight: 0.002 }
         ],
 
@@ -1828,7 +1829,6 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { item: "g19", weight: 0.166 },
             { item: "psm", weight: 0.166 },
             { item: "m1895", weight: 0.166 },
-            { item: "sks", weight: 0.0166 },
 
             // 28%
             { item: "mp5k", weight: 0.14 },
@@ -1842,26 +1842,29 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { item: "m16a2", weight: 0.032 },
             { item: "fn_fal", weight: 0.032 },
             { item: "mcx_spear", weight: 0.032 },
-            { item: "blr", weight: 0.032 },
             { item: "rpk74", weight: 0.032 },
 
             // 4%
-            { item: "vss", weight: 0.0133 },
-            { item: "model_89", weight: 0.0133 },
-            { item: "rgs", weight: 0.0133 },
-            { item: "sr25", weight: 0.0133 },
-            { item: "mini14", weight: 0.0133 },
+            { item: "stoner_63", weight: 0.0133 },
+            { item: "mg36", weight: 0.0133 },
 
             // 2%
-            { item: "stoner_63", weight: 0.005 },
-            { item: "mg36", weight: 0.005 },
-            { item: "tango_51", weight: 0.005 },
+
+            // DMRs
+            { item: "vss", weight: 0.005 },
+            { item: "model_89", weight: 0.005 },
+            { item: "rgs", weight: 0.005 },
+            { item: "sr25", weight: 0.005 },
+            { item: "mini14", weight: 0.005 },
+
+            // Sniper Rifles
             { item: "vks", weight: 0.005 },
             { item: "rsh12", weight: 0.005 },
             { item: "mosin_nagant", weight: 0.005 },
-            { item: "pk61", weight: 0.005 },
+            { item: "tango_51", weight: 0.005 },
 
             // rare
+            { item: "pk61", weight: 0.001 },
             { item: "negev", weight: 0.001 },
             { item: "mg5", weight: 0.001 },
             { item: "rpk16", weight: 0.001 },
