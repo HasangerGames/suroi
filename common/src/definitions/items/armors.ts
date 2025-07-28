@@ -53,7 +53,7 @@ export const Armors = new ObjectDefinitions<ArmorDefinition>([
     },
     {
         idString: "power_helmet",
-        name: "Power Helmet",
+        name: "NTK-11 Halycon",
         defType: DefinitionType.Armor,
         armorType: ArmorType.Helmet,
         level: 4,
@@ -96,7 +96,7 @@ export const Armors = new ObjectDefinitions<ArmorDefinition>([
     },
     {
         idString: "power_vest",
-        name: "Power Vest",
+        name: "ERV-3 Core",
         defType: DefinitionType.Armor,
         armorType: ArmorType.Vest,
         level: 4,

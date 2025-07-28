@@ -128,7 +128,7 @@ export const Backpacks = new ObjectDefinitions<BackpackDefinition>([
     },
     {
         idString: "power_pack",
-        name: "Power Pack",
+        name: "AMP-4 Mule",
         defType: DefinitionType.Backpack,
         level: 4,
         maxCapacity: {

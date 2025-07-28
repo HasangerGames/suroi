@@ -81,7 +81,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `create_team_force_start` is not defined
 - Key `create_team_ready` is not defined
 - Key `create_team_not_ready` is not defined
-- Key `power_vest` is not defined
 - Key `m16a4` is not defined
 - Key `region_ea` is not defined
 - Key `region_oc` is not defined
@@ -180,7 +179,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_screen_record` is not defined
 - Key `kf_were_finally_killed` is not defined
 - Key `tt_desc` is not defined
-- Key `power_vest` is not defined
 - Key `region_ea` is not defined
 - Key `region_oc` is not defined
 - Key `vaccine_syringe` is not defined
@@ -263,7 +261,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `create_team_force_start` is not defined
 - Key `create_team_ready` is not defined
 - Key `create_team_not_ready` is not defined
-- Key `power_vest` is not defined
 - Key `region_ea` is not defined
 - Key `region_oc` is not defined
 - Key `vaccine_syringe` is not defined
@@ -375,7 +372,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 - Key `kf_were_finally_killed` is not defined
 - Key `tt_desc` is not defined
-- Key `power_vest` is not defined
 - Key `region_ea` is not defined
 - Key `region_oc` is not defined
 - Key `vaccine_syringe` is not defined
@@ -508,7 +504,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `tt_desc` is not defined
 - Key `create_team_force_start` is not defined
 - Key `create_team_not_ready` is not defined
-- Key `power_vest` is not defined
 - Key `region_ea` is not defined
 - Key `region_oc` is not defined
 - Key `vaccine_syringe` is not defined
@@ -747,7 +742,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `interact_recorder_interactable` is not defined
 - Key `kf_suicide_finished_off` is not defined
 - Key `kf_were_finally_killed` is not defined
-- Key `power_vest` is not defined
 - Key `m16a4` is not defined
 - Key `region_ea` is not defined
 - Key `baby_plumpkin_pie_desc` is not defined
@@ -818,7 +812,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `tt_desc` is not defined
 - Key `create_team_force_start` is not defined
 - Key `create_team_not_ready` is not defined
-- Key `power_vest` is not defined
 - Key `region_ea` is not defined
 - Key `region_oc` is not defined
 - Key `vaccine_syringe` is not defined
@@ -892,7 +885,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇫🇷 Français (95% Complete) - fr.hjson
+## 🇫🇷 Français (96% Complete) - fr.hjson
 
 ### Invalid Keys
 
@@ -908,7 +901,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `interact_server` is not defined
 - Key `interact_recorder_interactable` is not defined
 - Key `tt_desc` is not defined
-- Key `power_vest` is not defined
 - Key `region_ea` is not defined
 - Key `vaccine_syringe` is not defined
 - Key `vaccine_syringe_desc` is not defined
@@ -922,7 +914,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
 
-## 🇬🇷 Ελληνικά (81% Complete) - gr.hjson
+## 🇬🇷 Ελληνικά (82% Complete) - gr.hjson
 
 ### Invalid Keys
 
@@ -931,7 +923,6 @@ This file is a report of all errors and missing keys in the translation files of
 ### Undefined Keys
 
 - Key `interact_server` is not defined
-- Key `power_vest` is not defined
 - Key `second_wind_desc` is not defined
 - Key `flechettes` is not defined
 - Key `flechettes_desc` is not defined
@@ -1073,7 +1064,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `create_team_force_start` is not defined
 - Key `create_team_ready` is not defined
 - Key `create_team_not_ready` is not defined
-- Key `power_vest` is not defined
 - Key `region_ea` is not defined
 - Key `region_oc` is not defined
 - Key `vaccine_syringe` is not defined
@@ -1147,7 +1137,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇭🇺 Magyar (95% Complete) - hu.hjson
+## 🇭🇺 Magyar (96% Complete) - hu.hjson
 
 ### (No Invalid Keys)
 
@@ -1157,7 +1147,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `interact_server` is not defined
 - Key `interact_recorder_interactable` is not defined
 - Key `kf_were_finally_killed` is not defined
-- Key `power_vest` is not defined
 - Key `region_ea` is not defined
 - Key `baby_plumpkin_pie_desc` is not defined
 - Key `hollow_points` is not defined
@@ -1258,7 +1247,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `create_team_force_start` is not defined
 - Key `create_team_ready` is not defined
 - Key `create_team_not_ready` is not defined
-- Key `power_vest` is not defined
 - Key `m16a4` is not defined
 - Key `region_ea` is not defined
 - Key `region_oc` is not defined
@@ -1333,7 +1321,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇯🇵 日本語 (96% Complete) - jp.hjson
+## 🇯🇵 日本語 (97% Complete) - jp.hjson
 
 ### Invalid Keys
 
@@ -1594,7 +1582,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `interact_server` is not defined
 - Key `interact_recorder_interactable` is not defined
 - Key `kf_were_finally_killed` is not defined
-- Key `power_vest` is not defined
 - Key `baby_plumpkin_pie_desc` is not defined
 - Key `hollow_points` is not defined
 - Key `hollow_points_desc` is not defined
@@ -1674,7 +1661,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `create_team_force_start` is not defined
 - Key `create_team_ready` is not defined
 - Key `create_team_not_ready` is not defined
-- Key `power_vest` is not defined
 - Key `region_ea` is not defined
 - Key `region_oc` is not defined
 - Key `vaccine_syringe` is not defined
@@ -1817,7 +1803,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `create_team_force_start` is not defined
 - Key `create_team_ready` is not defined
 - Key `create_team_not_ready` is not defined
-- Key `power_vest` is not defined
 - Key `region_ea` is not defined
 - Key `region_oc` is not defined
 - Key `vaccine_syringe` is not defined
@@ -1891,7 +1876,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇳🇱 Nederlands (95% Complete) - nl.hjson
+## 🇳🇱 Nederlands (96% Complete) - nl.hjson
 
 ### (No Invalid Keys)
 
@@ -1901,7 +1886,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `interact_server` is not defined
 - Key `interact_recorder_interactable` is not defined
 - Key `tt_desc` is not defined
-- Key `power_vest` is not defined
 - Key `region_ea` is not defined
 - Key `vaccine_syringe` is not defined
 - Key `vaccine_syringe_desc` is not defined
@@ -1973,7 +1957,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `tt_desc` is not defined
 - Key `create_team_force_start` is not defined
 - Key `create_team_not_ready` is not defined
-- Key `power_vest` is not defined
 - Key `region_ea` is not defined
 - Key `region_oc` is not defined
 - Key `vaccine_syringe` is not defined
@@ -2090,7 +2073,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `tt_desc` is not defined
 - Key `create_team_force_start` is not defined
 - Key `create_team_not_ready` is not defined
-- Key `power_vest` is not defined
 - Key `region_ea` is not defined
 - Key `region_oc` is not defined
 - Key `vaccine_syringe` is not defined
@@ -2164,7 +2146,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇷🇴 Română (95% Complete) - ro.hjson
+## 🇷🇴 Română (96% Complete) - ro.hjson
 
 ### Invalid Keys
 
@@ -2176,7 +2158,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `interact_server` is not defined
 - Key `interact_recorder_interactable` is not defined
 - Key `tt_desc` is not defined
-- Key `power_vest` is not defined
 - Key `region_ea` is not defined
 - Key `vaccine_syringe` is not defined
 - Key `vaccine_syringe_desc` is not defined
@@ -2203,7 +2184,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `interact_server` is not defined
 - Key `interact_recorder_interactable` is not defined
 - Key `tt_desc` is not defined
-- Key `power_vest` is not defined
 - Key `m16a4` is not defined
 - Key `region_ea` is not defined
 - Key `vaccine_syringe` is not defined
@@ -2218,7 +2198,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
 
-## 🇮🇳 தமிழ் (74% Complete) - ta.hjson
+## 🇮🇳 தமிழ் (75% Complete) - ta.hjson
 
 ### Invalid Keys
 
@@ -2249,7 +2229,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `tt_desc` is not defined
 - Key `create_team_force_start` is not defined
 - Key `create_team_not_ready` is not defined
-- Key `power_vest` is not defined
 - Key `region_ea` is not defined
 - Key `vaccine_syringe` is not defined
 - Key `vaccine_syringe_desc` is not defined
@@ -2340,7 +2319,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `tt_desc` is not defined
 - Key `create_team_force_start` is not defined
 - Key `create_team_not_ready` is not defined
-- Key `power_vest` is not defined
 - Key `region_ea` is not defined
 - Key `vaccine_syringe` is not defined
 - Key `vaccine_syringe_desc` is not defined
@@ -2413,7 +2391,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇹🇼 中文（繁體） (74% Complete) - tw.hjson
+## 🇹🇼 中文（繁體） (75% Complete) - tw.hjson
 
 ### Invalid Keys
 
@@ -2444,7 +2422,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `tt_desc` is not defined
 - Key `create_team_force_start` is not defined
 - Key `create_team_not_ready` is not defined
-- Key `power_vest` is not defined
 - Key `region_ea` is not defined
 - Key `vaccine_syringe` is not defined
 - Key `vaccine_syringe_desc` is not defined
@@ -2528,7 +2505,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `interact_server` is not defined
 - Key `interact_recorder_interactable` is not defined
 - Key `kf_were_finally_killed` is not defined
-- Key `power_vest` is not defined
 - Key `region_ea` is not defined
 - Key `baby_plumpkin_pie_desc` is not defined
 - Key `hollow_points` is not defined
@@ -2796,7 +2772,6 @@ This file is a report of all errors and missing keys in the translation files of
 
 - Key `interact_server` is not defined
 - Key `interact_recorder_interactable` is not defined
-- Key `power_vest` is not defined
 - Key `m16a4` is not defined
 - Key `hollow_points` is not defined
 - Key `hollow_points_desc` is not defined
