@@ -4582,6 +4582,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         rotationMode: RotationMode.Limited,
         allowFlyover: FlyoverPref.Never,
         tint: 0x8f8f8f,
+        zIndex: ZIndexes.ObstaclesLayer1 + 0.1,
         frames: {
             base: "column",
             particle: "metal_column_particle"

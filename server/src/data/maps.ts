@@ -784,6 +784,10 @@ const maps = {
         },
         majorBuildings: ["tavern", "sawmill", "shooting_range"],
         obstacles: {
+            stump: 60,
+            log: 30,
+            small_logs_pile: 30,
+            large_logs_pile_2: 20,
             clearing_boulder: 18,
             pine_tree: 95,
             spruce_tree: 90,
@@ -804,7 +808,8 @@ const maps = {
             gold_rock: 1,
             loot_barrel: 1,
             nsd_rock: 1,
-            reinforced_crate: 1
+            reinforced_crate: 1,
+            hatchet_stump: 3
         },
         obstacleClumps: [
             {
