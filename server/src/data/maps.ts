@@ -139,8 +139,13 @@ const maps = {
                 lily_pad: 6
             }
         },
+        majorBuildings: [
+            "port",
+            "headquarters",
+            "armory",
+            "refinery"
+        ],
         buildings: {
-            port: 1,
             large_bridge: 2,
             small_bridge: Infinity,
             river_hut_1: 2,
@@ -149,11 +154,8 @@ const maps = {
             lighthouse: 1,
             tugboat_red: 1,
             tugboat_white: 5,
-            armory: 1,
-            headquarters: 1,
             fulcrum_bunker: 1,
             small_bunker: 1,
-            refinery: 1,
             warehouse: 5,
             green_house: 3,
             blue_house: 2,
@@ -174,7 +176,6 @@ const maps = {
             memorial: 1,
             buoy: 12
         },
-        majorBuildings: ["armory", "refinery", "port", "headquarters"],
         quadBuildingLimit: {
             port: 1,
             river_hut_1: 1,
@@ -196,7 +197,7 @@ const maps = {
             birch_tree: 20,
             pine_tree: 10,
             loot_tree: 1,
-            regular_crate: 140,
+            regular_crate: 100,
             flint_crate: 5,
             aegis_crate: 5,
             grenade_crate: 35,
@@ -304,16 +305,18 @@ const maps = {
                 { idString: "flint_lockbox", min: 0, max: 1 }
             ]
         },
+        majorBuildings: [
+            "plumpkin_bunker",
+            "lodge",
+            "campsite",
+            "bombed_armory"
+        ],
         buildings: {
             breached_dam: 3,
             river_hut_4: 3,
             river_hut_5: 3,
             river_hut_6: 3,
             small_bridge: Infinity,
-            plumpkin_bunker: 1,
-            campsite: 1,
-            bombed_armory: 1,
-            lodge: 1,
             barn: 3,
             lighthouse: 1,
             tugboat_red: 1,
@@ -337,7 +340,6 @@ const maps = {
             outhouse: 10,
             buoy: 16
         },
-        majorBuildings: ["bombed_armory", "lodge", "plumpkin_bunker", "campsite"],
         quadBuildingLimit: {
             river_hut_4: 2,
             river_hut_5: 2,
@@ -759,20 +761,22 @@ const maps = {
             },
             centered: true
         },
+        majorBuildings: [
+            "sawmill",
+            "shooting_range",
+            "tavern"
+        ],
         buildings: {
-            sawmill: 1,
             small_bridge: Infinity,
             docks: 8,
             outhouse: 6,
-            tavern: 1,
-            cabin: 8,
-            carport: 2,
+            cabin: 6,
+            carport: 4,
             hunting_stand: 12,
             warehouse_hunted: 5,
             fox_bunker: 1,
             moose_bunker: 1,
-            bear_bunker: 1,
-            shooting_range: 1
+            bear_bunker: 1
         },
         quadBuildingLimit: {
             carport: 1,
@@ -782,7 +786,6 @@ const maps = {
             outhouse: 3,
             cabin: 3
         },
-        majorBuildings: ["tavern", "sawmill", "shooting_range"],
         obstacles: {
             clearing_boulder: 18,
             pine_tree: 95,

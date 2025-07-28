@@ -41,6 +41,33 @@
                 }
             ]
         },
+        "mapScaleRanges": {
+            "description": "Dynamically scale map size based on player count.",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "minPlayers": {
+                        "description": "The minimum number of players this range applies to, inclusive.",
+                        "type": "number"
+                    },
+                    "maxPlayers": {
+                        "description": "The maximum number of players this range applies to, inclusive.",
+                        "type": "number"
+                    },
+                    "scale": {
+                        "description": "The scale factor to use for the map.",
+                        "type": "number"
+                    },
+                    "maxMajorBuildings": {
+                        "description": "The maximum number of major buildings to allow to spawn.",
+                        "type": "number"
+                    }
+                },
+                "required": ["minPlayers", "maxPlayers", "scale"],
+                "additionalProperties": false
+            }
+        },
         "teamMode": {
             "description": "The team mode (solo, duo, or squad), or a schedule to switch between team modes.",
             "oneOf": [

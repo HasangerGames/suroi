@@ -31,7 +31,7 @@ import { Gas } from "./gas";
 import { GunItem } from "./inventory/gunItem";
 import type { MeleeItem } from "./inventory/meleeItem";
 import { ThrowableItem } from "./inventory/throwableItem";
-import { GameMap } from "./map";
+import { GameMap, MapOptions } from "./map";
 import { Bullet, type DamageRecord, type ServerBulletOptions } from "./objects/bullet";
 import { Decal } from "./objects/decal";
 import { type Emote } from "./objects/emote";
@@ -234,7 +234,7 @@ export class Game implements GameData {
         return this._idAllocator.takeNext();
     }
 
-    constructor(id: number, teamMode: TeamMode, map: string) {
+    constructor(id: number, teamMode: TeamMode, map: string, mapOptions: MapOptions = {}) {
         this.id = id;
         this.teamMode = teamMode;
         this.isTeamMode = this.teamMode > TeamMode.Solo;
@@ -251,7 +251,7 @@ export class Game implements GameData {
 
         const { width, height } = Maps[map.split(":")[0] as MapName];
         this.grid = new Grid(this, width, height);
-        this.map = new GameMap(this, map);
+        this.map = new GameMap(this, map, mapOptions);
         this.gas = new Gas(this);
 
         this.pluginManager.emit("game_created", this);

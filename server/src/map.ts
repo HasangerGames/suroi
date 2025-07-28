@@ -7,7 +7,7 @@ import { type Orientation, type Variation } from "@common/typings";
 import { CircleHitbox, GroupHitbox, HitboxType, RectangleHitbox, type Hitbox } from "@common/utils/hitbox";
 import { equalLayer } from "@common/utils/layer";
 import { Angle, Collision, Geometry, Numeric, τ } from "@common/utils/math";
-import { SDeepMutable } from "@common/utils/misc";
+import { removeFrom, SDeepMutable } from "@common/utils/misc";
 import { NullString, type ReferenceTo, type ReifiableDef } from "@common/utils/objectDefinitions";
 import { SeededRandom, pickRandomInArray, random, randomBoolean, randomFloat, randomPointInsideCircle, randomRotation, randomVector } from "@common/utils/random";
 import { River, Terrain } from "@common/utils/terrain";
@@ -19,17 +19,12 @@ import { Obstacle } from "./objects/obstacle";
 import { getLootFromTable } from "./utils/lootHelpers";
 import { CARDINAL_DIRECTIONS, getRandomIDString } from "./utils/misc";
 
+export interface MapOptions { scale?: number, maxMajorStructures?: number }
+
 export class GameMap {
     readonly game: Game;
 
     readonly mapDef: MapDefinition;
-    private readonly quadBuildings: Record<1 | 2 | 3 | 4, string[]> = { 1: [], 2: [], 3: [], 4: [] };
-    private readonly quadMajorBuildings: Array<1 | 2 | 3 | 4> = [];
-    private readonly majorBuildingPositions: Vector[] = [];
-
-    private readonly occupiedBridgePositions: Vector[] = [];
-
-    private readonly clearings: RectangleHitbox[] = [];
 
     readonly width: number;
     readonly height: number;
@@ -52,6 +47,16 @@ export class GameMap {
     readonly buffer: ArrayBuffer;
 
     private readonly _beachPadding;
+
+    private readonly quadBuildings: Record<1 | 2 | 3 | 4, string[]> = { 1: [], 2: [], 3: [], 4: [] };
+    private readonly quadMajorBuildings: Array<1 | 2 | 3 | 4> = [];
+    private readonly majorBuildingPositions: Vector[] = [];
+
+    private readonly occupiedBridgePositions: Vector[] = [];
+
+    private readonly clearings: RectangleHitbox[] = [];
+
+    private readonly mapScale: (num: number) => number;
 
     static getRandomRotation<T extends RotationMode>(mode: T): RotationMapping[T] {
         switch (mode) {
@@ -79,11 +84,29 @@ export class GameMap {
         }
     }
 
-    constructor(game: Game, mapData: string) {
+    constructor(game: Game, mapData: string, options: MapOptions = {}) {
         this.game = game;
 
         const [name, ...params] = mapData.split(":") as [MapName, ...string[]];
         const mapDef: MapDefinition = Maps[name];
+
+        const { scale = 1, maxMajorStructures } = options;
+        this.mapScale = scale === 1
+            ? (num: number): number => num
+            : (num: number): number => {
+                const val = Math.round(num * (((mapDef.width * scale) ** 2) / (mapDef.width ** 2)));
+                if (val < 5 && val > 1) return val - 1;
+                if (val < 1) return 1;
+                return val;
+            };
+
+        this.game.log(`Map scale: ${scale}`);
+
+        if (scale !== 1 && mapDef.quadBuildingLimit) {
+            for (const [idString, amount] of Object.entries(mapDef.quadBuildingLimit)) {
+                mapDef.quadBuildingLimit[idString] = this.mapScale(amount);
+            }
+        }
 
         const packet = MapPacket.create({ objects: [] });
         this._packet = packet;
@@ -92,8 +115,8 @@ export class GameMap {
 
         this.game.log(`Map seed: ${this.seed}`);
 
-        this.width = packet.width = mapDef.width;
-        this.height = packet.height = mapDef.height;
+        this.width = packet.width = mapDef.width * scale;
+        this.height = packet.height = mapDef.height * scale;
         this.oceanSize = packet.oceanSize = mapDef.oceanSize;
         this.beachSize = packet.beachSize = mapDef.beachSize;
 
@@ -147,9 +170,18 @@ export class GameMap {
             rivers
         );
 
-        this._generateClearings(mapDef.clearings);
+        const majorBuildings = Array.from(mapDef.majorBuildings ?? []);
+        const numToRemove = maxMajorStructures === undefined ? 0 : majorBuildings.length - maxMajorStructures;
+        if (numToRemove > 0) {
+            for (let i = 0; i < numToRemove; i++) {
+                removeFrom(majorBuildings, pickRandomInArray(majorBuildings));
+            }
+        }
+        majorBuildings.forEach(building => this._generateBuildings(building, 1));
 
         Object.entries(mapDef.buildings ?? {}).forEach(([building, count]) => this._generateBuildings(building, count));
+
+        this._generateClearings(mapDef.clearings);
 
         if (mapDef.rivers) {
             this._generateRiverObstacles(mapDef.rivers, false);
@@ -201,7 +233,7 @@ export class GameMap {
             centered
         } = definition;
         const rivers: River[] = [];
-        const amount = randomGenerator.getInt(minAmount, maxAmount);
+        const amount = this.mapScale(randomGenerator.getInt(minAmount, maxAmount));
 
         // generate a list of widths and sort by biggest, to make sure wide rivers generate first
         let wideAmount = 0;
@@ -387,13 +419,15 @@ export class GameMap {
             minHeight,
             maxWidth,
             maxHeight,
-            count,
+            count: initialCount,
             obstacles
         } = clearingDef;
 
+        const count = this.mapScale(initialCount);
+
         for (let i = 0; i < count; i++) {
-            const width = randomFloat(minWidth, maxWidth);
-            const height = randomFloat(minHeight, maxHeight);
+            const width = this.mapScale(randomFloat(minWidth, maxWidth));
+            const height = this.mapScale(randomFloat(minHeight, maxHeight));
             let hitbox = RectangleHitbox.fromRect(width, height);
 
             let position;
@@ -424,8 +458,9 @@ export class GameMap {
     }
 
     private _generateBuildings(definition: ReifiableDef<BuildingDefinition>, count: number): void {
-        const buildingDef = Buildings.reify(definition);
+        count = this.mapScale(count);
 
+        const buildingDef = Buildings.reify(definition);
         if (!buildingDef.bridgeHitbox) {
             const {
                 idString,
@@ -761,6 +796,8 @@ export class GameMap {
         const { spawnMin, spawnMax } = scale;
         const effSpawnHitbox = def.spawnHitbox ?? def.hitbox;
 
+        count = this.mapScale(count);
+
         for (let i = 0; i < count; i++) {
             const scale = randomFloat(spawnMin, spawnMax);
             const variation = (variations !== undefined ? random(0, variations - 1) : 0) as Variation;
@@ -875,17 +912,22 @@ export class GameMap {
     }
 
     private _generateObstacleClumps(clumpDef: ObstacleClump): void {
-        const clumpAmount = clumpDef.clumpAmount;
-        const firstObstacle = Obstacles.reify(clumpDef.clump.obstacles[0]);
-
-        const { clump: { obstacles, minAmount, maxAmount, radius, jitter } } = clumpDef;
+        const clumpAmount = this.mapScale(clumpDef.clumpAmount);
+        const {
+            obstacles,
+            minAmount,
+            maxAmount,
+            radius: initialRadius,
+            jitter: initialJitter
+        } = clumpDef.clump;
+        const radius = this.mapScale(initialRadius);
+        const jitter = this.mapScale(initialJitter);
+        const spawnMode = Obstacles.reify(clumpDef.clump.obstacles[0]).spawnMode;
 
         for (let i = 0; i < clumpAmount; i++) {
             const position = this.getRandomPosition(
                 new CircleHitbox(radius + jitter),
-                {
-                    spawnMode: firstObstacle.spawnMode
-                }
+                { spawnMode }
             );
 
             if (!position) {
@@ -893,7 +935,7 @@ export class GameMap {
                 continue;
             }
 
-            const amountOfObstacles = random(minAmount, maxAmount);
+            const amountOfObstacles = this.mapScale(random(minAmount, maxAmount));
             const offset = randomRotation();
             const step = τ / amountOfObstacles;
 

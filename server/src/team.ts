@@ -152,11 +152,13 @@ export class CustomTeam {
     // these are only used when creating games
     teamMode: TeamMode;
     map: string;
+    mapScaleRange: number;
 
-    constructor(teamMode: TeamMode, map: string) {
+    constructor(teamMode: TeamMode, map: string, mapScaleRange: number) {
         this.id = Array.from({ length: 4 }, () => CustomTeam._idChars.charAt(random(0, CustomTeam._idCharMax))).join("");
         this.teamMode = teamMode;
         this.map = map;
+        this.mapScaleRange = mapScaleRange;
     }
 
     addPlayer(player: CustomTeamPlayer): void {
@@ -233,7 +235,7 @@ export class CustomTeam {
     }
 
     private async _startGame(): Promise<void> {
-        const result = await findGame(this.teamMode, this.map);
+        const result = await findGame(this.teamMode, this.map, this.mapScaleRange);
         if (result === undefined) return;
 
         this.gameID = result;

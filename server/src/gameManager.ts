@@ -10,6 +10,7 @@ import { getPunishment, forbidden, getIP, parseRole, RateLimiter, serverLog, ser
 export enum WorkerMessages {
     UpdateTeamMode,
     UpdateMap,
+    UpdateMapOptions,
     NewGame
 }
 
@@ -21,6 +22,10 @@ export type WorkerMessage =
     | {
         readonly type: WorkerMessages.UpdateMap
         readonly map: string
+    }
+    | {
+        readonly type: WorkerMessages.UpdateMapOptions
+        readonly mapScaleRange: number
     }
     | {
         readonly type: WorkerMessages.NewGame
@@ -54,10 +59,11 @@ export class GameContainer {
         readonly id: number,
         teamMode: TeamMode,
         map: string,
+        mapScaleRange: number | undefined,
         resolve: (game: GameContainer) => void
     ) {
         this.promiseCallbacks.push(resolve);
-        this.worker = Cluster.fork({ id, teamMode, map }).on("message", (data: Partial<GameData>): void => {
+        this.worker = Cluster.fork({ id, teamMode, map, mapScaleRange }).on("message", (data: Partial<GameData>): void => {
             this._data = { ...this._data, ...data };
 
             if (data.allowJoin === true) { // This means the game was just created
@@ -76,7 +82,7 @@ export class GameContainer {
 export const games: Array<GameContainer | undefined> = [];
 let creating: GameContainer | undefined;
 
-export async function findGame(teamMode: TeamMode, map: string): Promise<number | undefined> {
+export async function findGame(teamMode: TeamMode, map: string, mapScaleRange?: number): Promise<number | undefined> {
     if (creating) return creating.id;
 
     const eligibleGames = games.filter((g?: GameContainer): g is GameContainer =>
@@ -88,11 +94,16 @@ export async function findGame(teamMode: TeamMode, map: string): Promise<number 
     return (
         eligibleGames.length
             ? pickRandomInArray(eligibleGames)
-            : await newGame(undefined, teamMode, map)
+            : await newGame(undefined, teamMode, map, mapScaleRange)
     )?.id;
 }
 
-export async function newGame(id: number | undefined, teamMode: TeamMode, map: string): Promise<GameContainer | undefined> {
+export async function newGame(
+    id: number | undefined,
+    teamMode: TeamMode,
+    map: string,
+    mapScaleRange?: number
+): Promise<GameContainer | undefined> {
     return new Promise<GameContainer | undefined>(resolve => {
         if (creating) {
             creating.promiseCallbacks.push(resolve);
@@ -100,7 +111,7 @@ export async function newGame(id: number | undefined, teamMode: TeamMode, map: s
             serverLog(`Creating new game with ID ${id}`);
             const game = games[id];
             if (!game) {
-                creating = games[id] = new GameContainer(id, teamMode, map, resolve);
+                creating = games[id] = new GameContainer(id, teamMode, map, mapScaleRange, resolve);
             } else if (game.over) {
                 game.promiseCallbacks.push(resolve);
                 game.sendMessage({ type: WorkerMessages.NewGame });
@@ -121,7 +132,7 @@ export async function newGame(id: number | undefined, teamMode: TeamMode, map: s
                     "aliveCount:", game?.aliveCount ?? "-"
                 );
                 if (!game || game.over) {
-                    void newGame(i, teamMode, map).then(resolve);
+                    void newGame(i, teamMode, map, mapScaleRange).then(resolve);
                     return;
                 }
             }
@@ -136,12 +147,14 @@ if (!Cluster.isPrimary) {
         readonly id: string
         readonly teamMode: string
         readonly map: string
+        readonly mapScaleRange?: string
     };
     const id = parseInt(data.id);
     let teamMode = parseInt(data.teamMode);
     let map = data.map;
+    let mapOptions = data.mapScaleRange ? Config.mapScaleRanges?.[parseInt(data.mapScaleRange)] : undefined;
 
-    let game = new Game(id, teamMode, map);
+    let game = new Game(id, teamMode, map, mapOptions);
 
     process.on("uncaughtException", e => {
         game.error("An unhandled error occurred. Details:", e);
@@ -159,9 +172,13 @@ if (!Cluster.isPrimary) {
                 game.kill();
                 break;
             }
+            case WorkerMessages.UpdateMapOptions: {
+                mapOptions = Config.mapScaleRanges?.[message.mapScaleRange];
+                break;
+            }
             case WorkerMessages.NewGame: {
                 game.kill();
-                game = new Game(id, teamMode, map);
+                game = new Game(id, teamMode, map, mapOptions);
                 game.setGameData({ allowJoin: true });
                 break;
             }

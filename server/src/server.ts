@@ -34,6 +34,10 @@ if (Cluster.isPrimary && require.main === module) {
     process.on("SIGTERM", exit);
     process.on("SIGUSR2", exit);
 
+    const getPlayerCount = (): number => games.filter(g => !g?.over).reduce((a, b) => (a + (b?.aliveCount ?? 0)), 0);
+
+    let mapScaleRange = -1;
+
     setInterval(() => {
         const memoryUsage = process.memoryUsage().rss;
 
@@ -46,6 +50,23 @@ if (Cluster.isPrimary && require.main === module) {
         }
 
         serverLog(perfString);
+
+        const mapScaleRanges = Config.mapScaleRanges;
+        if (!mapScaleRanges) return;
+
+        const playerCount = getPlayerCount();
+        mapScaleRange = -1;
+        for (let i = 0, len = mapScaleRanges.length; i < len; i++) {
+            const { minPlayers, maxPlayers } = mapScaleRanges[i];
+            if (playerCount < minPlayers || playerCount > maxPlayers) continue;
+            mapScaleRange = i;
+        }
+        for (const game of games) {
+            game?.sendMessage({ type: WorkerMessages.UpdateMapOptions, mapScaleRange });
+        }
+        for (const team of customTeams.values()) {
+            team.mapScaleRange = mapScaleRange;
+        }
     }, 60000);
 
     const teamsCreated = Config.maxCustomTeams
@@ -128,7 +149,7 @@ if (Cluster.isPrimary && require.main === module) {
             writeCorsHeaders(res);
             res.writeHeader("Content-Type", "application/json").end(JSON.stringify({
                 protocolVersion: GameConstants.protocolVersion,
-                playerCount: games.filter(g => !g?.over).reduce((a, b) => (a + (b?.aliveCount ?? 0)), 0),
+                playerCount: getPlayerCount(),
                 teamMode: teamMode.current,
                 nextTeamMode: teamMode.next,
                 teamModeSwitchTime: teamMode.nextSwitch ? teamMode.nextSwitch - Date.now() : undefined,
@@ -149,7 +170,7 @@ if (Cluster.isPrimary && require.main === module) {
         if (teamID) {
             gameID = customTeams.get(teamID)?.gameID;
         } else {
-            gameID = await findGame(teamMode.current, map.current);
+            gameID = await findGame(teamMode.current, map.current, mapScaleRange);
         }
 
         if (aborted) return;
@@ -200,7 +221,7 @@ if (Cluster.isPrimary && require.main === module) {
                 }
                 team = givenTeam;
             } else {
-                team = new CustomTeam(teamMode.current, map.current);
+                team = new CustomTeam(teamMode.current, map.current, mapScaleRange);
                 customTeams.set(team.id, team);
             }
 
