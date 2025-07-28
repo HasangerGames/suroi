@@ -1078,6 +1078,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         variations: 6,
         trunkVariations: 6,
         zIndex: ZIndexes.ObstaclesLayer5,
+        allowFlyover: FlyoverPref.Never,
         frames: {
             base: "big_oak_tree_trunk",
             leaves: "big_oak_tree_leaves",
