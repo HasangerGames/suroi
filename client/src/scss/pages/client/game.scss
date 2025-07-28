@@ -1786,9 +1786,10 @@
     }
 
     @media screen and (max-height: 465px) and (max-width: variables.$screen_large) {
-        bottom: 215px;
+        bottom: 210px;
         right: 5px;
     }
+
 
     /* @media screen and (max-width: variables.$screen_medium) and (max-height: 500px) { <- danger
         transform: scale(60%);
@@ -2222,12 +2223,10 @@
             }
 
             @media screen and (max-width: variables.$screen-large) {
-                @media screen and (max-height: variables.$screen_medium) {
-                    transform: translate(0%, 45%) rotate(15deg);
-                    width: 150px;
-                    height: 150px;
-                    position: absolute;
-                }
+                transform: translate(0%, 45%) rotate(15deg);
+                width: 150px;
+                height: 150px;
+                position: absolute;
             }
         }
 

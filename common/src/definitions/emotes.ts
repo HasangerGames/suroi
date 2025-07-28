@@ -72,7 +72,7 @@ export const Emotes = new ObjectDefinitions<EmoteDefinition>([
             "Man Face",
             "Satisfied Face",
             "Hot Face",
-            "Blind Walking",
+            "Blindfolded Face",
             "Melting Face",
             "Grimacing Face",
             "Vomiting Face",
@@ -141,6 +141,7 @@ export const Emotes = new ObjectDefinitions<EmoteDefinition>([
         ],
         [EmoteCategory.Misc]: [
             "Fire",
+            "Heart",
             "Penguin",
             "Squid",
             "Eagle",

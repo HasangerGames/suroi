@@ -114,18 +114,21 @@ if (Cluster.isPrimary && require.main === module) {
     const app = App();
 
     app.get("/api/serverInfo", async(res, req) => {
-        res.onAborted(() => { /* no-op */ });
+        let aborted = false;
+        res.onAborted(() => aborted = true);
 
         let punishment: PunishmentMessage | undefined;
         if (new URLSearchParams(req.getQuery()).get("checkPunishments") === "true") {
             punishment = await getPunishment(getIP(res, req));
         }
 
+        if (aborted) return;
+
         res.cork(() => {
             writeCorsHeaders(res);
             res.writeHeader("Content-Type", "application/json").end(JSON.stringify({
                 protocolVersion: GameConstants.protocolVersion,
-                playerCount: games.reduce((a, b) => (a + (b?.aliveCount ?? 0)), 0),
+                playerCount: games.filter(g => !g?.over).reduce((a, b) => (a + (b?.aliveCount ?? 0)), 0),
                 teamMode: teamMode.current,
                 nextTeamMode: teamMode.next,
                 teamModeSwitchTime: teamMode.nextSwitch ? teamMode.nextSwitch - Date.now() : undefined,
@@ -138,7 +141,8 @@ if (Cluster.isPrimary && require.main === module) {
     });
 
     app.get("/api/getGame", async(res, req) => {
-        res.onAborted(() => { /* no-op */ });
+        let aborted = false;
+        res.onAborted(() => aborted = true);
 
         let gameID: number | undefined;
         const teamID = teamMode.current !== TeamMode.Solo && new URLSearchParams(req.getQuery()).get("teamID");
@@ -147,6 +151,8 @@ if (Cluster.isPrimary && require.main === module) {
         } else {
             gameID = await findGame(teamMode.current, map.current);
         }
+
+        if (aborted) return;
 
         res.cork(() => {
             writeCorsHeaders(res);
@@ -160,7 +166,8 @@ if (Cluster.isPrimary && require.main === module) {
 
     app.ws("/team", {
         async upgrade(res, req, context) {
-            res.onAborted((): void => { /* no-op */ });
+            let aborted = false;
+            res.onAborted(() => aborted = true);
 
             // These lines must be before the await to prevent uWS errors
             // Accessing req isn't allowed after an await
@@ -176,9 +183,11 @@ if (Cluster.isPrimary && require.main === module) {
                 || teamsCreated?.isLimited(ip)
                 || await getPunishment(ip)
             ) {
-                forbidden(res);
+                if (!aborted) forbidden(res);
                 return;
             }
+
+            if (aborted) return;
 
             // Get team
             const teamID = searchParams.get("teamID");
@@ -215,13 +224,13 @@ if (Cluster.isPrimary && require.main === module) {
             }
 
             // Upgrade the connection
-            res.upgrade(
+            res.cork(() => res.upgrade(
                 { player: new CustomTeamPlayer(ip, team, name, skin, badge, nameColor) },
                 webSocketKey,
                 webSocketProtocol,
                 webSocketExtensions,
                 context
-            );
+            ));
         },
 
         open(socket: WebSocket<CustomTeamPlayerContainer>) {

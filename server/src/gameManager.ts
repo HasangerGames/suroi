@@ -30,7 +30,6 @@ export interface GameData {
     aliveCount: number
     allowJoin: boolean
     over: boolean
-    stopped: boolean
     startedTime: number
 }
 
@@ -43,14 +42,12 @@ export class GameContainer {
         aliveCount: 0,
         allowJoin: false,
         over: false,
-        stopped: false,
         startedTime: -1
     };
 
     get aliveCount(): number { return this._data.aliveCount; }
     get allowJoin(): boolean { return this._data.allowJoin; }
     get over(): boolean { return this._data.over; }
-    get stopped(): boolean { return this._data.stopped; }
     get startedTime(): number { return this._data.startedTime; }
 
     constructor(
@@ -104,7 +101,7 @@ export async function newGame(id: number | undefined, teamMode: TeamMode, map: s
             const game = games[id];
             if (!game) {
                 creating = games[id] = new GameContainer(id, teamMode, map, resolve);
-            } else if (game.stopped) {
+            } else if (game.over) {
                 game.promiseCallbacks.push(resolve);
                 game.sendMessage({ type: WorkerMessages.NewGame });
                 creating = game;
@@ -116,8 +113,14 @@ export async function newGame(id: number | undefined, teamMode: TeamMode, map: s
             const maxGames = Config.maxGames;
             for (let i = 0; i < maxGames; i++) {
                 const game = games[i];
-                serverLog("Game", i, "exists:", !!game, "stopped:", game?.stopped);
-                if (!game || game.stopped) {
+                serverLog(
+                    "Game", i,
+                    "exists:", !!game,
+                    "over:", game?.over ?? "-",
+                    "runtime:", game ? `${Math.round((Date.now() - (game.startedTime ?? 0)) / 1000)}s` : "-",
+                    "aliveCount:", game?.aliveCount ?? "-"
+                );
+                if (!game || game.over) {
                     void newGame(i, teamMode, map).then(resolve);
                     return;
                 }
@@ -138,9 +141,12 @@ if (!Cluster.isPrimary) {
     let teamMode = parseInt(data.teamMode);
     let map = data.map;
 
-    let game: Game | undefined;
+    let game = new Game(id, teamMode, map);
 
-    process.on("uncaughtException", e => game?.error("An unhandled error occurred. Details:", e));
+    process.on("uncaughtException", e => {
+        game.error("An unhandled error occurred. Details:", e);
+        game.kill();
+    });
 
     process.on("message", (message: WorkerMessage) => {
         switch (message.type) {
@@ -150,11 +156,13 @@ if (!Cluster.isPrimary) {
             }
             case WorkerMessages.UpdateMap: {
                 map = message.map;
-                game?.kill();
+                game.kill();
                 break;
             }
             case WorkerMessages.NewGame: {
+                game.kill();
                 game = new Game(id, teamMode, map);
+                game.setGameData({ allowJoin: true });
                 break;
             }
         }
@@ -162,7 +170,7 @@ if (!Cluster.isPrimary) {
 
     setInterval(() => {
         const memoryUsage = process.memoryUsage().rss;
-        game?.log(`RAM usage: ${Math.round(memoryUsage / 1024 / 1024 * 100) / 100} MB`);
+        game.log(`RAM usage: ${Math.round(memoryUsage / 1024 / 1024 * 100) / 100} MB`);
     }, 60000);
 
     const { maxSimultaneousConnections, maxJoinAttempts } = Config;
@@ -175,9 +183,10 @@ if (!Cluster.isPrimary) {
 
     App().ws("/play", {
         async upgrade(res, req, context) {
-            res.onAborted(() => { /* no-op */ });
+            let aborted = false;
+            res.onAborted(() => aborted = true);
 
-            if (!game?.allowJoin) {
+            if (!game.allowJoin) {
                 forbidden(res);
                 return;
             }
@@ -191,24 +200,28 @@ if (!Cluster.isPrimary) {
             const webSocketExtensions = req.getHeader("sec-websocket-extensions");
 
             if (simultaneousConnections?.isLimited(ip)) {
-                game?.warn(ip, "exceeded maximum simultaneous connections");
+                game.warn(ip, "exceeded maximum simultaneous connections");
                 forbidden(res);
                 return;
             }
             if (joinAttempts?.isLimited(ip)) {
-                game?.warn(ip, "exceeded maximum join attempts");
+                game.warn(ip, "exceeded maximum join attempts");
                 forbidden(res);
                 return;
             }
             joinAttempts?.increment(ip);
 
-            if (await getPunishment(ip)) {
+            const punishment = await getPunishment(ip);
+
+            if (aborted) return;
+
+            if (punishment) {
                 forbidden(res);
                 return;
             }
 
             const { role, isDev, nameColor } = parseRole(searchParams);
-            res.upgrade(
+            res.cork(() => res.upgrade(
                 {
                     ip,
                     teamID: searchParams.get("teamID") ?? undefined,
@@ -223,12 +236,12 @@ if (!Cluster.isPrimary) {
                 webSocketProtocol,
                 webSocketExtensions,
                 context
-            );
+            ));
         },
 
         open(socket: WebSocket<PlayerSocketData>) {
             const data = socket.getUserData();
-            data.player = game?.addPlayer(socket);
+            data.player = game.addPlayer(socket);
             if (data.player === undefined) return;
 
             simultaneousConnections?.increment(data.ip);
@@ -237,7 +250,7 @@ if (!Cluster.isPrimary) {
 
         message(socket: WebSocket<PlayerSocketData>, message: ArrayBuffer) {
             try {
-                game?.onMessage(socket.getUserData().player, message);
+                game.onMessage(socket.getUserData().player, message);
             } catch (e) {
                 console.warn("Error parsing message:", e);
             }
@@ -246,11 +259,11 @@ if (!Cluster.isPrimary) {
         close(socket: WebSocket<PlayerSocketData>) {
             const { player, ip } = socket.getUserData();
 
-            if (player) game?.removePlayer(player);
+            if (player) game.removePlayer(player);
             if (ip) simultaneousConnections?.decrement(ip);
         }
     }).listen(Config.hostname, Config.port + id + 1, () => {
-        game = new Game(id, teamMode, map);
+        game.setGameData({ allowJoin: true });
         game.log(`Listening on ${Config.hostname}:${Config.port + id + 1}`);
     });
 }

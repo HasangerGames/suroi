@@ -220,7 +220,7 @@ export const Melees = new InventoryItemDefinitions<MeleeDefinition>([
         piercingMultiplier: 1.5,
         radius: 2,
         swingSound: "heavy_swing",
-        offset: Vec(5.4, -0.5),
+        offset: Vec(5.2, -0.5),
         cooldown: 420,
         hitDelay: 180,
         fists: {
@@ -281,7 +281,7 @@ export const Melees = new InventoryItemDefinitions<MeleeDefinition>([
         iceMultiplier: 5,
         radius: 2.05,
         swingSound: "heavy_swing",
-        offset: Vec(5.4, -0.5),
+        offset: Vec(5.2, -0.5),
         cooldown: 420,
         hitDelay: 180,
         fists: {
