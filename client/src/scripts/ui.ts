@@ -61,7 +61,7 @@ interface RegionInfo extends Region {
 }
 
 enum hideUnlessPresent {
-    zh_tw = '🇹🇼'
+    zh_tw = "🇹🇼"
 }
 
 let selectedRegion: RegionInfo | undefined;
@@ -378,7 +378,7 @@ export async function setUpUI(): Promise<void> {
         const isSelected = GameConsole.getBuiltInCVar("cv_language") === language;
         languageFieldset.append(html`
            <a id="language-${language}" ${isSelected ? 'class="selected"' : ""}>
-              ${Object.values(hideUnlessPresent).includes(languageInfo.flag as hideUnlessPresent) && isSelected == false ? "" : languageInfo.flag} <strong>${languageInfo.name}</strong> [${!isSelected ? TRANSLATIONS.translations[language].percentage : languageInfo.percentage}]
+              ${Object.values(hideUnlessPresent).includes(languageInfo.flag as hideUnlessPresent) && !isSelected ? "" : languageInfo.flag} <strong>${languageInfo.name}</strong> [${!isSelected ? TRANSLATIONS.translations[language].percentage : languageInfo.percentage}]
            </a>
         `);
 

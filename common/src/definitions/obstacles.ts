@@ -6814,7 +6814,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         name: "Toolbox",
         defType: DefinitionType.Obstacle,
         material: "iron",
-        health: 110,
+        health: 150,
         reflectBullets: true,
         scale: {
             spawnMin: 1,
