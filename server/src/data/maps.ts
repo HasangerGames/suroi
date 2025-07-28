@@ -764,7 +764,6 @@ const maps = {
             small_bridge: Infinity,
             docks: 8,
             outhouse: 6,
-            buoy_hunted: 12,
             tavern: 1,
             cabin: 8,
             carport: 2,

@@ -8900,18 +8900,6 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             get position() { return Vec(random(50, 100), 0); }
         }]
     },
-    {
-        // we use tugboat "HACK" to generate these in the ocean
-        idString: "buoy_hunted",
-        name: "Buoy",
-        defType: DefinitionType.Building,
-        spawnMode: MapObjectSpawnMode.Beach,
-        spawnHitbox: RectangleHitbox.fromRect(70, 110, Vec(50, 0)),
-        obstacles: IS_CLIENT ? undefined : [{
-            idString: "buoy",
-            get position() { return Vec(random(50, 60), 0); }
-        }]
-    },
     { // implemented by pap with a lot of love >w<
         idString: "campsite",
         name: "Campsite",
