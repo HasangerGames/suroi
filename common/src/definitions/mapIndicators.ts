@@ -8,7 +8,8 @@ export const MapIndicators = new ObjectDefinitions<MapIndicatorDefinition>([
     "helmet_indicator",
     "vest_indicator",
     "pack_indicator",
-    "juggernaut_indicator"
+    "juggernaut_indicator",
+    "player_indicator"
 ].map(idString => ({
     idString,
     name: idString,

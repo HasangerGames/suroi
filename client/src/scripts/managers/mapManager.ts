@@ -18,6 +18,7 @@ import { GasManager, GasRender } from "./gasManager";
 import { InputManager } from "./inputManager";
 import { SoundManager } from "./soundManager";
 import { UIManager } from "./uiManager";
+import type { Tween } from "../utils/tween";
 
 class MapManagerClass {
     private _expanded = false;
@@ -88,7 +89,7 @@ class MapManagerClass {
     readonly pingsContainer = new Container();
     readonly pingGraphics = new Graphics();
 
-    readonly indicators = new Map<number, SuroiSprite>();
+    readonly indicators = new Map<number, { sprite: SuroiSprite, tween: Tween<SuroiSprite> }>();
     readonly indicatorsContainer = new Container();
 
     readonly terrainGraphics = new Graphics();
@@ -830,21 +831,34 @@ class MapManagerClass {
 
     updateMapIndicator(data: MapIndicatorSerialization): void {
         const id = data.id;
-
-        let indicator = this.indicators.get(id);
-        if (indicator) {
+        const indicator = this.indicators.get(id);
+        let sprite = indicator?.sprite;
+        let tween = indicator?.tween;
+        if (sprite) {
             if (data.dead) {
-                this.indicatorsContainer.removeChild(indicator);
                 this.indicators.delete(id);
+                tween?.kill();
+                Game.addTween({
+                    target: sprite,
+                    to: { alpha: 0 },
+                    duration: 250,
+                    onComplete: () => sprite && this.indicatorsContainer.removeChild(sprite)
+                });
             } else {
-                if (data.position) indicator.setVPos(data.position);
-                if (data.definition) indicator.setFrame(data.definition.idString);
+                if (data.position) sprite.setVPos(data.position);
+                if (data.definition) sprite.setFrame(data.definition.idString);
             }
         } else if (!data.dead) {
-            indicator = new SuroiSprite(data.definition?.idString)
-                .setVPos(data.position ?? Vec(0, 0));
-            this.indicatorsContainer.addChild(indicator);
-            this.indicators.set(id, indicator);
+            sprite = new SuroiSprite(data.definition?.idString)
+                .setVPos(data.position ?? Vec(0, 0))
+                .setAlpha(0);
+            tween = Game.addTween({
+                target: sprite,
+                to: { alpha: 1 },
+                duration: 250
+            });
+            this.indicatorsContainer.addChild(sprite);
+            this.indicators.set(id, { sprite, tween });
         }
     }
 

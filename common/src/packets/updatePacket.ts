@@ -791,22 +791,25 @@ export const UpdatePacket = new Packet<UpdateDataIn, UpdateDataOut>(PacketType.U
 
         if (data.mapIndicators?.length) {
             strm.writeArray(data.mapIndicators, indicator => {
-                let data = indicator.id;
-                if (indicator.positionDirty) data += 32;
-                if (indicator.definitionDirty) data += 64;
-                if (indicator.dead) data += 128;
-                strm.writeUint8(data);
+                const { id, positionDirty, definitionDirty, dead, position, definition } = indicator;
 
-                if (indicator.positionDirty) {
+                strm.writeUint8(id);
+                strm.writeBooleanGroup(
+                    positionDirty,
+                    definitionDirty,
+                    dead
+                );
+
+                if (positionDirty) {
                     // can't be undefined on server
                     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                    strm.writePosition(indicator.position!);
+                    strm.writePosition(position!);
                 }
 
-                if (indicator.definitionDirty) {
+                if (definitionDirty) {
                     // also can't be undefined on server
                     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                    MapIndicators.writeToStream(strm, indicator.definition!);
+                    MapIndicators.writeToStream(strm, definition!);
                 }
             });
             flags |= UpdateFlags.MapIndicators;
@@ -970,23 +973,24 @@ export const UpdatePacket = new Packet<UpdateDataIn, UpdateDataOut>(PacketType.U
 
         if ((flags & UpdateFlags.MapIndicators) !== 0) {
             data.mapIndicators = stream.readArray(() => {
-                const indicator = {} as MapIndicatorSerialization;
+                const id = stream.readUint8();
+                const [
+                    positionDirty,
+                    definitionDirty,
+                    dead
+                ] = stream.readBooleanGroup();
 
-                const data = stream.readUint8();
-                indicator.id = data & 0b0001_1111; // ignore 3 MSB
-                indicator.positionDirty = (data & 32) !== 0;
-                indicator.definitionDirty = (data & 64) !== 0;
-                indicator.dead = (data & 128) !== 0;
-
-                if (indicator.positionDirty) {
-                    indicator.position = stream.readPosition();
+                let position;
+                if (positionDirty) {
+                    position = stream.readPosition();
                 }
 
-                if (indicator.definitionDirty) {
-                    indicator.definition = MapIndicators.readFromStream(stream);
+                let definition;
+                if (definitionDirty) {
+                    definition = MapIndicators.readFromStream(stream);
                 }
 
-                return indicator;
+                return { id, positionDirty, definitionDirty, dead, position, definition };
             });
         }
 

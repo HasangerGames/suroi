@@ -530,6 +530,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     mapIndicator?: MapIndicator;
 
     highlightedPlayers?: Player[];
+    highlightedIndicators?: Map<Player, MapIndicator>;
 
     constructor(game: Game, socket: WebSocket<PlayerSocketData> | undefined, position: Vector, layer?: Layer, team?: Team) {
         super(game, position);
@@ -1104,9 +1105,25 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                                 || player === this
                                 || player.dead
                                 || (this.game.isTeamMode && player.teamID === this.teamID)
+                                || !this.visibleObjects.has(player)
                                 || !player.hitbox.collidesWith(detectionHitbox)
                             ) continue;
                             this.highlightedPlayers.push(player);
+                            const indicator = this.highlightedIndicators?.get(player);
+                            if (indicator) {
+                                indicator.updatePosition(player.position);
+                            } else {
+                                (this.highlightedIndicators ??= new Map<Player, MapIndicator>())
+                                    .set(player, new MapIndicator(this.game, "player_indicator", player.position));
+                            }
+                        }
+                        for (const [player, indicator] of this.highlightedIndicators ?? []) {
+                            if (this.highlightedPlayers.includes(player)) continue;
+                            if (indicator.dead) {
+                                this.game.mapIndicatorIDAllocator.give(indicator.id);
+                                this.highlightedIndicators?.delete(player);
+                            }
+                            indicator.dead = true;
                         }
                         this.dirty.highlightedPlayers = true;
                         break;
@@ -1719,9 +1736,10 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         packet.mapPings = [...game.mapPings, ...this._mapPings];
         this._mapPings.length = 0;
 
+        const indicators = [...game.mapIndicators, ...(this.highlightedIndicators?.values() ?? [])];
         packet.mapIndicators = this._firstPacket
-            ? game.mapIndicators.map(indicator => ({ ...indicator, positionDirty: true, definitionDirty: true }))
-            : game.mapIndicators.filter(indicator => indicator.positionDirty || indicator.definitionDirty || indicator.dead);
+            ? indicators.map(indicator => ({ ...indicator, positionDirty: true, definitionDirty: true }))
+            : indicators.filter(indicator => indicator.positionDirty || indicator.definitionDirty || indicator.dead);
 
         if (game.killLeaderDirty || this._firstPacket) {
             packet.killLeader = {
