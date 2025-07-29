@@ -14073,7 +14073,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         }],
         ceilingImages: [{
             key: "carport_ceiling",
-            position: Vec(-6.27, -4.2),
+            position: Vec(-6.27, -4.1),
             scale: Vec(2, 2)
         }],
         floorImages: [
