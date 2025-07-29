@@ -1106,3 +1106,11 @@ export const GameConsole = new (class GameConsole {
         this._ui.output.html("");
     }
 })();
+
+declare global {
+    interface Window {
+        GameConsole: typeof GameConsole
+    }
+}
+
+window.GameConsole = GameConsole;
