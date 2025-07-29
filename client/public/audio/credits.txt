@@ -73,6 +73,7 @@ Guns:
 Melees:
   Kukri pickup - "Metal Blade Slice 46" from Pixabay: https://pixabay.com/sound-effects/metal-blade-slice-46-195333/
   K-bar pickup - "Dagger Draw Fast" from Medieval sound effects - Weapon Textures: https://opengameart.org/content/medieval-sound-effects-weapon-textures
+  Pipe wrench switch - "wrench 02" by freesound_community from Pixabay: https://pixabay.com/users/freesound_community-46691455/
 
 Obstacles:
   Window punch: https://freesound.org/people/peter1984/sounds/414444/

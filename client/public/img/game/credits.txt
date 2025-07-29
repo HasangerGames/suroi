@@ -299,6 +299,7 @@ Melees:
   HE-AP Sword: Radians
   K-bar: Radians
   Maul: Radians
+  Pipe Wrench: sovietnuclearfridgebomb
 
 
 Obstacles:

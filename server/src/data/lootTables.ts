@@ -980,8 +980,12 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
                 { table: "ammo", weight: 1 }
             ],
             [{ table: "scopes", weight: 1 }],
-            [{ table: "guns", weight: 1 }]
-            // [{ item: "crowbar", weight: 1 }]
+            [{ table: "guns", weight: 1 }],
+            [
+                { item: NullString, weight: 1 },
+                { item: "crowbar", weight: 0.5 },
+                { item: "pipe_wrench", weight: 0.5 }
+            ]
         ],
         research_desk: [
             [
