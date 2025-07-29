@@ -18,6 +18,7 @@ import { InventoryItemBase } from "./inventoryItem";
 import { MeleeItem } from "./meleeItem";
 import { ThrowableItem } from "./throwableItem";
 import { DEFAULT_INVENTORY } from "@common/defaultInventory";
+import { WeaponSwitchAction } from "./weaponSwitchAction";
 
 export type ReifiableItem = InventoryItem | ReifiableDef<InventoryItem["definition"]>;
 
@@ -217,6 +218,15 @@ export class Inventory {
         owner.effectiveSwitchDelay = effectiveSwitchDelay;
         item.switchDate = now;
 
+        if (owner.action) {
+            owner.action.cancel();
+        }
+
+        if (item.isGun) {
+            owner.action = new WeaponSwitchAction(owner, item as GunItem);
+             console.log("WeaponSwitchAction started, duration:");
+        }
+
         if (item.isGun && item.ammo <= 0) {
             this._reloadTimeout = this.owner.game.addTimeout(
                 item.reload.bind(item),
@@ -224,6 +234,7 @@ export class Inventory {
             );
         }
 
+   
         owner.attacking = false;
         owner.recoil.active = false;
         owner.dirty.weapons = true;

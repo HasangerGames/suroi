@@ -273,7 +273,8 @@ export const enum PlayerActions {
     None,
     Reload,
     UseItem,
-    Revive
+    Revive,
+    SwitchWeapon
 }
 
 export enum InventoryMessages {
