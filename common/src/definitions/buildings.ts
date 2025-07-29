@@ -14053,6 +14053,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         ),
         material: "stone",
         particleVariations: 2,
+        floorZIndex: ZIndexes.Ground,
         particle: "carport_particle",
         hitbox: new GroupHitbox(
             RectangleHitbox.fromRect(2.01, 95.8, Vec(-52.72, -4.1)),
