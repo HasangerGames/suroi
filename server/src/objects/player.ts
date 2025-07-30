@@ -633,7 +633,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 this.inventory.items.setItem(ammoPtr, backpack.maxCapacity[ammoPtr]);
             };
 
-            // this.inventory.backpack = Loots.fromString("tactical_pack"); broken
+            this.inventory.backpack = Loots.fromString("tactical_pack");
             this.inventory.vest = Loots.fromString("developr_vest");
             this.inventory.helmet = Loots.fromString("tactical_helmet");
 
