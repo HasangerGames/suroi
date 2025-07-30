@@ -35,6 +35,7 @@ import { MapManager } from "./mapManager";
 import { ClientPerkManager } from "./perkManager";
 import { ScreenRecordManager } from "./screenRecordManager";
 import { SoundManager } from "./soundManager";
+import type { GunDefinition } from "@common/definitions/items/guns";
 
 function safeRound(value: number): number {
     if (0 < value && value <= 1) return 1;
@@ -932,7 +933,7 @@ class UIManagerClass {
         for (let i = 0, max = GameConstants.player.maxWeapons; i < max; i++) {
             const weapon = inventory.weapons[i];
             const isNew = this.weaponCache[i] === undefined;
-            const cache = this.weaponCache[i] ??= {};
+      const cache = (this.weaponCache[i] ??= {}) as any;
 
             const {
                 container,
@@ -1032,13 +1033,32 @@ class UIManagerClass {
                 cache.ammo = ammo;
                 ammoCounter.text(ammo ?? "");
             }
-
-            const hasAmmo = ammo !== undefined && ammo > 0;
-            if (hasAmmo !== cache.hasAmmo || isNew) {
-                cache.hasAmmo = hasAmmo;
-                ammoCounter.css("color", hasAmmo ? "unset" : "red");
-            }
+            let isAmmoFull = false;
+        if (weapon?.definition?.defType === DefinitionType.Gun && ammo !== undefined) {
+            const def = weapon.definition as GunDefinition;
+            // extendedCapacity is the TOTAL capacity with extended mag, not additional
+        if (def.extendedCapacity == null){
+            const maxAmmo = def.capacity;
+             isAmmoFull = ammo >= maxAmmo;
         }
+        else{
+              const maxAmmo = def.capacity;
+               isAmmoFull = ammo >= maxAmmo;
+        }
+        }
+            const hasAmmo = ammo !== undefined && ammo > 0;
+            const ammoColor = isAmmoFull
+                ? "orange"
+                : hasAmmo
+                    ? "unset"
+                    : "red";
+
+        if (isAmmoFull !== cache.isAmmoFull || hasAmmo !== cache.hasAmmo || isNew) {
+            cache.isAmmoFull = isAmmoFull;
+            cache.hasAmmo = hasAmmo;
+            ammoCounter.css("color", ammoColor);
+        }    
+    }
     }
 
     private _playSlotAnimation(element: JQuery): void {
