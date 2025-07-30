@@ -640,6 +640,8 @@ export class Inventory {
                 break;
             }
             case DefinitionType.Backpack: {
+                if (this.backpack.level !== definition.level) return;
+
                 const bag = Backpacks.fromString("bag");
                 const maxCapacity = bag.maxCapacity;
                 const validDefTypes = [
