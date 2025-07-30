@@ -15,6 +15,7 @@ export type ArmorDefinition = ItemDefinition & {
     | {
         readonly armorType: ArmorType.Vest
         readonly color: number
+        readonly worldImage?: string
     }
 );
 
@@ -101,7 +102,8 @@ export const Armors = new ObjectDefinitions<ArmorDefinition>([
         armorType: ArmorType.Vest,
         level: 4,
         damageReduction: 0.35,
-        color: 0x303030,
+        color: 0xffffff,
+        worldImage: "power_vest_world",
         perk: PerkIds.ExperimentalForcefield,
         mapIndicator: "vest_indicator"
     },

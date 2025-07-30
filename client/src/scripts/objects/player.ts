@@ -1,7 +1,7 @@
 import { AnimationType, GameConstants, InputActions, Layer, ObjectCategory, PlayerActions, SpectateActions, ZIndexes } from "@common/constants";
 import { getBadgeIdString, type EmoteDefinition } from "@common/definitions/emotes";
 import { Ammos } from "@common/definitions/items/ammos";
-import { type ArmorDefinition } from "@common/definitions/items/armors";
+import { ArmorType, type ArmorDefinition } from "@common/definitions/items/armors";
 import { type BackpackDefinition } from "@common/definitions/items/backpacks";
 import { type GunDefinition, type SingleGunNarrowing } from "@common/definitions/items/guns";
 import { HealType, type HealingItemDefinition } from "@common/definitions/items/healingItems";
@@ -1387,9 +1387,10 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     );
                 }
             } else {
+                const vestDef = def as ArmorDefinition & { armorType: ArmorType.Vest };
                 let color: number | undefined;
-                if ((color = (def as { color?: number }).color) !== undefined) {
-                    image.setFrame("vest_world")
+                if ((color = vestDef.color) !== undefined) {
+                    image.setFrame(vestDef.worldImage ?? "vest_world")
                         .setVisible(true)
                         .setTint(color);
                 }
