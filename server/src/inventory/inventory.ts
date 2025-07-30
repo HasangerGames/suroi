@@ -648,6 +648,13 @@ export class Inventory {
                     DefinitionType.Throwable
                 ];
 
+                if (definition.perk !== undefined) {
+                    this.owner.removePerk(definition.perk);
+                }
+
+                this._dropItem(definition);
+                this.backpack = bag;
+
                 for (const item in this.items.asRecord()) {
                     const def = Loots.fromString(item);
                     if (
@@ -666,13 +673,6 @@ export class Inventory {
                     this.items.setItem(item, targetAmount);
                     this.owner.game.addLoot(def, this.owner.position, this.owner.layer, { count: amountToDrop });
                 }
-
-                if (definition.perk !== undefined) {
-                    this.owner.removePerk(definition.perk);
-                }
-
-                this._dropItem(definition);
-                this.backpack = bag;
                 break;
             }
 
