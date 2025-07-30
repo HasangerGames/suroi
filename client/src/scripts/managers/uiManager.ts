@@ -1036,7 +1036,6 @@ class UIManagerClass {
             let isAmmoFull = false;
         if (weapon?.definition?.defType === DefinitionType.Gun && ammo !== undefined) {
             const def = weapon.definition as GunDefinition;
-            // extendedCapacity is the TOTAL capacity with extended mag, not additional
         if (def.extendedCapacity == null){
             const maxAmmo = def.capacity;
              isAmmoFull = ammo >= maxAmmo;
@@ -1057,7 +1056,7 @@ class UIManagerClass {
             cache.isAmmoFull = isAmmoFull;
             cache.hasAmmo = hasAmmo;
             ammoCounter.css("color", ammoColor);
-        }    
+        }    //does this work?
     }
     }
 
