@@ -80,6 +80,7 @@ export const Modes: Record<ModeName, ModeDefinition> = {
             delay: 1000
         },
         spriteSheets: ["shared", "fall"],
+        replaceMenuMusic: true,
         playButtonImage: "./img/game/fall/obstacles/pumpkin.svg"
     },
     halloween: {
