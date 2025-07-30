@@ -667,6 +667,10 @@ export class Inventory {
                     this.owner.game.addLoot(def, this.owner.position, this.owner.layer, { count: amountToDrop });
                 }
 
+                if (definition.perk !== undefined) {
+                    this.owner.removePerk(definition.perk);
+                }
+
                 this._dropItem(definition);
                 this.backpack = bag;
                 break;
