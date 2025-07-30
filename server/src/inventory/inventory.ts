@@ -1,7 +1,7 @@
 import { GameConstants } from "@common/constants";
 import { Ammos, type AmmoDefinition } from "@common/definitions/items/ammos";
 import { ArmorType, type ArmorDefinition } from "@common/definitions/items/armors";
-import { type BackpackDefinition } from "@common/definitions/items/backpacks";
+import { Backpacks, type BackpackDefinition } from "@common/definitions/items/backpacks";
 import { type DualGunNarrowing, type GunDefinition } from "@common/definitions/items/guns";
 import { HealType, HealingItems, type HealingItemDefinition } from "@common/definitions/items/healingItems";
 import { Loots, type LootDefForType, type LootDefinition, type WeaponDefinition, type WeaponTypes } from "@common/definitions/loots";
@@ -640,7 +640,36 @@ export class Inventory {
                 break;
             }
             case DefinitionType.Backpack: {
-                return;
+                const bag = Backpacks.fromString("bag");
+                const maxCapacity = bag.maxCapacity;
+                const validDefTypes = [
+                    DefinitionType.HealingItem,
+                    DefinitionType.Ammo,
+                    DefinitionType.Throwable
+                ];
+
+                for (const item in this.items.asRecord()) {
+                    const def = Loots.fromString(item);
+                    if (
+                        def.noDrop
+                        || ("ephemeral" in def && def.ephemeral)
+                        || !validDefTypes.includes(def.defType)
+                    ) continue;
+
+                    const count = this.items.getItem(item);
+                    if (count <= 0) continue;
+
+                    const targetAmount = Numeric.min(count, maxCapacity[item]);
+                    const amountToDrop = count - targetAmount;
+                    if (amountToDrop <= 0) continue;
+
+                    this.items.setItem(item, targetAmount);
+                    this.owner.game.addLoot(def, this.owner.position, this.owner.layer, { count: amountToDrop });
+                }
+
+                this._dropItem(definition);
+                this.backpack = bag;
+                break;
             }
 
             case DefinitionType.Perk: {

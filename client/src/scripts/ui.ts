@@ -34,6 +34,7 @@ import { html, humanDate, requestFullscreen } from "./utils/misc";
 import { spritesheetLoadPromise } from "./utils/pixi";
 import { TRANSLATIONS, getTranslatedString } from "./utils/translations/translations";
 import type { TranslationKeys } from "./utils/translations/typings";
+import type { BackpackDefinition } from "@common/definitions/items/backpacks";
 
 /*
     eslint-disable
@@ -1930,7 +1931,7 @@ export async function setUpUI(): Promise<void> {
 
     let dropTimer: number | undefined;
 
-    function mobileDropItem(button: number, condition: boolean, item?: AmmoDefinition | ArmorDefinition | ScopeDefinition | HealingItemDefinition, slot?: number): void {
+    function mobileDropItem(button: number, condition: boolean, item?: AmmoDefinition | ArmorDefinition | ScopeDefinition | HealingItemDefinition | BackpackDefinition, slot?: number): void {
         if (!InputManager.isMobile) return;
         dropTimer = window.setTimeout(() => {
             if (button === 0 && condition) {
@@ -2160,7 +2161,8 @@ export async function setUpUI(): Promise<void> {
     for (
         const [ele, type] of [
             [$<HTMLDivElement>("#helmet-slot"), "helmet"],
-            [$<HTMLDivElement>("#vest-slot"), "vest"]
+            [$<HTMLDivElement>("#vest-slot"), "vest"],
+            [$<HTMLDivElement>("#backpack-slot"), "backpack"]
         ] as const
     ) {
         ele[0].addEventListener("pointerup", () => clearTimeout(dropTimer));
@@ -2170,7 +2172,7 @@ export async function setUpUI(): Promise<void> {
             const shouldDrop = Game.activePlayer && Game.isTeamMode;
 
             if (isSecondary && shouldDrop) {
-                const item = Game.activePlayer?.getEquipment(type);
+                const item = Game.activePlayer?.equipment[type];
                 if (item) {
                     InputManager.addAction({
                         type: InputActions.DropItem,
@@ -2180,7 +2182,7 @@ export async function setUpUI(): Promise<void> {
             }
 
             if (shouldDrop !== undefined) {
-                mobileDropItem(button, shouldDrop, Game.activePlayer?.getEquipment(type));
+                mobileDropItem(button, shouldDrop, Game.activePlayer?.equipment[type]);
             }
         });
     }
