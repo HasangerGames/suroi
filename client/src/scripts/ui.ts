@@ -2161,7 +2161,8 @@ export async function setUpUI(): Promise<void> {
     for (
         const [ele, type] of [
             [$<HTMLDivElement>("#helmet-slot"), "helmet"],
-            [$<HTMLDivElement>("#vest-slot"), "vest"]
+            [$<HTMLDivElement>("#vest-slot"), "vest"],
+            [$<HTMLDivElement>("#backpack-slot"), "backpack"]
         ] as const
     ) {
         ele[0].addEventListener("pointerup", () => clearTimeout(dropTimer));
