@@ -776,7 +776,10 @@ const maps = {
             warehouse_hunted: 5,
             fox_bunker: 1,
             moose_bunker: 1,
-            bear_bunker: 1
+            bear_bunker: 1,
+            hollow_log_1: 5,
+            hollow_log_2: 5,
+            hollow_log_3: 5
         },
         quadBuildingLimit: {
             carport: 1,
@@ -784,11 +787,13 @@ const maps = {
             warehouse_hunted: 2,
             docks: 2,
             outhouse: 3,
-            cabin: 3
+            cabin: 3,
+            hollow_log_1: 3,
+            hollow_log_2: 3,
+            hollow_log_3: 3
         },
         obstacles: {
             stump: 60,
-            log: 30,
             small_logs_pile: 30,
             large_logs_pile_2: 20,
             clearing_boulder: 18,

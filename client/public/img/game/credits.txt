@@ -358,6 +358,15 @@ Buildings:
   Barn: platonthek
   Tents: Emeraldneo
   Breached Dam: Emeraldneo
+  Hollow Log: SquareCube
+  Tavern: TimoPro
+  (Hunted Mode) Warehouse: TimoPro
+  Sawmill: TimoPro
+  Hunted Mode Small Bridge Variant/Recolor: SquareCube
+  Carport: TimoPro
+  Shooting Range: TimoPro
+  Docks: TimoPro
+  Hunting Stand: TimoPro
 
 Emotes:
   Primary Artists: EndermanKing, Slapdap, Tofi38

@@ -439,7 +439,9 @@ export const TintedParticles: Record<string, { readonly base: string, readonly t
     nsd_wall_particle: { base: "wood_particle", tint: 0x3e5130 },
     carport_particle_1: { base: "stone_particle_1", tint: 0xafafaf },
     carport_particle_2: { base: "stone_particle_2", tint: 0xafafaf },
-    pickup_truck_particle: { base: "metal_particle_1", tint: 0x733226 }
+    pickup_truck_particle: { base: "metal_particle_1", tint: 0x733226 },
+    hollow_log_wall_particle_1: { base: "stone_particle_1", tint: 0x432f20 },
+    hollow_log_wall_particle_2: { base: "stone_particle_2", tint: 0x432f20 }
 };
 
 const houseWall = (
@@ -6969,6 +6971,19 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         material: "metal_heavy",
         hitbox: RectangleHitbox.fromRect(34.6, 14.23)
         // chuck will make sure to go vroom vroom on u if u dare to touch his definition
+    },
+    {
+        idString: "hollow_log_wall",
+        name: "Hollow Log Wall",
+        defType: DefinitionType.Obstacle,
+        particleVariations: 2,
+        material: "tree",
+        health: 200,
+        hideOnMap: true,
+        isWall: true,
+        noResidue: true,
+        hitbox: RectangleHitbox.fromRect(2.83, 32.77),
+        rotationMode: RotationMode.Limited
     }
 ] satisfies readonly RawObstacleDefinition[] as readonly RawObstacleDefinition[]).flatMap((def: Mutable<RawObstacleDefinition>) => {
     if (def.variations !== undefined) (def as Mutable<ObstacleDefinition>).variationBits = Math.ceil(Math.log2(def.variations));

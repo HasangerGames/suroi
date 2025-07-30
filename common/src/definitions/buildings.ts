@@ -52,6 +52,7 @@ export interface BuildingImageDefinition {
     readonly spinSpeed?: number
     readonly spinOnSolve?: boolean
     readonly residue?: string
+    readonly residuePosition?: Vector
     readonly beachTinted?: boolean
     readonly damaged?: string
     readonly alpha?: number
@@ -913,7 +914,58 @@ const container = (
             : {})
     } as const;
 };
-
+const hollowLog = (
+    id: number,
+    variant: "damaged" | "moldy" | "extended"
+): BuildingDefinition => {
+    return {
+        idString: `hollow_log_${id}`,
+        name: "Hollow Log",
+        defType: DefinitionType.Building,
+        spawnHitbox: RectangleHitbox.fromRect(18.42, 36.62),
+        ceilingHitbox: RectangleHitbox.fromRect(7.97, 32.76),
+        ceilingImages: [{
+            key: `hollow_log_ceiling_${variant}`,
+            position: Vec(variant === "extended" ? -1.25 : 0, 0),
+            scale: Vec(2.06, 1.985),
+            residue: "hollow_log_ceiling_residue",
+            residuePosition: Vec(0, 0)
+        }],
+        ceilingCollapseParticle: "hollow_log_ceiling_particle",
+        resetCeilingResidueScale: true,
+        wallsToDestroy: 1,
+        groundGraphics: [
+            { // stroke
+                color: 0x1f150d,
+                hitbox: RectangleHitbox.fromRect(13.68, 32.76)
+            },
+            { // fill 1
+                color: 0x3f2d1f,
+                hitbox: RectangleHitbox.fromRect(12.29, 31.37)
+            },
+            { // fill 2
+                color: 0x463222,
+                hitbox: RectangleHitbox.fromRect(10.23, 31.38)
+            },
+            { // fill 3
+                color: 0x563e29,
+                hitbox: RectangleHitbox.fromRect(7.45, 31.38)
+            }
+        ],
+        obstacles: [
+            { idString: "hollow_log_wall", position: Vec(-6, 0), rotation: 0 },
+            { idString: "hollow_log_wall", position: Vec(6, 0), rotation: 0 }
+        ],
+        lootSpawners: [{
+            table: "ground_loot",
+            position: Vec(0, 0)
+        }],
+        floors: [{
+            type: FloorNames.Log,
+            hitbox: RectangleHitbox.fromRect(13.68, 32.76)
+        }]
+    };
+};
 const truckContainer = (
     id: number,
     model: "two_sided" | "one_sided",
@@ -14118,5 +14170,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: randomPallet, position: Vec(32.65, 6.72) },
             { idString: randomPallet, position: Vec(-43.58, 35.45) }
         ]
-    }
+    },
+    hollowLog(1, "damaged"),
+    hollowLog(2, "extended"),
+    hollowLog(3, "moldy")
 ]);

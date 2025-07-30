@@ -102,6 +102,7 @@ Obstacles:
   Fence hit & destroyed - Katloo
 
 Ceiling breaking - https://freesound.org/people/InspectorJ/sounds/352513/
+Ceiling collapse - "Wood Smash 3" by floraphonic on Pixabay - https://pixabay.com/users/floraphonic-38928062/
 Vault door opening - "Metal warehouse door opened with chains" from Pixabay: https://pixabay.com/sound-effects/metal-warehouse-door-opened-with-chains-100823/
 
 Cola:
@@ -147,6 +148,7 @@ Footsteps:
   Metal - "Metal Footsteps" from Pixabay: https://pixabay.com/sound-effects/metal-footsteps-14727/
   Sand - "foley_footsteps_desert_boots_sand" from Pixabay: https://pixabay.com/sound-effects/foley-footsteps-desert-boots-sand-6900/
   Water - "Footsteps in Water - Nature Sounds" from Pixabay: https://pixabay.com/sound-effects/footsteps-in-water-nature-sounds-8185/
+  Log (Wood) - "Walking on wood" by freesounds123 from Pixabay: https://pixabay.com/users/freesounds123-49985424/
 
 Memorial open:
   "Tomb_door" from Pixabay: https://pixabay.com/sound-effects/tomb-door-95246/
