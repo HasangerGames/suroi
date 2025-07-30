@@ -4348,6 +4348,25 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         hitbox: RectangleHitbox.fromRect(7.5, 8)
     },
     {
+        ...controlPanel("bear_bunker_recorder", "Bear Bunker Recorder"),
+        hitbox: RectangleHitbox.fromRect(8.7, 6.34),
+        indestructible: true,
+        isActivatable: true,
+        interactObstacleIdString: "recorder_interactable",
+        sound: {
+            name: "bear_bunker_recording",
+            maxRange: 80,
+            falloff: 0.5,
+            dynamic: true
+        },
+        frames: {
+            base: "recorder",
+            activated: "recorder_used",
+            particle: "metal_particle",
+            residue: "barrel_residue"
+        }
+    },
+    {
         idString: "small_desk",
         name: "Small Desk",
         defType: DefinitionType.Obstacle,
