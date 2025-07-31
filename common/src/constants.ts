@@ -13,12 +13,13 @@ export const GameConstants = {
     maxPosition: 1924,
     objectMinScale: 0.15,
     objectMaxScale: 3,
-    defaultMode: "normal" satisfies ModeName as ModeName,
+    defaultMode: "hunted" satisfies ModeName as ModeName,
     player: {
         radius: 2.25,
         baseSpeed: 0.03,
         defaultHealth: 100,
         maxAdrenaline: 100,
+        maxShield: 100,
         inventorySlotTypings,
         maxWeapons: inventorySlotTypings.length,
         nameMaxLength: 16,
@@ -30,6 +31,7 @@ export const GameConstants = {
         maxReviveDist: 5,
         bleedOutDPMs: 0.002, // === 2 dps
         maxPerkCount: 1,
+        maxPerks: 4,
         buildingVisionSize: 20,
         rateLimitPunishmentTrigger: 10,
         emotePunishmentTime: 5000, // ms
@@ -37,12 +39,14 @@ export const GameConstants = {
         defaultModifiers: (): PlayerModifiers => ({
             maxHealth: 1,
             maxAdrenaline: 1,
+            maxShield: 1,
             baseSpeed: 1,
             size: 1,
             adrenDrain: 1,
 
             minAdrenaline: 0,
-            hpRegen: 0
+            hpRegen: 0,
+            shieldRegen: 0
         })
     },
     gas: {
@@ -83,7 +87,6 @@ export const GameConstants = {
         }
     },
     explosionMaxDistSquared: 128 ** 2,
-    riverPadding: 64,
     trailPadding: 384,
     explosionRayDistance: 2
 };
@@ -193,7 +196,8 @@ export enum MapObjectSpawnMode {
     GrassAndSand,
     River,
     Beach,
-    Trail
+    Trail,
+    Ring
 }
 
 export enum RotationMode {
@@ -225,7 +229,6 @@ export const enum AnimationType {
     GunFire,
     GunFireAlt,
     GunClick,
-    LastShot,
     Revive
 }
 

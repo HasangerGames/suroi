@@ -1,7 +1,7 @@
 import { GameConstants, GasState, Layer, ObjectCategory, ZIndexes, Z_INDEX_COUNT } from "@common/constants";
 import { type MapPingDefinition } from "@common/definitions/mapPings";
 import { type MapData } from "@common/packets/mapPacket";
-import { type PingSerialization, type PlayerPingSerialization } from "@common/packets/updatePacket";
+import { type MapIndicatorSerialization, type PingSerialization, type PlayerPingSerialization } from "@common/packets/updatePacket";
 import { RectangleHitbox } from "@common/utils/hitbox";
 import { Collision, Numeric } from "@common/utils/math";
 import { FloorTypes, River, Terrain } from "@common/utils/terrain";
@@ -18,6 +18,7 @@ import { GasManager, GasRender } from "./gasManager";
 import { InputManager } from "./inputManager";
 import { SoundManager } from "./soundManager";
 import { UIManager } from "./uiManager";
+import type { Tween } from "../utils/tween";
 
 class MapManagerClass {
     private _expanded = false;
@@ -88,6 +89,9 @@ class MapManagerClass {
     readonly pingsContainer = new Container();
     readonly pingGraphics = new Graphics();
 
+    readonly indicators = new Map<number, { sprite: SuroiSprite, tween: Tween<SuroiSprite> }>();
+    readonly indicatorsContainer = new Container();
+
     readonly terrainGraphics = new Graphics();
 
     private _objects: MapData["objects"] = [];
@@ -111,6 +115,7 @@ class MapManagerClass {
         this.container.addChild(this._border);
 
         this.safeZone.zIndex = 997;
+        this.indicatorsContainer.zIndex = 997.5;
         this.pingsContainer.zIndex = 998;
         this.teammateIndicatorContainer.zIndex = 999;
 
@@ -125,6 +130,7 @@ class MapManagerClass {
             this.safeZone,
             this.pingGraphics,
             this.pingsContainer,
+            this.indicatorsContainer,
             this.indicator,
             this.teammateIndicatorContainer
         ).sortChildren();
@@ -365,6 +371,7 @@ class MapManagerClass {
                             .setZIndex(image.zIndex ?? 0)
                             .setTint(image.beachTinted ? Game.colors.beach : 0xffffff);
 
+                        if (image.alpha !== undefined) sprite.setAlpha(image.alpha);
                         if (image.tint !== undefined) sprite.setTint(image.tint);
                         sprite.scale = Vec.scale(image.scale ?? Vec(1, 1), 1 / PIXI_SCALE);
                         floorContainer.addChild(sprite);
@@ -455,7 +462,7 @@ class MapManagerClass {
             );
             text.alpha = 0.7;
             text.anchor.set(0.5);
-            text.position.copyFrom(place.position);
+            text.position = place.position;
 
             this.placesContainer.addChild(text);
         }
@@ -822,11 +829,46 @@ class MapManagerClass {
         }
     }
 
+    updateMapIndicator(data: MapIndicatorSerialization): void {
+        const id = data.id;
+        const indicator = this.indicators.get(id);
+        let sprite = indicator?.sprite;
+        let tween = indicator?.tween;
+        if (sprite) {
+            if (data.dead) {
+                this.indicators.delete(id);
+                tween?.kill();
+                Game.addTween({
+                    target: sprite,
+                    to: { alpha: 0 },
+                    duration: 250,
+                    onComplete: () => sprite && this.indicatorsContainer.removeChild(sprite)
+                });
+            } else {
+                if (data.position) sprite.setVPos(data.position);
+                if (data.definition) sprite.setFrame(data.definition.idString);
+            }
+        } else if (!data.dead) {
+            sprite = new SuroiSprite(data.definition?.idString)
+                .setVPos(data.position ?? Vec(0, 0))
+                .setAlpha(0);
+            tween = Game.addTween({
+                target: sprite,
+                to: { alpha: 1 },
+                duration: 250
+            });
+            this.indicatorsContainer.addChild(sprite);
+            this.indicators.set(id, { sprite, tween });
+        }
+    }
+
     reset(): void {
         this.safeZone.clear();
         this.pingGraphics.clear();
         this.pings.clear();
         this.pingsContainer.removeChildren();
+        this.indicators.clear();
+        this.indicatorsContainer.removeChildren();
         this.teammateIndicators.clear();
         this.teammateIndicatorContainer.removeChildren();
     }

@@ -1,15 +1,19 @@
 import { TeamMode } from "@common/constants";
+import { ModeName } from "@common/definitions/modes";
 import { pickRandomInArray } from "@common/utils/random";
 import Cluster, { type Worker } from "node:cluster";
 import { App, WebSocket } from "uWebSockets.js";
-import { Config } from "./utils/config";
 import { Game } from "./game";
 import { PlayerSocketData } from "./objects/player";
-import { getPunishment, forbidden, getIP, parseRole, RateLimiter, serverLog, serverWarn } from "./utils/serverHelpers";
+import { resetTeams } from "./server";
+import { Config } from "./utils/config";
+import { modeFromMap } from "./utils/misc";
+import { forbidden, getIP, getPunishment, parseRole, RateLimiter, serverLog, serverWarn, StaticOrSwitched, Switcher } from "./utils/serverHelpers";
 
 export enum WorkerMessages {
     UpdateTeamMode,
     UpdateMap,
+    UpdateMapOptions,
     NewGame
 }
 
@@ -21,6 +25,10 @@ export type WorkerMessage =
     | {
         readonly type: WorkerMessages.UpdateMap
         readonly map: string
+    }
+    | {
+        readonly type: WorkerMessages.UpdateMapOptions
+        readonly mapScaleRange: number
     }
     | {
         readonly type: WorkerMessages.NewGame
@@ -52,16 +60,20 @@ export class GameContainer {
 
     constructor(
         readonly id: number,
-        teamMode: TeamMode,
-        map: string,
+        gameManager: GameManager,
         resolve: (game: GameContainer) => void
     ) {
         this.promiseCallbacks.push(resolve);
-        this.worker = Cluster.fork({ id, teamMode, map }).on("message", (data: Partial<GameData>): void => {
+        this.worker = Cluster.fork({
+            id,
+            teamMode: gameManager.teamMode.current,
+            map: gameManager.map.current,
+            mapScaleRange: gameManager.mapScaleRange
+        }).on("message", (data: Partial<GameData>): void => {
             this._data = { ...this._data, ...data };
 
             if (data.allowJoin === true) { // This means the game was just created
-                creating = undefined;
+                gameManager.creating = undefined;
                 for (const resolve of this.promiseCallbacks) resolve(this);
                 this.promiseCallbacks.length = 0;
             }
@@ -73,62 +85,141 @@ export class GameContainer {
     }
 }
 
-export const games: Array<GameContainer | undefined> = [];
-let creating: GameContainer | undefined;
+export class GameManager {
+    readonly games: Array<GameContainer | undefined> = [];
+    creating: GameContainer | undefined;
 
-export async function findGame(teamMode: TeamMode, map: string): Promise<number | undefined> {
-    if (creating) return creating.id;
+    get playerCount(): number {
+        return this.games.filter(g => !g?.over).reduce((a, b) => (a + (b?.aliveCount ?? 0)), 0);
+    }
 
-    const eligibleGames = games.filter((g?: GameContainer): g is GameContainer =>
-        g !== undefined
-        && g.allowJoin
-        && g.aliveCount < (Config.maxPlayersPerGame ?? Infinity)
-    );
+    teamMode: Switcher<TeamMode>;
+    map: Switcher<string>;
+    mode: ModeName;
+    nextMode?: ModeName;
+    mapScaleRange = -1;
 
-    return (
-        eligibleGames.length
-            ? pickRandomInArray(eligibleGames)
-            : await newGame(undefined, teamMode, map)
-    )?.id;
-}
-
-export async function newGame(id: number | undefined, teamMode: TeamMode, map: string): Promise<GameContainer | undefined> {
-    return new Promise<GameContainer | undefined>(resolve => {
-        if (creating) {
-            creating.promiseCallbacks.push(resolve);
-        } else if (id !== undefined) {
-            serverLog(`Creating new game with ID ${id}`);
-            const game = games[id];
-            if (!game) {
-                creating = games[id] = new GameContainer(id, teamMode, map, resolve);
-            } else if (game.over) {
-                game.promiseCallbacks.push(resolve);
-                game.sendMessage({ type: WorkerMessages.NewGame });
-                creating = game;
-            } else {
-                serverWarn(`Game with ID ${id} already exists`);
-                resolve(game);
+    constructor() {
+        const stringToTeamMode = (teamMode: string): TeamMode => {
+            switch (teamMode) {
+                case "solo": default: return TeamMode.Solo;
+                case "duo": return TeamMode.Duo;
+                case "squad": return TeamMode.Squad;
             }
+        };
+
+        let teamModeSchedule: StaticOrSwitched<TeamMode>;
+        if (typeof Config.teamMode === "string") {
+            teamModeSchedule = stringToTeamMode(Config.teamMode);
         } else {
-            const maxGames = Config.maxGames;
-            for (let i = 0; i < maxGames; i++) {
-                const game = games[i];
-                serverLog(
-                    "Game", i,
-                    "exists:", !!game,
-                    "over:", game?.over ?? "-",
-                    "runtime:", game ? `${Math.round((Date.now() - (game.startedTime ?? 0)) / 1000)}s` : "-",
-                    "aliveCount:", game?.aliveCount ?? "-"
-                );
-                if (!game || game.over) {
-                    void newGame(i, teamMode, map).then(resolve);
-                    return;
-                }
-            }
-            serverWarn("Unable to create new game, no slots left");
-            resolve(undefined);
+            const { rotation, cron } = Config.teamMode;
+            teamModeSchedule = { rotation: rotation.map(t => stringToTeamMode(t)), cron };
         }
-    });
+
+        const humanReadableTeamModes = {
+            [TeamMode.Solo]: "solos",
+            [TeamMode.Duo]: "duos",
+            [TeamMode.Squad]: "squads"
+        };
+
+        this.teamMode = new Switcher("teamMode", teamModeSchedule, teamMode => {
+            for (const game of this.games) {
+                game?.sendMessage({ type: WorkerMessages.UpdateTeamMode, teamMode });
+            }
+
+            resetTeams();
+
+            serverLog(`Switching to ${humanReadableTeamModes[teamMode] ?? `team mode ${teamMode}`}`);
+        });
+
+        this.map = new Switcher("map", Config.map, (map, nextMap) => {
+            this.mode = modeFromMap(map);
+            this.nextMode = modeFromMap(nextMap);
+
+            for (const game of this.games) {
+                game?.sendMessage({ type: WorkerMessages.UpdateMap, map });
+            }
+
+            resetTeams();
+
+            serverLog(`Switching to "${map}" map`);
+        });
+
+        this.mode = modeFromMap(this.map.current);
+        this.nextMode = this.map.next ? modeFromMap(this.map.next) : undefined;
+    }
+
+    async findGame(): Promise<number | undefined> {
+        if (this.creating) return this.creating.id;
+
+        const eligibleGames = this.games.filter((g?: GameContainer): g is GameContainer =>
+            g !== undefined
+            && g.allowJoin
+            && g.aliveCount < (Config.maxPlayersPerGame ?? Infinity)
+        );
+
+        return (
+            eligibleGames.length
+                ? pickRandomInArray(eligibleGames)
+                : await this.newGame(undefined)
+        )?.id;
+    }
+
+    async newGame(id: number | undefined): Promise<GameContainer | undefined> {
+        return new Promise<GameContainer | undefined>(resolve => {
+            if (this.creating) {
+                this.creating.promiseCallbacks.push(resolve);
+            } else if (id !== undefined) {
+                serverLog(`Creating new game with ID ${id}`);
+                const game = this.games[id];
+                if (!game) {
+                    this.creating = this.games[id] = new GameContainer(id, this, resolve);
+                } else if (game.over) {
+                    game.promiseCallbacks.push(resolve);
+                    game.sendMessage({ type: WorkerMessages.NewGame });
+                    this.creating = game;
+                } else {
+                    serverWarn(`Game with ID ${id} already exists`);
+                    resolve(game);
+                }
+            } else {
+                const maxGames = Config.maxGames;
+                for (let i = 0; i < maxGames; i++) {
+                    const game = this.games[i];
+                    serverLog(
+                        "Game", i,
+                        "exists:", !!game,
+                        "over:", game?.over ?? "-",
+                        "runtime:", game ? `${Math.round((Date.now() - (game.startedTime ?? 0)) / 1000)}s` : "-",
+                        "aliveCount:", game?.aliveCount ?? "-"
+                    );
+                    if (!game || game.over) {
+                        void this.newGame(i).then(resolve);
+                        return;
+                    }
+                }
+                serverWarn("Unable to create new game, no slots left");
+                resolve(undefined);
+            }
+        });
+    }
+
+    updateMapScaleRange(): void {
+        const mapScaleRanges = Config.mapScaleRanges;
+        if (!mapScaleRanges) return;
+
+        const playerCount = this.playerCount;
+        this.mapScaleRange = -1;
+        for (let i = 0, len = mapScaleRanges.length; i < len; i++) {
+            const { minPlayers, maxPlayers } = mapScaleRanges[i];
+            if (playerCount < minPlayers || playerCount > maxPlayers) continue;
+            this.mapScaleRange = i;
+        }
+
+        for (const game of this.games) {
+            game?.sendMessage({ type: WorkerMessages.UpdateMapOptions, mapScaleRange: this.mapScaleRange });
+        }
+    }
 }
 
 if (!Cluster.isPrimary) {
@@ -136,12 +227,14 @@ if (!Cluster.isPrimary) {
         readonly id: string
         readonly teamMode: string
         readonly map: string
+        readonly mapScaleRange: string
     };
     const id = parseInt(data.id);
     let teamMode = parseInt(data.teamMode);
     let map = data.map;
+    let mapOptions = data.mapScaleRange ? Config.mapScaleRanges?.[parseInt(data.mapScaleRange)] : undefined;
 
-    let game = new Game(id, teamMode, map);
+    let game = new Game(id, teamMode, map, mapOptions);
 
     process.on("uncaughtException", e => {
         game.error("An unhandled error occurred. Details:", e);
@@ -159,9 +252,13 @@ if (!Cluster.isPrimary) {
                 game.kill();
                 break;
             }
+            case WorkerMessages.UpdateMapOptions: {
+                mapOptions = Config.mapScaleRanges?.[message.mapScaleRange];
+                break;
+            }
             case WorkerMessages.NewGame: {
                 game.kill();
-                game = new Game(id, teamMode, map);
+                game = new Game(id, teamMode, map, mapOptions);
                 game.setGameData({ allowJoin: true });
                 break;
             }

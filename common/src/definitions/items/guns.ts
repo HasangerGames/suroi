@@ -586,7 +586,100 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
             reloadTime: 3.2
         }
     },
-
+    {
+        idString: "psm",
+        name: "PSM",
+        defType: DefinitionType.Gun,
+        tier: Tier.D,
+        ammoType: "545mm",
+        ammoSpawnAmount: 24,
+        fireDelay: 200,
+        switchDelay: 250,
+        speedMultiplier: 1.136,
+        recoilMultiplier: 0.75,
+        recoilDuration: 135,
+        fireMode: FireMode.Single,
+        shotSpread: 2,
+        moveSpread: 5,
+        length: 4.8,
+        fists: {
+            left: Vec(40, 0),
+            right: Vec(40, 0),
+            leftZIndex: 4,
+            rightZIndex: 4,
+            animationDuration: 100
+        },
+        image: { position: Vec(70, 0) },
+        casingParticles: [{
+            position: Vec(3.5, 0.5)
+        }],
+        gasParticles: gasParticlePresets.pistol,
+        capacity: 8,
+        reloadTime: 2.1,
+        ballistics: {
+            damage: 17,
+            obstacleMultiplier: 1.5,
+            speed: 0.26,
+            range: 160
+        },
+        dual: {
+            tier: Tier.C,
+            ammoSpawnAmount: 48,
+            leftRightOffset: 1.3,
+            fireDelay: 168,
+            shotSpread: 2,
+            moveSpread: 5,
+            capacity: 14,
+            reloadTime: 4
+        }
+    },
+    {
+        idString: "ots23",
+        name: "OTs-23",
+        defType: DefinitionType.Gun,
+        tier: Tier.B,
+        ammoType: "545mm",
+        ammoSpawnAmount: 45,
+        fireDelay: 133,
+        switchDelay: 250,
+        speedMultiplier: 1.136,
+        recoilMultiplier: 0.75,
+        recoilDuration: 135,
+        fireMode: FireMode.Auto,
+        shotSpread: 2,
+        moveSpread: 5,
+        length: 5.1,
+        fists: {
+            left: Vec(40, 0),
+            right: Vec(40, 0),
+            leftZIndex: 4,
+            rightZIndex: 4,
+            animationDuration: 100
+        },
+        image: { position: Vec(70, 0) },
+        casingParticles: [{
+            position: Vec(3.5, 0.5)
+        }],
+        gasParticles: gasParticlePresets.pistol,
+        capacity: 15,
+        reloadTime: 2.1,
+        ballistics: {
+            damage: 10,
+            obstacleMultiplier: 1.5,
+            speed: 0.26,
+            range: 160
+        },
+        dual: {
+            tier: Tier.A,
+            ammoSpawnAmount: 90,
+            leftRightOffset: 1.4,
+            fireDelay: 67,
+            shotSpread: 2,
+            moveSpread: 5,
+            capacity: 30,
+            reloadTime: 4
+        }
+    },
     //
     // Submachine guns (SMGs)
     //
@@ -1110,6 +1203,84 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
             }
         }
     },
+    {
+        idString: "aks74u",
+        name: "AKs-74u",
+        defType: DefinitionType.Gun,
+        tier: Tier.B,
+        ammoType: "545mm",
+        ammoSpawnAmount: 90,
+        capacity: 30,
+        extendedCapacity: 40,
+        reloadTime: 2.5,
+        fireDelay: 85,
+        switchDelay: 400,
+        speedMultiplier: 1,
+        recoilMultiplier: 0.75,
+        recoilDuration: 150,
+        fireMode: FireMode.Auto,
+        shotSpread: 2,
+        moveSpread: 6,
+        length: 7.3,
+        fists: {
+            left: Vec(105, -3),
+            right: Vec(45, 0),
+            rightZIndex: 4,
+            animationDuration: 100
+        },
+        image: { position: Vec(85, 1) },
+        casingParticles: [{
+            position: Vec(4.2, 0.4)
+        }],
+        gasParticles: gasParticlePresets.automatic,
+        ballistics: {
+            damage: 10.45,
+            obstacleMultiplier: 1.5,
+            speed: 0.26,
+            range: 160
+        }
+    },
+    {
+        idString: "an94",
+        name: "AN-94",
+        defType: DefinitionType.Gun,
+        tier: Tier.A,
+        ammoType: "545mm",
+        ammoSpawnAmount: 90,
+        capacity: 45,
+        extendedCapacity: 60,
+        reloadTime: 2.5,
+        fireDelay: 50,
+        burstProperties: {
+            shotsPerBurst: 2,
+            burstCooldown: 250
+        },
+        switchDelay: 400,
+        speedMultiplier: 1,
+        recoilMultiplier: 0.75,
+        recoilDuration: 150,
+        fireMode: FireMode.Burst,
+        shotSpread: 2,
+        moveSpread: 6,
+        length: 7.8,
+        fists: {
+            left: Vec(105, -3),
+            right: Vec(45, 0),
+            rightZIndex: 4,
+            animationDuration: 100
+        },
+        image: { position: Vec(83, 1) },
+        casingParticles: [{
+            position: Vec(4.2, 0.4)
+        }],
+        gasParticles: gasParticlePresets.automatic,
+        ballistics: {
+            damage: 24,
+            obstacleMultiplier: 1.5,
+            speed: 0.32,
+            range: 160
+        }
+    },
     //
     // Light machine guns (LMGs)
     //
@@ -1140,7 +1311,6 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
         },
         image: { position: Vec(100, 3) },
         casingParticles: [{
-            frame: "casing_762x51mm",
             position: Vec(3.5, 0.6)
         }],
         gasParticles: gasParticlePresets.automatic,
@@ -1417,7 +1587,88 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
             }
         }
     },
-
+    {
+        idString: "rpk74",
+        name: "RPK-74",
+        defType: DefinitionType.Gun,
+        tier: Tier.C,
+        ammoType: "545mm",
+        ammoSpawnAmount: 150,
+        capacity: 45,
+        extendedCapacity: 60,
+        reloadTime: 3.8,
+        fireDelay: 100,
+        switchDelay: 400,
+        speedMultiplier: 0.978,
+        recoilMultiplier: 0.7,
+        recoilDuration: 175,
+        fireMode: FireMode.Auto,
+        shotSpread: 3,
+        moveSpread: 4.5,
+        length: 8.3,
+        fists: {
+            left: Vec(90, -3),
+            right: Vec(40, 0),
+            rightZIndex: 4,
+            animationDuration: 100
+        },
+        image: { position: Vec(85, 0) },
+        casingParticles: [{
+            position: Vec(3.7, 0.6)
+        }],
+        gasParticles: gasParticlePresets.automatic,
+        ballistics: {
+            damage: 14,
+            obstacleMultiplier: 2,
+            speed: 0.28,
+            range: 180,
+            tracer: {
+                width: 1.1,
+                length: 1.4
+            }
+        }
+    },
+    {
+        idString: "rpk16",
+        name: "RPK-16",
+        defType: DefinitionType.Gun,
+        tier: Tier.A,
+        ammoType: "545mm",
+        ammoSpawnAmount: 190,
+        capacity: 95,
+        extendedCapacity: 180,
+        reloadTime: 3.8,
+        fireDelay: 90,
+        switchDelay: 400,
+        speedMultiplier: 0.978,
+        recoilMultiplier: 0.7,
+        recoilDuration: 175,
+        fireMode: FireMode.Auto,
+        shotSpread: 3,
+        moveSpread: 4.5,
+        length: 8.3,
+        fists: {
+            left: Vec(110, -3),
+            right: Vec(40, 0),
+            rightZIndex: 4,
+            animationDuration: 100
+        },
+        image: { position: Vec(88, 0) },
+        casingParticles: [{
+            position: Vec(3.7, 0.6)
+        }],
+        gasParticles: gasParticlePresets.automatic,
+        ballistics: {
+            damage: 11,
+            obstacleMultiplier: 2.25,
+            speed: 0.28,
+            range: 180,
+            tracer: {
+                width: 1.1,
+                length: 1.4
+            }
+        }
+    },
     //
     // Shotguns
     //
@@ -1660,7 +1911,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
         ammoType: "12g",
         ammoSpawnAmount: 20,
         capacity: 5,
-        extendedCapacity: 10,
+        extendedCapacity: 8,
         reloadTime: 2.4,
         fireDelay: 400,
         switchDelay: 650,

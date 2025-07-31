@@ -14,6 +14,7 @@ const bulletColors: Record<string, number> = {
     "762mm": 0x80ffff,
     "50cal": 0x202020,
     "338lap": 0x408000,
+    "545mm": 0xff8847,
     "bb": 0xaaaaaa,
     "shrapnel": 0x1d1d1d
 };
@@ -25,6 +26,7 @@ const saturatedBulletColors: Record<string, number> = {
     "762mm": 0x004dff,
     "50cal": 0x545454,
     "338lap": 0x92d211,
+    "545mm": 0xff5500,
     "bb": 0xeeeeee,
     "shrapnel": 0x363636
 };

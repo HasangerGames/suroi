@@ -1,7 +1,7 @@
 import { GameConstants, ObjectCategory } from "@common/constants";
 import { DEFAULT_INVENTORY } from "@common/defaultInventory";
 import { type BadgeDefinition } from "@common/definitions/badges";
-import { type EmoteDefinition } from "@common/definitions/emotes";
+import { getBadgeIdString, isEmoteBadge, type EmoteDefinition } from "@common/definitions/emotes";
 import { Ammos } from "@common/definitions/items/ammos";
 import { HealingItems } from "@common/definitions/items/healingItems";
 import { PerkCategories, PerkIds, type PerkDefinition } from "@common/definitions/items/perks";
@@ -32,7 +32,7 @@ import { CameraManager } from "./cameraManager";
 import { MapPingWheelManager } from "./emoteWheelManager";
 import { InputManager } from "./inputManager";
 import { MapManager } from "./mapManager";
-import { ClientPerkManager } from "./perkManager";
+import { PerkManager } from "./perkManager";
 import { ScreenRecordManager } from "./screenRecordManager";
 import { SoundManager } from "./soundManager";
 
@@ -175,6 +175,8 @@ class UIManagerClass {
         minAdrenBarWrapper: $<HTMLDivElement>("#adrenaline-bar-min-wrapper"),
         minAdrenBar: $<HTMLDivElement>("#adrenaline-bar-min"),
         adrenalineBarAmount: $<HTMLSpanElement>("#adrenaline-bar-amount"),
+
+        shieldBar: $<HTMLDivElement>("#shield-bar"),
 
         killFeed: $<HTMLDivElement>("#kill-feed"),
 
@@ -516,7 +518,7 @@ class UIManagerClass {
                 : "";
 
             const badgeHTML = badge
-                ? html`<img class="badge-icon" src="./img/game/shared/badges/${badge.idString}.svg" alt="${badge.name} badge">`
+                ? html`<img class="badge-icon" src="./img/game/shared/${isEmoteBadge(badge) ? "emotes" : "badges"}/${getBadgeIdString(badge)}.svg" alt="${badge.name} badge">`
                 : "";
 
             const card = html`
@@ -602,9 +604,11 @@ class UIManagerClass {
             minMax,
             health,
             adrenaline,
+            shield,
             zoom,
             id,
             teammates,
+            highlightedPlayers,
             inventory,
             lockedSlots,
             items,
@@ -637,7 +641,7 @@ class UIManagerClass {
             if (spectating) {
                 const playerName = this.getPlayerData(id.id).name;
                 const badge = this.getPlayerData(id.id).badge;
-                const badgeText = badge ? html`<img class="badge-icon" src="./img/game/shared/badges/${badge.idString}.svg" alt="${badge.name} badge">` : "";
+                const badgeText = badge ? html`<img class="badge-icon" src="./img/game/shared/${isEmoteBadge(badge) ? "emotes" : "badges"}/${getBadgeIdString(badge)}.svg" alt="${badge.name} badge">` : "";
 
                 this.ui.gameOverOverlay.fadeOut();
                 this.ui.spectatingMsgPlayer.html(playerName + badgeText);
@@ -773,6 +777,22 @@ class UIManagerClass {
             }
         }
 
+        if (highlightedPlayers) {
+            for (const { id, normalizedHealth } of highlightedPlayers) {
+                const object = Game.objects.get(id);
+                if (!object) {
+                    console.warn(`Attempted to update health of nonexistent player with ID ${id}`);
+                    continue;
+                }
+                if (!object.isPlayer) {
+                    console.warn(`Attempted to update health of non-player object with ID ${id}`);
+                    continue;
+                }
+
+                object.updateHealthBar(normalizedHealth);
+            }
+        }
+
         if (zoom) CameraManager.zoom = zoom;
 
         const hasAdrenaline = adrenaline !== undefined;
@@ -787,6 +807,10 @@ class UIManagerClass {
             this.ui.adrenalineBarAmount
                 .text(safeRound(this.adrenaline))
                 .css("color", this.adrenaline < 7 ? "#ffffff" : "#000000");
+        }
+
+        if (shield !== undefined) {
+            this.ui.shieldBar.css("clip-path", `inset(0 ${(1 - shield) * 100}% 0 0)`);
         }
 
         if (inventory?.weapons) {
@@ -815,11 +839,10 @@ class UIManagerClass {
         }
 
         if (perks) {
-            const oldPerks = ClientPerkManager.asList();
-            ClientPerkManager.overwrite(perks);
-            const newPerks = ClientPerkManager.asList();
-            for (let i = 0; i < 3; i++) { // TODO make a constant for max perks
-                const newPerk = newPerks[i];
+            const oldPerks = Array.from(PerkManager.perks);
+            PerkManager.perks = perks;
+            for (let i = 0; i < GameConstants.player.maxPerks; i++) {
+                const newPerk = perks[i];
                 if (newPerk === undefined) {
                     this.resetPerkSlot(i);
                     continue;
@@ -864,7 +887,7 @@ class UIManagerClass {
             let showReserve = false;
             if (activeWeapon.definition.defType === DefinitionType.Gun) {
                 const ammoType = activeWeapon.definition.ammoType;
-                let totalAmmo: number | string = ClientPerkManager.hasItem(PerkIds.InfiniteAmmo)
+                let totalAmmo: number | string = PerkManager.has(PerkIds.InfiniteAmmo)
                     ? "∞"
                     : this.inventory.items[ammoType];
 
@@ -998,7 +1021,7 @@ class UIManagerClass {
                     } else {
                         let frame = definition.idString;
                         if (
-                            ClientPerkManager.hasItem(PerkIds.PlumpkinBomb)
+                            PerkManager.has(PerkIds.PlumpkinBomb)
                             && definition.defType === DefinitionType.Throwable
                             && !definition.noSkin
                         ) {
@@ -1057,17 +1080,18 @@ class UIManagerClass {
         container.off("pointerdown");
     }
 
-    private readonly _perkSlots: Array<JQuery<HTMLDivElement> | undefined> = [];
+    readonly _perkSlots: Array<JQuery<HTMLDivElement> | undefined> = [];
     private readonly _animationTimeouts: Array<number | undefined> = [];
     updatePerkSlot(perkDef: PerkDefinition, index: number): void {
-        if (index > 3) index = 0; // overwrite stuff ig?
+        if (index > GameConstants.player.maxPerks) index = 0; // overwrite stuff ig?
         // no, write a hud that can handle it
 
         const container = this._perkSlots[index] ??= $<HTMLDivElement>(`#perk-slot-${index}`);
         container.attr("data-idString", perkDef.idString);
         container.children(".item-tooltip").html(`<strong>${getTranslatedString(perkDef.idString as unknown as TranslationKeys)}</strong><br>${getTranslatedString(`${perkDef.idString}_desc` as TranslationKeys)}`);
         container.children(".item-image").attr("src", `./img/game/${perkDef.category === PerkCategories.Halloween ? "halloween" : "shared"}/perks/${perkDef.idString}.svg`);
-        container.css("visibility", ClientPerkManager.hasItem(perkDef.idString) ? "visible" : "hidden");
+        container.css("visibility", PerkManager.has(perkDef) ? "visible" : "hidden");
+        if (container.hasClass("deactivated")) container.toggleClass("deactivated");
 
         container.css("outline", !perkDef.noDrop ? "" : "none");
 
@@ -1212,7 +1236,8 @@ class UIManagerClass {
         if (id === undefined) return "";
 
         const { name, badge } = this.getPlayerData(id);
-        return `${name}${badge ? html`<img class="badge-icon" src="./img/game/shared/badges/${badge.idString}.svg" alt="${badge.name} badge">` : ""}`;
+
+        return `${name}${badge ? html`<img class="badge-icon" src="./img/game/shared/${isEmoteBadge(badge) ? "emotes" : "badges"}/${getBadgeIdString(badge)}.svg" alt="${badge.name} badge">` : ""}`;
     }
 
     processKillPacket(data: KillData): void {
@@ -1931,7 +1956,7 @@ class TeammateIndicatorUI {
             const teammate = Game.playerNames.get(id);
 
             if (teammate?.badge) {
-                const src = `./img/game/shared/badges/${teammate.badge.idString}.svg`;
+                const src = `./img/game/shared/${isEmoteBadge(teammate.badge) ? "emotes" : "badges"}/${getBadgeIdString(teammate.badge)}.svg`;
 
                 if (this.badgeImage.attr("src") !== src) {
                     this.badgeImage

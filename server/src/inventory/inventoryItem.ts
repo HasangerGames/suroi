@@ -232,7 +232,9 @@ export abstract class InventoryItemBase<Type extends WeaponTypes = WeaponTypes> 
                 adrenDrain: this._modifiers.adrenDrain !== newModifiers.adrenDrain,
 
                 baseSpeed: this._modifiers.baseSpeed !== newModifiers.baseSpeed,
-                hpRegen: this._modifiers.hpRegen !== newModifiers.hpRegen
+                hpRegen: this._modifiers.hpRegen !== newModifiers.hpRegen,
+                shieldRegen: this._modifiers.shieldRegen !== newModifiers.shieldRegen,
+                maxShield: this._modifiers.maxShield !== newModifiers.maxShield
             };
 
             if (Object.values(diff).some(v => v)) {
@@ -246,6 +248,7 @@ export abstract class InventoryItemBase<Type extends WeaponTypes = WeaponTypes> 
 
                 this._modifiers.baseSpeed = newModifiers.baseSpeed;
                 this._modifiers.hpRegen = newModifiers.hpRegen;
+                this._modifiers.shieldRegen = newModifiers.shieldRegen;
 
                 this.owner.game.pluginManager.emit(
                     "inv_item_modifiers_changed",

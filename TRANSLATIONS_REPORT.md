@@ -2,7 +2,7 @@
 
 This file is a report of all errors and missing keys in the translation files of this game.
 
-## 🇦🇱 Shqip (63% Complete) - ab.hjson
+## 🇦🇱 Shqip (61% Complete) - ab.hjson
 
 ### Invalid Keys
 
@@ -42,6 +42,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `final_gas_waiting` is not defined
 - Key `final_gas_advancing` is not defined
 - Key `action_vaccine_syringe_use` is not defined
+- Key `interact_server` is not defined
 - Key `interact_speaker` is not defined
 - Key `interact_monument` is not defined
 - Key `interact_recorder_interactable` is not defined
@@ -128,6 +129,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `engorged` is not defined
 - Key `engorged_desc` is not defined
 - Key `baby_plumpkin_pie` is not defined
+- Key `baby_plumpkin_pie_desc` is not defined
 - Key `costumed` is not defined
 - Key `costumed_desc` is not defined
 - Key `torn_pockets` is not defined
@@ -142,15 +144,22 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `infected_desc` is not defined
 - Key `immunity` is not defined
 - Key `immunity_desc` is not defined
+- Key `hollow_points` is not defined
+- Key `hollow_points_desc` is not defined
+- Key `experimental_forcefield` is not defined
+- Key `experimental_forcefield_desc` is not defined
+- Key `thermal_goggles` is not defined
+- Key `thermal_goggles_desc` is not defined
+- Key `overdrive` is not defined
+- Key `overdrive_desc` is not defined
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇧🇷 Português (Brasil) (95% Complete) - br.hjson
+## 🇧🇷 Português (Brasil) (92% Complete) - br.hjson
 
 ### Invalid Keys
 
 - Key `create_team_waiting` is not a valid key
-- Key `baby_plumpkin_pie_desc` is not a valid key
 
 ### Undefined Keys
 
@@ -164,6 +173,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_normal_joystick_info` is not defined
 - Key `settings_switched_joystick_info` is not defined
 - Key `action_vaccine_syringe_use` is not defined
+- Key `interact_server` is not defined
 - Key `interact_monument` is not defined
 - Key `interact_recorder_interactable` is not defined
 - Key `bindings_screen_record` is not defined
@@ -173,8 +183,16 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `region_oc` is not defined
 - Key `vaccine_syringe` is not defined
 - Key `vaccine_syringe_desc` is not defined
+- Key `hollow_points` is not defined
+- Key `hollow_points_desc` is not defined
+- Key `experimental_forcefield` is not defined
+- Key `experimental_forcefield_desc` is not defined
+- Key `thermal_goggles` is not defined
+- Key `thermal_goggles_desc` is not defined
+- Key `overdrive` is not defined
+- Key `overdrive_desc` is not defined
 
-## 🇨🇿 Čeština (66% Complete) - cz.hjson
+## 🇨🇿 Čeština (64% Complete) - cz.hjson
 
 ### Invalid Keys
 
@@ -216,6 +234,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `final_gas_waiting` is not defined
 - Key `final_gas_advancing` is not defined
 - Key `action_vaccine_syringe_use` is not defined
+- Key `interact_server` is not defined
 - Key `interact_speaker` is not defined
 - Key `interact_monument` is not defined
 - Key `interact_recorder_interactable` is not defined
@@ -289,6 +308,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `engorged` is not defined
 - Key `engorged_desc` is not defined
 - Key `baby_plumpkin_pie` is not defined
+- Key `baby_plumpkin_pie_desc` is not defined
 - Key `costumed` is not defined
 - Key `costumed_desc` is not defined
 - Key `torn_pockets` is not defined
@@ -303,10 +323,18 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `infected_desc` is not defined
 - Key `immunity` is not defined
 - Key `immunity_desc` is not defined
+- Key `hollow_points` is not defined
+- Key `hollow_points_desc` is not defined
+- Key `experimental_forcefield` is not defined
+- Key `experimental_forcefield_desc` is not defined
+- Key `thermal_goggles` is not defined
+- Key `thermal_goggles_desc` is not defined
+- Key `overdrive` is not defined
+- Key `overdrive_desc` is not defined
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇩🇪 Deutsch (74% Complete) - de.hjson
+## 🇩🇪 Deutsch (72% Complete) - de.hjson
 
 ### Invalid Keys
 
@@ -335,6 +363,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `final_gas_waiting` is not defined
 - Key `final_gas_advancing` is not defined
 - Key `action_vaccine_syringe_use` is not defined
+- Key `interact_server` is not defined
 - Key `interact_monument` is not defined
 - Key `interact_recorder_interactable` is not defined
 - Key `loading_fetching_data_failed` is not defined
@@ -390,6 +419,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `engorged` is not defined
 - Key `engorged_desc` is not defined
 - Key `baby_plumpkin_pie` is not defined
+- Key `baby_plumpkin_pie_desc` is not defined
 - Key `costumed` is not defined
 - Key `costumed_desc` is not defined
 - Key `torn_pockets` is not defined
@@ -404,6 +434,14 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `infected_desc` is not defined
 - Key `immunity` is not defined
 - Key `immunity_desc` is not defined
+- Key `hollow_points` is not defined
+- Key `hollow_points_desc` is not defined
+- Key `experimental_forcefield` is not defined
+- Key `experimental_forcefield_desc` is not defined
+- Key `thermal_goggles` is not defined
+- Key `thermal_goggles_desc` is not defined
+- Key `overdrive` is not defined
+- Key `overdrive_desc` is not defined
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
@@ -413,7 +451,7 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### (No Undefined Keys)
 
-## 🇪🇸 Español (70% Complete) - es.hjson
+## 🇪🇸 Español (68% Complete) - es.hjson
 
 ### Invalid Keys
 
@@ -442,6 +480,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `final_gas_waiting` is not defined
 - Key `final_gas_advancing` is not defined
 - Key `action_vaccine_syringe_use` is not defined
+- Key `interact_server` is not defined
 - Key `interact_monument` is not defined
 - Key `interact_recorder_interactable` is not defined
 - Key `loading_fetching_data_failed` is not defined
@@ -512,6 +551,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `engorged` is not defined
 - Key `engorged_desc` is not defined
 - Key `baby_plumpkin_pie` is not defined
+- Key `baby_plumpkin_pie_desc` is not defined
 - Key `costumed` is not defined
 - Key `costumed_desc` is not defined
 - Key `torn_pockets` is not defined
@@ -526,10 +566,18 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `infected_desc` is not defined
 - Key `immunity` is not defined
 - Key `immunity_desc` is not defined
+- Key `hollow_points` is not defined
+- Key `hollow_points_desc` is not defined
+- Key `experimental_forcefield` is not defined
+- Key `experimental_forcefield_desc` is not defined
+- Key `thermal_goggles` is not defined
+- Key `thermal_goggles_desc` is not defined
+- Key `overdrive` is not defined
+- Key `overdrive_desc` is not defined
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇪🇪 eesti (99% Complete) - et.hjson
+## 🇪🇪 eesti (96% Complete) - et.hjson
 
 ### Invalid Keys
 
@@ -690,13 +738,23 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### Undefined Keys
 
+- Key `interact_server` is not defined
 - Key `interact_recorder_interactable` is not defined
 - Key `kf_suicide_finished_off` is not defined
 - Key `kf_were_finally_killed` is not defined
 - Key `m16a4` is not defined
 - Key `region_ea` is not defined
+- Key `baby_plumpkin_pie_desc` is not defined
+- Key `hollow_points` is not defined
+- Key `hollow_points_desc` is not defined
+- Key `experimental_forcefield` is not defined
+- Key `experimental_forcefield_desc` is not defined
+- Key `thermal_goggles` is not defined
+- Key `thermal_goggles_desc` is not defined
+- Key `overdrive` is not defined
+- Key `overdrive_desc` is not defined
 
-## 🇫🇮 suomi (69% Complete) - fi.hjson
+## 🇫🇮 suomi (67% Complete) - fi.hjson
 
 ### Invalid Keys
 
@@ -730,6 +788,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `final_gas_waiting` is not defined
 - Key `final_gas_advancing` is not defined
 - Key `action_vaccine_syringe_use` is not defined
+- Key `interact_server` is not defined
 - Key `interact_monument` is not defined
 - Key `interact_recorder_interactable` is not defined
 - Key `loading_fetching_data_failed` is not defined
@@ -800,6 +859,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `engorged` is not defined
 - Key `engorged_desc` is not defined
 - Key `baby_plumpkin_pie` is not defined
+- Key `baby_plumpkin_pie_desc` is not defined
 - Key `costumed` is not defined
 - Key `costumed_desc` is not defined
 - Key `torn_pockets` is not defined
@@ -814,10 +874,18 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `infected_desc` is not defined
 - Key `immunity` is not defined
 - Key `immunity_desc` is not defined
+- Key `hollow_points` is not defined
+- Key `hollow_points_desc` is not defined
+- Key `experimental_forcefield` is not defined
+- Key `experimental_forcefield_desc` is not defined
+- Key `thermal_goggles` is not defined
+- Key `thermal_goggles_desc` is not defined
+- Key `overdrive` is not defined
+- Key `overdrive_desc` is not defined
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇫🇷 Français (98% Complete) - fr.hjson
+## 🇫🇷 Français (96% Complete) - fr.hjson
 
 ### Invalid Keys
 
@@ -830,13 +898,23 @@ This file is a report of all errors and missing keys in the translation files of
 ### Undefined Keys
 
 - Key `action_vaccine_syringe_use` is not defined
+- Key `interact_server` is not defined
 - Key `interact_recorder_interactable` is not defined
 - Key `tt_desc` is not defined
 - Key `region_ea` is not defined
 - Key `vaccine_syringe` is not defined
 - Key `vaccine_syringe_desc` is not defined
+- Key `baby_plumpkin_pie_desc` is not defined
+- Key `hollow_points` is not defined
+- Key `hollow_points_desc` is not defined
+- Key `experimental_forcefield` is not defined
+- Key `experimental_forcefield_desc` is not defined
+- Key `thermal_goggles` is not defined
+- Key `thermal_goggles_desc` is not defined
+- Key `overdrive` is not defined
+- Key `overdrive_desc` is not defined
 
-## 🇬🇷 Ελληνικά (84% Complete) - gr.hjson
+## 🇬🇷 Ελληνικά (82% Complete) - gr.hjson
 
 ### Invalid Keys
 
@@ -844,6 +922,7 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### Undefined Keys
 
+- Key `interact_server` is not defined
 - Key `second_wind_desc` is not defined
 - Key `flechettes` is not defined
 - Key `flechettes_desc` is not defined
@@ -886,6 +965,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `engorged` is not defined
 - Key `engorged_desc` is not defined
 - Key `baby_plumpkin_pie` is not defined
+- Key `baby_plumpkin_pie_desc` is not defined
 - Key `costumed` is not defined
 - Key `costumed_desc` is not defined
 - Key `torn_pockets` is not defined
@@ -900,10 +980,18 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `infected_desc` is not defined
 - Key `immunity` is not defined
 - Key `immunity_desc` is not defined
+- Key `hollow_points` is not defined
+- Key `hollow_points_desc` is not defined
+- Key `experimental_forcefield` is not defined
+- Key `experimental_forcefield_desc` is not defined
+- Key `thermal_goggles` is not defined
+- Key `thermal_goggles_desc` is not defined
+- Key `overdrive` is not defined
+- Key `overdrive_desc` is not defined
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇭🇰 🇲🇴 廣東話(香港/澳門) (65% Complete) - hk_mo.hjson
+## 🇭🇰 🇲🇴 廣東話(香港/澳門) (63% Complete) - hk_mo.hjson
 
 ### Invalid Keys
 
@@ -947,6 +1035,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `final_gas_waiting` is not defined
 - Key `final_gas_advancing` is not defined
 - Key `action_vaccine_syringe_use` is not defined
+- Key `interact_server` is not defined
 - Key `interact_speaker` is not defined
 - Key `interact_monument` is not defined
 - Key `interact_recorder_interactable` is not defined
@@ -1022,6 +1111,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `engorged` is not defined
 - Key `engorged_desc` is not defined
 - Key `baby_plumpkin_pie` is not defined
+- Key `baby_plumpkin_pie_desc` is not defined
 - Key `costumed` is not defined
 - Key `costumed_desc` is not defined
 - Key `torn_pockets` is not defined
@@ -1036,23 +1126,41 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `infected_desc` is not defined
 - Key `immunity` is not defined
 - Key `immunity_desc` is not defined
+- Key `hollow_points` is not defined
+- Key `hollow_points_desc` is not defined
+- Key `experimental_forcefield` is not defined
+- Key `experimental_forcefield_desc` is not defined
+- Key `thermal_goggles` is not defined
+- Key `thermal_goggles_desc` is not defined
+- Key `overdrive` is not defined
+- Key `overdrive_desc` is not defined
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇭🇺 Magyar (98% Complete) - hu.hjson
+## 🇭🇺 Magyar (96% Complete) - hu.hjson
 
 ### (No Invalid Keys)
 
 ### Undefined Keys
 
 - Key `msg_cannot_use_flare` is not defined
+- Key `interact_server` is not defined
 - Key `interact_recorder_interactable` is not defined
 - Key `kf_were_finally_killed` is not defined
 - Key `region_ea` is not defined
+- Key `baby_plumpkin_pie_desc` is not defined
+- Key `hollow_points` is not defined
+- Key `hollow_points_desc` is not defined
+- Key `experimental_forcefield` is not defined
+- Key `experimental_forcefield_desc` is not defined
+- Key `thermal_goggles` is not defined
+- Key `thermal_goggles_desc` is not defined
+- Key `overdrive` is not defined
+- Key `overdrive_desc` is not defined
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇮🇹 Italiano (63% Complete) - it.hjson
+## 🇮🇹 Italiano (61% Complete) - it.hjson
 
 ### Invalid Keys
 
@@ -1109,6 +1217,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `final_gas_waiting` is not defined
 - Key `final_gas_advancing` is not defined
 - Key `action_vaccine_syringe_use` is not defined
+- Key `interact_server` is not defined
 - Key `interact_headquarters_security_desk` is not defined
 - Key `interact_speaker` is not defined
 - Key `interact_monument` is not defined
@@ -1186,6 +1295,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `engorged` is not defined
 - Key `engorged_desc` is not defined
 - Key `baby_plumpkin_pie` is not defined
+- Key `baby_plumpkin_pie_desc` is not defined
 - Key `costumed` is not defined
 - Key `costumed_desc` is not defined
 - Key `torn_pockets` is not defined
@@ -1200,10 +1310,18 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `infected_desc` is not defined
 - Key `immunity` is not defined
 - Key `immunity_desc` is not defined
+- Key `hollow_points` is not defined
+- Key `hollow_points_desc` is not defined
+- Key `experimental_forcefield` is not defined
+- Key `experimental_forcefield_desc` is not defined
+- Key `thermal_goggles` is not defined
+- Key `thermal_goggles_desc` is not defined
+- Key `overdrive` is not defined
+- Key `overdrive_desc` is not defined
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇯🇵 日本語 (99% Complete) - jp.hjson
+## 🇯🇵 日本語 (97% Complete) - jp.hjson
 
 ### Invalid Keys
 
@@ -1461,10 +1579,20 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### Undefined Keys
 
+- Key `interact_server` is not defined
 - Key `interact_recorder_interactable` is not defined
 - Key `kf_were_finally_killed` is not defined
+- Key `baby_plumpkin_pie_desc` is not defined
+- Key `hollow_points` is not defined
+- Key `hollow_points_desc` is not defined
+- Key `experimental_forcefield` is not defined
+- Key `experimental_forcefield_desc` is not defined
+- Key `thermal_goggles` is not defined
+- Key `thermal_goggles_desc` is not defined
+- Key `overdrive` is not defined
+- Key `overdrive_desc` is not defined
 
-## 🇱🇹 Lietuvių (66% Complete) - lt.hjson
+## 🇱🇹 Lietuvių (64% Complete) - lt.hjson
 
 ### Invalid Keys
 
@@ -1506,6 +1634,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `final_gas_waiting` is not defined
 - Key `final_gas_advancing` is not defined
 - Key `action_vaccine_syringe_use` is not defined
+- Key `interact_server` is not defined
 - Key `interact_speaker` is not defined
 - Key `interact_monument` is not defined
 - Key `interact_recorder_interactable` is not defined
@@ -1579,6 +1708,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `engorged` is not defined
 - Key `engorged_desc` is not defined
 - Key `baby_plumpkin_pie` is not defined
+- Key `baby_plumpkin_pie_desc` is not defined
 - Key `costumed` is not defined
 - Key `costumed_desc` is not defined
 - Key `torn_pockets` is not defined
@@ -1593,10 +1723,18 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `infected_desc` is not defined
 - Key `immunity` is not defined
 - Key `immunity_desc` is not defined
+- Key `hollow_points` is not defined
+- Key `hollow_points_desc` is not defined
+- Key `experimental_forcefield` is not defined
+- Key `experimental_forcefield_desc` is not defined
+- Key `thermal_goggles` is not defined
+- Key `thermal_goggles_desc` is not defined
+- Key `overdrive` is not defined
+- Key `overdrive_desc` is not defined
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇱🇻 Latviešu (66% Complete) - lv.hjson
+## 🇱🇻 Latviešu (64% Complete) - lv.hjson
 
 ### Invalid Keys
 
@@ -1638,6 +1776,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `final_gas_waiting` is not defined
 - Key `final_gas_advancing` is not defined
 - Key `action_vaccine_syringe_use` is not defined
+- Key `interact_server` is not defined
 - Key `interact_speaker` is not defined
 - Key `interact_monument` is not defined
 - Key `interact_recorder_interactable` is not defined
@@ -1711,6 +1850,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `engorged` is not defined
 - Key `engorged_desc` is not defined
 - Key `baby_plumpkin_pie` is not defined
+- Key `baby_plumpkin_pie_desc` is not defined
 - Key `costumed` is not defined
 - Key `costumed_desc` is not defined
 - Key `torn_pockets` is not defined
@@ -1725,23 +1865,41 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `infected_desc` is not defined
 - Key `immunity` is not defined
 - Key `immunity_desc` is not defined
+- Key `hollow_points` is not defined
+- Key `hollow_points_desc` is not defined
+- Key `experimental_forcefield` is not defined
+- Key `experimental_forcefield_desc` is not defined
+- Key `thermal_goggles` is not defined
+- Key `thermal_goggles_desc` is not defined
+- Key `overdrive` is not defined
+- Key `overdrive_desc` is not defined
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇳🇱 Nederlands (98% Complete) - nl.hjson
+## 🇳🇱 Nederlands (96% Complete) - nl.hjson
 
 ### (No Invalid Keys)
 
 ### Undefined Keys
 
 - Key `action_vaccine_syringe_use` is not defined
+- Key `interact_server` is not defined
 - Key `interact_recorder_interactable` is not defined
 - Key `tt_desc` is not defined
 - Key `region_ea` is not defined
 - Key `vaccine_syringe` is not defined
 - Key `vaccine_syringe_desc` is not defined
+- Key `baby_plumpkin_pie_desc` is not defined
+- Key `hollow_points` is not defined
+- Key `hollow_points_desc` is not defined
+- Key `experimental_forcefield` is not defined
+- Key `experimental_forcefield_desc` is not defined
+- Key `thermal_goggles` is not defined
+- Key `thermal_goggles_desc` is not defined
+- Key `overdrive` is not defined
+- Key `overdrive_desc` is not defined
 
-## 🇵🇱 Polski (69% Complete) - pl.hjson
+## 🇵🇱 Polski (67% Complete) - pl.hjson
 
 ### Invalid Keys
 
@@ -1775,6 +1933,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `final_gas_waiting` is not defined
 - Key `final_gas_advancing` is not defined
 - Key `action_vaccine_syringe_use` is not defined
+- Key `interact_server` is not defined
 - Key `interact_monument` is not defined
 - Key `interact_recorder_interactable` is not defined
 - Key `loading_fetching_data_failed` is not defined
@@ -1845,6 +2004,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `engorged` is not defined
 - Key `engorged_desc` is not defined
 - Key `baby_plumpkin_pie` is not defined
+- Key `baby_plumpkin_pie_desc` is not defined
 - Key `costumed` is not defined
 - Key `costumed_desc` is not defined
 - Key `torn_pockets` is not defined
@@ -1859,10 +2019,18 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `infected_desc` is not defined
 - Key `immunity` is not defined
 - Key `immunity_desc` is not defined
+- Key `hollow_points` is not defined
+- Key `hollow_points_desc` is not defined
+- Key `experimental_forcefield` is not defined
+- Key `experimental_forcefield_desc` is not defined
+- Key `thermal_goggles` is not defined
+- Key `thermal_goggles_desc` is not defined
+- Key `overdrive` is not defined
+- Key `overdrive_desc` is not defined
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🎀 Cute Engwish (73% Complete) - qen.hjson
+## 🎀 Cute Engwish (71% Complete) - qen.hjson
 
 ### Invalid Keys
 
@@ -1883,6 +2051,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_switched_joystick_info` is not defined
 - Key `msg_cannot_use_flare` is not defined
 - Key `action_vaccine_syringe_use` is not defined
+- Key `interact_server` is not defined
 - Key `interact_monument` is not defined
 - Key `interact_recorder_interactable` is not defined
 - Key `bindings_explode_c4` is not defined
@@ -1951,6 +2120,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `engorged` is not defined
 - Key `engorged_desc` is not defined
 - Key `baby_plumpkin_pie` is not defined
+- Key `baby_plumpkin_pie_desc` is not defined
 - Key `costumed` is not defined
 - Key `costumed_desc` is not defined
 - Key `torn_pockets` is not defined
@@ -1965,10 +2135,18 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `infected_desc` is not defined
 - Key `immunity` is not defined
 - Key `immunity_desc` is not defined
+- Key `hollow_points` is not defined
+- Key `hollow_points_desc` is not defined
+- Key `experimental_forcefield` is not defined
+- Key `experimental_forcefield_desc` is not defined
+- Key `thermal_goggles` is not defined
+- Key `thermal_goggles_desc` is not defined
+- Key `overdrive` is not defined
+- Key `overdrive_desc` is not defined
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇷🇴 Română (98% Complete) - ro.hjson
+## 🇷🇴 Română (96% Complete) - ro.hjson
 
 ### Invalid Keys
 
@@ -1977,13 +2155,23 @@ This file is a report of all errors and missing keys in the translation files of
 ### Undefined Keys
 
 - Key `action_vaccine_syringe_use` is not defined
+- Key `interact_server` is not defined
 - Key `interact_recorder_interactable` is not defined
 - Key `tt_desc` is not defined
 - Key `region_ea` is not defined
 - Key `vaccine_syringe` is not defined
 - Key `vaccine_syringe_desc` is not defined
+- Key `baby_plumpkin_pie_desc` is not defined
+- Key `hollow_points` is not defined
+- Key `hollow_points_desc` is not defined
+- Key `experimental_forcefield` is not defined
+- Key `experimental_forcefield_desc` is not defined
+- Key `thermal_goggles` is not defined
+- Key `thermal_goggles_desc` is not defined
+- Key `overdrive` is not defined
+- Key `overdrive_desc` is not defined
 
-## 🇷🇺 Русский (98% Complete) - ru.hjson
+## 🇷🇺 Русский (95% Complete) - ru.hjson
 
 ### Invalid Keys
 
@@ -1993,14 +2181,24 @@ This file is a report of all errors and missing keys in the translation files of
 
 - Key `settings_show_inout` is not defined
 - Key `action_vaccine_syringe_use` is not defined
+- Key `interact_server` is not defined
 - Key `interact_recorder_interactable` is not defined
 - Key `tt_desc` is not defined
 - Key `m16a4` is not defined
 - Key `region_ea` is not defined
 - Key `vaccine_syringe` is not defined
 - Key `vaccine_syringe_desc` is not defined
+- Key `baby_plumpkin_pie_desc` is not defined
+- Key `hollow_points` is not defined
+- Key `hollow_points_desc` is not defined
+- Key `experimental_forcefield` is not defined
+- Key `experimental_forcefield_desc` is not defined
+- Key `thermal_goggles` is not defined
+- Key `thermal_goggles_desc` is not defined
+- Key `overdrive` is not defined
+- Key `overdrive_desc` is not defined
 
-## 🇮🇳 தமிழ் (77% Complete) - ta.hjson
+## 🇮🇳 தமிழ் (75% Complete) - ta.hjson
 
 ### Invalid Keys
 
@@ -2012,6 +2210,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_alt_texture_loading` is not defined
 - Key `msg_cannot_use_flare` is not defined
 - Key `action_vaccine_syringe_use` is not defined
+- Key `interact_server` is not defined
 - Key `interact_recorder_interactable` is not defined
 - Key `kf_suicide_finished_off` is not defined
 - Key `kf_were_finally_killed` is not defined
@@ -2076,6 +2275,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `engorged` is not defined
 - Key `engorged_desc` is not defined
 - Key `baby_plumpkin_pie` is not defined
+- Key `baby_plumpkin_pie_desc` is not defined
 - Key `costumed` is not defined
 - Key `costumed_desc` is not defined
 - Key `torn_pockets` is not defined
@@ -2090,10 +2290,18 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `infected_desc` is not defined
 - Key `immunity` is not defined
 - Key `immunity_desc` is not defined
+- Key `hollow_points` is not defined
+- Key `hollow_points_desc` is not defined
+- Key `experimental_forcefield` is not defined
+- Key `experimental_forcefield_desc` is not defined
+- Key `thermal_goggles` is not defined
+- Key `thermal_goggles_desc` is not defined
+- Key `overdrive` is not defined
+- Key `overdrive_desc` is not defined
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇹🇷 Turkısh (81% Complete) - tr.hjson
+## 🇹🇷 Turkısh (78% Complete) - tr.hjson
 
 ### Invalid Keys
 
@@ -2105,6 +2313,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_error_kicked_team` is not defined
 - Key `msg_cannot_use_flare` is not defined
 - Key `action_vaccine_syringe_use` is not defined
+- Key `interact_server` is not defined
 - Key `interact_recorder_interactable` is not defined
 - Key `kf_were_finally_killed` is not defined
 - Key `tt_desc` is not defined
@@ -2156,6 +2365,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `engorged` is not defined
 - Key `engorged_desc` is not defined
 - Key `baby_plumpkin_pie` is not defined
+- Key `baby_plumpkin_pie_desc` is not defined
 - Key `costumed` is not defined
 - Key `costumed_desc` is not defined
 - Key `torn_pockets` is not defined
@@ -2170,10 +2380,18 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `infected_desc` is not defined
 - Key `immunity` is not defined
 - Key `immunity_desc` is not defined
+- Key `hollow_points` is not defined
+- Key `hollow_points_desc` is not defined
+- Key `experimental_forcefield` is not defined
+- Key `experimental_forcefield_desc` is not defined
+- Key `thermal_goggles` is not defined
+- Key `thermal_goggles_desc` is not defined
+- Key `overdrive` is not defined
+- Key `overdrive_desc` is not defined
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇹🇼 中文（繁體） (77% Complete) - tw.hjson
+## 🇹🇼 中文（繁體） (75% Complete) - tw.hjson
 
 ### Invalid Keys
 
@@ -2185,6 +2403,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_alt_texture_loading` is not defined
 - Key `msg_cannot_use_flare` is not defined
 - Key `action_vaccine_syringe_use` is not defined
+- Key `interact_server` is not defined
 - Key `interact_recorder_interactable` is not defined
 - Key `kf_suicide_finished_off` is not defined
 - Key `kf_were_finally_killed` is not defined
@@ -2249,6 +2468,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `engorged` is not defined
 - Key `engorged_desc` is not defined
 - Key `baby_plumpkin_pie` is not defined
+- Key `baby_plumpkin_pie_desc` is not defined
 - Key `costumed` is not defined
 - Key `costumed_desc` is not defined
 - Key `torn_pockets` is not defined
@@ -2263,10 +2483,18 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `infected_desc` is not defined
 - Key `immunity` is not defined
 - Key `immunity_desc` is not defined
+- Key `hollow_points` is not defined
+- Key `hollow_points_desc` is not defined
+- Key `experimental_forcefield` is not defined
+- Key `experimental_forcefield_desc` is not defined
+- Key `thermal_goggles` is not defined
+- Key `thermal_goggles_desc` is not defined
+- Key `overdrive` is not defined
+- Key `overdrive_desc` is not defined
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇻🇳 Tiếng Việt (99% Complete) - vi.hjson
+## 🇻🇳 Tiếng Việt (96% Complete) - vi.hjson
 
 ### Invalid Keys
 
@@ -2274,11 +2502,21 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### Undefined Keys
 
+- Key `interact_server` is not defined
 - Key `interact_recorder_interactable` is not defined
 - Key `kf_were_finally_killed` is not defined
 - Key `region_ea` is not defined
+- Key `baby_plumpkin_pie_desc` is not defined
+- Key `hollow_points` is not defined
+- Key `hollow_points_desc` is not defined
+- Key `experimental_forcefield` is not defined
+- Key `experimental_forcefield_desc` is not defined
+- Key `thermal_goggles` is not defined
+- Key `thermal_goggles_desc` is not defined
+- Key `overdrive` is not defined
+- Key `overdrive_desc` is not defined
 
-## 🇨🇳 中文（简体） (99% Complete) - zh.hjson
+## 🇨🇳 中文（简体） (97% Complete) - zh.hjson
 
 ### Invalid Keys
 
@@ -2529,10 +2767,18 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `special_weapon_preset_title` is not a valid key
 - Key `time_minute` is not a valid key
 - Key `time_second` is not a valid key
-- Key `baby_plumpkin_pie_desc` is not a valid key
 
 ### Undefined Keys
 
+- Key `interact_server` is not defined
 - Key `interact_recorder_interactable` is not defined
 - Key `m16a4` is not defined
+- Key `hollow_points` is not defined
+- Key `hollow_points_desc` is not defined
+- Key `experimental_forcefield` is not defined
+- Key `experimental_forcefield_desc` is not defined
+- Key `thermal_goggles` is not defined
+- Key `thermal_goggles_desc` is not defined
+- Key `overdrive` is not defined
+- Key `overdrive_desc` is not defined
 

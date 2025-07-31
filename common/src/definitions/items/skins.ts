@@ -130,7 +130,8 @@ export const Skins = new ObjectDefinitions<SkinDefinition>([
         ["One at NSD",            undefined, undefined, 0x27331a],
         ["Sky",                   undefined, undefined, 0x002121],
         ["Diseased",              undefined, undefined, 0x2d1f1f],
-        ["Deer Season",           undefined, 0xf8651e,  0x9a3604]
+        ["Deer Season",           undefined, 0xf8651e,  0x9a3604],
+        ["LOBOTOMY",              undefined, undefined, 0x00ff00]
     ] satisfies ReadonlyArray<readonly [string, number?, number?, number?]>)
         .map(([name, baseTint, fistsTint, backpackTint]) => ({ ...skin(name, baseTint, fistsTint, backpackTint), hideFromLoadout: true })),
 

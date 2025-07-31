@@ -6,6 +6,8 @@ import { Vec, type Vector } from "@common/utils/vector";
 import { Config } from "./utils/config";
 import { GasStage, GasStages } from "./data/gasStages";
 import { type Game } from "./game";
+import { MapPing, MapPings } from "@common/definitions/mapPings";
+import { runOrWait } from "./utils/misc";
 
 export class Gas {
     stage = 0;
@@ -91,6 +93,38 @@ export class Gas {
         this.completionRatio = 1;
         this.countdownStart = this.game.now;
         this.finalStage = currentStage.finalStage ?? false;
+
+        // Hunted Mode: Bunker doors
+        if (this.game.mode.unlockStage !== undefined && this.stage === this.game.mode.unlockStage) {
+            const doors = this.game.unlockableDoors;
+            for (let i = 0, len = doors.length; i < len; i++) {
+                const obstacle = doors[i];
+                runOrWait(this.game, () => {
+                    if (obstacle.door !== undefined) {
+                        obstacle.door.locked = false;
+                        obstacle.interact();
+                    }
+
+                    this.game.mapPings.push({
+                        definition: MapPings.fromString<MapPing>("unlock_ping"),
+                        position: obstacle.position
+                    });
+                }, i * 250);
+            }
+        }
+
+        if (this.game.mode.forcedGoldAirdropStage !== undefined && this.stage === this.game.mode.forcedGoldAirdropStage) {
+            this.game.summonAirdrop(
+                this.game.map.getRandomPosition(
+                    new CircleHitbox(15),
+                    {
+                        maxAttempts: 500,
+                        spawnMode: MapObjectSpawnMode.GrassAndSand,
+                        collides: position => Geometry.distanceSquared(position, this.currentPosition) >= this.newRadius ** 2
+                    }
+                ) ?? this.newPosition, true
+            );
+        }
 
         if (currentStage.state === GasState.Waiting) {
             this.oldPosition = Vec.clone(this.newPosition);

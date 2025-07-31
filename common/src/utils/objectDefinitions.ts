@@ -99,6 +99,7 @@ export enum DefinitionType {
     Gun,
     HealingItem,
     MapPing,
+    MapIndicator,
     Melee,
     Obstacle,
     Perk,
@@ -141,6 +142,7 @@ export interface ItemDefinition extends ObjectDefinition {
     readonly noSwap?: boolean
     readonly devItem?: boolean
     readonly reskins?: ModeName[]
+    readonly mapIndicator?: string
 }
 
 export interface InventoryItemDefinition extends ItemDefinition {

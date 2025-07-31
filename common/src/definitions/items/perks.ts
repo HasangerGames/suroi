@@ -31,7 +31,8 @@ export type PerkDefinition = LoosenNumerics<typeof perks[number]> & BasePerkDefi
 
 export const enum PerkCategories {
     Normal,
-    Halloween
+    Halloween,
+    Hunted
 }
 
 export const enum PerkQualities {
@@ -81,7 +82,13 @@ export const enum PerkIds {
     // Infection
     //
     Infected = "infected",
-    Immunity = "immunity"
+    Immunity = "immunity",
+
+    // H.U.N.T.E.D.
+    HollowPoints = "hollow_points",
+    ExperimentalForcefield = "experimental_forcefield",
+    ThermalGoggles = "thermal_goggles",
+    Overdrive = "overdrive"
 }
 
 const perks = [
@@ -452,6 +459,58 @@ const perks = [
         duration: 15000,
         noDrop: true,
         plumpkinGambleIgnore: true
+    },
+    {
+        idString: PerkIds.HollowPoints,
+        name: "Hollow Points",
+        defType: DefinitionType.Perk,
+        category: PerkCategories.Hunted,
+        damageMod: 1.1,
+        soundMod: 75,
+        noDrop: true
+    },
+    {
+        idString: PerkIds.ExperimentalForcefield,
+        name: "Experimental Forcefield",
+        defType: DefinitionType.Perk,
+        category: PerkCategories.Hunted,
+        noDrop: true,
+        shieldRegenRate: 1,
+        shieldRespawnTime: 20e3, // seconds
+
+        shieldObtainSound: "shield_obtained",
+        shieldDestroySound: "shield_destroyed",
+        shieldHitSound: "glass", // "_hit_1/2" is added by the client
+        shieldParticle: "window_particle"
+    },
+    {
+        idString: PerkIds.ThermalGoggles,
+        name: "Thermal Goggles",
+        defType: DefinitionType.Perk,
+        category: PerkCategories.Hunted,
+        noDrop: true,
+        updateInterval: 0,
+        detectionRadius: 100
+    },
+    {
+        idString: PerkIds.Overdrive,
+        name: "Overdrive",
+        defType: DefinitionType.Perk,
+        category: PerkCategories.Hunted,
+        quality: PerkQualities.Negative,
+        plumpkinGambleIgnore: true,
+        noDrop: true,
+
+        particle: "charged_particle",
+        activatedSound: "overdrive",
+        requiredKills: 2, // its actually 3 i know but code works with 2 (it takes it as 3)
+        speedMod: 1.25,
+        speedBoostDuration: 10e3, // msec
+        sizeMod: 1.05,
+        healBonus: 25,
+        adrenalineBonus: 25,
+        achieveTime: 30e3, // msec
+        cooldown: 20e3 // msec
     }
 ] as const satisfies ReadonlyArray<BasePerkDefinition & Record<string, unknown>>;
 

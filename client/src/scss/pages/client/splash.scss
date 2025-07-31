@@ -962,6 +962,13 @@
     animation: mode-infection-color 4s linear infinite;
 }
 
+.event-hunted {
+    background-color: #0b521d;
+    border-bottom: 2px solid #073613;
+    box-shadow: inset 0 -2px #0b521d;
+    animation: mode-hunted-color 4s linear infinite;
+}
+
 @keyframes mode-winter-color {
     0% {
         background-color: #dcdcdc;
@@ -1032,5 +1039,23 @@
         background-color: hsl(310, 35%, 50%);
         border-bottom: 2px solid hsl(310, 35%, 40%);
         box-shadow: inset 0 -2px hsl(315, 35%, 40%);
+    }
+}
+
+@keyframes mode-hunted-color {
+    0% {
+        background-color: #0b521d;
+        border-bottom: 2px solid #073613;
+        box-shadow: inset 0 -2px #0b521d;
+    }
+    50% {
+        background-color: #083d15;
+        border-bottom: 2px solid #062d10;
+        box-shadow: inset 0 -2px #083d15;
+    }
+    100% {
+        background-color: #0b521d;
+        border-bottom: 2px solid #073613;
+        box-shadow: inset 0 -2px #0b521d;
     }
 }

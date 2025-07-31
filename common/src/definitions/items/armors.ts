@@ -1,9 +1,13 @@
-import { DefinitionType, ObjectDefinitions, type ItemDefinition } from "../../utils/objectDefinitions";
+import { DefinitionType, ObjectDefinitions, ReferenceTo, type ItemDefinition } from "../../utils/objectDefinitions";
+import { PerkDefinition, PerkIds } from "./perks";
 
 export type ArmorDefinition = ItemDefinition & {
     readonly defType: DefinitionType.Armor
     readonly level: number
     readonly damageReduction: number
+    readonly perk?: ReferenceTo<PerkDefinition>
+    readonly positionOverride?: number
+    readonly positionOverrideDowned?: number
 } & (
     | {
         readonly armorType: ArmorType.Helmet
@@ -11,6 +15,7 @@ export type ArmorDefinition = ItemDefinition & {
     | {
         readonly armorType: ArmorType.Vest
         readonly color: number
+        readonly worldImage?: string
     }
 );
 
@@ -47,6 +52,18 @@ export const Armors = new ObjectDefinitions<ArmorDefinition>([
         level: 3,
         damageReduction: 0.2
     },
+    {
+        idString: "power_helmet",
+        name: "NTK-11 Halycon",
+        defType: DefinitionType.Armor,
+        armorType: ArmorType.Helmet,
+        level: 4,
+        damageReduction: 0.25,
+        positionOverride: 0,
+        positionOverrideDowned: 0,
+        perk: PerkIds.ThermalGoggles,
+        mapIndicator: "helmet_indicator"
+    },
 
     //
     // Vests
@@ -77,6 +94,18 @@ export const Armors = new ObjectDefinitions<ArmorDefinition>([
         level: 3,
         damageReduction: 0.45,
         color: 0x0d0d0d
+    },
+    {
+        idString: "power_vest",
+        name: "ERV-3 Core",
+        defType: DefinitionType.Armor,
+        armorType: ArmorType.Vest,
+        level: 4,
+        damageReduction: 0.35,
+        color: 0xffffff,
+        worldImage: "power_vest_world",
+        perk: PerkIds.ExperimentalForcefield,
+        mapIndicator: "vest_indicator"
     },
     {
         idString: "developr_vest",

@@ -2,7 +2,7 @@ import { GameConstants, Layer, MapObjectSpawnMode, ObjectCategory, TeamMode } fr
 import { Bullets, type BulletDefinition } from "@common/definitions/bullets";
 import { type ExplosionDefinition } from "@common/definitions/explosions";
 import type { SingleGunNarrowing } from "@common/definitions/items/guns";
-import { PerkData, PerkIds, Perks } from "@common/definitions/items/perks";
+import { PerkData, PerkIds } from "@common/definitions/items/perks";
 import { Loots, type LootDefinition } from "@common/definitions/loots";
 import { MapPings, type MapPing } from "@common/definitions/mapPings";
 import { ModeDefinition, ModeName, Modes } from "@common/definitions/modes";
@@ -12,7 +12,7 @@ import { type JoinData } from "@common/packets/joinPacket";
 import { JoinedPacket } from "@common/packets/joinedPacket";
 import { PacketDataIn, PacketType } from "@common/packets/packet";
 import { PacketStream } from "@common/packets/packetStream";
-import { type PingSerialization } from "@common/packets/updatePacket";
+import { MapIndicatorSerialization, type PingSerialization } from "@common/packets/updatePacket";
 import { CircleHitbox, type Hitbox } from "@common/utils/hitbox";
 import { ColorStyles, Logger, styleText } from "@common/utils/logging";
 import { Angle, Geometry, Numeric, Statistics } from "@common/utils/math";
@@ -31,13 +31,14 @@ import { Gas } from "./gas";
 import { GunItem } from "./inventory/gunItem";
 import type { MeleeItem } from "./inventory/meleeItem";
 import { ThrowableItem } from "./inventory/throwableItem";
-import { GameMap } from "./map";
+import { GameMap, MapOptions } from "./map";
 import { Bullet, type DamageRecord, type ServerBulletOptions } from "./objects/bullet";
 import { Decal } from "./objects/decal";
 import { type Emote } from "./objects/emote";
 import { Explosion } from "./objects/explosion";
 import { type BaseGameObject, type GameObject } from "./objects/gameObject";
 import { Loot, type ItemData } from "./objects/loot";
+import { Obstacle } from "./objects/obstacle";
 import { Parachute } from "./objects/parachute";
 import { Player, type PlayerSocketData } from "./objects/player";
 import { Projectile, ProjectileParams } from "./objects/projectile";
@@ -125,6 +126,7 @@ export class Game implements GameData {
 
     readonly explosions: Explosion[] = [];
     readonly emotes: Emote[] = [];
+    readonly unlockableDoors: Obstacle[] = [];
 
     /**
      * All bullets that currently exist
@@ -152,6 +154,11 @@ export class Game implements GameData {
      * All map pings this tick
      */
     readonly mapPings: PingSerialization[] = [];
+
+    readonly mapIndicatorIDAllocator = new IDAllocator(8);
+    get nextMapIndicatorID(): number { return this.mapIndicatorIDAllocator.takeNext(); }
+
+    readonly mapIndicators: MapIndicatorSerialization[] = [];
 
     killLeader: Player | undefined;
     killLeaderDirty = false;
@@ -195,13 +202,16 @@ export class Game implements GameData {
 
     // #endregion
 
-    startTimeout?: Timeout;
-
     /**
      * The value of `Date.now()`, as of the start of the tick.
      */
     private _now = Date.now();
     get now(): number { return this._now; }
+
+    startTimeout?: Timeout;
+
+    private readonly _start = this._now;
+    get start(): number { return this._start; }
 
     private readonly idealDt = 1000 / (Config.tps ?? GameConstants.tps);
 
@@ -215,9 +225,6 @@ export class Game implements GameData {
 
     private readonly _idAllocator = new IDAllocator(16);
 
-    private readonly _start = this._now;
-    get start(): number { return this._start; }
-
     /**
      * **Warning**: This is a getter _with side effects_! Make
      * sure to either use the id returned by this getter or
@@ -227,7 +234,7 @@ export class Game implements GameData {
         return this._idAllocator.takeNext();
     }
 
-    constructor(id: number, teamMode: TeamMode, map: string) {
+    constructor(id: number, teamMode: TeamMode, map: string, mapOptions: MapOptions = {}) {
         this.id = id;
         this.teamMode = teamMode;
         this.isTeamMode = this.teamMode > TeamMode.Solo;
@@ -244,7 +251,7 @@ export class Game implements GameData {
 
         const { width, height } = Maps[map.split(":")[0] as MapName];
         this.grid = new Grid(this, width, height);
-        this.map = new GameMap(this, map);
+        this.map = new GameMap(this, map, mapOptions);
         this.gas = new Gas(this);
 
         this.pluginManager.emit("game_created", this);
@@ -400,12 +407,12 @@ export class Game implements GameData {
             }
 
             if (object.isPlayer && removePerk) {
-                object.perks.removeItem(Perks.fromString(removePerk));
+                object.removePerk(removePerk);
                 if (removePerk === PerkIds.Infected) { // evil
                     const immunity = PerkData[PerkIds.Immunity];
-                    object.perks.addItem(immunity);
+                    object.addPerk(immunity);
                     object.immunityTimeout?.kill();
-                    object.immunityTimeout = this.addTimeout(() => object.perks.removeItem(immunity), immunity.duration);
+                    object.immunityTimeout = this.addTimeout(() => object.removePerk(immunity), immunity.duration);
                     object.setDirty();
                 }
             }
@@ -441,6 +448,16 @@ export class Game implements GameData {
         // Third loop over players: clean up after all packets have been sent
         for (const player of this.connectedPlayers) {
             player.postPacket();
+        }
+
+        for (const indicator of this.mapIndicators) {
+            if (indicator.dead) {
+                this.mapIndicatorIDAllocator.give(indicator.id);
+                removeFrom(this.mapIndicators, indicator);
+                continue;
+            }
+            indicator.positionDirty = false;
+            indicator.definitionDirty = false;
         }
 
         // Reset everything
@@ -960,6 +977,7 @@ export class Game implements GameData {
 
     removeLoot(loot: Loot): void {
         loot.dead = true;
+        if (loot.mapIndicator) loot.mapIndicator.dead = true;
         this.removeObject(loot);
     }
 
@@ -1088,12 +1106,12 @@ export class Game implements GameData {
         this.updateObjects = true;
     }
 
-    summonAirdrop(position: Vector): void {
+    summonAirdrop(position: Vector, forceGold = false): void {
         if (this.pluginManager.emit("airdrop_will_summon", { position })) return;
 
         const paddingFactor = 1.25;
 
-        const crateDef = Obstacles.fromString("airdrop_crate_locked");
+        const crateDef = Obstacles.fromString(`airdrop_crate_locked${forceGold ? "_force" : ""}`);
         const crateHitbox = (crateDef.spawnHitbox ?? crateDef.hitbox).clone();
         let thisHitbox = crateHitbox.clone();
 

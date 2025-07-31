@@ -15,6 +15,8 @@ Loot:
   Level 3 Helmet (Loot Image): Slapdap, modified by Skullboi249 and hasanger
   Level 3 Helmet (World Image): Slapdap, modified by Leia, Skullboi249 and hasanger
 
+  Power Armor/Level 4 Armor (Helmet Images, Backpack Images, Vest Loot Image): hugh jass
+
   1x, 2x, 4x, 8x, 16x Scopes: Winter
 
   Tablets: jchen
@@ -297,6 +299,7 @@ Melees:
   HE-AP Sword: Radians
   K-bar: Radians
   Maul: Radians
+  Pipe Wrench: sovietnuclearfridgebomb
 
 
 Obstacles:
@@ -355,6 +358,15 @@ Buildings:
   Barn: platonthek
   Tents: Emeraldneo
   Breached Dam: Emeraldneo
+  Hollow Log: SquareCube
+  Tavern: TimoPro
+  (Hunted Mode) Warehouse: TimoPro
+  Sawmill: TimoPro
+  Hunted Mode Small Bridge Variant/Recolor: SquareCube
+  Carport: TimoPro
+  Shooting Range: TimoPro
+  Docks: TimoPro
+  Hunting Stand: TimoPro
 
 Emotes:
   Primary Artists: EndermanKing, Slapdap, Tofi38
@@ -369,3 +381,10 @@ Other:
   A.E.G.I.S. Logo: Katloo
   Flint Logo: Katloo
   Tap Icon - "One Finger Tap Gesture Of Outlined Hand Symbol" from OnlineWebFonts: https://www.onlinewebfonts.com/icon/57341
+
+Perk Icons
+- All harvest, halloween perk icons: Winter
+- Experimental Forcefield: Skullboi249
+- Hollow Points: Skullboi249
+- Thermal Goggles: Skullboi249
+- Overdrive: AnnihilatingFox

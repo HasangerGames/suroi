@@ -9,7 +9,7 @@ import { type ObjectsNetData } from "@common/utils/objectsSerializations";
 import { type Vector } from "@common/utils/vector";
 import { GameConsole } from "../console/gameConsole";
 import { Game } from "../game";
-import { ClientPerkManager } from "../managers/perkManager";
+import { PerkManager } from "../managers/perkManager";
 import { UIManager } from "../managers/uiManager";
 import { DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS } from "../utils/constants";
 import { DebugRenderer } from "../utils/debugRenderer";
@@ -265,7 +265,7 @@ export class Loot extends GameObject.derive(ObjectCategory.Loot) {
                 return true;
             }
             case DefinitionType.Perk: {
-                return !ClientPerkManager.asList()[0]?.noSwap && !ClientPerkManager.hasItem(definition);
+                return !PerkManager.perks[0]?.noSwap && !PerkManager.has(definition);
             }
         }
     }

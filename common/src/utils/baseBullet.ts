@@ -115,10 +115,13 @@ export interface BulletOptions {
     }
     readonly saturate?: boolean
     readonly thin?: boolean
+    readonly split?: boolean
     readonly sourceID: number
     readonly reflectionCount?: number
     readonly variance?: number
     readonly rangeOverride?: number
+    readonly shotFX?: boolean
+    readonly lastShot?: boolean
 }
 
 type GameObject = {
@@ -156,6 +159,10 @@ export class BaseBullet {
 
     readonly reflectionCount: number;
 
+    shotFX = false;
+
+    lastShot = false;
+
     readonly sourceID: number;
 
     readonly collidedIDs = new Set<number>();
@@ -172,6 +179,7 @@ export class BaseBullet {
 
     readonly saturate: boolean;
     readonly thin: boolean;
+    readonly split: boolean;
 
     constructor(options: BulletOptions) {
         this.initialPosition = Vec.clone(options.position);
@@ -208,6 +216,11 @@ export class BaseBullet {
 
         this.saturate = options.saturate ?? false;
         this.thin = options.thin ?? false;
+        this.split = options.split ?? false;
+
+        this.shotFX = options.shotFX ?? false;
+
+        this.lastShot = options.lastShot ?? false;
     }
 
     /**
@@ -348,7 +361,7 @@ export class BaseBullet {
         const traceWidthMod = width !== undefined;
         const traceLengthMod = length !== undefined;
 
-        stream.writeBooleanGroup(
+        stream.writeBooleanGroup2(
             hasMods,
             speedMod,
             rangeMod,
@@ -356,7 +369,10 @@ export class BaseBullet {
             traceWidthMod,
             traceLengthMod,
             this.saturate,
-            this.thin
+            this.thin,
+            this.split,
+            this.shotFX,
+            this.lastShot
         );
 
         if (hasMods) {
@@ -409,8 +425,11 @@ export class BaseBullet {
             traceWidthMod,
             traceLengthMod,
             saturate,
-            thin
-        ] = stream.readBooleanGroup();
+            thin,
+            split,
+            shotFX,
+            lastShot
+        ] = stream.readBooleanGroup2();
 
         const modifiers = hasMods
             ? {
@@ -445,7 +464,10 @@ export class BaseBullet {
             rangeOverride,
             modifiers,
             saturate,
-            thin
+            thin,
+            split,
+            shotFX,
+            lastShot
         };
     }
 }

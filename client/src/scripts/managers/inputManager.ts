@@ -221,6 +221,7 @@ class InputManagerClass {
                 item = inventory.weapons[action.slot] as unknown as WeaponDefinition;
             }
 
+            // TODO always play sound, detect this elsewhere so the input action is never sent
             let playSound = !item.noDrop;
 
             if (playSound) {
@@ -235,10 +236,8 @@ class InputManagerClass {
                     case DefinitionType.Gun:
                     case DefinitionType.Melee:
                     case DefinitionType.Skin:
-                        playSound = true; // probably fine…?
-                        break;
                     case DefinitionType.Backpack:
-                        playSound = false; // womp womp
+                        playSound = true;
                         break;
                 }
             }

@@ -2,12 +2,15 @@ import { DefinitionType, ObjectDefinitions, type ItemDefinition, type ReferenceT
 import { type HealingItemDefinition } from "./healingItems";
 import { type AmmoDefinition } from "./ammos";
 import { type ThrowableDefinition } from "./throwables";
+import { PerkDefinition, PerkIds } from "./perks";
 
 export interface BackpackDefinition extends ItemDefinition {
     readonly defType: DefinitionType.Backpack
     readonly level: number
     readonly defaultTint?: number
     readonly maxCapacity: Record<ReferenceTo<HealingItemDefinition | AmmoDefinition | ThrowableDefinition>, number>
+    readonly perk?: ReferenceTo<PerkDefinition>
+    readonly noTint?: boolean
 }
 
 export const Backpacks = new ObjectDefinitions<BackpackDefinition>([
@@ -28,6 +31,7 @@ export const Backpacks = new ObjectDefinitions<BackpackDefinition>([
             "9mm": 120,
             "50cal": 40,
             "338lap": 18,
+            "545mm": 90,
             "power_cell": Infinity,
             "flare": 1,
             "firework_rocket": 10,
@@ -55,6 +59,7 @@ export const Backpacks = new ObjectDefinitions<BackpackDefinition>([
             "9mm": 240,
             "50cal": 60,
             "338lap": 24,
+            "545mm": 180,
             "power_cell": Infinity,
             "flare": 2,
             "firework_rocket": 20,
@@ -82,6 +87,7 @@ export const Backpacks = new ObjectDefinitions<BackpackDefinition>([
             "9mm": 330,
             "50cal": 80,
             "338lap": 30,
+            "545mm": 240,
             "power_cell": Infinity,
             "flare": 3,
             "firework_rocket": 30,
@@ -109,6 +115,7 @@ export const Backpacks = new ObjectDefinitions<BackpackDefinition>([
             "9mm": 420,
             "50cal": 100,
             "338lap": 42,
+            "545mm": 300,
             "power_cell": Infinity,
             "flare": 4,
             "firework_rocket": 40,
@@ -118,5 +125,35 @@ export const Backpacks = new ObjectDefinitions<BackpackDefinition>([
             "confetti_grenade": 16
         },
         defaultTint: 0x3f3f3f
+    },
+    {
+        idString: "power_pack",
+        name: "AMP-4 Mule",
+        defType: DefinitionType.Backpack,
+        level: 4,
+        maxCapacity: {
+            "gauze": 30,
+            "medikit": 4,
+            "vaccine_syringe": 4,
+            "cola": 15,
+            "tablets": 4,
+            "12g": 90,
+            "556mm": 300,
+            "762mm": 300,
+            "9mm": 420,
+            "50cal": 100,
+            "338lap": 42,
+            "545mm": 300,
+            "power_cell": Infinity,
+            "flare": 4,
+            "firework_rocket": 40,
+            "frag_grenade": 12,
+            "smoke_grenade": 12,
+            "c4": 8,
+            "confetti_grenade": 16
+        },
+        noTint: true,
+        perk: PerkIds.HollowPoints,
+        mapIndicator: "pack_indicator"
     }
 ]);

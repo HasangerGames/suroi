@@ -1,30 +1,44 @@
 import { GameConstants, TeamMode } from "@common/constants";
 import { Badges } from "@common/definitions/badges";
 import { Skins } from "@common/definitions/items/skins";
-import { ModeName } from "@common/definitions/modes";
 import { CustomTeamMessage, PunishmentMessage } from "@common/typings";
 import Cluster from "node:cluster";
 import { URLSearchParams } from "node:url";
 import os from "os";
 import { App, WebSocket } from "uWebSockets.js";
 import { version } from "../../package.json";
-import { findGame, games, newGame, WorkerMessages } from "./gameManager";
+import { GameManager } from "./gameManager";
 import { CustomTeam, CustomTeamPlayer, CustomTeamPlayerContainer } from "./team";
 import { Config } from "./utils/config";
-import { cleanUsername, modeFromMap } from "./utils/misc";
-import { forbidden, getIP, getPunishment, parseRole, RateLimiter, serverError, serverLog, StaticOrSwitched, Switcher, textDecoder, writeCorsHeaders } from "./utils/serverHelpers";
+import { cleanUsername } from "./utils/misc";
+import { forbidden, getIP, getPunishment, parseRole, RateLimiter, serverError, serverLog, textDecoder, writeCorsHeaders } from "./utils/serverHelpers";
+
+let customTeams: Map<string, CustomTeam> | undefined;
+let teamsCreated: RateLimiter | undefined;
+
+export function resetTeams(): void {
+    if (!customTeams) return;
+
+    for (const team of customTeams.values()) {
+        for (const player of team.players) player.socket?.close();
+    }
+    customTeams.clear();
+    teamsCreated?.reset();
+}
 
 if (Cluster.isPrimary && require.main === module) {
     //                   ^^^^^^^^^^^^^^^^^^^^^^^ only starts server if called directly from command line (not imported)
 
     process.on("uncaughtException", e => serverError("An unhandled error occurred. Details:", e));
 
+    const gameManager = new GameManager();
+
     let exiting = false;
     const exit = (): void => {
         if (exiting) return;
         exiting = true;
         serverLog("Shutting down...");
-        for (const game of games) {
+        for (const game of gameManager.games) {
             game?.worker.kill();
         }
         process.exit();
@@ -46,70 +60,15 @@ if (Cluster.isPrimary && require.main === module) {
         }
 
         serverLog(perfString);
+
+        gameManager.updateMapScaleRange();
     }, 60000);
 
-    const teamsCreated = Config.maxCustomTeams
+    customTeams = new Map<string, CustomTeam>();
+
+    teamsCreated = Config.maxCustomTeams
         ? new RateLimiter(Config.maxCustomTeams)
         : undefined;
-
-    const customTeams: Map<string, CustomTeam> = new Map<string, CustomTeam>();
-
-    const resetTeams = (): void => {
-        for (const team of customTeams.values()) {
-            for (const player of team.players) player.socket?.close();
-        }
-        customTeams.clear();
-        teamsCreated?.reset();
-    };
-
-    const stringToTeamMode = (teamMode: string): TeamMode => {
-        switch (teamMode) {
-            case "solo": default: return TeamMode.Solo;
-            case "duo": return TeamMode.Duo;
-            case "squad": return TeamMode.Squad;
-        }
-    };
-
-    let teamModeSchedule: StaticOrSwitched<TeamMode>;
-    if (typeof Config.teamMode === "string") {
-        teamModeSchedule = stringToTeamMode(Config.teamMode);
-    } else {
-        const { rotation, cron } = Config.teamMode;
-        teamModeSchedule = { rotation: rotation.map(t => stringToTeamMode(t)), cron };
-    }
-
-    const humanReadableTeamModes = {
-        [TeamMode.Solo]: "solos",
-        [TeamMode.Duo]: "duos",
-        [TeamMode.Squad]: "squads"
-    };
-
-    const teamMode = new Switcher("teamMode", teamModeSchedule, teamMode => {
-        for (const game of games) {
-            game?.sendMessage({ type: WorkerMessages.UpdateTeamMode, teamMode });
-        }
-
-        resetTeams();
-
-        serverLog(`Switching to ${humanReadableTeamModes[teamMode] ?? `team mode ${teamMode}`}`);
-    });
-
-    let mode: ModeName;
-    let nextMode: ModeName | undefined;
-    const map = new Switcher("map", Config.map, (map, nextMap) => {
-        mode = modeFromMap(map);
-        nextMode = modeFromMap(nextMap);
-
-        for (const game of games) {
-            game?.sendMessage({ type: WorkerMessages.UpdateMap, map });
-        }
-
-        resetTeams();
-
-        serverLog(`Switching to "${map}" map`);
-    });
-    mode = modeFromMap(map.current);
-    nextMode = map.next ? modeFromMap(map.next) : undefined;
 
     const app = App();
 
@@ -124,11 +83,13 @@ if (Cluster.isPrimary && require.main === module) {
 
         if (aborted) return;
 
+        const { playerCount, teamMode, map, mode, nextMode } = gameManager;
+
         res.cork(() => {
             writeCorsHeaders(res);
             res.writeHeader("Content-Type", "application/json").end(JSON.stringify({
                 protocolVersion: GameConstants.protocolVersion,
-                playerCount: games.filter(g => !g?.over).reduce((a, b) => (a + (b?.aliveCount ?? 0)), 0),
+                playerCount,
                 teamMode: teamMode.current,
                 nextTeamMode: teamMode.next,
                 teamModeSwitchTime: teamMode.nextSwitch ? teamMode.nextSwitch - Date.now() : undefined,
@@ -145,11 +106,11 @@ if (Cluster.isPrimary && require.main === module) {
         res.onAborted(() => aborted = true);
 
         let gameID: number | undefined;
-        const teamID = teamMode.current !== TeamMode.Solo && new URLSearchParams(req.getQuery()).get("teamID");
+        const teamID = gameManager.teamMode.current !== TeamMode.Solo && new URLSearchParams(req.getQuery()).get("teamID");
         if (teamID) {
-            gameID = customTeams.get(teamID)?.gameID;
+            gameID = customTeams?.get(teamID)?.gameID;
         } else {
-            gameID = await findGame(teamMode.current, map.current);
+            gameID = await gameManager.findGame();
         }
 
         if (aborted) return;
@@ -158,7 +119,7 @@ if (Cluster.isPrimary && require.main === module) {
             writeCorsHeaders(res);
             res.writeHeader("Content-Type", "application/json").end(JSON.stringify(
                 gameID !== undefined
-                    ? { success: true, gameID, mode }
+                    ? { success: true, gameID, mode: gameManager.mode }
                     : { success: false }
             ));
         });
@@ -179,7 +140,7 @@ if (Cluster.isPrimary && require.main === module) {
 
             // Prevent connection if it's solos + check rate limits & punishments
             if (
-                teamMode.current === TeamMode.Solo
+                gameManager.teamMode.current === TeamMode.Solo
                 || teamsCreated?.isLimited(ip)
                 || await getPunishment(ip)
             ) {
@@ -193,15 +154,15 @@ if (Cluster.isPrimary && require.main === module) {
             const teamID = searchParams.get("teamID");
             let team: CustomTeam;
             if (teamID !== null) {
-                const givenTeam = customTeams.get(teamID);
-                if (!givenTeam || givenTeam.locked || givenTeam.players.length >= (teamMode.current as number)) {
+                const givenTeam = customTeams?.get(teamID);
+                if (!givenTeam || givenTeam.locked || givenTeam.players.length >= (gameManager.teamMode.current as number)) {
                     forbidden(res); // TODO "Team is locked" and "Team is full" messages
                     return;
                 }
                 team = givenTeam;
             } else {
-                team = new CustomTeam(teamMode.current, map.current);
-                customTeams.set(team.id, team);
+                team = new CustomTeam(gameManager);
+                customTeams?.set(team.id, team);
             }
 
             // Get name, skin, badge, & role
@@ -253,7 +214,7 @@ if (Cluster.isPrimary && require.main === module) {
             const team = player.team;
             team.removePlayer(player);
             if (!team.players.length) {
-                customTeams.delete(team.id);
+                customTeams?.delete(team.id);
             }
             teamsCreated?.decrement(player.ip);
         }
@@ -270,6 +231,6 @@ if (Cluster.isPrimary && require.main === module) {
         serverLog(`Listening on ${Config.hostname}:${Config.port}`);
         serverLog("Press Ctrl+C to exit.");
 
-        void newGame(0, teamMode.current, map.current);
+        void gameManager.newGame(0);
     });
 }

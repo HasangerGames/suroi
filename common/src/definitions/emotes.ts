@@ -1,4 +1,5 @@
 import { DefinitionType, ObjectDefinitions, type ObjectDefinition } from "../utils/objectDefinitions";
+import { BadgeDefinition } from "./badges";
 import { Ammos } from "./items/ammos";
 import { Guns } from "./items/guns";
 import { HealingItems } from "./items/healingItems";
@@ -20,6 +21,21 @@ export interface EmoteDefinition extends ObjectDefinition {
     readonly category: EmoteCategory
     readonly hideInLoadout?: boolean
 }
+
+export const isEmoteBadge = (badge: BadgeDefinition | string): boolean => {
+    const bdgIdString = typeof badge === "string" ? badge.slice(4) : badge.idString.slice(4);
+
+    const found = Emotes.definitions.find(emote => {
+        return emote.idString === bdgIdString;
+    }) !== undefined;
+
+    return found;
+};
+
+export const getBadgeIdString = (badge: BadgeDefinition | string): string => {
+    const bdg = typeof badge === "string" ? badge : badge.idString;
+    return isEmoteBadge(badge) ? bdg.slice(4) : bdg;
+};
 
 export const Emotes = new ObjectDefinitions<EmoteDefinition>([
     ...Object.entries({
@@ -78,6 +94,7 @@ export const Emotes = new ObjectDefinitions<EmoteDefinition>([
             "Sighing Face",
             "Yawning Face",
             "Frustrated Face",
+            "Thousand Yard Stare",
             "Weary Face",
             "Pensive Face",
             "Zipper Mouth Face",

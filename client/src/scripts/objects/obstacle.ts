@@ -30,6 +30,8 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
     scale!: number;
     variation?: Variation;
 
+    animationFrame?: number;
+
     /**
      * `undefined` if this obstacle hasn't been updated yet, or if it's not a door obstacle
      */
@@ -199,9 +201,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
                         else this.playSound(definition.sound.name, definition.sound);
                     }
 
-                    // :martletdeadass:
-                    // FIXME idString check, hard coded behavior
-                    if (this.definition.idString === "airdrop_crate_locked") {
+                    if (this.definition.airdropUnlock) {
                         const options = (minSpeed: number, maxSpeed: number): Partial<ParticleOptions> => ({
                             zIndex: Numeric.max((this.definition.zIndex ?? ZIndexes.Players) + 1, 4),
                             lifetime: 1000,
@@ -307,7 +307,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
                     layer: this.layer,
                     lifetime: Infinity,
                     speed: Vec(0, 0),
-                    zIndex: this.container.zIndex - 0.5,
+                    zIndex: glow.zIndex ?? this.container.zIndex - 0.5,
                     tint: glow.tint,
                     scale: glow.scale
                 });
@@ -752,7 +752,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
             && (this.definition as DoorDef).openOnce
             && !this._door.locked
             && !((this.definition as DoorDef).openOnce && this._door.offset === 0)) return false;
-        return !this.dead
+        return !this.dead && !this.definition?.damage
             && (
                 this.definition.interactOnlyFromSide === undefined
                 || this.definition.interactOnlyFromSide === (this.hitbox as RectangleHitbox).getSide(player.position)

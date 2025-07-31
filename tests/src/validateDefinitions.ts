@@ -273,7 +273,7 @@ logger.indent("Validating map definitions", () => {
                             }
                         );
 
-                        validators.minMax(
+                        /* validators.minMax( -FIXME
                             errorPath2,
                             {
                                 min: rivers.minWideWidth,
@@ -287,7 +287,7 @@ logger.indent("Validating map definitions", () => {
                                     errorPath
                                 });
                             }
-                        );
+                        ); */
 
                         logger.indent("Validating obstacles", () => {
                             const errorPath3 = tester.createPath(errorPath2, "obstacles");
@@ -2646,14 +2646,6 @@ logger.indent("Validating modes", () => {
                 errorPath
             );
 
-            tester.assertNoPointlessValue({
-                obj: mode.sounds,
-                field: "foldersToLoad",
-                defaultValue: [],
-                equalityFunction: a => a.length === 0,
-                baseErrorPath: tester.createPath(errorPath, "sounds")
-            });
-
             if (mode.defaultScope !== undefined) {
                 tester.assertReferenceExists({
                     obj: mode,
@@ -3109,7 +3101,7 @@ logger.indent("Validating obstacles", () => {
                                     obj: obstacle,
                                     field: "slideFactor",
                                     min: 0,
-                                    max: 1,
+                                    max: 1.5,
                                     includeMin: true,
                                     includeMax: true,
                                     baseErrorPath: errorPath

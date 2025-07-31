@@ -101,11 +101,7 @@ export class GunItem extends InventoryItemBase.derive(DefinitionType.Gun) {
         owner.action?.cancel();
         clearTimeout(this._burstTimeout);
 
-        owner.animation = definition.ballistics.lastShotFX && this.ammo === 1
-            ? AnimationType.LastShot
-            : this._altFire
-                ? AnimationType.GunFireAlt
-                : AnimationType.GunFire;
+        owner.animation = this._altFire ? AnimationType.GunFireAlt : AnimationType.GunFire;
 
         owner.setPartialDirty();
 
@@ -246,6 +242,12 @@ export class GunItem extends InventoryItemBase.derive(DefinitionType.Gun) {
                     modifyForDamageMod(perk.damageMod);
                     break;
                 }
+                case PerkIds.HollowPoints: {
+                    if (this.definition.ammoType === "12g" && this.definition.casingParticles && !this.definition.casingParticles[0].frame?.includes("slug")) break;
+                    modifiers.damage *= perk.damageMod;
+                    modifyForDamageMod(perk.damageMod);
+                    break;
+                }
             }
         }
         // ! evil ends here
@@ -261,7 +263,7 @@ export class GunItem extends InventoryItemBase.derive(DefinitionType.Gun) {
             )
             : (_: Vector) => owner.layer;
 
-        const spawn = (position: Vector, spread: number): void => {
+        const spawn = (position: Vector, spread: number, shotFX: boolean, split = false): void => {
             owner.game.addBullet(
                 this,
                 owner,
@@ -272,7 +274,10 @@ export class GunItem extends InventoryItemBase.derive(DefinitionType.Gun) {
                     rangeOverride,
                     modifiers: modifiersModified ? modifiers : undefined,
                     saturate,
-                    thin
+                    thin,
+                    split,
+                    shotFX: shotFX,
+                    lastShot: this.definition.ballistics.lastShotFX && this.ammo === 1
                 }
             );
         };
@@ -302,17 +307,22 @@ export class GunItem extends InventoryItemBase.derive(DefinitionType.Gun) {
 
             rotation *= spread;
 
+            const isFirstBullet = i === 0;
+
             if (!doSplinterGrouping) {
-                spawn(finalSpawnPosition, rotation);
+                spawn(finalSpawnPosition, rotation, isFirstBullet);
                 continue;
             }
 
             const dev = Angle.degreesToRadians(deviation);
 
             for (let j = 0; j < split; j++) {
+                const isFirstSplinterBullet = isFirstBullet && j === 0;
                 spawn(
                     finalSpawnPosition,
-                    (8 * (j / sM1 - 0.5) ** 3) * dev + rotation
+                    (8 * (j / sM1 - 0.5) ** 3) * dev + rotation,
+                    isFirstSplinterBullet,
+                    isFirstSplinterBullet
                 );
             }
         }

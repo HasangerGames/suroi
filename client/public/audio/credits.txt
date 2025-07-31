@@ -1,5 +1,6 @@
-Menu music - Pixelbitie - Marching with Style: https://www.youtube.com/watch?v=_7lqVysj1ww
+Menu music - Lil Craw
 Halloween menu music - Secrets of the House on the Hill by Rage Sound
+Tavern Music - Lil Craw
 
 Most sound effects edited by Henry Sanger
 
@@ -60,11 +61,19 @@ Guns:
 
   SVU-A reload & switch - "M14" from Pixabay: https://pixabay.com/sound-effects/m14-168859/
 
+  PSM & Dual PSM (Reload, Fire sounds) - "freesound_community" from Pixabay: https://pixabay.com/users/freesound_community-46691455/
+
+  AKs-74u (Reload, Switch): modified by Teardrop, main sound is Gamebanana
+  AN-94 (Fire, Reload, Switch) - modified by Teardrop, main sound is Gamebanana
+  RPK-74 (Reload, Switch) - modified by Teardrop, main sound is Gamebanana
+  RPK-16 (Fire, Reload, Switch) - modified by Teardrop, main sound is from Gamebanana
+
   Other gun sound effects - Surviv.io Custom Sounds & Textures Resource Pack: https://github.com/humphreygaming/survivcustomsoundsandtextures
 
 Melees:
   Kukri pickup - "Metal Blade Slice 46" from Pixabay: https://pixabay.com/sound-effects/metal-blade-slice-46-195333/
   K-bar pickup - "Dagger Draw Fast" from Medieval sound effects - Weapon Textures: https://opengameart.org/content/medieval-sound-effects-weapon-textures
+  Pipe wrench switch - "wrench 02" by freesound_community from Pixabay: https://pixabay.com/users/freesound_community-46691455/
 
 Obstacles:
   Window punch: https://freesound.org/people/peter1984/sounds/414444/
@@ -88,10 +97,12 @@ Obstacles:
   Pumpkin destroyed - https://pixabay.com/sound-effects/splat2ogg-14668/
 
   Piano hit - Blus
+  Bunker unlock ping sound - Blus
 
   Fence hit & destroyed - Katloo
 
 Ceiling breaking - https://freesound.org/people/InspectorJ/sounds/352513/
+Ceiling collapse - "Wood Smash 3" by floraphonic on Pixabay - https://pixabay.com/users/floraphonic-38928062/
 Vault door opening - "Metal warehouse door opened with chains" from Pixabay: https://pixabay.com/sound-effects/metal-warehouse-door-opened-with-chains-100823/
 
 Cola:
@@ -137,6 +148,7 @@ Footsteps:
   Metal - "Metal Footsteps" from Pixabay: https://pixabay.com/sound-effects/metal-footsteps-14727/
   Sand - "foley_footsteps_desert_boots_sand" from Pixabay: https://pixabay.com/sound-effects/foley-footsteps-desert-boots-sand-6900/
   Water - "Footsteps in Water - Nature Sounds" from Pixabay: https://pixabay.com/sound-effects/footsteps-in-water-nature-sounds-8185/
+  Log (Wood) - "Walking on wood" by freesounds123 from Pixabay: https://pixabay.com/users/freesounds123-49985424/
 
 Memorial open:
   "Tomb_door" from Pixabay: https://pixabay.com/sound-effects/tomb-door-95246/
@@ -149,3 +161,9 @@ Ambience:
 
 Default switch sound - "Jump Landing" from Pixabay: https://pixabay.com/sound-effects/jump-landing-30946/
 Generic pickup sound - Katloo
+
+Shield (Bubble) Sounds
+  - Destroyed Sound: alien_tripod_debris_glass_falling by Alien Tripod, BluezoneCorp - https://sonniss.com/product/alien-tripod
+  - Equip/Obtain Sound: bluezone_BC0303_futuristic_user_interface_transition_006 by Futuristic User Interface, BluezoneCorp - https://sonniss.com/product/futuristic-user-interface
+
+Overdrive Sound: "Boost" by freesound_community on PixaBay - https://pixabay.com/users/freesound_community-46691455/

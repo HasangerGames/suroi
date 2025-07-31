@@ -5,6 +5,7 @@ export interface PlayerModifiers {
     // Multiplicative
     maxHealth: number
     maxAdrenaline: number
+    maxShield: number
     baseSpeed: number
     size: number
     adrenDrain: number
@@ -12,6 +13,7 @@ export interface PlayerModifiers {
     // Additive
     minAdrenaline: number
     hpRegen: number
+    shieldRegen: number
 }
 
 export interface PunishmentMessage {

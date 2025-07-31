@@ -15,6 +15,7 @@ export const enum FloorNames {
     Grass = "grass",
     Stone = "stone",
     Wood = "wood",
+    Log = "log",
     Sand = "sand",
     Metal = "metal",
     Carpet = "carpet",
@@ -31,6 +32,9 @@ export const FloorTypes: Record<FloorNames, FloorDefinition> = {
     },
     wood: {
         debugColor: 0x7f5500
+    },
+    log: {
+        debugColor: 0x452e00
     },
     sand: {
         debugColor: 0xff5500

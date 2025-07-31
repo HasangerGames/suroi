@@ -303,7 +303,7 @@ export const tester = (() => {
         const aboveMax = !(value < max || (includeMax === true && value === max));
 
         if (belowMin || aboveMax) {
-            errors.push(`This field must be in range ${includeMin ? "[" : "]"}${min}, ${max}${includeMax ? "]" : "["} (received ${safeString(value)})`);
+            errors.push(`This field must be in range ${includeMin ? "]" : "["}${min}, ${max}${includeMax ? "[" : "]"} (received ${safeString(value)})`);
         }
 
         return {

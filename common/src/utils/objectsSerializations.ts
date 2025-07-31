@@ -58,6 +58,8 @@ export interface ObjectsNetData extends BaseObjectsNetData {
             readonly activeDisguise?: ObstacleDefinition
             readonly infected: boolean
             readonly backEquippedMelee?: MeleeDefinition
+            readonly hasBubble: boolean
+            readonly activeOverdrive: boolean
         }
     }
     //
@@ -249,7 +251,9 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 halloweenThrowableSkin,
                 activeDisguise,
                 infected,
-                backEquippedMelee
+                backEquippedMelee,
+                hasBubble,
+                activeOverdrive
             } }
         ): void {
             stream.writeLayer(layer);
@@ -270,7 +274,9 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 hasVest,
                 hasDisguise,
                 infected,
-                hasBackEquippedMelee
+                hasBackEquippedMelee,
+                hasBubble,
+                activeOverdrive
             );
             stream.writeUint8(teamID);
             Loots.writeToStream(stream, activeItem);
@@ -329,7 +335,9 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 hasVest,
                 hasDisguise,
                 infected,
-                hasBackEquippedMelee
+                hasBackEquippedMelee,
+                hasBubble,
+                activeOverdrive
             ] = stream.readBooleanGroup2();
 
             return {
@@ -348,7 +356,9 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 backpack: Backpacks.readFromStream(stream),
                 activeDisguise: hasDisguise ? Obstacles.readFromStream(stream) : undefined,
                 infected,
-                backEquippedMelee: hasBackEquippedMelee ? Melees.readFromStream(stream) : undefined
+                backEquippedMelee: hasBackEquippedMelee ? Melees.readFromStream(stream) : undefined,
+                hasBubble,
+                activeOverdrive
             };
         }
     },

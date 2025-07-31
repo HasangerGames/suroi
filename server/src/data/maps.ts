@@ -46,6 +46,8 @@ export interface RiverDefinition {
      * you should use `MapDefinition.obstacles`
      */
     readonly obstacles: Record<ReferenceTo<ObstacleDefinition>, number>
+    /** Locks the river to a straight horizontal/vertical through the center of the map */
+    readonly centered?: boolean
 }
 
 export interface MapDefinition {
@@ -137,8 +139,13 @@ const maps = {
                 lily_pad: 6
             }
         },
+        majorBuildings: [
+            "port",
+            "headquarters",
+            "armory",
+            "refinery"
+        ],
         buildings: {
-            port: 1,
             large_bridge: 2,
             small_bridge: Infinity,
             river_hut_1: 2,
@@ -147,11 +154,8 @@ const maps = {
             lighthouse: 1,
             tugboat_red: 1,
             tugboat_white: 5,
-            armory: 1,
-            headquarters: 1,
             fulcrum_bunker: 1,
             small_bunker: 1,
-            refinery: 1,
             warehouse: 5,
             green_house: 3,
             blue_house: 2,
@@ -172,7 +176,6 @@ const maps = {
             memorial: 1,
             buoy: 12
         },
-        majorBuildings: ["armory", "refinery", "port", "headquarters"],
         quadBuildingLimit: {
             port: 1,
             river_hut_1: 1,
@@ -194,7 +197,7 @@ const maps = {
             birch_tree: 20,
             pine_tree: 10,
             loot_tree: 1,
-            regular_crate: 140,
+            regular_crate: 100,
             flint_crate: 5,
             aegis_crate: 5,
             grenade_crate: 35,
@@ -302,16 +305,18 @@ const maps = {
                 { idString: "flint_lockbox", min: 0, max: 1 }
             ]
         },
+        majorBuildings: [
+            "plumpkin_bunker",
+            "lodge",
+            "campsite",
+            "bombed_armory"
+        ],
         buildings: {
             breached_dam: 3,
             river_hut_4: 3,
             river_hut_5: 3,
             river_hut_6: 3,
             small_bridge: Infinity,
-            plumpkin_bunker: 1,
-            campsite: 1,
-            bombed_armory: 1,
-            lodge: 1,
             barn: 3,
             lighthouse: 1,
             tugboat_red: 1,
@@ -335,7 +340,6 @@ const maps = {
             outhouse: 10,
             buoy: 16
         },
-        majorBuildings: ["bombed_armory", "lodge", "plumpkin_bunker", "campsite"],
         quadBuildingLimit: {
             river_hut_4: 2,
             river_hut_5: 2,
@@ -735,6 +739,117 @@ const maps = {
             { name: "Pathogen Narrows", position: Vec(0.72, 0.8) },
             { name: "Mt. Putrid", position: Vec(0.5, 0.35) },
             { name: "Decayedwood", position: Vec(0.5, 0.65) }
+        ]
+    },
+    hunted: {
+        width: 1924,
+        height: 1924,
+        oceanSize: 66,
+        beachSize: 32,
+        rivers: {
+            minAmount: 1,
+            maxAmount: 1,
+            maxWideAmount: 0,
+            wideChance: 0,
+            minWidth: 18,
+            maxWidth: 22,
+            minWideWidth: 0,
+            maxWideWidth: 0,
+            obstacles: {
+                river_rock: 16,
+                lily_pad: 6
+            },
+            centered: true
+        },
+        majorBuildings: [
+            "sawmill",
+            "shooting_range",
+            "tavern"
+        ],
+        buildings: {
+            small_bridge: Infinity,
+            docks: 8,
+            outhouse: 6,
+            cabin: 6,
+            carport: 4,
+            hunting_stand: 12,
+            warehouse_hunted: 5,
+            fox_bunker: 1,
+            moose_bunker: 1,
+            bear_bunker: 1,
+            hollow_log_1: 5,
+            hollow_log_2: 5,
+            hollow_log_3: 5
+        },
+        quadBuildingLimit: {
+            carport: 1,
+            hunting_stand: 3,
+            warehouse_hunted: 2,
+            docks: 2,
+            outhouse: 3,
+            cabin: 3,
+            hollow_log_1: 3,
+            hollow_log_2: 3,
+            hollow_log_3: 3
+        },
+        obstacles: {
+            stump: 60,
+            small_logs_pile: 30,
+            large_logs_pile_2: 20,
+            clearing_boulder: 18,
+            pine_tree: 95,
+            spruce_tree: 90,
+            dead_pine_tree: 55,
+            oak_tree: 20,
+            regular_crate: 110,
+            nsd_crate: 6,
+            lansiraami_crate: 6,
+            grenade_crate: 35,
+            rock: 175,
+            river_chest: 1,
+            bush: 175,
+            blueberry_bush: 40,
+            barrel: 150,
+            viking_chest: 1,
+            super_barrel: 30,
+            melee_crate: 1,
+            gold_rock: 1,
+            nsd_rock: 1,
+            reinforced_crate: 1,
+            hatchet_stump: 3
+        },
+        obstacleClumps: [
+            {
+                clumpAmount: 45,
+                clump: {
+                    minAmount: 10,
+                    maxAmount: 15,
+                    jitter: 30,
+                    obstacles: ["pine_tree", "spruce_tree"],
+                    radius: 30
+                }
+            },
+            {
+                clumpAmount: 25,
+                clump: {
+                    minAmount: 2,
+                    maxAmount: 3,
+                    jitter: 5,
+                    obstacles: ["dead_pine_tree"],
+                    radius: 12
+                }
+            }
+        ],
+        loots: {
+            ground_loot: 100
+        },
+        places: [
+            { name: "Pine Cone", position: Vec(0.23, 0.2) },
+            { name: "Gunpoint", position: Vec(0.23, 0.8) },
+            { name: "Kuolema", position: Vec(0.75, 0.2) },
+            { name: "Switchback", position: Vec(0.72, 0.8) },
+            { name: "Black Hill", position: Vec(0.5, 0.35) },
+            { name: "The Grove", position: Vec(0.5, 0.65) }
         ]
     },
     winter: {

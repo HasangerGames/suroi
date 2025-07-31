@@ -12,7 +12,7 @@ import { PacketType, type DataSplit, type PacketDataIn, type PacketDataOut } fro
 import { PacketStream } from "@common/packets/packetStream";
 import { type UpdateDataOut } from "@common/packets/updatePacket";
 import { CircleHitbox } from "@common/utils/hitbox";
-import { adjacentOrEqualLayer, equalLayer } from "@common/utils/layer";
+import { adjacentOrEquivLayer, equalLayer } from "@common/utils/layer";
 import { EaseFunctions, Geometry, Numeric } from "@common/utils/math";
 import { Timeout } from "@common/utils/misc";
 import { DefinitionType } from "@common/utils/objectDefinitions";
@@ -299,7 +299,7 @@ export const Game = new (class Game {
         let menuMusicSuffix: string;
         if (GameConsole.getBuiltInCVar("cv_use_old_menu_music")) {
             menuMusicSuffix = "_old";
-        } else if (this.mode.sounds?.replaceMenuMusic) {
+        } else if (this.mode.replaceMenuMusic) {
             menuMusicSuffix = `_${this.modeName}`;
         } else {
             menuMusicSuffix = "";
@@ -585,7 +585,7 @@ export const Game = new (class Game {
         // game started if page is out of focus.
         if (!document.hasFocus()) SoundManager.play("join_notification");
 
-        const ambience = this.mode.sounds?.ambience;
+        const ambience = this.mode.ambience;
         if (ambience) {
             this.ambience = SoundManager.play(ambience, { loop: true, ambient: true });
         }
@@ -604,6 +604,7 @@ export const Game = new (class Game {
         emotes.push(...emotes.splice(0, (1 % len + len) % len)); // rotates the array so emotes appear in the correct order
         EmoteWheelManager.setupSlots();
         UIManager.updateRequestableItems();
+        MapManager.resize();
 
         const ui = UIManager.ui;
 
@@ -879,6 +880,10 @@ export const Game = new (class Game {
             MapManager.addMapPing(ping);
         }
 
+        for (const indicator of updateData.mapIndicators ?? []) {
+            MapManager.updateMapIndicator(indicator);
+        }
+
         if (updateData.killLeader) {
             UIManager.updateKillLeader(updateData.killLeader);
         }
@@ -1013,10 +1018,17 @@ export const Game = new (class Game {
                 const { isLoot, isObstacle, isPlayer, isBuilding } = object;
                 const isInteractable = (isLoot || isObstacle || isPlayer) && object.canInteract(player);
 
+                if (object.isObstacle && object.activated && object.definition.animationFrames) {
+                    object.animationFrame ??= 0;
+                    object.animationFrame++;
+                    object.animationFrame %= object.definition.animationFrames.length;
+                    object.image.setFrame(object.definition.animationFrames[object.animationFrame]);
+                }
+
                 if (
                     (isLoot || isInteractable)
                     && object.hitbox.collidesWith(detectionHitbox)
-                    && adjacentOrEqualLayer(object.layer, player.layer)
+                    && adjacentOrEquivLayer(object, player.layer)
                 ) {
                     const dist = Geometry.distanceSquared(object.position, player.position);
                     if (isInteractable) {
@@ -1181,7 +1193,7 @@ export const Game = new (class Game {
                         switch (true) {
                             case object?.isObstacle: {
                                 if (object.definition.isActivatable || object.definition.customInteractMessage) {
-                                    text = getTranslatedString(`interact_${object.definition.idString}` as TranslationKeys);
+                                    text = getTranslatedString(`interact_${object.definition.interactObstacleIdString ?? object.definition.idString}` as TranslationKeys);
                                 } else if (object.definition.isDoor) {
                                     text = object.door?.offset === 0
                                         ? getTranslatedString("action_open_door")

@@ -1,5 +1,5 @@
 import { GameConstants, Layer, MapObjectSpawnMode, ObjectCategory, RotationMode } from "@common/constants";
-import { Buildings, type BuildingDefinition } from "@common/definitions/buildings";
+import { BuildingObstacle, Buildings, SubBuilding, type BuildingDefinition } from "@common/definitions/buildings";
 import { Obstacles, type ObstacleDefinition } from "@common/definitions/obstacles";
 import { MapPacket, type MapData } from "@common/packets/mapPacket";
 import { PacketStream } from "@common/packets/packetStream";
@@ -7,7 +7,7 @@ import { type Orientation, type Variation } from "@common/typings";
 import { CircleHitbox, GroupHitbox, HitboxType, RectangleHitbox, type Hitbox } from "@common/utils/hitbox";
 import { equalLayer } from "@common/utils/layer";
 import { Angle, Collision, Geometry, Numeric, τ } from "@common/utils/math";
-import { SDeepMutable } from "@common/utils/misc";
+import { removeFrom, SDeepMutable } from "@common/utils/misc";
 import { NullString, type ReferenceTo, type ReifiableDef } from "@common/utils/objectDefinitions";
 import { SeededRandom, pickRandomInArray, random, randomBoolean, randomFloat, randomPointInsideCircle, randomRotation, randomVector } from "@common/utils/random";
 import { River, Terrain } from "@common/utils/terrain";
@@ -19,17 +19,12 @@ import { Obstacle } from "./objects/obstacle";
 import { getLootFromTable } from "./utils/lootHelpers";
 import { CARDINAL_DIRECTIONS, getRandomIDString } from "./utils/misc";
 
+export interface MapOptions { scale?: number, maxMajorStructures?: number }
+
 export class GameMap {
     readonly game: Game;
 
     readonly mapDef: MapDefinition;
-    private readonly quadBuildings: Record<1 | 2 | 3 | 4, string[]> = { 1: [], 2: [], 3: [], 4: [] };
-    private readonly quadMajorBuildings: Array<1 | 2 | 3 | 4> = [];
-    private readonly majorBuildingPositions: Vector[] = [];
-
-    private readonly occupiedBridgePositions: Vector[] = [];
-
-    private readonly clearings: RectangleHitbox[] = [];
 
     readonly width: number;
     readonly height: number;
@@ -52,6 +47,16 @@ export class GameMap {
     readonly buffer: ArrayBuffer;
 
     private readonly _beachPadding;
+
+    private readonly quadBuildings: Record<1 | 2 | 3 | 4, string[]> = { 1: [], 2: [], 3: [], 4: [] };
+    private readonly quadMajorBuildings: Array<1 | 2 | 3 | 4> = [];
+    private readonly majorBuildingPositions: Vector[] = [];
+
+    private readonly occupiedBridgePositions: Vector[] = [];
+
+    private readonly clearings: RectangleHitbox[] = [];
+
+    private readonly mapScale: (num: number) => number;
 
     static getRandomRotation<T extends RotationMode>(mode: T): RotationMapping[T] {
         switch (mode) {
@@ -79,11 +84,29 @@ export class GameMap {
         }
     }
 
-    constructor(game: Game, mapData: string) {
+    constructor(game: Game, mapData: string, options: MapOptions = {}) {
         this.game = game;
 
         const [name, ...params] = mapData.split(":") as [MapName, ...string[]];
         const mapDef: MapDefinition = Maps[name];
+
+        const { scale = 1, maxMajorStructures } = options;
+        this.mapScale = scale === 1
+            ? (num: number): number => num
+            : (num: number): number => {
+                const val = Math.round(num * (((mapDef.width * scale) ** 2) / (mapDef.width ** 2)));
+                if (val < 5 && val > 1) return val - 1;
+                if (val < 1) return 1;
+                return val;
+            };
+
+        this.game.log(`Map scale: ${scale}`);
+
+        if (scale !== 1 && mapDef.quadBuildingLimit) {
+            for (const [idString, amount] of Object.entries(mapDef.quadBuildingLimit)) {
+                mapDef.quadBuildingLimit[idString] = this.mapScale(amount);
+            }
+        }
 
         const packet = MapPacket.create({ objects: [] });
         this._packet = packet;
@@ -92,8 +115,8 @@ export class GameMap {
 
         this.game.log(`Map seed: ${this.seed}`);
 
-        this.width = packet.width = mapDef.width;
-        this.height = packet.height = mapDef.height;
+        this.width = packet.width = mapDef.width * scale;
+        this.height = packet.height = mapDef.height * scale;
         this.oceanSize = packet.oceanSize = mapDef.oceanSize;
         this.beachSize = packet.beachSize = mapDef.beachSize;
 
@@ -147,9 +170,18 @@ export class GameMap {
             rivers
         );
 
-        this._generateClearings(mapDef.clearings);
+        const majorBuildings = Array.from(mapDef.majorBuildings ?? []);
+        const numToRemove = maxMajorStructures === undefined ? 0 : majorBuildings.length - maxMajorStructures;
+        if (numToRemove > 0) {
+            for (let i = 0; i < numToRemove; i++) {
+                removeFrom(majorBuildings, pickRandomInArray(majorBuildings));
+            }
+        }
+        majorBuildings.forEach(building => this._generateBuildings(building, 1));
 
         Object.entries(mapDef.buildings ?? {}).forEach(([building, count]) => this._generateBuildings(building, count));
+
+        this._generateClearings(mapDef.clearings);
 
         if (mapDef.rivers) {
             this._generateRiverObstacles(mapDef.rivers, false);
@@ -197,10 +229,11 @@ export class GameMap {
             minWidth,
             maxWidth,
             minWideWidth,
-            maxWideWidth
+            maxWideWidth,
+            centered
         } = definition;
         const rivers: River[] = [];
-        const amount = randomGenerator.getInt(minAmount, maxAmount);
+        const amount = this.mapScale(randomGenerator.getInt(minAmount, maxAmount));
 
         // generate a list of widths and sort by biggest, to make sure wide rivers generate first
         let wideAmount = 0;
@@ -220,7 +253,7 @@ export class GameMap {
         const halfHeight = this.height / 2;
         const center = Vec(halfWidth, halfHeight);
 
-        const padding = isTrail ? GameConstants.trailPadding : GameConstants.riverPadding;
+        const padding = isTrail ? GameConstants.trailPadding : this.oceanSize / 2;
         const width = this.width - padding;
         const height = this.height - padding;
         const bounds = new RectangleHitbox(
@@ -237,14 +270,22 @@ export class GameMap {
             const horizontal = !!randomGenerator.getInt();
             const reverse = !!randomGenerator.getInt();
 
-            if (horizontal) {
-                const topHalf = randomGenerator.get(padding, halfHeight);
-                const bottomHalf = randomGenerator.get(halfHeight, height);
-                start = Vec(padding, reverse ? bottomHalf : topHalf);
+            if (centered) {
+                if (horizontal) {
+                    start = Vec(padding, halfHeight);
+                } else {
+                    start = Vec(halfWidth, padding);
+                }
             } else {
-                const leftHalf = randomGenerator.get(padding, halfWidth);
-                const rightHalf = randomGenerator.get(halfWidth, width);
-                start = Vec(reverse ? rightHalf : leftHalf, padding);
+                if (horizontal) {
+                    const topHalf = randomGenerator.get(padding, halfHeight);
+                    const bottomHalf = randomGenerator.get(halfHeight, height);
+                    start = Vec(padding, reverse ? bottomHalf : topHalf);
+                } else {
+                    const leftHalf = randomGenerator.get(padding, halfWidth);
+                    const rightHalf = randomGenerator.get(halfWidth, width);
+                    start = Vec(reverse ? rightHalf : leftHalf, padding);
+                }
             }
 
             const startAngle = Angle.betweenPoints(center, start) + (reverse ? 0 : Math.PI);
@@ -258,6 +299,7 @@ export class GameMap {
                 bounds,
                 isTrail,
                 rivers,
+                centered,
                 randomGenerator
             )) i++;
         }
@@ -272,6 +314,7 @@ export class GameMap {
         bounds: RectangleHitbox,
         isTrail: boolean,
         rivers: River[],
+        lockAngle: boolean | undefined,
         randomGenerator: SeededRandom
     ): boolean {
         const riverPoints: Vector[] = [];
@@ -290,10 +333,10 @@ export class GameMap {
             const maxDeviation = Numeric.lerp(0.8, 0.1, distFactor);
             const minDeviation = Numeric.lerp(0.3, 0.1, distFactor);
 
-            angle = angle + randomGenerator.get(
+            angle = (lockAngle ? startAngle : angle) + randomGenerator.get(
                 -randomGenerator.get(minDeviation, maxDeviation),
                 randomGenerator.get(minDeviation, maxDeviation)
-            );
+            ) * (lockAngle ? 0.5 : 1);
 
             const pos = Vec.add(lastPoint, Vec.fromPolar(angle, randomGenerator.getInt(30, 80)));
 
@@ -376,13 +419,15 @@ export class GameMap {
             minHeight,
             maxWidth,
             maxHeight,
-            count,
+            count: initialCount,
             obstacles
         } = clearingDef;
 
+        const count = this.mapScale(initialCount);
+
         for (let i = 0; i < count; i++) {
-            const width = randomFloat(minWidth, maxWidth);
-            const height = randomFloat(minHeight, maxHeight);
+            const width = this.mapScale(randomFloat(minWidth, maxWidth));
+            const height = this.mapScale(randomFloat(minHeight, maxHeight));
             let hitbox = RectangleHitbox.fromRect(width, height);
 
             let position;
@@ -413,8 +458,9 @@ export class GameMap {
     }
 
     private _generateBuildings(definition: ReifiableDef<BuildingDefinition>, count: number): void {
-        const buildingDef = Buildings.reify(definition);
+        count = this.mapScale(count);
 
+        const buildingDef = Buildings.reify(definition);
         if (!buildingDef.bridgeHitbox) {
             const {
                 idString,
@@ -422,6 +468,7 @@ export class GameMap {
                 spawnHitbox,
                 bunkerSpawnHitbox: bunkerHitbox,
                 spawnMode = MapObjectSpawnMode.Grass,
+                spawnRadius,
                 spawnOrientation,
                 spawnOffset
             } = buildingDef;
@@ -441,6 +488,7 @@ export class GameMap {
                         orientation,
                         spawnMode,
                         spawnOffset,
+                        spawnRadius,
                         bunkerHitbox,
                         orientationConsumer: (newOrientation: Orientation) => {
                             orientation = spawnOrientation ? Numeric.addOrientations(newOrientation, spawnOrientation) : newOrientation;
@@ -497,67 +545,90 @@ export class GameMap {
                 }
             }
         } else {
-            const { bridgeHitbox, bridgeMinRiverWidth, spawnHitbox } = buildingDef;
+            const {
+                bridgeHitbox,
+                bridgeMinRiverWidth,
+                bridgeSpawnRanges,
+                asymmetricalBridgeHitbox,
+                spawnHitbox,
+                spawnOffset
+            } = buildingDef;
             let spawnedCount = 0;
 
-            const generateBridge = (river: River) => (start: number, end: number): void => {
+            if (spawnOffset && "min" in spawnOffset) {
+                throw new Error("min/max spawnOffset unsupported for bridges");
+            }
+
+            const generateBridge = (river: River, [start, end]: [number, number]): void => {
                 if (spawnedCount >= count) return;
 
                 let shortestDistance = Number.MAX_VALUE;
                 let bestPosition: Vector | undefined;
+                let realPosition: Vector | undefined;
                 let bestOrientation: Orientation = 0;
                 for (let pos = start; pos <= end; pos += 0.05) {
                     const position = river.getPosition(pos);
 
+                    if (this.occupiedBridgePositions.some(pos => Vec.equals(pos, position))) continue;
+
                     // Find the best orientation
                     const direction = Vec.direction(river.getTangent(pos));
-                    for (const orientation of [0, 1] as readonly Orientation[]) {
+                    for (const orientation of (asymmetricalBridgeHitbox ? [0, 1, 2, 3] : [0, 1]) as readonly Orientation[]) {
                         const distance = Math.abs(Angle.minimize(direction, CARDINAL_DIRECTIONS[orientation]));
-                        if (distance < shortestDistance) {
-                            const hitbox = spawnHitbox.transform(position, 1, orientation);
+                        if (distance >= shortestDistance) continue;
 
-                            if (
-                                this.occupiedBridgePositions.some(pos => Vec.equals(pos, position))
-                                || this.isInRiver(bridgeHitbox.transform(position, 1, orientation))
-                                || hitbox.collidesWith(this.beachHitbox)
-                            ) continue;
+                        const finalPosition = spawnOffset ? Vec.addAdjust(position, spawnOffset, orientation) : position;
 
-                            // checks if the bridge hitbox collides with another object and if so does not spawn it
-                            let shouldContinue = false;
-                            for (const object of this.game.grid.intersectsHitbox(hitbox)) {
-                                const objectHitbox = "spawnHitbox" in object && object.spawnHitbox;
+                        if (this.isInRiver(bridgeHitbox.transform(finalPosition, 1, orientation))) continue;
 
-                                if (!objectHitbox) continue;
-                                if (hitbox.collidesWith(objectHitbox)) {
-                                    shouldContinue = true;
-                                    break;
-                                }
+                        const hitbox = spawnHitbox.transform(finalPosition, 1, orientation);
+
+                        if (hitbox.collidesWith(this.beachHitbox)) continue;
+
+                        // spawn hitbox check
+                        let collided = false;
+                        for (const object of this.game.grid.intersectsHitbox(hitbox)) {
+                            const objectHitbox = "spawnHitbox" in object && object.spawnHitbox;
+                            if (!objectHitbox) continue;
+
+                            if (hitbox.collidesWith(objectHitbox)) {
+                                collided = true;
+                                break;
                             }
-                            if (shouldContinue) continue;
-
-                            shortestDistance = distance;
-                            bestPosition = position;
-                            bestOrientation = orientation;
                         }
+                        if (collided) continue;
+
+                        shortestDistance = distance;
+                        bestPosition = position;
+                        realPosition = finalPosition;
+                        bestOrientation = orientation;
                     }
                 }
-                if (!bestPosition) return;
+                if (!bestPosition || !realPosition) return;
 
                 this.occupiedBridgePositions.push(bestPosition);
-                const finalOrientation: Orientation = bestOrientation === 0
-                    ? randomBoolean() ? 0 : 2
-                    : randomBoolean() ? 1 : 3;
-                this.generateBuilding(buildingDef, bestPosition, finalOrientation);
+                const finalOrientation: Orientation = asymmetricalBridgeHitbox
+                    ? bestOrientation
+                    : bestOrientation === 0
+                        ? randomBoolean() ? 0 : 2
+                        : randomBoolean() ? 1 : 3;
+                this.generateBuilding(buildingDef, realPosition, finalOrientation);
                 spawnedCount++;
             };
 
-            this.terrain.rivers
-                .filter(({ isTrail, width }) => !isTrail && width >= (bridgeMinRiverWidth ?? 0))
-                .map(generateBridge)
-                .forEach(generator => {
-                    generator(0.1, 0.4);
-                    generator(0.6, 0.9);
-                });
+            const ranges = (bridgeSpawnRanges ?? [[0.1, 0.4], [0.6, 0.9]])
+                // shuffle array: https://stackoverflow.com/a/46545530/5905216
+                .map(value => ({ value, sort: Math.random() }))
+                .sort((a, b) => a.sort - b.sort)
+                .map(({ value }) => value);
+
+            for (const river of this.terrain.rivers) {
+                if (river.isTrail || river.width < (bridgeMinRiverWidth ?? 0)) continue;
+
+                for (const range of ranges) {
+                    generateBridge(river, range);
+                }
+            }
         }
     }
 
@@ -585,12 +656,43 @@ export class GameMap {
 
         const building = new Building(this.game, definition, Vec.clone(position), orientation, layer);
 
-        for (const obstacleData of definition.obstacles ?? []) {
+        const obstacleDefinitionData = definition.obstacles ?? [];
+
+        // ---------------------------------------------------------------------------
+        // Stage 1: Collect all replaceable obstacles.
+        // ---------------------------------------------------------------------------
+        const replaceableObstacles: BuildingObstacle[] = [];
+        for (const obstacleData of obstacleDefinitionData) {
+            if (obstacleData.replaceableBy !== undefined) {
+                replaceableObstacles.push(obstacleData);
+            }
+        }
+        // ---------------------------------------------------------------------------
+
+        // ---------------------------------------------------------------------------
+        // Stage 2: Pick Random
+        // ---------------------------------------------------------------------------
+        const chosenReplaceableObstacle = pickRandomInArray(replaceableObstacles);
+        // ---------------------------------------------------------------------------
+
+        for (const obstacleData of obstacleDefinitionData) {
             let idString = getRandomIDString<ObstacleDefinition>(obstacleData.idString);
             if (idString === NullString) continue;
             if (obstacleData.outdoors && this.game.mode.obstacleVariants) {
                 idString = `${idString}_${this.game.modeName}`;
             }
+
+            // ------------------------------------------------------------------------------------------------
+            // Stage 3: Find it and then replace it by changing the idString before generation.
+            // ------------------------------------------------------------------------------------------------
+            let isChosenObstacle = false;
+            if (obstacleData.replaceableBy !== undefined) {
+                isChosenObstacle = idString === chosenReplaceableObstacle.idString && Vec.equals(obstacleData.position, chosenReplaceableObstacle.position);
+                if (isChosenObstacle && chosenReplaceableObstacle.replaceableBy !== undefined) {
+                    idString = chosenReplaceableObstacle.replaceableBy;
+                }
+            }
+            // ------------------------------------------------------------------------------------------------
 
             const obstacleDef = Obstacles.fromString(idString);
             let obstacleRotation = obstacleData.rotation ?? GameMap.getRandomRotation(obstacleDef.rotationMode);
@@ -613,7 +715,7 @@ export class GameMap {
                     variation: obstacleData.variation,
                     lootSpawnOffset,
                     parentBuilding: building,
-                    puzzlePiece: obstacleData.puzzlePiece,
+                    puzzlePiece: isChosenObstacle ? isChosenObstacle : obstacleData.puzzlePiece,
                     locked: obstacleData.locked,
                     activated: obstacleData.activated,
                     waterOverlay: obstacleData.waterOverlay
@@ -642,10 +744,29 @@ export class GameMap {
             }
         }
 
-        for (const subBuilding of definition.subBuildings ?? []) {
-            const idString = getRandomIDString<BuildingDefinition>(subBuilding.idString);
+        const subBuildingsData = definition.subBuildings ?? [];
+
+        const replaceableSubBuildings: SubBuilding[] = [];
+        for (const subBuilding of subBuildingsData) {
+            if (subBuilding.replaceableBy !== undefined) {
+                replaceableSubBuildings.push(subBuilding);
+            }
+        }
+
+        const chosenReplaceableSubBuilding = pickRandomInArray(replaceableSubBuildings);
+
+        for (const subBuilding of subBuildingsData) {
+            let idString = getRandomIDString<BuildingDefinition>(subBuilding.idString);
 
             if (idString === NullString) continue;
+
+            let isChosenSubBuilding = false;
+            if (subBuilding.replaceableBy !== undefined) {
+                isChosenSubBuilding = idString === chosenReplaceableSubBuilding.idString && Vec.equals(subBuilding.position, chosenReplaceableSubBuilding.position);
+                if (isChosenSubBuilding && chosenReplaceableSubBuilding.replaceableBy !== undefined) {
+                    idString = chosenReplaceableSubBuilding.replaceableBy;
+                }
+            }
 
             const finalOrientation = Numeric.addOrientations(orientation, subBuilding.orientation ?? 0);
             this.generateBuilding(
@@ -674,6 +795,8 @@ export class GameMap {
         const { scale = { spawnMin: 1, spawnMax: 1 }, variations, rotationMode } = def;
         const { spawnMin, spawnMax } = scale;
         const effSpawnHitbox = def.spawnHitbox ?? def.hitbox;
+
+        count = this.mapScale(count);
 
         for (let i = 0; i < count; i++) {
             const scale = randomFloat(spawnMin, spawnMax);
@@ -789,17 +912,22 @@ export class GameMap {
     }
 
     private _generateObstacleClumps(clumpDef: ObstacleClump): void {
-        const clumpAmount = clumpDef.clumpAmount;
-        const firstObstacle = Obstacles.reify(clumpDef.clump.obstacles[0]);
-
-        const { clump: { obstacles, minAmount, maxAmount, radius, jitter } } = clumpDef;
+        const clumpAmount = this.mapScale(clumpDef.clumpAmount);
+        const {
+            obstacles,
+            minAmount,
+            maxAmount,
+            radius: initialRadius,
+            jitter: initialJitter
+        } = clumpDef.clump;
+        const radius = this.mapScale(initialRadius);
+        const jitter = this.mapScale(initialJitter);
+        const spawnMode = Obstacles.reify(clumpDef.clump.obstacles[0]).spawnMode;
 
         for (let i = 0; i < clumpAmount; i++) {
             const position = this.getRandomPosition(
                 new CircleHitbox(radius + jitter),
-                {
-                    spawnMode: firstObstacle.spawnMode
-                }
+                { spawnMode }
             );
 
             if (!position) {
@@ -807,7 +935,7 @@ export class GameMap {
                 continue;
             }
 
-            const amountOfObstacles = random(minAmount, maxAmount);
+            const amountOfObstacles = this.mapScale(random(minAmount, maxAmount));
             const offset = randomRotation();
             const step = τ / amountOfObstacles;
 
@@ -855,7 +983,9 @@ export class GameMap {
             collides?: (position: Vector) => boolean
             collidableObjects?: Partial<Record<ObjectCategory, boolean>>
             spawnMode?: MapObjectSpawnMode
-            spawnOffset?: Vector
+            spawnOffset?: Vector | { min: Vector, max: Vector }
+            /** used by MapObjectSpawnMode.Ring */
+            spawnRadius?: number
             bunkerHitbox?: Hitbox
             scale?: number
             orientation?: Orientation
@@ -927,14 +1057,35 @@ export class GameMap {
                             }
                             case 0:
                             case 2: {
-                                beachRect.min.y += width;
+                                beachRect.min.y += height;
                                 beachRect.max.y -= height;
                                 break;
                             }
                         }
 
-                        const point = beachRect.randomPoint();
-                        return params?.spawnOffset ? Vec.addAdjust(point, params.spawnOffset, orientation) : point;
+                        let spawnOffset = params?.spawnOffset;
+                        let point: Vector;
+                        if (spawnOffset && "min" in spawnOffset) {
+                            const { min, max } = spawnOffset;
+                            spawnOffset = randomVector(min.x, max.x, min.y, max.y);
+
+                            switch (orientation) {
+                                case 1:
+                                case 3: {
+                                    point = Vec(randomFloat(beachRect.min.x, beachRect.max.x), beachRect.getCenter().y);
+                                    break;
+                                }
+                                case 0:
+                                case 2: {
+                                    point = Vec(beachRect.getCenter().x, randomFloat(beachRect.min.y, beachRect.max.y));
+                                    break;
+                                }
+                            }
+                        } else {
+                            point = beachRect.randomPoint();
+                        }
+
+                        return spawnOffset ? Vec.addAdjust(point, spawnOffset, orientation) : point;
                     };
                 }
                 case MapObjectSpawnMode.Trail: {
@@ -945,6 +1096,9 @@ export class GameMap {
                             initialHitbox.type === HitboxType.Circle ? initialHitbox.radius : 0
                         );
                     };
+                }
+                case MapObjectSpawnMode.Ring: {
+                    return () => Vec.add(Vec(this.width / 2, this.height / 2), Vec.fromPolar(randomRotation(), params?.spawnRadius ?? 0));
                 }
             }
         })();
@@ -1000,7 +1154,8 @@ export class GameMap {
             switch (spawnMode) {
                 case MapObjectSpawnMode.Grass:
                 case MapObjectSpawnMode.GrassAndSand:
-                case MapObjectSpawnMode.Beach: {
+                case MapObjectSpawnMode.Beach:
+                case MapObjectSpawnMode.Ring: {
                     for (const river of this.terrain.getRiversInHitbox(hitbox)) {
                         if (
                             (spawnMode !== MapObjectSpawnMode.GrassAndSand || river.isTrail)

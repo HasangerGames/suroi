@@ -246,7 +246,7 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
             };
 
             if (
-                sounds.normal
+                sounds.normal !== undefined
                 && !data.puzzle?.solved
                 && this.sound?.name !== sounds.normal
             ) {
@@ -255,12 +255,12 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
             }
 
             if (
-                sounds.solved
+                sounds.solved !== undefined
                 && data.puzzle?.solved
                 && this.sound?.name !== sounds.solved
             ) {
                 this.sound?.stop();
-                this.sound = SoundManager.play(sounds.solved, soundOptions);
+                if (sounds.solved !== null) this.sound = SoundManager.play(sounds.solved, soundOptions);
             }
         }
 
@@ -452,6 +452,10 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
 
         if (imageDef.spinSpeed !== undefined ? isNewSprite : true) {
             sprite.setRotation(imageDef.rotation ?? 0);
+        }
+
+        if (imageDef.residuePosition !== undefined && this.dead) {
+            sprite.setVPos(toPixiCoords(imageDef.residuePosition));
         }
 
         if (imageDef.alpha) sprite.setAlpha(imageDef.alpha);

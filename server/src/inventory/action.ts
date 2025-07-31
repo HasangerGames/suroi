@@ -1,13 +1,13 @@
 import { AnimationType, GameConstants, PlayerActions } from "@common/constants";
 import { HealType, type HealingItemDefinition } from "@common/definitions/items/healingItems";
+import { PerkIds } from "@common/definitions/items/perks";
 import { Loots } from "@common/definitions/loots";
-import { PerkIds, Perks } from "@common/definitions/items/perks";
 import { Numeric } from "@common/utils/math";
 import { type Timeout } from "@common/utils/misc";
 import { type ReifiableDef } from "@common/utils/objectDefinitions";
+import { randomRotation } from "@common/utils/random";
 import { type Player } from "../objects/player";
 import { type GunItem } from "./gunItem";
-import { randomRotation } from "@common/utils/random";
 
 export abstract class Action {
     readonly player: Player;
@@ -163,7 +163,7 @@ export class HealingAction extends Action {
                     });
                 }
                 if (this.item.effect?.removePerk !== undefined) {
-                    this.player.perks.removeItem(Perks.fromString(this.item.effect.removePerk));
+                    this.player.removePerk(this.item.effect.removePerk);
                 }
                 break;
         }

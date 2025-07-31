@@ -1,7 +1,7 @@
 import { GameConstants } from "@common/constants";
 import { Ammos, type AmmoDefinition } from "@common/definitions/items/ammos";
 import { ArmorType, type ArmorDefinition } from "@common/definitions/items/armors";
-import { type BackpackDefinition } from "@common/definitions/items/backpacks";
+import { Backpacks, type BackpackDefinition } from "@common/definitions/items/backpacks";
 import { type DualGunNarrowing, type GunDefinition } from "@common/definitions/items/guns";
 import { HealType, HealingItems, type HealingItemDefinition } from "@common/definitions/items/healingItems";
 import { Loots, type LootDefForType, type LootDefinition, type WeaponDefinition, type WeaponTypes } from "@common/definitions/loots";
@@ -631,20 +631,64 @@ export class Inventory {
                         break;
                     }
                 }
+
+                if (definition.perk !== undefined) {
+                    this.owner.removePerk(definition.perk);
+                }
+
                 this._dropItem(definition);
                 break;
             }
             case DefinitionType.Backpack: {
-                return;
+                if (this.backpack.level !== definition.level) return;
+
+                const bag = Backpacks.fromString("bag");
+                const maxCapacity = bag.maxCapacity;
+                const validDefTypes = [
+                    DefinitionType.HealingItem,
+                    DefinitionType.Ammo,
+                    DefinitionType.Throwable
+                ];
+
+                if (definition.perk !== undefined) {
+                    this.owner.removePerk(definition.perk);
+                }
+
+                this._dropItem(definition);
+                this.backpack = bag;
+
+                for (const item in this.items.asRecord()) {
+                    const def = Loots.fromString(item);
+                    if (
+                        def.noDrop
+                        || ("ephemeral" in def && def.ephemeral)
+                        || !validDefTypes.includes(def.defType)
+                    ) continue;
+
+                    const count = this.items.getItem(item);
+                    if (count <= 0) continue;
+
+                    const targetAmount = Numeric.min(count, maxCapacity[item]);
+                    const amountToDrop = count - targetAmount;
+                    if (amountToDrop <= 0) continue;
+
+                    this.items.setItem(item, targetAmount);
+                    this.owner.game.addLoot(def, this.owner.position, this.owner.layer, { count: amountToDrop });
+                }
+                break;
             }
 
             case DefinitionType.Perk: {
                 if (!this.owner.hasPerk(definition)) return;
-                this.owner.perks.removeItem(definition);
+                this.owner.removePerk(definition);
                 this._dropItem(definition);
                 this.owner.dirty.perks = true;
                 break;
             }
+        }
+
+        if (definition.mapIndicator) {
+            this.owner.updateMapIndicator();
         }
 
         this.owner.setDirty();
@@ -796,7 +840,7 @@ export class Inventory {
                     ) || (
                         definition.healType === HealType.Special
                         && definition.effect?.removePerk !== undefined
-                        && !this.owner.perks.hasItem(definition.effect?.removePerk)
+                        && !this.owner.hasPerk(definition.effect?.removePerk)
                     )
                 ) return;
 

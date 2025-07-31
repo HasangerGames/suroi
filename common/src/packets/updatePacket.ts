@@ -6,11 +6,11 @@ import { Explosions, type ExplosionDefinition } from "../definitions/explosions"
 import { Perks, type PerkDefinition } from "../definitions/items/perks";
 import { Scopes, type ScopeDefinition } from "../definitions/items/scopes";
 import { Loots, type WeaponDefinition } from "../definitions/loots";
+import { MapIndicatorDefinition, MapIndicators } from "../definitions/mapIndicators";
 import { MapPings, type MapPing, type PlayerPing } from "../definitions/mapPings";
 import { BaseBullet, type BulletOptions } from "../utils/baseBullet";
 import { type SDeepMutable } from "../utils/misc";
 import { ObjectSerializations, type FullData, type ObjectsNetData } from "../utils/objectsSerializations";
-import type { PerkCollection } from "../utils/perkManager";
 import { type SuroiByteStream } from "../utils/suroiByteStream";
 import { Vec, type Vector } from "../utils/vector";
 import { DataSplitTypes, getSplitTypeForCategory, Packet, PacketType } from "./packet";
@@ -22,10 +22,12 @@ function serializePlayerData(
         minMax,
         health,
         adrenaline,
+        shield,
         zoom,
         layer,
         id,
         teammates,
+        highlightedPlayers,
         inventory,
         lockedSlots,
         items,
@@ -36,29 +38,33 @@ function serializePlayerData(
     }: PlayerData
 ): void {
     /* eslint-disable @stylistic/no-multi-spaces */
-    const hasMinMax      = minMax !== undefined;
-    const hasHealth      = health !== undefined;
-    const hasAdrenaline  = adrenaline !== undefined;
-    const hasZoom        = zoom !== undefined;
-    const hasLayer       = layer !== undefined;
-    const hasId          = id !== undefined;
-    const hasTeammates   = teammates !== undefined;
-    const hasInventory   = inventory !== undefined;
-    const hasLockedSlots = lockedSlots !== undefined;
-    const hasItems       = items !== undefined;
-    const hasActiveC4s   = activeC4s !== undefined;
-    const hasPerks       = perks !== undefined;
-    const hasTeamID      = teamID !== undefined;
+    const hasMinMax             = minMax !== undefined;
+    const hasHealth             = health !== undefined;
+    const hasAdrenaline         = adrenaline !== undefined;
+    const hasShield             = shield !== undefined;
+    const hasZoom               = zoom !== undefined;
+    const hasLayer              = layer !== undefined;
+    const hasId                 = id !== undefined;
+    const hasTeammates          = teammates !== undefined;
+    const hasHighlightedPlayers = highlightedPlayers !== undefined;
+    const hasInventory          = inventory !== undefined;
+    const hasLockedSlots        = lockedSlots !== undefined;
+    const hasItems              = items !== undefined;
+    const hasActiveC4s          = activeC4s !== undefined;
+    const hasPerks              = perks !== undefined;
+    const hasTeamID             = teamID !== undefined;
     /* eslint-enable @stylistic/no-multi-spaces */
 
     strm.writeBooleanGroup2(
         hasMinMax,
         hasHealth,
         hasAdrenaline,
+        hasShield,
         hasZoom,
         hasLayer,
         hasId,
         hasTeammates,
+        hasHighlightedPlayers,
         hasInventory,
         hasLockedSlots,
         hasItems,
@@ -83,6 +89,10 @@ function serializePlayerData(
 
     if (hasAdrenaline) {
         strm.writeFloat(adrenaline, 0, 1, 2);
+    }
+
+    if (hasShield) {
+        strm.writeFloat(shield, 0, 1, 2);
     }
 
     if (hasZoom) {
@@ -117,9 +127,15 @@ function serializePlayerData(
                     .writePosition(position ?? Vec(0, 0))
                     .writeFloat(normalizedHealth, 0, 1, 1)
                     .writeUint8(colorIndex);
-            },
-            1
+            }
         );
+    }
+
+    if (hasHighlightedPlayers) {
+        strm.writeArray(highlightedPlayers, ({ id, normalizedHealth }) => {
+            strm.writeObjectId(id);
+            strm.writeFloat(normalizedHealth, 0, 1, 1);
+        });
     }
 
     if (hasInventory) {
@@ -236,18 +252,7 @@ function serializePlayerData(
     }
 
     if (hasPerks) {
-        let bitfield = perks.asBitfield();
-
-        /*
-            let n = Perks.definitions.length;
-            this is a bit field, so there are n bits to write => ceil(n / 8) bytes to write
-        */
-        const bytes = Math.ceil(Perks.definitions.length / 8);
-        for (let i = 0; i < bytes; i++) {
-            // now write the bitfield in chunks of 8
-            strm.writeUint8(bitfield); // no need to do '& 255', only the 8 LSB's are taken anyways
-            bitfield >>= 8;
-        }
+        strm.writeArray(perks, perk => Perks.writeToStream(strm, perk));
     }
 
     if (hasTeamID) {
@@ -260,10 +265,12 @@ function deserializePlayerData(strm: SuroiByteStream): PlayerData {
         hasMinMax,
         hasHealth,
         hasAdrenaline,
+        hasShield,
         hasZoom,
         hasLayer,
         hasId,
         hasTeammates,
+        hasHighlightedPlayers,
         hasInventory,
         hasLockedSlots,
         hasItems,
@@ -294,6 +301,10 @@ function deserializePlayerData(strm: SuroiByteStream): PlayerData {
         data.adrenaline = strm.readFloat(0, 1, 2);
     }
 
+    if (hasShield) {
+        data.shield = strm.readFloat(0, 1, 2);
+    }
+
     if (hasZoom) {
         data.zoom = strm.readUint8();
     }
@@ -310,20 +321,24 @@ function deserializePlayerData(strm: SuroiByteStream): PlayerData {
     }
 
     if (hasTeammates) {
-        data.teammates = strm.readArray(
-            () => {
-                const status = strm.readUint8();
-                return {
-                    id: strm.readObjectId(),
-                    position: strm.readPosition(),
-                    normalizedHealth: strm.readFloat(0, 1, 1),
-                    downed: (status & 2) !== 0,
-                    disconnected: (status & 1) !== 0,
-                    colorIndex: strm.readUint8()
-                };
-            },
-            1
-        );
+        data.teammates = strm.readArray(() => {
+            const status = strm.readUint8();
+            return {
+                id: strm.readObjectId(),
+                position: strm.readPosition(),
+                normalizedHealth: strm.readFloat(0, 1, 1),
+                downed: (status & 2) !== 0,
+                disconnected: (status & 1) !== 0,
+                colorIndex: strm.readUint8()
+            };
+        });
+    }
+
+    if (hasHighlightedPlayers) {
+        data.highlightedPlayers = strm.readArray(() => ({
+            id: strm.readObjectId(),
+            normalizedHealth: strm.readFloat(0, 1, 1)
+        }));
     }
 
     if (hasInventory) {
@@ -411,19 +426,7 @@ function deserializePlayerData(strm: SuroiByteStream): PlayerData {
     }
 
     if (hasPerks) {
-        const bytes = Math.ceil(Perks.definitions.length / 8);
-
-        let bitfield = 0;
-        for (let i = 0; i < bytes; i++) {
-            // append new chunks "leftwards"
-            bitfield += strm.readUint8() << (8 * i);
-        }
-
-        let list: PerkDefinition[] | undefined;
-        data.perks = {
-            asBitfield: () => bitfield,
-            asList: () => Array.from(list ??= Perks.definitions.filter((_, i) => (bitfield & (1 << i)) !== 0))
-        };
+        data.perks = strm.readArray(() => Perks.readFromStream(strm));
     }
 
     if (hasTeamID) {
@@ -448,7 +451,8 @@ export const enum UpdateFlags {
     AliveCount = 1 << 11,
     Planes = 1 << 12,
     MapPings = 1 << 13,
-    KillLeader = 1 << 14
+    MapIndicators = 1 << 14,
+    KillLeader = 1 << 15
 }
 
 export interface MapPingSerialization {
@@ -463,6 +467,15 @@ export interface PlayerPingSerialization {
 }
 
 export type PingSerialization = MapPingSerialization | PlayerPingSerialization;
+
+export interface MapIndicatorSerialization {
+    id: number
+    dead: boolean
+    positionDirty: boolean
+    position?: Vector
+    definitionDirty: boolean
+    definition?: MapIndicatorDefinition
+}
 
 export interface ExplosionSerialization {
     readonly definition: ExplosionDefinition
@@ -497,6 +510,7 @@ export interface PlayerData {
     }
     health?: number
     adrenaline?: number
+    shield?: number
     zoom?: number
     layer?: number
     id?: {
@@ -510,6 +524,10 @@ export interface PlayerData {
         readonly downed: boolean
         readonly disconnected: boolean
         readonly colorIndex: number
+    }>
+    highlightedPlayers?: Array<{
+        readonly id: number
+        readonly normalizedHealth: number
     }>
     inventory?: {
         readonly activeWeaponIndex: number
@@ -527,7 +545,7 @@ export interface PlayerData {
         readonly scope: ScopeDefinition
     }
     activeC4s?: boolean
-    perks?: PerkCollection
+    perks?: PerkDefinition[]
     teamID?: number
 }
 
@@ -566,6 +584,7 @@ export interface UpdateDataCommon {
         readonly direction: number
     }>
     readonly mapPings?: readonly PingSerialization[]
+    readonly mapIndicators?: readonly MapIndicatorSerialization[]
     readonly killLeader?: {
         id: number
         kills: number
@@ -760,18 +779,40 @@ export const UpdatePacket = new Packet<UpdateDataIn, UpdateDataOut>(PacketType.U
         }
 
         if (data.mapPings?.length) {
-            strm.writeArray(
-                data.mapPings,
-                ping => {
-                    MapPings.writeToStream(strm, ping.definition);
-                    strm.writePosition(ping.position);
-                    if (ping.definition.isPlayerPing) {
-                        strm.writeObjectId((ping as PlayerPingSerialization).playerId);
-                    }
-                },
-                1
-            );
+            strm.writeArray(data.mapPings, ping => {
+                MapPings.writeToStream(strm, ping.definition);
+                strm.writePosition(ping.position);
+                if (ping.definition.isPlayerPing) {
+                    strm.writeObjectId((ping as PlayerPingSerialization).playerId);
+                }
+            });
             flags |= UpdateFlags.MapPings;
+        }
+
+        if (data.mapIndicators?.length) {
+            strm.writeArray(data.mapIndicators, indicator => {
+                const { id, positionDirty, definitionDirty, dead, position, definition } = indicator;
+
+                strm.writeUint8(id);
+                strm.writeBooleanGroup(
+                    positionDirty,
+                    definitionDirty,
+                    dead
+                );
+
+                if (positionDirty) {
+                    // can't be undefined on server
+                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                    strm.writePosition(position!);
+                }
+
+                if (definitionDirty) {
+                    // also can't be undefined on server
+                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                    MapIndicators.writeToStream(strm, definition!);
+                }
+            });
+            flags |= UpdateFlags.MapIndicators;
         }
 
         if (data.killLeader) {
@@ -783,7 +824,7 @@ export const UpdatePacket = new Packet<UpdateDataIn, UpdateDataOut>(PacketType.U
         const idx = strm.index;
         strm.index = flagsIdx;
         strm.writeUint16(flags);
-        // restore steam index
+        // restore stream index
         strm.index = idx;
     },
 
@@ -928,6 +969,29 @@ export const UpdatePacket = new Packet<UpdateDataIn, UpdateDataOut>(PacketType.U
                     ...(definition.isPlayerPing ? { playerId: stream.readObjectId() } : {})
                 } as MapPingSerialization;
             }, 1);
+        }
+
+        if ((flags & UpdateFlags.MapIndicators) !== 0) {
+            data.mapIndicators = stream.readArray(() => {
+                const id = stream.readUint8();
+                const [
+                    positionDirty,
+                    definitionDirty,
+                    dead
+                ] = stream.readBooleanGroup();
+
+                let position;
+                if (positionDirty) {
+                    position = stream.readPosition();
+                }
+
+                let definition;
+                if (definitionDirty) {
+                    definition = MapIndicators.readFromStream(stream);
+                }
+
+                return { id, positionDirty, definitionDirty, dead, position, definition };
+            });
         }
 
         if ((flags & UpdateFlags.KillLeader) !== 0) {

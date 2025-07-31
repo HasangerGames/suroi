@@ -173,6 +173,8 @@ class CameraManagerClass {
             // if showing the container, it needs to be visible from the start or the transition won't work
             container.visible = true;
 
+            if (Game.mode.overrideUpstairsFunctionality && i === 2) container.visible = false; // hunting stand sucks balls
+
             this.layerTweens[i] = Game.addTween({
                 target: container,
                 to: { alpha: targetAlpha },

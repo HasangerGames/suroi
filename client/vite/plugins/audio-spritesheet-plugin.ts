@@ -1,10 +1,10 @@
 import { FSWatcher, watch } from "chokidar";
-import { readdirSync, readFileSync } from "fs";
+import { readFileSync } from "fs";
 import path from "path";
 import { type Plugin } from "vite";
 import { type ModeName, Modes, type SpritesheetNames } from "../../../common/src/definitions/modes";
-import { getPaths, shortHash } from "./utils";
 import { readDirectory } from "../../../common/src/utils/readDirectory";
+import { getPaths, shortHash } from "./utils";
 
 export interface AudioSpritesheetImporter {
     readonly importSpritesheet: (name: string) => Promise<AudioSpritesheetManifest>
@@ -18,8 +18,7 @@ export interface AudioSpritesheetManifest {
 
 const PLUGIN_NAME = "vite-audio-spritesheet-plugin";
 
-const audioDirContents = readdirSync("public/audio/game");
-const audioDirs = Object.keys(Modes).filter(m => audioDirContents.includes(m));
+const audioDirs = Object.keys(Modes);
 
 const virtualModuleIds = [
     "virtual:audio-spritesheet-importer",
