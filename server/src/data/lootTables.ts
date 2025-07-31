@@ -266,8 +266,8 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { item: "cola", weight: 0.1 }
         ],
         fridge: {
-            min: 2,
-            max: 3,
+            min: 1,
+            max: 2,
             loot: [
                 { item: "cola", weight: 1 }
             ]
@@ -282,8 +282,8 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             ]
         },
         cooler: {
-            min: 2,
-            max: 3,
+            min: 1,
+            max: 2,
             loot: [
                 { item: "cola", weight: 1 }
             ]
