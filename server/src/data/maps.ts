@@ -814,7 +814,6 @@ const maps = {
             super_barrel: 30,
             melee_crate: 1,
             gold_rock: 1,
-            loot_barrel: 1,
             nsd_rock: 1,
             reinforced_crate: 1,
             hatchet_stump: 3
