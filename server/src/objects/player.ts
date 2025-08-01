@@ -2480,10 +2480,10 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 }
                 case PerkIds.Overdrive: {
                     newModifiers.size *= perk.sizeMod;
-                    if (this.overdriveTimeout !== undefined) break;
+                    /* if (this.overdriveTimeout !== undefined) break;
                     this.overdriveTimeout = this.game.addTimeout(() => {
                         this.overdriveKills = 0;
-                    }, perk.achieveTime);
+                    }, perk.achieveTime); */
                     break;
                 }
             }

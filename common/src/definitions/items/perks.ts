@@ -503,14 +503,14 @@ const perks = [
 
         particle: "charged_particle",
         activatedSound: "overdrive",
-        requiredKills: 2, // its actually 3 i know but code works with 2 (it takes it as 3)
+        requiredKills: 0, // its actually 1 i know but code works with 0 (it takes it as 1)
         speedMod: 1.25,
         speedBoostDuration: 10e3, // msec
         sizeMod: 1.05,
         healBonus: 25,
         adrenalineBonus: 25,
-        achieveTime: 30e3, // msec
-        cooldown: 20e3 // msec
+        // achieveTime: 30e3, // msec
+        cooldown: 12e3 // msec
     }
 ] as const satisfies ReadonlyArray<BasePerkDefinition & Record<string, unknown>>;
 
