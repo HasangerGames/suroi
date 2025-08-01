@@ -1792,7 +1792,8 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
 
         special_guns: [
             // 32%
-            { item: "ots23", weight: 0.16 },
+            { item: "psm", weight: 0.16 },
+            { item: "g19", weight: 0.16 },
             { item: "mpx", weight: 0.16 },
             { item: "mp5k", weight: 0.16 },
             { item: "aks74u", weight: 0.16 },
@@ -1807,8 +1808,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { item: "ak47", weight: 0.074 },
 
             // 15%
-            { item: "psm", weight: 0.075 },
-            { item: "g19", weight: 0.075 },
+            { item: "ots23", weight: 0.075 },
 
             // 10%
             { item: "stoner_63", weight: 0.033 },
@@ -1843,11 +1843,11 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { item: "mp5k", weight: 0.14 },
             { item: "mpx", weight: 0.14 },
             { item: "saf200", weight: 0.14 },
-            { item: "ots23", weight: 0.14 },
             { item: "ak47", weight: 0.14 },
             { item: "aks74u", weight: 0.14 },
 
             // 16%
+            { item: "ots23", weight: 0.032 },
             { item: "m16a2", weight: 0.032 },
             { item: "fn_fal", weight: 0.032 },
             { item: "mcx_spear", weight: 0.032 },
