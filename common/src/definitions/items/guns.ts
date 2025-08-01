@@ -629,7 +629,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
             fireDelay: 168,
             shotSpread: 2,
             moveSpread: 5,
-            capacity: 14,
+            capacity: 16,
             reloadTime: 4
         }
     },
