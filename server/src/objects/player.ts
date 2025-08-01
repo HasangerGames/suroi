@@ -1153,6 +1153,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
         // building & smoke checks
         let isInsideBuilding = false;
+        let scopeTarget: ReferenceTo<ScopeDefinition> | undefined;
+
         const depleters = new Set<SyncedParticle>();
         for (const object of this.nearObjects) {
             if (
@@ -1163,6 +1165,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 && !Config.disableBuildingCheck
             ) {
                 isInsideBuilding = true;
+                scopeTarget ??= object.definition.ceilingScope;
             } else if (
                 object.isSyncedParticle
                 && object.hitbox?.collidesWith(this._hitbox)
@@ -1416,7 +1419,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         // Determine if player is inside building + reduce scope in buildings
         if (!this.isInsideBuilding) {
             this.effectiveScope = isInsideBuilding
-                ? DEFAULT_SCOPE
+                ? scopeTarget ?? DEFAULT_SCOPE
                 : this.inventory.scope;
         }
         this.isInsideBuilding = isInsideBuilding;
@@ -1425,7 +1428,6 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             this.effectiveScope = DEFAULT_SCOPE;
         }
 
-        let scopeTarget: ReferenceTo<ScopeDefinition> | undefined;
         depleters.forEach(depleter => {
             const def = depleter.definition;
             const depletion = def.depletePerMs;
