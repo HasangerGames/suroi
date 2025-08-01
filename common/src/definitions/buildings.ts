@@ -958,10 +958,16 @@ const hollowLog = (
             { idString: "hollow_log_wall", position: Vec(-6, 0), rotation: 0 },
             { idString: "hollow_log_wall", position: Vec(6, 0), rotation: 0 }
         ],
-        lootSpawners: [{
-            table: "ground_loot",
-            position: Vec(0, 0)
-        }],
+        lootSpawners: [
+            {
+                table: "ground_loot",
+                position: Vec(0, 8)
+            },
+            {
+                table: "ground_loot",
+                position: Vec(0, -8)
+            }
+        ],
         floors: [{
             type: FloorNames.Log,
             hitbox: RectangleHitbox.fromRect(13.68, 32.76)
