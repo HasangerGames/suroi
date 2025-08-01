@@ -673,7 +673,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
             tier: Tier.A,
             ammoSpawnAmount: 90,
             leftRightOffset: 1.4,
-            fireDelay: 67,
+            fireDelay: 112,
             shotSpread: 2,
             moveSpread: 5,
             capacity: 30,
