@@ -1732,6 +1732,11 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { item: "nsd_uniform", weight: 0.2 }
         ],
 
+        throwables: [
+            { item: "frag_grenade", count: 2, weight: 1 },
+            { item: "smoke_grenade", count: 2, weight: 1 }
+        ],
+
         ammo: [
             { item: "545mm", count: 40, weight: 0.75 },
             { item: "556mm", count: 30, weight: 1 },
