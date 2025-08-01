@@ -793,7 +793,7 @@ const maps = {
             hollow_log_3: 3
         },
         obstacles: {
-            stump: 60,
+            stump: 80,
             small_logs_pile: 30,
             large_logs_pile_2: 20,
             clearing_boulder: 18,
@@ -836,6 +836,16 @@ const maps = {
                     maxAmount: 3,
                     jitter: 5,
                     obstacles: ["dead_pine_tree"],
+                    radius: 12
+                }
+            },
+            {
+                clumpAmount: 20,
+                clump: {
+                    minAmount: 2,
+                    maxAmount: 3,
+                    jitter: 5,
+                    obstacles: ["stump"],
                     radius: 12
                 }
             }
