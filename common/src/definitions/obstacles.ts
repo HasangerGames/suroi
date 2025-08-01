@@ -5373,7 +5373,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         frames: {
             particle: "bunker_particle"
         },
-        rotationMode: RotationMode.Limited
+        rotationMode: RotationMode.Limited,
+        allowFlyover: FlyoverPref.Never
     },
     {
         idString: "bunker_stair",
