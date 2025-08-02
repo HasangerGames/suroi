@@ -8,6 +8,7 @@ import { FloorNames } from "../utils/terrain";
 import { Vec, type Vector } from "../utils/vector";
 import { Materials, type ObstacleDefinition } from "./obstacles";
 import "../utils/isClient";
+import { ScopeDefinition } from "./items/scopes";
 
 declare const IS_CLIENT: boolean;
 
@@ -88,6 +89,7 @@ export interface BuildingDefinition extends ObjectDefinition {
     readonly spawnHitbox: Hitbox
     readonly bunkerSpawnHitbox?: Hitbox
     readonly ceilingHitbox?: Hitbox
+    readonly ceilingScope?: ReferenceTo<ScopeDefinition>
     /**
      * @default {FlyoverPref.Never}
      */
@@ -450,7 +452,7 @@ const huntingStandLayout = (id: number, obstacles: readonly BuildingObstacle[], 
     idString: `hunting_stand_layout_${id}`,
     name: "Hunting Stand Layout",
     defType: DefinitionType.Building,
-    spawnHitbox: RectangleHitbox.fromRect(63.07, 114),
+    spawnHitbox: RectangleHitbox.fromRect(24.22, 30.14),
     obstacles,
     lootSpawners: lootSpawners_ ?? undefined
 });
@@ -956,10 +958,16 @@ const hollowLog = (
             { idString: "hollow_log_wall", position: Vec(-6, 0), rotation: 0 },
             { idString: "hollow_log_wall", position: Vec(6, 0), rotation: 0 }
         ],
-        lootSpawners: [{
-            table: "ground_loot",
-            position: Vec(0, 0)
-        }],
+        lootSpawners: [
+            {
+                table: "ground_loot",
+                position: Vec(0, 8)
+            },
+            {
+                table: "ground_loot",
+                position: Vec(0, -8)
+            }
+        ],
         floors: [{
             type: FloorNames.Log,
             hitbox: RectangleHitbox.fromRect(13.68, 32.76)
@@ -12732,6 +12740,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             RectangleHitbox.fromRect(15.29, 21.49, Vec(-0.01, 0.09)),
             RectangleHitbox.fromRect(9.58, 2.84, Vec(-0.21, 11.87))
         ),
+        ceilingScope: "8x_scope",
         floors: [{
             type: FloorNames.Wood,
             hitbox: RectangleHitbox.fromRect(21.27, 27.59)
