@@ -989,173 +989,10 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     update(): void {
         const dt = this.game.dt;
 
-        // Calculate movement
-        let movement: Vector;
-
-        const playerMovement = this.movement;
-        if (this.isMobile && playerMovement.moving) {
-            movement = Vec.fromPolar(playerMovement.angle);
-        } else {
-            let x = +playerMovement.right - +playerMovement.left;
-            let y = +playerMovement.down - +playerMovement.up;
-
-            if (x * y !== 0) {
-                // If the product is non-zero, then both of the components must be non-zero
-                x *= Math.SQRT1_2;
-                y *= Math.SQRT1_2;
-            }
-
-            movement = Vec(x, y);
-        }
-
-        // Rate Limiting: Team Pings & Emotes
-        if (this.emoteCount > 0 && !this.blockEmoting && (this.game.now - this.lastRateLimitUpdate > GameConstants.player.rateLimitInterval)) {
-            this.emoteCount--;
-            this.lastRateLimitUpdate = this.game.now;
-        }
-
-        // Perks
-        if (this.perkUpdateMap !== undefined) {
-            for (const [perk, lastUpdated] of this.perkUpdateMap.entries()) {
-                if (this.game.now - lastUpdated <= (perk.updateInterval ?? 1000)) continue;
-
-                this.perkUpdateMap.set(perk, this.game.now);
-                // ! evil starts here
-                switch (perk.idString) {
-                    case PerkIds.Bloodthirst: {
-                        this.piercingDamage({
-                            amount: perk.healthLoss
-                        });
-                        break;
-                    }
-                    case PerkIds.BabyPlumpkinPie: {
-                        this.swapWeaponRandomly(undefined, true);
-                        break;
-                    }
-                    case PerkIds.TornPockets: {
-                        const items = this.inventory.items;
-                        const candidates = new Set(Ammos.definitions.filter(({ ephemeral }) => !ephemeral).map(({ idString }) => idString));
-
-                        const counts = Object.entries(items.asRecord()).filter(
-                            ([str, count]) => Ammos.hasString(str) && candidates.has(str) && count !== 0
-                        );
-
-                        // no ammo at all
-                        if (counts.length === 0) break;
-
-                        const chosenAmmo = Ammos.fromString(
-                            weightedRandom(
-                                counts.map(([str]) => str),
-                                counts.map(([, cnt]) => cnt)
-                            )
-                        );
-
-                        const amountToDrop = Numeric.min(
-                            this.inventory.items.getItem(chosenAmmo.idString),
-                            perk.dropCount
-                        );
-
-                        this.game.addLoot(chosenAmmo, this.position, this.layer, { count: amountToDrop })
-                            ?.push(this.rotation + Math.PI, 0.025);
-                        items.decrementItem(chosenAmmo.idString, amountToDrop);
-                        this.dirty.items = true;
-                        break;
-                    }
-                    case PerkIds.RottenPlumpkin: {
-                        this.sendEmote(Emotes.fromStringSafe(perk.emote), true);
-                        this.piercingDamage({
-                            amount: perk.healthLoss
-                        });
-                        this.adrenaline -= this.adrenaline * (perk.adrenLoss / 100);
-                        break;
-                    }
-                    case PerkIds.Shrouded: {
-                        this.game.addSyncedParticle(
-                            "shrouded_particle",
-                            this.position,
-                            randomPointInsideCircle(this.position, 5),
-                            this.layer,
-                            this.id
-                        );
-                        break;
-                    }
-                    case PerkIds.Infected: {
-                        if (this.health > perk.minHealth) {
-                            this.health = Numeric.max(this.health - perk.dps, perk.minHealth);
-                        }
-                        const detectionHitbox = new CircleHitbox(perk.infectionRadius, this.position);
-                        for (const player of this.game.grid.intersectsHitbox(detectionHitbox)) {
-                            if (
-                                !player.isPlayer
-                                || !player.hitbox.collidesWith(detectionHitbox)
-                                || Math.random() > perk.infectionChance
-                                || player.hasPerk(PerkIds.Immunity)
-                            ) continue;
-                            player.addPerk(Perks.fromString(PerkIds.Infected));
-                            player.setDirty();
-                        }
-                        break;
-                    }
-                    case PerkIds.ThermalGoggles: {
-                        const detectionHitbox = new CircleHitbox(perk.detectionRadius, this.position);
-                        this.highlightedPlayers = [];
-                        for (const player of this.game.grid.intersectsHitbox(detectionHitbox)) {
-                            if (
-                                !player.isPlayer
-                                || player === this
-                                || player.dead
-                                || (this.game.isTeamMode && player.teamID === this.teamID)
-                                || !this.visibleObjects.has(player)
-                                || !player.hitbox.collidesWith(detectionHitbox)
-                            ) continue;
-                            this.highlightedPlayers.push(player);
-                            const indicator = this.highlightedIndicators?.get(player);
-                            if (indicator) {
-                                indicator.updatePosition(player.position);
-                            } else {
-                                (this.highlightedIndicators ??= new Map<Player, MapIndicator>())
-                                    .set(player, new MapIndicator(this.game, "player_indicator", player.position));
-                            }
-                        }
-                        for (const [player, indicator] of this.highlightedIndicators ?? []) {
-                            if (this.highlightedPlayers.includes(player)) continue;
-                            if (indicator.dead) {
-                                this.game.mapIndicatorIDAllocator.give(indicator.id);
-                                this.highlightedIndicators?.delete(player);
-                            }
-                            indicator.dead = true;
-                        }
-                        this.dirty.highlightedPlayers = true;
-                        break;
-                    }
-                }
-                // ! evil ends here
-            }
-        }
-
-        if (this.stuckProjectiles) {
-            for (const [proj, angle] of this.stuckProjectiles) {
-                if (proj.detonated || proj.dead) {
-                    this.stuckProjectiles.delete(proj);
-                    continue;
-                }
-                const finalAngle = Angle.normalize(this.rotation + angle);
-                proj.position = Vec.add(this.position, Vec.fromPolar(finalAngle, this.sizeMod * GameConstants.player.radius * 1.2));
-                proj.rotation = finalAngle;
-                proj.setPartialDirty();
-            }
-        }
-
-        // Recoil
-        const recoilMultiplier = this.recoil.active && (this.recoil.active = (this.recoil.time >= this.game.now))
-            ? this.recoil.multiplier
-            : 1;
-
-        // building & smoke checks
+        // Building & smoke checks
         let isInsideBuilding = false;
-        let scopeTarget: ReferenceTo<ScopeDefinition> | undefined;
-
-        const depleters = new Set<SyncedParticle>();
+        let scopeTarget: ReifiableDef<ScopeDefinition> | undefined;
+        const syncedParticles = new Set<SyncedParticle>();
         for (const object of this.nearObjects) {
             if (
                 !isInsideBuilding
@@ -1171,9 +1008,15 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 && object.hitbox?.collidesWith(this._hitbox)
                 && adjacentOrEqualLayer(object.layer, this.layer)
             ) {
-                depleters.add(object);
+                syncedParticles.add(object);
             }
         }
+        this.isInsideBuilding = isInsideBuilding;
+
+        // Recoil
+        const recoilMultiplier = this.recoil.active && (this.recoil.active = (this.recoil.time >= this.game.now))
+            ? this.recoil.multiplier
+            : 1;
 
         // Speed multiplier for perks
         const perkSpeedMod
@@ -1182,7 +1025,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 ({ waterSpeedMod, smokeSpeedMod }) => {
                     return (
                         (FloorTypes[this.floor].overlay ? waterSpeedMod : 1) // man do we need a better way of detecting water lol
-                        * (depleters.size !== 0 ? smokeSpeedMod : 1)
+                        * (syncedParticles.size !== 0 ? smokeSpeedMod : 1)
                     );
                 },
                 1
@@ -1237,33 +1080,33 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             * this.effectSpeedMultiplier                                             // Effect speed multiplier (currently only used for vaccinator slowdown)
             * this._modifiers.baseSpeed;                                             // Current on-wearer modifier
 
+        // Calculate movement
+        let movement: Vector;
+
+        const playerMovement = this.movement;
+        if (this.isMobile && playerMovement.moving) {
+            movement = Vec.fromPolar(playerMovement.angle);
+        } else {
+            let x = +playerMovement.right - +playerMovement.left;
+            let y = +playerMovement.down - +playerMovement.up;
+
+            if (x * y !== 0) {
+                // If the product is non-zero, then both of the components must be non-zero
+                x *= Math.SQRT1_2;
+                y *= Math.SQRT1_2;
+            }
+
+            movement = Vec(x, y);
+        }
+
         // Update position
         const oldPosition = Vec.clone(this.position);
-        const movementVector = Vec.scale(movement, speed);
-        this._movementVector = movementVector;
+        this._movementVector = Vec.scale(movement, speed);
 
         this.position = Vec.add(
             this.position,
             Vec.scale(this.movementVector, dt)
         );
-
-        if (this.mapIndicator) {
-            this.mapIndicator.updatePosition(this.position);
-        }
-
-        // Cancel reviving when out of range
-        if (this.action instanceof ReviveAction) {
-            if (
-                Vec.squaredLen(
-                    Vec.sub(
-                        this.position,
-                        this.action.target.position
-                    )
-                ) >= 7 ** 2
-            ) {
-                this.action.cancel();
-            }
-        }
 
         // Find and resolve collisions
         this.nearObjects = this.game.grid.intersectsHitbox(this._hitbox, this.layer);
@@ -1310,24 +1153,23 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             if (!collided) break;
         }
 
-        // World boundaries
+        // Clamp position to world boundaries
         this.position.x = Numeric.clamp(this.position.x, this._hitbox.radius, this.game.map.width - this._hitbox.radius);
         this.position.y = Numeric.clamp(this.position.y, this._hitbox.radius, this.game.map.height - this._hitbox.radius);
 
         this.isMoving = !Vec.equals(oldPosition, this.position);
         if (this.isMoving) {
             this.game.grid.updateObject(this);
+            this.floor = this.game.map.terrain.getFloor(this.position, this.layer);
+            this.mapIndicator?.updatePosition(this.position);
         }
 
-        // Disable invulnerability if the player moves or turns
         if (this.isMoving || this.turning) {
             this.disableInvulnerability();
             this.setPartialDirty();
-
-            if (this.isMoving) {
-                this.floor = this.game.map.terrain.getFloor(this.position, this.layer);
-            }
         }
+
+        this.turning = false;
 
         // Health regen
         let toRegen = this._modifiers.hpRegen;
@@ -1416,49 +1258,209 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             });
         }
 
-        // Determine if player is inside building + reduce scope in buildings
-        if (!this.isInsideBuilding) {
-            this.effectiveScope = isInsideBuilding
-                ? scopeTarget ?? DEFAULT_SCOPE
-                : this.inventory.scope;
+        // Cancel reviving when out of range
+        if (this.action instanceof ReviveAction) {
+            if (
+                Vec.squaredLen(
+                    Vec.sub(
+                        this.position,
+                        this.action.target.position
+                    )
+                ) >= 7 ** 2
+            ) {
+                this.action.cancel();
+            }
         }
-        this.isInsideBuilding = isInsideBuilding;
 
-        if (this.downed) {
-            this.effectiveScope = DEFAULT_SCOPE;
-        }
-
-        depleters.forEach(depleter => {
-            const def = depleter.definition;
+        // Smoke effects
+        for (const syncedParticle of syncedParticles) {
+            const def = syncedParticle.definition;
             const depletion = def.depletePerMs;
 
             const { snapScopeTo, scopeOutPreMs = 0 } = def as SyncedParticleDefinition & { readonly hitbox: Hitbox };
             // If lifetime - age > scope out time, we have the potential to zoom in the scope
             if (
                 snapScopeTo
-                && depleter._lifetime - (this.game.now - depleter._creationDate) >= scopeOutPreMs
+                && syncedParticle._lifetime - (this.game.now - syncedParticle._creationDate) >= scopeOutPreMs
             ) {
                 scopeTarget ??= snapScopeTo;
             }
 
+            // TODO if this is ever used, make a new damage type; gas is misleading
             if (depletion?.health) {
                 this.piercingDamage({
                     amount: depletion.health * dt,
                     source: DamageSources.Gas
-                //          ^^^^^^^^^^^^^ dubious
                 });
             }
 
             if (depletion?.adrenaline) {
                 this.adrenaline -= depletion.adrenaline * dt;
             }
-        });
-
-        if (scopeTarget !== undefined || this.isInsideBuilding || this.downed) {
-            this.effectiveScope = scopeTarget ?? DEFAULT_SCOPE;
         }
 
-        // Automatic doors
+        // Set scope
+        if (this.downed || (isInsideBuilding && !scopeTarget)) {
+            scopeTarget = DEFAULT_SCOPE;
+        }
+        this.effectiveScope = scopeTarget ?? this.inventory.scope;
+
+        // Rate limit team pings & emotes
+        if (this.emoteCount > 0 && !this.blockEmoting && (this.game.now - this.lastRateLimitUpdate > GameConstants.player.rateLimitInterval)) {
+            this.emoteCount--;
+            this.lastRateLimitUpdate = this.game.now;
+        }
+
+        // Update perks
+        if (this.perkUpdateMap !== undefined) {
+            for (const [perk, lastUpdated] of this.perkUpdateMap.entries()) {
+                if (this.game.now - lastUpdated <= (perk.updateInterval ?? 1000)) continue;
+
+                this.perkUpdateMap.set(perk, this.game.now);
+                // ! evil starts here
+                switch (perk.idString) {
+                    case PerkIds.Bloodthirst: {
+                        this.piercingDamage({
+                            amount: perk.healthLoss
+                        });
+                        break;
+                    }
+                    case PerkIds.BabyPlumpkinPie: {
+                        this.swapWeaponRandomly(undefined, true);
+                        break;
+                    }
+                    case PerkIds.TornPockets: {
+                        const items = this.inventory.items;
+                        const candidates = new Set(Ammos.definitions.filter(({ ephemeral }) => !ephemeral).map(({ idString }) => idString));
+
+                        const counts = Object.entries(items.asRecord()).filter(
+                            ([str, count]) => Ammos.hasString(str) && candidates.has(str) && count !== 0
+                        );
+
+                        // no ammo at all
+                        if (counts.length === 0) break;
+
+                        const chosenAmmo = Ammos.fromString(
+                            weightedRandom(
+                                counts.map(([str]) => str),
+                                counts.map(([, cnt]) => cnt)
+                            )
+                        );
+
+                        const amountToDrop = Numeric.min(
+                            this.inventory.items.getItem(chosenAmmo.idString),
+                            perk.dropCount
+                        );
+
+                        this.game.addLoot(chosenAmmo, this.position, this.layer, { count: amountToDrop })
+                            ?.push(this.rotation + Math.PI, 0.025);
+                        items.decrementItem(chosenAmmo.idString, amountToDrop);
+                        this.dirty.items = true;
+                        break;
+                    }
+                    case PerkIds.RottenPlumpkin: {
+                        this.sendEmote(Emotes.fromStringSafe(perk.emote), true);
+                        this.piercingDamage({
+                            amount: perk.healthLoss
+                        });
+                        this.adrenaline -= this.adrenaline * (perk.adrenLoss / 100);
+                        break;
+                    }
+                    case PerkIds.Shrouded: {
+                        this.game.addSyncedParticle(
+                            "shrouded_particle",
+                            this.position,
+                            randomPointInsideCircle(this.position, 5),
+                            this.layer,
+                            this.id
+                        );
+                        break;
+                    }
+                    case PerkIds.Infected: {
+                        if (this.health > perk.minHealth) {
+                            this.health = Numeric.max(this.health - perk.dps, perk.minHealth);
+                        }
+                        const detectionHitbox = new CircleHitbox(perk.infectionRadius, this.position);
+                        for (const player of this.game.grid.intersectsHitbox(detectionHitbox)) {
+                            if (
+                                !player.isPlayer
+                                || !player.hitbox.collidesWith(detectionHitbox)
+                                || Math.random() > perk.infectionChance
+                                || player.hasPerk(PerkIds.Immunity)
+                            ) continue;
+                            player.addPerk(Perks.fromString(PerkIds.Infected));
+                            player.setDirty();
+                        }
+                        break;
+                    }
+                    case PerkIds.ThermalGoggles: {
+                        const detectionHitbox = new CircleHitbox(perk.detectionRadius, this.position);
+                        this.highlightedPlayers = [];
+                        const indicatedPlayers = [];
+                        const alreadyHighlighted: PerkDefinition[] = [
+                            PerkData[PerkIds.ThermalGoggles],
+                            PerkData[PerkIds.ExperimentalForcefield],
+                            PerkData[PerkIds.HollowPoints]
+                        ];
+
+                        for (const player of this.game.grid.intersectsHitbox(detectionHitbox)) {
+                            if (
+                                !player.isPlayer
+                                || player === this
+                                || player.dead
+                                || (this.game.isTeamMode && player.teamID === this.teamID)
+                                || !player.hitbox.collidesWith(detectionHitbox)
+                            ) continue;
+
+                            if (this.visibleObjects.has(player)) {
+                                this.highlightedPlayers.push(player);
+                            }
+
+                            if (player.perks.some(perk => alreadyHighlighted.includes(perk))) continue;
+
+                            indicatedPlayers.push(player);
+
+                            const indicator = this.highlightedIndicators?.get(player);
+                            if (indicator) {
+                                indicator.updatePosition(player.position);
+                            } else {
+                                (this.highlightedIndicators ??= new Map<Player, MapIndicator>())
+                                    .set(player, new MapIndicator(this.game, "player_indicator", player.position));
+                            }
+                        }
+
+                        for (const [player, indicator] of this.highlightedIndicators ?? []) {
+                            if (indicatedPlayers.includes(player)) continue;
+                            if (indicator.dead) {
+                                this.game.mapIndicatorIDAllocator.give(indicator.id);
+                                this.highlightedIndicators?.delete(player);
+                            }
+                            indicator.dead = true;
+                        }
+
+                        this.dirty.highlightedPlayers = true; // TODO determine if the list of highlighted players actually changed
+                        break;
+                    }
+                }
+                // ! evil ends here
+            }
+        }
+
+        // Update stuck projectiles (currently only seedshot seeds)
+        if (this.stuckProjectiles) {
+            for (const [proj, angle] of this.stuckProjectiles) {
+                if (proj.detonated || proj.dead) {
+                    this.stuckProjectiles.delete(proj);
+                    continue;
+                }
+                const finalAngle = Angle.normalize(this.rotation + angle);
+                proj.position = Vec.add(this.position, Vec.fromPolar(finalAngle, this.sizeMod * GameConstants.player.radius * 1.2));
+                proj.rotation = finalAngle;
+                proj.setPartialDirty();
+            }
+        }
+
+        // Update automatic doors
         const openedDoors: Obstacle[] = [];
         const unopenedDoors: Obstacle[] = [];
 
@@ -1499,7 +1501,6 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         };
         this.game.addTimeout(closeDoors, 1000);
 
-        this.turning = false;
         this.game.pluginManager.emit("player_update", this);
     }
 
