@@ -2034,6 +2034,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 this.mapIndicator.definitionDirty = true;
             } else {
                 this.mapIndicator = new MapIndicator(this.game, indicator, this.position);
+                this.game.mapIndicators.push(this.mapIndicator);
             }
         } else if (this.mapIndicator) {
             this.mapIndicator.dead = true;

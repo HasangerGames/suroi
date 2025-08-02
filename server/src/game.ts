@@ -156,7 +156,9 @@ export class Game implements GameData {
     readonly mapPings: PingSerialization[] = [];
 
     readonly mapIndicatorIDAllocator = new IDAllocator(8);
-    get nextMapIndicatorID(): number { return this.mapIndicatorIDAllocator.takeNext(); }
+    get nextMapIndicatorID(): number {
+        return this.mapIndicatorIDAllocator.takeNext();
+    }
 
     readonly mapIndicators: MapIndicatorSerialization[] = [];
 

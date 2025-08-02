@@ -23,6 +23,5 @@ export class MapIndicator implements MapIndicatorSerialization {
         this.id = game.nextMapIndicatorID;
         this.definition = MapIndicators.reify(definition);
         this.position = position;
-        game.mapIndicators.push(this);
     }
 }
