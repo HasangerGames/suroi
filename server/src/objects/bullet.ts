@@ -13,6 +13,7 @@ import { type Explosion } from "./explosion";
 import { type GameObject } from "./gameObject";
 import { Obstacle } from "./obstacle";
 import { type Player } from "./player";
+import { adjacentOrEquivLayer } from "@common/utils/layer";
 
 type Weapon = GunItem | Explosion;
 
@@ -104,17 +105,22 @@ export class Bullet extends BaseBullet {
         const records: DamageRecord[] = [];
         const definition = this.definition;
 
-        const objects = grid.intersectsHitbox(lineRect);
+        const objects = grid.intersectsHitbox(lineRect, this.layer);
 
         const damageMod = (this.modifiers?.damage ?? 1) / (this.reflectionCount + 1);
         for (const collision of this.updateAndGetCollisions(dt, objects)) {
             const object = collision.object as DamageRecord["object"];
-            const { isObstacle } = object;
+            const { isObstacle, isProjectile } = object;
 
             if (isObstacle && object.definition.isStair) {
                 object.handleStairInteraction(this);
                 continue;
             }
+
+            if (
+                (isObstacle && object.definition.noCollisions)
+                || (isProjectile && !adjacentOrEquivLayer(object, this.layer))
+            ) continue;
 
             const { point, normal } = collision.intersection;
             const reflected = (
@@ -178,8 +184,6 @@ export class Bullet extends BaseBullet {
 
             this.collidedIDs.add(object.id);
 
-            if (isObstacle && object.definition.noCollisions) continue;
-
             if (reflected) {
                 this.reflect(rotation ?? 0);
                 this.reflected = true;
@@ -187,16 +191,6 @@ export class Bullet extends BaseBullet {
 
             this.dead = true;
             break;
-        }
-
-        for (const object of objects) {
-            if (
-                object.isProjectile
-                && object.definition.health
-                && lineRect.collidesWith(object.hitbox)
-            ) {
-                object.damage({ amount: definition.damage });
-            }
         }
 
         return records;

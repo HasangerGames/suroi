@@ -1,7 +1,7 @@
 import { Layer, ObjectCategory, ZIndexes } from "@common/constants";
 import { BaseBullet, type BulletOptions } from "@common/utils/baseBullet";
 import { RectangleHitbox } from "@common/utils/hitbox";
-import { adjacentOrEqualLayer } from "@common/utils/layer";
+import { adjacentOrEqualLayer, adjacentOrEquivLayer } from "@common/utils/layer";
 import { Geometry, Numeric, resolveStairInteraction } from "@common/utils/math";
 import { random, randomFloat, randomRotation } from "@common/utils/random";
 import { Vec } from "@common/utils/vector";
@@ -18,6 +18,7 @@ import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 import type { Building } from "./building";
 import { type Obstacle } from "./obstacle";
 import { type Player } from "./player";
+import type { Projectile } from "./projectile";
 
 const white = 0xFFFFFF;
 
@@ -138,6 +139,11 @@ export class Bullet extends BaseBullet {
                     continue;
                 }
 
+                if (
+                    (object.isObstacle && object.definition.noCollisions)
+                    || (object.isProjectile && !adjacentOrEquivLayer(object, this.layer))
+                ) continue;
+
                 const { point, normal } = collision.intersection;
 
                 if (object.isPlayer && collision.reflected) {
@@ -150,14 +156,12 @@ export class Bullet extends BaseBullet {
                             layer: object.layer
                         });
                 } else {
-                    (object as Player | Obstacle | Building).hitEffect(point, Math.atan2(normal.y, normal.x));
+                    (object as Player | Obstacle | Building | Projectile).hitEffect(point, Math.atan2(normal.y, normal.x));
                 }
 
                 this.collidedIDs.add(object.id);
 
                 this.position = point;
-
-                if (object.isObstacle && object.definition.noCollisions) continue;
 
                 this.dead = true;
                 break;
