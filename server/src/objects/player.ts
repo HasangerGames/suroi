@@ -716,10 +716,12 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     private static readonly _weaponTiersCache: Partial<Record<DefinitionType, Partial<Record<Tier, WeaponDefinition[]>>>> = {};
 
     tryRefund(item: InventoryItem = this.activeItem): void {
+        const bulletCount = item.category === DefinitionType.Gun && item.definition.bulletCount ? item.definition.bulletCount : 1;
+
         if (
             item.category !== DefinitionType.Gun
             || item.owner !== this
-            || item.definition.bulletCount !== 1
+            || bulletCount !== 1
             || !this.inventory.weapons.includes(item)
         ) return;
 
