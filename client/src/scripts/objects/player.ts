@@ -42,6 +42,7 @@ import { GameObject } from "./gameObject";
 import { Loot } from "./loot";
 import { Obstacle } from "./obstacle";
 import type { Projectile } from "./projectile";
+import { Explosions } from "@common/definitions/explosions";
 
 export class Player extends GameObject.derive(ObjectCategory.Player) {
     teamID!: number;
@@ -180,6 +181,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
     sizeMod = 1;
 
+    private grenadeImpactPreview?: Graphics;
+
     constructor(id: number, data: ObjectsNetData[ObjectCategory.Player]) {
         super(id);
 
@@ -308,7 +311,9 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         this.images.healthBar?.position.copyFrom(Vec.addComponent(this.container.position, 0, -90));
     }
 
-    override update(): void { /* bleh */ }
+    override update(): void {
+        this.updateGrenadePreview();
+    }
 
     override updateInterpolation(): void {
         this.updateContainerPosition();
@@ -979,6 +984,76 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
             // @ts-expect-error 'item' not existing is okay
             this.action = action;
+        }
+    }
+
+    updateGrenadePreview(): void {
+        if (
+            !(this.animation === AnimationType.ThrowableCook
+                && this.activeItem.defType === DefinitionType.Throwable
+                && this.isActivePlayer)
+        ) {
+            this.grenadeImpactPreview?.clear();
+            this.grenadeImpactPreview?.destroy();
+            this.grenadeImpactPreview = undefined;
+            return;
+        }
+
+        if (PerkManager.has(PerkIds.DemoExpert)) {
+            if (!this.grenadeImpactPreview) {
+                this.grenadeImpactPreview = new Graphics();
+                this.grenadeImpactPreview.zIndex = 999;
+                CameraManager.addObject(this.grenadeImpactPreview);
+            } else {
+                this.grenadeImpactPreview.clear();
+            }
+
+            const graphics = this.grenadeImpactPreview;
+            const def = this.activeItem;
+
+            const pos = Vec.add(
+                toPixiCoords(this.position),
+                Vec.rotate(toPixiCoords(def.animation.cook.rightFist), this.rotation)
+            );
+
+            const maxRange = (def.physics.maxThrowDistance ?? 128) * PerkData[PerkIds.DemoExpert].rangeMod;
+            const range = def.c4 ? 0 : Math.min(InputManager.distanceToMouse * 0.9, maxRange);
+
+            const cookMod = def.cookable ? Date.now() - this.animationChangeTime : 0;
+            const drag = 0.001;
+            const fuseTime = def.fuseTime ?? 0;
+            const physDist = (range / (985 * drag)) * (1 - Math.exp(-drag * (fuseTime - cookMod)));
+
+            const { x, y } = Vec.add(
+                pos,
+                Vec.fromPolar(this.rotation, physDist * PIXI_SCALE)
+            );
+
+            graphics.clear()
+                .setFillStyle({ color: 0xff0000, alpha: 0.3 })
+                .setStrokeStyle({ color: 0xff0000, width: 8, alpha: 0.7 })
+                .beginPath();
+
+            const explosionDef = Explosions.fromStringSafe(def.detonation.explosion ?? "");
+
+            if (
+                explosionDef !== undefined
+                && explosionDef.damage !== 0
+                && explosionDef.radius.min + explosionDef.radius.max !== 0
+            ) {
+                graphics
+                    .circle(x, y, explosionDef.radius.min * PIXI_SCALE)
+                    .closePath()
+                    .fill()
+                    .stroke()
+                    .setStrokeStyle({ color: 0xFFFF00, width: 3, alpha: 0.1 });
+            }
+        } else {
+            if (this.grenadeImpactPreview) {
+                this.grenadeImpactPreview.clear();
+                this.grenadeImpactPreview.destroy();
+                this.grenadeImpactPreview = undefined;
+            }
         }
     }
 
@@ -2172,6 +2247,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         anims.muzzleFlashFade?.kill();
         anims.muzzleFlashRecoil?.kill();
         anims.sizeMod?.kill();
+
+        this.grenadeImpactPreview?.destroy();
 
         images.backMeleeSprite?.destroy();
 
