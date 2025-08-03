@@ -37,7 +37,7 @@ export interface ConfigSchema {
         cron: string;
       };
   /**
-   * Dynamically scale map size based on player count.
+   * Dynamically scale map size and other values based on player count.
    */
   mapScaleRanges?: {
     /**
@@ -56,6 +56,10 @@ export interface ConfigSchema {
      * The maximum number of major buildings to allow to spawn.
      */
     maxMajorBuildings?: number;
+    /**
+     * The window of time after a game is started during which players are allowed to join, in seconds.
+     */
+    gameSpawnWindow?: number;
   }[];
   /**
    * The team mode (solo, duo, or squad), or a schedule to switch between team modes.

@@ -190,8 +190,6 @@ export class Game implements GameData {
     private _started = false;
     private _stopped = false;
 
-    // #region GameData interface members
-
     startedTime = Number.MAX_VALUE; // Default of Number.MAX_VALUE makes it so games that haven't started yet are joined first
     allowJoin = false;
     over = false;
@@ -202,7 +200,7 @@ export class Game implements GameData {
 
     aliveCountDirty = false;
 
-    // #endregion
+    spawnWindow: number;
 
     /**
      * The value of `Date.now()`, as of the start of the tick.
@@ -248,6 +246,8 @@ export class Game implements GameData {
         });
 
         this.mode = Modes[this.modeName = modeFromMap(map)];
+
+        this.spawnWindow = mapOptions.gameSpawnWindow ?? GAME_SPAWN_WINDOW;
 
         void this.pluginManager.loadPlugins();
 
@@ -787,7 +787,7 @@ export class Game implements GameData {
                 this.addTimeout(() => {
                     this.log("Preventing new players from joining");
                     this.setGameData({ allowJoin: false });
-                }, (GAME_SPAWN_WINDOW * 1000) - 3000);
+                }, (this.spawnWindow * 1000) - 3000);
             }, 3000);
         }
 

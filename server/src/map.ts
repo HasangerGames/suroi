@@ -19,7 +19,11 @@ import { Obstacle } from "./objects/obstacle";
 import { getLootFromTable } from "./utils/lootHelpers";
 import { CARDINAL_DIRECTIONS, getRandomIDString } from "./utils/misc";
 
-export interface MapOptions { scale?: number, maxMajorStructures?: number }
+export interface MapOptions {
+    scale?: number
+    maxMajorBuildings?: number
+    gameSpawnWindow?: number
+}
 
 export class GameMap {
     readonly game: Game;
@@ -90,7 +94,7 @@ export class GameMap {
         const [name, ...params] = mapData.split(":") as [MapName, ...string[]];
         const mapDef: MapDefinition = Maps[name];
 
-        const { scale = 1, maxMajorStructures } = options;
+        const { scale = 1, maxMajorBuildings } = options;
         this.mapScale = scale === 1
             ? (num: number): number => num
             : (num: number): number => {
@@ -173,7 +177,7 @@ export class GameMap {
         );
 
         const majorBuildings = Array.from(mapDef.majorBuildings ?? []);
-        const numToRemove = maxMajorStructures === undefined ? 0 : majorBuildings.length - maxMajorStructures;
+        const numToRemove = maxMajorBuildings === undefined ? 0 : majorBuildings.length - maxMajorBuildings;
         if (numToRemove > 0) {
             for (let i = 0; i < numToRemove; i++) {
                 removeFrom(majorBuildings, pickRandomInArray(majorBuildings));

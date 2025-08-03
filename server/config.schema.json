@@ -42,7 +42,7 @@
             ]
         },
         "mapScaleRanges": {
-            "description": "Dynamically scale map size based on player count.",
+            "description": "Dynamically scale map size and other values based on player count.",
             "type": "array",
             "items": {
                 "type": "object",
@@ -61,6 +61,10 @@
                     },
                     "maxMajorBuildings": {
                         "description": "The maximum number of major buildings to allow to spawn.",
+                        "type": "number"
+                    },
+                    "gameSpawnWindow": {
+                        "description": "The window of time after a game is started during which players are allowed to join, in seconds.",
                         "type": "number"
                     }
                 },
