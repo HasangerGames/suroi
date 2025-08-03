@@ -1259,7 +1259,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             .roundRect(-82.5, -17.5, 165, 35, 3)
             .fill({ color: 0x000000, alpha: 0.45 })
             .roundRect(-75, -10, 150 * normalizedHealth, 20, 2)
-            .fill(UIManager.getHealthColor(normalizedHealth));
+            .fill(UIManager.getHealthColor(normalizedHealth, this.downed));
     }
 
     updateFistsPosition(anim: boolean): void {
