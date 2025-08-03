@@ -95,7 +95,6 @@ export class GameMap {
             ? (num: number): number => num
             : (num: number): number => {
                 const val = Math.round(num * (((mapDef.width * scale) ** 2) / (mapDef.width ** 2)));
-                if (val < 5 && val > 1) return val - 1;
                 if (val < 1) return 1;
                 return val;
             };
@@ -104,7 +103,10 @@ export class GameMap {
 
         if (scale !== 1 && mapDef.quadBuildingLimit) {
             for (const [idString, amount] of Object.entries(mapDef.quadBuildingLimit)) {
-                mapDef.quadBuildingLimit[idString] = this.mapScale(amount);
+                mapDef.quadBuildingLimit[idString] = Numeric.max(
+                    this.mapScale(amount),
+                    this.mapScale(mapDef.buildings?.[idString] ?? 1)
+                );
             }
         }
 

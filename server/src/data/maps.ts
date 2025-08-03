@@ -306,12 +306,12 @@ const maps = {
             ]
         },
         majorBuildings: [
-            "plumpkin_bunker",
             "lodge",
             "campsite",
             "bombed_armory"
         ],
         buildings: {
+            plumpkin_bunker: 1,
             breached_dam: 3,
             river_hut_4: 3,
             river_hut_5: 3,
