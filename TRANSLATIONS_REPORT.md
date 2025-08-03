@@ -18,6 +18,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `warning_hw_accel_2` is not defined
 - Key `warning_hw_accel_link` is not defined
 - Key `privacy` is not defined
+- Key `contact` is not defined
 - Key `donate` is not defined
 - Key `wiki` is not defined
 - Key `bindings_fullscreen` is not defined
@@ -163,6 +164,7 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### Undefined Keys
 
+- Key `contact` is not defined
 - Key `bindings_fullscreen` is not defined
 - Key `recording` is not defined
 - Key `settings_record_res` is not defined
@@ -208,6 +210,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `warning_hw_accel_2` is not defined
 - Key `warning_hw_accel_link` is not defined
 - Key `privacy` is not defined
+- Key `contact` is not defined
 - Key `donate` is not defined
 - Key `wiki` is not defined
 - Key `bindings_fullscreen` is not defined
@@ -346,6 +349,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `warning_hw_accel_2` is not defined
 - Key `warning_hw_accel_link` is not defined
 - Key `privacy` is not defined
+- Key `contact` is not defined
 - Key `wiki` is not defined
 - Key `bindings_fullscreen` is not defined
 - Key `recording` is not defined
@@ -464,6 +468,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `warning_hw_accel_2` is not defined
 - Key `warning_hw_accel_link` is not defined
 - Key `privacy` is not defined
+- Key `contact` is not defined
 - Key `wiki` is not defined
 - Key `bindings_fullscreen` is not defined
 - Key `recording` is not defined
@@ -738,6 +743,7 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### Undefined Keys
 
+- Key `contact` is not defined
 - Key `interact_server` is not defined
 - Key `interact_recorder_interactable` is not defined
 - Key `kf_suicide_finished_off` is not defined
@@ -768,6 +774,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `warning_hw_accel_2` is not defined
 - Key `warning_hw_accel_link` is not defined
 - Key `privacy` is not defined
+- Key `contact` is not defined
 - Key `wiki` is not defined
 - Key `bindings_fullscreen` is not defined
 - Key `recording` is not defined
@@ -885,7 +892,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇫🇷 Français (96% Complete) - fr.hjson
+## 🇫🇷 Français (95% Complete) - fr.hjson
 
 ### Invalid Keys
 
@@ -897,6 +904,7 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### Undefined Keys
 
+- Key `contact` is not defined
 - Key `action_vaccine_syringe_use` is not defined
 - Key `interact_server` is not defined
 - Key `interact_recorder_interactable` is not defined
@@ -914,7 +922,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
 
-## 🇬🇷 Ελληνικά (82% Complete) - gr.hjson
+## 🇬🇷 Ελληνικά (81% Complete) - gr.hjson
 
 ### Invalid Keys
 
@@ -922,6 +930,7 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### Undefined Keys
 
+- Key `contact` is not defined
 - Key `interact_server` is not defined
 - Key `second_wind_desc` is not defined
 - Key `flechettes` is not defined
@@ -1008,6 +1017,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `warning_hw_accel_2` is not defined
 - Key `warning_hw_accel_link` is not defined
 - Key `privacy` is not defined
+- Key `contact` is not defined
 - Key `donate` is not defined
 - Key `wiki` is not defined
 - Key `bindings_fullscreen` is not defined
@@ -1137,12 +1147,13 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇭🇺 Magyar (96% Complete) - hu.hjson
+## 🇭🇺 Magyar (95% Complete) - hu.hjson
 
 ### (No Invalid Keys)
 
 ### Undefined Keys
 
+- Key `contact` is not defined
 - Key `msg_cannot_use_flare` is not defined
 - Key `interact_server` is not defined
 - Key `interact_recorder_interactable` is not defined
@@ -1191,6 +1202,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `warning_hw_accel_2` is not defined
 - Key `warning_hw_accel_link` is not defined
 - Key `privacy` is not defined
+- Key `contact` is not defined
 - Key `donate` is not defined
 - Key `wiki` is not defined
 - Key `bindings_fullscreen` is not defined
@@ -1321,7 +1333,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇯🇵 日本語 (97% Complete) - jp.hjson
+## 🇯🇵 日本語 (96% Complete) - jp.hjson
 
 ### Invalid Keys
 
@@ -1579,6 +1591,7 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### Undefined Keys
 
+- Key `contact` is not defined
 - Key `interact_server` is not defined
 - Key `interact_recorder_interactable` is not defined
 - Key `kf_were_finally_killed` is not defined
@@ -1608,6 +1621,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `warning_hw_accel_2` is not defined
 - Key `warning_hw_accel_link` is not defined
 - Key `privacy` is not defined
+- Key `contact` is not defined
 - Key `donate` is not defined
 - Key `wiki` is not defined
 - Key `bindings_fullscreen` is not defined
@@ -1750,6 +1764,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `warning_hw_accel_2` is not defined
 - Key `warning_hw_accel_link` is not defined
 - Key `privacy` is not defined
+- Key `contact` is not defined
 - Key `donate` is not defined
 - Key `wiki` is not defined
 - Key `bindings_fullscreen` is not defined
@@ -1876,12 +1891,13 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇳🇱 Nederlands (96% Complete) - nl.hjson
+## 🇳🇱 Nederlands (95% Complete) - nl.hjson
 
 ### (No Invalid Keys)
 
 ### Undefined Keys
 
+- Key `contact` is not defined
 - Key `action_vaccine_syringe_use` is not defined
 - Key `interact_server` is not defined
 - Key `interact_recorder_interactable` is not defined
@@ -1913,6 +1929,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `warning_hw_accel_2` is not defined
 - Key `warning_hw_accel_link` is not defined
 - Key `privacy` is not defined
+- Key `contact` is not defined
 - Key `wiki` is not defined
 - Key `bindings_fullscreen` is not defined
 - Key `recording` is not defined
@@ -2039,6 +2056,7 @@ This file is a report of all errors and missing keys in the translation files of
 ### Undefined Keys
 
 - Key `msg_error_kicked_team` is not defined
+- Key `contact` is not defined
 - Key `bindings_fullscreen` is not defined
 - Key `recording` is not defined
 - Key `settings_record_res` is not defined
@@ -2146,7 +2164,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇷🇴 Română (96% Complete) - ro.hjson
+## 🇷🇴 Română (95% Complete) - ro.hjson
 
 ### Invalid Keys
 
@@ -2154,6 +2172,7 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### Undefined Keys
 
+- Key `contact` is not defined
 - Key `action_vaccine_syringe_use` is not defined
 - Key `interact_server` is not defined
 - Key `interact_recorder_interactable` is not defined
@@ -2179,6 +2198,7 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### Undefined Keys
 
+- Key `contact` is not defined
 - Key `settings_show_inout` is not defined
 - Key `action_vaccine_syringe_use` is not defined
 - Key `interact_server` is not defined
@@ -2198,7 +2218,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
 
-## 🇮🇳 தமிழ் (75% Complete) - ta.hjson
+## 🇮🇳 தமிழ் (74% Complete) - ta.hjson
 
 ### Invalid Keys
 
@@ -2207,6 +2227,7 @@ This file is a report of all errors and missing keys in the translation files of
 ### Undefined Keys
 
 - Key `msg_error_kicked_team` is not defined
+- Key `contact` is not defined
 - Key `settings_alt_texture_loading` is not defined
 - Key `msg_cannot_use_flare` is not defined
 - Key `action_vaccine_syringe_use` is not defined
@@ -2311,6 +2332,7 @@ This file is a report of all errors and missing keys in the translation files of
 ### Undefined Keys
 
 - Key `msg_error_kicked_team` is not defined
+- Key `contact` is not defined
 - Key `msg_cannot_use_flare` is not defined
 - Key `action_vaccine_syringe_use` is not defined
 - Key `interact_server` is not defined
@@ -2391,7 +2413,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇹🇼 中文（繁體） (75% Complete) - tw.hjson
+## 🇹🇼 中文（繁體） (74% Complete) - tw.hjson
 
 ### Invalid Keys
 
@@ -2400,6 +2422,7 @@ This file is a report of all errors and missing keys in the translation files of
 ### Undefined Keys
 
 - Key `msg_error_kicked_team` is not defined
+- Key `contact` is not defined
 - Key `settings_alt_texture_loading` is not defined
 - Key `msg_cannot_use_flare` is not defined
 - Key `action_vaccine_syringe_use` is not defined
@@ -2502,6 +2525,7 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### Undefined Keys
 
+- Key `contact` is not defined
 - Key `interact_server` is not defined
 - Key `interact_recorder_interactable` is not defined
 - Key `kf_were_finally_killed` is not defined
@@ -2770,6 +2794,7 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### Undefined Keys
 
+- Key `contact` is not defined
 - Key `interact_server` is not defined
 - Key `interact_recorder_interactable` is not defined
 - Key `m16a4` is not defined

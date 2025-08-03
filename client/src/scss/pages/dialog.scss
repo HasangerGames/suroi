@@ -277,12 +277,23 @@
     flex-wrap: wrap;
     gap: 5px;
     column-gap: 15px;
-    padding: 0.25rem 1rem 1rem 1rem;
-    max-height: 365px;
+    padding: 0.25rem 1rem;
+    max-height: 215px;
     overflow-x: scroll;
 
     a {
         color: white;
+    }
+}
+
+#partners-contact {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 1rem 1rem 1rem;
+
+    a {
+        font-size: 16px;
     }
 }
 
