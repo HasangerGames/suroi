@@ -42,7 +42,6 @@ import { GameObject } from "./gameObject";
 import { Loot } from "./loot";
 import { Obstacle } from "./obstacle";
 import type { Projectile } from "./projectile";
-import { Explosions } from "@common/definitions/explosions";
 
 export class Player extends GameObject.derive(ObjectCategory.Player) {
     teamID!: number;
@@ -309,7 +308,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         this.images.healthBar?.position.copyFrom(Vec.addComponent(this.container.position, 0, -90));
     }
 
-    override update(): void {}
+    override update(): void { /* bleh */ }
 
     override updateInterpolation(): void {
         this.updateContainerPosition();
