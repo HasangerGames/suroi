@@ -4831,7 +4831,19 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             {
                 key: "cargo_ship_floor_top_1",
                 position: Vec(0.115, 94.7)
-            }
+            },
+            { key: "cargo_ship_stair_holder", position: Vec(53.19, -124.55) },
+            { key: "cargo_ship_stair_holder", position: Vec(53.18, -113.69) },
+            { key: "cargo_ship_stair_holder", position: Vec(53.19, -53.86) },
+            { key: "cargo_ship_stair_holder", position: Vec(53.19, -43) },
+            { key: "cargo_ship_stair_holder", position: Vec(53.19, 115.98) },
+            { key: "cargo_ship_stair_holder", position: Vec(53.19, 126.93) },
+            { key: "cargo_ship_stair_holder", position: Vec(-53.15, 116.22) },
+            { key: "cargo_ship_stair_holder", position: Vec(-53.15, 127.14) },
+            { key: "cargo_ship_stair_holder", position: Vec(-53.15, 16.39) },
+            { key: "cargo_ship_stair_holder", position: Vec(-53.15, 27.26) },
+            { key: "cargo_ship_stair_holder", position: Vec(-53.15, -124.5) },
+            { key: "cargo_ship_stair_holder", position: Vec(-53.06, -113.56) }
         ],
         floors: [
             { // Stairs
