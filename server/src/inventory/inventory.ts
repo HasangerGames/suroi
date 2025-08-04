@@ -847,6 +847,7 @@ export class Inventory {
                 // Can't have downed players using consumables
                 if (this.owner.downed) return;
 
+                this.owner.isConsumingItem = true;
                 this.owner.executeAction(new HealingAction(this.owner, idString));
                 break;
             }

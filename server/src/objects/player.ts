@@ -98,6 +98,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     teamID?: number;
     colorIndex = 0; // Assigned in the team.ts file.
 
+    isConsumingItem = false;
+
     hadShield = false;
 
     // Rate Limiting: Team Pings & Emotes.
@@ -441,6 +443,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             && this.activeItem.isGun
             && this.activeItem.ammo <= 0
             && this.inventory.items.hasItem((this.activeItemDefinition as GunDefinition).ammoType)
+            && !this.isConsumingItem // we do not want a forced reload action when we are using a healing item otherwise we will "reload" fists
         ) {
             // The action slot is now free, meaning our player isn't doing anything
             // Let's try reloading our empty gun then, unless we just cancelled a reload

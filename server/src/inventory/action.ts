@@ -170,5 +170,6 @@ export class HealingAction extends Action {
 
         this.player.game.addDecal(`${this.item.idString}_residue`, this.player.position, randomRotation(), this.player.layer);
         this.player.dirty.items = true;
+        this.player.isConsumingItem = false;
     }
 }
