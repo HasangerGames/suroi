@@ -100,8 +100,6 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
     isConsumingItem = false;
 
-    hadShield = false;
-
     // Rate Limiting: Team Pings & Emotes.
     emoteCount = 0;
     lastRateLimitUpdate = 0;
@@ -239,6 +237,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         }
     }
 
+    hadShield = false;
+
     private _shield = 0;
     get shield(): number { return this._shield; }
     set shield(shield: number) {
@@ -253,7 +253,16 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         if (this.hasBubble !== hasBubble) {
             this.hasBubble = hasBubble;
             this.setDirty();
+            if (!hasBubble && this.hasPerk(PerkIds.ExperimentalForcefield)) {
+                this._setShieldTimeout();
+            }
         }
+    }
+
+    private _setShieldTimeout(): void {
+        this.shieldTimeout = this.game.addTimeout(() => {
+            if (!this.dead) this.shield = 100;
+        }, PerkData[PerkIds.ExperimentalForcefield].shieldRespawnTime);
     }
 
     private _sizeMod = 1;
@@ -1896,13 +1905,10 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 break;
             }
             case PerkIds.ExperimentalForcefield: {
-                const hadShield = this.shieldTimeout !== undefined;
-                this.shieldTimeout?.kill();
-
-                if (!this.hadShield && !hadShield) {
-                    this.hadShield = false;
+                if (!this.hadShield) {
                     this.shield = 100;
-                    this.setDirty();
+                } else {
+                    this._setShieldTimeout();
                 }
                 break;
             }
@@ -1998,9 +2004,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             }
             case PerkIds.ExperimentalForcefield: {
                 this.hadShield = true;
-                this.shieldTimeout?.kill();
                 this.shield = 0;
-                this.setDirty();
                 break;
             }
             case PerkIds.Overdrive: {
@@ -2500,15 +2504,6 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 }
                 case PerkIds.ExperimentalForcefield: {
                     newModifiers.shieldRegen += perk.shieldRegenRate;
-                    if (!this.hasBubble) {
-                        this.shieldTimeout?.kill();
-                        this.shieldTimeout = this.game.addTimeout(() => {
-                            if (!this.dead) {
-                                this.shield = 100;
-                                this.setDirty();
-                            }
-                        }, perk.shieldRespawnTime);
-                    }
                     break;
                 }
                 case PerkIds.Overdrive: {
