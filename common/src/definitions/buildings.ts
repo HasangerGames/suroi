@@ -10913,7 +10913,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             delay: 1500
         },
         sounds: {
-            solved: "chainsaw",
+            solved: "saw",
             position: Vec(5.88, -10.22),
             maxRange: 260,
             falloff: 1
