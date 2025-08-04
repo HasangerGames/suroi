@@ -424,7 +424,7 @@
 "immunity": "Immunity"
 "immunity_desc": "Immune to infection for 15 seconds."
 "hollow_points": "Hollow Points"
-"hollow_points_desc": "Gun-type weapons deal 10% more damage. Does not apply to non-slug shotguns."
+"hollow_points_desc": "Gun-type weapons deal 10% more damage, except for non-slug shotguns. Players are highlighted on the map for 5 seconds when hit."
 "experimental_forcefield": "Experimental Forcefield"
 "experimental_forcefield_desc": "Gain a shield that blocks damage. The shield regenerates and respawns every 20 seconds."
 "thermal_goggles": "Thermal Goggles"

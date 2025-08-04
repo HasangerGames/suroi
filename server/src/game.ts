@@ -50,6 +50,7 @@ import { Grid } from "./utils/grid";
 import { IDAllocator } from "./utils/idAllocator";
 import { Cache, getAllLoots, getSpawnableLoots, ItemRegistry } from "./utils/lootHelpers";
 import { cleanUsername, modeFromMap } from "./utils/misc";
+import { MapIndicator } from "./objects/mapIndicator";
 
 export class Game implements GameData {
     public readonly id: number;
@@ -417,6 +418,13 @@ export class Game implements GameData {
                     object.immunityTimeout = this.addTimeout(() => object.removePerk(immunity), immunity.duration);
                     object.setDirty();
                 }
+            }
+
+            if (object.isPlayer && source.isPlayer && source.hasPerk(PerkIds.HollowPoints)) {
+                (source.recentlyHitPlayers ??= new Map<Player, number>())
+                    .set(object, this.now);
+                (source.highlightedIndicators ??= new Map<Player, MapIndicator>())
+                    .set(object, new MapIndicator(this, "player_indicator", object.position));
             }
         }
 

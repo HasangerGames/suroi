@@ -467,6 +467,7 @@ const perks = [
         category: PerkCategories.Hunted,
         damageMod: 1.1,
         soundMod: 75,
+        highlightDuration: 5000,
         noDrop: true
     },
     {
@@ -489,7 +490,6 @@ const perks = [
         defType: DefinitionType.Perk,
         category: PerkCategories.Hunted,
         noDrop: true,
-        updateInterval: 0,
         detectionRadius: 100
     },
     {

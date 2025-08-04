@@ -532,6 +532,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     highlightedPlayers?: Player[];
     highlightedIndicators?: Map<Player, MapIndicator>;
 
+    recentlyHitPlayers?: Map<Player, number>;
+
     constructor(game: Game, socket: WebSocket<PlayerSocketData> | undefined, position: Vector, layer?: Layer, team?: Team) {
         super(game, position);
 
@@ -1399,56 +1401,74 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                         }
                         break;
                     }
-                    case PerkIds.ThermalGoggles: {
-                        const detectionHitbox = new CircleHitbox(perk.detectionRadius, this.position);
-                        this.highlightedPlayers = [];
-                        const indicatedPlayers = [];
-                        const alreadyHighlighted: PerkDefinition[] = [
-                            PerkData[PerkIds.ThermalGoggles],
-                            PerkData[PerkIds.ExperimentalForcefield],
-                            PerkData[PerkIds.HollowPoints]
-                        ];
-
-                        for (const player of this.game.grid.intersectsHitbox(detectionHitbox)) {
-                            if (
-                                !player.isPlayer
-                                || player === this
-                                || player.dead
-                                || (this.game.isTeamMode && player.teamID === this.teamID)
-                                || !player.hitbox.collidesWith(detectionHitbox)
-                            ) continue;
-
-                            if (this.visibleObjects.has(player)) {
-                                this.highlightedPlayers.push(player);
-                            }
-
-                            if (player.perks.some(perk => alreadyHighlighted.includes(perk))) continue;
-
-                            indicatedPlayers.push(player);
-
-                            const indicator = this.highlightedIndicators?.get(player);
-                            if (indicator) {
-                                indicator.updatePosition(player.position);
-                            } else {
-                                (this.highlightedIndicators ??= new Map<Player, MapIndicator>())
-                                    .set(player, new MapIndicator(this.game, "player_indicator", player.position));
-                            }
-                        }
-
-                        for (const [player, indicator] of this.highlightedIndicators ?? []) {
-                            if (indicatedPlayers.includes(player)) continue;
-                            if (indicator.dead) {
-                                this.game.mapIndicatorIDAllocator.give(indicator.id);
-                                this.highlightedIndicators?.delete(player);
-                            }
-                            indicator.dead = true;
-                        }
-
-                        this.dirty.highlightedPlayers = true; // TODO determine if the list of highlighted players actually changed
-                        break;
-                    }
                 }
                 // ! evil ends here
+            }
+        }
+
+        // Update Thermal Goggles & Hollow Points perks
+        // TODO this is dogshit there's gotta be a cleaner way to do this
+        const hasThermalGoggles = this.hasPerk(PerkIds.ThermalGoggles);
+        const hasHollowPoints = this.hasPerk(PerkIds.HollowPoints);
+        if (hasThermalGoggles || hasHollowPoints) {
+            let indicatedPlayers;
+
+            if (hasThermalGoggles) {
+                const detectionHitbox = new CircleHitbox(PerkData[PerkIds.ThermalGoggles].detectionRadius, this.position);
+                indicatedPlayers = [];
+                this.highlightedPlayers = [];
+                const alreadyHighlighted: PerkDefinition[] = [
+                    PerkData[PerkIds.ThermalGoggles],
+                    PerkData[PerkIds.ExperimentalForcefield],
+                    PerkData[PerkIds.HollowPoints]
+                ];
+
+                for (const player of this.game.grid.intersectsHitbox(detectionHitbox)) {
+                    if (
+                        !player.isPlayer
+                        || player === this
+                        || player.dead
+                        || (this.game.isTeamMode && player.teamID === this.teamID)
+                        || !player.hitbox.collidesWith(detectionHitbox)
+                    ) continue;
+
+                    if (this.visibleObjects.has(player)) {
+                        this.highlightedPlayers.push(player);
+                    }
+
+                    if (player.perks.some(perk => alreadyHighlighted.includes(perk))) continue;
+
+                    indicatedPlayers.push(player);
+
+                    const indicator = this.highlightedIndicators?.get(player);
+                    if (indicator) {
+                        indicator.updatePosition(player.position);
+                    } else {
+                        (this.highlightedIndicators ??= new Map<Player, MapIndicator>())
+                            .set(player, new MapIndicator(this.game, "player_indicator", player.position));
+                    }
+                }
+
+                this.dirty.highlightedPlayers = true; // TODO determine if the list of highlighted players actually changed
+            }
+
+            for (const [player, indicator] of this.highlightedIndicators ?? []) {
+                const lastHitTime = this.recentlyHitPlayers?.get(player);
+                if (lastHitTime !== undefined) {
+                    if (this.game.now - lastHitTime < PerkData[PerkIds.HollowPoints].highlightDuration) {
+                        indicator.updatePosition(player.position);
+                        continue;
+                    }
+                    this.recentlyHitPlayers?.delete(player);
+                }
+
+                if (indicatedPlayers?.includes(player)) continue;
+
+                if (indicator.dead) {
+                    this.game.mapIndicatorIDAllocator.give(indicator.id);
+                    this.highlightedIndicators?.delete(player);
+                }
+                indicator.dead = true;
             }
         }
 
