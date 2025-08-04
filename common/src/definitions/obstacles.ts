@@ -7002,7 +7002,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         hideOnMap: true,
         isWall: true,
         noResidue: true,
-        hitbox: RectangleHitbox.fromRect(2.83, 32.77),
+        hitbox: RectangleHitbox.fromRect(1.7, 19.66),
         rotationMode: RotationMode.Limited
     }
 ] satisfies readonly RawObstacleDefinition[] as readonly RawObstacleDefinition[]).flatMap((def: Mutable<RawObstacleDefinition>) => {
