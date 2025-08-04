@@ -8841,7 +8841,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
 
         subBuildings: IS_CLIENT ? undefined : [
             { idString: "blue_stair", position: Vec(23.33, 12.89), orientation: 3 },
-            { idString: randomPortDamagedContainer, position: Vec(0, -23), orientation: 2 },
+            { idString: randomPortDamagedContainer, position: Vec(0, -22.7), orientation: 2 },
             { idString: randomPortDamagedContainer, position: Vec(0, -5.1) }
         ]
     },
