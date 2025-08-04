@@ -202,8 +202,8 @@
 "kf_gas_kill": "<player> è morto/a dal gas"
 "kf_gas_down": "<player> è stato/a tramortito/a dal gas"
 
-"kf_airdrop_kill": "<player> è stato/a schiacciato/a fatalmente da un airdrop"
-"kf_airdrop_down": "<player> è stato/a tramortito/a da un airdrop"
+"kf_airdrop_crate_locked_kill": "<player> è stato/a schiacciato/a fatalmente da un airdrop"
+"kf_airdrop_crate_locked_down": "<player> è stato/a tramortito/a da un airdrop"
 
 // ------------------------------------------------------------------
 "finally": "finalmente"

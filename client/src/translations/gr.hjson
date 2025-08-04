@@ -200,8 +200,8 @@
 "kf_finally_down": "Ο/Η <player> τελικά βγήκε νοκ άουτ"
 "kf_gas_kill": "Ο/Η <player> πέθανε από το τοξικό αέριο"
 "kf_gas_down": "Ο/Η <player> βγήκε νοκ άουτ από το τοξικό αέριο"
-"kf_airdrop_kill": "Ο/Η <player> πατήθηκε μοιραία από ρίψη αέρος"
-"kf_airdrop_down": "Ο/Η <player> βγήκε νοκ άουτ από ρίψη αέρος"
+"kf_airdrop_crate_locked_kill": "Ο/Η <player> πατήθηκε μοιραία από ρίψη αέρος"
+"kf_airdrop_crate_locked_down": "Ο/Η <player> βγήκε νοκ άουτ από ρίψη αέρος"
 "kf_kl_promotion": "Ο/Η <player> προάχθηκε ως αρχηγός των σκοτωμών!"
 "kf_kl_killed": "Ο/Η <player> σκότωσε τον αρχηγό των σκοτωμών"
 "kf_kl_dead": "Ο/Η Αρχηγός των σκοτωμών είναι νεκρός!"
@@ -212,8 +212,8 @@
 "km_finally_killed": "Τελικά σκοτώθηκες"
 "km_gas_kill_you": ("Πέθανες από το θανατηφόρο αέριο") or ("Πέθανες από το βλαβερό αέριο")
 "km_gas_down_you": ("Βγήκες νοκ άουτ από το θανατηφόρο αέριο") or ("Βγήκες νοκ άουτ από το Βλαβερό αέριο")
-"km_airdrop_kill_you": "Θρυμματίστηκες μοιραία από ρίψη αέρος"
-"km_airdrop_down_you": "Βγήκες νοκ άουτ από ρίψη αέρος"
+"km_airdrop_crate_locked_kill_you": "Θρυμματίστηκες μοιραία από ρίψη αέρος"
+"km_airdrop_crate_locked_down_you": "Βγήκες νοκ άουτ από ρίψη αέρος"
 "km_knocked_you": "σε έβγαλε νοκ άουτ"
 "km_finished_off_you": "σε αποτελείωσε"
 "km_killed_you": "σε σκότωσε"

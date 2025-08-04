@@ -15,6 +15,7 @@ import { type Building } from "./building";
 import { type Bullet } from "./bullet";
 import { BaseGameObject, DamageParams, type GameObject } from "./gameObject";
 import { type Player } from "./player";
+import { Explosion } from "./explosion";
 
 export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
     override readonly fullAllocBytes = 10;
@@ -210,7 +211,9 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
             this.health = 0;
             this.dead = true;
             if (definition.weaponSwap && source instanceof BaseGameObject && source.isPlayer) {
-                source.swapWeaponRandomly(weaponIsItem ? weaponUsed : weaponUsed?.weapon, true, definition.weaponSwap.modeRestricted, definition.weaponSwap.weighted);
+                source.swapWeaponRandomly(weaponIsItem ? weaponUsed : (weaponUsed as Explosion)?.weapon, true, definition.weaponSwap.modeRestricted, definition.weaponSwap.weighted);
+                //                                                    ^^^^^^^^^^^^^^^^^^^^^^^^^
+                // FIXME this cast to Explosion is not ideal and could cause issues in future if weaponUsed isn't an explosion
             }
 
             if (
@@ -229,7 +232,9 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
             if (definition.explosion !== undefined && source instanceof BaseGameObject) {
                 //                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
                 // FIXME This is implying that obstacles won't explode if destroyed by non–game objects
-                this.game.addExplosion(definition.explosion, this.position, source, this.layer, weaponIsItem ? weaponUsed : weaponUsed?.weapon);
+                this.game.addExplosion(definition.explosion, this.position, source, this.layer, weaponIsItem ? weaponUsed : (weaponUsed as Explosion)?.weapon);
+                //                                                                                                          ^^^^^^^^^^^^^^^^^^^^^^^^^
+                // FIXME this cast to Explosion is not ideal and could cause issues in future if weaponUsed isn't an explosion
             }
 
             if (source instanceof BaseGameObject && source.isPlayer) {

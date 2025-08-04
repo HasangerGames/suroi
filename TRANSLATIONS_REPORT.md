@@ -2,7 +2,7 @@
 
 This file is a report of all errors and missing keys in the translation files of this game.
 
-## 🇦🇱 Shqip (61% Complete) - ab.hjson
+## 🇦🇱 Shqip (60% Complete) - ab.hjson
 
 ### Invalid Keys
 
@@ -54,6 +54,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 - Key `kf_suicide_finished_off` is not defined
 - Key `kf_were_finally_killed` is not defined
+- Key `kf_saw_kill` is not defined
+- Key `kf_saw_down` is not defined
 - Key `kf_impact_of` is not defined
 - Key `finally` is not defined
 - Key `with` is not defined
@@ -69,8 +71,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `km_finally_killed` is not defined
 - Key `km_gas_kill_you` is not defined
 - Key `km_gas_down_you` is not defined
-- Key `km_airdrop_kill_you` is not defined
-- Key `km_airdrop_down_you` is not defined
+- Key `km_airdrop_crate_locked_kill_you` is not defined
+- Key `km_airdrop_crate_locked_down_you` is not defined
+- Key `km_saw_kill_you` is not defined
+- Key `km_saw_down_you` is not defined
 - Key `km_knocked_you` is not defined
 - Key `km_finished_off_you` is not defined
 - Key `km_killed_you` is not defined
@@ -156,7 +160,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇧🇷 Português (Brasil) (92% Complete) - br.hjson
+## 🇧🇷 Português (Brasil) (91% Complete) - br.hjson
 
 ### Invalid Keys
 
@@ -180,6 +184,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `interact_recorder_interactable` is not defined
 - Key `bindings_screen_record` is not defined
 - Key `kf_were_finally_killed` is not defined
+- Key `kf_saw_kill` is not defined
+- Key `kf_saw_down` is not defined
+- Key `km_saw_kill_you` is not defined
+- Key `km_saw_down_you` is not defined
 - Key `tt_desc` is not defined
 - Key `region_ea` is not defined
 - Key `region_oc` is not defined
@@ -194,7 +202,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
 
-## 🇨🇿 Čeština (64% Complete) - cz.hjson
+## 🇨🇿 Čeština (63% Complete) - cz.hjson
 
 ### Invalid Keys
 
@@ -248,13 +256,17 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 - Key `kf_suicide_finished_off` is not defined
 - Key `kf_were_finally_killed` is not defined
+- Key `kf_saw_kill` is not defined
+- Key `kf_saw_down` is not defined
 - Key `kf_impact_of` is not defined
 - Key `km_finally_ended_yourself` is not defined
 - Key `km_finally_killed` is not defined
 - Key `km_gas_kill_you` is not defined
 - Key `km_gas_down_you` is not defined
-- Key `km_airdrop_kill_you` is not defined
-- Key `km_airdrop_down_you` is not defined
+- Key `km_airdrop_crate_locked_kill_you` is not defined
+- Key `km_airdrop_crate_locked_down_you` is not defined
+- Key `km_saw_kill_you` is not defined
+- Key `km_saw_down_you` is not defined
 - Key `km_knocked_you` is not defined
 - Key `km_finished_off_you` is not defined
 - Key `km_killed_you` is not defined
@@ -337,7 +349,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇩🇪 Deutsch (72% Complete) - de.hjson
+## 🇩🇪 Deutsch (71% Complete) - de.hjson
 
 ### Invalid Keys
 
@@ -375,6 +387,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_screen_record` is not defined
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 - Key `kf_were_finally_killed` is not defined
+- Key `kf_saw_kill` is not defined
+- Key `kf_saw_down` is not defined
+- Key `km_saw_kill_you` is not defined
+- Key `km_saw_down_you` is not defined
 - Key `tt_desc` is not defined
 - Key `region_ea` is not defined
 - Key `region_oc` is not defined
@@ -455,7 +471,7 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### (No Undefined Keys)
 
-## 🇪🇸 Español (68% Complete) - es.hjson
+## 🇪🇸 Español (67% Complete) - es.hjson
 
 ### Invalid Keys
 
@@ -494,13 +510,17 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 - Key `kf_suicide_finished_off` is not defined
 - Key `kf_were_finally_killed` is not defined
+- Key `kf_saw_kill` is not defined
+- Key `kf_saw_down` is not defined
 - Key `kf_impact_of` is not defined
 - Key `km_finally_ended_yourself` is not defined
 - Key `km_finally_killed` is not defined
 - Key `km_gas_kill_you` is not defined
 - Key `km_gas_down_you` is not defined
-- Key `km_airdrop_kill_you` is not defined
-- Key `km_airdrop_down_you` is not defined
+- Key `km_airdrop_crate_locked_kill_you` is not defined
+- Key `km_airdrop_crate_locked_down_you` is not defined
+- Key `km_saw_kill_you` is not defined
+- Key `km_saw_down_you` is not defined
 - Key `km_knocked_you` is not defined
 - Key `km_finished_off_you` is not defined
 - Key `km_killed_you` is not defined
@@ -582,7 +602,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇪🇪 eesti (96% Complete) - et.hjson
+## 🇪🇪 eesti (95% Complete) - et.hjson
 
 ### Invalid Keys
 
@@ -748,6 +768,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `interact_recorder_interactable` is not defined
 - Key `kf_suicide_finished_off` is not defined
 - Key `kf_were_finally_killed` is not defined
+- Key `kf_saw_kill` is not defined
+- Key `kf_saw_down` is not defined
+- Key `km_saw_kill_you` is not defined
+- Key `km_saw_down_you` is not defined
 - Key `m16a4` is not defined
 - Key `region_ea` is not defined
 - Key `baby_plumpkin_pie_desc` is not defined
@@ -760,7 +784,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
 
-## 🇫🇮 suomi (67% Complete) - fi.hjson
+## 🇫🇮 suomi (66% Complete) - fi.hjson
 
 ### Invalid Keys
 
@@ -804,13 +828,17 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 - Key `kf_suicide_finished_off` is not defined
 - Key `kf_were_finally_killed` is not defined
+- Key `kf_saw_kill` is not defined
+- Key `kf_saw_down` is not defined
 - Key `kf_impact_of` is not defined
 - Key `km_finally_ended_yourself` is not defined
 - Key `km_finally_killed` is not defined
 - Key `km_gas_kill_you` is not defined
 - Key `km_gas_down_you` is not defined
-- Key `km_airdrop_kill_you` is not defined
-- Key `km_airdrop_down_you` is not defined
+- Key `km_airdrop_crate_locked_kill_you` is not defined
+- Key `km_airdrop_crate_locked_down_you` is not defined
+- Key `km_saw_kill_you` is not defined
+- Key `km_saw_down_you` is not defined
 - Key `km_knocked_you` is not defined
 - Key `km_finished_off_you` is not defined
 - Key `km_killed_you` is not defined
@@ -892,7 +920,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇫🇷 Français (95% Complete) - fr.hjson
+## 🇫🇷 Français (94% Complete) - fr.hjson
 
 ### Invalid Keys
 
@@ -908,6 +936,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `action_vaccine_syringe_use` is not defined
 - Key `interact_server` is not defined
 - Key `interact_recorder_interactable` is not defined
+- Key `kf_saw_kill` is not defined
+- Key `kf_saw_down` is not defined
+- Key `km_saw_kill_you` is not defined
+- Key `km_saw_down_you` is not defined
 - Key `tt_desc` is not defined
 - Key `region_ea` is not defined
 - Key `vaccine_syringe` is not defined
@@ -932,6 +964,10 @@ This file is a report of all errors and missing keys in the translation files of
 
 - Key `contact` is not defined
 - Key `interact_server` is not defined
+- Key `kf_saw_kill` is not defined
+- Key `kf_saw_down` is not defined
+- Key `km_saw_kill_you` is not defined
+- Key `km_saw_down_you` is not defined
 - Key `second_wind_desc` is not defined
 - Key `flechettes` is not defined
 - Key `flechettes_desc` is not defined
@@ -1000,7 +1036,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇭🇰 🇲🇴 廣東話(香港/澳門) (63% Complete) - hk_mo.hjson
+## 🇭🇰 🇲🇴 廣東話(香港/澳門) (62% Complete) - hk_mo.hjson
 
 ### Invalid Keys
 
@@ -1058,13 +1094,17 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `kf_finished_off_kill` is not defined
 - Key `kf_finished_off_down` is not defined
 - Key `kf_were_finally_killed` is not defined
+- Key `kf_saw_kill` is not defined
+- Key `kf_saw_down` is not defined
 - Key `kf_impact_of` is not defined
 - Key `km_finally_ended_yourself` is not defined
 - Key `km_finally_killed` is not defined
 - Key `km_gas_kill_you` is not defined
 - Key `km_gas_down_you` is not defined
-- Key `km_airdrop_kill_you` is not defined
-- Key `km_airdrop_down_you` is not defined
+- Key `km_airdrop_crate_locked_kill_you` is not defined
+- Key `km_airdrop_crate_locked_down_you` is not defined
+- Key `km_saw_kill_you` is not defined
+- Key `km_saw_down_you` is not defined
 - Key `km_knocked_you` is not defined
 - Key `km_finished_off_you` is not defined
 - Key `km_killed_you` is not defined
@@ -1147,7 +1187,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇭🇺 Magyar (95% Complete) - hu.hjson
+## 🇭🇺 Magyar (94% Complete) - hu.hjson
 
 ### (No Invalid Keys)
 
@@ -1158,6 +1198,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `interact_server` is not defined
 - Key `interact_recorder_interactable` is not defined
 - Key `kf_were_finally_killed` is not defined
+- Key `kf_saw_kill` is not defined
+- Key `kf_saw_down` is not defined
+- Key `km_saw_kill_you` is not defined
+- Key `km_saw_down_you` is not defined
 - Key `region_ea` is not defined
 - Key `baby_plumpkin_pie_desc` is not defined
 - Key `hollow_points` is not defined
@@ -1243,13 +1287,17 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `kf_finished_off_kill` is not defined
 - Key `kf_finished_off_down` is not defined
 - Key `kf_were_finally_killed` is not defined
+- Key `kf_saw_kill` is not defined
+- Key `kf_saw_down` is not defined
 - Key `kf_impact_of` is not defined
 - Key `km_finally_ended_yourself` is not defined
 - Key `km_finally_killed` is not defined
 - Key `km_gas_kill_you` is not defined
 - Key `km_gas_down_you` is not defined
-- Key `km_airdrop_kill_you` is not defined
-- Key `km_airdrop_down_you` is not defined
+- Key `km_airdrop_crate_locked_kill_you` is not defined
+- Key `km_airdrop_crate_locked_down_you` is not defined
+- Key `km_saw_kill_you` is not defined
+- Key `km_saw_down_you` is not defined
 - Key `km_knocked_you` is not defined
 - Key `km_finished_off_you` is not defined
 - Key `km_killed_you` is not defined
@@ -1333,7 +1381,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇯🇵 日本語 (96% Complete) - jp.hjson
+## 🇯🇵 日本語 (95% Complete) - jp.hjson
 
 ### Invalid Keys
 
@@ -1595,6 +1643,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `interact_server` is not defined
 - Key `interact_recorder_interactable` is not defined
 - Key `kf_were_finally_killed` is not defined
+- Key `kf_saw_kill` is not defined
+- Key `kf_saw_down` is not defined
+- Key `km_saw_kill_you` is not defined
+- Key `km_saw_down_you` is not defined
 - Key `baby_plumpkin_pie_desc` is not defined
 - Key `hollow_points` is not defined
 - Key `hollow_points_desc` is not defined
@@ -1605,7 +1657,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
 
-## 🇱🇹 Lietuvių (64% Complete) - lt.hjson
+## 🇱🇹 Lietuvių (63% Complete) - lt.hjson
 
 ### Invalid Keys
 
@@ -1659,13 +1711,17 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 - Key `kf_suicide_finished_off` is not defined
 - Key `kf_were_finally_killed` is not defined
+- Key `kf_saw_kill` is not defined
+- Key `kf_saw_down` is not defined
 - Key `kf_impact_of` is not defined
 - Key `km_finally_ended_yourself` is not defined
 - Key `km_finally_killed` is not defined
 - Key `km_gas_kill_you` is not defined
 - Key `km_gas_down_you` is not defined
-- Key `km_airdrop_kill_you` is not defined
-- Key `km_airdrop_down_you` is not defined
+- Key `km_airdrop_crate_locked_kill_you` is not defined
+- Key `km_airdrop_crate_locked_down_you` is not defined
+- Key `km_saw_kill_you` is not defined
+- Key `km_saw_down_you` is not defined
 - Key `km_knocked_you` is not defined
 - Key `km_finished_off_you` is not defined
 - Key `km_killed_you` is not defined
@@ -1748,7 +1804,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇱🇻 Latviešu (64% Complete) - lv.hjson
+## 🇱🇻 Latviešu (63% Complete) - lv.hjson
 
 ### Invalid Keys
 
@@ -1802,13 +1858,17 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 - Key `kf_suicide_finished_off` is not defined
 - Key `kf_were_finally_killed` is not defined
+- Key `kf_saw_kill` is not defined
+- Key `kf_saw_down` is not defined
 - Key `kf_impact_of` is not defined
 - Key `km_finally_ended_yourself` is not defined
 - Key `km_finally_killed` is not defined
 - Key `km_gas_kill_you` is not defined
 - Key `km_gas_down_you` is not defined
-- Key `km_airdrop_kill_you` is not defined
-- Key `km_airdrop_down_you` is not defined
+- Key `km_airdrop_crate_locked_kill_you` is not defined
+- Key `km_airdrop_crate_locked_down_you` is not defined
+- Key `km_saw_kill_you` is not defined
+- Key `km_saw_down_you` is not defined
 - Key `km_knocked_you` is not defined
 - Key `km_finished_off_you` is not defined
 - Key `km_killed_you` is not defined
@@ -1891,7 +1951,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇳🇱 Nederlands (95% Complete) - nl.hjson
+## 🇳🇱 Nederlands (94% Complete) - nl.hjson
 
 ### (No Invalid Keys)
 
@@ -1901,6 +1961,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `action_vaccine_syringe_use` is not defined
 - Key `interact_server` is not defined
 - Key `interact_recorder_interactable` is not defined
+- Key `kf_saw_kill` is not defined
+- Key `kf_saw_down` is not defined
+- Key `km_saw_kill_you` is not defined
+- Key `km_saw_down_you` is not defined
 - Key `tt_desc` is not defined
 - Key `region_ea` is not defined
 - Key `vaccine_syringe` is not defined
@@ -1915,7 +1979,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
 
-## 🇵🇱 Polski (67% Complete) - pl.hjson
+## 🇵🇱 Polski (66% Complete) - pl.hjson
 
 ### Invalid Keys
 
@@ -1959,13 +2023,17 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 - Key `kf_suicide_finished_off` is not defined
 - Key `kf_were_finally_killed` is not defined
+- Key `kf_saw_kill` is not defined
+- Key `kf_saw_down` is not defined
 - Key `kf_impact_of` is not defined
 - Key `km_finally_ended_yourself` is not defined
 - Key `km_finally_killed` is not defined
 - Key `km_gas_kill_you` is not defined
 - Key `km_gas_down_you` is not defined
-- Key `km_airdrop_kill_you` is not defined
-- Key `km_airdrop_down_you` is not defined
+- Key `km_airdrop_crate_locked_kill_you` is not defined
+- Key `km_airdrop_crate_locked_down_you` is not defined
+- Key `km_saw_kill_you` is not defined
+- Key `km_saw_down_you` is not defined
 - Key `km_knocked_you` is not defined
 - Key `km_finished_off_you` is not defined
 - Key `km_killed_you` is not defined
@@ -2047,7 +2115,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🎀 Cute Engwish (71% Complete) - qen.hjson
+## 🎀 Cute Engwish (70% Complete) - qen.hjson
 
 ### Invalid Keys
 
@@ -2076,13 +2144,17 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_screen_record` is not defined
 - Key `kf_suicide_finished_off` is not defined
 - Key `kf_were_finally_killed` is not defined
+- Key `kf_saw_kill` is not defined
+- Key `kf_saw_down` is not defined
 - Key `kf_impact_of` is not defined
 - Key `km_finally_ended_yourself` is not defined
 - Key `km_finally_killed` is not defined
 - Key `km_gas_kill_you` is not defined
 - Key `km_gas_down_you` is not defined
-- Key `km_airdrop_kill_you` is not defined
-- Key `km_airdrop_down_you` is not defined
+- Key `km_airdrop_crate_locked_kill_you` is not defined
+- Key `km_airdrop_crate_locked_down_you` is not defined
+- Key `km_saw_kill_you` is not defined
+- Key `km_saw_down_you` is not defined
 - Key `km_knocked_you` is not defined
 - Key `km_finished_off_you` is not defined
 - Key `km_killed_you` is not defined
@@ -2164,7 +2236,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇷🇴 Română (95% Complete) - ro.hjson
+## 🇷🇴 Română (94% Complete) - ro.hjson
 
 ### Invalid Keys
 
@@ -2176,6 +2248,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `action_vaccine_syringe_use` is not defined
 - Key `interact_server` is not defined
 - Key `interact_recorder_interactable` is not defined
+- Key `kf_saw_kill` is not defined
+- Key `kf_saw_down` is not defined
+- Key `km_saw_kill_you` is not defined
+- Key `km_saw_down_you` is not defined
 - Key `tt_desc` is not defined
 - Key `region_ea` is not defined
 - Key `vaccine_syringe` is not defined
@@ -2190,7 +2266,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
 
-## 🇷🇺 Русский (95% Complete) - ru.hjson
+## 🇷🇺 Русский (94% Complete) - ru.hjson
 
 ### Invalid Keys
 
@@ -2203,6 +2279,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `action_vaccine_syringe_use` is not defined
 - Key `interact_server` is not defined
 - Key `interact_recorder_interactable` is not defined
+- Key `kf_saw_kill` is not defined
+- Key `kf_saw_down` is not defined
+- Key `km_saw_kill_you` is not defined
+- Key `km_saw_down_you` is not defined
 - Key `tt_desc` is not defined
 - Key `m16a4` is not defined
 - Key `region_ea` is not defined
@@ -2235,13 +2315,17 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `interact_recorder_interactable` is not defined
 - Key `kf_suicide_finished_off` is not defined
 - Key `kf_were_finally_killed` is not defined
+- Key `kf_saw_kill` is not defined
+- Key `kf_saw_down` is not defined
 - Key `kf_impact_of` is not defined
 - Key `km_finally_ended_yourself` is not defined
 - Key `km_finally_killed` is not defined
 - Key `km_gas_kill_you` is not defined
 - Key `km_gas_down_you` is not defined
-- Key `km_airdrop_kill_you` is not defined
-- Key `km_airdrop_down_you` is not defined
+- Key `km_airdrop_crate_locked_kill_you` is not defined
+- Key `km_airdrop_crate_locked_down_you` is not defined
+- Key `km_saw_kill_you` is not defined
+- Key `km_saw_down_you` is not defined
 - Key `km_knocked_you` is not defined
 - Key `km_finished_off_you` is not defined
 - Key `km_killed_you` is not defined
@@ -2322,7 +2406,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇹🇷 Turkısh (78% Complete) - tr.hjson
+## 🇹🇷 Turkısh (77% Complete) - tr.hjson
 
 ### Invalid Keys
 
@@ -2338,6 +2422,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `interact_server` is not defined
 - Key `interact_recorder_interactable` is not defined
 - Key `kf_were_finally_killed` is not defined
+- Key `kf_saw_kill` is not defined
+- Key `kf_saw_down` is not defined
+- Key `km_saw_kill_you` is not defined
+- Key `km_saw_down_you` is not defined
 - Key `tt_desc` is not defined
 - Key `create_team_force_start` is not defined
 - Key `create_team_not_ready` is not defined
@@ -2430,13 +2518,17 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `interact_recorder_interactable` is not defined
 - Key `kf_suicide_finished_off` is not defined
 - Key `kf_were_finally_killed` is not defined
+- Key `kf_saw_kill` is not defined
+- Key `kf_saw_down` is not defined
 - Key `kf_impact_of` is not defined
 - Key `km_finally_ended_yourself` is not defined
 - Key `km_finally_killed` is not defined
 - Key `km_gas_kill_you` is not defined
 - Key `km_gas_down_you` is not defined
-- Key `km_airdrop_kill_you` is not defined
-- Key `km_airdrop_down_you` is not defined
+- Key `km_airdrop_crate_locked_kill_you` is not defined
+- Key `km_airdrop_crate_locked_down_you` is not defined
+- Key `km_saw_kill_you` is not defined
+- Key `km_saw_down_you` is not defined
 - Key `km_knocked_you` is not defined
 - Key `km_finished_off_you` is not defined
 - Key `km_killed_you` is not defined
@@ -2517,7 +2609,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇻🇳 Tiếng Việt (96% Complete) - vi.hjson
+## 🇻🇳 Tiếng Việt (95% Complete) - vi.hjson
 
 ### Invalid Keys
 
@@ -2529,6 +2621,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `interact_server` is not defined
 - Key `interact_recorder_interactable` is not defined
 - Key `kf_were_finally_killed` is not defined
+- Key `kf_saw_kill` is not defined
+- Key `kf_saw_down` is not defined
+- Key `km_saw_kill_you` is not defined
+- Key `km_saw_down_you` is not defined
 - Key `region_ea` is not defined
 - Key `baby_plumpkin_pie_desc` is not defined
 - Key `hollow_points` is not defined
@@ -2540,7 +2636,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
 
-## 🇨🇳 中文（简体） (97% Complete) - zh.hjson
+## 🇨🇳 中文（简体） (96% Complete) - zh.hjson
 
 ### Invalid Keys
 
@@ -2797,6 +2893,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `contact` is not defined
 - Key `interact_server` is not defined
 - Key `interact_recorder_interactable` is not defined
+- Key `kf_saw_kill` is not defined
+- Key `kf_saw_down` is not defined
+- Key `km_saw_kill_you` is not defined
+- Key `km_saw_down_you` is not defined
 - Key `m16a4` is not defined
 - Key `hollow_points` is not defined
 - Key `hollow_points_desc` is not defined

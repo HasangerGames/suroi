@@ -52,7 +52,7 @@ import { Explosion } from "./explosion";
 import { BaseGameObject, type DamageParams, type GameObject } from "./gameObject";
 import { type Loot } from "./loot";
 import { MapIndicator } from "./mapIndicator";
-import { type Obstacle } from "./obstacle";
+import { Obstacle } from "./obstacle";
 import { Projectile } from "./projectile";
 import { type SyncedParticle } from "./syncedParticle";
 import { serverWarn } from "../utils/serverHelpers";
@@ -1146,7 +1146,11 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                         this._hitbox.resolveCollision(potential.hitbox);
 
                         if (isObstacle && potential.activated && potential.definition.damage) {
-                            this.damage({ amount: potential.definition.damage, source: potential });
+                            this.damage({
+                                amount: potential.definition.damage,
+                                source: DamageSources.Obstacle,
+                                weaponUsed: potential
+                            });
                         }
                     }
                 }
@@ -2557,6 +2561,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
     private static _itemToDamageSource(item: NonNullable<DamageParams["weaponUsed"]>): DamageSources {
         if (item instanceof Explosion) return DamageSources.Explosion;
+        else if (item instanceof Obstacle) return DamageSources.Obstacle;
         else if (item.isGun) return DamageSources.Gun;
         else if (item.isMelee) return DamageSources.Melee;
         else /* if (item.isThrowable) */ return DamageSources.Throwable;
@@ -2600,7 +2605,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         const downedBy = this.downedBy?.player;
         if (
             source === DamageSources.Gas
-            || source === DamageSources.Airdrop
+            || source === DamageSources.Obstacle
             || source === DamageSources.BleedOut
             || source === DamageSources.FinallyKilled
         ) {
@@ -2612,10 +2617,10 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             }
 
             if (this.game.mode.weaponSwap && downedBy !== undefined) {
-                if (!(weaponUsed instanceof Explosion)) {
-                    downedBy.swapWeaponRandomly(weaponUsed, true);
-                } else if (weaponUsed.weapon) {
+                if (weaponUsed instanceof Explosion) {
                     downedBy.swapWeaponRandomly(weaponUsed.weapon, true);
+                } else if (!(weaponUsed instanceof Obstacle)) {
+                    downedBy.swapWeaponRandomly(weaponUsed, true);
                 }
             }
         } else if (source instanceof Player && source !== this) {
@@ -2703,10 +2708,10 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
             // Weapon swap
             if (this.game.mode.weaponSwap) {
-                if (!(weaponUsed instanceof Explosion)) {
-                    source.swapWeaponRandomly(weaponUsed, true);
-                } else if (weaponUsed.weapon) {
+                if (weaponUsed instanceof Explosion) {
                     source.swapWeaponRandomly(weaponUsed.weapon, true);
+                } else if (!(weaponUsed instanceof Obstacle)) {
+                    source.swapWeaponRandomly(weaponUsed, true);
                 }
             }
 
@@ -2861,8 +2866,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     }
 
     down(
-        source?: GameObject | (typeof DamageSources)["Gas" | "Airdrop" | "BleedOut" | "FinallyKilled"],
-        weaponUsed?: GunItem | MeleeItem | ThrowableItem | Explosion
+        source?: GameObject | (typeof DamageSources)["Gas" | "Obstacle" | "BleedOut" | "FinallyKilled"],
+        weaponUsed?: DamageParams["weaponUsed"]
     ): void {
         const packet = KillPacket.create();
         packet.victimId = this.id;
@@ -2883,7 +2888,10 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             if (source !== this) {
                 packet.attackerId = source.id;
             }
-        } else if (source === DamageSources.Gas || source === DamageSources.Airdrop) {
+        } else if (source === DamageSources.Obstacle) {
+            packet.weaponUsed = weaponUsed?.definition;
+            packet.damageSource = source;
+        } else if (source === DamageSources.Gas) {
             packet.damageSource = source;
         }
 

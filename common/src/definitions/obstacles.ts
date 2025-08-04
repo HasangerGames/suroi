@@ -6510,7 +6510,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         material: "metal_light",
         animationFrames: ["saw_1", "saw_1", "saw_2"],
         health: 1000,
-        damage: 20,
+        damage: 15,
         isActivatable: true,
         indestructible: true,
         hitbox: RectangleHitbox.fromRect(3, 18), // RectangleHitbox.fromRect(1.99, 16.71),

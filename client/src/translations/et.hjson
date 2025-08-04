@@ -315,8 +315,8 @@
 "kf_gas_down": "<player> löödi maha gaasi pärast"
 
 // airdrop
-"kf_airdrop_kill": "<player> purustati surmavalt õhudessanti poolt"
-"kf_airdrop_down": "<player> löödi maha õhudessanti poolt"
+"kf_airdrop_crate_locked_kill": "<player> purustati surmavalt õhudessanti poolt"
+"kf_airdrop_crate_locked_down": "<player> löödi maha õhudessanti poolt"
 
 // kf meta keys
 "finally": "lõpuks"
@@ -333,8 +333,8 @@
 "km_finally_killed": "Sind tapeti lõpuks ära"
 "km_gas_kill_you": "Sa surid gaasi kätte"
 "km_gas_down_you": "Gaas lõi su maha"
-"km_airdrop_kill_you": "Sa surid jäädes õhudessanti alla"
-"km_airdrop_down_you": "Õhudessant lõi su maha"
+"km_airdrop_crate_locked_kill_you": "Sa surid jäädes õhudessanti alla"
+"km_airdrop_crate_locked_down_you": "Õhudessant lõi su maha"
 "km_knocked_you": "lõi su maha"
 "km_finished_off_you": "lõpetas su elu"
 "km_killed_you": "tappis su"

@@ -2,6 +2,7 @@ import { Explosions, type ExplosionDefinition } from "../definitions/explosions"
 import { Guns, type GunDefinition } from "../definitions/items/guns";
 import { Melees, type MeleeDefinition } from "../definitions/items/melees";
 import { Throwables, type ThrowableDefinition } from "../definitions/items/throwables";
+import { ObstacleDefinition, Obstacles } from "../definitions/obstacles";
 import { DefinitionType } from "../utils/objectDefinitions";
 import { DataSplitTypes, Packet, PacketType } from "./packet";
 
@@ -11,7 +12,7 @@ export enum DamageSources {
     Throwable,
     Explosion,
     Gas,
-    Airdrop,
+    Obstacle,
     BleedOut,
     FinallyKilled
 }
@@ -23,7 +24,7 @@ export interface KillData {
     readonly creditedId?: number
     readonly kills?: number
     readonly damageSource: DamageSources
-    readonly weaponUsed?: GunDefinition | MeleeDefinition | ThrowableDefinition | ExplosionDefinition
+    readonly weaponUsed?: GunDefinition | MeleeDefinition | ThrowableDefinition | ExplosionDefinition | ObstacleDefinition
     readonly killstreak?: number
     readonly downed: boolean
     readonly killed: boolean
@@ -85,11 +86,15 @@ export const KillPacket = new Packet<KillData>(PacketType.Kill, {
             case DamageSources.Explosion:
                 Explosions.writeToStream(stream, data.weaponUsed as ExplosionDefinition);
                 break;
+            case DamageSources.Obstacle:
+                Obstacles.writeToStream(stream, data.weaponUsed as ObstacleDefinition);
+                break;
         }
 
         if (
             data.weaponUsed !== undefined
             && data.weaponUsed.defType !== DefinitionType.Explosion
+            && "killstreak" in data.weaponUsed
             && data.weaponUsed.killstreak
         ) {
             stream.writeUint8(data.killstreak ?? 0);
@@ -139,6 +144,9 @@ export const KillPacket = new Packet<KillData>(PacketType.Kill, {
                 break;
             case DamageSources.Explosion:
                 data.weaponUsed = Explosions.readFromStream(stream);
+                break;
+            case DamageSources.Obstacle:
+                data.weaponUsed = Obstacles.readFromStream(stream);
                 break;
         }
 

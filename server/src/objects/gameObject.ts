@@ -36,8 +36,8 @@ export type GameObject = ObjectMapping[ObjectCategory];
 
 export interface DamageParams {
     readonly amount: number
-    readonly source?: GameObject | DamageSources.Gas | DamageSources.Airdrop | DamageSources.BleedOut | DamageSources.FinallyKilled
-    readonly weaponUsed?: GunItem | MeleeItem | ThrowableItem | Explosion
+    readonly source?: GameObject | DamageSources.Gas | DamageSources.Obstacle | DamageSources.BleedOut | DamageSources.FinallyKilled
+    readonly weaponUsed?: GunItem | MeleeItem | ThrowableItem | Explosion | Obstacle
 }
 
 export type CollidableGameObject<

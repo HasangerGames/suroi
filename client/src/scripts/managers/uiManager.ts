@@ -1337,8 +1337,8 @@ class UIManagerClass {
                     case DamageSources.Gas:
                         feedMessage = getTranslatedString(`kf_gas_${killed ? "kill" : "down"}`, { player: victimText });
                         break;
-                    case DamageSources.Airdrop:
-                        feedMessage = getTranslatedString(`kf_airdrop_${killed ? "kill" : "down"}`, { player: victimText });
+                    case DamageSources.Obstacle:
+                        feedMessage = getTranslatedString(`kf_${weaponUsed?.idString ?? ""}_${killed ? "kill" : "down"}` as TranslationKeys, { player: victimText });
                         break;
                     case DamageSources.BleedOut:
                         feedMessage = getTranslatedString(`kf_bleed_out_${killed ? "kill" : "down"}`, { player: victimText });
@@ -1386,11 +1386,11 @@ class UIManagerClass {
                     case DamageSources.Gas:
                         iconName = "gas";
                         break;
-                    case DamageSources.Airdrop:
-                        iconName = "airdrop";
+                    case DamageSources.Obstacle:
+                        iconName = weaponUsed?.idString ?? "";
                         break;
                     default:
-                        iconName = weaponUsed?.killfeedFrame ?? weaponUsed?.idString ?? "";
+                        iconName = (weaponUsed && "killfeedFrame" in weaponUsed ? weaponUsed.killfeedFrame : weaponUsed?.idString) ?? "";
                         break;
                 }
                 const altText = weaponUsed ? weaponUsed.name : iconName;
@@ -1410,7 +1410,7 @@ class UIManagerClass {
                         break;
                     }
                     case DamageSources.Gas:
-                    case DamageSources.Airdrop:
+                    case DamageSources.Obstacle:
                         body = `${weaponText} ${victimText}`;
                         break;
                     case DamageSources.BleedOut:
@@ -1490,7 +1490,7 @@ class UIManagerClass {
                         : getTranslatedString("kf_kl_suicide");
                     break;
                 case DamageSources.Gas:
-                case DamageSources.Airdrop:
+                case DamageSources.Obstacle:
                 case DamageSources.BleedOut:
                 case DamageSources.FinallyKilled:
                     messageInner = getTranslatedString("kf_kl_dead");
@@ -1596,11 +1596,11 @@ class UIManagerClass {
                     modalMessage = getTranslatedString(`kf_gas_${killed ? "kill" : "down"}`, { player: victimText });
                 }
                 break;
-            case DamageSources.Airdrop:
+            case DamageSources.Obstacle:
                 if (activeId === victimId) {
-                    modalMessage = getTranslatedString(`km_airdrop_${killed ? "kill" : "down"}_you`);
+                    modalMessage = getTranslatedString(`km_${weaponUsed?.idString ?? ""}_${killed ? "kill" : "down"}_you` as TranslationKeys);
                 } else if (activeId === creditedId || victimOnThisTeam) {
-                    modalMessage = getTranslatedString(`kf_airdrop_${killed ? "kill" : "down"}`, { player: victimText });
+                    modalMessage = getTranslatedString(`kf_${weaponUsed?.idString ?? ""}_${killed ? "kill" : "down"}` as TranslationKeys, { player: victimText });
                 }
                 break;
             case DamageSources.BleedOut: {

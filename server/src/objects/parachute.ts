@@ -1,11 +1,11 @@
 import { GameConstants, ObjectCategory } from "@common/constants";
+import { DamageSources } from "@common/packets/killPacket";
 import { CircleHitbox } from "@common/utils/hitbox";
 import { Angle, Numeric } from "@common/utils/math";
 import { type FullData } from "@common/utils/objectsSerializations";
 import { type Vector } from "@common/utils/vector";
 import { type Airdrop, type Game } from "../game";
 import { BaseGameObject } from "./gameObject";
-import { DamageSources } from "@common/packets/killPacket";
 
 export class Parachute extends BaseGameObject.derive(ObjectCategory.Parachute) {
     override readonly fullAllocBytes = 8;
@@ -47,7 +47,8 @@ export class Parachute extends BaseGameObject.derive(ObjectCategory.Parachute) {
                         case object.isPlayer: {
                             object.piercingDamage({
                                 amount: GameConstants.airdrop.damage,
-                                source: DamageSources.Airdrop
+                                source: DamageSources.Obstacle,
+                                weaponUsed: crate
                             });
                             break;
                         }
