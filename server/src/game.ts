@@ -1237,9 +1237,9 @@ export class Game implements GameData {
                 // second loop, buildings
                 for (const object of this.grid.intersectsHitbox(thisHitbox, Layer.Ground)) {
                     if (
-                        object.isBuilding
-                        && object.scopeHitbox
-                        && object.definition.wallsToDestroy === undefined
+                        (object.isBuilding
+                            && object.scopeHitbox
+                            && (object.definition.wallsToDestroy === undefined || object.definition.hasDamagedCeiling))
                     ) {
                         const hitbox = object.scopeHitbox.clone();
                         hitbox.scale(paddingFactor);
