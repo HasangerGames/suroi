@@ -673,8 +673,6 @@ class MapManagerClass {
                 indicator.setScale(1);
             }
         } else {
-            if (!this._visible) return;
-
             const bounds = this._borderContainer[0].getBoundingClientRect();
             const border = parseInt(this._borderContainer.css("border-width")) * uiScale;
 
@@ -776,12 +774,7 @@ class MapManagerClass {
             this.container.visible = UIManager.ui.spectatingContainer.hasClass("mobile-visible");
         }
 
-        if (!this._visible) {
-            this.container.visible = false;
-            return;
-        }
-
-        this._borderContainer.show();
+        if (this.visible) this._borderContainer.show();
         this.resize();
     }
 
