@@ -437,7 +437,7 @@ const blueHouseVaultLayout = (
     }],
     obstacles,
     subBuildings,
-    ...(subBuildings === undefined ? { lootSpawners: [{ table: "ground_loot", position: Vec(23.5, 14.4) }] } : {})
+    ...(subBuildings === undefined ? { lootSpawners: IS_CLIENT ? undefined : [{ table: "ground_loot", position: Vec(23.5, 14.4) }] } : {})
 });
 
 const warehouseLayout = (id: number, obstacles: readonly BuildingObstacle[]): BuildingDefinition => ({
@@ -877,7 +877,7 @@ const container = (
                 ? {}
                 : variant === "gas_can"
                     ? {
-                        lootSpawners: [
+                        lootSpawners: IS_CLIENT ? undefined : [
                             {
                                 position: Vec(0, -8.5),
                                 table: "gas_can"
@@ -886,7 +886,7 @@ const container = (
                     }
                     : color.includes("military")
                         ? {
-                            lootSpawners: [
+                            lootSpawners: IS_CLIENT ? undefined : [
                                 {
                                     position: Vec(0, 0),
                                     table: "airdrop_guns"
@@ -898,7 +898,7 @@ const container = (
                             ]
                         }
                         : {
-                            lootSpawners: [
+                            lootSpawners: IS_CLIENT ? undefined : [
                                 {
                                     position: Vec(0, 0),
                                     table: "ground_loot"
@@ -954,11 +954,11 @@ const hollowLog = (
                 hitbox: RectangleHitbox.fromRect(7.45, 31.38)
             }
         ],
-        obstacles: [
+        obstacles: IS_CLIENT ? undefined : [
             { idString: "hollow_log_wall", position: Vec(-6, 0), rotation: 0 },
             { idString: "hollow_log_wall", position: Vec(6, 0), rotation: 0 }
         ],
-        lootSpawners: [
+        lootSpawners: IS_CLIENT ? undefined : [
             {
                 table: "ground_loot",
                 position: Vec(0, 8)
@@ -1188,7 +1188,7 @@ const tent = (
                     { idString: "box", position: Vec(0, 5) }
                 ]
         ),
-        lootSpawners: [{
+        lootSpawners: IS_CLIENT ? undefined : [{
             table: special ? "warehouse" : "ground_loot",
             position: Vec(0, -5)
         }]
@@ -1282,7 +1282,7 @@ const bigTent = (
             { idString: "tent_window", position: Vec(-9.11, 14.03), rotation: 0 },
             { idString: "tent_window", position: Vec(9.11, 14.03), rotation: 0 }
         ],
-        lootSpawners: [
+        lootSpawners: IS_CLIENT ? undefined : [
             { table: "ground_loot", position: Vec(-10.68, 0) },
             { table: "ground_loot", position: Vec(10.68, 0) }
         ]
@@ -1394,7 +1394,7 @@ const tugboat = (color: string, mainLoot: string): BuildingDefinition => ({
     ...(
         color === "red"
             ? {
-                lootSpawners: [
+                lootSpawners: IS_CLIENT ? undefined : [
                     { table: "tugboat_red_floor", position: Vec(89, -25) }
                 ]
             }
@@ -2679,7 +2679,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 rotation: 2
             }
         ],
-        lootSpawners: [
+        lootSpawners: IS_CLIENT ? undefined : [
             { table: "ground_loot", position: Vec(16.44, -15.64) },
             { table: "ground_loot", position: Vec(-15.42, 17.44) }
         ]
@@ -2790,7 +2790,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "window", position: Vec(-15.2, 28.9), rotation: 1 },
             { idString: "window", position: Vec(-15.6, -29.7), rotation: 1 }
         ],
-        lootSpawners: [
+        lootSpawners: IS_CLIENT ? undefined : [
             { table: "ground_loot", position: Vec(0, 0) }
         ]
     },
@@ -2914,7 +2914,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 lootSpawnOffset: Vec(-4, 0)
             }
         ],
-        lootSpawners: [
+        lootSpawners: IS_CLIENT ? undefined : [
             { table: "ground_loot", position: Vec(18.48, 6.37) },
             { table: "ground_loot", position: Vec(-23.91, -18.07) }
         ]
@@ -4281,7 +4281,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "lamp", position: Vec(-10.82, -6.98), rotation: 3, variation: 1 },
             { idString: "recorder_interactable", position: Vec(-7.5, -22.73), rotation: 0, puzzlePiece: true } // TODO
         ],
-        lootSpawners: [{
+        lootSpawners: IS_CLIENT ? undefined : [{
             table: "gun_mount_m590m",
             position: Vec(-2.63, -11.39)
         }]
@@ -5040,7 +5040,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: randomPortDamagedContainer, position: Vec(-27.17, -100.35), orientation: 2 },
             { idString: randomPortOpenContainerOneSide, position: Vec(41.47, 100.35) }
         ],
-        lootSpawners: [{
+        lootSpawners: IS_CLIENT ? undefined : [{
             table: "ship_skins",
             position: Vec(0.79, 151.41)
         }]
@@ -5246,7 +5246,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "briefcase", position: Vec(-20.7, 10.85), rotation: 2 },
             { idString: "vault_door", position: Vec(-14.1, -3.22), rotation: 3 }
         ],
-        lootSpawners: [{
+        lootSpawners: IS_CLIENT ? undefined : [{
             position: Vec(-25.5, -1),
             table: "armory_skin"
         }]
@@ -5712,7 +5712,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         subBuildings: IS_CLIENT ? undefined : [
             { idString: "lighthouse_lighting", position: Vec(0, -36.2) }
         ],
-        lootSpawners: [
+        lootSpawners: IS_CLIENT ? undefined : [
             { table: "ground_loot", position: Vec(-17, 8) },
             { table: "lighthouse_skin", position: Vec(-1, 20) }
         ]
@@ -5780,7 +5780,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         floors: [
             { type: FloorNames.Wood, hitbox: RectangleHitbox.fromRect(13.6, 55.7, Vec(0, 0)) }
         ],
-        lootSpawners: [
+        lootSpawners: IS_CLIENT ? undefined : [
             { table: "ground_loot", position: Vec(0, 0) }
         ]
     },
@@ -6520,7 +6520,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             // ---------------------------------------------------------------------------------------------------------------
         ] as BuildingObstacle[],
         subBuildings: IS_CLIENT ? undefined : [{ idString: "headquarters_secret_room", position: Vec(7.4, -94.5) }],
-        lootSpawners: [{
+        lootSpawners: IS_CLIENT ? undefined : [{
             position: Vec(16, -88),
             table: "hq_skin"
         }]
@@ -6601,7 +6601,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "small_drawer", position: Vec(16, 3.3), lootSpawnOffset: Vec(-2, 0), rotation: 3 },
             { idString: "flint_crate", position: Vec(15, 11.5), lootSpawnOffset: Vec(-2, -2) }
         ],
-        lootSpawners: [
+        lootSpawners: IS_CLIENT ? undefined : [
             { table: "ground_loot", position: Vec(0, -0.5) }
         ]
     },
@@ -6942,7 +6942,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { key: "cabinet_residue", position: Vec(16, 37.6), zIndex: ZIndexes.Decals },
             { key: "cabinet_residue", position: Vec(16, 20.9), zIndex: ZIndexes.Decals }
         ],
-        lootSpawners: [
+        lootSpawners: IS_CLIENT ? undefined : [
             { table: "cabinet", position: Vec(16, 20.9) },
             { table: "cabinet", position: Vec(16, 37.6) }
         ],
@@ -7056,7 +7056,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "trash_can", position: Vec(12, 17.5) },
             { idString: "window_damaged", position: Vec(-13.9, 7.1), rotation: 0 }
         ],
-        lootSpawners: [
+        lootSpawners: IS_CLIENT ? undefined : [
             {
                 table: "small_drawer",
                 position: Vec(-9.2, 16.8)
@@ -7153,7 +7153,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "box", position: Vec(-17.88, 6.72) },
             { idString: "bombed_armory_vault_wall", position: Vec(-13.94, -2.1), rotation: 1 }
         ],
-        lootSpawners: [
+        lootSpawners: IS_CLIENT ? undefined : [
             {
                 position: Vec(12.85, -0.45),
                 table: "ammo_crate"
@@ -7422,7 +7422,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 })
             )
         ],
-        lootSpawners: [
+        lootSpawners: IS_CLIENT ? undefined : [
             {
                 table: "flint_crate",
                 position: Vec(33.86, -46.16)
@@ -8123,7 +8123,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             setSolvedImmediately: true,
             delay: 1000
         },
-        lootSpawners: [
+        lootSpawners: IS_CLIENT ? undefined : [
             { table: "plumpkin_bunker_skin", position: Vec(-49.23, -110.21) }
         ],
         obstacles: IS_CLIENT ? undefined : [
@@ -11470,6 +11470,12 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "sawmill_center_warehouse", position: Vec(13.75, -37) },
             { idString: "sawmill_storage", position: Vec(-51.47, -212.03) },
             { idString: "porta_potty", position: Vec(-118.1, -130), orientation: 3 }
+        ],
+        lootSpawners: IS_CLIENT ? undefined : [
+            { table: "ground_loot", position: Vec(-37.87, -161.59) },
+            { table: "ground_loot", position: Vec(102.02, -152.49) },
+            { table: "ground_loot", position: Vec(-54.68, 91.21) },
+            { table: "ground_loot", position: Vec(116.63, 52.96) }
         ]
     },
     {
@@ -12071,7 +12077,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "cabin_column", position: Vec(-46.8, 35.44) },
             { idString: "cabin_column", position: Vec(-46.8, 12.48) },
             { idString: "cabin_column", position: Vec(-46.8, -9.48) }
-        ]
+        ],
+        lootSpawners: IS_CLIENT ? undefined : [{ table: "ground_loot", position: Vec(-37.59, -2.24) }]
     },
     {
         idString: "sawmill_storage",
@@ -12197,6 +12204,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 type: FloorNames.Sand,
                 hitbox: RectangleHitbox.fromRect(10, 10.09, Vec(30.35, 1.4))
             },
+            // TODO simplify these, we absolutely do not need polygon hitboxes for floors
             {
                 type: FloorNames.Sand,
                 hitbox: new PolygonHitbox([
@@ -12702,6 +12710,10 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "warehouse_hunted_column", position: Vec(4.45, -6.09) },
             { idString: "warehouse_hunted_wall_1", position: Vec(4.45, 1.43), rotation: 0 },
             { idString: "warehouse_hunted_wall_2", position: Vec(-16.07, -15.74), rotation: 0 }
+        ],
+        lootSpawners: IS_CLIENT ? undefined : [
+            { table: "ground_loot", position: Vec(-29.05, -2.76) },
+            { table: "ground_loot", position: Vec(39.69, -8.94) }
         ]
     },
     {
@@ -13094,7 +13106,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "tavern_secret_ceiling", position: Vec(39.85, 3.2) },
             { idString: "tavern_basement", position: Vec(43.66, -53.7), layer: Layer.Basement },
             { idString: "tavern_recording_puzzle", position: Vec(0, 0) }
-        ]
+        ],
+        lootSpawners: IS_CLIENT ? undefined : [{ table: "ground_loot", position: Vec(-14.99, 48.38) }]
     },
     {
         idString: "tavern_secret_ceiling",
@@ -13325,7 +13338,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "box", position: Vec(34.57, 17.93) },
             { idString: "nsd_crate", position: Vec(14.67, -22.46) },
             { idString: "regular_crate", position: Vec(-31.57, 19.99) }
-        ]
+        ],
+        lootSpawners: IS_CLIENT ? undefined : [{ table: "ground_loot", position: Vec(0.05, 18.36) }]
     },
     {
         idString: "shooting_range",
@@ -13738,7 +13752,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         ],
         lootSpawners: IS_CLIENT ? undefined : [
             { table: "ground_loot", position: Vec(-35.78, 49.5) },
-            { table: "ground_loot", position: Vec(-20.5, -62.69) }
+            { table: "ground_loot", position: Vec(-20.5, -62.69) },
+            { table: "ground_loot", position: Vec(-52.41, -23.68) }
         ]
     },
     {
@@ -14164,7 +14179,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 rotation: Math.PI / 2
             }
         ],
-        obstacles: [
+        obstacles: IS_CLIENT ? undefined : [
             { idString: "pickup_truck", position: Vec(-24.01, -5.02), rotation: 2 },
             { idString: "regular_crate", position: Vec(-23.63, -31.09) },
             { idString: "regular_crate", position: Vec(-35, -24.02) },
@@ -14187,10 +14202,11 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "forklift", position: Vec(32.7, 17.99), rotation: 2 },
             { idString: "toolbox", position: Vec(-30.12, -45.72), rotation: 0 }
         ],
-        subBuildings: [
+        subBuildings: IS_CLIENT ? undefined : [
             { idString: randomPallet, position: Vec(32.65, 6.72) },
             { idString: randomPallet, position: Vec(-43.58, 35.45) }
-        ]
+        ],
+        lootSpawners: IS_CLIENT ? undefined : [{ table: "ground_loot", position: Vec(-31.38, 17.04) }]
     },
     hollowLog(1, "damaged"),
     hollowLog(2, "extended"),
