@@ -2,7 +2,7 @@ Menu music - Lil Craw
 Halloween menu music - Secrets of the House on the Hill by Rage Sound
 Tavern Music - Lil Craw
 
-Most sound effects edited by Henry Sanger
+Most sound effects edited by hasanger
 
 Guns:
   M3K switch - Dablux
@@ -31,8 +31,6 @@ Guns:
 
   ACR fire - "Beefy Suppressed Bushmaster ACR 5.56 Close Gunshot A Sound Effect" by Fesliyan Studios: https://www.fesliyanstudios.com/royalty-free-sound-effects-download/bushmaster-acr-5.56-combat-rifle-298
   ACR reload & switch - "Bushmaster ACR remake" by Tyrannotitan Fan: https://gamebanana.com/sounds/68939
-
-  Vector fire - "smgshoot2" from Pixabay: https://pixabay.com/sound-effects/smgshoot2-35768/
 
   Vepr-12 reload & switch - Dablux
 

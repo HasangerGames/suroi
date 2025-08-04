@@ -34,6 +34,16 @@ Guns:
     World Image: Winter
     Killfeed Image: eiπ
 
+  AKs-74u:
+    Loot Image: Wampi, Skullboi249
+    World Image: Skullboi249
+    Killfeed Image: Skullboi249
+
+  AN-94:
+    Loot Image: Skullboi249
+    World Image: Skullboi249
+    Killfeed Image: Skullboi249
+
   ARX-160:
     Loot Image: Sophie, Skullboi249
     World Image: Winter
@@ -194,6 +204,11 @@ Guns:
     World Image: Winter
     Killfeed Image: eiπ
 
+  OTs-23:
+    Loot Image: hugh jass
+    World Image: Skullboi249
+    Killfeed Image: Skullboi249
+
   PK-61:
     Loot Image: Winter
     World Image: Winter
@@ -204,20 +219,35 @@ Guns:
     World Image: Winter
     Killfeed Image: eiπ
 
-  RG Scout:
-    Loot Image: Winter
-    World Image: Winter
-    Killfeed Image: Winter
-
-  RSh-12:
-    Loot Image: Winter, Skullboi249
-    World Image: Winter
-    Killfeed Image: Winter
+  PSM:
+    Loot Image: Skullboi249
+    World Image: Skullboi249
+    Killfeed Image: Skullboi249
 
   Revitalizer:
     Loot Image: eiπ
     World Image: eiπ
     Killfeed Image: eiπ
+
+  RG Scout:
+    Loot Image: Winter
+    World Image: Winter
+    Killfeed Image: Winter
+
+  RPK-16:
+    Loot Image: Skullboi249
+    World Image: Skullboi249
+    Killfeed Image: Skullboi249
+
+  RPK-74:
+    Loot Image: Skullboi249
+    World Image: Skullboi249
+    Killfeed Image: Skullboi249
+
+  RSh-12:
+    Loot Image: Winter, Skullboi249
+    World Image: Winter
+    Killfeed Image: Winter
 
   SAF-200:
     Loot Image: eiπ, artuhr
@@ -337,6 +367,8 @@ Obstacles:
   Stove: 1092384
   Residues for above obstacles: platonthek
 
+  Toolbox: Katloo
+
   Sandbags: Yeet120, Eclair
 
   Pumpkin: RedCoder09
@@ -363,7 +395,7 @@ Buildings:
   (Hunted Mode) Warehouse: TimoPro
   Sawmill: TimoPro
   Hunted Mode Small Bridge Variant/Recolor: SquareCube
-  Carport: TimoPro
+  Carport: Katloo, TimoPro
   Shooting Range: TimoPro
   Docks: TimoPro
   Hunting Stand: TimoPro
@@ -382,11 +414,11 @@ Other:
   Flint Logo: Katloo
   Tap Icon - "One Finger Tap Gesture Of Outlined Hand Symbol" from OnlineWebFonts: https://www.onlinewebfonts.com/icon/57341
 
-Perk Icons
-- All harvest (except combat expert), halloween perk icons: Winter
-- Combat Expert: Skullboi249
-- Experimental Forcefield: Skullboi249
-- Hollow Points: Skullboi249
-- Thermal Goggles: Skullboi249
-- Overdrive: AnnihilatingFox
-- Loot Baron: Skullboi249
+Perk Icons:
+  All harvest (except combat expert), halloween perk icons: Winter
+  Combat Expert: Skullboi249
+  Experimental Forcefield: Skullboi249
+  Hollow Points: Skullboi249
+  Thermal Goggles: Skullboi249
+  Overdrive: AnnihilatingFox
+  Loot Baron: Skullboi249
