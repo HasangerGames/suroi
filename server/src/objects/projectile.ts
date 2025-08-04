@@ -202,7 +202,13 @@ export class Projectile extends BaseGameObject.derive(ObjectCategory.Projectile)
                 const damage = this.definition.impactDamage
                     * (object.isPlayer ? 1 : this.definition.obstacleMultiplier ?? 1);
                 object.damage({ amount: damage, source: this.owner, weaponUsed: this.source });
+
+                // forcing a detonation seems to be broken, so we modify the fuse time
+                if (this.owner.isPlayer && this.owner.hasPerk(PerkIds.DemoExpert)) {
+                    this._fuseTime = -1;
+                }
             }
+
             if (object.dead) continue;
 
             this.hitbox.resolveCollision(object.hitbox);
