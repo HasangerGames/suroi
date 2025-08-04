@@ -5079,7 +5079,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
             new CircleHitbox(0.51, Vec(0.57, -2.13))
         ),
         rotationMode: RotationMode.Limited,
-        zIndex: ZIndexes.BuildingsFloor - 1,
+        zIndex: ZIndexes.BuildingsFloor - 0.25,
         noResidue: true,
         frames: {
             particle: "flint_lockbox_particle"

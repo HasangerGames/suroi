@@ -3970,7 +3970,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 type: FloorNames.Stone,
                 hitbox: new GroupHitbox(
                     RectangleHitbox.fromRect(149, 434.5, Vec(-141.68, -27.59)), // G1 - L
-                    RectangleHitbox.fromRect(433.5, 76, Vec(0, -207)), // G2 - C
+                    RectangleHitbox.fromRect(432, 76, Vec(0, -207)), // G2 - C
                     RectangleHitbox.fromRect(149, 434.5, Vec(141.68, -27.59)) // G1 - R
                 )
             },
@@ -4010,7 +4010,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 color: 0x666666,
                 hitbox: new GroupHitbox(
                     RectangleHitbox.fromRect(149, 434.5, Vec(-141.68, -27.59)), // G1 - L
-                    RectangleHitbox.fromRect(433.5, 76, Vec(0, -207)), // G2 - C
+                    RectangleHitbox.fromRect(432, 76, Vec(0, -207)), // G2 - C
                     RectangleHitbox.fromRect(149, 434.5, Vec(141.68, -27.59)) // G1 - R
                 )
             },
