@@ -162,7 +162,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇧🇷 Português (Brasil) (91% Complete) - br.hjson
+## 🇧🇷 Português (Brasil) (95% Complete) - br.hjson
 
 ### Invalid Keys
 
@@ -170,7 +170,6 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### Undefined Keys
 
-- Key `contact` is not defined
 - Key `bindings_fullscreen` is not defined
 - Key `recording` is not defined
 - Key `settings_record_res` is not defined
@@ -181,30 +180,15 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_normal_joystick_info` is not defined
 - Key `settings_switched_joystick_info` is not defined
 - Key `action_vaccine_syringe_use` is not defined
-- Key `interact_server` is not defined
 - Key `interact_monument` is not defined
 - Key `interact_recorder_interactable` is not defined
 - Key `bindings_screen_record` is not defined
 - Key `kf_were_finally_killed` is not defined
-- Key `kf_saw_kill` is not defined
-- Key `kf_saw_down` is not defined
-- Key `km_saw_kill_you` is not defined
-- Key `km_saw_down_you` is not defined
 - Key `tt_desc` is not defined
 - Key `region_ea` is not defined
 - Key `region_oc` is not defined
 - Key `vaccine_syringe` is not defined
 - Key `vaccine_syringe_desc` is not defined
-- Key `loot_baron` is not defined
-- Key `loot_baron_desc` is not defined
-- Key `hollow_points` is not defined
-- Key `hollow_points_desc` is not defined
-- Key `experimental_forcefield` is not defined
-- Key `experimental_forcefield_desc` is not defined
-- Key `thermal_goggles` is not defined
-- Key `thermal_goggles_desc` is not defined
-- Key `overdrive` is not defined
-- Key `overdrive_desc` is not defined
 
 ## 🇨🇿 Čeština (63% Complete) - cz.hjson
 
@@ -934,7 +918,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇫🇷 Français (94% Complete) - fr.hjson
+## 🇫🇷 Français (96% Complete) - fr.hjson
 
 ### Invalid Keys
 
@@ -948,7 +932,6 @@ This file is a report of all errors and missing keys in the translation files of
 
 - Key `contact` is not defined
 - Key `action_vaccine_syringe_use` is not defined
-- Key `interact_server` is not defined
 - Key `interact_recorder_interactable` is not defined
 - Key `kf_saw_kill` is not defined
 - Key `kf_saw_down` is not defined
@@ -961,14 +944,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `loot_baron` is not defined
 - Key `loot_baron_desc` is not defined
 - Key `baby_plumpkin_pie_desc` is not defined
-- Key `hollow_points` is not defined
-- Key `hollow_points_desc` is not defined
-- Key `experimental_forcefield` is not defined
-- Key `experimental_forcefield_desc` is not defined
-- Key `thermal_goggles` is not defined
-- Key `thermal_goggles_desc` is not defined
-- Key `overdrive` is not defined
-- Key `overdrive_desc` is not defined
 
 ## 🇬🇷 Ελληνικά (80% Complete) - gr.hjson
 
@@ -1405,17 +1380,20 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇯🇵 日本語 (95% Complete) - jp.hjson
+## 🇯🇵 日本語 (98% Complete) - jp.hjson
 
 ### Invalid Keys
 
-- Key ``"kf_were_finally_killed"` is not a valid key
+- Key `power_vest` is not a valid key
+- Key `power_helmet` is not a valid key
+- Key `power_pack` is not a valid key
 - Key `12g` is not a valid key
 - Key `556mm` is not a valid key
 - Key `762mm` is not a valid key
 - Key `9mm` is not a valid key
 - Key `50cal` is not a valid key
 - Key `338lap` is not a valid key
+- Key `545mm` is not a valid key
 - Key `firework_rocket` is not a valid key
 - Key `power_cell` is not a valid key
 - Key `bb` is not a valid key
@@ -1429,11 +1407,15 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `super_barrel_explosion` is not a valid key
 - Key `small_refinery_barrel_explosion` is not a valid key
 - Key `large_refinery_barrel_explosion` is not a valid key
+- Key `silo_explosion` is not a valid key
+- Key `propane_tank_explosion` is not a valid key
 - Key `firework_launcher_explosion` is not a valid key
-- Key `confetti_grenade_explosion` is not a valid key
-- Key `frag_grenade_explosion` is not a valid key
-- Key `pumpkin_explosion` is not a valid key
 - Key `seed_explosion` is not a valid key
+- Key `coal_explosion` is not a valid key
+- Key `frag_grenade_explosion` is not a valid key
+- Key `confetti_grenade_explosion` is not a valid key
+- Key `pumpkin_explosion` is not a valid key
+- Key `sawblade` is not a valid key
 - Key `bdg_developr` is not a valid key
 - Key `bdg_dev_managr` is not a valid key
 - Key `bdg_designr` is not a valid key
@@ -1446,6 +1428,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bdg_youtubr` is not a valid key
 - Key `bdg_boostr` is not a valid key
 - Key `bdg_ownr` is not a valid key
+- Key `bdg_marketr` is not a valid key
 - Key `bdg_bleh` is not a valid key
 - Key `bdg_froog` is not a valid key
 - Key `bdg_aegis_logo` is not a valid key
@@ -1487,7 +1470,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `emote_man_face` is not a valid key
 - Key `emote_satisfied_face` is not a valid key
 - Key `emote_hot_face` is not a valid key
-- Key `emote_blind_walking` is not a valid key
+- Key `emote_blindfolded_face` is not a valid key
 - Key `emote_melting_face` is not a valid key
 - Key `emote_grimacing_face` is not a valid key
 - Key `emote_vomiting_face` is not a valid key
@@ -1513,6 +1496,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `emote_pensive_face` is not a valid key
 - Key `emote_zipper_mouth_face` is not a valid key
 - Key `emote_zombie_face` is not a valid key
+- Key `emote_thousand_yard_stare` is not a valid key
 - Key `emote_question_mark` is not a valid key
 - Key `emote_team_=_ban` is not a valid key
 - Key `emote_hack_=_ban` is not a valid key
@@ -1548,6 +1532,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `emote_chicken_dinner` is not a valid key
 - Key `emote_trophy` is not a valid key
 - Key `emote_fire` is not a valid key
+- Key `emote_heart` is not a valid key
 - Key `emote_penguin` is not a valid key
 - Key `emote_squid` is not a valid key
 - Key `emote_eagle` is not a valid key
@@ -1599,6 +1584,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `holiday_tree` is not a valid key
 - Key `lemon` is not a valid key
 - Key `light_choco` is not a valid key
+- Key `lobotomy` is not a valid key
 - Key `lumberjack` is not a valid key
 - Key `mango` is not a valid key
 - Key `military_camo` is not a valid key
@@ -1660,28 +1646,25 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `spokelsesfelt` is not a valid key
 - Key `haunted_hollow` is not a valid key
 - Key `mt_fang` is not a valid key
+- Key `pine_cone` is not a valid key
+- Key `gunpoint` is not a valid key
+- Key `kuolema` is not a valid key
+- Key `switchback` is not a valid key
+- Key `black_hill` is not a valid key
+- Key `the_grove` is not a valid key
+- Key `region_1v1` is not a valid key
+- Key `region_ea1v1` is not a valid key
+- Key `region_test` is not a valid key
 
 ### Undefined Keys
 
 - Key `contact` is not defined
-- Key `interact_server` is not defined
-- Key `interact_recorder_interactable` is not defined
-- Key `kf_were_finally_killed` is not defined
 - Key `kf_saw_kill` is not defined
 - Key `kf_saw_down` is not defined
 - Key `km_saw_kill_you` is not defined
 - Key `km_saw_down_you` is not defined
 - Key `loot_baron` is not defined
 - Key `loot_baron_desc` is not defined
-- Key `baby_plumpkin_pie_desc` is not defined
-- Key `hollow_points` is not defined
-- Key `hollow_points_desc` is not defined
-- Key `experimental_forcefield` is not defined
-- Key `experimental_forcefield_desc` is not defined
-- Key `thermal_goggles` is not defined
-- Key `thermal_goggles_desc` is not defined
-- Key `overdrive` is not defined
-- Key `overdrive_desc` is not defined
 
 ## 🇱🇹 Lietuvių (63% Complete) - lt.hjson
 
@@ -2272,7 +2255,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇷🇴 Română (94% Complete) - ro.hjson
+## 🇷🇴 Română (100% Complete) - ro.hjson
 
 ### Invalid Keys
 
@@ -2280,42 +2263,22 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### Undefined Keys
 
-- Key `contact` is not defined
-- Key `action_vaccine_syringe_use` is not defined
-- Key `interact_server` is not defined
-- Key `interact_recorder_interactable` is not defined
-- Key `kf_saw_kill` is not defined
-- Key `kf_saw_down` is not defined
-- Key `km_saw_kill_you` is not defined
-- Key `km_saw_down_you` is not defined
-- Key `tt_desc` is not defined
-- Key `region_ea` is not defined
-- Key `vaccine_syringe` is not defined
-- Key `vaccine_syringe_desc` is not defined
-- Key `loot_baron` is not defined
-- Key `loot_baron_desc` is not defined
 - Key `baby_plumpkin_pie_desc` is not defined
-- Key `hollow_points` is not defined
-- Key `hollow_points_desc` is not defined
-- Key `experimental_forcefield` is not defined
-- Key `experimental_forcefield_desc` is not defined
-- Key `thermal_goggles` is not defined
-- Key `thermal_goggles_desc` is not defined
-- Key `overdrive` is not defined
-- Key `overdrive_desc` is not defined
 
-## 🇷🇺 Русский (93% Complete) - ru.hjson
+## 🇷🇺 Русский (96% Complete) - ru.hjson
 
 ### Invalid Keys
 
 - Key `create_team_waiting` is not a valid key
+- Key `power_helmet` is not a valid key
+- Key `power_vest` is not a valid key
+- Key `power_pack` is not a valid key
 
 ### Undefined Keys
 
 - Key `contact` is not defined
 - Key `settings_show_inout` is not defined
 - Key `action_vaccine_syringe_use` is not defined
-- Key `interact_server` is not defined
 - Key `interact_recorder_interactable` is not defined
 - Key `kf_saw_kill` is not defined
 - Key `kf_saw_down` is not defined
@@ -2329,14 +2292,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `loot_baron` is not defined
 - Key `loot_baron_desc` is not defined
 - Key `baby_plumpkin_pie_desc` is not defined
-- Key `hollow_points` is not defined
-- Key `hollow_points_desc` is not defined
-- Key `experimental_forcefield` is not defined
-- Key `experimental_forcefield_desc` is not defined
-- Key `thermal_goggles` is not defined
-- Key `thermal_goggles_desc` is not defined
-- Key `overdrive` is not defined
-- Key `overdrive_desc` is not defined
 
 ## 🇮🇳 தமிழ் (73% Complete) - ta.hjson
 
@@ -2684,7 +2639,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
 
-## 🇨🇳 中文（简体） (95% Complete) - zh.hjson
+## 🇨🇳 中文（简体） (99% Complete) - zh.hjson
 
 ### Invalid Keys
 
@@ -2938,22 +2893,6 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### Undefined Keys
 
-- Key `contact` is not defined
-- Key `interact_server` is not defined
 - Key `interact_recorder_interactable` is not defined
-- Key `kf_saw_kill` is not defined
-- Key `kf_saw_down` is not defined
-- Key `km_saw_kill_you` is not defined
-- Key `km_saw_down_you` is not defined
 - Key `m16a4` is not defined
-- Key `loot_baron` is not defined
-- Key `loot_baron_desc` is not defined
-- Key `hollow_points` is not defined
-- Key `hollow_points_desc` is not defined
-- Key `experimental_forcefield` is not defined
-- Key `experimental_forcefield_desc` is not defined
-- Key `thermal_goggles` is not defined
-- Key `thermal_goggles_desc` is not defined
-- Key `overdrive` is not defined
-- Key `overdrive_desc` is not defined
 
