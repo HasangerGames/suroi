@@ -1,6 +1,6 @@
 {
   "name": "suroi",
-  "version": "0.27.4",
+  "version": "0.28.0",
   "description": "An open-source 2D battle royale game inspired by surviv.io.",
   "scripts": {
     "build": "pnpm -r build",
