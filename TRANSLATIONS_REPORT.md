@@ -119,6 +119,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `combat_expert_desc` is not defined
 - Key `precision_recycling` is not defined
 - Key `precision_recycling_desc` is not defined
+- Key `loot_baron` is not defined
+- Key `loot_baron_desc` is not defined
 - Key `plumpkin_gamble` is not defined
 - Key `plumpkin_gamble_desc` is not defined
 - Key `lycanthropy` is not defined
@@ -193,6 +195,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `region_oc` is not defined
 - Key `vaccine_syringe` is not defined
 - Key `vaccine_syringe_desc` is not defined
+- Key `loot_baron` is not defined
+- Key `loot_baron_desc` is not defined
 - Key `hollow_points` is not defined
 - Key `hollow_points_desc` is not defined
 - Key `experimental_forcefield` is not defined
@@ -308,6 +312,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `combat_expert_desc` is not defined
 - Key `precision_recycling` is not defined
 - Key `precision_recycling_desc` is not defined
+- Key `loot_baron` is not defined
+- Key `loot_baron_desc` is not defined
 - Key `plumpkin_gamble` is not defined
 - Key `plumpkin_gamble_desc` is not defined
 - Key `lycanthropy` is not defined
@@ -424,6 +430,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `combat_expert_desc` is not defined
 - Key `precision_recycling` is not defined
 - Key `precision_recycling_desc` is not defined
+- Key `loot_baron` is not defined
+- Key `loot_baron_desc` is not defined
 - Key `plumpkin_gamble` is not defined
 - Key `plumpkin_gamble_desc` is not defined
 - Key `lycanthropy` is not defined
@@ -561,6 +569,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `combat_expert_desc` is not defined
 - Key `precision_recycling` is not defined
 - Key `precision_recycling_desc` is not defined
+- Key `loot_baron` is not defined
+- Key `loot_baron_desc` is not defined
 - Key `plumpkin_gamble` is not defined
 - Key `plumpkin_gamble_desc` is not defined
 - Key `lycanthropy` is not defined
@@ -602,7 +612,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇪🇪 eesti (95% Complete) - et.hjson
+## 🇪🇪 eesti (94% Complete) - et.hjson
 
 ### Invalid Keys
 
@@ -774,6 +784,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `km_saw_down_you` is not defined
 - Key `m16a4` is not defined
 - Key `region_ea` is not defined
+- Key `loot_baron` is not defined
+- Key `loot_baron_desc` is not defined
 - Key `baby_plumpkin_pie_desc` is not defined
 - Key `hollow_points` is not defined
 - Key `hollow_points_desc` is not defined
@@ -879,6 +891,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `combat_expert_desc` is not defined
 - Key `precision_recycling` is not defined
 - Key `precision_recycling_desc` is not defined
+- Key `loot_baron` is not defined
+- Key `loot_baron_desc` is not defined
 - Key `plumpkin_gamble` is not defined
 - Key `plumpkin_gamble_desc` is not defined
 - Key `lycanthropy` is not defined
@@ -944,6 +958,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `region_ea` is not defined
 - Key `vaccine_syringe` is not defined
 - Key `vaccine_syringe_desc` is not defined
+- Key `loot_baron` is not defined
+- Key `loot_baron_desc` is not defined
 - Key `baby_plumpkin_pie_desc` is not defined
 - Key `hollow_points` is not defined
 - Key `hollow_points_desc` is not defined
@@ -954,7 +970,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
 
-## 🇬🇷 Ελληνικά (81% Complete) - gr.hjson
+## 🇬🇷 Ελληνικά (80% Complete) - gr.hjson
 
 ### Invalid Keys
 
@@ -995,6 +1011,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `combat_expert_desc` is not defined
 - Key `precision_recycling` is not defined
 - Key `precision_recycling_desc` is not defined
+- Key `loot_baron` is not defined
+- Key `loot_baron_desc` is not defined
 - Key `plumpkin_gamble` is not defined
 - Key `plumpkin_gamble_desc` is not defined
 - Key `lycanthropy` is not defined
@@ -1146,6 +1164,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `combat_expert_desc` is not defined
 - Key `precision_recycling` is not defined
 - Key `precision_recycling_desc` is not defined
+- Key `loot_baron` is not defined
+- Key `loot_baron_desc` is not defined
 - Key `plumpkin_gamble` is not defined
 - Key `plumpkin_gamble_desc` is not defined
 - Key `lycanthropy` is not defined
@@ -1203,6 +1223,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `km_saw_kill_you` is not defined
 - Key `km_saw_down_you` is not defined
 - Key `region_ea` is not defined
+- Key `loot_baron` is not defined
+- Key `loot_baron_desc` is not defined
 - Key `baby_plumpkin_pie_desc` is not defined
 - Key `hollow_points` is not defined
 - Key `hollow_points_desc` is not defined
@@ -1215,7 +1237,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇮🇹 Italiano (61% Complete) - it.hjson
+## 🇮🇹 Italiano (60% Complete) - it.hjson
 
 ### Invalid Keys
 
@@ -1340,6 +1362,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `combat_expert_desc` is not defined
 - Key `precision_recycling` is not defined
 - Key `precision_recycling_desc` is not defined
+- Key `loot_baron` is not defined
+- Key `loot_baron_desc` is not defined
 - Key `plumpkin_gamble` is not defined
 - Key `plumpkin_gamble_desc` is not defined
 - Key `lycanthropy` is not defined
@@ -1647,6 +1671,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `kf_saw_down` is not defined
 - Key `km_saw_kill_you` is not defined
 - Key `km_saw_down_you` is not defined
+- Key `loot_baron` is not defined
+- Key `loot_baron_desc` is not defined
 - Key `baby_plumpkin_pie_desc` is not defined
 - Key `hollow_points` is not defined
 - Key `hollow_points_desc` is not defined
@@ -1763,6 +1789,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `combat_expert_desc` is not defined
 - Key `precision_recycling` is not defined
 - Key `precision_recycling_desc` is not defined
+- Key `loot_baron` is not defined
+- Key `loot_baron_desc` is not defined
 - Key `plumpkin_gamble` is not defined
 - Key `plumpkin_gamble_desc` is not defined
 - Key `lycanthropy` is not defined
@@ -1910,6 +1938,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `combat_expert_desc` is not defined
 - Key `precision_recycling` is not defined
 - Key `precision_recycling_desc` is not defined
+- Key `loot_baron` is not defined
+- Key `loot_baron_desc` is not defined
 - Key `plumpkin_gamble` is not defined
 - Key `plumpkin_gamble_desc` is not defined
 - Key `lycanthropy` is not defined
@@ -1969,6 +1999,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `region_ea` is not defined
 - Key `vaccine_syringe` is not defined
 - Key `vaccine_syringe_desc` is not defined
+- Key `loot_baron` is not defined
+- Key `loot_baron_desc` is not defined
 - Key `baby_plumpkin_pie_desc` is not defined
 - Key `hollow_points` is not defined
 - Key `hollow_points_desc` is not defined
@@ -2074,6 +2106,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `combat_expert_desc` is not defined
 - Key `precision_recycling` is not defined
 - Key `precision_recycling_desc` is not defined
+- Key `loot_baron` is not defined
+- Key `loot_baron_desc` is not defined
 - Key `plumpkin_gamble` is not defined
 - Key `plumpkin_gamble_desc` is not defined
 - Key `lycanthropy` is not defined
@@ -2195,6 +2229,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `combat_expert_desc` is not defined
 - Key `precision_recycling` is not defined
 - Key `precision_recycling_desc` is not defined
+- Key `loot_baron` is not defined
+- Key `loot_baron_desc` is not defined
 - Key `plumpkin_gamble` is not defined
 - Key `plumpkin_gamble_desc` is not defined
 - Key `lycanthropy` is not defined
@@ -2256,6 +2292,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `region_ea` is not defined
 - Key `vaccine_syringe` is not defined
 - Key `vaccine_syringe_desc` is not defined
+- Key `loot_baron` is not defined
+- Key `loot_baron_desc` is not defined
 - Key `baby_plumpkin_pie_desc` is not defined
 - Key `hollow_points` is not defined
 - Key `hollow_points_desc` is not defined
@@ -2266,7 +2304,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
 
-## 🇷🇺 Русский (94% Complete) - ru.hjson
+## 🇷🇺 Русский (93% Complete) - ru.hjson
 
 ### Invalid Keys
 
@@ -2288,6 +2326,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `region_ea` is not defined
 - Key `vaccine_syringe` is not defined
 - Key `vaccine_syringe_desc` is not defined
+- Key `loot_baron` is not defined
+- Key `loot_baron_desc` is not defined
 - Key `baby_plumpkin_pie_desc` is not defined
 - Key `hollow_points` is not defined
 - Key `hollow_points_desc` is not defined
@@ -2298,7 +2338,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
 
-## 🇮🇳 தமிழ் (74% Complete) - ta.hjson
+## 🇮🇳 தமிழ் (73% Complete) - ta.hjson
 
 ### Invalid Keys
 
@@ -2365,6 +2405,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `combat_expert_desc` is not defined
 - Key `precision_recycling` is not defined
 - Key `precision_recycling_desc` is not defined
+- Key `loot_baron` is not defined
+- Key `loot_baron_desc` is not defined
 - Key `plumpkin_gamble` is not defined
 - Key `plumpkin_gamble_desc` is not defined
 - Key `lycanthropy` is not defined
@@ -2460,6 +2502,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `combat_expert_desc` is not defined
 - Key `precision_recycling` is not defined
 - Key `precision_recycling_desc` is not defined
+- Key `loot_baron` is not defined
+- Key `loot_baron_desc` is not defined
 - Key `plumpkin_gamble` is not defined
 - Key `plumpkin_gamble_desc` is not defined
 - Key `lycanthropy` is not defined
@@ -2501,7 +2545,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇹🇼 中文（繁體） (74% Complete) - tw.hjson
+## 🇹🇼 中文（繁體） (73% Complete) - tw.hjson
 
 ### Invalid Keys
 
@@ -2568,6 +2612,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `combat_expert_desc` is not defined
 - Key `precision_recycling` is not defined
 - Key `precision_recycling_desc` is not defined
+- Key `loot_baron` is not defined
+- Key `loot_baron_desc` is not defined
 - Key `plumpkin_gamble` is not defined
 - Key `plumpkin_gamble_desc` is not defined
 - Key `lycanthropy` is not defined
@@ -2626,6 +2672,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `km_saw_kill_you` is not defined
 - Key `km_saw_down_you` is not defined
 - Key `region_ea` is not defined
+- Key `loot_baron` is not defined
+- Key `loot_baron_desc` is not defined
 - Key `baby_plumpkin_pie_desc` is not defined
 - Key `hollow_points` is not defined
 - Key `hollow_points_desc` is not defined
@@ -2636,7 +2684,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
 
-## 🇨🇳 中文（简体） (96% Complete) - zh.hjson
+## 🇨🇳 中文（简体） (95% Complete) - zh.hjson
 
 ### Invalid Keys
 
@@ -2898,6 +2946,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `km_saw_kill_you` is not defined
 - Key `km_saw_down_you` is not defined
 - Key `m16a4` is not defined
+- Key `loot_baron` is not defined
+- Key `loot_baron_desc` is not defined
 - Key `hollow_points` is not defined
 - Key `hollow_points_desc` is not defined
 - Key `experimental_forcefield` is not defined

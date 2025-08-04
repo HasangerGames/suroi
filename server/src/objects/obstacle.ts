@@ -1,5 +1,5 @@
 import { FlyoverPref, ObjectCategory, RotationMode } from "@common/constants";
-import { PerkIds } from "@common/definitions/items/perks";
+import { PerkData, PerkIds } from "@common/definitions/items/perks";
 import { Obstacles, type ObstacleDefinition } from "@common/definitions/obstacles";
 import { type Orientation, type Variation } from "@common/typings";
 import { CircleHitbox, RectangleHitbox, type Hitbox } from "@common/utils/hitbox";
@@ -282,6 +282,29 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
                     Angle.betweenPoints(this.position, lootSpawnPosition),
                     0.02
                 );
+            }
+
+            if (source instanceof BaseGameObject && source.isPlayer && source.hasPerk(PerkIds.LootBaron) && this.definition.hasLoot) {
+                const perkBonus = PerkData[PerkIds.LootBaron].lootBonus;
+                const lootTable = getLootFromTable(this.game.modeName, definition.lootTable ?? definition.idString);
+
+                for (let i = 0; i < perkBonus; i++) {
+                    for (const item of lootTable) {
+                        this.game.addLoot(
+                            item.idString,
+                            this.lootSpawnOffset
+                                ? Vec.add(this.position, this.lootSpawnOffset)
+                                : this.loot.length > 1
+                                    ? this.hitbox.randomPoint()
+                                    : this.position,
+                            this.layer,
+                            { count: item.count }
+                        )?.push(
+                            Angle.betweenPoints(this.position, lootSpawnPosition),
+                            0.02
+                        );
+                    }
+                }
             }
 
             if (definition.isWall) {

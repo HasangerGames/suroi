@@ -59,6 +59,7 @@ export const enum PerkIds {
     LowProfile = "low_profile",
     CombatExpert = "combat_expert",
     PrecisionRecycling = "precision_recycling",
+    LootBaron = "loot_baron",
 
     //
     // Halloween Perks
@@ -226,6 +227,13 @@ const perks = [
         accThreshold: 0.5,
         refund: 2,
         margin: 3 // times fireDelay
+    },
+    {
+        idString: PerkIds.LootBaron,
+        name: "Loot Baron",
+        defType: DefinitionType.Perk,
+        category: PerkCategories.Normal,
+        lootBonus: 1
     },
     //
     // Halloween perks
@@ -432,6 +440,9 @@ const perks = [
         noDrop: true,
         plumpkinGambleIgnore: true
     }, */
+    //
+    // Infection Mode
+    //
     {
         idString: PerkIds.Infected,
         name: "Infected",
@@ -460,6 +471,9 @@ const perks = [
         noDrop: true,
         plumpkinGambleIgnore: true
     },
+    //
+    // Hunted Mode
+    //
     {
         idString: PerkIds.HollowPoints,
         name: "Hollow Points",

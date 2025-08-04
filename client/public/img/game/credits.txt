@@ -383,8 +383,10 @@ Other:
   Tap Icon - "One Finger Tap Gesture Of Outlined Hand Symbol" from OnlineWebFonts: https://www.onlinewebfonts.com/icon/57341
 
 Perk Icons
-- All harvest, halloween perk icons: Winter
+- All harvest (except combat expert), halloween perk icons: Winter
+- Combat Expert: Skullboi249
 - Experimental Forcefield: Skullboi249
 - Hollow Points: Skullboi249
 - Thermal Goggles: Skullboi249
 - Overdrive: AnnihilatingFox
+- Loot Baron: Skullboi249

@@ -393,6 +393,8 @@
 "combat_expert_desc": "Decreased reload time."
 "precision_recycling": "Precision Recycling"
 "precision_recycling_desc": "Hitting an enemy with two bullets in a row refunds two bullets back into the magazine.<br>Does not apply to shotguns."
+"loot_baron": "Loot Baron"
+"loot_baron_desc": "Bonus loot drops."
 "plumpkin_gamble": "Plumpkin Gamble"
 "plumpkin_gamble_desc": "Picks a random Halloween perk."
 "lycanthropy": "Lycanthropy"
