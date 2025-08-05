@@ -300,7 +300,7 @@ export const TintedParticles: Record<string, { readonly base: string, readonly t
     memorial_crate_particle: { base: "wood_particle", tint: 0x763800 },
     flint_crate_particle: { base: "wood_particle", tint: 0xda6a0b },
     nsd_crate_particle: { base: "wood_particle", tint: 0x3d6336 },
-    lansiraami_crate_particle: { base: "wood_particle", tint: 0x725940 },
+    lansirama_crate_particle: { base: "wood_particle", tint: 0x725940 },
     reinforced_crate_particle: { base: "metal_particle_1", tint: 0x2e2e2e },
     furniture_particle: { base: "wood_particle", tint: 0x785a2e },
     couch_part_particle: { base: "wood_particle", tint: 0x6a330b },
@@ -432,7 +432,7 @@ export const TintedParticles: Record<string, { readonly base: string, readonly t
     tavern_wall_particle: { base: "wood_particle", tint: 0x72572a },
 
     humvee_particle: { base: "metal_particle_1", tint: 0x425b3e },
-    lansiraami_log_particle: { base: "stone_particle_1", tint: 0x6c543d },
+    lansirama_log_particle: { base: "stone_particle_1", tint: 0x6c543d },
     toolbox_particle: { base: "metal_particle_1", tint: 0x2f4b88 },
     garage_door_particle: { base: "metal_particle_1", tint: 0xa29e99 },
     research_desk_particle: { base: "wood_particle", tint: 0x88642f },
@@ -1818,8 +1818,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         winterVariations: 6
     },
     {
-        idString: "lansiraami_crate",
-        name: "Lansiraami Crate",
+        idString: "lansirama_crate",
+        name: "Lansirama Crate",
         defType: DefinitionType.Obstacle,
         material: "crate",
         health: 80,
@@ -6799,8 +6799,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         )
     },
     {
-        idString: "lansiraami_log",
-        name: "Lansiraami Log",
+        idString: "lansirama_log",
+        name: "Lansirama Log",
         defType: DefinitionType.Obstacle,
         material: "tree",
         health: 250,
@@ -6815,8 +6815,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         noResidue: true
     },
     {
-        idString: "small_lansiraami_log",
-        name: "Small Lansiraami Log",
+        idString: "small_lansirama_log",
+        name: "Small Lansirama Log",
         defType: DefinitionType.Obstacle,
         material: "tree",
         health: 150,
@@ -6826,7 +6826,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
             destroy: 0.7
         },
         frames: {
-            particle: "lansiraami_log_particle"
+            particle: "lansirama_log_particle"
         },
         hitbox: RectangleHitbox.fromRect(15.82, 6.5),
         rotationMode: RotationMode.Limited,
@@ -6918,7 +6918,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
             destroy: 0.7
         },
         frames: {
-            particle: "lansiraami_log_particle"
+            particle: "lansirama_log_particle"
         },
         zIndex: ZIndexes.Players + 0.1,
         hitbox: RectangleHitbox.fromRect(7.48, 33.36, Vec(-0.67, 0.01)),

@@ -90,7 +90,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
                 { table: "special_scopes", weight: 0.3 }
             ]
         },
-        lansiraami_crate: {
+        lansirama_crate: {
             min: 3,
             max: 4,
             loot: [

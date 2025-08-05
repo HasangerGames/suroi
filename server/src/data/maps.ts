@@ -803,7 +803,7 @@ const maps = {
             oak_tree: 20,
             regular_crate: 110,
             nsd_crate: 6,
-            lansiraami_crate: 6,
+            lansirama_crate: 6,
             grenade_crate: 35,
             rock: 175,
             river_chest: 1,
