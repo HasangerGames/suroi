@@ -1393,14 +1393,13 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇯🇵 日本語 (98% Complete) - jp.hjson
+## 🇯🇵 日本語 (100% Complete) - jp.hjson
 
 ### Invalid Keys
 
 - Key `power_vest` is not a valid key
 - Key `power_helmet` is not a valid key
 - Key `power_pack` is not a valid key
-- Key `m16a4` is not a valid key
 - Key `12g` is not a valid key
 - Key `556mm` is not a valid key
 - Key `762mm` is not a valid key
@@ -1429,7 +1428,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `frag_grenade_explosion` is not a valid key
 - Key `confetti_grenade_explosion` is not a valid key
 - Key `pumpkin_explosion` is not a valid key
-- Key `sawblade` is not a valid key
 - Key `bdg_developr` is not a valid key
 - Key `bdg_dev_managr` is not a valid key
 - Key `bdg_designr` is not a valid key
@@ -1447,8 +1445,9 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bdg_froog` is not a valid key
 - Key `bdg_aegis_logo` is not a valid key
 - Key `bdg_flint_logo` is not a valid key
-- Key `bdg_duel` is not a valid key
+- Key `bdg_nsd_logo` is not a valid key
 - Key `bdg_suroi_logo` is not a valid key
+- Key `bdg_duel` is not a valid key
 - Key `bdg_fire` is not a valid key
 - Key `bdg_colon_three` is not a valid key
 - Key `bdg_suroi_general_chat` is not a valid key
@@ -1670,15 +1669,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `region_ea1v1` is not a valid key
 - Key `region_test` is not a valid key
 
-### Undefined Keys
-
-- Key `contact` is not defined
-- Key `kf_saw_kill` is not defined
-- Key `kf_saw_down` is not defined
-- Key `km_saw_kill_you` is not defined
-- Key `km_saw_down_you` is not defined
-- Key `loot_baron` is not defined
-- Key `loot_baron_desc` is not defined
+### (No Undefined Keys)
 
 ## 🇱🇹 Lietuvių (63% Complete) - lt.hjson
 
