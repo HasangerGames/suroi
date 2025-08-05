@@ -2,7 +2,7 @@
 
 This file is a report of all errors and missing keys in the translation files of this game.
 
-## 🇦🇱 Shqip (60% Complete) - ab.hjson
+## 🇦🇱 Shqip (59% Complete) - ab.hjson
 
 ### Invalid Keys
 
@@ -34,6 +34,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_normal_joystick_info` is not defined
 - Key `settings_switched_joystick_info` is not defined
 - Key `settings_haptics` is not defined
+- Key `settings_shake_to_reload` is not defined
+- Key `settings_shake_count` is not defined
+- Key `settings_shake_force` is not defined
+- Key `settings_shake_delay` is not defined
 - Key `msg_your_team_eliminated` is not defined
 - Key `msg_the_team_eliminated` is not defined
 - Key `msg_not_enough_space` is not defined
@@ -161,7 +165,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇧🇷 Português (Brasil) (95% Complete) - br.hjson
+## 🇧🇷 Português (Brasil) (94% Complete) - br.hjson
 
 ### Invalid Keys
 
@@ -179,6 +183,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_right_joystick_color` is not defined
 - Key `settings_normal_joystick_info` is not defined
 - Key `settings_switched_joystick_info` is not defined
+- Key `settings_shake_to_reload` is not defined
+- Key `settings_shake_count` is not defined
+- Key `settings_shake_force` is not defined
+- Key `settings_shake_delay` is not defined
 - Key `action_vaccine_syringe_use` is not defined
 - Key `interact_monument` is not defined
 - Key `interact_recorder_interactable` is not defined
@@ -190,7 +198,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `vaccine_syringe` is not defined
 - Key `vaccine_syringe_desc` is not defined
 
-## 🇨🇿 Čeština (63% Complete) - cz.hjson
+## 🇨🇿 Čeština (62% Complete) - cz.hjson
 
 ### Invalid Keys
 
@@ -225,6 +233,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_normal_joystick_info` is not defined
 - Key `settings_switched_joystick_info` is not defined
 - Key `settings_haptics` is not defined
+- Key `settings_shake_to_reload` is not defined
+- Key `settings_shake_count` is not defined
+- Key `settings_shake_force` is not defined
+- Key `settings_shake_delay` is not defined
 - Key `msg_your_team_eliminated` is not defined
 - Key `msg_the_team_eliminated` is not defined
 - Key `msg_not_enough_space` is not defined
@@ -340,7 +352,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇩🇪 Deutsch (71% Complete) - de.hjson
+## 🇩🇪 Deutsch (70% Complete) - de.hjson
 
 ### Invalid Keys
 
@@ -367,6 +379,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_normal_joystick_info` is not defined
 - Key `settings_switched_joystick_info` is not defined
 - Key `settings_haptics` is not defined
+- Key `settings_shake_to_reload` is not defined
+- Key `settings_shake_count` is not defined
+- Key `settings_shake_force` is not defined
+- Key `settings_shake_delay` is not defined
 - Key `msg_cannot_use_flare` is not defined
 - Key `final_gas_waiting` is not defined
 - Key `final_gas_advancing` is not defined
@@ -465,7 +481,7 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### (No Undefined Keys)
 
-## 🇪🇸 Español (67% Complete) - es.hjson
+## 🇪🇸 Español (66% Complete) - es.hjson
 
 ### Invalid Keys
 
@@ -492,6 +508,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_right_joystick_color` is not defined
 - Key `settings_normal_joystick_info` is not defined
 - Key `settings_switched_joystick_info` is not defined
+- Key `settings_shake_to_reload` is not defined
+- Key `settings_shake_count` is not defined
+- Key `settings_shake_force` is not defined
+- Key `settings_shake_delay` is not defined
 - Key `msg_cannot_use_flare` is not defined
 - Key `final_gas_waiting` is not defined
 - Key `final_gas_advancing` is not defined
@@ -599,7 +619,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇪🇪 eesti (94% Complete) - et.hjson
+## 🇪🇪 eesti (93% Complete) - et.hjson
 
 ### Invalid Keys
 
@@ -761,6 +781,10 @@ This file is a report of all errors and missing keys in the translation files of
 ### Undefined Keys
 
 - Key `contact` is not defined
+- Key `settings_shake_to_reload` is not defined
+- Key `settings_shake_count` is not defined
+- Key `settings_shake_force` is not defined
+- Key `settings_shake_delay` is not defined
 - Key `interact_server` is not defined
 - Key `interact_recorder_interactable` is not defined
 - Key `kf_suicide_finished_off` is not defined
@@ -782,13 +806,18 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
 
-## 🇮🇷 فارسی (100% Complete) - fa.hjson
+## 🇮🇷 فارسی (99% Complete) - fa.hjson
 
 ### (No Invalid Keys)
 
-### (No Undefined Keys)
+### Undefined Keys
 
-## 🇫🇮 suomi (66% Complete) - fi.hjson
+- Key `settings_shake_to_reload` is not defined
+- Key `settings_shake_count` is not defined
+- Key `settings_shake_force` is not defined
+- Key `settings_shake_delay` is not defined
+
+## 🇫🇮 suomi (65% Complete) - fi.hjson
 
 ### Invalid Keys
 
@@ -818,6 +847,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_normal_joystick_info` is not defined
 - Key `settings_switched_joystick_info` is not defined
 - Key `settings_haptics` is not defined
+- Key `settings_shake_to_reload` is not defined
+- Key `settings_shake_count` is not defined
+- Key `settings_shake_force` is not defined
+- Key `settings_shake_delay` is not defined
 - Key `msg_your_team_eliminated` is not defined
 - Key `msg_the_team_eliminated` is not defined
 - Key `msg_cannot_use_flare` is not defined
@@ -927,7 +960,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇫🇷 Français (96% Complete) - fr.hjson
+## 🇫🇷 Français (95% Complete) - fr.hjson
 
 ### Invalid Keys
 
@@ -941,6 +974,10 @@ This file is a report of all errors and missing keys in the translation files of
 ### Undefined Keys
 
 - Key `contact` is not defined
+- Key `settings_shake_to_reload` is not defined
+- Key `settings_shake_count` is not defined
+- Key `settings_shake_force` is not defined
+- Key `settings_shake_delay` is not defined
 - Key `action_vaccine_syringe_use` is not defined
 - Key `interact_recorder_interactable` is not defined
 - Key `kf_saw_kill` is not defined
@@ -955,7 +992,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `loot_baron_desc` is not defined
 - Key `baby_plumpkin_pie_desc` is not defined
 
-## 🇬🇷 Ελληνικά (80% Complete) - gr.hjson
+## 🇬🇷 Ελληνικά (79% Complete) - gr.hjson
 
 ### Invalid Keys
 
@@ -965,6 +1002,10 @@ This file is a report of all errors and missing keys in the translation files of
 ### Undefined Keys
 
 - Key `contact` is not defined
+- Key `settings_shake_to_reload` is not defined
+- Key `settings_shake_count` is not defined
+- Key `settings_shake_force` is not defined
+- Key `settings_shake_delay` is not defined
 - Key `interact_server` is not defined
 - Key `kf_saw_kill` is not defined
 - Key `kf_saw_down` is not defined
@@ -1040,7 +1081,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇭🇰 🇲🇴 廣東話(香港/澳門) (62% Complete) - hk_mo.hjson
+## 🇭🇰 🇲🇴 廣東話(香港/澳門) (61% Complete) - hk_mo.hjson
 
 ### Invalid Keys
 
@@ -1077,6 +1118,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_normal_joystick_info` is not defined
 - Key `settings_switched_joystick_info` is not defined
 - Key `settings_haptics` is not defined
+- Key `settings_shake_to_reload` is not defined
+- Key `settings_shake_count` is not defined
+- Key `settings_shake_force` is not defined
+- Key `settings_shake_delay` is not defined
 - Key `msg_your_team_eliminated` is not defined
 - Key `msg_the_team_eliminated` is not defined
 - Key `msg_not_enough_space` is not defined
@@ -1194,7 +1239,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇭🇺 Magyar (94% Complete) - hu.hjson
+## 🇭🇺 Magyar (93% Complete) - hu.hjson
 
 ### Invalid Keys
 
@@ -1203,6 +1248,10 @@ This file is a report of all errors and missing keys in the translation files of
 ### Undefined Keys
 
 - Key `contact` is not defined
+- Key `settings_shake_to_reload` is not defined
+- Key `settings_shake_count` is not defined
+- Key `settings_shake_force` is not defined
+- Key `settings_shake_delay` is not defined
 - Key `msg_cannot_use_flare` is not defined
 - Key `interact_server` is not defined
 - Key `interact_recorder_interactable` is not defined
@@ -1275,6 +1324,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_normal_joystick_info` is not defined
 - Key `settings_switched_joystick_info` is not defined
 - Key `settings_haptics` is not defined
+- Key `settings_shake_to_reload` is not defined
+- Key `settings_shake_count` is not defined
+- Key `settings_shake_force` is not defined
+- Key `settings_shake_delay` is not defined
 - Key `msg_your_team_eliminated` is not defined
 - Key `msg_the_team_eliminated` is not defined
 - Key `msg_not_enough_space` is not defined
@@ -1393,7 +1446,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇯🇵 日本語 (100% Complete) - jp.hjson
+## 🇯🇵 日本語 (99% Complete) - jp.hjson
 
 ### Invalid Keys
 
@@ -1669,9 +1722,14 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `region_ea1v1` is not a valid key
 - Key `region_test` is not a valid key
 
-### (No Undefined Keys)
+### Undefined Keys
 
-## 🇱🇹 Lietuvių (63% Complete) - lt.hjson
+- Key `settings_shake_to_reload` is not defined
+- Key `settings_shake_count` is not defined
+- Key `settings_shake_force` is not defined
+- Key `settings_shake_delay` is not defined
+
+## 🇱🇹 Lietuvių (62% Complete) - lt.hjson
 
 ### Invalid Keys
 
@@ -1706,6 +1764,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_normal_joystick_info` is not defined
 - Key `settings_switched_joystick_info` is not defined
 - Key `settings_haptics` is not defined
+- Key `settings_shake_to_reload` is not defined
+- Key `settings_shake_count` is not defined
+- Key `settings_shake_force` is not defined
+- Key `settings_shake_delay` is not defined
 - Key `msg_your_team_eliminated` is not defined
 - Key `msg_the_team_eliminated` is not defined
 - Key `msg_not_enough_space` is not defined
@@ -1821,7 +1883,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇱🇻 Latviešu (63% Complete) - lv.hjson
+## 🇱🇻 Latviešu (62% Complete) - lv.hjson
 
 ### Invalid Keys
 
@@ -1856,6 +1918,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_normal_joystick_info` is not defined
 - Key `settings_switched_joystick_info` is not defined
 - Key `settings_haptics` is not defined
+- Key `settings_shake_to_reload` is not defined
+- Key `settings_shake_count` is not defined
+- Key `settings_shake_force` is not defined
+- Key `settings_shake_delay` is not defined
 - Key `msg_your_team_eliminated` is not defined
 - Key `msg_the_team_eliminated` is not defined
 - Key `msg_not_enough_space` is not defined
@@ -1971,7 +2037,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇳🇱 Nederlands (94% Complete) - nl.hjson
+## 🇳🇱 Nederlands (93% Complete) - nl.hjson
 
 ### Invalid Keys
 
@@ -1980,6 +2046,10 @@ This file is a report of all errors and missing keys in the translation files of
 ### Undefined Keys
 
 - Key `contact` is not defined
+- Key `settings_shake_to_reload` is not defined
+- Key `settings_shake_count` is not defined
+- Key `settings_shake_force` is not defined
+- Key `settings_shake_delay` is not defined
 - Key `action_vaccine_syringe_use` is not defined
 - Key `interact_server` is not defined
 - Key `interact_recorder_interactable` is not defined
@@ -2003,7 +2073,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
 
-## 🇵🇱 Polski (66% Complete) - pl.hjson
+## 🇵🇱 Polski (65% Complete) - pl.hjson
 
 ### Invalid Keys
 
@@ -2033,6 +2103,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_normal_joystick_info` is not defined
 - Key `settings_switched_joystick_info` is not defined
 - Key `settings_haptics` is not defined
+- Key `settings_shake_to_reload` is not defined
+- Key `settings_shake_count` is not defined
+- Key `settings_shake_force` is not defined
+- Key `settings_shake_delay` is not defined
 - Key `msg_your_team_eliminated` is not defined
 - Key `msg_the_team_eliminated` is not defined
 - Key `msg_cannot_use_flare` is not defined
@@ -2142,7 +2216,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🎀 Cute Engwish (70% Complete) - qen.hjson
+## 🎀 Cute Engwish (69% Complete) - qen.hjson
 
 ### Invalid Keys
 
@@ -2163,6 +2237,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_right_joystick_color` is not defined
 - Key `settings_normal_joystick_info` is not defined
 - Key `settings_switched_joystick_info` is not defined
+- Key `settings_shake_to_reload` is not defined
+- Key `settings_shake_count` is not defined
+- Key `settings_shake_force` is not defined
+- Key `settings_shake_delay` is not defined
 - Key `msg_cannot_use_flare` is not defined
 - Key `action_vaccine_syringe_use` is not defined
 - Key `interact_server` is not defined
@@ -2266,7 +2344,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇷🇴 Română (100% Complete) - ro.hjson
+## 🇷🇴 Română (99% Complete) - ro.hjson
 
 ### Invalid Keys
 
@@ -2275,9 +2353,13 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### Undefined Keys
 
+- Key `settings_shake_to_reload` is not defined
+- Key `settings_shake_count` is not defined
+- Key `settings_shake_force` is not defined
+- Key `settings_shake_delay` is not defined
 - Key `baby_plumpkin_pie_desc` is not defined
 
-## 🇷🇺 Русский (96% Complete) - ru.hjson
+## 🇷🇺 Русский (95% Complete) - ru.hjson
 
 ### Invalid Keys
 
@@ -2290,6 +2372,10 @@ This file is a report of all errors and missing keys in the translation files of
 
 - Key `contact` is not defined
 - Key `settings_show_inout` is not defined
+- Key `settings_shake_to_reload` is not defined
+- Key `settings_shake_count` is not defined
+- Key `settings_shake_force` is not defined
+- Key `settings_shake_delay` is not defined
 - Key `action_vaccine_syringe_use` is not defined
 - Key `interact_recorder_interactable` is not defined
 - Key `kf_saw_kill` is not defined
@@ -2304,7 +2390,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `loot_baron_desc` is not defined
 - Key `baby_plumpkin_pie_desc` is not defined
 
-## 🇮🇳 தமிழ் (73% Complete) - ta.hjson
+## 🇮🇳 தமிழ் (72% Complete) - ta.hjson
 
 ### Invalid Keys
 
@@ -2316,6 +2402,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_error_kicked_team` is not defined
 - Key `contact` is not defined
 - Key `settings_alt_texture_loading` is not defined
+- Key `settings_shake_to_reload` is not defined
+- Key `settings_shake_count` is not defined
+- Key `settings_shake_force` is not defined
+- Key `settings_shake_delay` is not defined
 - Key `msg_cannot_use_flare` is not defined
 - Key `action_vaccine_syringe_use` is not defined
 - Key `interact_server` is not defined
@@ -2415,7 +2505,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇹🇷 Turkısh (77% Complete) - tr.hjson
+## 🇹🇷 Turkısh (76% Complete) - tr.hjson
 
 ### Invalid Keys
 
@@ -2427,6 +2517,10 @@ This file is a report of all errors and missing keys in the translation files of
 
 - Key `msg_error_kicked_team` is not defined
 - Key `contact` is not defined
+- Key `settings_shake_to_reload` is not defined
+- Key `settings_shake_count` is not defined
+- Key `settings_shake_force` is not defined
+- Key `settings_shake_delay` is not defined
 - Key `msg_cannot_use_flare` is not defined
 - Key `action_vaccine_syringe_use` is not defined
 - Key `interact_server` is not defined
@@ -2513,7 +2607,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇹🇼 中文（繁體） (73% Complete) - tw.hjson
+## 🇹🇼 中文（繁體） (72% Complete) - tw.hjson
 
 ### Invalid Keys
 
@@ -2525,6 +2619,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_error_kicked_team` is not defined
 - Key `contact` is not defined
 - Key `settings_alt_texture_loading` is not defined
+- Key `settings_shake_to_reload` is not defined
+- Key `settings_shake_count` is not defined
+- Key `settings_shake_force` is not defined
+- Key `settings_shake_delay` is not defined
 - Key `msg_cannot_use_flare` is not defined
 - Key `action_vaccine_syringe_use` is not defined
 - Key `interact_server` is not defined
@@ -2624,7 +2722,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇻🇳 Tiếng Việt (95% Complete) - vi.hjson
+## 🇻🇳 Tiếng Việt (94% Complete) - vi.hjson
 
 ### Invalid Keys
 
@@ -2634,6 +2732,10 @@ This file is a report of all errors and missing keys in the translation files of
 ### Undefined Keys
 
 - Key `contact` is not defined
+- Key `settings_shake_to_reload` is not defined
+- Key `settings_shake_count` is not defined
+- Key `settings_shake_force` is not defined
+- Key `settings_shake_delay` is not defined
 - Key `interact_server` is not defined
 - Key `interact_recorder_interactable` is not defined
 - Key `kf_were_finally_killed` is not defined
@@ -2654,7 +2756,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
 
-## 🇨🇳 中文（简体） (100% Complete) - zh.hjson
+## 🇨🇳 中文（简体） (99% Complete) - zh.hjson
 
 ### Invalid Keys
 
@@ -2908,5 +3010,9 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### Undefined Keys
 
+- Key `settings_shake_to_reload` is not defined
+- Key `settings_shake_count` is not defined
+- Key `settings_shake_force` is not defined
+- Key `settings_shake_delay` is not defined
 - Key `interact_recorder_interactable` is not defined
 

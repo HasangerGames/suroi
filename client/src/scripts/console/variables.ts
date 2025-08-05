@@ -203,6 +203,10 @@ export const CVarCasters = Object.freeze({
     mb_joystick_lock: Casters.toBoolean,
     mb_gyro_angle: Casters.toNumber,
     mb_haptics: Casters.toBoolean,
+    mb_shake_to_reload: Casters.toBoolean,
+    mb_shake_count: Casters.toNumber,
+    mb_shake_force: Casters.toNumber,
+    mb_shake_delay: Casters.toNumber,
     mb_high_res_textures: Casters.toBoolean,
     mb_antialias: Casters.toBoolean,
 
@@ -345,6 +349,10 @@ export const defaultClientCVars: SimpleCVarMapping = Object.freeze({
     mb_joystick_lock: false,
     mb_gyro_angle: 0,
     mb_haptics: true,
+    mb_shake_to_reload: true,
+    mb_shake_count: 3,
+    mb_shake_force: 10,
+    mb_shake_delay: 100,
     mb_high_res_textures: false,
     mb_antialias: false,
 
