@@ -784,9 +784,7 @@ This file is a report of all errors and missing keys in the translation files of
 
 ## 🇮🇷 فارسی (100% Complete) - fa.hjson
 
-### Invalid Keys
-
-- Key `m16a4` is not a valid key
+### (No Invalid Keys)
 
 ### (No Undefined Keys)
 
