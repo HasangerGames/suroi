@@ -13474,7 +13474,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 hitbox: new GroupHitbox(
                     RectangleHitbox.fromRect(5.88, 24.6, Vec(-37.98, -7.57)),
                     RectangleHitbox.fromRect(5.88, 24.6, Vec(-38.01, -39.59)),
-                    RectangleHitbox.fromRect(24.63, 6.23, Vec(43.96, -14.88))
+                    RectangleHitbox.fromRect(24.63, 6.23, Vec(43.96, -14.88)),
+                    RectangleHitbox.fromRect(4.39, 11.66, Vec(98.31, -46.04))
                 )
             },
             { // fill
@@ -13485,7 +13486,9 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                     RectangleHitbox.fromRect(4.74, 11.25, Vec(-38.17, -33.66)),
                     RectangleHitbox.fromRect(4.74, 11.25, Vec(-38.17, -13.53)),
                     RectangleHitbox.fromRect(11.21, 5.03, Vec(49.94, -15.01)),
-                    RectangleHitbox.fromRect(11.21, 5.03, Vec(38.01, -15.04))
+                    RectangleHitbox.fromRect(11.21, 5.03, Vec(38.01, -15.04)),
+                    RectangleHitbox.fromRect(3.34, 4.98, Vec(98.29, -43.28)),
+                    RectangleHitbox.fromRect(3.34, 4.98, Vec(98.28, -48.79))
                 )
             }
         ],
