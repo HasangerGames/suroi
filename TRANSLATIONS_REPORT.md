@@ -806,16 +806,11 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
 
-## 🇮🇷 فارسی (99% Complete) - fa.hjson
+## 🇮🇷 فارسی (100% Complete) - fa.hjson
 
 ### (No Invalid Keys)
 
-### Undefined Keys
-
-- Key `settings_shake_to_reload` is not defined
-- Key `settings_shake_count` is not defined
-- Key `settings_shake_force` is not defined
-- Key `settings_shake_delay` is not defined
+### (No Undefined Keys)
 
 ## 🇫🇮 suomi (65% Complete) - fi.hjson
 
@@ -1446,7 +1441,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇯🇵 日本語 (99% Complete) - jp.hjson
+## 🇯🇵 日本語 (100% Complete) - jp.hjson
 
 ### Invalid Keys
 
@@ -1722,12 +1717,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `region_ea1v1` is not a valid key
 - Key `region_test` is not a valid key
 
-### Undefined Keys
-
-- Key `settings_shake_to_reload` is not defined
-- Key `settings_shake_count` is not defined
-- Key `settings_shake_force` is not defined
-- Key `settings_shake_delay` is not defined
+### (No Undefined Keys)
 
 ## 🇱🇹 Lietuvių (62% Complete) - lt.hjson
 
@@ -2756,7 +2746,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
 
-## 🇨🇳 中文（简体） (99% Complete) - zh.hjson
+## 🇨🇳 中文（简体） (100% Complete) - zh.hjson
 
 ### Invalid Keys
 
@@ -3010,9 +3000,5 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### Undefined Keys
 
-- Key `settings_shake_to_reload` is not defined
-- Key `settings_shake_count` is not defined
-- Key `settings_shake_force` is not defined
-- Key `settings_shake_delay` is not defined
 - Key `interact_recorder_interactable` is not defined
 

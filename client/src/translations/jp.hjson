@@ -117,6 +117,10 @@
 "settings_normal_joystick_info": "左ジョイスティックで移動、右ジョイスティックで狙う"
 "settings_switched_joystick_info": "左ジョイスティックで狙い、右ジョイスティックで移動"
 "settings_haptics": "ハプティクス"
+"settings_shake_to_reload": "振ってリロード"
+"settings_shake_count": "振り回数しきい値"
+"settings_shake_force": "振り力しきい値"
+"settings_shake_delay": "振り時間しきい値"
 
 "loadout_skins": "スキン"
 "loadout_emotes": "エモート"
