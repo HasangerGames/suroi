@@ -806,6 +806,12 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
 
+## 🇮🇷 فارسی (100% Complete) - fa.hjson
+
+### (No Invalid Keys)
+
+### (No Undefined Keys)
+
 ## 🇫🇮 suomi (65% Complete) - fi.hjson
 
 ### Invalid Keys
