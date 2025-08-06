@@ -806,12 +806,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
 
-## 🇮🇷 فارسی (100% Complete) - fa.hjson
-
-### (No Invalid Keys)
-
-### (No Undefined Keys)
-
 ## 🇫🇮 suomi (65% Complete) - fi.hjson
 
 ### Invalid Keys
@@ -2997,6 +2991,13 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `special_weapon_preset_title` is not a valid key
 - Key `time_minute` is not a valid key
 - Key `time_second` is not a valid key
+- Key `545mm` is not a valid key
+- Key `power_helmet` is not a valid key
+- Key `power_vest` is not a valid key
+- Key `power_pack` is not a valid key
+- Key `bdg_marketr` is not a valid key
+- Key `emote_blindfolded_face` is not a valid key
+- Key `lobotomy` is not a valid key
 
 ### Undefined Keys
 
