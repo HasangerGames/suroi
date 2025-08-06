@@ -2917,7 +2917,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     blueHouseVaultLayout(2,
         [
             { idString: "blue_house_stair", position: Vec(17, 14.5), layer: Layer.ToBasement, rotation: 0 },
-            { idString: "blue_house_stair_walls", position: Vec(15, 7), rotation: 0 }
+            { idString: "blue_house_stair_walls", position: Vec(15, 7), layer: Layer.ToBasement, rotation: 0 },
+            { idString: "blue_house_stair_walls", position: Vec(15, 21.5), layer: Layer.ToBasement, rotation: 0 }
         ],
         [
             { idString: "blue_house_basement", position: Vec(1.5, 4.25), layer: Layer.Basement }
