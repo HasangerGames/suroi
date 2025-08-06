@@ -125,6 +125,7 @@ export class Bullet extends BaseBullet {
         if (!this.dead) {
             for (const collision of this.updateAndGetCollisions(delta, Game.objects)) {
                 const object = collision.object;
+                const { isProjectile, isObstacle, isPlayer } = object;
 
                 if (object.isObstacle && object.definition.isStair) {
                     const newLayer = resolveStairInteraction(
@@ -139,14 +140,12 @@ export class Bullet extends BaseBullet {
                     continue;
                 }
 
-                if (
-                    (object.isObstacle && object.definition.noCollisions)
-                    || (object.isProjectile && !adjacentOrEquivLayer(object, this.layer))
-                ) continue;
+                // We check for projectiles first, not obstacles, otherwise stuff like tables or bushes won't be damaged by bullets.
+                if (isProjectile && !adjacentOrEquivLayer(object, this.layer)) continue;
 
                 const { point, normal } = collision.intersection;
 
-                if (object.isPlayer && collision.reflected) {
+                if (isPlayer && collision.reflected) {
                     SoundManager.play(
                         `bullet_reflection_${random(1, 5)}`,
                         {
@@ -162,6 +161,10 @@ export class Bullet extends BaseBullet {
                 this.collidedIDs.add(object.id);
 
                 this.position = point;
+
+                // We check here for obstacles, after the collision was done, in order to damage tables and bushes.
+                // think of it as bullet penetration.
+                if (isObstacle && object.definition.noCollisions) continue;
 
                 this.dead = true;
                 break;

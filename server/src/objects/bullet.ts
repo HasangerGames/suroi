@@ -117,10 +117,8 @@ export class Bullet extends BaseBullet {
                 continue;
             }
 
-            if (
-                (isObstacle && object.definition.noCollisions)
-                || (isProjectile && !adjacentOrEquivLayer(object, this.layer))
-            ) continue;
+            // We check for projectiles first, not obstacles, otherwise stuff like tables or bushes won't be damaged by bullets.
+            if (isProjectile && !adjacentOrEquivLayer(object, this.layer)) continue;
 
             const { point, normal } = collision.intersection;
             const reflected = (
@@ -183,6 +181,10 @@ export class Bullet extends BaseBullet {
             }
 
             this.collidedIDs.add(object.id);
+
+            // We check here for obstacles, after the collision was done, in order to damage tables and bushes.
+            // think of it as bullet penetration.
+            if (isObstacle && object.definition.noCollisions) continue;
 
             if (reflected) {
                 this.reflect(rotation ?? 0);
