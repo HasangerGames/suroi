@@ -769,7 +769,7 @@ const maps = {
         buildings: {
             small_bridge: Infinity,
             docks: 8,
-            outhouse: 6,
+            outhouse: 8,
             cabin: 6,
             carport: 4,
             hunting_stand: 12,
@@ -797,19 +797,19 @@ const maps = {
             small_logs_pile: 30,
             large_logs_pile_2: 20,
             clearing_boulder: 18,
-            pine_tree: 95,
-            spruce_tree: 90,
+            pine_tree: 100,
+            spruce_tree: 92,
             dead_pine_tree: 55,
             oak_tree: 20,
-            regular_crate: 110,
+            regular_crate: 120,
             nsd_crate: 6,
             lansirama_crate: 6,
             grenade_crate: 35,
-            rock: 175,
+            rock: 180,
             river_chest: 1,
             bush: 175,
-            blueberry_bush: 40,
-            barrel: 150,
+            blueberry_bush: 42,
+            barrel: 155,
             viking_chest: 1,
             super_barrel: 30,
             melee_crate: 1,
@@ -851,7 +851,7 @@ const maps = {
             }
         ],
         loots: {
-            ground_loot: 100
+            ground_loot: 105
         },
         places: [
             { name: "Pine Cone", position: Vec(0.23, 0.2) },
