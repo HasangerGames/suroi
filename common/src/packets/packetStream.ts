@@ -49,8 +49,6 @@ export class PacketStream {
     }
 
     getBuffer(): ArrayBuffer {
-        // it is, in fact, a necessary type assertion; ts isn't happy without it
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-        return this.stream.buffer.slice(0, this.stream.index) as ArrayBuffer;
+        return this.stream.buffer.slice(0, this.stream.index);
     }
 }
