@@ -261,7 +261,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
     private _setShieldTimeout(): void {
         this.shieldTimeout = this.game.addTimeout(() => {
-            if (!this.dead) this.shield = 100;
+            if (!this.dead && this.hasPerk(PerkIds.ExperimentalForcefield)) this.shield = 100;
         }, PerkData[PerkIds.ExperimentalForcefield].shieldRespawnTime);
     }
 
