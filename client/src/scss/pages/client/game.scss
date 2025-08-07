@@ -474,7 +474,7 @@
             font-size: 50px;
 
             @media screen and (max-width: variables.$screen_large) {
-                font-size: 25px;
+                font-size: 22px;
             }
         }
 
@@ -1666,6 +1666,10 @@
             display: none;
             position: absolute;
             width: 45px;
+
+            @media screen and (max-width: variables.$screen_large) {
+                width: 20px;
+            }
         }
 
         &.active {
