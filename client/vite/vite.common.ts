@@ -19,6 +19,7 @@ const commonConfig: UserConfig = {
     },
     build: {
         chunkSizeWarningLimit: 2000,
+        sourcemap: true,
         rollupOptions: {
             input: {
                 main: resolve(__dirname, "../index.html"),
