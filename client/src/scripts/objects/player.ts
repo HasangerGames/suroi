@@ -43,6 +43,7 @@ import { Loot } from "./loot";
 import { Obstacle } from "./obstacle";
 import type { Projectile } from "./projectile";
 
+
 export class Player extends GameObject.derive(ObjectCategory.Player) {
     teamID!: number;
 
@@ -932,6 +933,21 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                         );
                     }
 
+                    break;
+                }
+                        case PlayerActions.SwitchWeapon: {
+                    const weapon = this.activeItem;
+                    const weaponDef = weapon && "definition" in weapon 
+                        ? (weapon.definition as GunDefinition) 
+                        : undefined;
+                    if (!weaponDef) break;
+
+                    if (this.isActivePlayer) {
+                        UIManager.animateAction(
+                            "Switching Weapon",
+                            (weaponDef.switchDelay ?? 250) / 1000
+                        );
+                    }
                     break;
                 }
                 case PlayerActions.UseItem: {
