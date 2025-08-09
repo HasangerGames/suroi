@@ -987,7 +987,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `loot_baron_desc` is not defined
 - Key `baby_plumpkin_pie_desc` is not defined
 
-## 🇬🇷 Ελληνικά (79% Complete) - gr.hjson
+## 🇬🇷 Ελληνικά (83% Complete) - gr.hjson
 
 ### Invalid Keys
 
@@ -996,16 +996,6 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### Undefined Keys
 
-- Key `contact` is not defined
-- Key `settings_shake_to_reload` is not defined
-- Key `settings_shake_count` is not defined
-- Key `settings_shake_force` is not defined
-- Key `settings_shake_delay` is not defined
-- Key `interact_server` is not defined
-- Key `kf_saw_kill` is not defined
-- Key `kf_saw_down` is not defined
-- Key `km_saw_kill_you` is not defined
-- Key `km_saw_down_you` is not defined
 - Key `second_wind_desc` is not defined
 - Key `flechettes` is not defined
 - Key `flechettes_desc` is not defined
@@ -1029,12 +1019,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `close_quarters_combat_desc` is not defined
 - Key `low_profile` is not defined
 - Key `low_profile_desc` is not defined
-- Key `combat_expert` is not defined
-- Key `combat_expert_desc` is not defined
-- Key `precision_recycling` is not defined
-- Key `precision_recycling_desc` is not defined
-- Key `loot_baron` is not defined
-- Key `loot_baron_desc` is not defined
 - Key `plumpkin_gamble` is not defined
 - Key `plumpkin_gamble_desc` is not defined
 - Key `lycanthropy` is not defined
