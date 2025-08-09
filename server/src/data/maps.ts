@@ -805,7 +805,7 @@ const maps = {
             nsd_crate: 6,
             lansirama_crate: 6,
             grenade_crate: 35,
-            rock: 180,
+            rock: 200,
             river_chest: 1,
             bush: 175,
             blueberry_bush: 42,

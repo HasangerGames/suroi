@@ -996,7 +996,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
         }],
         noMuzzleFlash: true,
         ballistics: {
-            damage: 21,
+            damage: 19,
             obstacleMultiplier: 1.5,
             speed: 0.3,
             range: 180,

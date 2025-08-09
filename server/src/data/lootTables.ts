@@ -1000,7 +1000,17 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
                 { table: "guns", weight: 0.3 }
             ]
         ],
-        shooting_range_practice_log: [{ item: "ak47", weight: 1, count: 3, spawnSeparately: true }]
+        shooting_range_practice_log: [{ item: "ak47", weight: 1, count: 3, spawnSeparately: true }],
+        hunted_skins: {
+            min: 1,
+            max: 1,
+            loot: [
+                { item: "military_camo", weight: 1 },
+                { item: "nsd_uniform", weight: 1 },
+                { item: "veteran", weight: 1 },
+                { item: "carpenter_uniform", weight: 1 }
+            ]
+        }
     },
 
     halloween: {
@@ -1730,7 +1740,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { table: "ammo", weight: 0.9 },
             { table: "guns", weight: 0.9 },
             { table: "scopes", weight: 0.35 },
-            { item: "nsd_uniform", weight: 0.2 }
+            { table: "hunted_skins", weight: 0.2 }
         ],
 
         throwables: [
@@ -1756,13 +1766,12 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
         ],
 
         viking_chest_guns: [
-            { item: "m16a2", weight: 1 },
+            { item: "m16a2", weight: 0.75 },
             { item: "mini14", weight: 0.75 },
             { item: "sr25", weight: 0.75 },
             { item: "vss", weight: 0.75 },
             { item: "mcx_spear", weight: 0.75 },
             { item: "mg36", weight: 0.725 },
-            { item: "cz600", weight: 0.7 },
             { item: "fn_fal", weight: 0.6 },
             { item: "mosin_nagant", weight: 0.5 },
             { item: "stoner_63", weight: 0.2 },
@@ -1786,8 +1795,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { item: "mg36", weight: 0.45 },
             { item: "mosin_nagant", weight: 0.45 },
             { item: "rpk74", weight: 0.08 },
-            { item: "stoner_63", weight: 0.08 },
-            { item: "pk61", weight: 0.08 },
+            { item: "tango_51", weight: 0.08 },
             { item: "g19", weight: 0.08 }
         ],
 
@@ -1812,11 +1820,11 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { item: "ots23", weight: 0.075 },
 
             // 10%
-            { item: "stoner_63", weight: 0.033 },
             { item: "mg36", weight: 0.033 },
-            { item: "rsh12", weight: 0.033 },
 
             // 5%
+            { item: "stoner_63", weight: 0.0125 },
+            { item: "rsh12", weight: 0.0125 },
             { item: "vss", weight: 0.0125 },
             { item: "sr25", weight: 0.0125 },
             { item: "mini14", weight: 0.0125 },
@@ -1855,10 +1863,10 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { item: "rpk74", weight: 0.032 },
 
             // 4%
-            { item: "stoner_63", weight: 0.0133 },
             { item: "mg36", weight: 0.0133 },
 
             // 2%
+            { item: "stoner_63", weight: 0.005 },
 
             // DMRs
             { item: "vss", weight: 0.005 },
@@ -1902,7 +1910,6 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { item: "mosin_nagant", weight: 0.95 },
             { item: "tango_51", weight: 0.9 },
             { item: "stoner_63", weight: 0.9 },
-            { item: "pk61", weight: 0.6 },
             { item: "model_89", weight: 0.6 },
             { item: "vks", weight: 0.6 },
             { item: "flare", weight: 0.1 }
@@ -1912,6 +1919,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { item: "negev", weight: 1 },
             { item: "rpk16", weight: 1 },
             { item: "mg5", weight: 1 },
+            { item: "pk61", weight: 1 },
             { item: "an94", weight: 0.8 },
             { item: "shak12", weight: 0.9 },
             { item: "svu", weight: 0.9 },
@@ -1951,6 +1959,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
                 // 65%
                 { item: "aks74u", weight: 0.1083 },
                 { item: "fn_fal", weight: 0.1083 },
+                { item: "rpk74", weight: 0.1083 },
                 { item: "m16a2", weight: 0.1083 },
                 { item: "mcx_spear", weight: 0.1083 },
                 { item: "ak47", weight: 0.1083 },
