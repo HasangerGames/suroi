@@ -2027,7 +2027,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇳🇱 Nederlands (93% Complete) - nl.hjson
+## 🇳🇱 Nederlands (95% Complete) - nl.hjson
 
 ### Invalid Keys
 
@@ -2041,7 +2041,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_shake_force` is not defined
 - Key `settings_shake_delay` is not defined
 - Key `action_vaccine_syringe_use` is not defined
-- Key `interact_server` is not defined
 - Key `interact_recorder_interactable` is not defined
 - Key `kf_saw_kill` is not defined
 - Key `kf_saw_down` is not defined
@@ -2054,14 +2053,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `loot_baron` is not defined
 - Key `loot_baron_desc` is not defined
 - Key `baby_plumpkin_pie_desc` is not defined
-- Key `hollow_points` is not defined
-- Key `hollow_points_desc` is not defined
-- Key `experimental_forcefield` is not defined
-- Key `experimental_forcefield_desc` is not defined
-- Key `thermal_goggles` is not defined
-- Key `thermal_goggles_desc` is not defined
-- Key `overdrive` is not defined
-- Key `overdrive_desc` is not defined
 
 ## 🇵🇱 Polski (65% Complete) - pl.hjson
 
