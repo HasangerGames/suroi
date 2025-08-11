@@ -1593,7 +1593,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
         defType: DefinitionType.Gun,
         tier: Tier.C,
         ammoType: "545mm",
-        ammoSpawnAmount: 150,
+        ammoSpawnAmount: 90,
         capacity: 45,
         extendedCapacity: 60,
         reloadTime: 3.8,
