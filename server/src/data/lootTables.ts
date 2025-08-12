@@ -104,8 +104,8 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             min: 1,
             max: 1,
             loot: [
+                { item: "mg5", weight: 1 },
                 { item: "rpk16", weight: 1 },
-                { item: "svu", weight: 1 },
                 { item: "pk61", weight: 1 }
             ]
         },
@@ -1734,6 +1734,19 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
         rsh_case_dual: [{ item: "seedshot", weight: 1 }]
     },
     hunted: {
+        equipment: [
+            { item: "basic_helmet", weight: 0.95 },
+            { item: "regular_helmet", weight: 0.25 },
+            { item: "tactical_helmet", weight: 0.055 },
+
+            { item: "basic_vest", weight: 0.95 },
+            { item: "regular_vest", weight: 0.25 },
+            { item: "tactical_vest", weight: 0.055 },
+
+            { item: "basic_pack", weight: 0.95 },
+            { item: "regular_pack", weight: 0.25 },
+            { item: "tactical_pack", weight: 0.055 }
+        ],
         ground_loot: [
             { table: "equipment", weight: 1.05 },
             { table: "healing_items", weight: 0.9 },
@@ -1767,35 +1780,43 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
 
         viking_chest_guns: [
             { item: "m16a2", weight: 0.75 },
+            { item: "ak47", weight: 0.75 },
             { item: "mini14", weight: 0.75 },
             { item: "sr25", weight: 0.75 },
             { item: "vss", weight: 0.75 },
+            { item: "blr", weight: 0.75 },
             { item: "mcx_spear", weight: 0.75 },
-            { item: "mg36", weight: 0.725 },
             { item: "fn_fal", weight: 0.6 },
+            { item: "rpk74", weight: 0.6 },
             { item: "mosin_nagant", weight: 0.5 },
+            { item: "tango_51", weight: 0.2 },
+            { item: "mg36", weight: 0.25 },
             { item: "stoner_63", weight: 0.2 },
-            { item: "rpk74", weight: 0.2 },
-            { item: "pk61", weight: 0.15 },
-            { item: "negev", weight: 0.15 },
-            { item: "mg5", weight: 0.15 },
-            { item: "svu", weight: 0.1 },
+            { item: "vks", weight: 0.2 },
+            { item: "pk61", weight: 0.1 },
+            { item: "negev", weight: 0.1 },
+            { item: "mg5", weight: 0.1 },
             { item: "rpk16", weight: 0.1 },
-            { item: "tango_51", weight: 0.1 },
+            { item: "mp153", weight: 0.1 },
             { item: "g19", weight: 0.05 }
         ],
 
         river_chest_guns: [
             { item: "m16a2", weight: 1 },
+            { item: "ak47", weight: 1 },
             { item: "mcx_spear", weight: 1 },
             { item: "aks74u", weight: 0.75 },
-            { item: "mini14", weight: 0.75 },
+            { item: "rpk74", weight: 0.8 },
+            { item: "fn_fal", weight: 0.8 },
+            { item: "mg36", weight: 0.5 },
+            { item: "mini14", weight: 0.5 },
             { item: "sr25", weight: 0.5 },
             { item: "vss", weight: 0.5 },
-            { item: "mg36", weight: 0.45 },
+            { item: "blr", weight: 0.5 },
             { item: "mosin_nagant", weight: 0.45 },
-            { item: "rpk74", weight: 0.08 },
-            { item: "tango_51", weight: 0.08 },
+            { item: "tango_51", weight: 0.45 },
+            { item: "vks", weight: 0.45 },
+            { item: "model_89", weight: 0.45 },
             { item: "g19", weight: 0.08 }
         ],
 
@@ -1826,6 +1847,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { item: "stoner_63", weight: 0.0125 },
             { item: "rsh12", weight: 0.0125 },
             { item: "vss", weight: 0.0125 },
+            { item: "blr", weight: 0.0125 },
             { item: "sr25", weight: 0.0125 },
             { item: "mini14", weight: 0.0125 },
             { item: "tango_51", weight: 0.0125 },
@@ -1837,7 +1859,6 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             // 1%
             { item: "flare", weight: 0.002 },
             { item: "mg5", weight: 0.002 },
-            { item: "svu", weight: 0.002 },
             { item: "shak12", weight: 0.002 },
             { item: "pk61", weight: 0.002 }
         ],
@@ -1869,6 +1890,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { item: "stoner_63", weight: 0.005 },
 
             // DMRs
+            { item: "blr", weight: 0.005 },
             { item: "vss", weight: 0.005 },
             { item: "model_89", weight: 0.005 },
             { item: "rgs", weight: 0.005 },
@@ -1888,8 +1910,8 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { item: "rpk16", weight: 0.001 },
             { item: "flare", weight: 0.001 },
             { item: "shak12", weight: 0.001 },
-            { item: "svu", weight: 0.001 },
-            { item: "mp153", weight: 0.001 }
+            { item: "mp153", weight: 0.001 },
+            { item: "mk18", weight: 0.001 }
         ],
 
         airdrop_skins: [
@@ -1906,10 +1928,10 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { item: "sr25", weight: 1 },
             { item: "vss", weight: 1 },
             { item: "rpk74", weight: 0.95 },
+            { item: "stoner_63", weight: 0.95 },
             { item: "mcx_spear", weight: 0.95 },
-            { item: "mosin_nagant", weight: 0.95 },
+            { item: "mosin_nagant", weight: 0.9 },
             { item: "tango_51", weight: 0.9 },
-            { item: "stoner_63", weight: 0.9 },
             { item: "model_89", weight: 0.6 },
             { item: "vks", weight: 0.6 },
             { item: "flare", weight: 0.1 }
@@ -1920,10 +1942,10 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { item: "rpk16", weight: 1 },
             { item: "mg5", weight: 1 },
             { item: "pk61", weight: 1 },
-            { item: "an94", weight: 0.8 },
             { item: "shak12", weight: 0.9 },
-            { item: "svu", weight: 0.9 },
             { item: "mp153", weight: 0.85 },
+            { item: "mk18", weight: 0.85 },
+            { item: "an94", weight: 0.8 },
             { item: "dual_rsh12", weight: 0.8 },
             { item: "g19", weight: 0.0005 }
         ],
