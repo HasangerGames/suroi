@@ -615,6 +615,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
         }],
         gasParticles: gasParticlePresets.pistol,
         capacity: 8,
+        extendedCapacity: 12,
         reloadTime: 2.1,
         ballistics: {
             damage: 17,
@@ -630,6 +631,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
             shotSpread: 2,
             moveSpread: 5,
             capacity: 16,
+            extendedCapacity: 24,
             reloadTime: 4
         }
     },
@@ -662,6 +664,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
         }],
         gasParticles: gasParticlePresets.pistol,
         capacity: 15,
+        extendedCapacity: 20,
         reloadTime: 2.1,
         ballistics: {
             damage: 10,
@@ -677,6 +680,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
             shotSpread: 2,
             moveSpread: 5,
             capacity: 30,
+            extendedCapacity: 40,
             reloadTime: 4
         }
     },
@@ -1636,7 +1640,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
         ammoType: "545mm",
         ammoSpawnAmount: 190,
         capacity: 95,
-        extendedCapacity: 180,
+        extendedCapacity: 145,
         reloadTime: 3.8,
         fireDelay: 90,
         switchDelay: 400,
