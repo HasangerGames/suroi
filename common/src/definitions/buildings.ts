@@ -3479,30 +3479,30 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "metal_column", position: Vec(119.93, 175.08) },
             { idString: "metal_column", position: Vec(215.67, 152.85) },
 
-            { idString: "barrel", position: Vec(180.91, 45.99) },
-            { idString: "barrel", position: Vec(131.66, 182.27) },
+            { idString: "barrel", position: Vec(180.91, 45.99), outdoors: true },
+            { idString: "barrel", position: Vec(131.66, 182.27), outdoors: true },
 
-            { idString: "flint_crate", position: Vec(181.89, 54.97) },
+            { idString: "flint_crate", position: Vec(181.89, 54.97), outdoors: true },
 
-            { idString: "ammo_crate", position: Vec(209.3, 59.77) },
-            { idString: "ammo_crate", position: Vec(197.03, 84.43) },
+            { idString: "ammo_crate", position: Vec(209.3, 59.77), outdoors: true },
+            { idString: "ammo_crate", position: Vec(197.03, 84.43), outdoors: true },
 
-            { idString: "smaller_sandbags", position: Vec(196.48, 92.23), rotation: 0 },
-            { idString: "smaller_sandbags", position: Vec(137.9, 135.75), rotation: 0 },
+            { idString: "smaller_sandbags", position: Vec(196.48, 92.23), rotation: 0, outdoors: true },
+            { idString: "smaller_sandbags", position: Vec(137.9, 135.75), rotation: 0, outdoors: true },
 
-            { idString: "box", position: Vec(146.98, 131.24) },
-            { idString: "box", position: Vec(144.35, 136.2) },
-            { idString: "box", position: Vec(149.46, 136.2) },
+            { idString: "box", position: Vec(146.98, 131.24), outdoors: true },
+            { idString: "box", position: Vec(144.35, 136.2), outdoors: true },
+            { idString: "box", position: Vec(149.46, 136.2), outdoors: true },
 
-            { idString: "box", position: Vec(179.86, 142.15) },
-            { idString: "box", position: Vec(184.96, 142.15) },
-            { idString: "box", position: Vec(182.26, 146.96) },
+            { idString: "box", position: Vec(179.86, 142.15), outdoors: true },
+            { idString: "box", position: Vec(184.96, 142.15), outdoors: true },
+            { idString: "box", position: Vec(182.26, 146.96), outdoors: true },
 
-            { idString: "grenade_crate", position: Vec(182.72, 182.48) },
-            { idString: "grenade_crate", position: Vec(189.36, 179.71) },
+            { idString: "grenade_crate", position: Vec(182.72, 182.48), outdoors: true },
+            { idString: "grenade_crate", position: Vec(189.36, 179.71), outdoors: true },
 
-            { idString: "regular_crate", position: Vec(205.12, 151.1) },
-            { idString: "regular_crate", position: Vec(207.37, 160.88) },
+            { idString: "regular_crate", position: Vec(205.12, 151.1), outdoors: true },
+            { idString: "regular_crate", position: Vec(207.37, 160.88), outdoors: true },
             // ------------------------------------------------------------------------------------------
 
             // ------------------------------------------------------------------------------------------
@@ -3536,7 +3536,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 })
             ),
 
-            { idString: "regular_crate", position: Vec(112.95, 5.44) },
+            { idString: "regular_crate", position: Vec(112.95, 5.44), outdoors: true },
 
             { idString: "metal_column", position: Vec(215.59, -79.04) },
             { idString: "metal_column", position: Vec(202.54, -38.28) },
@@ -3544,32 +3544,32 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "metal_column", position: Vec(119.86, -38.36) },
             { idString: "metal_column", position: Vec(119.84, 26.32) },
 
-            { idString: "forklift", position: Vec(111.6, -85.18), rotation: 2 },
+            { idString: "forklift", position: Vec(111.6, -85.18), rotation: 2, outdoors: true },
 
-            { idString: "grenade_crate", position: Vec(200.77, -121.33) },
-            { idString: "grenade_crate", position: Vec(81, -37.2) },
-            { idString: "grenade_crate", position: Vec(114.59, -9.83) },
+            { idString: "grenade_crate", position: Vec(200.77, -121.33), outdoors: true },
+            { idString: "grenade_crate", position: Vec(81, -37.2), outdoors: true },
+            { idString: "grenade_crate", position: Vec(114.59, -9.83), outdoors: true },
 
-            { idString: "propane_tank", position: Vec(82.46, -53.54) },
-            { idString: "propane_tank", position: Vec(96.82, -38.52) },
+            { idString: "propane_tank", position: Vec(82.46, -53.54), outdoors: true },
+            { idString: "propane_tank", position: Vec(96.82, -38.52), outdoors: true },
 
-            { idString: "ammo_crate", position: Vec(142.93, -16.31) },
-            { idString: "ammo_crate", position: Vec(209.41, -120.27) },
-            { idString: "ammo_crate", position: Vec(89.61, -51.02) },
-            { idString: "ammo_crate", position: Vec(79.47, -46.2) },
-            { idString: "ammo_crate", position: Vec(89.69, -40.66) },
+            { idString: "ammo_crate", position: Vec(142.93, -16.31), outdoors: true },
+            { idString: "ammo_crate", position: Vec(209.41, -120.27), outdoors: true },
+            { idString: "ammo_crate", position: Vec(89.61, -51.02), outdoors: true },
+            { idString: "ammo_crate", position: Vec(79.47, -46.2), outdoors: true },
+            { idString: "ammo_crate", position: Vec(89.69, -40.66), outdoors: true },
 
-            { idString: "sandbags", position: Vec(151.87, -56.03), rotation: 0 },
-            { idString: "sandbags", position: Vec(203.28, -129.7), rotation: 0 },
-            { idString: "sandbags", position: Vec(184.03, -32.98), rotation: 0 },
-            { idString: "sandbags", position: Vec(210.22, -22.85), rotation: 1 },
+            { idString: "sandbags", position: Vec(151.87, -56.03), rotation: 0, outdoors: true },
+            { idString: "sandbags", position: Vec(203.28, -129.7), rotation: 0, outdoors: true },
+            { idString: "sandbags", position: Vec(184.03, -32.98), rotation: 0, outdoors: true },
+            { idString: "sandbags", position: Vec(210.22, -22.85), rotation: 1, outdoors: true },
 
-            { idString: "smaller_sandbags", position: Vec(113.58, -2.94), rotation: 0 },
-            { idString: "smaller_sandbags", position: Vec(210.38, 15.27), rotation: 0 },
+            { idString: "smaller_sandbags", position: Vec(113.58, -2.94), rotation: 0, outdoors: true },
+            { idString: "smaller_sandbags", position: Vec(210.38, 15.27), rotation: 0, outdoors: true },
 
-            { idString: { box: 1, grenade_box: 0.15 }, position: Vec(97.78, -53.95) },
-            { idString: "box", position: Vec(172.96, -111.62) },
-            { idString: "box", position: Vec(211.96, 20.85) },
+            { idString: { box: 1, grenade_box: 0.15 }, position: Vec(97.78, -53.95), outdoors: true },
+            { idString: "box", position: Vec(172.96, -111.62), outdoors: true },
+            { idString: "box", position: Vec(211.96, 20.85), outdoors: true },
             // ------------------------------------------------------------------------------------------
 
             // ------------------------------------------------------------------------------------------
@@ -3599,63 +3599,63 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "metal_column", position: Vec(215.66, -243.25) },
             { idString: "metal_column", position: Vec(215.66, -111.21) },
 
-            { idString: "dumpster", position: Vec(208.3, -210.42), rotation: 0 },
-            { idString: "trash_bag", position: Vec(207.12, -198.56) },
+            { idString: "dumpster", position: Vec(208.3, -210.42), rotation: 0, outdoors: true },
+            { idString: "trash_bag", position: Vec(207.12, -198.56), outdoors: true },
 
             { idString: "metal_column", position: Vec(20.82, -221.09) },
             { idString: "metal_column", position: Vec(20.97, -243.09) },
 
-            { idString: "barrel", position: Vec(78.38, -234.57) },
-            { idString: "barrel", position: Vec(57.46, -163.16), waterOverlay: true },
-            { idString: "regular_crate", position: Vec(54.54, -153.74), waterOverlay: true },
+            { idString: "barrel", position: Vec(78.38, -234.57), outdoors: true },
+            { idString: "barrel", position: Vec(57.46, -163.16), waterOverlay: true, outdoors: true },
+            { idString: "regular_crate", position: Vec(54.54, -153.74), waterOverlay: true, outdoors: true },
 
-            { idString: "grenade_crate", position: Vec(114.83, -216.15) },
+            { idString: "grenade_crate", position: Vec(114.83, -216.15), outdoors: true },
 
-            { idString: "propane_tank", position: Vec(87.16, -134.58) },
+            { idString: "propane_tank", position: Vec(87.16, -134.58), outdoors: true },
 
-            { idString: "gun_case", position: Vec(93.12, -135.29), rotation: 1 },
+            { idString: "gun_case", position: Vec(93.12, -135.29), rotation: 1, outdoors: true },
 
-            { idString: "regular_crate", position: Vec(69.62, -235.69) },
-            { idString: "regular_crate", position: Vec(85.12, -141.67) },
-            { idString: "regular_crate", position: Vec(80.03, -131.98) },
+            { idString: "regular_crate", position: Vec(69.62, -235.69), outdoors: true },
+            { idString: "regular_crate", position: Vec(85.12, -141.67), outdoors: true },
+            { idString: "regular_crate", position: Vec(80.03, -131.98), outdoors: true },
 
-            { idString: "box", position: Vec(30.27, -230.74) },
-            { idString: "box", position: Vec(30.27, -235.7) },
-            { idString: "box", position: Vec(70.36, -217.63) },
-            { idString: "box", position: Vec(75.46, -217.56) },
-            { idString: "box", position: Vec(156.55, -233.86) },
-            { idString: { box: 1, grenade_box: 0.5 }, position: Vec(169.67, -233.93) },
-            { idString: "box", position: Vec(77.83, -139.44) },
-            { idString: "box", position: Vec(87.45, -129.9) },
+            { idString: "box", position: Vec(30.27, -230.74), outdoors: true },
+            { idString: "box", position: Vec(30.27, -235.7), outdoors: true },
+            { idString: "box", position: Vec(70.36, -217.63), outdoors: true },
+            { idString: "box", position: Vec(75.46, -217.56), outdoors: true },
+            { idString: "box", position: Vec(156.55, -233.86), outdoors: true },
+            { idString: { box: 1, grenade_box: 0.5 }, position: Vec(169.67, -233.93), outdoors: true },
+            { idString: "box", position: Vec(77.83, -139.44), outdoors: true },
+            { idString: "box", position: Vec(87.45, -129.9), outdoors: true },
 
-            { idString: "planted_bushes", position: Vec(73.65, -225.45), rotation: 1 },
-            { idString: "planted_bushes", position: Vec(109.69, -225.45), rotation: 1 },
+            { idString: "planted_bushes", position: Vec(73.65, -225.45), rotation: 1, outdoors: true },
+            { idString: "planted_bushes", position: Vec(109.69, -225.45), rotation: 1, outdoors: true },
 
-            { idString: "smaller_sandbags", position: Vec(163.06, -234.3), rotation: 0 },
+            { idString: "smaller_sandbags", position: Vec(163.06, -234.3), rotation: 0, outdoors: true },
 
-            { idString: "pallet", position: Vec(65.4, -155.76), rotation: 2 },
-            { idString: "box", position: Vec(67.31, -155.12) },
+            { idString: "pallet", position: Vec(65.4, -155.76), rotation: 2, outdoors: true },
+            { idString: "box", position: Vec(67.31, -155.12), outdoors: true },
             // ------------------------------------------------------------------------------------------
 
             // ------------------------------------------------------------------------------------------
             // Left Side: Top Left // Refinery-like area
             // ------------------------------------------------------------------------------------------
-            { idString: "silo", position: Vec(-181.75, -167.4), rotation: 0 },
-            { idString: "silo", position: Vec(-141.15, -209.35), rotation: 2 },
+            { idString: "silo", position: Vec(-181.75, -167.4), rotation: 0, outdoors: true },
+            { idString: "silo", position: Vec(-141.15, -209.35), rotation: 2, outdoors: true },
 
-            { idString: "regular_crate", position: Vec(-177.77, -222.93) },
-            { idString: "melee_crate", position: Vec(-158.02, -198.87) },
-            { idString: "regular_crate", position: Vec(-162.67, -155.56) },
+            { idString: "regular_crate", position: Vec(-177.77, -222.93), outdoors: true },
+            { idString: "melee_crate", position: Vec(-158.02, -198.87), outdoors: true },
+            { idString: "regular_crate", position: Vec(-162.67, -155.56), outdoors: true },
 
-            { idString: "barrel", position: Vec(-125.97, -190.27) },
-            { idString: "barrel", position: Vec(-190.81, -192.61) },
-            { idString: "barrel", position: Vec(-168.52, -224.26) },
-            { idString: "super_barrel", position: Vec(-197.02, -187.09) },
+            { idString: "barrel", position: Vec(-125.97, -190.27), outdoors: true },
+            { idString: "barrel", position: Vec(-190.81, -192.61), outdoors: true },
+            { idString: "barrel", position: Vec(-168.52, -224.26), outdoors: true },
+            { idString: "super_barrel", position: Vec(-197.02, -187.09), outdoors: true },
 
             // the only ones who will survive the boom boom boom boom i want you in my room
-            { idString: "sandbags", position: Vec(-161.08, -177.44), rotation: 0 },
-            { idString: "sandbags", position: Vec(-197.34, -202.28), rotation: 1 },
-            { idString: "smaller_sandbags", position: Vec(-158.31, -170.34), rotation: 0 },
+            { idString: "sandbags", position: Vec(-161.08, -177.44), rotation: 0, outdoors: true },
+            { idString: "sandbags", position: Vec(-197.34, -202.28), rotation: 1, outdoors: true },
+            { idString: "smaller_sandbags", position: Vec(-158.31, -170.34), rotation: 0, outdoors: true },
 
             { idString: "metal_column", position: Vec(-202.51, -212.43) },
             { idString: "metal_column", position: Vec(-184.42, -229.94) },
@@ -3702,29 +3702,29 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             ),
 
             // outside refinery-like area
-            { idString: "forklift", position: Vec(-97.1, -153.48), rotation: 0 },
+            { idString: "forklift", position: Vec(-97.1, -153.48), rotation: 0, outdoors: true },
 
-            { idString: "barrel", position: Vec(-69.38, -216.4) },
+            { idString: "barrel", position: Vec(-69.38, -216.4), outdoors: true },
 
-            { idString: "grenade_crate", position: Vec(-105.66, -229.46) },
+            { idString: "grenade_crate", position: Vec(-105.66, -229.46), outdoors: true },
 
-            { idString: "regular_crate", position: Vec(-112.72, -215.26) },
-            { idString: "regular_crate", position: Vec(-75.61, -183.93) },
+            { idString: "regular_crate", position: Vec(-112.72, -215.26), outdoors: true },
+            { idString: "regular_crate", position: Vec(-75.61, -183.93), outdoors: true },
 
-            { idString: "planted_bushes", position: Vec(-91.86, -225.47), rotation: 1 },
-            { idString: "planted_bushes", position: Vec(-73.75, -225.47), rotation: 1 },
+            { idString: "planted_bushes", position: Vec(-91.86, -225.47), rotation: 1, outdoors: true },
+            { idString: "planted_bushes", position: Vec(-73.75, -225.47), rotation: 1, outdoors: true },
 
-            { idString: "sandbags", position: Vec(-113.66, -226.97), rotation: 1 },
-            { idString: "sandbags", position: Vec(-77.72, -174.34), rotation: 0 },
-            { idString: "smaller_sandbags", position: Vec(-105.2, -222.95), rotation: 0 },
-            { idString: "smaller_sandbags", position: Vec(-76.39, -216.45), rotation: 1 },
-            { idString: "barrier", position: Vec(-0.87, -227.85), rotation: 3 },
+            { idString: "sandbags", position: Vec(-113.66, -226.97), rotation: 1, outdoors: true },
+            { idString: "sandbags", position: Vec(-77.72, -174.34), rotation: 0, outdoors: true },
+            { idString: "smaller_sandbags", position: Vec(-105.2, -222.95), rotation: 0, outdoors: true },
+            { idString: "smaller_sandbags", position: Vec(-76.39, -216.45), rotation: 1, outdoors: true },
+            { idString: "barrier", position: Vec(-0.87, -227.85), rotation: 3, outdoors: true },
             // ------------------------------------------------------------------------------------------
 
             // ------------------------------------------------------------------------------------------
             // Left Side: Bottom Left
             // ------------------------------------------------------------------------------------------
-            { idString: "ship_oil_source", position: Vec(-63.48, 113.09), rotation: 0 },
+            { idString: "ship_oil_source", position: Vec(-63.48, 113.09), rotation: 0, outdoors: true },
 
             // fence pieces
             { idString: "fence", position: Vec(-125.37, 55.7), rotation: 0 },
@@ -3755,34 +3755,34 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "metal_column", position: Vec(-215.58, 152.81) },
             { idString: "metal_column", position: Vec(-215.58, 38.48) },
 
-            { idString: "sandbags", position: Vec(-142.32, 138.75), rotation: 0 },
-            { idString: "smaller_sandbags", position: Vec(-198.55, 157.42), rotation: 0 },
+            { idString: "sandbags", position: Vec(-142.32, 138.75), rotation: 0, outdoors: true },
+            { idString: "smaller_sandbags", position: Vec(-198.55, 157.42), rotation: 0, outdoors: true },
             { idString: "smaller_sandbags", position: Vec(-145.02, 74.26), rotation: 0 }, // H_S
 
-            { idString: "barrel", position: Vec(-92.65, 185.04) },
-            { idString: "barrel", position: Vec(-190.09, 156.94) },
-            { idString: "barrel", position: Vec(-145.3, 130.52) },
+            { idString: "barrel", position: Vec(-92.65, 185.04), outdoors: true },
+            { idString: "barrel", position: Vec(-190.09, 156.94), outdoors: true },
+            { idString: "barrel", position: Vec(-145.3, 130.52), outdoors: true },
 
             { idString: "propane_tank", position: Vec(-128.55, 81.93) }, // H_S
             { idString: { box: 0.5, grenade_box: 1 }, position: Vec(-123.93, 83.03) }, // H_S
             { idString: "regular_crate", position: Vec(-144.21, 65.72) }, // H_S
             { idString: "grenade_crate", position: Vec(-125.13, 65.32) }, // H_S
 
-            { idString: "box", position: Vec(-126.9, 184.32) },
-            { idString: "box", position: Vec(-132.22, 186.21) },
-            { idString: "box", position: Vec(-97.01, 154.82) },
-            { idString: "box", position: Vec(-91.61, 157.44) },
-            { idString: "box", position: Vec(-146.62, 110.96) },
-            { idString: "box", position: Vec(-146.55, 105.93) },
-            { idString: "box", position: Vec(-141.3, 108.04) },
+            { idString: "box", position: Vec(-126.9, 184.32), outdoors: true },
+            { idString: "box", position: Vec(-132.22, 186.21), outdoors: true },
+            { idString: "box", position: Vec(-97.01, 154.82), outdoors: true },
+            { idString: "box", position: Vec(-91.61, 157.44), outdoors: true },
+            { idString: "box", position: Vec(-146.62, 110.96), outdoors: true },
+            { idString: "box", position: Vec(-146.55, 105.93), outdoors: true },
+            { idString: "box", position: Vec(-141.3, 108.04), outdoors: true },
 
-            { idString: "forklift", position: Vec(-123.36, 121.84), rotation: 1 },
-            { idString: "dumpster", position: Vec(-207.76, 128.33), rotation: 2 },
-            { idString: "trash_bag", position: Vec(-206.77, 139.05) },
+            { idString: "forklift", position: Vec(-123.36, 121.84), rotation: 1, outdoors: true },
+            { idString: "dumpster", position: Vec(-207.76, 128.33), rotation: 2, outdoors: true },
+            { idString: "trash_bag", position: Vec(-206.77, 139.05), outdoors: true },
             { idString: "roadblock", position: Vec(-140.92, 55.62), rotation: 1 }, // H_S
 
-            { idString: "ammo_crate", position: Vec(-95.12, 147.13) },
-            { idString: "ammo_crate", position: Vec(-100.03, 164.29) },
+            { idString: "ammo_crate", position: Vec(-95.12, 147.13), outdoors: true },
+            { idString: "ammo_crate", position: Vec(-100.03, 164.29), outdoors: true },
             { idString: "ammo_crate", position: Vec(-126.3, 74.77) }, // H_S
             // ------------------------------------------------------------------------------------------
 
@@ -3803,22 +3803,22 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "metal_column", position: Vec(-215.63, 6.16) },
             { idString: "metal_column", position: Vec(-215.53, -243.21) },
 
-            { idString: "forklift", position: Vec(-155.48, 34.57), rotation: 0 },
-            { idString: "forklift", position: Vec(-124.14, 35.6), rotation: 2 },
-            { idString: "forklift", position: Vec(-176.57, -11.61), rotation: 2 },
+            { idString: "forklift", position: Vec(-155.48, 34.57), rotation: 0, outdoors: true },
+            { idString: "forklift", position: Vec(-124.14, 35.6), rotation: 2, outdoors: true },
+            { idString: "forklift", position: Vec(-176.57, -11.61), rotation: 2, outdoors: true },
 
-            { idString: "grenade_crate", position: Vec(-141.76, 39.83) },
-            { idString: "super_barrel", position: Vec(-138.62, 32) },
-            { idString: "barrel", position: Vec(-195.61, 32.45) },
-            { idString: "ammo_crate", position: Vec(-194.52, 23.24) },
-            { idString: "ammo_crate", position: Vec(-112.52, -77.97), rotation: 0 },
-            { idString: "grenade_crate", position: Vec(-80.03, -99.44) },
-            { idString: "grenade_crate", position: Vec(-72.52, -106.3) },
-            { idString: "sandbags", position: Vec(-80.14, -109.58), rotation: 1 },
-            { idString: "propane_tank", position: Vec(-73.85, -111.96) },
-            { idString: "dumpster", position: Vec(-208.05, -47.65), rotation: 2 },
-            { idString: "dumpster", position: Vec(-208.05, -63.05), rotation: 2 },
-            { idString: "trash_bag", position: Vec(-207.22, -74.08) },
+            { idString: "grenade_crate", position: Vec(-141.76, 39.83), outdoors: true },
+            { idString: "super_barrel", position: Vec(-138.62, 32), outdoors: true },
+            { idString: "barrel", position: Vec(-195.61, 32.45), outdoors: true },
+            { idString: "ammo_crate", position: Vec(-194.52, 23.24), outdoors: true },
+            { idString: "ammo_crate", position: Vec(-112.52, -77.97), rotation: 0, outdoors: true },
+            { idString: "grenade_crate", position: Vec(-80.03, -99.44), outdoors: true },
+            { idString: "grenade_crate", position: Vec(-72.52, -106.3), outdoors: true },
+            { idString: "sandbags", position: Vec(-80.14, -109.58), rotation: 1, outdoors: true },
+            { idString: "propane_tank", position: Vec(-73.85, -111.96), outdoors: true },
+            { idString: "dumpster", position: Vec(-208.05, -47.65), rotation: 2, outdoors: true },
+            { idString: "dumpster", position: Vec(-208.05, -63.05), rotation: 2, outdoors: true },
+            { idString: "trash_bag", position: Vec(-207.22, -74.08), outdoors: true },
 
             // Large Warehouse Obstacles
             { idString: "forklift", position: Vec(-163.52, -117.59), rotation: 1 },
@@ -3858,14 +3858,14 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
 
             // Bollards
             // Left Side
-            { idString: "bollard", position: Vec(-198.63, 185.55), rotation: 3 },
-            { idString: "bollard", position: Vec(-141.17, 185.52), rotation: 3 },
-            { idString: "bollard", position: Vec(-83.87, 185.62), rotation: 3 },
+            { idString: "bollard", position: Vec(-198.63, 185.55), rotation: 3, outdoors: true },
+            { idString: "bollard", position: Vec(-141.17, 185.52), rotation: 3, outdoors: true },
+            { idString: "bollard", position: Vec(-83.87, 185.62), rotation: 3, outdoors: true },
 
             // Right Side
-            { idString: "bollard", position: Vec(84.42, 185.59), rotation: 3 },
-            { idString: "bollard", position: Vec(141.8, 185.44), rotation: 3 },
-            { idString: "bollard", position: Vec(199.25, 185.47), rotation: 3 }
+            { idString: "bollard", position: Vec(84.42, 185.59), rotation: 3, outdoors: true },
+            { idString: "bollard", position: Vec(141.8, 185.44), rotation: 3, outdoors: true },
+            { idString: "bollard", position: Vec(199.25, 185.47), rotation: 3, outdoors: true }
         ],
         subBuildings: IS_CLIENT ? undefined : [
             { idString: "cargo_ship", position: Vec(0, 45.5) },
@@ -12650,31 +12650,31 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         obstacles: IS_CLIENT ? undefined : [
             { idString: "door", position: Vec(-45.51, 2.91), rotation: 3 },
             { idString: "ammo_crate", position: Vec(-39.02, -18.68) },
-            { idString: "lansirama_crate", position: Vec(43.7, 18.73) },
+            { idString: "lansirama_crate", position: Vec(43.7, 18.73), outdoors: true },
             { idString: "box", position: Vec(-11.85, -11.25) },
             { idString: { box: 1, grenade_box: 0.5 }, position: Vec(-31.08, -20.87) },
             { idString: "box", position: Vec(-29.62, -15.62) },
             { idString: "box", position: Vec(14.96, -21.59) },
             { idString: "box", position: Vec(20.21, -19.83) },
             { idString: "box", position: Vec(19.86, 4.52) },
-            { idString: { box: 1, grenade_box: 0.7 }, position: Vec(-50.28, -19.75) },
-            { idString: { box: 1, grenade_box: 0.1 }, position: Vec(46.66, -18.86) },
-            { idString: "box", position: Vec(41.48, -20.91) },
-            { idString: "box", position: Vec(36.16, 21.24) },
-            { idString: "pallet", position: Vec(43.88, -19.54), rotation: 0 },
-            { idString: "pallet", position: Vec(8.71, 14.14), rotation: 0 },
-            { idString: "pallet", position: Vec(-9.84, 16.25), rotation: 1 },
-            { idString: "propane_tank", position: Vec(10.5, 15.75) },
-            { idString: "propane_tank", position: Vec(6.7, 12.54) },
+            { idString: { box: 1, grenade_box: 0.7 }, position: Vec(-50.28, -19.75), outdoors: true },
+            { idString: { box: 1, grenade_box: 0.1 }, position: Vec(46.66, -18.86), outdoors: true },
+            { idString: "box", position: Vec(41.48, -20.91), outdoors: true },
+            { idString: "box", position: Vec(36.16, 21.24), outdoors: true },
+            { idString: "pallet", position: Vec(43.88, -19.54), rotation: 0, outdoors: true },
+            { idString: "pallet", position: Vec(8.71, 14.14), rotation: 0, outdoors: true },
+            { idString: "pallet", position: Vec(-9.84, 16.25), rotation: 1, outdoors: true },
+            { idString: "propane_tank", position: Vec(10.5, 15.75), outdoors: true },
+            { idString: "propane_tank", position: Vec(6.7, 12.54), outdoors: true },
             { idString: "barrel", position: Vec(-1.04, 3.06) },
-            { idString: "barrel", position: Vec(-50.99, -12.54) },
-            { idString: "barrel", position: Vec(30.2, 3.57) },
+            { idString: "barrel", position: Vec(-50.99, -12.54), outdoors: true },
+            { idString: "barrel", position: Vec(30.2, 3.57), outdoors: true },
             { idString: "small_logs_pile_2", position: Vec(-22.17, -18.56), rotation: 0, variation: 2 },
-            { idString: "small_logs_pile_2", position: Vec(-9.61, 16.49), rotation: 3, variation: 2 },
+            { idString: "small_logs_pile_2", position: Vec(-9.61, 16.49), rotation: 3, variation: 2, outdoors: true },
             { idString: "small_moldy_logs", position: Vec(-39.16, -9.41), rotation: 0 },
             { idString: "cobweb", position: Vec(-39.66, -19.32), rotation: 0 },
-            { idString: "grenade_crate", position: Vec(32.19, -19.82) },
-            { idString: "forklift", position: Vec(-21.11, 16.38), rotation: 1 },
+            { idString: "grenade_crate", position: Vec(32.19, -19.82), outdoors: true },
+            { idString: "forklift", position: Vec(-21.11, 16.38), rotation: 1, outdoors: true },
             { idString: "regular_crate", position: Vec(11.63, 1.86) },
             { idString: "regular_crate", position: Vec(-9.88, -19.1) },
             { idString: "fence", position: Vec(29.74, -25.06), rotation: 0 },
@@ -13225,7 +13225,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 idString: {
                     gun_mount_svu: 0.3,
                     gun_mount_an94: 0.2,
-                    gun_mount_rpk74: 0.5
+                    gun_mount_stoner_63: 0.5
                 },
                 position: Vec(-0.73, -56.17),
                 lootSpawnOffset: Vec(0, 5),
@@ -13318,12 +13318,12 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             }
         ],
         obstacles: IS_CLIENT ? undefined : [
-            { idString: "trash_can", position: Vec(27.53, 22.36) },
-            { idString: "box", position: Vec(-23.82, 22.38) },
-            { idString: { box: 1, grenade_box: 0.35 }, position: Vec(33.26, 23.11) },
-            { idString: "box", position: Vec(34.57, 17.93) },
-            { idString: "nsd_crate", position: Vec(14.67, -22.46) },
-            { idString: "regular_crate", position: Vec(-31.57, 19.99) }
+            { idString: "trash_can", position: Vec(27.53, 22.36), outdoors: true },
+            { idString: "box", position: Vec(-23.82, 22.38), outdoors: true },
+            { idString: { box: 1, grenade_box: 0.35 }, position: Vec(33.26, 23.11), outdoors: true },
+            { idString: "box", position: Vec(34.57, 17.93), outdoors: true },
+            { idString: "nsd_crate", position: Vec(14.67, -22.46), outdoors: true },
+            { idString: "regular_crate", position: Vec(-31.57, 19.99), outdoors: true }
         ],
         lootSpawners: IS_CLIENT ? undefined : [{ table: "ground_loot", position: Vec(0.05, 18.36) }]
     },
@@ -13680,39 +13680,40 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             }
         ],
         obstacles: IS_CLIENT ? undefined : [
-            { idString: "humvee", position: Vec(-70.59, 25.15), rotation: 0 },
-            { idString: "humvee", position: Vec(6.04, -43.11), rotation: 3 },
-            { idString: "nsd_crate", position: Vec(-22.25, -4.09) },
-            { idString: "pallet", position: Vec(-22.25, -4.09), rotation: 0 },
-            { idString: "regular_crate", position: Vec(-77.85, 45.14) },
-            { idString: "pallet", position: Vec(-74.84, 72.48), rotation: 0 },
-            { idString: "super_barrel", position: Vec(-74.84, 72.48) },
-            { idString: "ammo_crate", position: Vec(-63.33, 72.56) },
-            { idString: "forklift", position: Vec(-22.3, 7.44), rotation: 2 },
-            { idString: "grenade_crate", position: Vec(-84.53, 72.04) },
+            { idString: "humvee", position: Vec(-70.59, 25.15), rotation: 0, outdoors: true },
+            { idString: "humvee", position: Vec(6.04, -43.11), rotation: 3, outdoors: true },
+            { idString: "nsd_crate", position: Vec(-22.25, -4.09), outdoors: true },
+            { idString: "pallet", position: Vec(-22.25, -4.09), rotation: 0, outdoors: true },
+            { idString: "regular_crate", position: Vec(-77.85, 45.14), outdoors: true },
+            { idString: "pallet", position: Vec(-74.84, 72.48), rotation: 0, outdoors: true },
+            { idString: "super_barrel", position: Vec(-74.84, 72.48), outdoors: true },
+            { idString: "ammo_crate", position: Vec(-63.33, 72.56), outdoors: true },
+            { idString: "forklift", position: Vec(-22.3, 7.44), rotation: 2, outdoors: true },
+            { idString: "grenade_crate", position: Vec(-84.53, 72.04), outdoors: true },
             { idString: "barrel", position: Vec(-9.31, -43.42) },
-            { idString: "box", position: Vec(-9.38, -36.83) },
-            { idString: "box", position: Vec(92.01, 9.94) },
-            { idString: "sandbags", position: Vec(41.6, 7.96), rotation: 0 },
-            { idString: "smaller_sandbags", position: Vec(72.33, -14.7), rotation: 1 },
-            { idString: "regular_crate", position: Vec(53.82, 6.92) },
-            { idString: "grenade_crate", position: Vec(79.34, -15.03) },
-            { idString: "lansirama_log", position: Vec(81.81, -23.05), rotation: 0 },
+            { idString: "box", position: Vec(-9.38, -36.83), outdoors: true },
+            { idString: "box", position: Vec(92.01, 9.94), outdoors: true },
+            { idString: "sandbags", position: Vec(41.6, 7.96), rotation: 0, outdoors: true },
+            { idString: "smaller_sandbags", position: Vec(72.33, -14.7), rotation: 1, outdoors: true },
+            { idString: "regular_crate", position: Vec(53.82, 6.92), outdoors: true },
+            { idString: "grenade_crate", position: Vec(79.34, -15.03), outdoors: true },
+            { idString: "lansirama_log", position: Vec(81.81, -23.05), rotation: 0, outdoors: true },
 
             // fence system
-            { idString: "fence", position: Vec(-12.65, 80), rotation: 0 },
-            { idString: "fence", position: Vec(96.27, 8.86), rotation: 1 },
-            { idString: "fence", position: Vec(96.35, -23.8), rotation: 1 },
-            { idString: "fence", position: Vec(15, -77.62), rotation: 0 },
-            { idString: "fence", position: Vec(6.4, -77.62), rotation: 0 },
-            { idString: "fence", position: Vec(-35.33, -77.33), rotation: 0 },
+            { idString: "fence", position: Vec(-12.65, 80), rotation: 0, outdoors: true },
+            { idString: "fence", position: Vec(96.27, 8.86), rotation: 1, outdoors: true },
+            { idString: "fence", position: Vec(96.35, -23.8), rotation: 1, outdoors: true },
+            { idString: "fence", position: Vec(15, -77.62), rotation: 0, outdoors: true },
+            { idString: "fence", position: Vec(6.4, -77.62), rotation: 0, outdoors: true },
+            { idString: "fence", position: Vec(-35.33, -77.33), rotation: 0, outdoors: true },
 
             ...Array.from(
                 { length: 8 },
                 (_, i) => ({
                     idString: "fence",
                     position: Vec(-96.19, 14.2 + 8.6 * i),
-                    rotation: 1
+                    rotation: 1,
+                    outdoors: true
                 })
             ),
 
@@ -13721,7 +13722,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 (_, i) => ({
                     idString: "fence",
                     position: Vec(-90.22 + 8.6 * i, 80),
-                    rotation: 0
+                    rotation: 0,
+                    outdoors: true
                 })
             ),
 

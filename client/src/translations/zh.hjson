@@ -723,7 +723,7 @@
 "thermal_goggles": "热能护目镜"
 "thermal_goggles_desc": "揭示周围玩家的生命条和在地图上的位置。"
 "overdrive": "超频"
-"overdrive_desc": "当你在三十秒内得到三次击杀时，增加速度、生命值和肾上腺素。有二十秒的冷却时间。"
+"overdrive_desc": "击杀玩家后短暂提升速度并恢复生命值和肾上腺素。冷却时间为十二秒。"
 "loot_baron": "战利品领主"
 "loot_baron_desc": "增加战利品掉落。"
 "interact_server": "骇入服务器"

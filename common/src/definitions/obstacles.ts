@@ -6858,7 +6858,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         noResidue: true,
         reflectBullets: true,
         hitbox: RectangleHitbox.fromRect(21.76, 1.51, Vec(0, -0.42)),
-        rotationMode: RotationMode.Limited
+        rotationMode: RotationMode.Limited,
+        allowFlyover: FlyoverPref.Never
     },
     {
         idString: "research_desk",
@@ -6904,7 +6905,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         isWall: true,
         noResidue: true,
         hitbox: RectangleHitbox.fromRect(8.96, 2),
-        rotationMode: RotationMode.Limited
+        rotationMode: RotationMode.Limited,
+        allowFlyover: FlyoverPref.Never
     },
     {
         idString: "shooting_range_practice_log",

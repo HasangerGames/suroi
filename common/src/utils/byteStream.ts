@@ -7,10 +7,10 @@ export class ByteStream {
     static readonly decoder = new TextDecoder();
     static readonly encoder = new TextEncoder();
 
-    private readonly _view: DataView;
+    private readonly _view: DataView<ArrayBuffer>;
     private readonly _u8Array: Uint8Array;
 
-    get buffer(): ArrayBufferLike { return this._view.buffer; }
+    get buffer(): ArrayBuffer { return this._view.buffer; }
 
     index = 0;
 

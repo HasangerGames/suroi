@@ -805,7 +805,7 @@ const maps = {
             nsd_crate: 6,
             lansirama_crate: 6,
             grenade_crate: 35,
-            rock: 180,
+            rock: 200,
             river_chest: 1,
             bush: 175,
             blueberry_bush: 42,
@@ -1382,14 +1382,14 @@ const maps = {
 
             const buildings = {
                 // seriously stfu
-                /* eslint-disable @typescript-eslint/no-unnecessary-type-conversion */
+
                 red_house: ~~Math.random(),
                 blue_house: ~~Math.random(),
                 green_house: ~~Math.random(),
                 red_house_v2: ~~Math.random(),
                 mobile_home: ~~(Math.random() * 5) + 3,
                 porta_potty: ~~(Math.random() * 5) + 3,
-                /* eslint-enable @typescript-eslint/no-unnecessary-type-conversion */
+
                 warehouse: 1,
                 container_3: 1,
                 container_4: 1,

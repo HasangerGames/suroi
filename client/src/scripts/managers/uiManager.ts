@@ -932,7 +932,7 @@ class UIManagerClass {
             i < max;
             this._getSlotUI(i + 1).container.toggleClass(
                 "locked",
-                !!(this.inventory.lockedSlots & (1 << i))
+                UI_DEBUG_MODE ? true : !!(this.inventory.lockedSlots & (1 << i))
             ), i++
         );
     }

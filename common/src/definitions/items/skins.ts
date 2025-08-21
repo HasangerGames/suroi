@@ -48,12 +48,13 @@ export const Skins = new ObjectDefinitions<SkinDefinition>([
     skin("Pap",      undefined, undefined, 0x00366b, ["pap"]),
 
     // Role skins
-    skin("Developr Swag",      undefined, undefined, 0x007a7f, ["developr", "pap"]),
+    skin("Developr Swag",      undefined, undefined, 0x007a7f, ["developr", "pap", "hasanger"]),
     skin("Designr Swag",       undefined, undefined, 0x67cf00, ["designr", "vip_designr"]),
     skin("Sound Designr Swag", undefined, undefined, 0x3e8476, ["sound_designr"]),
 
     // Standard skins
     ...([
+        // NAME               BASE       FIST     BACKPACK
         ["HAZEL Jumpsuit",  0x97866b,  0xb4a894,  0xb4a894],
         ["The Amateur",     0x9d732c,  0x9b8767,  0x9b8767],
         ["The Pro",         0x9b8767,  0x9d732c,  0x9d732c],
@@ -99,6 +100,7 @@ export const Skins = new ObjectDefinitions<SkinDefinition>([
 
     // Hidden from loadout
     ...([
+        // NAME                     BASE       FIST     BACKPACK
         ["Lemon",                 0xe6ca3d,  0xebe092,  0xebe092],
         ["Flamingo",              0xe94a60,  0xf1847d,  0xf1847d],
         ["Peachy Breeze",         0xe66e53,  0xf2a263,  0xf2a263],
@@ -131,7 +133,9 @@ export const Skins = new ObjectDefinitions<SkinDefinition>([
         ["Sky",                   undefined, undefined, 0x002121],
         ["Diseased",              undefined, undefined, 0x2d1f1f],
         ["Deer Season",           undefined, 0xf8651e,  0x9a3604],
-        ["LOBOTOMY",              undefined, undefined, 0x00ff00]
+        ["LOBOTOMY",              undefined, undefined, 0x00ff00],
+        ["Veteran",               undefined, 0x636363,  0x2f7942],
+        ["Carpenter Uniform",     0x516951,  0x676e67,  0x273d27]
     ] satisfies ReadonlyArray<readonly [string, number?, number?, number?]>)
         .map(([name, baseTint, fistsTint, backpackTint]) => ({ ...skin(name, baseTint, fistsTint, backpackTint), hideFromLoadout: true })),
 
