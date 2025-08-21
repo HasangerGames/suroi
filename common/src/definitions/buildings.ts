@@ -356,8 +356,8 @@ const randomStove = {
 };
 
 const randomSmallStove = {
-    small_stove: 0.97,
-    small_pan_stove: 0.03
+    small_stove: 0.99,
+    small_pan_stove: 0.01
 };
 
 const randomHayShed = {
