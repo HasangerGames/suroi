@@ -888,10 +888,6 @@ export async function setUpUI(): Promise<void> {
             link: "https://www.twitch.tv/bcdf92"
         },
         {
-            name: "cybytroll",
-            link: "https://www.twitch.tv/cybytroll"
-        },
-        {
             name: "bedbests",
             link: "https://www.twitch.tv/bedbests"
         }
