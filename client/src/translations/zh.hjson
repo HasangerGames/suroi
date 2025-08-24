@@ -316,16 +316,19 @@
 "basic_vest": "基础护甲"
 "regular_vest": "常规护甲"
 "tactical_vest": "战术护甲"
-
 "developr_vest": "开发者护甲"
+"power_vest": "ERV-3核心"
+
 "basic_helmet": "基础头盔"
 "regular_helmet": "常规头盔"
 "tactical_helmet": "战术头盔"
+"power_helmet": "NTK-11神翠鸟"
 
 "bag": "袋子"
 "basic_pack": "基础背包"
 "regular_pack": "常规背包"
 "tactical_pack": "战术背包"
+"power_pack": "AMP-4骡"
 
 "1x_scope": "一倍镜"
 "2x_scope": "二倍镜"
@@ -350,6 +353,7 @@
 "chainsaw": "电锯"
 "pan": "平底锅"
 "kukri": "库克力弯刀"
+"pipe_wrench": "管钳"
 
 "mosin_nagant": "莫辛纳甘"
 "hp18": "HP-18"
@@ -400,6 +404,12 @@
 "stevens_555": "史蒂文斯555"
 "mpx": "MPX"
 "rgs": "RG侦察兵"
+"aks74u": "AKs-74u"
+"an94": "AN-94"
+"ots23": "OTs-23"
+"psm": "PSM"
+"rpk16": "RPK-16"
+"rpk74": "RPK-74"
 
 "frag_grenade": "破片手榴弹"
 "smoke_grenade": "烟雾弹"
@@ -426,6 +436,7 @@
 "proj_seed": "南瓜种子"
 "needle": "针管"
 "plumpkin_ammo": "南瓜子弹"
+"545mm": "5.45毫米"
 
 "bdg_developr": "开发者"
 "bdg_dev_managr": "开发管理者"
@@ -437,6 +448,7 @@
 "bdg_content_creatr": "内容创作者"
 "bdg_donatr": "赞助者"
 "bdg_ownr": "所有者"
+"bdg_marketr": "营销者"
 
 "bdg_bleh": "略"
 "bdg_froog": "蛙"
@@ -506,6 +518,7 @@
 "emote_pensive_face": "沉思"
 "emote_zipper_mouth_face": "闭嘴"
 "emote_zombie_face": "僵尸"
+"emote_blindfolded_face": "蒙眼"
 
 "emote_question_mark": "问号"
 "emote_team_=_ban": "组队 = 封号"
@@ -740,24 +753,5 @@
 "loot_baron_desc": "增加战利品掉落。"
 
 "contact": "联系我们"
-
-"545mm": "5.45毫米"
-
-"power_helmet": "NTK-11神翠鸟"
-"power_vest": "ERV-3核心"
-"power_pack": "AMP-4骡"
-
-"bdg_marketr": "营销者"
-
-"emote_blindfolded_face": "蒙眼"
-
-"aks74u": "AKs-74u"
-"an94": "AN-94"
-"ots23": "OTs-23"
-"psm": "PSM"
-"rpk16": "RPK-16"
-"rpk74": "RPK-74"
-
-"pipe_wrench": "管钳"
 
 "lobotomy": "火在洞里"
