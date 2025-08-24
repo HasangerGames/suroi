@@ -38,6 +38,8 @@
 "msg_your_team_eliminated": "你的队伍被淘汰了。"
 "msg_the_team_eliminated": "队伍被淘汰了。"
 "msg_punishment_warn_agreement": "我承认这次警告，并且不会再犯。"
+"msg_locked_tooltip": "由于没有足够的玩家来同时进行多种游戏，游戏每天切换一次。"
+"msg_contact": "想与我们合作?"
 
 "warning_hw_accel_1": "图形加速被此浏览器关闭或者此浏览器无法使用。"
 "warning_hw_accel_2": "Suroi表现可能会差。"
@@ -47,7 +49,6 @@
 "play_duo": "双人游戏"
 "play_squad": "小队游戏"
 "join_team": "加入队伍"
-"msg_locked_tooltip": "由于没有足够的玩家来同时进行多种游戏，游戏每天切换一次。"
 "rules_and_tutorial": "规则与教程"
 "news": "新闻"
 "donate": "捐赠"
@@ -178,6 +179,8 @@
 "interact_button": "按下按钮"
 "interact_speaker": "播放音箱"
 "interact_monument": "表达敬意"
+"interact_server": "骇入服务器"
+"interact_recorder_interactable": "播放录音机"
 
 "loading_spritesheets": "加载图像中<progress>"
 "loading_connecting": "连接中"
@@ -254,10 +257,14 @@
 "kf_kl_suicide": "击杀领袖自杀了！"
 "kf_suicide_finished_off": "<player>最终解决了自己"
 "kf_impact_of": ""
+"kf_saw_kill": "<player>被圆锯切碎了"
+"kf_saw_down": "<player>被圆锯切倒了"
+
 "finally": "最终"
 "with": "用"
 "you": "你"
 "yourself": "你自己"
+
 "km_killed": "击杀了"
 "km_knocked": "击倒了"
 "km_message": "<you><with><weapon><event><victim>"
@@ -272,10 +279,15 @@
 "km_killed_you": "把你击杀了"
 "km_suicide_down": "击倒了自己"
 "km_suicide_finished_off": "解决了自己"
+"km_saw_kill_you": "你被圆锯切碎了"
+"km_saw_down_you": "你被圆锯切倒了"
+
 "tt_restores": "<item>恢复<amount>点<type>"
 "tt_reduces": "<item>受到的伤害减少<percent>%"
 "tt_desc": "<item> <desc>"
+
 "vaccine_syringe_desc": "恢复50肾上腺素并且治愈感染"
+
 "go_kills": "击杀："
 "go_damage_done": "造成伤害："
 "go_damage_taken": "受到伤害："
@@ -726,12 +738,7 @@
 "overdrive_desc": "击杀玩家后短暂提升速度并恢复生命值和肾上腺素。冷却时间为十二秒。"
 "loot_baron": "战利品领主"
 "loot_baron_desc": "增加战利品掉落。"
-"interact_server": "骇入服务器"
-"kf_saw_kill": "<player>被圆锯切碎了"
-"kf_saw_down": "<player>被圆锯切倒了"
-"km_saw_kill_you": "你被圆锯切碎了"
-"km_saw_down_you": "你被圆锯切倒了"
-"message_contact": "想与我们合作?"
+
 "contact": "联系我们"
 
 "545mm": "5.45毫米"
