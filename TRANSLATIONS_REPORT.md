@@ -164,7 +164,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive_desc` is not defined
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
-- Key `message_contact` is not defined
+- Key `msg_contact` is not defined
 
 ## 🇧🇷 Português (Brasil) (94% Complete) - br.hjson
 
@@ -198,7 +198,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `region_oc` is not defined
 - Key `vaccine_syringe` is not defined
 - Key `vaccine_syringe_desc` is not defined
-- Key `message_contact` is not defined
+- Key `msg_contact` is not defined
 
 ## 🇨🇿 Čeština (62% Complete) - cz.hjson
 
@@ -353,7 +353,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive_desc` is not defined
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
-- Key `message_contact` is not defined
+- Key `msg_contact` is not defined
 
 ## 🇩🇪 Deutsch (70% Complete) - de.hjson
 
@@ -477,7 +477,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive_desc` is not defined
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
-- Key `message_contact` is not defined
+- Key `msg_contact` is not defined
 
 ## 🇬🇧 English (100% Complete) - en.hjson
 
@@ -622,7 +622,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive_desc` is not defined
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
-- Key `message_contact` is not defined
+- Key `msg_contact` is not defined
 
 ## 🇪🇪 eesti (93% Complete) - et.hjson
 
@@ -810,7 +810,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `thermal_goggles_desc` is not defined
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
-- Key `message_contact` is not defined
+- Key `msg_contact` is not defined
 
 ## 🇮🇷 فارسی (100% Complete) - fa.hjson
 
@@ -818,7 +818,7 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### Undefined Keys
 
-- Key `message_contact` is not defined
+- Key `msg_contact` is not defined
 
 ## 🇫🇮 suomi (65% Complete) - fi.hjson
 
@@ -962,7 +962,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive_desc` is not defined
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
-- Key `message_contact` is not defined
+- Key `msg_contact` is not defined
 
 ## 🇫🇷 Français (95% Complete) - fr.hjson
 
@@ -995,7 +995,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `loot_baron` is not defined
 - Key `loot_baron_desc` is not defined
 - Key `baby_plumpkin_pie_desc` is not defined
-- Key `message_contact` is not defined
+- Key `msg_contact` is not defined
 
 ## 🇬🇷 Ελληνικά (83% Complete) - gr.hjson
 
@@ -1069,7 +1069,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive_desc` is not defined
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
-- Key `message_contact` is not defined
+- Key `msg_contact` is not defined
 
 ## 🇭🇰 🇲🇴 廣東話(香港/澳門) (61% Complete) - hk_mo.hjson
 
@@ -1228,7 +1228,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive_desc` is not defined
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
-- Key `message_contact` is not defined
+- Key `msg_contact` is not defined
 
 ## 🇭🇺 Magyar (93% Complete) - hu.hjson
 
@@ -1265,7 +1265,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive_desc` is not defined
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
-- Key `message_contact` is not defined
+- Key `msg_contact` is not defined
 
 ## 🇮🇹 Italiano (60% Complete) - it.hjson
 
@@ -1437,7 +1437,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive_desc` is not defined
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
-- Key `message_contact` is not defined
+- Key `msg_contact` is not defined
 
 ## 🇯🇵 日本語 (100% Complete) - jp.hjson
 
@@ -1717,7 +1717,7 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### Undefined Keys
 
-- Key `message_contact` is not defined
+- Key `msg_contact` is not defined
 
 ## 🇱🇹 Lietuvių (62% Complete) - lt.hjson
 
@@ -1872,7 +1872,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive_desc` is not defined
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
-- Key `message_contact` is not defined
+- Key `msg_contact` is not defined
 
 ## 🇱🇻 Latviešu (62% Complete) - lv.hjson
 
@@ -2027,7 +2027,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive_desc` is not defined
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
-- Key `message_contact` is not defined
+- Key `msg_contact` is not defined
 
 ## 🇳🇱 Nederlands (95% Complete) - nl.hjson
 
@@ -2055,7 +2055,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `loot_baron` is not defined
 - Key `loot_baron_desc` is not defined
 - Key `baby_plumpkin_pie_desc` is not defined
-- Key `message_contact` is not defined
+- Key `msg_contact` is not defined
 
 ## 🇵🇱 Polski (65% Complete) - pl.hjson
 
@@ -2199,7 +2199,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive_desc` is not defined
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
-- Key `message_contact` is not defined
+- Key `msg_contact` is not defined
 
 ## 🎀 Cute Engwish (69% Complete) - qen.hjson
 
@@ -2328,7 +2328,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive_desc` is not defined
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
-- Key `message_contact` is not defined
+- Key `msg_contact` is not defined
 
 ## 🇷🇴 Română (98% Complete) - ro.hjson
 
@@ -2344,7 +2344,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_shake_force` is not defined
 - Key `settings_shake_delay` is not defined
 - Key `baby_plumpkin_pie_desc` is not defined
-- Key `message_contact` is not defined
+- Key `msg_contact` is not defined
 
 ## 🇷🇺 Русский (95% Complete) - ru.hjson
 
@@ -2376,7 +2376,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `loot_baron` is not defined
 - Key `loot_baron_desc` is not defined
 - Key `baby_plumpkin_pie_desc` is not defined
-- Key `message_contact` is not defined
+- Key `msg_contact` is not defined
 
 ## 🇮🇳 தமிழ் (98% Complete) - ta.hjson
 
@@ -2398,7 +2398,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `plumpkin_bomb` is not defined
 - Key `plumpkin_bomb_desc` is not defined
 - Key `experimental_forcefield_desc` is not defined
-- Key `message_contact` is not defined
+- Key `msg_contact` is not defined
 
 ## 🇹🇷 Turkısh (76% Complete) - tr.hjson
 
@@ -2501,7 +2501,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive_desc` is not defined
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
-- Key `message_contact` is not defined
+- Key `msg_contact` is not defined
 
 ## 🇹🇼 中文（繁體） (72% Complete) - tw.hjson
 
@@ -2617,7 +2617,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive_desc` is not defined
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
-- Key `message_contact` is not defined
+- Key `msg_contact` is not defined
 
 ## 🇻🇳 Tiếng Việt (93% Complete) - vi.hjson
 
@@ -2652,33 +2652,34 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `thermal_goggles_desc` is not defined
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
-- Key `message_contact` is not defined
+- Key `msg_contact` is not defined
 
 ## 🇨🇳 中文（简体） (100% Complete) - zh.hjson
 
 ### Invalid Keys
 
 - Key `msg_lost_connection` is not a valid key
-- Key `msg_contact` is not a valid key
 - Key `create_team_waiting` is not a valid key
-- Key `developr_vest` is not a valid key
 - Key `power_vest` is not a valid key
+- Key `developr_vest` is not a valid key
 - Key `power_helmet` is not a valid key
 - Key `power_pack` is not a valid key
 - Key `destroyer_of_worlds` is not a valid key
 - Key `deathray` is not a valid key
+- Key `C4` is not a valid key
 - Key `12g` is not a valid key
 - Key `556mm` is not a valid key
 - Key `762mm` is not a valid key
 - Key `9mm` is not a valid key
 - Key `50cal` is not a valid key
 - Key `338lap` is not a valid key
+- Key `545mm` is not a valid key
 - Key `firework_rocket` is not a valid key
-- Key `power_cell` is not a valid key
-- Key `bb` is not a valid key
+- Key `seed` is not a valid key
 - Key `needle` is not a valid key
 - Key `plumpkin_ammo` is not a valid key
-- Key `545mm` is not a valid key
+- Key `power_cell` is not a valid key
+- Key `bb` is not a valid key
 - Key `bdg_developr` is not a valid key
 - Key `bdg_dev_managr` is not a valid key
 - Key `bdg_designr` is not a valid key
@@ -2687,13 +2688,14 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bdg_moderatr` is not a valid key
 - Key `bdg_administratr` is not a valid key
 - Key `bdg_content_creatr` is not a valid key
+- Key `bdg_marketr` is not a valid key
 - Key `bdg_donatr` is not a valid key
 - Key `bdg_ownr` is not a valid key
-- Key `bdg_marketr` is not a valid key
 - Key `bdg_bleh` is not a valid key
 - Key `bdg_froog` is not a valid key
 - Key `bdg_aegis_logo` is not a valid key
 - Key `bdg_flint_logo` is not a valid key
+- Key `bdg_nsd_logo` is not a valid key
 - Key `bdg_duel` is not a valid key
 - Key `bdg_suroi_logo` is not a valid key
 - Key `bdg_fire` is not a valid key
@@ -2731,6 +2733,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `emote_man_face` is not a valid key
 - Key `emote_satisfied_face` is not a valid key
 - Key `emote_hot_face` is not a valid key
+- Key `emote_blindfolded_face` is not a valid key
 - Key `emote_blindfolded` is not a valid key
 - Key `emote_melting_face` is not a valid key
 - Key `emote_grimacing_face` is not a valid key
@@ -2753,11 +2756,11 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `emote_sighing_face` is not a valid key
 - Key `emote_yawning_face` is not a valid key
 - Key `emote_frustrated_face` is not a valid key
+- Key `emote_thousand_yard_stare` is not a valid key
 - Key `emote_weary_face` is not a valid key
 - Key `emote_pensive_face` is not a valid key
 - Key `emote_zipper_mouth_face` is not a valid key
 - Key `emote_zombie_face` is not a valid key
-- Key `emote_blindfolded_face` is not a valid key
 - Key `emote_question_mark` is not a valid key
 - Key `emote_team_=_ban` is not a valid key
 - Key `emote_hack_=_ban` is not a valid key
@@ -2820,86 +2823,86 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `small_refinery_barrel_explosion` is not a valid key
 - Key `stove_explosion` is not a valid key
 - Key `super_barrel_explosion` is not a valid key
-- Key `1st_birthday` is not a valid key
-- Key `algae` is not a valid key
-- Key `ancestral_garb` is not a valid key
-- Key `aquatic` is not a valid key
-- Key `arctic_camo` is not a valid key
-- Key `armadillo` is not a valid key
-- Key `ashfall` is not a valid key
-- Key `aurora` is not a valid key
-- Key `basic_outfit` is not a valid key
-- Key `beacon` is not a valid key
-- Key `bee` is not a valid key
-- Key `bloodlust` is not a valid key
-- Key `blue_blood` is not a valid key
-- Key `bubblegum` is not a valid key
-- Key `candy_cane` is not a valid key
-- Key `cargo_wave` is not a valid key
-- Key `celestial` is not a valid key
-- Key `coal` is not a valid key
-- Key `deep_sea` is not a valid key
-- Key `deer_season` is not a valid key
-- Key `desert_camo` is not a valid key
-- Key `designr_swag` is not a valid key
 - Key `developr_swag` is not a valid key
-- Key `diseased` is not a valid key
-- Key `distant_shores` is not a valid key
-- Key `flamingo` is not a valid key
-- Key `floral` is not a valid key
-- Key `forest_camo` is not a valid key
-- Key `frosty` is not a valid key
-- Key `full_moon` is not a valid key
-- Key `ghillie_suit` is not a valid key
-- Key `gingerbread` is not a valid key
-- Key `gold_tie_event` is not a valid key
-- Key `greenhorn` is not a valid key
-- Key `gunmetal` is not a valid key
-- Key `hazel_jumpsuit` is not a valid key
-- Key `henrys_little_helper` is not a valid key
-- Key `holiday_tree` is not a valid key
-- Key `lemon` is not a valid key
-- Key `light_choco` is not a valid key
-- Key `lumberjack` is not a valid key
-- Key `mango` is not a valid key
-- Key `military_camo` is not a valid key
-- Key `nebula` is not a valid key
-- Key `no_kil_pls` is not a valid key
-- Key `nsd_uniform` is not a valid key
-- Key `one_at_nsd` is not a valid key
-- Key `peachy_breeze` is not a valid key
-- Key `peppermint` is not a valid key
-- Key `pot_o_gold` is not a valid key
-- Key `printer` is not a valid key
-- Key `pumpkified` is not a valid key
-- Key `red_tomato` is not a valid key
-- Key `ship_carrier` is not a valid key
-- Key `silver_lining` is not a valid key
-- Key `sky` is not a valid key
-- Key `snow_cone` is not a valid key
-- Key `solar_flare` is not a valid key
+- Key `designr_swag` is not a valid key
 - Key `sound_designr_swag` is not a valid key
-- Key `spearmint` is not a valid key
-- Key `stardust` is not a valid key
-- Key `stratosphere` is not a valid key
-- Key `sunny` is not a valid key
-- Key `sunrise` is not a valid key
-- Key `sunset` is not a valid key
-- Key `swiss_cheese` is not a valid key
-- Key `target_practice` is not a valid key
+- Key `hazel_jumpsuit` is not a valid key
 - Key `the_amateur` is not a valid key
 - Key `the_pro` is not a valid key
-- Key `tiger` is not a valid key
-- Key `timeless` is not a valid key
-- Key `toadstool` is not a valid key
+- Key `forest_camo` is not a valid key
+- Key `desert_camo` is not a valid key
+- Key `arctic_camo` is not a valid key
+- Key `bloodlust` is not a valid key
+- Key `red_tomato` is not a valid key
+- Key `greenhorn` is not a valid key
+- Key `blue_blood` is not a valid key
+- Key `silver_lining` is not a valid key
+- Key `pot_o_gold` is not a valid key
+- Key `gunmetal` is not a valid key
+- Key `algae` is not a valid key
 - Key `twilight_zone` is not a valid key
-- Key `verified` is not a valid key
+- Key `bubblegum` is not a valid key
+- Key `sunrise` is not a valid key
+- Key `sunset` is not a valid key
+- Key `stratosphere` is not a valid key
+- Key `mango` is not a valid key
+- Key `snow_cone` is not a valid key
+- Key `aquatic` is not a valid key
+- Key `floral` is not a valid key
+- Key `sunny` is not a valid key
 - Key `volcanic` is not a valid key
+- Key `ashfall` is not a valid key
+- Key `solar_flare` is not a valid key
+- Key `beacon` is not a valid key
 - Key `wave_jumpsuit` is not a valid key
-- Key `werewolf` is not a valid key
+- Key `toadstool` is not a valid key
+- Key `full_moon` is not a valid key
+- Key `swiss_cheese` is not a valid key
+- Key `target_practice` is not a valid key
 - Key `zebra` is not a valid key
-- Key `fps` is not a valid key
-- Key `ping` is not a valid key
+- Key `tiger` is not a valid key
+- Key `bee` is not a valid key
+- Key `armadillo` is not a valid key
+- Key `printer` is not a valid key
+- Key `distant_shores` is not a valid key
+- Key `celestial` is not a valid key
+- Key `lemon` is not a valid key
+- Key `flamingo` is not a valid key
+- Key `peachy_breeze` is not a valid key
+- Key `deep_sea` is not a valid key
+- Key `ancestral_garb` is not a valid key
+- Key `timeless` is not a valid key
+- Key `peppermint` is not a valid key
+- Key `spearmint` is not a valid key
+- Key `coal` is not a valid key
+- Key `henrys_little_helper` is not a valid key
+- Key `candy_cane` is not a valid key
+- Key `holiday_tree` is not a valid key
+- Key `gingerbread` is not a valid key
+- Key `light_choco` is not a valid key
+- Key `frosty` is not a valid key
+- Key `verified` is not a valid key
+- Key `no_kil_pls` is not a valid key
+- Key `stardust` is not a valid key
+- Key `aurora` is not a valid key
+- Key `nebula` is not a valid key
+- Key `1st_birthday` is not a valid key
+- Key `lumberjack` is not a valid key
+- Key `gold_tie_event` is not a valid key
+- Key `ship_carrier` is not a valid key
+- Key `cargo_wave` is not a valid key
+- Key `military_camo` is not a valid key
+- Key `nsd_uniform` is not a valid key
+- Key `pumpkified` is not a valid key
+- Key `one_at_nsd` is not a valid key
+- Key `sky` is not a valid key
+- Key `diseased` is not a valid key
+- Key `deer_season` is not a valid key
+- Key `lobotomy` is not a valid key
+- Key `veteran` is not a valid key
+- Key `carpenter_uniform` is not a valid key
+- Key `ghillie_suit` is not a valid key
+- Key `werewolf` is not a valid key
 - Key `special_developer_cheats` is not a valid key
 - Key `special_login` is not a valid key
 - Key `special_name_color` is not a valid key
@@ -2910,11 +2913,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `special_weapon_preset` is not a valid key
 - Key `special_weapon_preset_placeholder` is not a valid key
 - Key `special_weapon_preset_title` is not a valid key
+- Key `fps` is not a valid key
+- Key `ping` is not a valid key
 - Key `time_minute` is not a valid key
 - Key `time_second` is not a valid key
-- Key `lobotomy` is not a valid key
 
-### Undefined Keys
-
-- Key `message_contact` is not defined
+### (No Undefined Keys)
 

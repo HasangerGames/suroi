@@ -21,7 +21,7 @@ export const Badges = new ObjectDefinitions<BadgeDefinition>([
     badge("Sound Designr", ["sound_designr"]),
     badge("Moderatr", ["moderatr"]),
     badge("Administratr", ["administratr"]),
-    badge("Content Creatr", ["content_creatr"]),
+    badge("Content Creatr", ["content_creatr", "lead_content_creatr"]),
     badge("Donatr", ["donatr"]),
     badge("Marketr", ["marketr"]),
     badge("Ownr", ["hasanger"]),

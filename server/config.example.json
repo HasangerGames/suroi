@@ -15,6 +15,7 @@
         "sound_designr": { "password": "sound_designr" },
         "moderatr": { "password": "moderatr" },
         "administratr": { "password": "administratr" },
+        "lead_content_creatr": { "password": "lead_content_creatr", "isDev": true },
         "content_creatr": { "password": "content_creatr" },
         "donatr": { "password": "donatr" },
         "marketr": { "password": "marketr", "isDev": true },
