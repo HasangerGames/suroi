@@ -164,6 +164,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive_desc` is not defined
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
+- Key `message_contact` is not defined
 
 ## 🇧🇷 Português (Brasil) (94% Complete) - br.hjson
 
@@ -197,6 +198,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `region_oc` is not defined
 - Key `vaccine_syringe` is not defined
 - Key `vaccine_syringe_desc` is not defined
+- Key `message_contact` is not defined
 
 ## 🇨🇿 Čeština (62% Complete) - cz.hjson
 
@@ -351,6 +353,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive_desc` is not defined
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
+- Key `message_contact` is not defined
 
 ## 🇩🇪 Deutsch (70% Complete) - de.hjson
 
@@ -474,6 +477,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive_desc` is not defined
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
+- Key `message_contact` is not defined
 
 ## 🇬🇧 English (100% Complete) - en.hjson
 
@@ -618,6 +622,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive_desc` is not defined
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
+- Key `message_contact` is not defined
 
 ## 🇪🇪 eesti (93% Complete) - et.hjson
 
@@ -805,12 +810,15 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `thermal_goggles_desc` is not defined
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
+- Key `message_contact` is not defined
 
 ## 🇮🇷 فارسی (100% Complete) - fa.hjson
 
 ### (No Invalid Keys)
 
-### (No Undefined Keys)
+### Undefined Keys
+
+- Key `message_contact` is not defined
 
 ## 🇫🇮 suomi (65% Complete) - fi.hjson
 
@@ -954,6 +962,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive_desc` is not defined
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
+- Key `message_contact` is not defined
 
 ## 🇫🇷 Français (95% Complete) - fr.hjson
 
@@ -986,6 +995,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `loot_baron` is not defined
 - Key `loot_baron_desc` is not defined
 - Key `baby_plumpkin_pie_desc` is not defined
+- Key `message_contact` is not defined
 
 ## 🇬🇷 Ελληνικά (83% Complete) - gr.hjson
 
@@ -1059,6 +1069,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive_desc` is not defined
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
+- Key `message_contact` is not defined
 
 ## 🇭🇰 🇲🇴 廣東話(香港/澳門) (61% Complete) - hk_mo.hjson
 
@@ -1217,6 +1228,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive_desc` is not defined
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
+- Key `message_contact` is not defined
 
 ## 🇭🇺 Magyar (93% Complete) - hu.hjson
 
@@ -1253,6 +1265,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive_desc` is not defined
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
+- Key `message_contact` is not defined
 
 ## 🇮🇹 Italiano (60% Complete) - it.hjson
 
@@ -1424,6 +1437,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive_desc` is not defined
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
+- Key `message_contact` is not defined
 
 ## 🇯🇵 日本語 (100% Complete) - jp.hjson
 
@@ -1701,7 +1715,9 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `region_ea1v1` is not a valid key
 - Key `region_test` is not a valid key
 
-### (No Undefined Keys)
+### Undefined Keys
+
+- Key `message_contact` is not defined
 
 ## 🇱🇹 Lietuvių (62% Complete) - lt.hjson
 
@@ -1856,6 +1872,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive_desc` is not defined
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
+- Key `message_contact` is not defined
 
 ## 🇱🇻 Latviešu (62% Complete) - lv.hjson
 
@@ -2010,6 +2027,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive_desc` is not defined
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
+- Key `message_contact` is not defined
 
 ## 🇳🇱 Nederlands (95% Complete) - nl.hjson
 
@@ -2037,6 +2055,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `loot_baron` is not defined
 - Key `loot_baron_desc` is not defined
 - Key `baby_plumpkin_pie_desc` is not defined
+- Key `message_contact` is not defined
 
 ## 🇵🇱 Polski (65% Complete) - pl.hjson
 
@@ -2180,6 +2199,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive_desc` is not defined
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
+- Key `message_contact` is not defined
 
 ## 🎀 Cute Engwish (69% Complete) - qen.hjson
 
@@ -2308,8 +2328,9 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive_desc` is not defined
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
+- Key `message_contact` is not defined
 
-## 🇷🇴 Română (99% Complete) - ro.hjson
+## 🇷🇴 Română (98% Complete) - ro.hjson
 
 ### Invalid Keys
 
@@ -2323,6 +2344,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_shake_force` is not defined
 - Key `settings_shake_delay` is not defined
 - Key `baby_plumpkin_pie_desc` is not defined
+- Key `message_contact` is not defined
 
 ## 🇷🇺 Русский (95% Complete) - ru.hjson
 
@@ -2354,6 +2376,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `loot_baron` is not defined
 - Key `loot_baron_desc` is not defined
 - Key `baby_plumpkin_pie_desc` is not defined
+- Key `message_contact` is not defined
 
 ## 🇮🇳 தமிழ் (98% Complete) - ta.hjson
 
@@ -2375,6 +2398,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `plumpkin_bomb` is not defined
 - Key `plumpkin_bomb_desc` is not defined
 - Key `experimental_forcefield_desc` is not defined
+- Key `message_contact` is not defined
 
 ## 🇹🇷 Turkısh (76% Complete) - tr.hjson
 
@@ -2477,6 +2501,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive_desc` is not defined
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
+- Key `message_contact` is not defined
 
 ## 🇹🇼 中文（繁體） (72% Complete) - tw.hjson
 
@@ -2592,8 +2617,9 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive_desc` is not defined
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
+- Key `message_contact` is not defined
 
-## 🇻🇳 Tiếng Việt (94% Complete) - vi.hjson
+## 🇻🇳 Tiếng Việt (93% Complete) - vi.hjson
 
 ### Invalid Keys
 
@@ -2626,14 +2652,19 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `thermal_goggles_desc` is not defined
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
+- Key `message_contact` is not defined
 
 ## 🇨🇳 中文（简体） (100% Complete) - zh.hjson
 
 ### Invalid Keys
 
 - Key `msg_lost_connection` is not a valid key
+- Key `msg_contact` is not a valid key
 - Key `create_team_waiting` is not a valid key
 - Key `developr_vest` is not a valid key
+- Key `power_vest` is not a valid key
+- Key `power_helmet` is not a valid key
+- Key `power_pack` is not a valid key
 - Key `destroyer_of_worlds` is not a valid key
 - Key `deathray` is not a valid key
 - Key `12g` is not a valid key
@@ -2647,6 +2678,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bb` is not a valid key
 - Key `needle` is not a valid key
 - Key `plumpkin_ammo` is not a valid key
+- Key `545mm` is not a valid key
 - Key `bdg_developr` is not a valid key
 - Key `bdg_dev_managr` is not a valid key
 - Key `bdg_designr` is not a valid key
@@ -2657,6 +2689,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bdg_content_creatr` is not a valid key
 - Key `bdg_donatr` is not a valid key
 - Key `bdg_ownr` is not a valid key
+- Key `bdg_marketr` is not a valid key
 - Key `bdg_bleh` is not a valid key
 - Key `bdg_froog` is not a valid key
 - Key `bdg_aegis_logo` is not a valid key
@@ -2724,6 +2757,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `emote_pensive_face` is not a valid key
 - Key `emote_zipper_mouth_face` is not a valid key
 - Key `emote_zombie_face` is not a valid key
+- Key `emote_blindfolded_face` is not a valid key
 - Key `emote_question_mark` is not a valid key
 - Key `emote_team_=_ban` is not a valid key
 - Key `emote_hack_=_ban` is not a valid key
@@ -2878,15 +2912,9 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `special_weapon_preset_title` is not a valid key
 - Key `time_minute` is not a valid key
 - Key `time_second` is not a valid key
-- Key `545mm` is not a valid key
-- Key `power_helmet` is not a valid key
-- Key `power_vest` is not a valid key
-- Key `power_pack` is not a valid key
-- Key `bdg_marketr` is not a valid key
-- Key `emote_blindfolded_face` is not a valid key
 - Key `lobotomy` is not a valid key
 
 ### Undefined Keys
 
-- Key `interact_recorder_interactable` is not defined
+- Key `message_contact` is not defined
 
