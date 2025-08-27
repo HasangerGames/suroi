@@ -1011,7 +1011,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
                 { item: "carpenter_uniform", weight: 1 }
             ]
         },
-        small_logs_pile_hs: [{ item: "hand_saw", weight: 1 }],
+        small_logs_pile_hs: [{ item: "hand_saw", weight: 1 }]
     },
 
     halloween: {

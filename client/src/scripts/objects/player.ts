@@ -1607,7 +1607,9 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     let hitCount = 0;
                     for (let i = 0; i < (weaponDef.numberOfHits ?? 1); i++) {
                         this.addTimeout((): void => {
-                            if (hitCount > 0 && this.activeItem.defType === DefinitionType.Melee) {
+                            if (this.activeItem.defType !== DefinitionType.Melee) return;
+
+                            if (hitCount > 0) {
                                 this.playSound(
                                     weaponDef.swingSound ?? "swing",
                                     {
@@ -1654,7 +1656,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                                 const target = targets[i];
 
                                 if (target.isPlayer) {
-                                    let sound = (this.activeItem as MeleeDefinition).hitSound;
+                                    let sound = this.activeItem.hitSound;
                                     if (sound && weaponDef.numberOfHits !== undefined && weaponDef.numberOfHits > 1) {
                                         sound += `_${hitCount}`;
                                     }
