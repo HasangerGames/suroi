@@ -11250,7 +11250,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "small_moldy_logs", position: Vec(-68.77, 74.2), rotation: 3 },
 
             { idString: "small_logs_pile_2", position: Vec(-17.61, 69.07), rotation: 0 },
-            { idString: "small_logs_pile_hs", position: Vec(13.28, 123.94), rotation: 2, variation: 1 },
+            { idString: "small_logs_pile_hs", position: Vec(13.28, 123.94), rotation: 2 },
             { idString: "small_logs_pile_2", position: Vec(-70.89, 121.51), rotation: 2 },
             { idString: "small_logs_pile_2", position: Vec(-127.39, 202.94), rotation: 1 },
             { idString: "small_logs_pile_2", position: Vec(63.51, 100.71), rotation: 0 },
