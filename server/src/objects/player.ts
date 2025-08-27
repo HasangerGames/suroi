@@ -2530,7 +2530,6 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                     newModifiers.reload *= perk.reloadMod;
                     break;
                 }
-
             }
         }
         // ! evil ends here
