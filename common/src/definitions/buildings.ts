@@ -7802,6 +7802,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         name: "Plumpkin Bunker",
         defType: DefinitionType.Building,
         material: "metal_heavy",
+        particle: "bunker_particle",
         reflectBullets: true,
         collideWithLayers: Layers.Equal,
         hitbox: new GroupHitbox(
