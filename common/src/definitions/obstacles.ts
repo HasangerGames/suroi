@@ -5877,7 +5877,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
             RectangleHitbox.fromRect(9, 1, Vec(9.1, -39))
         ),
         rotationMode: RotationMode.Limited,
-        allowFlyover: FlyoverPref.Always,
+        allowFlyover: FlyoverPref.Never,
         invisible: true,
         frames: {
             particle: "metal_particle"
