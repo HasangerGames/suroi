@@ -69,83 +69,87 @@ export class MeleeItem extends InventoryItemBase.derive(DefinitionType.Melee) {
         owner.action?.cancel();
 
         const hitDelay = definition.hitDelay ?? 50;
+
         this.owner.game.addTimeout((): void => {
             if (!satisfiesPreflights()) return;
+            for (let i = 0; i < (definition.numberOfHits ?? 1); i++) {
+                this.owner.game.addTimeout((): void => {
+                    type MeleeObject = Player | Obstacle | Building | Projectile;
 
-            type MeleeObject = Player | Obstacle | Building | Projectile;
+                    const position = Vec.add(
+                        owner.position,
+                        Vec.scale(Vec.rotate(definition.offset, owner.rotation), owner.sizeMod)
+                    );
+                    const hitbox = new CircleHitbox(definition.radius * owner.sizeMod, position);
+                    const targets: MeleeObject[] = [];
 
-            const position = Vec.add(
-                owner.position,
-                Vec.scale(Vec.rotate(definition.offset, owner.rotation), owner.sizeMod)
-            );
-            const hitbox = new CircleHitbox(definition.radius * owner.sizeMod, position);
-            const targets: MeleeObject[] = [];
+                    for (const object of owner.game.grid.intersectsHitbox(hitbox)) {
+                        if (
+                            (object.dead && !(object.isBuilding && object.definition.hasDamagedCeiling))
+                            || object === owner
+                            || !(object.isPlayer || object.isObstacle || object.isBuilding || object.isProjectile)
+                            || !object.damageable
+                            || (object.isObstacle && (object.definition.isStair || object.definition.noMeleeCollision))
+                            || !adjacentOrEquivLayer(object, owner.layer)
+                            || !object.hitbox?.collidesWith(hitbox)
+                        ) continue;
 
-            for (const object of owner.game.grid.intersectsHitbox(hitbox)) {
-                if (
-                    (object.dead && !(object.isBuilding && object.definition.hasDamagedCeiling))
-                    || object === owner
-                    || !(object.isPlayer || object.isObstacle || object.isBuilding || object.isProjectile)
-                    || !object.damageable
-                    || (object.isObstacle && (object.definition.isStair || object.definition.noMeleeCollision))
-                    || !adjacentOrEquivLayer(object, owner.layer)
-                    || !object.hitbox?.collidesWith(hitbox)
-                ) continue;
-
-                targets.push(object);
-            }
-
-            targets.sort((a, b) => {
-                if (owner.game.isTeamMode && a.isPlayer && a.teamID === owner.teamID) return Infinity;
-                if (owner.game.isTeamMode && b.isPlayer && b.teamID === owner.teamID) return -Infinity;
-
-                return (a.hitbox?.distanceTo(owner.hitbox).distance ?? 0) - (b.hitbox?.distanceTo(owner.hitbox).distance ?? 0);
-            });
-
-            const numTargets = Numeric.min(targets.length, definition.maxTargets ?? 1);
-            for (let i = 0; i < numTargets; i++) {
-                const target = targets[i];
-                let multiplier = 1;
-
-                multiplier *= this.owner.mapPerkOrDefault(PerkIds.Berserker, ({ damageMod }) => damageMod, 1);
-                multiplier *= this.owner.mapPerkOrDefault(PerkIds.Lycanthropy, ({ damageMod }) => damageMod, 1);
-                multiplier *= this.owner.mapPerkOrDefault(PerkIds.Infected, ({ damageMod }) => damageMod, 1);
-
-                if (target.isObstacle) {
-                    multiplier *= definition.piercingMultiplier !== undefined && target.definition.impenetrable
-                        ? definition.piercingMultiplier
-                        : definition.obstacleMultiplier;
-
-                    if (target.definition.material === "ice") {
-                        multiplier *= definition.iceMultiplier ?? 0.01;
+                        targets.push(object);
                     }
-                }
 
-                if (target.isProjectile) {
-                    multiplier *= definition.obstacleMultiplier;
-                }
+                    targets.sort((a, b) => {
+                        if (owner.game.isTeamMode && a.isPlayer && a.teamID === owner.teamID) return Infinity;
+                        if (owner.game.isTeamMode && b.isPlayer && b.teamID === owner.teamID) return -Infinity;
 
-                target.damage({
-                    amount: definition.damage * multiplier,
-                    source: owner,
-                    weaponUsed: this
-                });
+                        return (a.hitbox?.distanceTo(owner.hitbox).distance ?? 0) - (b.hitbox?.distanceTo(owner.hitbox).distance ?? 0);
+                    });
 
-                if (target.isObstacle && !target.dead) {
-                    target.interact(this.owner);
-                }
-            }
+                    const numTargets = Numeric.min(targets.length, definition.maxTargets ?? 1);
+                    for (let i = 0; i < numTargets; i++) {
+                        const target = targets[i];
+                        let multiplier = 1;
 
-            if (definition.fireMode === FireMode.Auto || owner.isMobile) {
-                clearTimeout(this._autoUseTimeoutID);
-                this._autoUseTimeoutID = setTimeout(
-                    () => this._useItemNoDelayCheck(false),
-                    (
-                        targets.length && definition.attackCooldown
-                            ? definition.attackCooldown
-                            : definition.cooldown
-                    ) - hitDelay
-                );
+                        multiplier *= this.owner.mapPerkOrDefault(PerkIds.Berserker, ({ damageMod }) => damageMod, 1);
+                        multiplier *= this.owner.mapPerkOrDefault(PerkIds.Lycanthropy, ({ damageMod }) => damageMod, 1);
+                        multiplier *= this.owner.mapPerkOrDefault(PerkIds.Infected, ({ damageMod }) => damageMod, 1);
+
+                        if (target.isObstacle) {
+                            multiplier *= definition.piercingMultiplier !== undefined && target.definition.impenetrable
+                                ? definition.piercingMultiplier
+                                : definition.obstacleMultiplier;
+
+                            if (target.definition.material === "ice") {
+                                multiplier *= definition.iceMultiplier ?? 0.01;
+                            }
+                        }
+
+                        if (target.isProjectile) {
+                            multiplier *= definition.obstacleMultiplier;
+                        }
+
+                        target.damage({
+                            amount: definition.damage * multiplier,
+                            source: owner,
+                            weaponUsed: this
+                        });
+
+                        if (target.isObstacle && !target.dead) {
+                            target.interact(this.owner);
+                        }
+                    }
+
+                    if (definition.fireMode === FireMode.Auto || owner.isMobile) {
+                        clearTimeout(this._autoUseTimeoutID);
+                        this._autoUseTimeoutID = setTimeout(
+                            () => this._useItemNoDelayCheck(false),
+                            (
+                                targets.length && definition.attackCooldown
+                                    ? definition.attackCooldown
+                                    : definition.cooldown
+                            ) - hitDelay
+                        );
+                    }
+                }, (i === 0 ? 0 : (definition.delayBetweenHits ?? 0)));
             }
         }, hitDelay);
     }

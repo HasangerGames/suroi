@@ -1384,12 +1384,12 @@ const maps = {
             const buildings = {
                 // seriously stfu
 
-                red_house: ~~Math.random(),
-                blue_house: ~~Math.random(),
-                green_house: ~~Math.random(),
-                red_house_v2: ~~Math.random(),
-                mobile_home: ~~(Math.random() * 5) + 3,
-                porta_potty: ~~(Math.random() * 5) + 3,
+                red_house: Math.random(),
+                blue_house: Math.random(),
+                green_house: Math.random(),
+                red_house_v2: Math.random(),
+                mobile_home: (Math.random() * 5) + 3,
+                porta_potty: (Math.random() * 5) + 3,
 
                 warehouse: 1,
                 container_3: 1,

@@ -6395,7 +6395,6 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         name: "Small Logs Pile",
         defType: DefinitionType.Obstacle,
         material: "tree",
-        variations: 2,
         health: 230,
         scale: {
             spawnMin: 1,
@@ -6409,6 +6408,26 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         frames: {
             particle: "log_particle"
         }
+    },
+    {
+        idString: "small_logs_pile_hs",
+        name: "Small Logs Pile",
+        defType: DefinitionType.Obstacle,
+        material: "tree",
+        health: 230,
+        scale: {
+            spawnMin: 1,
+            spawnMax: 1,
+            destroy: 0.7
+        },
+        hitbox: RectangleHitbox.fromRect(8.6, 8.21),
+        rotationMode: RotationMode.Limited,
+        allowFlyover: FlyoverPref.Always,
+        noResidue: true,
+        frames: {
+            particle: "log_particle"
+        },
+        hasLoot: true
     },
     {
         idString: "small_moldy_logs",

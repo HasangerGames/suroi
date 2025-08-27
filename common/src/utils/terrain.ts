@@ -417,7 +417,7 @@ export class River {
         t = Numeric.clamp(t, 0, 1);
         // go away
 
-        const i = ~~(t * (count - 1));
+        const i = (t * (count - 1));
         const i1 = i === count - 1 ? i - 1 : i;
         const i2 = i1 + 1;
         const i0 = i1 > 0 ? i1 - 1 : i1;

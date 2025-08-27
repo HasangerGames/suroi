@@ -72,6 +72,7 @@ Melees:
   Kukri pickup - "Metal Blade Slice 46" from Pixabay: https://pixabay.com/sound-effects/metal-blade-slice-46-195333/
   K-bar pickup - "Dagger Draw Fast" from Medieval sound effects - Weapon Textures: https://opengameart.org/content/medieval-sound-effects-weapon-textures
   Pipe wrench switch - "wrench 02" by freesound_community from Pixabay: https://pixabay.com/users/freesound_community-46691455/
+  Hand Saw switch - "Hand Saw 3 FX" by SOUND_GARAGE from Pixabay: https://pixabay.com/users/sound_garage-47313534/
 
 Obstacles:
   Window punch: https://freesound.org/people/peter1984/sounds/414444/
@@ -167,3 +168,7 @@ Shield (Bubble) Sounds
 Overdrive Sound: "Boost" by freesound_community on PixaBay - https://pixabay.com/users/freesound_community-46691455/
 
 Sawmill saw: "Cutting wood on a band saw" from Pixabay - https://pixabay.com/sound-effects/cutting-wood-on-a-band-saw-320670/
+
+Hand Saw sounds
+   - Hit 1: "Axe Hit Flesh 02" by u_xjrmmgxfru from Pixabay: https://pixabay.com/users/u_xjrmmgxfru-47169417/
+   - Hit 2: "Hit Flesh 02" by u_xjrmmgxfru from Pixabay: https://pixabay.com/users/u_xjrmmgxfru-47169417/

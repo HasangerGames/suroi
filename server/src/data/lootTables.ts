@@ -1010,7 +1010,8 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
                 { item: "veteran", weight: 1 },
                 { item: "carpenter_uniform", weight: 1 }
             ]
-        }
+        },
+        small_logs_pile_hs: [{ item: "hand_saw", weight: 1 }],
     },
 
     halloween: {
@@ -1230,7 +1231,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
         airdrop_melee: [
             { item: NullString, weight: 1 },
             { item: "hatchet", weight: 0.2 },
-            { item: "kbar", weight: 0.2 },
+            { item: "hand_saw", weight: 0.2 },
             { item: "maul", weight: 0.1 }
         ],
         gold_airdrop_guns: [
@@ -1593,7 +1594,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
         airdrop_melee: [
             { item: NullString, weight: 1 },
             { item: "hatchet", weight: 0.2 },
-            { item: "kbar", weight: 0.2 },
+            { item: "hand_saw", weight: 0.2 },
             { item: "maul", weight: 0.1 }
         ],
         gold_airdrop_guns: [
@@ -1952,10 +1953,11 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
 
         airdrop_melee: [
             { item: NullString, weight: 1 },
+            { item: "hand_saw", weight: 0.025 },
             { item: "crowbar", weight: 0.12 },
             { item: "hatchet", weight: 0.12 },
             { item: "sickle", weight: 0.12 },
-            { item: "maul", weight: 0.12 },
+            { item: "maul", weight: 0.2 },
             { item: "pan", weight: 0.075 }
         ],
 

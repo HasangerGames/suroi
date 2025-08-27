@@ -11249,12 +11249,12 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "small_moldy_logs", position: Vec(136.5, 216.19), rotation: 1 },
             { idString: "small_moldy_logs", position: Vec(-68.77, 74.2), rotation: 3 },
 
-            { idString: "small_logs_pile_2", position: Vec(-17.61, 69.07), rotation: 0, variation: 2 },
-            { idString: "small_logs_pile_2", position: Vec(13.28, 123.94), rotation: 2, variation: 1 },
-            { idString: "small_logs_pile_2", position: Vec(-70.89, 121.51), rotation: 2, variation: 2 },
-            { idString: "small_logs_pile_2", position: Vec(-127.39, 202.94), rotation: 1, variation: 2 },
-            { idString: "small_logs_pile_2", position: Vec(63.51, 100.71), rotation: 0, variation: 2 },
-            { idString: "small_logs_pile_2", position: Vec(84.21, 49.22), rotation: 0, variation: 2 },
+            { idString: "small_logs_pile_2", position: Vec(-17.61, 69.07), rotation: 0 },
+            { idString: "small_logs_pile_hs", position: Vec(13.28, 123.94), rotation: 2, variation: 1 },
+            { idString: "small_logs_pile_2", position: Vec(-70.89, 121.51), rotation: 2 },
+            { idString: "small_logs_pile_2", position: Vec(-127.39, 202.94), rotation: 1 },
+            { idString: "small_logs_pile_2", position: Vec(63.51, 100.71), rotation: 0 },
+            { idString: "small_logs_pile_2", position: Vec(84.21, 49.22), rotation: 0 },
 
             { idString: "large_logs_pile_2", position: Vec(6.04, 93.4), rotation: 0, variation: 2 },
             { idString: "large_logs_pile_2", position: Vec(-7.61, 89.32), rotation: 1, variation: 1 },
@@ -11427,8 +11427,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "large_logs_pile_2", position: Vec(90.8, -105.51), rotation: 1, variation: 1 },
             { idString: "large_logs_pile_2", position: Vec(5.8, -140.08), rotation: 3, variation: 2 },
 
-            { idString: "small_logs_pile_2", position: Vec(64.83, -115.86), rotation: 0, variation: 2 },
-            { idString: "small_logs_pile_2", position: Vec(-71.44, -167.01), rotation: 2, variation: 2 },
+            { idString: "small_logs_pile_2", position: Vec(64.83, -115.86), rotation: 0 },
+            { idString: "small_logs_pile_2", position: Vec(-71.44, -167.01), rotation: 2 },
 
             { idString: "small_moldy_logs", position: Vec(120.62, -169.01), rotation: 0 },
             { idString: "small_moldy_logs", position: Vec(130.35, -163.62), rotation: 3 },
@@ -11450,8 +11450,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "regular_crate", position: Vec(-49.22, -27.19) },
             { idString: "regular_crate", position: Vec(-51.63, -36.81) },
 
-            { idString: "small_logs_pile_2", position: Vec(-45.27, -64.89), rotation: 2, variation: 2 },
-            { idString: "small_logs_pile_2", position: Vec(73.31, -25.39), rotation: 2, variation: 2 },
+            { idString: "small_logs_pile_2", position: Vec(-45.27, -64.89), rotation: 2 },
+            { idString: "small_logs_pile_2", position: Vec(73.31, -25.39), rotation: 2 },
 
             { idString: "barrel", position: Vec(-45.23, -73.05) },
 
@@ -11542,7 +11542,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "abandoned_warehouse_metal_collider", position: Vec(0, 0), rotation: 0 },
             { idString: "grenade_crate", position: Vec(19.68, 8.05) },
             { idString: "barrel", position: Vec(-2.98, -8.19) },
-            { idString: "small_logs_pile_2", position: Vec(6.17, -8.57), rotation: 2, variation: 2 },
+            { idString: "small_logs_pile_2", position: Vec(6.17, -8.57), rotation: 2 },
             { idString: "lansirama_crate", position: Vec(-12.5, -7.96) },
             { idString: "small_moldy_logs", position: Vec(8, 16.81), rotation: 2 },
             { idString: "forklift", position: Vec(-33.73, 17.78), rotation: 1 },
@@ -11673,10 +11673,10 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "pallet", position: Vec(46.3, -45.47), rotation: 0 },
             { idString: "pallet", position: Vec(19.05, -10.33), rotation: 0 },
 
-            { idString: "small_logs_pile_2", position: Vec(5.81, 32.13), rotation: 3, variation: 2 },
-            { idString: "small_logs_pile_2", position: Vec(46.2, 24.98), rotation: 2, variation: 2 },
-            { idString: "small_logs_pile_2", position: Vec(47.04, -31.65), rotation: 2, variation: 2 },
-            { idString: "small_logs_pile_2", position: Vec(37.85, -27.06), rotation: 3, variation: 2 },
+            { idString: "small_logs_pile_2", position: Vec(5.81, 32.13), rotation: 3 },
+            { idString: "small_logs_pile_2", position: Vec(46.2, 24.98), rotation: 2 },
+            { idString: "small_logs_pile_2", position: Vec(47.04, -31.65), rotation: 2 },
+            { idString: "small_logs_pile_2", position: Vec(37.85, -27.06), rotation: 3 },
 
             { idString: "large_logs_pile_2", position: Vec(-41.61, -17.12), rotation: 0, variation: 2 },
 
@@ -11803,8 +11803,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "pallet", position: Vec(38.67, 20.25), rotation: 0 },
             { idString: "regular_crate", position: Vec(11.22, 48.05) },
             { idString: "regular_crate", position: Vec(21.34, 44.9) },
-            { idString: "small_logs_pile_2", position: Vec(-20.55, 55.01), rotation: 3, variation: 2 },
-            { idString: "small_logs_pile_2", position: Vec(10.7, 37.82), rotation: 3, variation: 2 },
+            { idString: "small_logs_pile_2", position: Vec(-20.55, 55.01), rotation: 3 },
+            { idString: "small_logs_pile_2", position: Vec(10.7, 37.82), rotation: 3 },
             { idString: "large_drawer", position: Vec(40.29, 6.61), rotation: 3 },
             { idString: "desk_left", position: Vec(34.52, -48.19), rotation: 0 },
             { idString: "desk_right", position: Vec(34.48, -15.7), rotation: 2 },
@@ -12158,7 +12158,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "lansirama_crate", position: Vec(40.9, 11.59) },
             { idString: "grenade_crate", position: Vec(0.41, 8.53) },
             { idString: "pallet", position: Vec(0.2, 8.09), rotation: 0 },
-            { idString: "small_logs_pile_2", position: Vec(-44.19, -1.03), rotation: 2, variation: 2 },
+            { idString: "small_logs_pile_2", position: Vec(-44.19, -1.03), rotation: 2 },
             { idString: "large_logs_pile_2", position: Vec(39.26, 0.2), rotation: 2, variation: 2 },
             { idString: "porta_potty_toilet_open", position: Vec(-44.41, 11.59), rotation: 1 },
             { idString: "porta_potty_sink_wall", position: Vec(-39.6, 5.7), rotation: 2 }
@@ -12685,8 +12685,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "barrel", position: Vec(-1.04, 3.06) },
             { idString: "barrel", position: Vec(-50.99, -12.54), outdoors: true },
             { idString: "barrel", position: Vec(30.2, 3.57), outdoors: true },
-            { idString: "small_logs_pile_2", position: Vec(-22.17, -18.56), rotation: 0, variation: 2 },
-            { idString: "small_logs_pile_2", position: Vec(-9.61, 16.49), rotation: 3, variation: 2, outdoors: true },
+            { idString: "small_logs_pile_2", position: Vec(-22.17, -18.56), rotation: 0 },
+            { idString: "small_logs_pile_2", position: Vec(-9.61, 16.49), rotation: 3, outdoors: true },
             { idString: "small_moldy_logs", position: Vec(-39.16, -9.41), rotation: 0 },
             { idString: "cobweb", position: Vec(-39.66, -19.32), rotation: 0 },
             { idString: "grenade_crate", position: Vec(32.19, -19.82), outdoors: true },

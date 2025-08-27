@@ -1599,53 +1599,73 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     this.images.weapon.setFrame(`${weaponDef.idString}${this.meleeAttackCounter <= 0 ? "_used" : ""}`);
                 }
 
+                const hitDelay = weaponDef.hitDelay ?? 50;
                 this.addTimeout(() => {
                     // Play hit effect on closest object
                     // TODO: share this logic with the server
 
-                    type MeleeObject = Player | Obstacle | Building | Projectile;
+                    let hitCount = 0;
+                    for (let i = 0; i < (weaponDef.numberOfHits ?? 1); i++) {
+                        this.addTimeout((): void => {
+                            if (hitCount > 0 && this.activeItem.defType === DefinitionType.Melee) {
+                                this.playSound(
+                                    weaponDef.swingSound ?? "swing",
+                                    {
+                                        falloff: 0.4,
+                                        maxRange: 96
+                                    }
+                                );
+                            }
 
-                    const position = Vec.add(
-                        this.position,
-                        Vec.scale(Vec.rotate(weaponDef.offset, this.rotation), this.sizeMod)
-                    );
-                    const hitbox = new CircleHitbox(weaponDef.radius * this.sizeMod, position);
-                    const targets: MeleeObject[] = [];
+                            type MeleeObject = Player | Obstacle | Building | Projectile;
 
-                    for (const object of Game.objects) {
-                        if (
-                            (object.dead && !(object.isBuilding && object.definition.hasDamagedCeiling))
-                            || object === this
-                            || !(object.isPlayer || object.isObstacle || object.isBuilding || object.isProjectile)
-                            || !object.damageable
-                            || (object.isObstacle && (object.definition.isStair || object.definition.noMeleeCollision))
-                            || !adjacentOrEquivLayer(object, this.layer)
-                            || !object.hitbox?.collidesWith(hitbox)
-                        ) continue;
+                            const position = Vec.add(
+                                this.position,
+                                Vec.scale(Vec.rotate(weaponDef.offset, this.rotation), this.sizeMod)
+                            );
+                            const hitbox = new CircleHitbox(weaponDef.radius * this.sizeMod, position);
+                            const targets: MeleeObject[] = [];
 
-                        targets.push(object);
+                            hitCount++;
+                            for (const object of Game.objects) {
+                                if (
+                                    (object.dead && !(object.isBuilding && object.definition.hasDamagedCeiling))
+                                    || object === this
+                                    || !(object.isPlayer || object.isObstacle || object.isBuilding || object.isProjectile)
+                                    || !object.damageable
+                                    || (object.isObstacle && (object.definition.isStair || object.definition.noMeleeCollision))
+                                    || !adjacentOrEquivLayer(object, this.layer)
+                                    || !object.hitbox?.collidesWith(hitbox)
+                                ) continue;
+
+                                targets.push(object);
+                            }
+
+                            targets.sort((a, b) => {
+                                if (Game.isTeamMode && a.isPlayer && a.teamID === this.teamID) return Infinity;
+                                if (Game.isTeamMode && b.isPlayer && b.teamID === this.teamID) return -Infinity;
+
+                                return (a.hitbox?.distanceTo(this.hitbox).distance ?? 0) - (b.hitbox?.distanceTo(this.hitbox).distance ?? 0);
+                            });
+
+                            const angleToPos = Angle.betweenPoints(this.position, position);
+                            const numTargets = Numeric.min(targets.length, weaponDef.maxTargets ?? 1);
+                            for (let i = 0; i < numTargets; i++) {
+                                const target = targets[i];
+
+                                if (target.isPlayer) {
+                                    let sound = (this.activeItem as MeleeDefinition).hitSound;
+                                    if (sound && weaponDef.numberOfHits !== undefined && weaponDef.numberOfHits > 1) {
+                                        sound += `_${hitCount}`;
+                                    }
+                                    target.hitEffect(position, angleToPos, sound);
+                                } else {
+                                    target.hitEffect(position, angleToPos);
+                                }
+                            }
+                        }, (i === 0 ? 0 : (weaponDef.delayBetweenHits ?? 0)));
                     }
-
-                    targets.sort((a, b) => {
-                        if (Game.isTeamMode && a.isPlayer && a.teamID === this.teamID) return Infinity;
-                        if (Game.isTeamMode && b.isPlayer && b.teamID === this.teamID) return -Infinity;
-
-                        return (a.hitbox?.distanceTo(this.hitbox).distance ?? 0) - (b.hitbox?.distanceTo(this.hitbox).distance ?? 0);
-                    });
-
-                    const angleToPos = Angle.betweenPoints(this.position, position);
-                    const numTargets = Numeric.min(targets.length, weaponDef.maxTargets ?? 1);
-                    for (let i = 0; i < numTargets; i++) {
-                        const target = targets[i];
-
-                        if (target.isPlayer) {
-                            target.hitEffect(position, angleToPos, (this.activeItem as MeleeDefinition).hitSound);
-                        } else {
-                            target.hitEffect(position, angleToPos);
-                        }
-                    }
-                }, weaponDef.hitDelay ?? 50);
-
+                }, hitDelay);
                 break;
             }
             case AnimationType.Downed: {
