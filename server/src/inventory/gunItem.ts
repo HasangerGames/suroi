@@ -216,8 +216,10 @@ export class GunItem extends InventoryItemBase.derive(DefinitionType.Gun) {
                         )
                     ) {
                         modifiers.damage *= perk.damageMod;
+                        owner.reloadMod = perk.reloadMod;
                         modifyForDamageMod(perk.damageMod);
                     }
+                    else owner.reloadMod = 1;
                     break;
                 }
                 case PerkIds.Toploaded: {

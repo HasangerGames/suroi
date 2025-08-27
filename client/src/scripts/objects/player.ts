@@ -180,6 +180,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
     sizeMod = 1;
 
+    reloadMod = 1;
+
     constructor(id: number, data: ObjectsNetData[ObjectCategory.Player]) {
         super(id);
 
@@ -548,6 +550,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     invulnerable,
                     activeItem,
                     sizeMod,
+                    reloadMod,
                     skin,
                     helmet,
                     vest,
@@ -724,6 +727,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     }
                 });
             }
+
+            if (reloadMod !== undefined && this.reloadMod !== reloadMod) this.reloadMod = reloadMod;
 
             const { hideEquipment, helmetLevel, vestLevel, backpackLevel } = this;
 
@@ -928,7 +933,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     if (this.isActivePlayer) {
                         UIManager.animateAction(
                             getTranslatedString("action_reloading"),
-                            (reloadFullClip ? weaponDef.fullReloadTime : weaponDef.reloadTime) / (PerkManager.mapOrDefault(PerkIds.CombatExpert, ({ reloadMod }) => reloadMod, 1))
+                            (reloadFullClip ? weaponDef.fullReloadTime : weaponDef.reloadTime) / (this.reloadMod === 0 ? 1 : this.reloadMod)
                         );
                     }
 
@@ -961,10 +966,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             }
 
             if (actionSoundName) {
-                let speed = 1;
-                if (PerkManager.has(PerkIds.CombatExpert) && action.type === PlayerActions.Reload) {
-                    speed = PerkData[PerkIds.CombatExpert].reloadMod;
-                } else if (PerkManager.has(PerkIds.FieldMedic) && actionSoundName === action.item?.idString) {
+                let speed = action.type === PlayerActions.Reload ? this.reloadMod : 1;
+                if (PerkManager.has(PerkIds.FieldMedic) && actionSoundName === action.item?.idString) {
                     speed = PerkData[PerkIds.FieldMedic].usageMod;
                 }
                 this.actionSound = this.playSound(

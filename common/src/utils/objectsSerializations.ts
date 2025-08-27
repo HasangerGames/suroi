@@ -50,6 +50,7 @@ export interface ObjectsNetData extends BaseObjectsNetData {
             readonly invulnerable: boolean
             readonly activeItem: WeaponDefinition
             readonly sizeMod?: number
+            readonly reloadMod?: number
             readonly skin: SkinDefinition
             readonly helmet?: ArmorDefinition
             readonly vest?: ArmorDefinition
@@ -244,6 +245,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 invulnerable,
                 activeItem,
                 sizeMod,
+                reloadMod,
                 skin,
                 helmet,
                 vest,
@@ -258,6 +260,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
         ): void {
             stream.writeLayer(layer);
             const hasSizeMod = sizeMod !== undefined;
+            const hasReloadMod = reloadMod !== undefined;
             const hasHelmet = helmet !== undefined;
             const hasVest = vest !== undefined;
             const hasDisguise = activeDisguise !== undefined;
@@ -269,6 +272,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 beingRevived,
                 invulnerable,
                 hasSizeMod,
+                hasReloadMod,
                 halloweenThrowableSkin,
                 hasHelmet,
                 hasVest,
@@ -283,6 +287,10 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
 
             if (hasSizeMod) {
                 stream.writeFloat(sizeMod, 0, 4, 1);
+            }
+
+            if (hasReloadMod) {
+                stream.writeFloat(reloadMod, 0, 4, 1);
             }
 
             Skins.writeToStream(stream, skin);
@@ -330,6 +338,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 beingRevived,
                 invulnerable,
                 hasSizeMod,
+                hasReloadMod,
                 halloweenThrowableSkin,
                 hasHelmet,
                 hasVest,
@@ -350,6 +359,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 teamID: stream.readUint8(),
                 activeItem: Loots.readFromStream(stream),
                 sizeMod: hasSizeMod ? stream.readFloat(0, 4, 1) : undefined,
+                reloadMod: hasReloadMod ? stream.readFloat(0, 4, 1) : undefined,
                 skin: Skins.readFromStream(stream),
                 helmet: hasHelmet ? Armors.readFromStream(stream) : undefined,
                 vest: hasVest ? Armors.readFromStream(stream) : undefined,

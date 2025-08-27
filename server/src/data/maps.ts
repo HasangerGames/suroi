@@ -1089,6 +1089,7 @@ const maps = {
                         || (item.defType === DefinitionType.Perk && item.category === PerkCategories.Halloween)
                         || item.defType === DefinitionType.Skin
                         || item.devItem
+                        || ((item.defType === DefinitionType.Armor || item.defType === DefinitionType.Backpack) && item.perk)
                     ) continue;
 
                     game.addLoot(item, itemPos, 0, { count: countMap[item.defType] ?? 1, pushVel: 0, jitterSpawn: false });

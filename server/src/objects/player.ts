@@ -276,6 +276,16 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         this.setDirty();
     }
 
+    private _reloadMod = 1;
+    get reloadMod(): number { return this._reloadMod; }
+    set reloadMod(reload: number) {
+        if (this._reloadMod === reload) return;
+
+        this._reloadMod = reload;
+        this.dirty.reload = true;
+        this.setDirty();
+    }
+
     private _modifiers = GameConstants.player.defaultModifiers();
 
     killedBy?: Player;
@@ -350,6 +360,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         adrenaline: true,
         shield: true,
         size: true,
+        reload: true,
         weapons: true,
         slotLocks: true,
         items: true,
@@ -2444,6 +2455,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             newModifiers.maxHealth *= modifiers.maxHealth;
             newModifiers.baseSpeed *= modifiers.baseSpeed;
             newModifiers.size *= modifiers.size;
+            newModifiers.reload *= modifiers.reload;
             newModifiers.adrenDrain *= modifiers.adrenDrain;
 
             newModifiers.minAdrenaline += modifiers.minAdrenaline;
@@ -2514,6 +2526,11 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                     }, perk.achieveTime); */
                     break;
                 }
+                case PerkIds.CombatExpert: {
+                    newModifiers.reload *= perk.reloadMod;
+                    break;
+                }
+
             }
         }
         // ! evil ends here
@@ -2553,7 +2570,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             maxAdrenaline,
             minAdrenaline,
             maxShield,
-            size
+            size,
+            reload
         } = this._modifiers = this._calculateModifiers();
 
         this.maxHealth = GameConstants.player.defaultHealth * maxHealth;
@@ -2561,6 +2579,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         this.maxShield = GameConstants.player.maxShield * maxShield;
         this.minAdrenaline = minAdrenaline;
         this.sizeMod = size;
+        this.reloadMod = reload;
     }
 
     updateBackEquippedMelee(): void {
@@ -3188,6 +3207,10 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
         if (this.dirty.size) {
             data.full.sizeMod = this._sizeMod;
+        }
+
+        if (this.dirty.reload) {
+            data.full.reloadMod = this._reloadMod;
         }
 
         if (this._animation.dirty) {
