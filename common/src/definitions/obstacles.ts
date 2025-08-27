@@ -2482,8 +2482,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     hqWall(4, RectangleHitbox.fromRect(16, 2.1)),
     hqWall(5, RectangleHitbox.fromRect(11.2, 2)),
     hqWall(6, RectangleHitbox.fromRect(39.2, 2)),
-    hqWall(7, RectangleHitbox.fromRect(3.2, 1.6), true),
-    hqWall(8, RectangleHitbox.fromRect(3.5, 1.6), true),
+    hqWall(7, RectangleHitbox.fromRect(3.7, 1.6), true),
+    hqWall(8, RectangleHitbox.fromRect(4.35, 1.6), true),
     hqWall(9, RectangleHitbox.fromRect(21, 2.1)),
 
     // cabin walls
@@ -3969,11 +3969,6 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         material: "wood",
         health: 100,
         noResidue: true,
-        scale: {
-            spawnMin: 1,
-            spawnMax: 1,
-            destroy: 0.9
-        },
         hideOnMap: true,
         hitbox: RectangleHitbox.fromRect(19.2, 1.7, Vec(0, -1.15)),
         rotationMode: RotationMode.Limited,
