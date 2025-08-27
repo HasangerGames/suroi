@@ -6745,6 +6745,11 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             RectangleHitbox.fromRect(85.5, 56, Vec(-11, -11.9)),
             RectangleHitbox.fromRect(64, 24, Vec(-23, 29.5))
         ),
+        ceilingImages: [{
+            key: "barn_ceiling",
+            position: Vec(-11, -0.5),
+            scale: Vec(2.12, 2.12)
+        }],
         hasSecondFloor: true,
         floorImages: [
             {
@@ -7518,6 +7523,16 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             {
                 key: "lodge_second_floor_bottom",
                 position: Vec(0, 29.9)
+            },
+            {
+                key: "lodge_ceiling_top",
+                position: Vec(0, -35),
+                scale: Vec(2, 2)
+            },
+            {
+                key: "lodge_ceiling_bottom",
+                position: Vec(0, 16.85),
+                scale: Vec(2, 2)
             }
         ],
         subBuildings: IS_CLIENT ? undefined : [
