@@ -137,8 +137,8 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { item: "smoke_grenade", weight: 1, count: 2 }
         ],
         grenade_crate: {
-            min: 3,
-            max: 4,
+            min: 1,
+            max: 3,
             loot: [
                 { table: "throwables", weight: 1 }
             ]
