@@ -286,9 +286,20 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
 
             if (source instanceof BaseGameObject && source.isPlayer && source.hasPerk(PerkIds.LootBaron) && this.definition.hasLoot) {
                 const perkBonus = PerkData[PerkIds.LootBaron].lootBonus;
-                const lootTable = getLootFromTable(this.game.modeName, definition.lootTable ?? definition.idString);
 
                 for (let i = 0; i < perkBonus; i++) {
+                    let lootTable = getLootFromTable(this.game.modeName, definition.lootTable ?? definition.idString),
+                        isDuplicated = JSON.stringify(lootTable) === JSON.stringify(this.loot),
+                        loopCount = 0;
+
+                    while (isDuplicated && loopCount < 100) {
+                        lootTable = getLootFromTable(this.game.modeName, definition.lootTable ?? definition.idString);
+                        isDuplicated = JSON.stringify(lootTable) === JSON.stringify(this.loot);
+                        loopCount++;
+                    }
+
+                    if (isDuplicated) break;
+
                     for (const item of lootTable) {
                         this.game.addLoot(
                             item.idString,
