@@ -14713,7 +14713,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "pebble", position: Vec(-22, 48.96), rotation: 0, variation: 1 },
             { idString: "pebble", position: Vec(4.28, 50.2), rotation: 0, variation: 1 },
             { idString: "pebble", position: Vec(50.01, 50.06), rotation: 3, variation: 1 },
-            { idString: "pebble", position: Vec(105.4, 29.7), rotation: 1, variation: 1 }
+            { idString: "pebble", position: Vec(105.4, 29.7), rotation: 1, variation: 1 },
+            { idString: "pebble", position: Vec(-73.02, 49.91), rotation: 1, variation: 1 }
         ],
         subBuildings: [
             { idString: "train", position: Vec(-3.52, 26.91) },
