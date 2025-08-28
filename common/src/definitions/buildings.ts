@@ -14217,5 +14217,203 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     },
     hollowLog(1, "damaged"),
     hollowLog(2, "extended"),
-    hollowLog(3, "moldy")
+    hollowLog(3, "moldy"),
+
+    {
+        idString: "decayed_bridge_storage",
+        name: "Decayed Bridge Storage",
+        defType: DefinitionType.Building,
+        spawnHitbox: RectangleHitbox.fromRect(48, 39.04, Vec(4.2, 0.3)),
+        material: "stone",
+        particleVariations: 2,
+        hitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(33.85, 2.01, Vec(0, -16.2)),
+            RectangleHitbox.fromRect(2.01, 20.14, Vec(-15.93, 6.54)),
+            RectangleHitbox.fromRect(18.14, 2, Vec(-7.87, 16.18))
+        ),
+        floorImages: [{
+            key: "decayed_bridge_storage_floor",
+            position: Vec(0, 0)
+        }],
+        floors: [{
+            type: FloorNames.Stone,
+            hitbox: RectangleHitbox.fromRect(33.86, 34.39, Vec(-0.02, -0.02))
+        }],
+        obstacles: [
+            { idString: "lansirama_crate", position: Vec(-9.45, 9.95), outdoors: true },
+            { idString: "barrel", position: Vec(-10.29, 1.01), outdoors: true },
+            { idString: "trash_bag", position: Vec(-1.15, -11.8), rotation: 0, outdoors: true },
+            { idString: "trash_bag", position: Vec(5.49, -11.5), outdoors: true },
+            { idString: "grenade_crate", position: Vec(21.61, -5), outdoors: true },
+            { idString: "large_logs_pile_2", position: Vec(22.8, 7.98), rotation: 1, variation: 1, outdoors: true }
+        ]
+    },
+    {
+        idString: "decayed_bridge_lmr_office",
+        name: "Decayed Bridge LMR Office",
+        defType: DefinitionType.Building,
+        spawnHitbox: RectangleHitbox.fromRect(59.15, 58.04, Vec(-3.4, -2.84)),
+        material: "stone",
+        hitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(18.14, 2, Vec(-14.19, -22.6)),
+            RectangleHitbox.fromRect(2, 33.42, Vec(-22.24, 6.86)),
+            RectangleHitbox.fromRect(17.21, 2, Vec(14.59, 22.56)),
+            RectangleHitbox.fromRect(2.01, 17.21, Vec(22.19, -15)),
+            RectangleHitbox.fromRect(2.01, 17.09, Vec(22.19, 14.89))
+        ),
+        floorImages: [{
+            key: "decayed_bridge_lmr_office_floor",
+            position: Vec(0, 0)
+        }],
+        floors: [{
+            type: FloorNames.Wood,
+            hitbox: RectangleHitbox.fromRect(46.5, 47.17, Vec(0.07, -0.02))
+        }],
+        obstacles: [
+            { idString: "box", position: Vec(18.15, 18.55), outdoors: true },
+            { idString: "trash_can", position: Vec(17.7, 12.98), outdoors: true },
+            { idString: "regular_crate", position: Vec(-15.82, -0.97), outdoors: true },
+            { idString: "regular_crate", position: Vec(-13.11, 8.95), outdoors: true },
+            { idString: "chair", position: Vec(4.88, 3.07), rotation: 1, outdoors: true },
+            { idString: "smaller_sandbags", position: Vec(-27.41, -22.43), rotation: 0, outdoors: true },
+            { idString: { box: 1, grenade_box: 0.35 }, position: Vec(-26.27, -1.1), outdoors: true },
+            { idString: "box", position: Vec(-12.63, -27.8), outdoors: true },
+            { idString: "box", position: Vec(-7.31, -26.35), outdoors: true },
+            { idString: "small_logs_pile_2", position: Vec(-27.9, 6.16), rotation: 1, outdoors: true }
+        ]
+    },
+    {
+        idString: "decayed_bridge",
+        name: "Decayed Bridge",
+        defType: DefinitionType.Building,
+        spawnMode: MapObjectSpawnMode.Beach,
+        spawnOrientation: 3,
+        spawnOffset: { min: Vec(35, 0), max: Vec(45, 0) },
+        spawnHitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(151.74, 63.34, Vec(-1.05, 42.25)),
+            RectangleHitbox.fromRect(63.94, 92.71, Vec(-7.49, -26.07))
+        ),
+        floorImages: [{
+            key: "decayed_bridge_floor",
+            position: Vec(-6.49, 0.07)
+        }],
+        floors: [
+            {
+                type: FloorNames.Metal,
+                hitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(3.14, 31.6, Vec(-0.06, 46.13)),
+                    RectangleHitbox.fromRect(3.16, 91.8, Vec(-14.1, -21.26)),
+                    RectangleHitbox.fromRect(3.14, 78.87, Vec(-0.04, -14.83))
+                )
+            },
+            {
+                type: FloorNames.Metal,
+                hitbox: new PolygonHitbox([
+                    Vec(-10.15, 64.7),
+                    Vec(-17.31, 34.1),
+                    Vec(-14.35, 33.4),
+                    Vec(-7.25, 64)
+                ])
+            },
+            {
+                type: FloorNames.Log,
+                hitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(21.62, 4.66, Vec(-5.36, 54.24)),
+                    RectangleHitbox.fromRect(21.63, 4.66, Vec(-6.98, -54.26)),
+                    RectangleHitbox.fromRect(21.65, 4.66, Vec(-6.97, 6.92)),
+                    RectangleHitbox.fromRect(21.65, 4.66, Vec(-7.08, -14.23)),
+                    RectangleHitbox.fromRect(21.65, 4.66, Vec(-7.05, -23.52)),
+                    RectangleHitbox.fromRect(21.65, 4.66, Vec(-7.02, -44.99)),
+                    RectangleHitbox.fromRect(21.62, 4.66, Vec(-7.03, 16.22))
+                )
+            },
+            {
+                type: FloorNames.Log,
+                hitbox: new PolygonHitbox([
+                    Vec(2.66, -9.43),
+                    Vec(-18.18, -3.88),
+                    Vec(-16.91, 0.37),
+                    Vec(3.78, -5.06)
+                ])
+            },
+            {
+                type: FloorNames.Log,
+                hitbox: new PolygonHitbox([
+                    Vec(2.59, -70.14),
+                    Vec(-18.16, -64.58),
+                    Vec(-17.04, -60.25),
+                    Vec(3.84, -65.75)
+                ])
+            },
+            {
+                type: FloorNames.Log,
+                hitbox: new PolygonHitbox([
+                    Vec(3.66, -33.74),
+                    Vec(-17.06, -39.27),
+                    Vec(-18.25, -34.89),
+                    Vec(2.47, -29.38)
+                ])
+            },
+            {
+                type: FloorNames.Log,
+                hitbox: new PolygonHitbox([
+                    Vec(2.58, 33.82),
+                    Vec(-18.24, 39.33),
+                    Vec(-17.04, 43.75),
+                    Vec(3.73, 38.16)
+                ])
+            },
+            {
+                type: FloorNames.Stone,
+                hitbox: new PolygonHitbox([
+                    Vec(-14.5, 4.58),
+                    Vec(-21.74, 3.29),
+                    Vec(-21.73, 68.2),
+                    Vec(-17.2, 69.98),
+                    Vec(-7.9, 69.58),
+                    Vec(1.8, 70.08),
+                    Vec(7.7, 68.68),
+                    Vec(7.7, 3.58),
+                    Vec(-2.3, 1.38)
+                ])
+            },
+            {
+                type: FloorNames.Sand,
+                hitbox: new PolygonHitbox([
+                    Vec(-28.63, -55.13),
+                    Vec(-29.6, 1.35),
+                    Vec(-14.94, 4.93),
+                    Vec(-2.42, 1.56),
+                    Vec(8.78, 3.98),
+                    Vec(16.78, 0.98),
+                    Vec(17.78, -57.02),
+                    Vec(13.78, -56.02),
+                    Vec(9.31, -57.61),
+                    Vec(4.31, -53.74),
+                    Vec(0.92, -58.9),
+                    Vec(-7.35, -54),
+                    Vec(-17.63, -59.86)
+                ])
+            }
+        ],
+        obstacles: [
+            { idString: "decayed_bridge_wall", position: Vec(-28.72, -28.24), rotation: 0, outdoors: true },
+            { idString: "decayed_bridge_wall", position: Vec(16.05, -28.24), rotation: 0, outdoors: true },
+            { idString: "smaller_sandbags", position: Vec(-20.62, -28.26), rotation: 0, outdoors: true },
+            { idString: "smaller_sandbags", position: Vec(-21.79, -20.97), rotation: 1, outdoors: true },
+            { idString: "gun_case", position: Vec(-21.58, -37.06), rotation: 1, outdoors: true },
+            { idString: "box", position: Vec(8.42, -40.89), outdoors: true },
+            { idString: "box", position: Vec(9.59, -35.72), outdoors: true },
+            { idString: "barrel", position: Vec(8.08, -5.18), outdoors: true },
+            { idString: "pebble", position: Vec(-24.84, 25.18), rotation: 1, variation: 2 },
+            { idString: "pebble", position: Vec(11.24, 69.12), rotation: 3, variation: 2 },
+            { idString: "pebble", position: Vec(-25.71, 60.87), rotation: 0, variation: 1 },
+            { idString: "pebble", position: Vec(10.89, 51.04), rotation: 2, variation: 1 },
+            { idString: "pebble", position: Vec(10.82, 35.06), rotation: 3, variation: 1 }
+        ],
+        subBuildings: [
+            { idString: "decayed_bridge_storage", position: Vec(-53.35, 35.78) },
+            { idString: "decayed_bridge_lmr_office", position: Vec(46.89, 44.19) }
+        ]
+    }
 ]);

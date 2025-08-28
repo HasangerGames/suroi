@@ -744,7 +744,7 @@ const maps = {
     hunted: {
         width: 1924,
         height: 1924,
-        oceanSize: 66,
+        oceanSize: 128,
         beachSize: 32,
         rivers: {
             minAmount: 1,
@@ -768,6 +768,7 @@ const maps = {
         ],
         buildings: {
             small_bridge: Infinity,
+            decayed_bridge: 3,
             docks: 8,
             outhouse: 8,
             cabin: 6,
@@ -790,7 +791,8 @@ const maps = {
             cabin: 3,
             hollow_log_1: 3,
             hollow_log_2: 3,
-            hollow_log_3: 3
+            hollow_log_3: 3,
+            decayed_bridge: 1
         },
         obstacles: {
             stump: 80,

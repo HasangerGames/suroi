@@ -318,7 +318,7 @@
         hitboxes = hitboxes;
         selected = hitboxes[0];
     }
-    const bgImage = loadImage("/img/game/hunted/obstacles/pickup_truck.svg");
+    const bgImage = loadImage("/img/game/hunted/buildings/decayed_bridge_storage.svg");
 
     function handleKeydown(e: KeyboardEvent) {
         let moved = false;

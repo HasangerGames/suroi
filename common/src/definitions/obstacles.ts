@@ -441,7 +441,11 @@ export const TintedParticles: Record<string, { readonly base: string, readonly t
     carport_particle_2: { base: "stone_particle_2", tint: 0xafafaf },
     pickup_truck_particle: { base: "metal_particle_1", tint: 0x733226 },
     hollow_log_wall_particle_1: { base: "stone_particle_1", tint: 0x432f20 },
-    hollow_log_wall_particle_2: { base: "stone_particle_2", tint: 0x432f20 }
+    hollow_log_wall_particle_2: { base: "stone_particle_2", tint: 0x432f20 },
+    decayed_bridge_storage_particle_1: { base: "stone_particle_1", tint: 0x808080 },
+    decayed_bridge_storage_particle_2: { base: "stone_particle_2", tint: 0x808080 },
+    decayed_bridge_wall_particle: { base: "metal_particle_1", tint: 0x5d3323 },
+    decayed_bridge_lmr_office_particle: { base: "wood_particle", tint: 0x523b25 }
 };
 
 const houseWall = (
@@ -7019,6 +7023,18 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         isWall: true,
         noResidue: true,
         hitbox: RectangleHitbox.fromRect(1.7, 19.66),
+        rotationMode: RotationMode.Limited
+    },
+    {
+        idString: "decayed_bridge_wall",
+        name: "Decayed Bridge Wall",
+        defType: DefinitionType.Obstacle,
+        material: "metal_heavy",
+        hitbox: RectangleHitbox.fromRect(6.98, 68.94, Vec(-0.01, 0.78)),
+        reflectBullets: true,
+        health: 100,
+        indestructible: true,
+        isWall: true,
         rotationMode: RotationMode.Limited
     }
 ] satisfies readonly RawObstacleDefinition[] as readonly RawObstacleDefinition[]).flatMap((def: Mutable<RawObstacleDefinition>) => {
