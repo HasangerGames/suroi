@@ -775,6 +775,7 @@ const maps = {
             carport: 4,
             hunting_stand: 12,
             warehouse_hunted: 5,
+            train_station: 2,
             fox_bunker: 1,
             moose_bunker: 1,
             bear_bunker: 1,
@@ -792,7 +793,8 @@ const maps = {
             hollow_log_1: 3,
             hollow_log_2: 3,
             hollow_log_3: 3,
-            decayed_bridge: 1
+            decayed_bridge: 1,
+            train_station: 1
         },
         obstacles: {
             stump: 80,

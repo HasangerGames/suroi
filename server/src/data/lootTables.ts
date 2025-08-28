@@ -1011,7 +1011,14 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
                 { item: "carpenter_uniform", weight: 1 }
             ]
         },
-        small_logs_pile_hs: [{ item: "hand_saw", weight: 1 }]
+        small_logs_pile_hs: [{ item: "hand_saw", weight: 1 }],
+        hollow_log: [
+            { table: "healing_items", weight: 1 },
+            { table: "ammo", weight: 1 },
+            { table: "equipment", weight: 1 },
+            { table: "scopes", weight: 0.5 },
+            { table: "hunted_skins", weight: 0.25 }
+        ]
     },
 
     halloween: {

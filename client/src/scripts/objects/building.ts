@@ -242,7 +242,7 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
                 maxRange: sounds.maxRange,
                 dynamic: true,
                 ambient: true,
-                loop: true
+                loop: sounds.loop ?? true
             };
 
             if (

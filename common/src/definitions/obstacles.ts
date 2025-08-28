@@ -445,7 +445,8 @@ export const TintedParticles: Record<string, { readonly base: string, readonly t
     decayed_bridge_storage_particle_1: { base: "stone_particle_1", tint: 0x808080 },
     decayed_bridge_storage_particle_2: { base: "stone_particle_2", tint: 0x808080 },
     decayed_bridge_wall_particle: { base: "metal_particle_1", tint: 0x5d3323 },
-    decayed_bridge_lmr_office_particle: { base: "wood_particle", tint: 0x523b25 }
+    decayed_bridge_lmr_office_particle: { base: "wood_particle", tint: 0x523b25 },
+    train_engine_collider_particle: { base: "metal_particle_1", tint: 0x971919 }
 };
 
 const houseWall = (
@@ -7036,6 +7037,21 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         indestructible: true,
         isWall: true,
         rotationMode: RotationMode.Limited
+    },
+    {
+        idString: "train_engine_collider",
+        name: "Train Engine Collider",
+        defType: DefinitionType.Obstacle,
+        material: "metal_heavy",
+        health: 100,
+        reflectBullets: true,
+        rotationMode: RotationMode.Limited,
+        indestructible: true,
+        invisible: true,
+        hitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(55.1, 16.05, Vec(-21.03, -0.07)),
+            RectangleHitbox.fromRect(13.59, 16.22, Vec(40.8, -0.18))
+        )
     }
 ] satisfies readonly RawObstacleDefinition[] as readonly RawObstacleDefinition[]).flatMap((def: Mutable<RawObstacleDefinition>) => {
     if (def.variations !== undefined) (def as Mutable<ObstacleDefinition>).variationBits = Math.ceil(Math.log2(def.variations));
