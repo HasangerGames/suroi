@@ -7075,6 +7075,22 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
             RectangleHitbox.fromRect(55.1, 16.05, Vec(-21.03, -0.07)),
             RectangleHitbox.fromRect(13.59, 16.22, Vec(40.8, -0.18))
         )
+    },
+    {
+        ...controlPanel("control_panel_train", "Control Panel (Supreme TRAIN Edition)"),
+        isActivatable: true,
+        sound: {
+            names: ["button_press", "train_horn"],
+            falloff: 1,
+            maxRange: 300
+        },
+        frames: {
+            base: "control_panel",
+            activated: "control_panel_activated",
+            particle: "metal_particle",
+            residue: "barrel_residue"
+        },
+        interactObstacleIdString: "control_panel"
     }
 ] satisfies readonly RawObstacleDefinition[] as readonly RawObstacleDefinition[]).flatMap((def: Mutable<RawObstacleDefinition>) => {
     if (def.variations !== undefined) (def as Mutable<ObstacleDefinition>).variationBits = Math.ceil(Math.log2(def.variations));

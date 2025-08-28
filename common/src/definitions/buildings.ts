@@ -138,7 +138,6 @@ export interface BuildingDefinition extends ObjectDefinition {
         readonly position?: Vector
         readonly maxRange: number
         readonly falloff: number
-        readonly loop?: boolean
     }
 
     readonly floorImages?: readonly BuildingImageDefinition[]
@@ -14688,14 +14687,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             delay: 1000,
             unlockOnly: true
         },
-        sounds: {
-            solved: "train_horn",
-            loop: false,
-            maxRange: 300,
-            falloff: 1
-        },
         obstacles: [
-            { idString: "control_panel", position: Vec(26.08, 26.99), rotation: 3, puzzlePiece: true },
+            { idString: "control_panel_train", position: Vec(26.08, 26.99), rotation: 3, puzzlePiece: true },
             { idString: "powered_metal_door", position: Vec(2.25, -20.35), rotation: 1, locked: true },
             { idString: "regular_crate", position: Vec(-70.62, -35.48), outdoors: true },
             { idString: "regular_crate", position: Vec(63.26, -34.7), outdoors: true },
