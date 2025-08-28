@@ -14295,7 +14295,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         defType: DefinitionType.Building,
         spawnMode: MapObjectSpawnMode.Beach,
         spawnOrientation: 3,
-        spawnOffset: { min: Vec(35, 0), max: Vec(45, 0) },
+        spawnOffset: Vec(25, 0),
         spawnHitbox: new GroupHitbox(
             RectangleHitbox.fromRect(151.74, 63.34, Vec(-1.05, 42.25)),
             RectangleHitbox.fromRect(63.94, 92.71, Vec(-7.49, -26.07))
