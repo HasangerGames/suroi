@@ -13246,7 +13246,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "rare_wine_case", position: Vec(-0.73, -41.54), rotation: 0 },
             {
                 idString: {
-                    gun_mount_svu: 0.3,
+                    gun_mount_rpk16: 0.3,
                     gun_mount_an94: 0.2,
                     gun_mount_stoner_63: 0.5
                 },
