@@ -53,6 +53,7 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
         openAltHitbox?: Hitbox
         offset: number
         powered: boolean
+        openOnce: boolean
     };
 
     activated?: boolean;
@@ -147,7 +148,8 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
                 openHitbox: hitboxes.openHitbox,
                 openAltHitbox: (hitboxes as typeof hitboxes & { readonly openAltHitbox?: RectangleHitbox }).openAltHitbox,
                 offset: 0,
-                powered: false
+                powered: false,
+                openOnce: definition.openOnce ?? false
             };
 
             if (this.game.mode.unlockStage !== undefined && this.definition.unlockableWithStage && this.door.locked) {
@@ -513,7 +515,7 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
                             hitbox = this.door.openAltHitbox!.clone();
                         } else {
                             this.door.offset = 1;
-                            if (this.definition.requiresPower && !this.door.locked) {
+                            if (this.definition.requiresPower && !this.door.locked && this.door.openOnce) {
                                 this.door.offset = 3;
                                 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                                 hitbox = this.door.openAltHitbox!.clone();

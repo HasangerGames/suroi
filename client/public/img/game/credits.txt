@@ -374,6 +374,8 @@ Obstacles:
 
   Pumpkin: RedCoder09
 
+  Powered Metal Door: TjCj/sniperboi4
+
 Buildings:
   Red House: platonthek
   Green House: platonthek

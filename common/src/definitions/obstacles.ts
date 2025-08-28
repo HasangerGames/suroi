@@ -3101,7 +3101,6 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         doorSound: "metal_door",
         indestructible: true,
         collideWithLayers: Layers.Adjacent,
-        //  visibleFromLayers: Layers.All,
         health: 500,
         hitbox: RectangleHitbox.fromRect(10.46, 1.69, Vec(-0.25, 0)),
         rotationMode: RotationMode.Limited,
@@ -3109,9 +3108,32 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         animationDuration: 80,
         isDoor: true,
         hingeOffset: Vec(-5.5, 0),
-        //   zIndex: ZIndexes.ObstaclesLayer3,
         frames: {
             particle: "metal_particle"
+        }
+    },
+    {
+        idString: "powered_metal_door",
+        name: "Powered Metal Door",
+        defType: DefinitionType.Obstacle,
+        material: "metal_heavy",
+        reflectBullets: true,
+        doorSound: "metal_door",
+        requiresPower: true,
+        indestructible: true,
+        collideWithLayers: Layers.Adjacent,
+        health: 500,
+        hitbox: RectangleHitbox.fromRect(10.46, 1.69, Vec(-0.25, 0)),
+        rotationMode: RotationMode.Limited,
+        noResidue: true,
+        animationDuration: 80,
+        isDoor: true,
+        hingeOffset: Vec(-5.5, 0),
+        frames: {
+            particle: "metal_particle",
+            base: "metal_door_deactivated",
+            powered: "metal_door_activated",
+            opened: "metal_door_activated"
         }
     },
     {

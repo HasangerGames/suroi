@@ -455,6 +455,8 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
             // TODO opened, powered, and activated states can probably be combined in some way
             if (this.dead) {
                 texture = definition.frames?.residue ?? `${definition.idString}_residue`;
+            } else if (!this.door?.locked && this.powered && definition.frames?.opened && !(definition as { openOnce?: boolean }).openOnce) {
+                texture = definition.frames.opened;
             } else if (!this.door?.locked && !this.powered && this.door?.offset !== 0 && definition.frames?.opened) {
                 texture = definition.frames.opened;
             } else if (!this.door?.locked && !this.powered && definition.requiresPower && definition.frames?.powered) {

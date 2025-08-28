@@ -6056,7 +6056,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         ),
         spawnMode: MapObjectSpawnMode.Grass,
         puzzle: {
-            triggerOnSolve: "metal_door",
+            triggerOnSolve: "powered_metal_door",
             delay: 1000,
             unlockOnly: true
         },
@@ -6283,7 +6283,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "gun_case", position: Vec(-47.8, 3.2), rotation: 0 },
             { idString: "grey_office_chair", position: Vec(-47, 26), rotation: 0 },
             { idString: "grey_office_chair", position: Vec(-60, 18), rotation: 0 },
-            { idString: "metal_door", position: Vec(-64.25, -0.65), rotation: 0, locked: true },
+            { idString: "powered_metal_door", position: Vec(-64.25, -0.65), rotation: 0, locked: true },
             { idString: "headquarters_security_desk", position: Vec(-55.9, 33.25), rotation: 0, puzzlePiece: true },
             { idString: "gun_mount_mini14", position: Vec(-68, -27), lootSpawnOffset: Vec(5, 0.5), rotation: 1 },
             { idString: "gun_locker", position: Vec(-62.5, -13.5), lootSpawnOffset: Vec(0.5, 0), rotation: 0 },
@@ -10372,7 +10372,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             }
         ],
         puzzle: {
-            triggerOnSolve: "metal_door",
+            triggerOnSolve: "powered_metal_door",
             delay: 1000,
             unlockOnly: true
         },
@@ -10421,7 +10421,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "pipe", position: Vec(7.86, 29.77), rotation: 0, variation: 3 },
 
             // Vault
-            { idString: "metal_door", position: Vec(2.04, 2.12), rotation: 3, locked: true },
+            { idString: "powered_metal_door", position: Vec(2.04, 2.12), rotation: 3, locked: true },
             { idString: "gun_case", position: Vec(-18.99, -0.25), rotation: 0 },
             { idString: "box", position: Vec(-21.05, 12.46) },
             { idString: "barrel", position: Vec(-3.2, 11.67) },
@@ -14684,7 +14684,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             }
         ],
         puzzle: {
-            triggerOnSolve: "metal_door",
+            triggerOnSolve: "powered_metal_door",
             delay: 1000,
             unlockOnly: true
         },
@@ -14696,7 +14696,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         },
         obstacles: [
             { idString: "control_panel", position: Vec(26.08, 26.99), rotation: 3, puzzlePiece: true },
-            { idString: "metal_door", position: Vec(2.25, -20.35), rotation: 1, locked: true },
+            { idString: "powered_metal_door", position: Vec(2.25, -20.35), rotation: 1, locked: true },
             { idString: "regular_crate", position: Vec(-70.62, -35.48), outdoors: true },
             { idString: "regular_crate", position: Vec(63.26, -34.7), outdoors: true },
             { idString: "regular_crate", position: Vec(53.12, -32.66), outdoors: true },
