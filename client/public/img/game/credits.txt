@@ -327,6 +327,7 @@ Guns:
   M202-F
     Loot Image: Skullboi249
     World Image: Skullboi249
+    Killfeed: AnnihilatingFox
 
 Melees:
   Baseball Bat: Radians

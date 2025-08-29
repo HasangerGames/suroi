@@ -949,6 +949,9 @@ export class Game implements GameData {
 
         definition = Loots.reify<Def>(definition);
 
+        // no ephemeral shit
+        if (definition.defType === DefinitionType.Ammo && definition.ephemeral) return;
+
         if (
             this.pluginManager.emit(
                 "loot_will_generate",
