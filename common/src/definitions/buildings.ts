@@ -14431,6 +14431,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         ceilingHitbox: RectangleHitbox.fromRect(29.91, 27.54, Vec(20.2, -0.04)),
         material: "metal_heavy",
         particle: "metal_particle",
+        floorZIndex: ZIndexes.BuildingsFloor + 0.5, // otherwise it doesn't display on the map
         reflectBullets: true,
         hitbox: new GroupHitbox(
             RectangleHitbox.fromRect(66.61, 1, Vec(21.88, 14.18)),
