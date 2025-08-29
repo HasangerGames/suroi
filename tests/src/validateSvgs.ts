@@ -24,7 +24,7 @@ const MAX_SIZES: Record<string, number> = {
     player: 25_000,
     shared: 10_000, // theres only missing_texture there lol
     casings: 5_000,
-    trails: 5_000
+    trails: 6_000
 };
 
 const MAX_PATH_LENGTH = 100_000;

@@ -1861,8 +1861,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 }
 
                 if (weaponDef.backblast !== undefined) {
-                    const trail = weaponDef.ballistics.trail;
-                    const backblast = weaponDef.backblast;
+                    const trail = weaponDef.ballistics.trail,
+                        backblast = weaponDef.backblast;
 
                     if (trail && Date.now() - this._lastParticleTrail >= trail.interval) {
                         const offset = weaponDef.isDual
@@ -1885,13 +1885,13 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                                 position,
                                 lifetime: backblast.duration,
                                 zIndex: ZIndexes.Bullets - 1,
-                                scale: randomFloat(trail.scale.min, trail.scale.max),
+                                scale: randomFloat(backblast.scale.min, backblast.scale.max),
                                 alpha: {
                                     start: randomFloat(trail.alpha.min, trail.alpha.max),
                                     end: 0
                                 },
                                 layer: this.layer,
-                                tint: pickRandomInArray([0xd18100, 0xffb43b, 0xe8b048])
+                                tint: pickRandomInArray([0x8a8a8a, 0x3d3d3d, 0x858585])
                             })
                         );
 

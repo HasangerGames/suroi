@@ -67,10 +67,14 @@ Guns:
   RPK-16 (Fire, Reload, Switch) - modified by Teardrop, main sound is from Gamebanana
 
   M202-F (Fire) - "Usas 12 Sound effect" by Red_Army_Soviet from Pixabay: https://pixabay.com/users/red_army_soviet-46121007/
-  M202-F (Reload, Switch) - Combination of the following sounds:
+  M202-F (Switch) - "grappling gun" by akivavita from Pixabay: https://pixabay.com/users/akivavita-32661801/
+  M202-F (Reload) - Combination and edit of the following sounds:
       - "shotgun close" by CeebFrack (Freesound) from Pixabay: https://pixabay.com/users/freesound_community-46691455/
       - "22 Bolt" by freesound_community from Pixabay: https://pixabay.com/users/freesound_community-46691455/
       - "grappling gun" by akivavita from Pixabay: https://pixabay.com/users/akivavita-32661801/
+      - "Running Gear" by freesound_community from Pixabay: https://pixabay.com/users/freesound_community-46691455/
+      - "Spray" by freesound_community from Pixabay: https://pixabay.com/users/freesound_community-46691455/
+      - "Leather Stretching sound effect" by Cookie from Youtube: https://www.youtube.com/@Cookie_No
 
   Other gun sound effects - Surviv.io Custom Sounds & Textures Resource Pack: https://github.com/humphreygaming/survivcustomsoundsandtextures
 

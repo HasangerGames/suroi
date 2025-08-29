@@ -105,6 +105,10 @@ type BaseGunDefinition = InventoryItemDefinition & {
         readonly duration: number
         readonly min: number
         readonly max: number
+        readonly scale: {
+            readonly min: number
+            readonly max: number
+        }
     }
 
     readonly noMuzzleFlash?: boolean
@@ -2922,15 +2926,10 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
         ammoType: "plumpkin_ammo",
         ammoSpawnAmount: 0,
         capacity: 4,
-        reloadTime: 1.25,
-        shotsPerReload: 1,
+        reloadTime: 6.3,
         shootOnRelease: true,
         fireDelay: 850,
         switchDelay: 900,
-        cameraShake: {
-            duration: 150,
-            intensity: 12.5
-        },
         noMuzzleFlash: true,
         speedMultiplier: 0.495,
         recoilMultiplier: 0.01,
@@ -2941,13 +2940,6 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
         shotSpread: 0,
         moveSpread: 0,
         length: 7.35,
-        backblast: {
-            length: 7,
-            min: 9,
-            max: 12,
-            particlesAmount: 16,
-            duration: 350
-        },
         fists: {
             left: Vec(119, 28),
             right: Vec(65, 87),
@@ -2993,7 +2985,22 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
             },
             ignoreCoolerGraphics: true // we want smoke trail when it launches plumpkin
         },
-        noSwap: true
+        noSwap: true,
+        cameraShake: {
+            duration: 150,
+            intensity: 12.5
+        },
+        backblast: {
+            length: 7,
+            min: 9,
+            max: 12,
+            particlesAmount: 32,
+            duration: 800,
+            scale: {
+                min: 0.1,
+                max: 0.5
+            }
+        }
     },
     //
     // Dev weapons
