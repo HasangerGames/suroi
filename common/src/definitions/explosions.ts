@@ -699,5 +699,42 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>([
         },
         sound: "firework_rocket_explode",
         decal: "explosion_decal"
+    },
+    {
+        idString: "sm56_explosion",
+        name: "S.E.E.D.",
+        defType: DefinitionType.Explosion,
+        damage: 100,
+        obstacleMultiplier: 1.15,
+        radius: {
+            min: 10,
+            max: 25
+        },
+        cameraShake: {
+            duration: 200,
+            intensity: 30
+        },
+        animation: {
+            duration: 1000,
+            tint: 0x8a4c70,
+            scale: 1.5
+        },
+        shrapnelCount: 10,
+        ballistics: {
+            shrapnel: true,
+            damage: 15,
+            obstacleMultiplier: 1,
+            speed: 0.08,
+            range: 80,
+            rangeVariance: 1,
+            tracer: {
+                image: "seed_trail",
+                length: 1.4,
+                color: 0x8a4c70
+            },
+            onHitProjectile: "proj_seed_infected"
+        },
+        sound: "frag_grenade",
+        decal: "frag_explosion_decal"
     }
 ]);

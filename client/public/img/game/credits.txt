@@ -432,3 +432,8 @@ Perk Icons:
   Loot Baron: Skullboi249
 
 Saw Killfeed - AnnihilatingFox
+
+S.E.E.D.
+  - Loot: Skullboi249
+  - Projectile: Skullboi249
+  - Pin/Lever: Skullboi249

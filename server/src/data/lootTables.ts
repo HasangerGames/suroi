@@ -1715,6 +1715,11 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { item: "9mm", count: 60, weight: 1 },
             { item: "50cal", count: 20, weight: 0.05 }
         ],
+        throwables: [
+            { item: "frag_grenade", count: 2, weight: 1 },
+            { item: "smoke_grenade", count: 2, weight: 1 },
+            { item: "sm56", weight: 0.5 }
+        ],
         healing_items: [
             { item: "gauze", count: 5, weight: 3 },
             { item: "cola", weight: 2 },
@@ -1751,7 +1756,8 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
         rsh_case_dual: [{ item: "seedshot", weight: 1 }],
         hazel_crate: [
             [{ item: "m202", weight: 1 }],
-            [{ item: "diseased", weight: 1 }]
+            [{ item: "diseased", weight: 1 }],
+            [{ item: "sm56", count: 3, weight: 1 }]
         ]
     },
     hunted: {
