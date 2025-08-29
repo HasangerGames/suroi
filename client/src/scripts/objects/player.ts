@@ -1873,7 +1873,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                             this.position,
                             Vec.scale(Vec.rotate(Vec(-backblast.length, offset), this.rotation), this.sizeMod)
                         );
-                        
+
                         ParticleManager.spawnParticles(
                             backblast.particlesAmount,
                             () => ({
@@ -1894,7 +1894,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                                 tint: pickRandomInArray([0xd18100, 0xffb43b, 0xe8b048])
                             })
                         );
-                    
+
                         this._lastParticleTrail = Date.now();
                     }
                 }

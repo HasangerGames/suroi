@@ -699,5 +699,5 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>([
         },
         sound: "firework_rocket_explode",
         decal: "explosion_decal"
-    },
+    }
 ]);

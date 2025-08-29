@@ -379,7 +379,7 @@ export const Throwables = new InventoryItemDefinitions<ThrowableDefinition>([
             }
         }
     },
-     {
+    {
         idString: "proj_seed_infected",
         name: "Seed",
         defType: DefinitionType.Throwable,
