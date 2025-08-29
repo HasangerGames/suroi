@@ -1898,7 +1898,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         name: "HAZEL Crate",
         defType: DefinitionType.Obstacle,
         material: "crate",
-        health: 1700,
+        health: 100,
         scale: {
             spawnMin: 1,
             spawnMax: 1,

@@ -17,7 +17,7 @@ import { Angle, EaseFunctions, Geometry, Numeric } from "@common/utils/math";
 import { removeFrom, type Timeout } from "@common/utils/misc";
 import { DefinitionType, type ReferenceTo } from "@common/utils/objectDefinitions";
 import { type ObjectsNetData } from "@common/utils/objectsSerializations";
-import { random, randomBoolean, randomFloat, randomPointInsideCircle, randomRotation, randomSign, randomVector } from "@common/utils/random";
+import { pickRandomInArray, random, randomBoolean, randomFloat, randomPointInsideCircle, randomRotation, randomSign, randomVector } from "@common/utils/random";
 import { FloorNames, FloorTypes } from "@common/utils/terrain";
 import { Vec, type Vector } from "@common/utils/vector";
 import $ from "jquery";
@@ -108,6 +108,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
     bleedEffectInterval?: NodeJS.Timeout;
 
     private _skin: ReferenceTo<SkinDefinition> = "";
+
+    private _lastParticleTrail = Date.now();
 
     readonly images: {
         aimTrail?: Graphics
@@ -1852,6 +1854,49 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                             this.anims.rightFist = undefined;
                         }
                     });
+                }
+
+                if (weaponDef.cameraShake !== undefined) {
+                    CameraManager.shake(weaponDef.cameraShake.duration, weaponDef.cameraShake.intensity);
+                }
+
+                if (weaponDef.backblast !== undefined) {
+                    const trail = weaponDef.ballistics.trail;
+                    const backblast = weaponDef.backblast;
+
+                    if (trail && Date.now() - this._lastParticleTrail >= trail.interval) {
+                        const offset = weaponDef.isDual
+                            ? (isAltFire ? -1 : 1) * weaponDef.leftRightOffset
+                            : (weaponDef.bulletOffset ?? 0);
+
+                        const position = Vec.add(
+                            this.position,
+                            Vec.scale(Vec.rotate(Vec(-backblast.length, offset), this.rotation), this.sizeMod)
+                        );
+                        
+                        ParticleManager.spawnParticles(
+                            backblast.particlesAmount,
+                            () => ({
+                                frames: trail.frame,
+                                speed: Vec.fromPolar(
+                                    randomRotation(),
+                                    randomFloat(backblast.min, backblast.max)
+                                ),
+                                position,
+                                lifetime: backblast.duration,
+                                zIndex: ZIndexes.Bullets - 1,
+                                scale: randomFloat(trail.scale.min, trail.scale.max),
+                                alpha: {
+                                    start: randomFloat(trail.alpha.min, trail.alpha.max),
+                                    end: 0
+                                },
+                                layer: this.layer,
+                                tint: pickRandomInArray([0xd18100, 0xffb43b, 0xe8b048])
+                            })
+                        );
+                    
+                        this._lastParticleTrail = Date.now();
+                    }
                 }
 
                 this.spawnCasingParticles("fire", isAltFire);

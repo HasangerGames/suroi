@@ -324,6 +324,10 @@ Guns:
     World Image: Winter, Skullboi249
     Killfeed Image: Skullboi249
 
+  M202-F
+    Loot Image: Skullboi249
+    World Image: Skullboi249
+
 Melees:
   Baseball Bat: Radians
   HE-AP Sword: Radians

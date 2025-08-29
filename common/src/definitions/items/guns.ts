@@ -31,6 +31,7 @@ type BaseGunDefinition = InventoryItemDefinition & {
     readonly shotSpread: number
     readonly moveSpread: number
     readonly bulletOffset?: number
+    readonly bulletOffsets?: number[]
     readonly fsaReset?: number // first-shot-accuracy reset (ms)
     readonly jitterRadius?: number // Jitters the bullet position, mainly for shotguns
     readonly consistentPatterning?: boolean
@@ -92,6 +93,19 @@ type BaseGunDefinition = InventoryItemDefinition & {
         readonly zIndex?: number
     }
     readonly inventoryScale?: number
+
+    readonly cameraShake?: {
+        readonly duration: number
+        readonly intensity: number
+    }
+
+    readonly backblast?: {
+        readonly length: number
+        readonly particlesAmount: number
+        readonly duration: number
+        readonly min: number
+        readonly max: number
+    }
 
     readonly noMuzzleFlash?: boolean
     readonly ballistics: BaseBulletDefinition
@@ -2900,7 +2914,87 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
         },
         noSwap: true
     },
-
+    {
+        idString: "m202",
+        name: "M202-F",
+        defType: DefinitionType.Gun,
+        tier: Tier.S,
+        ammoType: "plumpkin_ammo",
+        ammoSpawnAmount: 0,
+        capacity: 4,
+        reloadTime: 1.25,
+        shotsPerReload: 1,
+        shootOnRelease: true,
+        fireDelay: 850,
+        switchDelay: 900,
+        cameraShake: {
+            duration: 150,
+            intensity: 12.5
+        },
+        noMuzzleFlash: true,
+        speedMultiplier: 0.495,
+        recoilMultiplier: 0.01,
+        recoilDuration: 0,
+        fireMode: FireMode.Auto,
+        bulletOffset: 3,
+        bulletOffsets: [2, 4, 2, 4],
+        shotSpread: 0,
+        moveSpread: 0,
+        length: 7.35,
+        backblast: {
+            length: 7,
+            min: 9,
+            max: 12,
+            particlesAmount: 16,
+            duration: 350
+        },
+        fists: {
+            left: Vec(119, 28),
+            right: Vec(65, 87),
+            animationDuration: 100
+        },
+        image: {
+            position: Vec(29.7, 53.5),
+            zIndex: 4
+        },
+        casingParticles: [{
+            position: Vec(0.5, 3),
+            ejectionDelay: 800
+        }],
+        gasParticles: {
+            spread: 360,
+            amount: 75,
+            minLife: 7500,
+            maxLife: 20000,
+            minSpeed: 3,
+            maxSpeed: 7,
+            minSize: 0.4,
+            maxSize: 0.6
+        },
+        ballistics: {
+            damage: 20,
+            obstacleMultiplier: 1,
+            speed: 0.15,
+            range: 120,
+            onHitExplosion: "m202_explosion",
+            explodeOnImpact: true,
+            tracer: {
+                image: "baby_plumpkin_trail"
+            },
+            trail: {
+                frame: "small_gas",
+                interval: 5,
+                amount: 3,
+                tint: 0x707070,
+                alpha: { min: 0.6, max: 0.85 },
+                scale: { min: 0.1, max: 0.2 },
+                spreadSpeed: { min: 1, max: 3 },
+                lifetime: { min: 1500, max: 3000 }
+            },
+            ignoreCoolerGraphics: true // we want smoke trail when it launches plumpkin
+        },
+        noSwap: true
+    },
     //
     // Dev weapons
     //
