@@ -7077,6 +7077,42 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         )
     },
     {
+        idString: "train_connector",
+        name: "Train Connector",
+        defType: DefinitionType.Obstacle,
+        material: "metal_heavy",
+        health: 100,
+        reflectBullets: true,
+        rotationMode: RotationMode.Limited,
+        indestructible: true,
+        zIndex: ZIndexes.BuildingsFloor - 0.15,
+        hitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(1.15, 2.8, Vec(1.05, -0.01)),
+            RectangleHitbox.fromRect(2.99, 1.98, Vec(-0.1, -0.04))
+        ),
+        frames: {
+            particle: "metal_particle"
+        }
+    },
+    {
+        idString: "train_barricade_line",
+        name: "barricade line because floor image zindex no work",
+        defType: DefinitionType.Obstacle,
+        rotationMode: RotationMode.Limited,
+        hitbox: new CircleHitbox(4),
+        noCollisions: true,
+        noHitEffect: true,
+        noMeleeCollision: true,
+        zIndex: ZIndexes.BuildingsFloor - 0.2,
+        noBulletCollision: true,
+        material: "ice",
+        health: 1,
+        indestructible: true,
+        frames: {
+            base: "train_barricade_line"
+        }
+    },
+    {
         ...controlPanel("control_panel_train", "Control Panel (Supreme TRAIN Edition)"),
         isActivatable: true,
         sound: {

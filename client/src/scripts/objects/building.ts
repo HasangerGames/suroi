@@ -429,6 +429,7 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
             definition: imageDef,
             isCeiling
         };
+
         this.images.set(imageDef, image);
 
         if (imageDef.beachTinted) {
@@ -445,10 +446,14 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
         const frame = this.dead
             ? imageDef.residue ?? imageDef.damaged ?? imageDef.key
             : imageDef.key;
+
         sprite
+            .setZIndex(imageDef.zIndex ?? ZIndexes.Ground)
             .setFrame(frame)
             .setVPos(toPixiCoords(imageDef.position))
             .setVisible(frame !== undefined && !(this.dead && imageDef.hideOnDead));
+
+        console.log(imageDef.zIndex ?? 0);
 
         if (imageDef.spinSpeed !== undefined ? isNewSprite : true) {
             sprite.setRotation(imageDef.rotation ?? 0);
@@ -459,8 +464,6 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
         }
 
         if (imageDef.alpha) sprite.setAlpha(imageDef.alpha);
-
-        sprite.setZIndex(imageDef.zIndex ?? 0);
 
         if (imageDef.scale) sprite.scale = (this.definition.resetCeilingResidueScale && this.dead) ? 1 : imageDef.scale;
 

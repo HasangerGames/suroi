@@ -14424,8 +14424,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         ]
     },
     {
-        idString: "train",
-        name: "Train",
+        idString: "regular_train",
+        name: "Regular Train",
         defType: DefinitionType.Building,
         spawnHitbox: RectangleHitbox.fromRect(118.72, 34.81, Vec(-0.16, 0.08)),
         ceilingHitbox: RectangleHitbox.fromRect(29.91, 27.54, Vec(20.2, -0.04)),
@@ -14451,26 +14451,21 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             new CircleHitbox(0.83, Vec(54.89, -0.75)),
             new CircleHitbox(0.83, Vec(54.89, 14.23)),
             new CircleHitbox(0.83, Vec(35.64, 14.18)),
-            new CircleHitbox(0.83, Vec(-24.89, 14.3)),
-            RectangleHitbox.fromRect(1.55, 1.98, Vec(-55.98, 8.83)),
-            RectangleHitbox.fromRect(1.55, 1.98, Vec(-56.1, -7.74)),
-            RectangleHitbox.fromRect(1.55, 1.98, Vec(-55.99, 0.1)),
-            RectangleHitbox.fromRect(1.14, 2.79, Vec(-56.84, 8.86)),
-            RectangleHitbox.fromRect(1.14, 2.8, Vec(-56.96, -7.73)),
-            RectangleHitbox.fromRect(1.14, 2.79, Vec(-56.81, 0.12)),
-            RectangleHitbox.fromRect(1.57, 1.98, Vec(55.85, 8.02)),
-            RectangleHitbox.fromRect(1.57, 1.98, Vec(55.88, -8.55)),
-            RectangleHitbox.fromRect(1.57, 1.98, Vec(55.89, -0.7)),
-            RectangleHitbox.fromRect(1.15, 2.8, Vec(56.82, 8.05)),
-            RectangleHitbox.fromRect(1.23, 2.81, Vec(56.9, -8.55)),
-            RectangleHitbox.fromRect(1.15, 2.81, Vec(56.79, -0.69))
+            new CircleHitbox(0.83, Vec(-24.89, 14.3))
         ),
-        floorImages: [{
-            key: "train_floor",
-            position: Vec(0, 0)
-        }],
+        floorImages: [
+            // {
+            //     key: "train_barricade_line",
+            //     position: Vec(55.09, -0.44),
+            //     scale: Vec(2, 2),
+            // },
+            {
+                key: "regular_train_floor",
+                position: Vec(-0.21, 0.01)
+            }
+        ],
         ceilingImages: [{
-            key: "train_ceiling",
+            key: "regular_train_ceiling",
             position: Vec(20.28, 0.11),
             scale: Vec(2.02, 2)
         }],
@@ -14492,6 +14487,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             }
         ],
         obstacles: [
+            { idString: "train_barricade_line", position: Vec(55.09, -0.44), rotation: 0, scale: 2 },
             { idString: "train_engine_collider", position: Vec(0, 0), rotation: 0 }, // mbhmbmbrtb uwu,,
             { idString: "gun_case", position: Vec(9.85, -0.07), rotation: 1 },
             { idString: "box", position: Vec(-28.61, -10.9), outdoors: true },
@@ -14499,7 +14495,13 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "box", position: Vec(51.42, 0.99), outdoors: true },
             { idString: "smaller_sandbags", position: Vec(-35.55, -11), rotation: 0, outdoors: true },
             { idString: "smaller_sandbags", position: Vec(-51.75, 1.69), rotation: 1, outdoors: true },
-            { idString: "smaller_sandbags", position: Vec(-29.37, 10.81), rotation: 0, outdoors: true }
+            { idString: "smaller_sandbags", position: Vec(-29.37, 10.81), rotation: 0, outdoors: true },
+            { idString: "train_connector", position: Vec(55.89, -8.52), rotation: 0 },
+            { idString: "train_connector", position: Vec(55.89, -0.71), rotation: 0 },
+            { idString: "train_connector", position: Vec(55.89, 8.12), rotation: 0 },
+            { idString: "train_connector", position: Vec(-55.87, 8.82), rotation: 2 },
+            { idString: "train_connector", position: Vec(-55.87, 0.07), rotation: 2 },
+            { idString: "train_connector", position: Vec(-55.95, -7.73), rotation: 2 }
         ]
     },
     {
@@ -14718,7 +14720,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "pebble", position: Vec(-73.02, 49.91), rotation: 1, variation: 1 }
         ],
         subBuildings: [
-            { idString: "train", position: Vec(-3.52, 26.91) },
+            { idString: "regular_train", position: Vec(-3.52, 26.91) },
             { idString: "train_station_office", position: Vec(-5.75, -26.5) },
             { idString: randomHollowLog, position: Vec(-75.76, 14.5), orientation: 2 },
             { idString: randomHollowLog, position: Vec(-47.8, 14.22), orientation: 3 },
