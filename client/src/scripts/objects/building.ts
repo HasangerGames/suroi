@@ -448,12 +448,10 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
             : imageDef.key;
 
         sprite
-            .setZIndex(imageDef.zIndex ?? ZIndexes.Ground)
+            .setZIndex(imageDef.zIndex ?? ZIndexes.Ground) // broken
             .setFrame(frame)
             .setVPos(toPixiCoords(imageDef.position))
             .setVisible(frame !== undefined && !(this.dead && imageDef.hideOnDead));
-
-        console.log(imageDef.zIndex ?? 0);
 
         if (imageDef.spinSpeed !== undefined ? isNewSprite : true) {
             sprite.setRotation(imageDef.rotation ?? 0);

@@ -7063,7 +7063,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     },
     {
         idString: "train_engine_collider",
-        name: "Train Engine Collider",
+        name: "Regular Train Engine Collider",
         defType: DefinitionType.Obstacle,
         material: "metal_heavy",
         health: 100,
@@ -7075,6 +7075,26 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
             RectangleHitbox.fromRect(55.1, 16.05, Vec(-21.03, -0.07)),
             RectangleHitbox.fromRect(13.59, 16.22, Vec(40.8, -0.18))
         )
+    },
+    {
+        idString: "passenger_train_back_collider",
+        name: "Passenger Train Back Collider",
+        defType: DefinitionType.Obstacle,
+        material: "metal_heavy",
+        health: 100,
+        reflectBullets: true,
+        rotationMode: RotationMode.Limited,
+        indestructible: true,
+        invisible: true,
+        hitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(4.73, 0.92, Vec(-53.03, 15.12)),
+            RectangleHitbox.fromRect(4.73, 0.92, Vec(-53.03, -14.34)),
+            new CircleHitbox(0.77, Vec(-55.51, -14.34)),
+            new CircleHitbox(0.77, Vec(-55.51, 15.11))
+        ),
+        frames: {
+            particle: "metal_particle"
+        }
     },
     {
         idString: "train_connector",
