@@ -446,7 +446,9 @@ export const TintedParticles: Record<string, { readonly base: string, readonly t
     decayed_bridge_storage_particle_2: { base: "stone_particle_2", tint: 0x808080 },
     decayed_bridge_wall_particle: { base: "metal_particle_1", tint: 0x5d3323 },
     decayed_bridge_lmr_office_particle: { base: "wood_particle", tint: 0x523b25 },
-    train_engine_collider_particle: { base: "metal_particle_1", tint: 0x971919 }
+    train_engine_collider_particle: { base: "metal_particle_1", tint: 0x971919 },
+    wood_train_particle_1: { base: "stone_particle_1", tint: 0x8b1919 },
+    wood_train_particle_2: { base: "stone_particle_2", tint: 0x8b1919 }
 };
 
 const houseWall = (
@@ -7105,7 +7107,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         reflectBullets: true,
         rotationMode: RotationMode.Limited,
         indestructible: true,
-        zIndex: ZIndexes.BuildingsFloor - 0.15,
+        zIndex: ZIndexes.BuildingsFloor + 0.01,
         hitbox: new GroupHitbox(
             RectangleHitbox.fromRect(1.15, 2.8, Vec(1.05, -0.01)),
             RectangleHitbox.fromRect(2.99, 1.98, Vec(-0.1, -0.04))
@@ -7123,7 +7125,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         noCollisions: true,
         noHitEffect: true,
         noMeleeCollision: true,
-        zIndex: ZIndexes.BuildingsFloor - 0.2,
+        zIndex: ZIndexes.BuildingsFloor + 0.005,
         noBulletCollision: true,
         material: "ice",
         health: 1,

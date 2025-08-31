@@ -800,7 +800,7 @@ const maps = {
             stump: 80,
             small_logs_pile: 30,
             large_logs_pile_2: 20,
-            clearing_boulder: 18,
+            clearing_boulder: 22,
             pine_tree: 100,
             spruce_tree: 92,
             dead_pine_tree: 55,
@@ -820,7 +820,8 @@ const maps = {
             gold_rock: 1,
             nsd_rock: 1,
             reinforced_crate: 1,
-            hatchet_stump: 3
+            hatchet_stump: 3,
+            small_logs_pile_hs: 1
         },
         obstacleClumps: [
             {

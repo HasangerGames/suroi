@@ -941,6 +941,7 @@ const hollowLog = (
         }],
         ceilingCollapseParticle: "hollow_log_ceiling_particle",
         resetCeilingResidueScale: true,
+        floorZIndex: ZIndexes.BuildingsFloor + 0.55,
         floorImages: [{
             key: "hollow_log_floor",
             position: Vec(0, 0)
@@ -14245,7 +14246,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             type: FloorNames.Stone,
             hitbox: RectangleHitbox.fromRect(33.86, 34.39, Vec(-0.02, -0.02))
         }],
-        obstacles: [
+        obstacles: IS_CLIENT ? undefined : [
             { idString: "lansirama_crate", position: Vec(-9.45, 9.95), outdoors: true },
             { idString: "barrel", position: Vec(-10.29, 1.01), outdoors: true },
             { idString: "trash_bag", position: Vec(-1.15, -11.8), rotation: 0, outdoors: true },
@@ -14275,7 +14276,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             type: FloorNames.Wood,
             hitbox: RectangleHitbox.fromRect(46.5, 47.17, Vec(0.07, -0.02))
         }],
-        obstacles: [
+        obstacles: IS_CLIENT ? undefined : [
             { idString: "box", position: Vec(18.15, 18.55), outdoors: true },
             { idString: "trash_can", position: Vec(17.7, 12.98), outdoors: true },
             { idString: "regular_crate", position: Vec(-15.82, -0.97), outdoors: true },
@@ -14403,7 +14404,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 ])
             }
         ],
-        obstacles: [
+        obstacles: IS_CLIENT ? undefined : [
             { idString: "decayed_bridge_wall", position: Vec(-28.72, -28.24), rotation: 0, outdoors: true },
             { idString: "decayed_bridge_wall", position: Vec(16.05, -28.24), rotation: 0, outdoors: true },
             { idString: "smaller_sandbags", position: Vec(-20.62, -28.26), rotation: 0, outdoors: true },
@@ -14418,7 +14419,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "pebble", position: Vec(10.89, 51.04), rotation: 2, variation: 1 },
             { idString: "pebble", position: Vec(10.82, 35.06), rotation: 3, variation: 1 }
         ],
-        subBuildings: [
+        subBuildings: IS_CLIENT ? undefined : [
             { idString: "decayed_bridge_storage", position: Vec(-53.35, 35.78) },
             { idString: "decayed_bridge_lmr_office", position: Vec(46.89, 44.19) }
         ]
@@ -14491,7 +14492,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             delay: 1000,
             unlockOnly: true
         },
-        obstacles: [
+        obstacles: IS_CLIENT ? undefined : [
             // station units
             { idString: "powered_metal_door", position: Vec(5.77, -47.26), rotation: 1, locked: true },
             { idString: "control_panel_train", position: Vec(29.6, -0.22), rotation: 3, puzzlePiece: true },
@@ -14579,7 +14580,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             delay: 1000,
             unlockOnly: true
         },
-        obstacles: [
+        obstacles: IS_CLIENT ? undefined : [
             // station units
             { idString: "powered_metal_door", position: Vec(5.77, -47.26), rotation: 1, locked: true },
             { idString: "control_panel", position: Vec(48.58, 8.37), rotation: 3, puzzlePiece: true },
@@ -14613,6 +14614,69 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "chair", position: Vec(-7.56, -6.68), rotation: 3 },
             { idString: "chair", position: Vec(-39.86, 8.75), rotation: 3 },
             { idString: "chair", position: Vec(-27.32, 8.75), rotation: 1 }
+        ]
+    },
+    {
+        idString: "wood_train",
+        name: "Wood Train",
+        defType: DefinitionType.Building,
+        spawnHitbox: RectangleHitbox.fromRect(112.89, 37.98, Vec(0.07, 0.03)),
+        material: "stone",
+        particleVariations: 2,
+        hitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(37.96, 1.61, Vec(32.84, 14.58)),
+            RectangleHitbox.fromRect(65.07, 1.61, Vec(9.23, -14.87)),
+            RectangleHitbox.fromRect(38.19, 1.61, Vec(-32.76, 14.88)),
+            RectangleHitbox.fromRect(1.61, 29.31, Vec(-52.09, -0.14)),
+            RectangleHitbox.fromRect(1.61, 29.31, Vec(52.11, -0.19)),
+            RectangleHitbox.fromRect(13.41, 1.61, Vec(-44.87, -14.83)),
+            new CircleHitbox(1.2, Vec(-52.1, 14.89)),
+            new CircleHitbox(1.2, Vec(-52.07, -14.89)),
+            new CircleHitbox(1.2, Vec(52.14, -14.9)),
+            new CircleHitbox(1.2, Vec(52.12, 14.88))
+        ),
+        floorZIndex: ZIndexes.BuildingsFloor + 0.5, // otherwise it doesn't display on the map
+        floors: [
+            {
+                type: FloorNames.Stone,
+                hitbox: RectangleHitbox.fromRect(12.8, 15.88, Vec(-44.89, 6.14))
+            },
+            {
+                type: FloorNames.Metal,
+                hitbox: RectangleHitbox.fromRect(102.62, 30.37, Vec(0, -0.04))
+            }
+        ],
+        floorImages: [{
+            key: "wood_train_floor",
+            position: Vec(0.07, 0)
+        }],
+        puzzle: {
+            triggerOnSolve: "powered_metal_door",
+            delay: 1000,
+            unlockOnly: true
+        },
+        obstacles: IS_CLIENT ? undefined : [
+            // station units
+            { idString: "powered_metal_door", position: Vec(5.77, -47.26), rotation: 1, locked: true },
+            { idString: "control_panel", position: Vec(-44.84, 6.16), rotation: 1, puzzlePiece: true },
+
+            { idString: "train_connector", position: Vec(53.38, -7.51), rotation: 0 },
+            { idString: "train_connector", position: Vec(53.38, 0.29), rotation: 0 },
+            { idString: "train_connector", position: Vec(53.38, 9.04), rotation: 0 },
+            { idString: "train_connector", position: Vec(-53.38, -7.51), rotation: 2 },
+            { idString: "train_connector", position: Vec(-53.38, 0.29), rotation: 2 },
+            { idString: "train_connector", position: Vec(-53.38, 9.04), rotation: 2 },
+            { idString: "box", position: Vec(-17.39, 10.98) },
+            { idString: "box", position: Vec(36.12, 10.69) },
+            { idString: "gun_case", position: Vec(44.49, 10.31), rotation: 2 },
+            { idString: "small_logs_pile_2", position: Vec(-29.45, -0.37), rotation: 0 },
+            { idString: "small_logs_pile_2", position: Vec(-40.68, -8.1), rotation: 3 },
+            { idString: "small_logs_pile_2", position: Vec(10.66, -0.08), rotation: 0 },
+            { idString: "large_logs_pile_2", position: Vec(31.79, -9.13), rotation: 2 }
+        ],
+        subBuildings: IS_CLIENT ? undefined : [
+            { idString: randomHollowLog, position: Vec(9.21, -13.14), orientation: 1 },
+            { idString: randomHollowLog, position: Vec(9.03, -10.85), orientation: 3 }
         ]
     },
     {
@@ -14650,7 +14714,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 hitbox: RectangleHitbox.fromRect(97.41, 29.31, Vec(0.73, -0.9))
             }
         ],
-        obstacles: [
+        obstacles: IS_CLIENT ? undefined : [
             { idString: "sawmill_center_warehouse_column", position: Vec(49.12, -14.82) },
             { idString: "sawmill_center_warehouse_column", position: Vec(49.12, 13.28) },
             { idString: "sawmill_center_warehouse_column", position: Vec(-47.22, 13.28) },
@@ -14796,7 +14860,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 ])
             }
         ],
-        obstacles: [
+        obstacles: IS_CLIENT ? undefined : [
             { idString: "regular_crate", position: Vec(-70.62, -35.48), outdoors: true },
             { idString: "regular_crate", position: Vec(63.26, -34.7), outdoors: true },
             { idString: "regular_crate", position: Vec(53.12, -32.66), outdoors: true },
@@ -14823,11 +14887,12 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "pebble", position: Vec(105.4, 29.7), rotation: 1, variation: 1 },
             { idString: "pebble", position: Vec(-73.02, 49.91), rotation: 1, variation: 1 }
         ],
-        subBuildings: [
+        subBuildings: IS_CLIENT ? undefined : [
             {
                 idString: {
-                    train_engine: 0.5,
-                    passenger_train: 0.5
+                    train_engine: 0.25,
+                    passenger_train: 0.25,
+                    wood_train: 0.25
                 },
                 position: Vec(-3.52, 26.91)
             },
