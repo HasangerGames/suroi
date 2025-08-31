@@ -6900,7 +6900,6 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         defType: DefinitionType.Obstacle,
         material: "appliance",
         health: 300,
-        noResidue: true,
         reflectBullets: true,
         hitbox: RectangleHitbox.fromRect(21.76, 1.51, Vec(0, -0.42)),
         rotationMode: RotationMode.Limited,

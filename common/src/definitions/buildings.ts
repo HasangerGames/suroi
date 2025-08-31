@@ -14658,7 +14658,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         obstacles: IS_CLIENT ? undefined : [
             // station units
             { idString: "powered_metal_door", position: Vec(5.77, -47.26), rotation: 1, locked: true },
-            { idString: "control_panel", position: Vec(-44.84, 6.16), rotation: 1, puzzlePiece: true },
+            { idString: "control_panel", position: Vec(-44.84, 6.16), rotation: 1, puzzlePiece: true, outdoors: true },
 
             { idString: "train_connector", position: Vec(53.38, -7.51), rotation: 0 },
             { idString: "train_connector", position: Vec(53.38, 0.29), rotation: 0 },
@@ -14666,13 +14666,13 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "train_connector", position: Vec(-53.38, -7.51), rotation: 2 },
             { idString: "train_connector", position: Vec(-53.38, 0.29), rotation: 2 },
             { idString: "train_connector", position: Vec(-53.38, 9.04), rotation: 2 },
-            { idString: "box", position: Vec(-17.39, 10.98) },
-            { idString: "box", position: Vec(36.12, 10.69) },
-            { idString: "gun_case", position: Vec(44.49, 10.31), rotation: 2 },
-            { idString: "small_logs_pile_2", position: Vec(-29.45, -0.37), rotation: 0 },
-            { idString: "small_logs_pile_2", position: Vec(-40.68, -8.1), rotation: 3 },
-            { idString: "small_logs_pile_2", position: Vec(10.66, -0.08), rotation: 0 },
-            { idString: "large_logs_pile_2", position: Vec(31.79, -9.13), rotation: 2 }
+            { idString: "box", position: Vec(-17.39, 10.98), outdoors: true },
+            { idString: "box", position: Vec(36.12, 10.69), outdoors: true },
+            { idString: "gun_case", position: Vec(44.49, 10.31), rotation: 2, outdoors: true },
+            { idString: "small_logs_pile_2", position: Vec(-29.45, -0.37), rotation: 0, outdoors: true },
+            { idString: "small_logs_pile_2", position: Vec(-40.68, -8.1), rotation: 3, outdoors: true },
+            { idString: "small_logs_pile_2", position: Vec(10.66, -0.08), rotation: 0, outdoors: true },
+            { idString: "large_logs_pile_2", position: Vec(31.79, -9.13), rotation: 2, outdoors: true }
         ],
         subBuildings: IS_CLIENT ? undefined : [
             { idString: randomHollowLog, position: Vec(9.21, -13.14), orientation: 1 },
