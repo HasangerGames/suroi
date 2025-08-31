@@ -1717,6 +1717,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             [{ table: "airdrop_guns", weight: 1 }],
             [
                 { item: "sm56", count: 3, weight: 2 },
+                { item: "vaccine_syringe", count: 2, weight: 1.5 },
                 { item: NullString, weight: 1 }
             ]
         ],
