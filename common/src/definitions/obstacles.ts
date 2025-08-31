@@ -448,7 +448,8 @@ export const TintedParticles: Record<string, { readonly base: string, readonly t
     decayed_bridge_lmr_office_particle: { base: "wood_particle", tint: 0x523b25 },
     train_engine_collider_particle: { base: "metal_particle_1", tint: 0x971919 },
     wood_train_particle_1: { base: "stone_particle_1", tint: 0x8b1919 },
-    wood_train_particle_2: { base: "stone_particle_2", tint: 0x8b1919 }
+    wood_train_particle_2: { base: "stone_particle_2", tint: 0x8b1919 },
+    container_train_particle: { base: "metal_particle_1", tint: 0x1e6b63 }
 };
 
 const houseWall = (

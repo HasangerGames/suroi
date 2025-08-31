@@ -14680,6 +14680,84 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         ]
     },
     {
+        idString: "container_train",
+        name: "Container Train",
+        defType: DefinitionType.Building,
+        spawnHitbox: RectangleHitbox.fromRect(115.01, 37.5, Vec(0.59, 0.24)),
+        ceilingHitbox: RectangleHitbox.fromRect(100.71, 26.6, Vec(0.13, -0.06)),
+        material: "metal_heavy",
+        reflectBullets: true,
+        hitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(70.93, 2, Vec(15.96, 14.23)),
+            RectangleHitbox.fromRect(73.3, 2, Vec(-0.36, -14.12)),
+            RectangleHitbox.fromRect(2, 30.36, Vec(-51.2, 0.05)),
+            RectangleHitbox.fromRect(2.01, 12.16, Vec(-7.64, 7.9)),
+            RectangleHitbox.fromRect(2.01, 12.16, Vec(8.65, 7.9)),
+            RectangleHitbox.fromRect(2, 30.36, Vec(51.48, 0.05)),
+            RectangleHitbox.fromRect(15.58, 2.01, Vec(-43.92, 14.23)),
+            RectangleHitbox.fromRect(3, 3.01, Vec(8.64, 0.58)),
+            RectangleHitbox.fromRect(3, 3.01, Vec(-7.65, 0.77))
+        ),
+        graphics: [
+            { // stroke
+                color: 0x333333,
+                hitbox: RectangleHitbox.fromRect(107.11, 32.43, Vec(0.04, -0.01))
+            },
+            { // fill
+                color: 0x4d4d4d,
+                hitbox: RectangleHitbox.fromRect(105.99, 31.32, Vec(0.04, -0.01))
+            }
+        ],
+        graphicsZIndex: ZIndexes.BuildingsFloor + 0.2,
+        floorZIndex: ZIndexes.BuildingsFloor + 0.5, // otherwise it doesn't display on the map
+        floorImages: [{
+            key: "container_train_floor",
+            position: Vec(0.15, 0.17)
+        }],
+        ceilingImages: [{
+            key: "container_train_ceiling",
+            position: Vec(0, 0),
+            scale: Vec(2, 2)
+        }],
+        floors: [
+            {
+                type: FloorNames.Metal,
+                hitbox: RectangleHitbox.fromRect(101.49, 30.37, Vec(-0.27, 0.05))
+            },
+            {
+                type: FloorNames.Stone,
+                hitbox: RectangleHitbox.fromRect(107.11, 32.43, Vec(0.04, -0.01))
+            }
+        ],
+        puzzle: {
+            triggerOnSolve: "powered_metal_door",
+            delay: 1000,
+            unlockOnly: true
+        },
+        obstacles: IS_CLIENT ? undefined : [
+            // station units
+            { idString: "powered_metal_door", position: Vec(5.77, -47.26), rotation: 1, locked: true },
+            { idString: "control_panel", position: Vec(0.27, 8.54), rotation: 2, puzzlePiece: true },
+
+            { idString: "train_connector", position: Vec(53.64, -8.27), rotation: 0 },
+            { idString: "train_connector", position: Vec(53.64, -0.4), rotation: 0 },
+            { idString: "train_connector", position: Vec(53.64, 8.34), rotation: 0 },
+            { idString: "train_connector", position: Vec(-53.64, -8.27), rotation: 2 },
+            { idString: "train_connector", position: Vec(-53.64, -0.4), rotation: 2 },
+            { idString: "train_connector", position: Vec(-53.64, 8.34), rotation: 2 },
+            { idString: "propane_tank", position: Vec(26.71, 10.57) },
+            { idString: "barrel", position: Vec(45.23, -2.59) },
+            { idString: "barrel", position: Vec(-23.2, 0.47) },
+            { idString: "barrel", position: Vec(-31.37, -2.01) },
+            { idString: "super_barrel", position: Vec(14.67, 8.43) },
+            { idString: "box", position: Vec(-12.17, 10.49) },
+            { idString: "box", position: Vec(-46.88, 0.87) },
+            { idString: "box", position: Vec(21.86, 10.57) },
+            { idString: "regular_crate", position: Vec(-44.77, 8.1) },
+            { idString: "gun_case", position: Vec(46.73, 7.39), rotation: 3 }
+        ]
+    },
+    {
         idString: "train_station_office",
         name: "Train Station Office",
         defType: DefinitionType.Building,
@@ -14892,7 +14970,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 idString: {
                     train_engine: 0.25,
                     passenger_train: 0.25,
-                    wood_train: 0.25
+                    wood_train: 0.25,
+                    container_train: 0.25
                 },
                 position: Vec(-3.52, 26.91)
             },
