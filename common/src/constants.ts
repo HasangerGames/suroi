@@ -20,6 +20,7 @@ export const GameConstants = {
         defaultHealth: 100,
         maxAdrenaline: 100,
         maxShield: 100,
+        maxInfection: 100,
         inventorySlotTypings,
         maxWeapons: inventorySlotTypings.length,
         nameMaxLength: 16,

@@ -286,6 +286,43 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         this.setDirty();
     }
 
+    private _maxInfection = GameConstants.player.maxInfection;
+
+    private _normalizedInfection = 0;
+    get normalizedInfection(): number { return this._normalizedInfection; }
+
+    get maxInfection(): number { return this._maxInfection; }
+    set maxInfection(maxInfection: number) {
+        if (this._maxInfection === maxInfection) return;
+        this._maxInfection = maxInfection;
+        this.dirty.maxMinStats = true;
+
+        if (this._infection < this._maxInfection) {
+            this._normalizedInfection = Numeric.remap(this.infection, 0, this.maxInfection, 0, 1);
+            this.dirty.infection = true;
+        } else {
+            this.infection = this._infection;
+        }
+    }
+
+    private _infection = 0;
+    get infection(): number { return this._infection; }
+    set infection(infection: number) {
+        const clamped = Numeric.clamp(infection, 0, this._maxInfection);
+        if (this._infection === clamped) return;
+
+        this._infection = clamped;
+        this.dirty.infection = true;
+        this._normalizedInfection = Numeric.remap(this.infection, 0, this.maxInfection, 0, 1);
+
+        const infected = this.infection >= 100;
+        if (infected) {
+            this.addPerk(PerkIds.Infected);
+        } else if (this.infection <= 0) {
+            this.removePerk(PerkIds.Infected);
+        }
+    }
+
     private _modifiers = GameConstants.player.defaultModifiers();
 
     killedBy?: Player;
@@ -359,6 +396,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         maxMinStats: true,
         adrenaline: true,
         shield: true,
+        infection: true,
         size: true,
         reload: true,
         weapons: true,
@@ -1253,6 +1291,11 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             this.shield += dt / 1000 * _toRegen;
         }
 
+        // Infection regen
+        if (this.hasPerk(PerkIds.Infected)) {
+            this.infection += dt / 1000;
+        }
+
         // Shoot gun/use item
         if (this.startedAttacking && this.game.pluginManager.emit("player_start_attacking", this) === undefined) {
             this.startedAttacking = false;
@@ -1641,6 +1684,10 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             playerData.shield = player._normalizedShield;
         }
 
+        if (player.dirty.infection || forceInclude) {
+            playerData.infection = player._normalizedInfection;
+        }
+
         if (player.dirty.zoom || forceInclude) {
             playerData.zoom = player._scope.zoomLevel;
         }
@@ -2010,6 +2057,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 this.addPerk(immunity);
                 this.immunityTimeout?.kill();
                 this.immunityTimeout = this.game.addTimeout(() => this.removePerk(immunity), immunity.duration);
+                this.infection = 0;
                 this.setDirty();
                 break;
             }

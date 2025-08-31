@@ -24,6 +24,7 @@ export type BaseBulletDefinition = {
     readonly noCollision?: boolean
     readonly noReflect?: boolean
     readonly ignoreCoolerGraphics?: boolean
+    readonly infection?: number
 
     readonly teammateHeal?: number
     readonly enemySpeedMultiplier?: {

@@ -852,6 +852,34 @@
             linear-gradient(#000 0 0) content-box;
     }
 
+    #infection-bar {
+        position: absolute;
+        width: calc(100% + 16px);
+        height: calc(100% + 16px);
+        left: -8px;
+        transition: clip-path ease-in-out 50ms;
+        z-index: 2;
+
+        @media screen and (max-width: variables.$screen_large) {
+            width: calc(100% + 9px);
+            height: calc(100% + 9px);
+            left: -5px;
+        }
+    }
+
+    #infection-bar::before {
+        content: "";
+        position: absolute;
+        z-index: -1;
+        inset: 0;
+        padding: 8px;
+        border-radius: 8px;
+        background: linear-gradient(45deg, #ac0793 -10%, #29011c 100%);
+        mask:
+            linear-gradient(#000 0 0) exclude,
+            linear-gradient(#000 0 0) content-box;
+    }
+
     #health-bar-animation {
         opacity: 50%;
         background: #ff0000;

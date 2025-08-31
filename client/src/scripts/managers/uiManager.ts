@@ -178,6 +178,8 @@ class UIManagerClass {
 
         shieldBar: $<HTMLDivElement>("#shield-bar"),
 
+        infectionBar: $<HTMLDivElement>("#infection-bar"),
+
         killFeed: $<HTMLDivElement>("#kill-feed"),
 
         gameUi: $<HTMLDivElement>("#game-ui"),
@@ -605,6 +607,7 @@ class UIManagerClass {
             health,
             adrenaline,
             shield,
+            infection,
             zoom,
             id,
             teammates,
@@ -811,6 +814,10 @@ class UIManagerClass {
 
         if (shield !== undefined) {
             this.ui.shieldBar.css("clip-path", `inset(0 ${(1 - shield) * 100}% 0 0)`);
+        }
+
+        if (infection !== undefined) {
+            this.ui.infectionBar.css("clip-path", `inset(0 ${(1 - infection) * 100}% 0 0)`);
         }
 
         if (inventory?.weapons) {

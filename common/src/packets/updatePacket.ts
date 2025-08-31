@@ -23,6 +23,7 @@ function serializePlayerData(
         health,
         adrenaline,
         shield,
+        infection,
         zoom,
         layer,
         id,
@@ -42,6 +43,7 @@ function serializePlayerData(
     const hasHealth             = health !== undefined;
     const hasAdrenaline         = adrenaline !== undefined;
     const hasShield             = shield !== undefined;
+    const hasInfection          = infection !== undefined;
     const hasZoom               = zoom !== undefined;
     const hasLayer              = layer !== undefined;
     const hasId                 = id !== undefined;
@@ -74,6 +76,8 @@ function serializePlayerData(
         blockEmoting
     );
 
+    strm.writeBooleanGroup(hasInfection);
+
     strm.writeUint8(pingSeq);
 
     if (hasMinMax) {
@@ -93,6 +97,10 @@ function serializePlayerData(
 
     if (hasShield) {
         strm.writeFloat(shield, 0, 1, 2);
+    }
+
+    if (hasInfection) {
+        strm.writeFloat(infection, 0, 1, 2);
     }
 
     if (hasZoom) {
@@ -280,6 +288,8 @@ function deserializePlayerData(strm: SuroiByteStream): PlayerData {
         blockEmoting
     ] = strm.readBooleanGroup2();
 
+    const [hasInfection] = strm.readBooleanGroup();
+
     const data: SDeepMutable<PlayerData> = {
         pingSeq: strm.readUint8(),
         blockEmoting
@@ -303,6 +313,10 @@ function deserializePlayerData(strm: SuroiByteStream): PlayerData {
 
     if (hasShield) {
         data.shield = strm.readFloat(0, 1, 2);
+    }
+
+    if (hasInfection) {
+        data.infection = strm.readFloat(0, 1, 2);
     }
 
     if (hasZoom) {
@@ -511,6 +525,7 @@ export interface PlayerData {
     health?: number
     adrenaline?: number
     shield?: number
+    infection?: number
     zoom?: number
     layer?: number
     id?: {

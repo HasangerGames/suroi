@@ -5,7 +5,6 @@ import { DefinitionType, type InventoryItemDefinition, type ReferenceTo } from "
 import { Vec, type Vector } from "../../utils/vector";
 import { type AmmoDefinition } from "./ammos";
 import { InventoryItemDefinitions } from "./items";
-import { PerkIds } from "./perks";
 import { ScopeDefinition } from "./scopes";
 
 export enum Tier { S, A, B, C, D }
@@ -1404,7 +1403,8 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
             tracer: {
                 width: 1.1,
                 length: 1.4
-            }
+            },
+            infection: 100
         }
     },
     {
@@ -2986,8 +2986,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
             enemySpeedMultiplier: {
                 duration: 2000,
                 multiplier: 0.7
-            },
-            removePerk: PerkIds.Infected
+            }
         },
         noSwap: true
     },

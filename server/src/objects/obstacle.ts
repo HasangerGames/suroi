@@ -1,9 +1,9 @@
-import { FlyoverPref, ObjectCategory, RotationMode } from "@common/constants";
+import { FlyoverPref, GameConstants, ObjectCategory, RotationMode } from "@common/constants";
 import { PerkData, PerkIds } from "@common/definitions/items/perks";
 import { Obstacles, type ObstacleDefinition } from "@common/definitions/obstacles";
 import { type Orientation, type Variation } from "@common/typings";
 import { CircleHitbox, RectangleHitbox, type Hitbox } from "@common/utils/hitbox";
-import { Angle, calculateDoorHitboxes, resolveStairInteraction } from "@common/utils/math";
+import { Angle, calculateDoorHitboxes, Geometry, resolveStairInteraction } from "@common/utils/math";
 import { DefinitionType, NullString, type ReifiableDef } from "@common/utils/objectDefinitions";
 import { type FullData } from "@common/utils/objectsSerializations";
 import { Vec, type Vector } from "@common/utils/vector";
@@ -250,7 +250,7 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
                 }
 
                 // Infected perk
-                if (
+                /* if (
                     definition.applyPerkOnDestroy
                     && definition.applyPerkOnDestroy.mode === this.game.modeName
                     && definition.applyPerkOnDestroy.chance > Math.random()
@@ -260,6 +260,27 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
                     if (definition.applyPerkOnDestroy.perk === PerkIds.Infected) { // evil
                         source.setDirty();
                     }
+                } */
+                // Infection bar logic
+                if (
+                    definition.applyPerkOnDestroy
+                    && definition.applyPerkOnDestroy.mode === this.game.modeName
+                    && !(definition.applyPerkOnDestroy.perk === PerkIds.Infected && source.hasPerk(PerkIds.Immunity))
+                ) {
+                    const position = source.position,
+                        distance = Geometry.distance(position, this.position),
+                        deathZone = new CircleHitbox(10, this.position),
+                        minDistance = 30,
+                        maxDistance = 150, // 3 player units -> (2.25 ** 3) -> 6.75 but we go 7 * 10
+                        clampedDistance = Math.min(distance, maxDistance),
+                        scaleFactor = 1 - (clampedDistance - minDistance) / (maxDistance - minDistance);
+
+                    let infectionAmount = Math.round((GameConstants.player.maxInfection / 4) * scaleFactor);
+
+                    if (source.hitbox.collidesWith(deathZone)) infectionAmount = 100; // force
+
+                    source.infection += infectionAmount;
+                    console.log(infectionAmount);
                 }
             }
 
