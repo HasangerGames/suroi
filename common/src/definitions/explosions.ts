@@ -687,7 +687,7 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>([
         shrapnelCount: 10,
         ballistics: {
             damage: 2,
-            obstacleMultiplier: 1.5,
+            obstacleMultiplier: 2.1,
             speed: 0.1,
             range: 15,
             tracer: {
