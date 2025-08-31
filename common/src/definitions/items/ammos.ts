@@ -166,9 +166,9 @@ export const Ammos = new ObjectDefinitions<AmmoDefinition>([
         maxStackSize: 0,
         minDropAmount: 0,
         characteristicColor: {
-            hue: 305,
-            saturation: 70,
-            lightness: 50
+            hue: 308,
+            saturation: 55,
+            lightness: 10
         },
         ephemeral: true
     },

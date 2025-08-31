@@ -1707,6 +1707,19 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
         ]
     },
     infection: {
+        ammo: [
+            { item: "12g", count: 10, weight: 0.75 },
+            { item: "545mm", count: 40, weight: 0.25 },
+            { item: "556mm", count: 60, weight: 1 },
+            { item: "762mm", count: 60, weight: 1 },
+            { item: "9mm", count: 60, weight: 1 },
+            { item: "50cal", count: 20, weight: 0.05 }
+        ],
+        throwables: [
+            { item: "frag_grenade", count: 2, weight: 1 },
+            { item: "smoke_grenade", count: 2, weight: 1 },
+            { item: "sm56", weight: 0.5 }
+        ],
         healing_items: [
             { item: "gauze", count: 5, weight: 3 },
             { item: "cola", weight: 2 },
@@ -1740,7 +1753,12 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
         ],
         aegis_golden_case: [{ item: "vaccinator", weight: 1 }],
         rsh_case_single: [{ item: "seedshot", weight: 1 }],
-        rsh_case_dual: [{ item: "seedshot", weight: 1 }]
+        rsh_case_dual: [{ item: "seedshot", weight: 1 }],
+        hazel_crate: [
+            [{ item: "m202", weight: 1 }],
+            [{ item: "diseased", weight: 1 }],
+            [{ item: "sm56", count: 3, weight: 1 }]
+        ]
     },
     hunted: {
         equipment: [

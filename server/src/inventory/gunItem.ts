@@ -122,7 +122,7 @@ export class GunItem extends InventoryItemBase.derive(DefinitionType.Gun) {
 
         const offset = definition.isDual
             ? (this._altFire ? -1 : 1) * definition.leftRightOffset
-            : (definition.bulletOffset ?? 0);
+            : ((definition.bulletOffsets ? definition.bulletOffsets[this.ammo - 1] : definition.bulletOffset) ?? 0);
 
         const ownerPos = owner.position;
         const startPosition = offset !== 0

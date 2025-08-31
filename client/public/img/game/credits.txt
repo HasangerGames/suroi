@@ -129,6 +129,11 @@ Guns:
     World Image: Winter
     Killfeed Image: eiπ
 
+  M202-F:
+    Loot Image: Skullboi249
+    World Image: Skullboi249
+    Killfeed: AnnihilatingFox
+
   M3K:
     Loot Image: Wampi
     World Image: Wampi
@@ -208,6 +213,11 @@ Guns:
     Loot Image: hugh jass
     World Image: Skullboi249
     Killfeed Image: Skullboi249
+
+  P226-S:
+    Loot Image: AnnihilatingFox
+    World Image: AnnihilatingFox
+    Killfeed Image: AnnihilatingFox
 
   PK-61:
     Loot Image: Winter
@@ -324,11 +334,6 @@ Guns:
     World Image: Winter, Skullboi249
     Killfeed Image: Skullboi249
 
-  P226-S
-    Loot Image: AnnihilatingFox
-    World Image: AnnihilatingFox
-    Killfeed Image: AnnihilatingFox
-
 Melees:
   Baseball Bat: Radians
   HE-AP Sword: Radians
@@ -432,3 +437,8 @@ Perk Icons:
   Loot Baron: Skullboi249
 
 Saw Killfeed - AnnihilatingFox
+
+S.E.E.D.
+  - Loot: Skullboi249
+  - Projectile: Skullboi249
+  - Pin/Lever: Skullboi249

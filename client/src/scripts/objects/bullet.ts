@@ -224,7 +224,7 @@ export class Bullet extends BaseBullet {
 
         if (
             this.definition.trail
-            && GameConsole.getBuiltInCVar("cv_cooler_graphics")
+            && (this.definition.ignoreCoolerGraphics || GameConsole.getBuiltInCVar("cv_cooler_graphics"))
             && Date.now() - this._lastParticleTrail >= this.definition.trail.interval
         ) {
             const trail = this.definition.trail;
