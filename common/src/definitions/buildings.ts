@@ -14782,6 +14782,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             RectangleHitbox.fromRect(2.01, 17.49, Vec(7.97, -7.58)),
             RectangleHitbox.fromRect(2.57, 2.36, Vec(-47.75, -15.03))
         ),
+        floorZIndex: ZIndexes.BuildingsFloor + 0.5, // so it always displays above station floor
         floors: [
             {
                 type: FloorNames.Wood,
