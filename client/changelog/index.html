@@ -29,18 +29,13 @@
   <pre>
 # Changelog
 
-[VERSION] - [RELEASE_DATE] INFECTION_V2
-- Added new gun: m202 flash, an automatic rocket launcher that shoots baby plumpkins (infection mode only).
-- Added new building: mini warehouse (infection mode only).
+[VERSION] - [RELEASE_DATE]
 - Added new throwable: S.E.E.D. (infection mode only).
 - Added a pine tree variant for infection mode.
-- 5.45mm can now spawn from ammo crates in infection mode.
 - Added a vaccine syringe residue.
-
-[VERSION] - [RELEASE_DATE]
-- Added new melee: hand saw (hunted & harvest mode only).
-- Added new gun: p226-s 9mm suppressed pistol (hunted mode only).
-- Added new buildings: decayed bridge, train station, train engine, passenger train, wooden train, container train (hunted mode only).
+- Added new melee: hand saw (hunted & harvest mode only), m202 flash, an automatic rocket launcher that shoots baby plumpkins (infection mode only).
+- Added new guns: p226-s 9mm suppressed pistol (hunted mode only).
+- Added new buildings: mini warehouse (infection mode only), decayed bridge, train station, train engine, passenger train, wooden train, container train (hunted mode only).
 - Added new obstacles: powered metal door, rpk-16 gun mount.
 - Fixed an issue with the close quarters combat perk not making guns reload faster at close range.
 - Fixed an issue where grenades would fly over the barn stair walls and get stuck at the wrong layer.
@@ -53,8 +48,16 @@
 - The an-94 can now drop from the memorial crate.
 - Replaced all locked metal doors with powered metal doors (Headquarters, Fulcrum Bunker, Train Station).
 - Removed the svu-a gun mount from the tavern, it has been replaced by an rpk-16 gun mount.
+- The 5.45mm ammunition can now spawn from ammo crates in infection mode.
 
 ## Balance
+- Completely reworked the infection mode logic.
+  - Players now have an infection bar, similar to the shield bar that determines your percentage (%) of infection, if the bar gets full, you get the infected perk.
+  - Vaccinator
+    - Needles no longer provide the "Immunity" perk but decrease the infection bar by 20 units.
+      - If the infection bar gets at 0, the player gets cured and receives the immunity perk.
+  - Vaccine syringe (the consumable) is unaffected by this change.
+
 - Guns no longer spawn inside hollow logs.
 - Decreased the amount of throwables that drop from grenade crates.
   - Minimum decreased to 1 (from 3).

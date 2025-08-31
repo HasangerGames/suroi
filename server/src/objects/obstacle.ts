@@ -249,18 +249,6 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
                     this.game.addExplosion("pumpkin_explosion", this.position, source, this.layer);
                 }
 
-                // Infected perk
-                /* if (
-                    definition.applyPerkOnDestroy
-                    && definition.applyPerkOnDestroy.mode === this.game.modeName
-                    && definition.applyPerkOnDestroy.chance > Math.random()
-                    && !(definition.applyPerkOnDestroy.perk === PerkIds.Infected && source.hasPerk(PerkIds.Immunity)) // evil
-                ) {
-                    source.addPerk(definition.applyPerkOnDestroy.perk);
-                    if (definition.applyPerkOnDestroy.perk === PerkIds.Infected) { // evil
-                        source.setDirty();
-                    }
-                } */
                 // Infection bar logic
                 if (
                     definition.applyPerkOnDestroy
@@ -280,7 +268,6 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
                     if (source.hitbox.collidesWith(deathZone)) infectionAmount = 100; // force
 
                     source.infection += infectionAmount;
-                    console.log(infectionAmount);
                 }
             }
 

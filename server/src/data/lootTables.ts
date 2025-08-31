@@ -1707,6 +1707,29 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
         ]
     },
     infection: {
+        airdrop_crate: [
+            [{ table: "airdrop_equipment", weight: 1 }],
+            [{ table: "airdrop_scopes", weight: 1 }],
+            [{ table: "airdrop_healing_items", weight: 1 }],
+            [{ table: "airdrop_skins", weight: 1 }],
+            [{ table: "airdrop_melee", weight: 1 }],
+            [{ table: "ammo", weight: 1 }],
+            [{ table: "airdrop_guns", weight: 1 }],
+            [
+                { item: "sm56", count: 3, weight: 2 },
+                { item: NullString, weight: 1 }
+            ]
+        ],
+        gold_airdrop_crate: [
+            [{ table: "airdrop_equipment", weight: 1 }],
+            [{ table: "airdrop_scopes", weight: 1 }],
+            [{ table: "airdrop_healing_items", weight: 1 }],
+            [{ table: "airdrop_skins", weight: 1 }],
+            [{ table: "airdrop_melee", weight: 1 }],
+            [{ table: "ammo", weight: 1 }],
+            [{ table: "gold_airdrop_guns", weight: 1 }],
+            [{ item: "sm56", count: 3, weight: 1 }]
+        ],
         ammo: [
             { item: "12g", count: 10, weight: 0.75 },
             { item: "545mm", count: 40, weight: 0.25 },

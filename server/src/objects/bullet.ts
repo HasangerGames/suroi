@@ -167,10 +167,7 @@ export class Bullet extends BaseBullet {
 
                 if (object.isPlayer) {
                     if (definition.infection !== undefined) object.infection += definition.infection; // evil
-                    if (definition.teammateHeal !== undefined && damageAmount === definition.damage) {
-                        console.log("decrease");
-                        object.infection -= definition.teammateHeal * 10;
-                    }
+                    if (definition.teammateHeal !== undefined && damageAmount === definition.damage) object.infection -= definition.teammateHeal * 10;
                 }
 
                 if (

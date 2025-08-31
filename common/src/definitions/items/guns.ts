@@ -2879,7 +2879,8 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
                 spreadSpeed: { min: 1, max: 3 },
                 lifetime: { min: 1500, max: 3000 }
             },
-            ignoreCoolerGraphics: true // we want smoke trail when it launches plumpkin
+            ignoreCoolerGraphics: true, // we want smoke trail when it launches plumpkin
+            infection: 100
         },
         cameraShake: {
             duration: 150,

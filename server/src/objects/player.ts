@@ -318,6 +318,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         const infected = this.infection >= 100;
         if (infected) {
             this.addPerk(PerkIds.Infected);
+            this.setDirty();
         } else if (this.infection <= 0) {
             this.removePerk(PerkIds.Infected);
         }
