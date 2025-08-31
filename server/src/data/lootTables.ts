@@ -1897,6 +1897,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
 
             // 2%
             { item: "stoner_63", weight: 0.005 },
+            { item: "p226s", weight: 0.005 },
 
             // DMRs
             { item: "blr", weight: 0.005 },
@@ -1942,7 +1943,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { item: "mosin_nagant", weight: 0.9 },
             { item: "tango_51", weight: 0.9 },
             { item: "model_89", weight: 0.6 },
-            { item: "vks", weight: 0.6 },
+            { item: "p226s", weight: 0.6 },
             { item: "flare", weight: 0.1 }
         ],
 
@@ -1956,6 +1957,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { item: "mk18", weight: 0.85 },
             { item: "an94", weight: 0.8 },
             { item: "dual_rsh12", weight: 0.8 },
+            { item: "dual_p226s", weight: 0.8 },
             { item: "g19", weight: 0.0005 }
         ],
 
