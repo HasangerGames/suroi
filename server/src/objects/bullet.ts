@@ -166,7 +166,7 @@ export class Bullet extends BaseBullet {
                 });
 
                 if (object.isPlayer) {
-                    if (definition.infection !== undefined) object.infection += definition.infection; // evil 1
+                    if (this.shooter.isPlayer && definition.infection !== undefined && object.teamID !== this.shooter.teamID) object.infection += definition.infection; // evil 1
                     if (definition.teammateHeal !== undefined) object.infection -= definition.teammateHeal * 10; // evil 2
                 }
 
