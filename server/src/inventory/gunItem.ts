@@ -238,11 +238,6 @@ export class GunItem extends InventoryItemBase.derive(DefinitionType.Gun) {
                     }
                     break;
                 }
-                case PerkIds.Infected: {
-                    modifiers.damage *= perk.damageMod;
-                    modifyForDamageMod(perk.damageMod);
-                    break;
-                }
                 case PerkIds.HollowPoints: {
                     if (this.definition.ammoType === "12g" && this.definition.casingParticles && !this.definition.casingParticles[0].frame?.includes("slug")) break;
                     modifiers.damage *= perk.damageMod;

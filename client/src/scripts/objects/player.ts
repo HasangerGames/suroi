@@ -1423,6 +1423,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             }
 
             container.children(".item-tooltip").html(itemTooltip);
+            container.css("outline", def.noDrop ? "none" : "");
         }
 
         container.css("visibility", (def?.level ?? 0) > 0 || UI_DEBUG_MODE ? "visible" : "hidden");

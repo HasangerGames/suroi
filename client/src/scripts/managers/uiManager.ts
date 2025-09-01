@@ -1093,6 +1093,8 @@ class UIManagerClass {
         if (index > GameConstants.player.maxPerks) index = 0; // overwrite stuff ig?
         // no, write a hud that can handle it
 
+        if (perkDef.hideInHUD) return;
+
         const container = this._perkSlots[index] ??= $<HTMLDivElement>(`#perk-slot-${index}`);
         container.attr("data-idString", perkDef.idString);
         container.children(".item-tooltip").html(`<strong>${getTranslatedString(perkDef.idString as unknown as TranslationKeys)}</strong><br>${getTranslatedString(`${perkDef.idString}_desc` as TranslationKeys)}`);
@@ -1100,7 +1102,7 @@ class UIManagerClass {
         container.css("visibility", PerkManager.has(perkDef) ? "visible" : "hidden");
         if (container.hasClass("deactivated")) container.toggleClass("deactivated");
 
-        container.css("outline", !perkDef.noDrop ? "" : "none");
+        container.css("outline", perkDef.noDrop || PerkManager.has(PerkIds.Infected) ? "none" : "");
 
         const flashAnimationDuration = 3000; // ms
 

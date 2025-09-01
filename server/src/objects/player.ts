@@ -1278,7 +1278,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             toRegen += adrenRegen * this.mapPerkOrDefault(
                 PerkIds.LacedStimulants,
                 ({ healDmgRate, lowerHpLimit }) => (this.health <= lowerHpLimit ? 1 : -healDmgRate),
-                (this.adrenaline > 0 || (this.normalizedHealth < 0.3 && !this.hasPerk(PerkIds.Infected))) && !this.downed ? 1 : 0
+                this.adrenaline > 0 && !this.downed ? 1 : 0
             );
 
             // Drain adrenaline
@@ -1451,21 +1451,35 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                         );
                         break;
                     }
-                    case PerkIds.Infected: {
+                    case PerkIds.Necrosis: {
+                        // 1) Bleed health slowly*
                         if (this.health > perk.minHealth) {
                             this.health = Numeric.max(this.health - perk.dps, perk.minHealth);
                         }
+                        break;
+                    }
+                    case PerkIds.Infected: {
+                        // 1) Bleed health slowly* ^
+                        // Used by Necrosis, a perk that does not display in HUD.
+
+                        // 2) Infect nearby players
                         const detectionHitbox = new CircleHitbox(perk.infectionRadius, this.position);
                         for (const player of this.game.grid.intersectsHitbox(detectionHitbox)) {
                             if (
                                 !player.isPlayer
                                 || !player.hitbox.collidesWith(detectionHitbox)
-                                || Math.random() > perk.infectionChance
                                 || player.hasPerk(PerkIds.Immunity)
                             ) continue;
-                            player.addPerk(Perks.fromString(PerkIds.Infected));
-                            player.setDirty();
+                            player.infection += perk.infectionUnits;
                         }
+
+                        // 3) Random perk swap, without removing the perk itself
+                        const allowedPerks = Perks.definitions.filter(perkDef => !perkDef.infectedEffectIgnore && perkDef.category !== PerkCategories.Infection),
+                            perkToRemove = this.perks.find(perk => perk.category !== PerkCategories.Infection && !perk.infectedEffectIgnore),
+                            randomPerk = pickRandomInArray(allowedPerks);
+
+                        if (perkToRemove !== undefined) this.removePerk(perkToRemove);
+                        this.addPerk(randomPerk);
                         break;
                     }
                 }
@@ -1978,6 +1992,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             }
             case PerkIds.Infected: {
                 this.infection = 100;
+                this.addPerk(PerkIds.Necrosis);
                 break;
             }
         }
@@ -2058,6 +2073,10 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 break;
             }
             case PerkIds.Infected: { // evil
+                this.removePerk(PerkIds.Necrosis);
+                const perkToRemove = this.perks.find(perk => perk.category !== PerkCategories.Infection && !perk.infectedEffectIgnore);
+                if (perkToRemove !== undefined) this.removePerk(perkToRemove);
+
                 const immunity = PerkData[PerkIds.Immunity];
                 this.infection = 0;
                 this.addPerk(immunity);
@@ -2561,12 +2580,6 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                     newModifiers.size *= perk.sizeMod;
                     break;
                 }
-                case PerkIds.Infected: {
-                    newModifiers.baseSpeed *= perk.speedMod;
-                    newModifiers.maxHealth *= perk.healthMod;
-                    newModifiers.adrenDrain *= perk.adrenDrainMod;
-                    break;
-                }
                 case PerkIds.ExperimentalForcefield: {
                     newModifiers.shieldRegen += perk.shieldRegenRate;
                     break;
@@ -2883,10 +2896,12 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
         // Drop perks
         for (const perk of this.perks) {
-            if (!perk.noDrop) {
-                this.game.addLoot(perk, position, layer);
-            } else if (perk.noDrop && perk.category === PerkCategories.Halloween) {
-                this.game.addLoot(PerkIds.PlumpkinGamble, position, layer);
+            if (!this.hasPerk(PerkIds.Infected)) {
+                if (!perk.noDrop) {
+                    this.game.addLoot(perk, position, layer);
+                } else if (perk.noDrop && perk.category === PerkCategories.Halloween) {
+                    this.game.addLoot(PerkIds.PlumpkinGamble, position, layer);
+                }
             }
         }
 

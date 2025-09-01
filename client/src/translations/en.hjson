@@ -425,7 +425,7 @@
 "rotten_plumpkin": "Rotten Plumpkin"
 "rotten_plumpkin_desc": "Every 10 seconds, you send the vomit emote and lose 5% adrenaline and 5 health."
 "infected": "Infected"
-"infected_desc": "Increased speed and damage, but health drops and adrenaline decays fast. Infect nearby players."
+"infected_desc": "Swaps to a random perk every 15 seconds.<br>Lose health every second.<br>Infect nearby players."
 "immunity": "Immunity"
 "immunity_desc": "Immune to infection for 15 seconds."
 "hollow_points": "Hollow Points"

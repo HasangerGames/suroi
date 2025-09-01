@@ -45,6 +45,7 @@
 - Fixed the highlight functionality of the hollow points perk.
 - Fixed the garage door not using it's residue.
 - Fixed the seedshot case sprite.
+- Fixed an issue where the item dropping sound would play for specific items that can't be dropped such as fists, certain perks or equipment.
 - Increased the ocean size of the hunted map.
 - The an-94 can now drop from the memorial crate.
 - Replaced all locked metal doors with powered metal doors (Headquarters, Fulcrum Bunker, Train Station).
@@ -61,6 +62,12 @@
     - Needles no longer provide the "Immunity" perk but decrease the infection bar by 20 units.
       - If the infection bar gets at 0, the player gets cured and receives the immunity perk.
   - Vaccine Syringe (the consumable) is unaffected by this change (it still works as it used to).
+
+  - "Infected" perk
+    - No longer applies speed and damage modifiers.
+    - Removed the adrenaline drain.
+    - Every 15 seconds it now adds a random perk to the player.
+    - Drains additional healthpoints every second.
 
 - Flares obtained from swapping throwables with baby plumpkins are now limited to 2.
 - Guns no longer spawn inside hollow logs.
