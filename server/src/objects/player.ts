@@ -309,7 +309,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     get infection(): number { return this._infection; }
     set infection(infection: number) {
         const clamped = Numeric.clamp(infection, 0, this._maxInfection);
-        if (this._infection === clamped) return;
+        if (this._infection === clamped || this.hasPerk(PerkIds.Immunity)) return;
 
         this._infection = clamped;
         this.dirty.infection = true;
@@ -886,7 +886,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 const { idString } = chosenItem;
 
                 const count = items.hasItem(idString) ? items.getItem(idString) : 0;
-                const max = maxCapacity[idString];
+                const max = chosenItem.maxSwapCount ?? maxCapacity[idString];
 
                 const toAdd = Numeric.min(max - count, 3);
                 // toAdd is greater than 0
@@ -1974,6 +1974,10 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             case PerkIds.Overdrive: {
                 this.overdriveTimeout?.kill();
                 this.overdriveKills = 0;
+                break;
+            }
+            case PerkIds.Infected: {
+                this.infection = 100;
                 break;
             }
         }
