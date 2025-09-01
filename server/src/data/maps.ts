@@ -684,11 +684,11 @@ const maps = {
             flint_crate: 5,
             aegis_crate: 5,
             grenade_crate: 35,
-            rock: 150,
+            rock: 200,
             river_chest: 1,
-            bush: 110,
+            bush: 120,
             // birthday_cake: 100, // birthday mode
-            blueberry_bush: 30,
+            blueberry_bush: 35,
             barrel: 80,
             viking_chest: 1,
             super_barrel: 30,
@@ -699,7 +699,7 @@ const maps = {
         },
         obstacleClumps: [
             {
-                clumpAmount: 100,
+                clumpAmount: 80,
                 clump: {
                     minAmount: 2,
                     maxAmount: 3,
@@ -709,7 +709,7 @@ const maps = {
                 }
             },
             {
-                clumpAmount: 25,
+                clumpAmount: 15,
                 clump: {
                     minAmount: 2,
                     maxAmount: 3,

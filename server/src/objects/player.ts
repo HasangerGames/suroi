@@ -2059,10 +2059,10 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             }
             case PerkIds.Infected: { // evil
                 const immunity = PerkData[PerkIds.Immunity];
+                this.infection = 0;
                 this.addPerk(immunity);
                 this.immunityTimeout?.kill();
                 this.immunityTimeout = this.game.addTimeout(() => this.removePerk(immunity), immunity.duration);
-                this.infection = 0;
                 this.setDirty();
                 break;
             }
