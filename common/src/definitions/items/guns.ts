@@ -2836,7 +2836,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
         recoilMultiplier: 0.01,
         recoilDuration: 0,
         bulletOffset: 3,
-        bulletOffsets: [2, 4, 2, 4],
+        bulletOffsets: [2.2, 3.95, 2.2, 3.95],
         shotSpread: 0,
         moveSpread: 0,
         length: 7.35,
@@ -2863,11 +2863,12 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
             damage: 20,
             obstacleMultiplier: 1,
             speed: 0.15,
-            range: 120,
+            range: 135,
             onHitExplosion: "m202_explosion",
             explodeOnImpact: true,
             tracer: {
-                image: "baby_plumpkin_trail"
+                image: "baby_plumpkin_trail",
+                spinSpeed: 0.075
             },
             trail: {
                 frame: "small_gas",
@@ -2879,7 +2880,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
                 spreadSpeed: { min: 1, max: 3 },
                 lifetime: { min: 1500, max: 3000 }
             },
-            ignoreCoolerGraphics: true, // we want smoke trail when it launches plumpkin
+            ignoreCoolerGraphics: true, // we want smoke trail when it launches plumpkins
             infection: 100
         },
         cameraShake: {

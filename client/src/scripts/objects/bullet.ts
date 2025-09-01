@@ -65,6 +65,9 @@ export class Bullet extends BaseBullet {
         }
 
         this._image.anchor.set(1, 0.5);
+        if (tracerStats?.spinSpeed !== undefined) {
+            this._image.anchor.set(0.5, 0.5);
+        }
 
         const color = new Color(
             tracerStats?.color === -1
@@ -168,6 +171,10 @@ export class Bullet extends BaseBullet {
 
                 this.dead = true;
                 break;
+            }
+
+            if (this.definition.tracer?.spinSpeed !== undefined) {
+                this._image.rotation += this.definition.tracer.spinSpeed;
             }
         }
 

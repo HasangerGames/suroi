@@ -90,10 +90,6 @@ type CommonObstacleDefinition = ObjectDefinition & {
     readonly applyPerkOnDestroy?: {
         readonly mode?: ModeName
         readonly perk: ReferenceTo<PerkDefinition>
-        /**
-         * A number between 0 and 1 indicating the chance of the perk being applied
-         */
-        readonly chance: number
     }
 
     readonly gunMount?: {
@@ -1421,8 +1417,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         regenerateAfterDestroyed: 30000,
         applyPerkOnDestroy: {
             mode: "infection",
-            perk: PerkIds.Infected,
-            chance: 0.05
+            perk: PerkIds.Infected
         },
         glow: {
             tint: 0x643554,
@@ -1432,7 +1427,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
                 to: 0.5,
                 duration: 1e3
             }
-        },
+        }
     },
     {
         idString: "plumpkin",

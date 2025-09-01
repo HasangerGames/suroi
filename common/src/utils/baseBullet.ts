@@ -58,6 +58,11 @@ export type BaseBulletDefinition = {
          */
         readonly color?: number
         readonly saturatedColor?: number
+
+        /**
+         * How fast tracer images spin (useful for projectiles)
+        */
+        readonly spinSpeed?: number
     }
 
     readonly trail?: {
