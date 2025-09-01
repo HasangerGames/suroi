@@ -30,7 +30,7 @@
 # Changelog
 
 [VERSION] - [RELEASE_DATE]
-- Added new throwable: S.E.E.D. (infection mode only).
+- Added new throwable: S.E.E.D. (Sequential Explosive Ejection Device) (infection mode only).
 - Added a pine tree variant for infection mode.
 - Added a vaccine syringe residue.
 - Added new melee: hand saw (hunted & harvest mode only).
@@ -44,6 +44,7 @@
 - Fixed the killfeed images for maul and m590m.
 - Fixed the highlight functionality of the hollow points perk.
 - Fixed the garage door not using it's residue.
+- Fixed the seedshot case sprite.
 - Increased the ocean size of the hunted map.
 - The an-94 can now drop from the memorial crate.
 - Replaced all locked metal doors with powered metal doors (Headquarters, Fulcrum Bunker, Train Station).
@@ -53,10 +54,13 @@
 ## Balance
 - Completely reworked the infection mode logic.
   - Players now have an infection bar, similar to the shield bar that determines your percentage (%) of infection, if the bar gets full, you get the infected perk.
+  
   - Vaccinator
+    - Slowdown duration decreased to 1.25 seconds (from 2 seconds).
+    - Speed multiplier increased to 0.9 (from 0.7).
     - Needles no longer provide the "Immunity" perk but decrease the infection bar by 20 units.
       - If the infection bar gets at 0, the player gets cured and receives the immunity perk.
-  - Vaccine syringe (the consumable) is unaffected by this change.
+  - Vaccine Syringe (the consumable) is unaffected by this change (it still works as it used to).
 
 - Flares obtained from swapping throwables with baby plumpkins are now limited to 2.
 - Guns no longer spawn inside hollow logs.

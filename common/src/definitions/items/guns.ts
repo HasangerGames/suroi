@@ -2986,8 +2986,8 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
                 length: 1.4
             },
             enemySpeedMultiplier: {
-                duration: 2000,
-                multiplier: 0.7
+                duration: 1250,
+                multiplier: 0.9
             }
         },
         noSwap: true
