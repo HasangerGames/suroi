@@ -1423,7 +1423,16 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
             mode: "infection",
             perk: PerkIds.Infected,
             chance: 0.05
-        }
+        },
+        glow: {
+            tint: 0x643554,
+            scale: 0.6,
+            alpha: 0.8,
+            scaleAnim: {
+                to: 0.5,
+                duration: 1e3
+            }
+        },
     },
     {
         idString: "plumpkin",
