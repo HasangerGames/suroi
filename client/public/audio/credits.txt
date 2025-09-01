@@ -66,10 +66,8 @@ Guns:
   RPK-74 (Reload, Switch) - modified by Teardrop, main sound is Gamebanana
   RPK-16 (Fire, Reload, Switch) - modified by Teardrop, main sound is from Gamebanana
 
-  P226-S (Reload) - Combination of the following sounds:
-    - Pistol Draw Unholster by "freesound_community" from Pixabay: https://pixabay.com/users/freesound_community-46691455/
-    - gun full reload by "u_2jam93dfan" from Pixabay: https://pixabay.com/users/u_2jam93dfan-51535441/
-    - CP99 Reload by "freesound_community" from Pixabay: https://pixabay.com/users/freesound_community-46691455/
+  P226-S (Fire, Reload, Switch) - https://gamebanana.com/sounds/26936
+
   M202-F (Fire) - "Usas 12 Sound effect" by Red_Army_Soviet from Pixabay: https://pixabay.com/users/red_army_soviet-46121007/
   M202-F (Switch) - "grappling gun" by akivavita from Pixabay: https://pixabay.com/users/akivavita-32661801/
   M202-F (Reload) - Combination and edit of the following sounds:
