@@ -1456,11 +1456,6 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                         if (this.health > perk.minHealth) {
                             this.health = Numeric.max(this.health - perk.dps, perk.minHealth);
                         }
-                        break;
-                    }
-                    case PerkIds.Infected: {
-                        // 1) Bleed health slowly* ^
-                        // Used by Necrosis, a perk that does not display in HUD.
 
                         // 2) Infect nearby players
                         const detectionHitbox = new CircleHitbox(perk.infectionRadius, this.position);
@@ -1472,6 +1467,12 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                             ) continue;
                             player.infection += perk.infectionUnits;
                         }
+                        break;
+                    }
+                    case PerkIds.Infected: {
+                        // 1) Bleed health slowly* ^
+                        // 2) Infect nearby players
+                        // Used by Necrosis, a perk that does not display in HUD.
 
                         // 3) Random perk swap, without removing the perk itself
                         const allowedPerks = Perks.definitions.filter(perkDef => !perkDef.infectedEffectIgnore && perkDef.category !== PerkCategories.Infection),

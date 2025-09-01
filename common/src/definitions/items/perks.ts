@@ -459,8 +459,6 @@ const perks = [
         category: PerkCategories.Infection,
         quality: PerkQualities.Negative,
         updateInterval: 15000,
-        infectionRadius: 20,
-        infectionUnits: 2,
         noDrop: true,
         plumpkinGambleIgnore: true
     },
@@ -471,6 +469,8 @@ const perks = [
         category: PerkCategories.Infection,
         updateInterval: 1000,
         dps: 0.78,
+        infectionRadius: 20,
+        infectionUnits: 5,
         minHealth: 5,
         hideInHUD: true,
         noDrop: true
