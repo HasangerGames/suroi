@@ -740,7 +740,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
         gasParticles: gasParticlePresets.pistol,
         capacity: 12,
         extendedCapacity: 20,
-        reloadTime: 1.45,
+        reloadTime: 1.5,
         ballistics: {
             damage: 19,
             obstacleMultiplier: 1,
