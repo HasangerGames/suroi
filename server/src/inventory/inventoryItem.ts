@@ -230,6 +230,7 @@ export abstract class InventoryItemBase<Type extends WeaponTypes = WeaponTypes> 
                 minAdrenaline: this._modifiers.minAdrenaline !== newModifiers.minAdrenaline,
                 size: this._modifiers.size !== newModifiers.size,
                 reload: this._modifiers.reload !== newModifiers.reload,
+                fireRate: this._modifiers.fireRate !== newModifiers.fireRate,
                 adrenDrain: this._modifiers.adrenDrain !== newModifiers.adrenDrain,
 
                 baseSpeed: this._modifiers.baseSpeed !== newModifiers.baseSpeed,
@@ -246,6 +247,7 @@ export abstract class InventoryItemBase<Type extends WeaponTypes = WeaponTypes> 
                 this._modifiers.minAdrenaline = newModifiers.minAdrenaline;
                 this._modifiers.size = newModifiers.size;
                 this._modifiers.reload = newModifiers.reload;
+                this._modifiers.fireRate = newModifiers.fireRate;
                 this._modifiers.adrenDrain = newModifiers.adrenDrain;
 
                 this._modifiers.baseSpeed = newModifiers.baseSpeed;

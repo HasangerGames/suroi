@@ -2,7 +2,7 @@
 
 This file is a report of all errors and missing keys in the translation files of this game.
 
-## 🇦🇱 Shqip (59% Complete) - ab.hjson
+## 🇦🇱 Shqip (58% Complete) - ab.hjson
 
 ### Invalid Keys
 
@@ -124,6 +124,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `precision_recycling_desc` is not defined
 - Key `loot_baron` is not defined
 - Key `loot_baron_desc` is not defined
+- Key `overclocked` is not defined
+- Key `overclocked_desc` is not defined
 - Key `plumpkin_gamble` is not defined
 - Key `plumpkin_gamble_desc` is not defined
 - Key `lycanthropy` is not defined
@@ -170,7 +172,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `username_placeholder` is not defined
 - Key `msg_contact` is not defined
 
-## 🇧🇷 Português (Brasil) (93% Complete) - br.hjson
+## 🇧🇷 Português (Brasil) (92% Complete) - br.hjson
 
 ### Invalid Keys
 
@@ -202,6 +204,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `region_oc` is not defined
 - Key `vaccine_syringe` is not defined
 - Key `vaccine_syringe_desc` is not defined
+- Key `overclocked` is not defined
+- Key `overclocked_desc` is not defined
 - Key `priority_target` is not defined
 - Key `priority_target_desc` is not defined
 - Key `butterfingers` is not defined
@@ -321,6 +325,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `precision_recycling_desc` is not defined
 - Key `loot_baron` is not defined
 - Key `loot_baron_desc` is not defined
+- Key `overclocked` is not defined
+- Key `overclocked_desc` is not defined
 - Key `plumpkin_gamble` is not defined
 - Key `plumpkin_gamble_desc` is not defined
 - Key `lycanthropy` is not defined
@@ -449,6 +455,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `precision_recycling_desc` is not defined
 - Key `loot_baron` is not defined
 - Key `loot_baron_desc` is not defined
+- Key `overclocked` is not defined
+- Key `overclocked_desc` is not defined
 - Key `plumpkin_gamble` is not defined
 - Key `plumpkin_gamble_desc` is not defined
 - Key `lycanthropy` is not defined
@@ -598,6 +606,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `precision_recycling_desc` is not defined
 - Key `loot_baron` is not defined
 - Key `loot_baron_desc` is not defined
+- Key `overclocked` is not defined
+- Key `overclocked_desc` is not defined
 - Key `plumpkin_gamble` is not defined
 - Key `plumpkin_gamble_desc` is not defined
 - Key `lycanthropy` is not defined
@@ -821,6 +831,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `region_ea` is not defined
 - Key `loot_baron` is not defined
 - Key `loot_baron_desc` is not defined
+- Key `overclocked` is not defined
+- Key `overclocked_desc` is not defined
 - Key `baby_plumpkin_pie_desc` is not defined
 - Key `priority_target` is not defined
 - Key `priority_target_desc` is not defined
@@ -836,12 +848,14 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive_desc` is not defined
 - Key `msg_contact` is not defined
 
-## 🇮🇷 فارسی (99% Complete) - fa.hjson
+## 🇮🇷 فارسی (98% Complete) - fa.hjson
 
 ### (No Invalid Keys)
 
 ### Undefined Keys
 
+- Key `overclocked` is not defined
+- Key `overclocked_desc` is not defined
 - Key `priority_target` is not defined
 - Key `priority_target_desc` is not defined
 - Key `butterfingers` is not defined
@@ -950,6 +964,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `precision_recycling_desc` is not defined
 - Key `loot_baron` is not defined
 - Key `loot_baron_desc` is not defined
+- Key `overclocked` is not defined
+- Key `overclocked_desc` is not defined
 - Key `plumpkin_gamble` is not defined
 - Key `plumpkin_gamble_desc` is not defined
 - Key `lycanthropy` is not defined
@@ -1026,6 +1042,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `vaccine_syringe_desc` is not defined
 - Key `loot_baron` is not defined
 - Key `loot_baron_desc` is not defined
+- Key `overclocked` is not defined
+- Key `overclocked_desc` is not defined
 - Key `baby_plumpkin_pie_desc` is not defined
 - Key `priority_target` is not defined
 - Key `priority_target_desc` is not defined
@@ -1065,6 +1083,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `close_quarters_combat_desc` is not defined
 - Key `low_profile` is not defined
 - Key `low_profile_desc` is not defined
+- Key `overclocked` is not defined
+- Key `overclocked_desc` is not defined
 - Key `plumpkin_gamble` is not defined
 - Key `plumpkin_gamble_desc` is not defined
 - Key `lycanthropy` is not defined
@@ -1228,6 +1248,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `precision_recycling_desc` is not defined
 - Key `loot_baron` is not defined
 - Key `loot_baron_desc` is not defined
+- Key `overclocked` is not defined
+- Key `overclocked_desc` is not defined
 - Key `plumpkin_gamble` is not defined
 - Key `plumpkin_gamble_desc` is not defined
 - Key `lycanthropy` is not defined
@@ -1274,7 +1296,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `username_placeholder` is not defined
 - Key `msg_contact` is not defined
 
-## 🇭🇺 Magyar (92% Complete) - hu.hjson
+## 🇭🇺 Magyar (91% Complete) - hu.hjson
 
 ### Invalid Keys
 
@@ -1298,6 +1320,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `region_ea` is not defined
 - Key `loot_baron` is not defined
 - Key `loot_baron_desc` is not defined
+- Key `overclocked` is not defined
+- Key `overclocked_desc` is not defined
 - Key `baby_plumpkin_pie_desc` is not defined
 - Key `priority_target` is not defined
 - Key `priority_target_desc` is not defined
@@ -1445,6 +1469,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `precision_recycling_desc` is not defined
 - Key `loot_baron` is not defined
 - Key `loot_baron_desc` is not defined
+- Key `overclocked` is not defined
+- Key `overclocked_desc` is not defined
 - Key `plumpkin_gamble` is not defined
 - Key `plumpkin_gamble_desc` is not defined
 - Key `lycanthropy` is not defined
@@ -1491,7 +1517,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `username_placeholder` is not defined
 - Key `msg_contact` is not defined
 
-## 🇯🇵 日本語 (99% Complete) - jp.hjson
+## 🇯🇵 日本語 (98% Complete) - jp.hjson
 
 ### Invalid Keys
 
@@ -1769,6 +1795,8 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### Undefined Keys
 
+- Key `overclocked` is not defined
+- Key `overclocked_desc` is not defined
 - Key `priority_target` is not defined
 - Key `priority_target_desc` is not defined
 - Key `butterfingers` is not defined
@@ -1888,6 +1916,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `precision_recycling_desc` is not defined
 - Key `loot_baron` is not defined
 - Key `loot_baron_desc` is not defined
+- Key `overclocked` is not defined
+- Key `overclocked_desc` is not defined
 - Key `plumpkin_gamble` is not defined
 - Key `plumpkin_gamble_desc` is not defined
 - Key `lycanthropy` is not defined
@@ -2047,6 +2077,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `precision_recycling_desc` is not defined
 - Key `loot_baron` is not defined
 - Key `loot_baron_desc` is not defined
+- Key `overclocked` is not defined
+- Key `overclocked_desc` is not defined
 - Key `plumpkin_gamble` is not defined
 - Key `plumpkin_gamble_desc` is not defined
 - Key `lycanthropy` is not defined
@@ -2118,6 +2150,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `vaccine_syringe_desc` is not defined
 - Key `loot_baron` is not defined
 - Key `loot_baron_desc` is not defined
+- Key `overclocked` is not defined
+- Key `overclocked_desc` is not defined
 - Key `baby_plumpkin_pie_desc` is not defined
 - Key `priority_target` is not defined
 - Key `priority_target_desc` is not defined
@@ -2227,6 +2261,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `precision_recycling_desc` is not defined
 - Key `loot_baron` is not defined
 - Key `loot_baron_desc` is not defined
+- Key `overclocked` is not defined
+- Key `overclocked_desc` is not defined
 - Key `plumpkin_gamble` is not defined
 - Key `plumpkin_gamble_desc` is not defined
 - Key `lycanthropy` is not defined
@@ -2360,6 +2396,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `precision_recycling_desc` is not defined
 - Key `loot_baron` is not defined
 - Key `loot_baron_desc` is not defined
+- Key `overclocked` is not defined
+- Key `overclocked_desc` is not defined
 - Key `plumpkin_gamble` is not defined
 - Key `plumpkin_gamble_desc` is not defined
 - Key `lycanthropy` is not defined
@@ -2419,6 +2457,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_shake_count` is not defined
 - Key `settings_shake_force` is not defined
 - Key `settings_shake_delay` is not defined
+- Key `overclocked` is not defined
+- Key `overclocked_desc` is not defined
 - Key `baby_plumpkin_pie_desc` is not defined
 - Key `priority_target` is not defined
 - Key `priority_target_desc` is not defined
@@ -2426,7 +2466,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `butterfingers_desc` is not defined
 - Key `msg_contact` is not defined
 
-## 🇷🇺 Русский (94% Complete) - ru.hjson
+## 🇷🇺 Русский (93% Complete) - ru.hjson
 
 ### Invalid Keys
 
@@ -2455,6 +2495,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `vaccine_syringe_desc` is not defined
 - Key `loot_baron` is not defined
 - Key `loot_baron_desc` is not defined
+- Key `overclocked` is not defined
+- Key `overclocked_desc` is not defined
 - Key `baby_plumpkin_pie_desc` is not defined
 - Key `priority_target` is not defined
 - Key `priority_target_desc` is not defined
@@ -2462,7 +2504,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `butterfingers_desc` is not defined
 - Key `msg_contact` is not defined
 
-## 🇮🇳 தமிழ் (97% Complete) - ta.hjson
+## 🇮🇳 தமிழ் (96% Complete) - ta.hjson
 
 ### Invalid Keys
 
@@ -2479,6 +2521,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `kf_impact_of` is not defined
 - Key `berserker` is not defined
 - Key `berserker_desc` is not defined
+- Key `overclocked` is not defined
+- Key `overclocked_desc` is not defined
 - Key `plumpkin_bomb` is not defined
 - Key `plumpkin_bomb_desc` is not defined
 - Key `priority_target` is not defined
@@ -2549,6 +2593,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `precision_recycling_desc` is not defined
 - Key `loot_baron` is not defined
 - Key `loot_baron_desc` is not defined
+- Key `overclocked` is not defined
+- Key `overclocked_desc` is not defined
 - Key `plumpkin_gamble` is not defined
 - Key `plumpkin_gamble_desc` is not defined
 - Key `lycanthropy` is not defined
@@ -2669,6 +2715,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `precision_recycling_desc` is not defined
 - Key `loot_baron` is not defined
 - Key `loot_baron_desc` is not defined
+- Key `overclocked` is not defined
+- Key `overclocked_desc` is not defined
 - Key `plumpkin_gamble` is not defined
 - Key `plumpkin_gamble_desc` is not defined
 - Key `lycanthropy` is not defined
@@ -2739,6 +2787,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `region_ea` is not defined
 - Key `loot_baron` is not defined
 - Key `loot_baron_desc` is not defined
+- Key `overclocked` is not defined
+- Key `overclocked_desc` is not defined
 - Key `baby_plumpkin_pie_desc` is not defined
 - Key `priority_target` is not defined
 - Key `priority_target_desc` is not defined
@@ -2754,7 +2804,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive_desc` is not defined
 - Key `msg_contact` is not defined
 
-## 🇨🇳 中文（简体） (99% Complete) - zh.hjson
+## 🇨🇳 中文（简体） (98% Complete) - zh.hjson
 
 ### Invalid Keys
 
@@ -3020,6 +3070,8 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### Undefined Keys
 
+- Key `overclocked` is not defined
+- Key `overclocked_desc` is not defined
 - Key `priority_target` is not defined
 - Key `priority_target_desc` is not defined
 - Key `butterfingers` is not defined

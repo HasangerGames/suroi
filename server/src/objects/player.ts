@@ -286,6 +286,14 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         this.setDirty();
     }
 
+    private _fireRateMod = 1;
+    get fireRateMod(): number { return this._fireRateMod; }
+    set fireRateMod(fireRate: number) {
+        if (this._fireRateMod === fireRate) return;
+
+        this._fireRateMod = fireRate;
+    }
+
     private _maxInfection = GameConstants.player.maxInfection;
 
     private _normalizedInfection = 0;
@@ -794,7 +802,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         this.targetHitCountExpiration?.kill();
         this.targetHitCountExpiration = this.game.addTimeout(() => {
             this.bulletTargetHitCount = 0;
-        }, margin * item.definition.fireDelay);
+        }, margin * item.definition.fireDelay * this.fireRateMod);
 
         if (this.bulletTargetHitCount < hitsNeeded) {
             ++this.bulletTargetHitCount;
@@ -2610,6 +2618,10 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                     newModifiers.reload *= perk.reloadMod;
                     break;
                 }
+                case PerkIds.Overclocked: {
+                    newModifiers.fireRate *= perk.fireRateMod;
+                    break;
+                }
             }
         }
         // ! evil ends here
@@ -2650,7 +2662,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             minAdrenaline,
             maxShield,
             size,
-            reload
+            reload,
+            fireRate
         } = this._modifiers = this._calculateModifiers();
 
         this.maxHealth = GameConstants.player.defaultHealth * maxHealth;
@@ -2659,6 +2672,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         this.minAdrenaline = minAdrenaline;
         this.sizeMod = size;
         this.reloadMod = reload;
+        this.fireRateMod = fireRate;
     }
 
     updateBackEquippedMelee(): void {

@@ -44,6 +44,7 @@ export const GameConstants = {
             baseSpeed: 1,
             size: 1,
             reload: 1,
+            fireRate: 1,
             adrenDrain: 1,
 
             minAdrenaline: 0,

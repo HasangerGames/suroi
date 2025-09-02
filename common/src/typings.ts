@@ -9,6 +9,7 @@ export interface PlayerModifiers {
     baseSpeed: number
     size: number
     reload: number
+    fireRate: number
     adrenDrain: number
 
     // Additive

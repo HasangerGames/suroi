@@ -430,6 +430,8 @@ Perk Icons:
   Thermal Goggles: Skullboi249
   Overdrive: AnnihilatingFox
   Loot Baron: Skullboi249
+  Butterfingers: Skullboi249
+  Overclocked: sniperboi4/TjCj
 
 Saw Killfeed - AnnihilatingFox
 

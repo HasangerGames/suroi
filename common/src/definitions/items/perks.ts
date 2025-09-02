@@ -63,6 +63,7 @@ export const enum PerkIds {
     CombatExpert = "combat_expert",
     PrecisionRecycling = "precision_recycling",
     LootBaron = "loot_baron",
+    Overclocked = "overclocked",
 
     //
     // Halloween Perks
@@ -239,6 +240,14 @@ const perks = [
         defType: DefinitionType.Perk,
         category: PerkCategories.Normal,
         lootBonus: 1
+    },
+    {
+        idString: PerkIds.Overclocked,
+        name: "Overclocked",
+        defType: DefinitionType.Perk,
+        category: PerkCategories.Normal,
+        fireRateMod: 0.5,
+        spreadMod: 2.5
     },
     //
     // Halloween perks
