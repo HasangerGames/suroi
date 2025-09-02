@@ -289,7 +289,6 @@ class UIManagerClass {
         detonateKey: $<HTMLDivElement>("#detonate-key"),
 
         inventoryMsg: $<HTMLSpanElement>("#inventory-message"),
-        perkMsg: $<HTMLDivElement>("#perk-message"),
 
         debugPos: $<HTMLSpanElement>("#coordinates-hud"),
 
@@ -1101,16 +1100,17 @@ class UIManagerClass {
             lootBg = `./img/game/shared/loot/loot_background_${perkDef.idString === PerkIds.PlumpkinGamble ? PerkIds.PlumpkinGamble : "perk"}.svg`,
             perkName = getTranslatedString(perkDef.idString as unknown as TranslationKeys);
 
-        const { killMsgModal, inventoryMsg, perkMsg, interactMsg } = this.ui;
+        const { killMsgModal, inventoryMsg, interactMsg } = this.ui;
 
+        clearTimeout(Game.inventoryMsgTimeout);
         killMsgModal.fadeOut(PERK_MESSAGE_FADE_TIME);
-        inventoryMsg.fadeOut(PERK_MESSAGE_FADE_TIME);
         interactMsg.fadeOut(PERK_MESSAGE_FADE_TIME);
 
-        perkMsg
+        inventoryMsg
+            .fadeOut(0)
             .html(`
                 <div id="perk" style="background-image: url(${lootBg});">
-                    <img class="perk-img" src="${perkSrc}" draggable="false" width="50" height="50"/>
+                    <img class="perk-img" src="${perkSrc}" draggable="false"/>
                 </div>
                 <strong class="perk-name">${perkName}</strong>
             `)
@@ -1135,7 +1135,7 @@ class UIManagerClass {
 
         this._animationTimeouts[index] = window.setTimeout(() => {
             container.css("animation", "none");
-            perkMsg.fadeOut(PERK_MESSAGE_FADE_TIME);
+            inventoryMsg.fadeOut(PERK_MESSAGE_FADE_TIME);
         }, flashAnimationDuration);
     }
 
@@ -1688,7 +1688,6 @@ class UIManagerClass {
             this.ui.killMsgHeader.text("");
         }
 
-        this.ui.perkMsg.fadeOut(PERK_MESSAGE_FADE_TIME);
         this.ui.killMsgContainer.html(modalMessage);
 
         this.ui.killMsgModal.fadeIn(350, () => {

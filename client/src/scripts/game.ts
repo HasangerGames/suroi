@@ -529,8 +529,7 @@ export const Game = new (class Game {
                 const { message, item } = packet;
 
                 if (message !== undefined) {
-                    const { inventoryMsg, perkMsg } = UIManager.ui;
-                    perkMsg.fadeOut(250);
+                    const { inventoryMsg } = UIManager.ui;
                     inventoryMsg.text(getTranslatedString(this._inventoryMessageMap[message])).fadeIn(250);
 
                     clearTimeout(this.inventoryMsgTimeout);

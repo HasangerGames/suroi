@@ -653,10 +653,22 @@
     }
 
     @media screen and (max-width: 900px) and (max-height: 500px) {
-        transform: scale(80%);
-        transform-origin: 0% 0%;
-        left: 45.5%;
         top: 59%;
+
+        #interact-text {
+            font-size: 10px;
+        }
+
+        #interact-key {
+            width: 15px;
+            height: 15px;
+            font-size: 12px;
+
+            img {
+                width: 14px;
+                height: 14px;
+            }
+        }
     }
 }
 
@@ -1294,20 +1306,19 @@
         cursor: pointer;
     }
 }
-#perk-message {
+#inventory-message {
     position: absolute;
-    top: calc(60% + 20px);
-    left: calc(50% - 2px);
+    top: calc(60% + 100px);
+    left: 50%;
     transform: translateX(-50%);
     font-size: 30px;
     font-weight: bold;
-    @include variables.text-shadow; 
+    @include variables.text-shadow;
+
     display: flex;
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    width: 100%;
-    height: 140px;
 
     #perk {
         display: flex;
@@ -1317,8 +1328,8 @@
         background-position: center;
         background-repeat: no-repeat;
         background-size: 75px;
-        width: 50%;
-        height: 50%;
+        width: 100%;
+        height: 80px;
 
         .perk-img {
             width: 42px;
@@ -1336,27 +1347,19 @@
         margin: 0;
         
         #perk {
-            background-size: 40px;
+            background-size: 45px;
+            height: 68px;
 
             .perk-img {
-                width: 22px;
+                width: 25px;
             }
         }
 
         .perk-name {
-            font-size: 10px;
+            font-size: 12px;
             margin-top: -15px;
         }
     }
-}
-#inventory-message {
-    position: absolute;
-    top: calc(60% + 100px);
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 30px;
-    font-weight: bold;
-    @include variables.text-shadow;
 
     @media screen and (max-height: 750px) {
         font-size: 20px;
