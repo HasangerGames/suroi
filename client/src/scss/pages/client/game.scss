@@ -1297,7 +1297,7 @@
 #perk-message {
     position: absolute;
     top: calc(60% + 20px);
-    left: 50%;
+    left: calc(50% - 2px);
     transform: translateX(-50%);
     font-size: 30px;
     font-weight: bold;
@@ -1314,8 +1314,6 @@
         align-items: center;
         justify-content: center;
         flex-direction: column;
-
-        position: relative;
         background-position: center;
         background-repeat: no-repeat;
         background-size: 75px;
