@@ -424,6 +424,8 @@
 "laced_stimulants_desc": "Instead of healing you, adrenaline damages you at half the normal healing rate."
 "rotten_plumpkin": "Rotten Plumpkin"
 "rotten_plumpkin_desc": "Every 10 seconds, you send the vomit emote and lose 5% adrenaline and 5 health."
+"priority_target": "Priority Target"
+"priority_target_desc": "All players on the map can see your location."
 "butterfingers": "Butterfingers"
 "butterfingers_desc": "Increased reload time."
 "infected": "Infected"

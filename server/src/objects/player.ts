@@ -1475,7 +1475,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                         // Used by Necrosis, a perk that does not display in HUD.
 
                         // 3) Random perk swap, without removing the perk itself
-                        const allowedPerks = Perks.definitions.filter(perkDef => !perkDef.infectedEffectIgnore && perkDef.category !== PerkCategories.Infection),
+                        const allowedPerks = Perks.definitions.filter(perk => perk.category !== PerkCategories.Infection && !perk.infectedEffectIgnore),
                             perkToRemove = this.perks.find(perk => perk.category !== PerkCategories.Infection && !perk.infectedEffectIgnore),
                             randomPerk = pickRandomInArray(allowedPerks);
 
@@ -1997,6 +1997,10 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 this.addPerk(PerkIds.Necrosis);
                 break;
             }
+            case PerkIds.PriorityTarget: {
+                this.updateMapIndicator();
+                break;
+            }
         }
         // ! evil ends here
 
@@ -2098,6 +2102,10 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 this.overdriveKills = 0;
                 break;
             }
+            case PerkIds.PriorityTarget: {
+                this.updateMapIndicator();
+                break;
+            }
         }
         // ! evil ends here
 
@@ -2149,6 +2157,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 indicator = "juggernaut_indicator";
                 break;
         }
+
+        if (this.hasPerk(PerkIds.PriorityTarget)) indicator = "priority_target";
 
         if (indicator) {
             if (this.mapIndicator) {

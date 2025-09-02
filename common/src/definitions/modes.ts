@@ -113,7 +113,7 @@ export const Modes: Record<ModeName, ModeDefinition> = {
             void: "hsl(25, 80%, 6%)"
         },
         ambience: "wind_ambience",
-        spriteSheets: ["shared", "normal", "infection", "halloween"],
+        spriteSheets: ["shared", "normal", "infection"],
         playButtonImage: "./img/game/shared/perks/infected.svg",
         weaponSwap: true
     },

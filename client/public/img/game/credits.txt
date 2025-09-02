@@ -214,11 +214,6 @@ Guns:
     World Image: Skullboi249
     Killfeed Image: Skullboi249
 
-  P226-S:
-    Loot Image: AnnihilatingFox
-    World Image: AnnihilatingFox
-    Killfeed Image: AnnihilatingFox
-
   PK-61:
     Loot Image: Winter
     World Image: Winter

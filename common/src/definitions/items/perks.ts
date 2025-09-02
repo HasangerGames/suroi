@@ -80,8 +80,8 @@ export const enum PerkIds {
     Claustrophobic = "claustrophobic",
     LacedStimulants = "laced_stimulants",
     RottenPlumpkin = "rotten_plumpkin",
+    PriorityTarget = "priority_target",
     Butterfingers = "butterfingers",
-    // PriorityTarget = "priority_target",
 
     //
     // Infection
@@ -440,6 +440,15 @@ const perks = [
         noDrop: true
     },
     {
+        idString: PerkIds.PriorityTarget,
+        name: "Priority Target",
+        defType: DefinitionType.Perk,
+        category: PerkCategories.Halloween,
+        quality: PerkQualities.Negative,
+        mapIndicator: PerkIds.PriorityTarget,
+        noDrop: true
+    },
+    {
         idString: PerkIds.Butterfingers,
         name: "Butterfingers",
         defType: DefinitionType.Perk,
@@ -448,17 +457,6 @@ const perks = [
         reloadMod: 0.75,
         noDrop: true
     },
-    /* {
-        idString: PerkIds.PriorityTarget,
-        name: "Priority Target",
-        defType: DefinitionType.Perk,
-                description: "All players on the map can see your location.",
-        category: PerkCategories.Halloween,
-        type: PerkQualities.Negative,
-
-        noDrop: true,
-        plumpkinGambleIgnore: true
-    }, */
     //
     // Infection Mode
     //
