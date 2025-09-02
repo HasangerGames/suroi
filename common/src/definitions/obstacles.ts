@@ -449,7 +449,10 @@ export const TintedParticles: Record<string, { readonly base: string, readonly t
     graveyard_basement_particle: { base: "wood_particle", tint: 0x4f3924 },
     small_coffin_particle: { base: "wood_particle", tint: 0x964a1c },
     large_coffin_particle: { base: "wood_particle", tint: 0x865520 },
-    seedshot_case_particle: { base: "wood_particle", tint: 0x764e0a }
+    seedshot_case_particle: { base: "wood_particle", tint: 0x764e0a },
+    graveyard_particle_1: { base: "stone_particle_1", tint: 0x4e4e4e },
+    graveyard_particle_2: { base: "stone_particle_2", tint: 0x4e4e4e },
+    graveyard_basement_entrance_particle: { base: "wood_particle", tint: 0x553b24 }
 };
 
 const houseWall = (
@@ -5726,6 +5729,26 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
             low: 2
         },
         hitbox: RectangleHitbox.fromRect(7.5, 7),
+        frames: {
+            particle: "metal_particle"
+        },
+        rotationMode: RotationMode.Limited,
+        zIndex: ZIndexes.BuildingsFloor
+    },
+    {
+        idString: "graveyard_stair",
+        name: "Graveyard Stair",
+        defType: DefinitionType.Obstacle,
+        material: "metal_heavy",
+        health: 1000,
+        indestructible: true,
+        invisible: true,
+        isStair: true,
+        activeEdges: {
+            high: 0,
+            low: 2
+        },
+        hitbox: RectangleHitbox.fromRect(10.5, 10.56),
         frames: {
             particle: "metal_particle"
         },
