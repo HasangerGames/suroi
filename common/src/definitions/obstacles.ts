@@ -445,7 +445,11 @@ export const TintedParticles: Record<string, { readonly base: string, readonly t
     train_engine_collider_particle: { base: "metal_particle_1", tint: 0x971919 },
     wood_train_particle_1: { base: "stone_particle_1", tint: 0x8b1919 },
     wood_train_particle_2: { base: "stone_particle_2", tint: 0x8b1919 },
-    container_train_particle: { base: "metal_particle_1", tint: 0x1e6b63 }
+    container_train_particle: { base: "metal_particle_1", tint: 0x1e6b63 },
+    graveyard_basement_particle: { base: "wood_particle", tint: 0x4f3924 },
+    small_coffin_particle: { base: "wood_particle", tint: 0x964a1c },
+    large_coffin_particle: { base: "wood_particle", tint: 0x865520 },
+    seedshot_case_particle: { base: "wood_particle", tint: 0x764e0a }
 };
 
 const houseWall = (
@@ -6386,6 +6390,30 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         }
     },
     {
+        idString: "graveyard_light",
+        name: "Graveyard Light",
+        defType: DefinitionType.Obstacle,
+        material: "glass",
+        health: 80,
+        zIndex: ZIndexes.ObstaclesLayer3 + 0.6,
+        hitbox: new CircleHitbox(1.6),
+        noResidue: true,
+        rotationMode: RotationMode.Full,
+        frames: {
+            particle: "window_particle"
+        },
+        glow: {
+            tint: 0xcd8942,
+            scale: 0.25,
+            alpha: 0.8,
+            zIndex: ZIndexes.ObstaclesLayer3 + 0.7,
+            scaleAnim: {
+                to: 0.265,
+                duration: 150
+            }
+        }
+    },
+    {
         idString: "log",
         name: "Wood Log",
         defType: DefinitionType.Obstacle,
@@ -7153,6 +7181,73 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
             residue: "barrel_residue"
         },
         interactObstacleIdString: "control_panel"
+    },
+    {
+        idString: "graveyard_basement_collider_hack",
+        name: "Graveyard Basement Collider Hack",
+        defType: DefinitionType.Obstacle,
+        material: "stone",
+        health: 100,
+        indestructible: true,
+        invisible: true,
+        hitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(12.45, 1.99, Vec(-26.11, 21.31)),
+            RectangleHitbox.fromRect(12.14, 2.01, Vec(26.21, -9.75)),
+            RectangleHitbox.fromRect(12.47, 2.02, Vec(-26.1, 8.72)),
+            RectangleHitbox.fromRect(12.15, 1.99, Vec(26.27, -22.33))
+        ),
+        frames: {
+            particle: "graveyard_basement_particle"
+        },
+        rotationMode: RotationMode.Limited,
+        collideWithLayers: Layers.Equal
+    },
+    {
+        idString: "small_coffin",
+        name: "Small Coffin",
+        defType: DefinitionType.Obstacle,
+        material: "wood",
+        health: 150,
+        rotationMode: RotationMode.Limited,
+        hitbox: RectangleHitbox.fromRect(13.67, 6.48),
+        scale: {
+            spawnMax: 1,
+            spawnMin: 1,
+            destroy: 0.8
+        }
+    },
+    {
+        idString: "large_coffin",
+        name: "Large Coffin",
+        defType: DefinitionType.Obstacle,
+        material: "wood",
+        health: 300,
+        rotationMode: RotationMode.Limited,
+        hitbox: RectangleHitbox.fromRect(20.66, 10),
+        scale: {
+            spawnMax: 1,
+            spawnMin: 1,
+            destroy: 0.8
+        }
+    },
+    {
+        idString: "seedshot_case",
+        name: "Seedshot Case",
+        defType: DefinitionType.Obstacle,
+        material: "crate",
+        health: 150,
+        hitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(8.5, 5.5),
+            RectangleHitbox.fromRect(1.3, 6, Vec(-2.7, 0)),
+            RectangleHitbox.fromRect(1.3, 6, Vec(2.7, 0))
+        ),
+        scale: {
+            spawnMax: 1,
+            spawnMin: 1,
+            destroy: 0.8
+        },
+        rotationMode: RotationMode.Limited,
+        hasLoot: true
     }
 ] satisfies readonly RawObstacleDefinition[] as readonly RawObstacleDefinition[]).flatMap((def: Mutable<RawObstacleDefinition>) => {
     if (def.variations !== undefined) (def as Mutable<ObstacleDefinition>).variationBits = Math.ceil(Math.log2(def.variations));

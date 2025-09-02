@@ -1020,7 +1020,8 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { table: "equipment", weight: 1 },
             { table: "scopes", weight: 0.5 },
             { table: "hunted_skins", weight: 0.25 }
-        ]
+        ],
+        seedshot_case: [{ item: "seedshot", weight: 1 }]
     },
 
     halloween: {
@@ -1777,8 +1778,6 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { item: "flare", weight: 0.1 }
         ],
         aegis_golden_case: [{ item: "vaccinator", weight: 1 }],
-        rsh_case_single: [{ item: "seedshot", weight: 1 }],
-        rsh_case_dual: [{ item: "seedshot", weight: 1 }],
         hazel_crate: [
             [{ item: "m202", weight: 1 }],
             [{ item: "diseased", weight: 1 }],

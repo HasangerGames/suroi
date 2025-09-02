@@ -14981,5 +14981,72 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: randomHollowLog, position: Vec(-47.8, 14.22), orientation: 3 },
             { idString: randomPallet, position: Vec(-8.08, -7.37) }
         ]
+    },
+    {
+        idString: "graveyard_basement",
+        name: "Graveyard Basement",
+        defType: DefinitionType.Building,
+        spawnHitbox: RectangleHitbox.fromRect(73.2, 78.77, Vec(0.22, -0.67)),
+        ceilingHitbox: RectangleHitbox.fromRect(39.99, 61.83, Vec(0.11, 0.02)),
+        material: "stone",
+        hitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(1.99, 42.08, Vec(-20.88, -11.62)),
+            RectangleHitbox.fromRect(44.02, 2.02, Vec(0.13, 31.9)),
+            RectangleHitbox.fromRect(2, 12.13, Vec(-20.9, 26.84)),
+            RectangleHitbox.fromRect(1.99, 42.08, Vec(21.14, 11.06)),
+            RectangleHitbox.fromRect(2, 10.82, Vec(21.21, -27.5)),
+            RectangleHitbox.fromRect(43.44, 2, Vec(-0.17, -31.9)),
+            RectangleHitbox.fromRect(12.45, 1.99, Vec(-26.11, 21.31)),
+            RectangleHitbox.fromRect(12.14, 2.01, Vec(26.21, -9.75)),
+            RectangleHitbox.fromRect(12.47, 2.02, Vec(-26.1, 8.72)),
+            RectangleHitbox.fromRect(12.15, 1.99, Vec(26.27, -22.33))
+        ),
+        floorImages: [
+            {
+                key: "graveyard_basement_floor_stair",
+                position: Vec(26.05, -16.13)
+            },
+            {
+                key: "graveyard_basement_floor_stair",
+                position: Vec(-25.9, 15),
+                rotation: Math.PI
+            },
+            {
+                key: "graveyard_basement_floor",
+                position: Vec(0.19, -0.07)
+            }
+        ],
+        floors: [
+            {
+                type: FloorNames.Wood,
+                hitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(39.99, 61.83, Vec(0.11, 0.02)),
+                    RectangleHitbox.fromRect(12.72, 10.92, Vec(-25.97, 15.18)),
+                    RectangleHitbox.fromRect(12.33, 10.92, Vec(26.08, -16.12))
+                )
+            },
+            { // stairs
+                type: FloorNames.Wood,
+                hitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(12.72, 10.92, Vec(-25.97, 15.18)),
+                    RectangleHitbox.fromRect(12.33, 10.92, Vec(26.08, -16.12))
+                ),
+                layer: Layer.ToBasement
+            }
+        ],
+        obstacles: [
+            { idString: "graveyard_basement_collider_hack", position: Vec(0, 0), rotation: 0, layer: Layer.ToBasement },
+            { idString: "regular_crate", position: Vec(-13.84, 25.56) },
+            { idString: "aegis_crate", position: Vec(14.96, -25.39) },
+            { idString: "box", position: Vec(16.67, 9.66) },
+            { idString: "box", position: Vec(-5, -27.83) },
+            { idString: "box", position: Vec(7.33, -26.15) },
+            { idString: "small_coffin", position: Vec(-15.75, -23.35), rotation: 3 },
+            { idString: "small_coffin", position: Vec(11.14, 15.25), rotation: 2 },
+            { idString: "large_coffin", position: Vec(0.19, -6.18), rotation: 3 },
+            { idString: "seedshot_case", position: Vec(15.13, 24.84), rotation: 3 },
+            { idString: "graveyard_light", position: Vec(-0.17, 27.03) },
+            { idString: "graveyard_light", position: Vec(0.69, -27.27) }
+        ]
     }
 ]);
