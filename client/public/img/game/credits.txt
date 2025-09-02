@@ -407,6 +407,9 @@ Buildings:
   Shooting Range: TimoPro
   Docks: TimoPro
   Hunting Stand: TimoPro
+  Decayed Bridge: TimoPro
+  Train Station (and all train variations): TimoPro
+  Graveyard: TimoPro
 
 Emotes:
   Primary Artists: EndermanKing, Slapdap, Tofi38
@@ -431,7 +434,7 @@ Perk Icons:
   Overdrive: AnnihilatingFox
   Loot Baron: Skullboi249
   Butterfingers: Skullboi249
-  Overclocked: sniperboi4/TjCj
+  Overclocked: sniperboi4/TjCj, AnnihilatingFox
 
 Saw Killfeed - AnnihilatingFox
 
