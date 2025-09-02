@@ -1140,6 +1140,8 @@ class UIManagerClass {
 
             itemSlot.toggleClass("has-item", isPresent);
 
+            itemSlot.css("outline", count === 0 || itemDef.noDrop ? "none" : "");
+
             if ((itemDef.defType === DefinitionType.Ammo || itemDef.defType === DefinitionType.HealingItem) && itemDef.hideUnlessPresent) {
                 itemSlot.css("visibility", isPresent ? "visible" : "hidden");
             }
@@ -1147,6 +1149,7 @@ class UIManagerClass {
             if (itemDef.defType === DefinitionType.Scope && !UI_DEBUG_MODE) {
                 itemSlot.toggle(isPresent).removeClass("active");
             }
+
         }
 
         (

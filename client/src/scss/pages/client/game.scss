@@ -2077,7 +2077,7 @@
         }
 
         &.active {
-            outline: none;
+            outline-width: 0;
             opacity: 1;
 
             .item-image {
