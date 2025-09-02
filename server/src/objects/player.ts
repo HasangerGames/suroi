@@ -1970,6 +1970,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 }
                 break;
             }
+            case PerkIds.Butterfingers:
             case PerkIds.CombatExpert: {
                 if (this.action?.type === PlayerActions.Reload) this.action?.cancel();
                 break;
@@ -2063,6 +2064,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 this.setDirty();
                 break;
             }
+            case PerkIds.Butterfingers:
             case PerkIds.CombatExpert: {
                 if (this.action?.type === PlayerActions.Reload) this.action?.cancel();
                 break;
@@ -2593,6 +2595,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                     }, perk.achieveTime); */
                     break;
                 }
+                case PerkIds.Butterfingers:
                 case PerkIds.CombatExpert: {
                     newModifiers.reload *= perk.reloadMod;
                     break;

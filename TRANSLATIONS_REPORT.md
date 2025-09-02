@@ -150,6 +150,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `laced_stimulants_desc` is not defined
 - Key `rotten_plumpkin` is not defined
 - Key `rotten_plumpkin_desc` is not defined
+- Key `butterfingers` is not defined
+- Key `butterfingers_desc` is not defined
 - Key `infected` is not defined
 - Key `infected_desc` is not defined
 - Key `immunity` is not defined
@@ -166,7 +168,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `username_placeholder` is not defined
 - Key `msg_contact` is not defined
 
-## 🇧🇷 Português (Brasil) (94% Complete) - br.hjson
+## 🇧🇷 Português (Brasil) (93% Complete) - br.hjson
 
 ### Invalid Keys
 
@@ -198,6 +200,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `region_oc` is not defined
 - Key `vaccine_syringe` is not defined
 - Key `vaccine_syringe_desc` is not defined
+- Key `butterfingers` is not defined
+- Key `butterfingers_desc` is not defined
 - Key `msg_contact` is not defined
 
 ## 🇨🇿 Čeština (62% Complete) - cz.hjson
@@ -339,6 +343,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `laced_stimulants_desc` is not defined
 - Key `rotten_plumpkin` is not defined
 - Key `rotten_plumpkin_desc` is not defined
+- Key `butterfingers` is not defined
+- Key `butterfingers_desc` is not defined
 - Key `infected` is not defined
 - Key `infected_desc` is not defined
 - Key `immunity` is not defined
@@ -463,6 +469,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `laced_stimulants_desc` is not defined
 - Key `rotten_plumpkin` is not defined
 - Key `rotten_plumpkin_desc` is not defined
+- Key `butterfingers` is not defined
+- Key `butterfingers_desc` is not defined
 - Key `infected` is not defined
 - Key `infected_desc` is not defined
 - Key `immunity` is not defined
@@ -608,6 +616,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `laced_stimulants_desc` is not defined
 - Key `rotten_plumpkin` is not defined
 - Key `rotten_plumpkin_desc` is not defined
+- Key `butterfingers` is not defined
+- Key `butterfingers_desc` is not defined
 - Key `infected` is not defined
 - Key `infected_desc` is not defined
 - Key `immunity` is not defined
@@ -802,6 +812,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `loot_baron` is not defined
 - Key `loot_baron_desc` is not defined
 - Key `baby_plumpkin_pie_desc` is not defined
+- Key `butterfingers` is not defined
+- Key `butterfingers_desc` is not defined
 - Key `hollow_points` is not defined
 - Key `hollow_points_desc` is not defined
 - Key `experimental_forcefield` is not defined
@@ -812,15 +824,17 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive_desc` is not defined
 - Key `msg_contact` is not defined
 
-## 🇮🇷 فارسی (100% Complete) - fa.hjson
+## 🇮🇷 فارسی (99% Complete) - fa.hjson
 
 ### (No Invalid Keys)
 
 ### Undefined Keys
 
+- Key `butterfingers` is not defined
+- Key `butterfingers_desc` is not defined
 - Key `msg_contact` is not defined
 
-## 🇫🇮 suomi (65% Complete) - fi.hjson
+## 🇫🇮 suomi (64% Complete) - fi.hjson
 
 ### Invalid Keys
 
@@ -948,6 +962,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `laced_stimulants_desc` is not defined
 - Key `rotten_plumpkin` is not defined
 - Key `rotten_plumpkin_desc` is not defined
+- Key `butterfingers` is not defined
+- Key `butterfingers_desc` is not defined
 - Key `infected` is not defined
 - Key `infected_desc` is not defined
 - Key `immunity` is not defined
@@ -995,6 +1011,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `loot_baron` is not defined
 - Key `loot_baron_desc` is not defined
 - Key `baby_plumpkin_pie_desc` is not defined
+- Key `butterfingers` is not defined
+- Key `butterfingers_desc` is not defined
 - Key `msg_contact` is not defined
 
 ## 🇬🇷 Ελληνικά (83% Complete) - gr.hjson
@@ -1055,6 +1073,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `laced_stimulants_desc` is not defined
 - Key `rotten_plumpkin` is not defined
 - Key `rotten_plumpkin_desc` is not defined
+- Key `butterfingers` is not defined
+- Key `butterfingers_desc` is not defined
 - Key `infected` is not defined
 - Key `infected_desc` is not defined
 - Key `immunity` is not defined
@@ -1214,6 +1234,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `laced_stimulants_desc` is not defined
 - Key `rotten_plumpkin` is not defined
 - Key `rotten_plumpkin_desc` is not defined
+- Key `butterfingers` is not defined
+- Key `butterfingers_desc` is not defined
 - Key `infected` is not defined
 - Key `infected_desc` is not defined
 - Key `immunity` is not defined
@@ -1230,7 +1252,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `username_placeholder` is not defined
 - Key `msg_contact` is not defined
 
-## 🇭🇺 Magyar (93% Complete) - hu.hjson
+## 🇭🇺 Magyar (92% Complete) - hu.hjson
 
 ### Invalid Keys
 
@@ -1255,6 +1277,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `loot_baron` is not defined
 - Key `loot_baron_desc` is not defined
 - Key `baby_plumpkin_pie_desc` is not defined
+- Key `butterfingers` is not defined
+- Key `butterfingers_desc` is not defined
 - Key `hollow_points` is not defined
 - Key `hollow_points_desc` is not defined
 - Key `experimental_forcefield` is not defined
@@ -1267,7 +1291,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `username_placeholder` is not defined
 - Key `msg_contact` is not defined
 
-## 🇮🇹 Italiano (60% Complete) - it.hjson
+## 🇮🇹 Italiano (59% Complete) - it.hjson
 
 ### Invalid Keys
 
@@ -1423,6 +1447,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `laced_stimulants_desc` is not defined
 - Key `rotten_plumpkin` is not defined
 - Key `rotten_plumpkin_desc` is not defined
+- Key `butterfingers` is not defined
+- Key `butterfingers_desc` is not defined
 - Key `infected` is not defined
 - Key `infected_desc` is not defined
 - Key `immunity` is not defined
@@ -1439,7 +1465,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `username_placeholder` is not defined
 - Key `msg_contact` is not defined
 
-## 🇯🇵 日本語 (100% Complete) - jp.hjson
+## 🇯🇵 日本語 (99% Complete) - jp.hjson
 
 ### Invalid Keys
 
@@ -1717,6 +1743,8 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### Undefined Keys
 
+- Key `butterfingers` is not defined
+- Key `butterfingers_desc` is not defined
 - Key `msg_contact` is not defined
 
 ## 🇱🇹 Lietuvių (62% Complete) - lt.hjson
@@ -1858,6 +1886,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `laced_stimulants_desc` is not defined
 - Key `rotten_plumpkin` is not defined
 - Key `rotten_plumpkin_desc` is not defined
+- Key `butterfingers` is not defined
+- Key `butterfingers_desc` is not defined
 - Key `infected` is not defined
 - Key `infected_desc` is not defined
 - Key `immunity` is not defined
@@ -2013,6 +2043,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `laced_stimulants_desc` is not defined
 - Key `rotten_plumpkin` is not defined
 - Key `rotten_plumpkin_desc` is not defined
+- Key `butterfingers` is not defined
+- Key `butterfingers_desc` is not defined
 - Key `infected` is not defined
 - Key `infected_desc` is not defined
 - Key `immunity` is not defined
@@ -2055,9 +2087,11 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `loot_baron` is not defined
 - Key `loot_baron_desc` is not defined
 - Key `baby_plumpkin_pie_desc` is not defined
+- Key `butterfingers` is not defined
+- Key `butterfingers_desc` is not defined
 - Key `msg_contact` is not defined
 
-## 🇵🇱 Polski (65% Complete) - pl.hjson
+## 🇵🇱 Polski (64% Complete) - pl.hjson
 
 ### Invalid Keys
 
@@ -2185,6 +2219,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `laced_stimulants_desc` is not defined
 - Key `rotten_plumpkin` is not defined
 - Key `rotten_plumpkin_desc` is not defined
+- Key `butterfingers` is not defined
+- Key `butterfingers_desc` is not defined
 - Key `infected` is not defined
 - Key `infected_desc` is not defined
 - Key `immunity` is not defined
@@ -2201,7 +2237,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `username_placeholder` is not defined
 - Key `msg_contact` is not defined
 
-## 🎀 Cute Engwish (69% Complete) - qen.hjson
+## 🎀 Cute Engwish (68% Complete) - qen.hjson
 
 ### Invalid Keys
 
@@ -2314,6 +2350,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `laced_stimulants_desc` is not defined
 - Key `rotten_plumpkin` is not defined
 - Key `rotten_plumpkin_desc` is not defined
+- Key `butterfingers` is not defined
+- Key `butterfingers_desc` is not defined
 - Key `infected` is not defined
 - Key `infected_desc` is not defined
 - Key `immunity` is not defined
@@ -2344,9 +2382,11 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_shake_force` is not defined
 - Key `settings_shake_delay` is not defined
 - Key `baby_plumpkin_pie_desc` is not defined
+- Key `butterfingers` is not defined
+- Key `butterfingers_desc` is not defined
 - Key `msg_contact` is not defined
 
-## 🇷🇺 Русский (95% Complete) - ru.hjson
+## 🇷🇺 Русский (94% Complete) - ru.hjson
 
 ### Invalid Keys
 
@@ -2376,9 +2416,11 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `loot_baron` is not defined
 - Key `loot_baron_desc` is not defined
 - Key `baby_plumpkin_pie_desc` is not defined
+- Key `butterfingers` is not defined
+- Key `butterfingers_desc` is not defined
 - Key `msg_contact` is not defined
 
-## 🇮🇳 தமிழ் (98% Complete) - ta.hjson
+## 🇮🇳 தமிழ் (97% Complete) - ta.hjson
 
 ### Invalid Keys
 
@@ -2397,10 +2439,12 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `berserker_desc` is not defined
 - Key `plumpkin_bomb` is not defined
 - Key `plumpkin_bomb_desc` is not defined
+- Key `butterfingers` is not defined
+- Key `butterfingers_desc` is not defined
 - Key `experimental_forcefield_desc` is not defined
 - Key `msg_contact` is not defined
 
-## 🇹🇷 Turkısh (76% Complete) - tr.hjson
+## 🇹🇷 Turkısh (75% Complete) - tr.hjson
 
 ### Invalid Keys
 
@@ -2487,6 +2531,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `laced_stimulants_desc` is not defined
 - Key `rotten_plumpkin` is not defined
 - Key `rotten_plumpkin_desc` is not defined
+- Key `butterfingers` is not defined
+- Key `butterfingers_desc` is not defined
 - Key `infected` is not defined
 - Key `infected_desc` is not defined
 - Key `immunity` is not defined
@@ -2603,6 +2649,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `laced_stimulants_desc` is not defined
 - Key `rotten_plumpkin` is not defined
 - Key `rotten_plumpkin_desc` is not defined
+- Key `butterfingers` is not defined
+- Key `butterfingers_desc` is not defined
 - Key `infected` is not defined
 - Key `infected_desc` is not defined
 - Key `immunity` is not defined
@@ -2644,6 +2692,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `loot_baron` is not defined
 - Key `loot_baron_desc` is not defined
 - Key `baby_plumpkin_pie_desc` is not defined
+- Key `butterfingers` is not defined
+- Key `butterfingers_desc` is not defined
 - Key `hollow_points` is not defined
 - Key `hollow_points_desc` is not defined
 - Key `experimental_forcefield` is not defined
@@ -2654,7 +2704,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive_desc` is not defined
 - Key `msg_contact` is not defined
 
-## 🇨🇳 中文（简体） (100% Complete) - zh.hjson
+## 🇨🇳 中文（简体） (99% Complete) - zh.hjson
 
 ### Invalid Keys
 
@@ -2918,5 +2968,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `time_minute` is not a valid key
 - Key `time_second` is not a valid key
 
-### (No Undefined Keys)
+### Undefined Keys
+
+- Key `butterfingers` is not defined
+- Key `butterfingers_desc` is not defined
 

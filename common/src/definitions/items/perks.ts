@@ -80,6 +80,7 @@ export const enum PerkIds {
     Claustrophobic = "claustrophobic",
     LacedStimulants = "laced_stimulants",
     RottenPlumpkin = "rotten_plumpkin",
+    Butterfingers = "butterfingers",
     // PriorityTarget = "priority_target",
 
     //
@@ -436,6 +437,15 @@ const perks = [
         emote: "vomiting_face",
         adrenLoss: 5, // percentage
         healthLoss: 5, // absolute
+        noDrop: true
+    },
+    {
+        idString: PerkIds.Butterfingers,
+        name: "Butterfingers",
+        defType: DefinitionType.Perk,
+        category: PerkCategories.Halloween,
+        quality: PerkQualities.Negative,
+        reloadMod: 0.75,
         noDrop: true
     },
     /* {
