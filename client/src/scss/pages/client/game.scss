@@ -2306,8 +2306,6 @@
             opacity: 0.95;
 
             &.dead {
-                width: 175px;
-                height: 175px;
                 transform: translate(0%, 50%);
             }
 
@@ -2316,6 +2314,11 @@
                 width: 150px;
                 height: 150px;
                 position: absolute;
+
+                &.dead {
+                    width: 120px;
+                    height: 120px;
+                }
             }
         }
 
