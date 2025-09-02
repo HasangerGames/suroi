@@ -701,66 +701,6 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
             reloadTime: 4
         }
     },
-    {
-        idString: "p226s",
-        name: "P226-S",
-        defType: DefinitionType.Gun,
-        tier: Tier.A,
-        ammoType: "9mm",
-        ammoSpawnAmount: 48,
-        fireDelay: 130,
-        switchDelay: 220,
-        speedMultiplier: 1.136,
-        recoilMultiplier: 0.9,
-        recoilDuration: 75,
-        fireMode: FireMode.Single,
-        shotSpread: 2,
-        moveSpread: 5,
-        length: 7.5,
-        noMuzzleFlash: true,
-        fists: {
-            left: Vec(45, 0),
-            right: Vec(45, 0),
-            leftZIndex: 4,
-            rightZIndex: 4,
-            animationDuration: 100
-        },
-        image: { position: Vec(95, 0) },
-        inventoryScale: 0.9,
-        casingParticles: [{
-            frame: "casing_357sig",
-            position: Vec(3.5, 0.5),
-            velocity: {
-                y: {
-                    min: -6,
-                    max: 15
-                }
-            }
-        }],
-        gasParticles: gasParticlePresets.pistol,
-        capacity: 12,
-        extendedCapacity: 20,
-        reloadTime: 1.5,
-        ballistics: {
-            damage: 19,
-            obstacleMultiplier: 1,
-            speed: 0.24,
-            range: 160,
-            tracer: {
-                opacity: 0.3
-            }
-        },
-        dual: {
-            tier: Tier.S,
-            leftRightOffset: 1.3,
-            fireDelay: 65,
-            shotSpread: 3.5,
-            moveSpread: 7,
-            capacity: 24,
-            extendedCapacity: 40,
-            reloadTime: 2.92
-        }
-    },
     //
     // Submachine guns (SMGs)
     //
