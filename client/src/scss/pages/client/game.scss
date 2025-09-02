@@ -1294,7 +1294,63 @@
         cursor: pointer;
     }
 }
+#perk-message {
+    position: absolute;
+    top: calc(60% + 20px);
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 30px;
+    font-weight: bold;
+    @include variables.text-shadow; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    width: 100%;
+    height: 140px;
 
+    #perk {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+
+        position: relative;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: 75px;
+        width: 50%;
+        height: 50%;
+
+        .perk-img {
+            width: 50px;
+        }
+    }
+
+    .perk-name {
+        font-size: 20px;
+        padding: 5px;
+    }
+
+    @media screen and (max-width: variables.$screen_large) and (max-height: 750px) {
+        top: calc(60% - 55px);
+        padding: 0;
+        margin: 0;
+        
+        #perk {
+            background-size: 45px;
+
+            .perk-img {
+                width: 20px;
+            }
+        }
+
+        .perk-name {
+            font-size: 10px;
+            margin-top: -15px;
+        }
+    }
+}
 #inventory-message {
     position: absolute;
     top: calc(60% + 100px);

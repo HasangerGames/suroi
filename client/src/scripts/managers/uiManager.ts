@@ -23,7 +23,7 @@ import { GameConsole } from "../console/gameConsole";
 import { Game } from "../game";
 import { type GameObject } from "../objects/gameObject";
 import { Player } from "../objects/player";
-import { TEAMMATE_COLORS, UI_DEBUG_MODE } from "../utils/constants";
+import { PERK_MESSAGE_FADE_TIME, TEAMMATE_COLORS, UI_DEBUG_MODE } from "../utils/constants";
 import { formatDate, html } from "../utils/misc";
 import { SuroiSprite } from "../utils/pixi";
 import { getTranslatedString, TRANSLATIONS } from "../utils/translations/translations";
@@ -289,6 +289,7 @@ class UIManagerClass {
         detonateKey: $<HTMLDivElement>("#detonate-key"),
 
         inventoryMsg: $<HTMLSpanElement>("#inventory-message"),
+        perkMsg: $<HTMLDivElement>("#perk-message"),
 
         debugPos: $<HTMLSpanElement>("#coordinates-hud"),
 
@@ -1095,10 +1096,30 @@ class UIManagerClass {
 
         if (perkDef.hideInHUD) return;
 
+        const folder = perkDef.category === PerkCategories.Halloween ? "halloween" : "shared",
+            perkSrc = `./img/game/${folder}/perks/${perkDef.idString}.svg`,
+            lootBg = `./img/game/shared/loot/loot_background_${perkDef.idString === PerkIds.PlumpkinGamble ? PerkIds.PlumpkinGamble : "perk"}.svg`,
+            perkName = getTranslatedString(perkDef.idString as unknown as TranslationKeys);
+
+        const { killMsgModal, inventoryMsg, perkMsg, interactMsg } = this.ui;
+
+        killMsgModal.fadeOut(PERK_MESSAGE_FADE_TIME);
+        inventoryMsg.fadeOut(PERK_MESSAGE_FADE_TIME);
+        interactMsg.fadeOut(PERK_MESSAGE_FADE_TIME);
+
+        perkMsg
+            .html(`
+                <div id="perk" style="background-image: url(${lootBg});">
+                    <img class="perk-img" src="${perkSrc}" draggable="false" width="50" height="50"/>
+                </div>
+                <strong class="perk-name">${perkName}</strong>
+            `)
+            .fadeIn(PERK_MESSAGE_FADE_TIME);
+
         const container = this._perkSlots[index] ??= $<HTMLDivElement>(`#perk-slot-${index}`);
         container.attr("data-idString", perkDef.idString);
-        container.children(".item-tooltip").html(`<strong>${getTranslatedString(perkDef.idString as unknown as TranslationKeys)}</strong><br>${getTranslatedString(`${perkDef.idString}_desc` as TranslationKeys)}`);
-        container.children(".item-image").attr("src", `./img/game/${perkDef.category === PerkCategories.Halloween ? "halloween" : "shared"}/perks/${perkDef.idString}.svg`);
+        container.children(".item-tooltip").html(`<strong>${perkName}</strong><br>${getTranslatedString(`${perkDef.idString}_desc` as TranslationKeys)}`);
+        container.children(".item-image").attr("src", perkSrc);
         container.css("visibility", PerkManager.has(perkDef) ? "visible" : "hidden");
         if (container.hasClass("deactivated")) container.toggleClass("deactivated");
 
@@ -1114,6 +1135,7 @@ class UIManagerClass {
 
         this._animationTimeouts[index] = window.setTimeout(() => {
             container.css("animation", "none");
+            perkMsg.fadeOut(PERK_MESSAGE_FADE_TIME);
         }, flashAnimationDuration);
     }
 
@@ -1149,7 +1171,6 @@ class UIManagerClass {
             if (itemDef.defType === DefinitionType.Scope && !UI_DEBUG_MODE) {
                 itemSlot.toggle(isPresent).removeClass("active");
             }
-
         }
 
         (
@@ -1667,6 +1688,7 @@ class UIManagerClass {
             this.ui.killMsgHeader.text("");
         }
 
+        this.ui.perkMsg.fadeOut(PERK_MESSAGE_FADE_TIME);
         this.ui.killMsgContainer.html(modalMessage);
 
         this.ui.killMsgModal.fadeIn(350, () => {
