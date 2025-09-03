@@ -2157,7 +2157,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `username_placeholder` is not defined
 - Key `msg_contact` is not defined
 
-## 🇳🇱 Nederlands (93% Complete) - nl.hjson
+## 🇳🇱 Nederlands (95% Complete) - nl.hjson
 
 ### Invalid Keys
 
@@ -2182,15 +2182,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `vaccine_syringe_desc` is not defined
 - Key `loot_baron` is not defined
 - Key `loot_baron_desc` is not defined
-- Key `overclocked` is not defined
-- Key `overclocked_desc` is not defined
 - Key `baby_plumpkin_pie_desc` is not defined
-- Key `priority_target` is not defined
-- Key `priority_target_desc` is not defined
-- Key `butterfingers` is not defined
-- Key `butterfingers_desc` is not defined
-- Key `overweight` is not defined
-- Key `overweight_desc` is not defined
 - Key `msg_contact` is not defined
 
 ## 🇵🇱 Polski (63% Complete) - pl.hjson
@@ -2482,7 +2474,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `username_placeholder` is not defined
 - Key `msg_contact` is not defined
 
-## 🇷🇴 Română (96% Complete) - ro.hjson
+## 🇷🇴 Română (98% Complete) - ro.hjson
 
 ### Invalid Keys
 
@@ -2495,15 +2487,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_shake_count` is not defined
 - Key `settings_shake_force` is not defined
 - Key `settings_shake_delay` is not defined
-- Key `overclocked` is not defined
-- Key `overclocked_desc` is not defined
 - Key `baby_plumpkin_pie_desc` is not defined
-- Key `priority_target` is not defined
-- Key `priority_target_desc` is not defined
-- Key `butterfingers` is not defined
-- Key `butterfingers_desc` is not defined
-- Key `overweight` is not defined
-- Key `overweight_desc` is not defined
 - Key `msg_contact` is not defined
 
 ## 🇷🇺 Русский (93% Complete) - ru.hjson
