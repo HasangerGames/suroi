@@ -2597,6 +2597,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                     }
                     break;
                 }
+                case PerkIds.Overweight:
                 case PerkIds.LowProfile: {
                     newModifiers.size *= perk.sizeMod;
                     break;

@@ -83,6 +83,7 @@ export const enum PerkIds {
     RottenPlumpkin = "rotten_plumpkin",
     PriorityTarget = "priority_target",
     Butterfingers = "butterfingers",
+    Overweight = "overweight",
 
     //
     // Infection
@@ -464,6 +465,15 @@ const perks = [
         category: PerkCategories.Halloween,
         quality: PerkQualities.Negative,
         reloadMod: 0.75,
+        noDrop: true
+    },
+    {
+        idString: PerkIds.Overweight,
+        name: "Overweight",
+        defType: DefinitionType.Perk,
+        category: PerkCategories.Halloween,
+        quality: PerkQualities.Negative,
+        sizeMod: 1.5,
         noDrop: true
     },
     //

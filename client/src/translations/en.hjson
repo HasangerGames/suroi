@@ -430,6 +430,8 @@
 "priority_target_desc": "All players on the map can see your location."
 "butterfingers": "Butterfingers"
 "butterfingers_desc": "Increased reload time."
+"overweight": "Overweight"
+"overweight_desc": "Increased size."
 "infected": "Infected"
 "infected_desc": "Swaps to a random perk every 15 seconds.<br>Lose health every second.<br>Infect nearby players."
 "immunity": "Immunity"
