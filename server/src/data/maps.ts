@@ -1089,7 +1089,7 @@ const maps = {
                         ((item.defType === DefinitionType.Melee || item.defType === DefinitionType.Scope) && item.noDrop)
                         || (item.defType === DefinitionType.Ammo && item.ephemeral)
                         || (item.defType === DefinitionType.Backpack && item.level === 0)
-                        || (item.defType === DefinitionType.Perk && (item.hideInHUD || item.category === PerkCategories.Halloween))
+                        || (item.defType === DefinitionType.Perk && (item.hideInHUD || item.category !== PerkCategories.Halloween))
                         || item.defType === DefinitionType.Skin
                         || item.devItem
                         || ((item.defType === DefinitionType.Armor || item.defType === DefinitionType.Backpack) && item.perk)
