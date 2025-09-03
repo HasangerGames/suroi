@@ -15063,6 +15063,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             }
         ],
         obstacles: IS_CLIENT ? undefined : [
+            { idString: "graveyard_basement_collider_hack", position: Vec(-18, -45.25), rotation: 0, layer: Layer.ToBasement },
             { idString: "dormant_oak_tree", position: Vec(13.57, 60.23) },
             { idString: "dormant_oak_tree", position: Vec(-30.26, 60.23) },
             { idString: "baby_plumpkin_infection", position: Vec(20.08, -32.71) },
@@ -15249,7 +15250,6 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             }
         ],
         obstacles: IS_CLIENT ? undefined : [
-            { idString: "graveyard_basement_collider_hack", position: Vec(0, 0), rotation: 0, layer: Layer.ToBasement },
             { idString: "regular_crate", position: Vec(-13.84, 25.56) },
             { idString: "aegis_crate", position: Vec(14.96, -25.39) },
             { idString: "box", position: Vec(16.67, 9.66) },

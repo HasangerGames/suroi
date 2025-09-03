@@ -7217,7 +7217,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
             RectangleHitbox.fromRect(12.45, 1.99, Vec(-26.11, 21.31)),
             RectangleHitbox.fromRect(12.14, 2.01, Vec(26.21, -9.75)),
             RectangleHitbox.fromRect(12.47, 2.02, Vec(-26.1, 8.72)),
-            RectangleHitbox.fromRect(12.15, 1.99, Vec(26.27, -22.33))
+            RectangleHitbox.fromRect(12.15, 2.07, Vec(26.27, -22.13))
         ),
         frames: {
             particle: "graveyard_basement_particle"
