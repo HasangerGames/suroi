@@ -8710,6 +8710,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         material: "metal_heavy",
         particle: "cargo_ship_particle",
         reflectBullets: true,
+        collideWithLayers: Layers.Adjacent,
         floorImages: [{
             key: "blue_stair",
             position: Vec(0, 0)
@@ -12838,7 +12839,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             rotation: 2
         }],
         subBuildings: IS_CLIENT ? undefined : [
-            { idString: "blue_stair", position: Vec(0, 13.66) },
+            { idString: "blue_stair", position: Vec(0, 13.66), layer: Layer.ToUpstairs },
             { idString: "hunting_stand_bottom", position: Vec(0, -5.4) },
             { idString: "hunting_stand_top", position: Vec(0, -5.33), layer: Layer.Upstairs }
         ]
