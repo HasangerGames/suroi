@@ -2157,33 +2157,13 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `username_placeholder` is not defined
 - Key `msg_contact` is not defined
 
-## 🇳🇱 Nederlands (95% Complete) - nl.hjson
+## 🇳🇱 Nederlands (100% Complete) - nl.hjson
 
 ### Invalid Keys
 
 - Key `m16a4` is not a valid key
 
-### Undefined Keys
-
-- Key `contact` is not defined
-- Key `settings_shake_to_reload` is not defined
-- Key `settings_shake_count` is not defined
-- Key `settings_shake_force` is not defined
-- Key `settings_shake_delay` is not defined
-- Key `action_vaccine_syringe_use` is not defined
-- Key `interact_recorder_interactable` is not defined
-- Key `kf_saw_kill` is not defined
-- Key `kf_saw_down` is not defined
-- Key `km_saw_kill_you` is not defined
-- Key `km_saw_down_you` is not defined
-- Key `tt_desc` is not defined
-- Key `region_ea` is not defined
-- Key `vaccine_syringe` is not defined
-- Key `vaccine_syringe_desc` is not defined
-- Key `loot_baron` is not defined
-- Key `loot_baron_desc` is not defined
-- Key `baby_plumpkin_pie_desc` is not defined
-- Key `msg_contact` is not defined
+### (No Undefined Keys)
 
 ## 🇵🇱 Polski (63% Complete) - pl.hjson
 

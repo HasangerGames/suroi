@@ -174,6 +174,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         this._team?.setDirty();
         this.dirty.health = true;
         this._normalizedHealth = Numeric.remap(this.health, 0, this.maxHealth, 0, 1);
+
+        if (this.hasPerk(PerkIds.SecondWind) && !(this._health / this._maxHealth < 0.5)) this._modifiers.baseSpeed = 1;
     }
 
     private _maxAdrenaline = GameConstants.player.maxAdrenaline;
