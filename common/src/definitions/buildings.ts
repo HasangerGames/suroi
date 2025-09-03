@@ -14991,6 +14991,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         material: "stone",
         particleVariations: 2,
         allowFlyover: FlyoverPref.Always,
+        graphicsZIndex: ZIndexes.BuildingsFloor + 0.25,
         hitbox: new GroupHitbox(
             RectangleHitbox.fromRect(1.6, 33.6, Vec(-36.88, -54.22)),
             RectangleHitbox.fromRect(68.87, 1.6, Vec(37.03, -71.31)),
@@ -15041,7 +15042,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 position: Vec(17.15, -51.79)
             }
         ],
-        groundGraphics: [
+        graphics: [
             { // stroke
                 color: 0x4d4d4d,
                 hitbox: new GroupHitbox(
