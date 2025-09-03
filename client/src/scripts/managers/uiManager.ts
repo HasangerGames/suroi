@@ -1093,7 +1093,10 @@ class UIManagerClass {
         if (index > GameConstants.player.maxPerks) index = 0; // overwrite stuff ig?
         // no, write a hud that can handle it
 
-        if (perkDef.hideInHUD) return;
+        if (perkDef.hideInHUD) {
+            this.resetPerkSlot(index);
+            return;
+        }
 
         const folder = perkDef.category === PerkCategories.Halloween ? "halloween" : "shared",
             perkSrc = `./img/game/${folder}/perks/${perkDef.idString}.svg`,
