@@ -125,9 +125,9 @@ Guns:
     Killfeed Image: eiπ
 
   M1895:
-    Loot Image: cobby
+    Loot Image: AnnihilatingFox
     World Image: Winter
-    Killfeed Image: eiπ
+    Killfeed Image: AnnihilatingFox
 
   M202-F:
     Loot Image: Skullboi249
