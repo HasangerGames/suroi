@@ -530,7 +530,7 @@ export const Game = new (class Game {
 
                 if (message !== undefined) {
                     const { inventoryMsg } = UIManager.ui;
-                    inventoryMsg.text(getTranslatedString(this._inventoryMessageMap[message])).fadeIn(250);
+                    inventoryMsg.text(getTranslatedString(this._inventoryMessageMap[message])).fadeOut(0).fadeIn(250);
 
                     clearTimeout(this.inventoryMsgTimeout);
                     this.inventoryMsgTimeout = window.setTimeout(() => inventoryMsg.fadeOut(250), 2500);
