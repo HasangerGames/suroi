@@ -137,8 +137,8 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { item: "smoke_grenade", weight: 1, count: 2 }
         ],
         grenade_crate: {
-            min: 3,
-            max: 4,
+            min: 1,
+            max: 3,
             loot: [
                 { table: "throwables", weight: 1 }
             ]
@@ -413,6 +413,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
                 { item: "vss", weight: 0.2 },
                 { item: "vector", weight: 0.2 },
                 { item: "deagle", weight: 0.2 },
+                { item: "an94", weight: 0.01 },
                 { item: "m1_garand", weight: 0.01 },
                 { item: "dual_deagle", weight: 0.01 }
             ],
@@ -899,7 +900,8 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
                 { item: PerkIds.Berserker, weight: 1 },
                 { item: PerkIds.CombatExpert, weight: 1 },
                 { item: PerkIds.PrecisionRecycling, weight: 1 },
-                { item: PerkIds.LootBaron, weight: 1 }
+                { item: PerkIds.LootBaron, weight: 1 },
+                { item: PerkIds.Overclocked, weight: 1 }
             ]
         },
         red_gift: [
@@ -1010,7 +1012,16 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
                 { item: "veteran", weight: 1 },
                 { item: "carpenter_uniform", weight: 1 }
             ]
-        }
+        },
+        small_logs_pile_hs: [{ item: "hand_saw", weight: 1 }],
+        hollow_log: [
+            { table: "healing_items", weight: 1 },
+            { table: "ammo", weight: 1 },
+            { table: "equipment", weight: 1 },
+            { table: "scopes", weight: 0.5 },
+            { table: "hunted_skins", weight: 0.25 }
+        ],
+        seedshot_case: [{ item: "seedshot", weight: 1 }]
     },
 
     halloween: {
@@ -1230,7 +1241,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
         airdrop_melee: [
             { item: NullString, weight: 1 },
             { item: "hatchet", weight: 0.2 },
-            { item: "kbar", weight: 0.2 },
+            { item: "hand_saw", weight: 0.2 },
             { item: "maul", weight: 0.1 }
         ],
         gold_airdrop_guns: [
@@ -1593,7 +1604,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
         airdrop_melee: [
             { item: NullString, weight: 1 },
             { item: "hatchet", weight: 0.2 },
-            { item: "kbar", weight: 0.2 },
+            { item: "hand_saw", weight: 0.2 },
             { item: "maul", weight: 0.1 }
         ],
         gold_airdrop_guns: [
@@ -1698,6 +1709,43 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
         ]
     },
     infection: {
+        airdrop_crate: [
+            [{ table: "airdrop_equipment", weight: 1 }],
+            [{ table: "airdrop_scopes", weight: 1 }],
+            [{ table: "airdrop_healing_items", weight: 1 }],
+            [{ table: "airdrop_skins", weight: 1 }],
+            [{ table: "airdrop_melee", weight: 1 }],
+            [{ table: "ammo", weight: 1 }],
+            [{ table: "airdrop_guns", weight: 1 }],
+            [
+                { item: "sm56", count: 3, weight: 2 },
+                { item: "vaccine_syringe", count: 2, weight: 1.5 },
+                { item: NullString, weight: 1 }
+            ]
+        ],
+        gold_airdrop_crate: [
+            [{ table: "airdrop_equipment", weight: 1 }],
+            [{ table: "airdrop_scopes", weight: 1 }],
+            [{ table: "airdrop_healing_items", weight: 1 }],
+            [{ table: "airdrop_skins", weight: 1 }],
+            [{ table: "airdrop_melee", weight: 1 }],
+            [{ table: "ammo", weight: 1 }],
+            [{ table: "gold_airdrop_guns", weight: 1 }],
+            [{ item: "sm56", count: 3, weight: 1 }]
+        ],
+        ammo: [
+            { item: "12g", count: 10, weight: 0.75 },
+            { item: "545mm", count: 40, weight: 0.25 },
+            { item: "556mm", count: 60, weight: 1 },
+            { item: "762mm", count: 60, weight: 1 },
+            { item: "9mm", count: 60, weight: 1 },
+            { item: "50cal", count: 20, weight: 0.05 }
+        ],
+        throwables: [
+            { item: "frag_grenade", count: 2, weight: 1 },
+            { item: "smoke_grenade", count: 2, weight: 1 },
+            { item: "sm56", weight: 0.5 }
+        ],
         healing_items: [
             { item: "gauze", count: 5, weight: 3 },
             { item: "cola", weight: 2 },
@@ -1720,7 +1768,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { item: "vector", weight: 1 },
             { item: "vepr12", weight: 1 },
             { item: "deagle", weight: 1 },
-            { item: "mcx_spear", weight: 0.95 },
+            { item: "rpk74", weight: 0.95 },
             { item: "shak12", weight: 0.95 },
             { item: "mosin_nagant", weight: 0.95 },
             { item: "tango_51", weight: 0.9 },
@@ -1730,8 +1778,11 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { item: "flare", weight: 0.1 }
         ],
         aegis_golden_case: [{ item: "vaccinator", weight: 1 }],
-        rsh_case_single: [{ item: "seedshot", weight: 1 }],
-        rsh_case_dual: [{ item: "seedshot", weight: 1 }]
+        hazel_crate: [
+            [{ item: "m202", weight: 1 }],
+            [{ item: "diseased", weight: 1 }],
+            [{ item: "sm56", count: 3, weight: 1 }]
+        ]
     },
     hunted: {
         equipment: [
@@ -1933,7 +1984,6 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { item: "mosin_nagant", weight: 0.9 },
             { item: "tango_51", weight: 0.9 },
             { item: "model_89", weight: 0.6 },
-            { item: "vks", weight: 0.6 },
             { item: "flare", weight: 0.1 }
         ],
 
@@ -1952,10 +2002,11 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
 
         airdrop_melee: [
             { item: NullString, weight: 1 },
+            { item: "hand_saw", weight: 0.025 },
             { item: "crowbar", weight: 0.12 },
             { item: "hatchet", weight: 0.12 },
             { item: "sickle", weight: 0.12 },
-            { item: "maul", weight: 0.12 },
+            { item: "maul", weight: 0.2 },
             { item: "pan", weight: 0.075 }
         ],
 

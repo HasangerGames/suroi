@@ -51,7 +51,7 @@ import { Player } from "./objects/player";
 import { Projectile } from "./objects/projectile";
 import { SyncedParticle } from "./objects/syncedParticle";
 import { autoPickup, fetchServerData, finalizeUI, resetPlayButtons, setUpUI, teamSocket, unlockPlayButtons, updateDisconnectTime } from "./ui";
-import { EMOTE_SLOTS, LAYER_TRANSITION_DELAY, PIXI_SCALE, UI_DEBUG_MODE } from "./utils/constants";
+import { EMOTE_SLOTS, LAYER_TRANSITION_DELAY, PERK_MESSAGE_FADE_TIME, PIXI_SCALE, UI_DEBUG_MODE } from "./utils/constants";
 import { DebugRenderer } from "./utils/debugRenderer";
 import { setUpNetGraph } from "./utils/graph/netGraph";
 import { loadSpritesheets, SuroiSprite } from "./utils/pixi";
@@ -529,8 +529,8 @@ export const Game = new (class Game {
                 const { message, item } = packet;
 
                 if (message !== undefined) {
-                    const inventoryMsg = UIManager.ui.inventoryMsg;
-                    inventoryMsg.text(getTranslatedString(this._inventoryMessageMap[message])).fadeIn(250);
+                    const { inventoryMsg } = UIManager.ui;
+                    inventoryMsg.text(getTranslatedString(this._inventoryMessageMap[message])).fadeOut(0).fadeIn(250);
 
                     clearTimeout(this.inventoryMsgTimeout);
                     this.inventoryMsgTimeout = window.setTimeout(() => inventoryMsg.fadeOut(250), 2500);
@@ -611,6 +611,8 @@ export const Game = new (class Game {
         if (this.isTeamMode = packet.teamMode !== TeamMode.Solo) {
             this.teamID = packet.teamID;
         }
+
+        ui.inventoryMsg.fadeOut(PERK_MESSAGE_FADE_TIME);
 
         ui.canvas.addClass("active");
         ui.splashUi.fadeOut(400, () => resetPlayButtons());

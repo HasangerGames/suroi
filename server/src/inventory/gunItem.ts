@@ -122,7 +122,7 @@ export class GunItem extends InventoryItemBase.derive(DefinitionType.Gun) {
 
         const offset = definition.isDual
             ? (this._altFire ? -1 : 1) * definition.leftRightOffset
-            : (definition.bulletOffset ?? 0);
+            : ((definition.bulletOffsets ? definition.bulletOffsets[this.ammo - 1] : definition.bulletOffset) ?? 0);
 
         const ownerPos = owner.position;
         const startPosition = offset !== 0
@@ -216,8 +216,9 @@ export class GunItem extends InventoryItemBase.derive(DefinitionType.Gun) {
                         )
                     ) {
                         modifiers.damage *= perk.damageMod;
+                        owner.reloadMod = perk.reloadMod;
                         modifyForDamageMod(perk.damageMod);
-                    }
+                    } else owner.reloadMod = 1;
                     break;
                 }
                 case PerkIds.Toploaded: {
@@ -237,15 +238,15 @@ export class GunItem extends InventoryItemBase.derive(DefinitionType.Gun) {
                     }
                     break;
                 }
-                case PerkIds.Infected: {
-                    modifiers.damage *= perk.damageMod;
-                    modifyForDamageMod(perk.damageMod);
-                    break;
-                }
                 case PerkIds.HollowPoints: {
                     if (this.definition.ammoType === "12g" && this.definition.casingParticles && !this.definition.casingParticles[0].frame?.includes("slug")) break;
                     modifiers.damage *= perk.damageMod;
                     modifyForDamageMod(perk.damageMod);
+                    break;
+                }
+                case PerkIds.Overclocked: {
+                    spread *= perk.spreadMod;
+                    modifiersModified = true;
                     break;
                 }
             }
@@ -339,7 +340,7 @@ export class GunItem extends InventoryItemBase.derive(DefinitionType.Gun) {
             this._consecutiveShots = 0;
             this._reloadTimeout = owner.game.addTimeout(
                 this.reload.bind(this, true),
-                definition.fireDelay
+                definition.fireDelay * this.owner.fireRateMod
             );
             return;
         }
@@ -368,7 +369,7 @@ export class GunItem extends InventoryItemBase.derive(DefinitionType.Gun) {
             clearTimeout(this._autoFireTimeout);
             this._autoFireTimeout = setTimeout(
                 this._useItemNoDelayCheck.bind(this, false),
-                definition.fireDelay
+                definition.fireDelay * this.owner.fireRateMod
             );
         }
     }
@@ -385,9 +386,9 @@ export class GunItem extends InventoryItemBase.derive(DefinitionType.Gun) {
         const def = this.definition;
 
         super._bufferAttack(
-            def.fireMode === FireMode.Burst
+            (def.fireMode === FireMode.Burst
                 ? def.burstProperties.burstCooldown
-                : def.fireDelay,
+                : def.fireDelay) * this.owner.fireRateMod,
             this._useItemNoDelayCheck.bind(this, true)
         );
     }

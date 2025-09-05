@@ -90,10 +90,6 @@ type CommonObstacleDefinition = ObjectDefinition & {
     readonly applyPerkOnDestroy?: {
         readonly mode?: ModeName
         readonly perk: ReferenceTo<PerkDefinition>
-        /**
-         * A number between 0 and 1 indicating the chance of the perk being applied
-         */
-        readonly chance: number
     }
 
     readonly gunMount?: {
@@ -441,7 +437,22 @@ export const TintedParticles: Record<string, { readonly base: string, readonly t
     carport_particle_2: { base: "stone_particle_2", tint: 0xafafaf },
     pickup_truck_particle: { base: "metal_particle_1", tint: 0x733226 },
     hollow_log_wall_particle_1: { base: "stone_particle_1", tint: 0x432f20 },
-    hollow_log_wall_particle_2: { base: "stone_particle_2", tint: 0x432f20 }
+    hollow_log_wall_particle_2: { base: "stone_particle_2", tint: 0x432f20 },
+    decayed_bridge_storage_particle_1: { base: "stone_particle_1", tint: 0x808080 },
+    decayed_bridge_storage_particle_2: { base: "stone_particle_2", tint: 0x808080 },
+    decayed_bridge_wall_particle: { base: "metal_particle_1", tint: 0x5d3323 },
+    decayed_bridge_lmr_office_particle: { base: "wood_particle", tint: 0x523b25 },
+    train_engine_collider_particle: { base: "metal_particle_1", tint: 0x971919 },
+    wood_train_particle_1: { base: "stone_particle_1", tint: 0x8b1919 },
+    wood_train_particle_2: { base: "stone_particle_2", tint: 0x8b1919 },
+    container_train_particle: { base: "metal_particle_1", tint: 0x1e6b63 },
+    graveyard_basement_particle: { base: "wood_particle", tint: 0x4f3924 },
+    small_coffin_particle: { base: "wood_particle", tint: 0x964a1c },
+    large_coffin_particle: { base: "wood_particle", tint: 0x865520 },
+    seedshot_case_particle: { base: "wood_particle", tint: 0x764e0a },
+    graveyard_particle_1: { base: "stone_particle_1", tint: 0x4e4e4e },
+    graveyard_particle_2: { base: "stone_particle_2", tint: 0x4e4e4e },
+    graveyard_basement_entrance_particle: { base: "wood_particle", tint: 0x553b24 }
 };
 
 const houseWall = (
@@ -1413,8 +1424,16 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         regenerateAfterDestroyed: 30000,
         applyPerkOnDestroy: {
             mode: "infection",
-            perk: PerkIds.Infected,
-            chance: 0.05
+            perk: PerkIds.Infected
+        },
+        glow: {
+            tint: 0x643554,
+            scale: 0.6,
+            alpha: 0.8,
+            scaleAnim: {
+                to: 0.5,
+                duration: 1e3
+            }
         }
     },
     {
@@ -2482,8 +2501,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     hqWall(4, RectangleHitbox.fromRect(16, 2.1)),
     hqWall(5, RectangleHitbox.fromRect(11.2, 2)),
     hqWall(6, RectangleHitbox.fromRect(39.2, 2)),
-    hqWall(7, RectangleHitbox.fromRect(3.2, 1.6), true),
-    hqWall(8, RectangleHitbox.fromRect(3.5, 1.6), true),
+    hqWall(7, RectangleHitbox.fromRect(3.7, 1.6), true),
+    hqWall(8, RectangleHitbox.fromRect(4.35, 1.6), true),
     hqWall(9, RectangleHitbox.fromRect(21, 2.1)),
 
     // cabin walls
@@ -3096,7 +3115,6 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         doorSound: "metal_door",
         indestructible: true,
         collideWithLayers: Layers.Adjacent,
-        //  visibleFromLayers: Layers.All,
         health: 500,
         hitbox: RectangleHitbox.fromRect(10.46, 1.69, Vec(-0.25, 0)),
         rotationMode: RotationMode.Limited,
@@ -3104,9 +3122,32 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         animationDuration: 80,
         isDoor: true,
         hingeOffset: Vec(-5.5, 0),
-        //   zIndex: ZIndexes.ObstaclesLayer3,
         frames: {
             particle: "metal_particle"
+        }
+    },
+    {
+        idString: "powered_metal_door",
+        name: "Powered Metal Door",
+        defType: DefinitionType.Obstacle,
+        material: "metal_heavy",
+        reflectBullets: true,
+        doorSound: "metal_door",
+        requiresPower: true,
+        indestructible: true,
+        collideWithLayers: Layers.Adjacent,
+        health: 500,
+        hitbox: RectangleHitbox.fromRect(10.46, 1.69, Vec(-0.25, 0)),
+        rotationMode: RotationMode.Limited,
+        noResidue: true,
+        animationDuration: 80,
+        isDoor: true,
+        hingeOffset: Vec(-5.5, 0),
+        frames: {
+            particle: "metal_particle",
+            base: "metal_door_deactivated",
+            powered: "metal_door_activated",
+            opened: "metal_door_activated"
         }
     },
     {
@@ -3969,11 +4010,6 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         material: "wood",
         health: 100,
         noResidue: true,
-        scale: {
-            spawnMin: 1,
-            spawnMax: 1,
-            destroy: 0.9
-        },
         hideOnMap: true,
         hitbox: RectangleHitbox.fromRect(19.2, 1.7, Vec(0, -1.15)),
         rotationMode: RotationMode.Limited,
@@ -4161,6 +4197,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     gunMount("ak47", "gun"),
     gunMount("an94", "gun"),
     gunMount("rpk74", "gun"),
+    gunMount("rpk16", "gun"),
     gunMount("fn_fal", "gun"),
     gunMount(
         "maul",
@@ -5699,6 +5736,26 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         zIndex: ZIndexes.BuildingsFloor
     },
     {
+        idString: "graveyard_stair",
+        name: "Graveyard Stair",
+        defType: DefinitionType.Obstacle,
+        material: "metal_heavy",
+        health: 1000,
+        indestructible: true,
+        invisible: true,
+        isStair: true,
+        activeEdges: {
+            high: 0,
+            low: 2
+        },
+        hitbox: RectangleHitbox.fromRect(10.5, 10.56),
+        frames: {
+            particle: "metal_particle"
+        },
+        rotationMode: RotationMode.Limited,
+        zIndex: ZIndexes.BuildingsFloor
+    },
+    {
         idString: "fulcrum_bunker_collider_hack",
         name: "Fulcrum Bunker Collider Hack",
         defType: DefinitionType.Obstacle,
@@ -5877,7 +5934,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
             RectangleHitbox.fromRect(9, 1, Vec(9.1, -39))
         ),
         rotationMode: RotationMode.Limited,
-        allowFlyover: FlyoverPref.Always,
+        allowFlyover: FlyoverPref.Never,
         invisible: true,
         frames: {
             particle: "metal_particle"
@@ -6356,6 +6413,30 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         }
     },
     {
+        idString: "graveyard_light",
+        name: "Graveyard Light",
+        defType: DefinitionType.Obstacle,
+        material: "glass",
+        health: 80,
+        zIndex: ZIndexes.ObstaclesLayer3 + 0.6,
+        hitbox: new CircleHitbox(1.6),
+        noResidue: true,
+        rotationMode: RotationMode.Full,
+        frames: {
+            particle: "window_particle"
+        },
+        glow: {
+            tint: 0xcd8942,
+            scale: 0.25,
+            alpha: 0.8,
+            zIndex: ZIndexes.ObstaclesLayer3 + 0.7,
+            scaleAnim: {
+                to: 0.265,
+                duration: 150
+            }
+        }
+    },
+    {
         idString: "log",
         name: "Wood Log",
         defType: DefinitionType.Obstacle,
@@ -6400,7 +6481,6 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         name: "Small Logs Pile",
         defType: DefinitionType.Obstacle,
         material: "tree",
-        variations: 2,
         health: 230,
         scale: {
             spawnMin: 1,
@@ -6414,6 +6494,26 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         frames: {
             particle: "log_particle"
         }
+    },
+    {
+        idString: "small_logs_pile_hs",
+        name: "Small Logs Pile",
+        defType: DefinitionType.Obstacle,
+        material: "tree",
+        health: 230,
+        scale: {
+            spawnMin: 1,
+            spawnMax: 1,
+            destroy: 0.7
+        },
+        hitbox: RectangleHitbox.fromRect(8.6, 8.21),
+        rotationMode: RotationMode.Limited,
+        allowFlyover: FlyoverPref.Always,
+        noResidue: true,
+        frames: {
+            particle: "log_particle"
+        },
+        hasLoot: true
     },
     {
         idString: "small_moldy_logs",
@@ -6855,7 +6955,6 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         defType: DefinitionType.Obstacle,
         material: "appliance",
         health: 300,
-        noResidue: true,
         reflectBullets: true,
         hitbox: RectangleHitbox.fromRect(21.76, 1.51, Vec(0, -0.42)),
         rotationMode: RotationMode.Limited,
@@ -7006,6 +7105,172 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         noResidue: true,
         hitbox: RectangleHitbox.fromRect(1.7, 19.66),
         rotationMode: RotationMode.Limited
+    },
+    {
+        idString: "decayed_bridge_wall",
+        name: "Decayed Bridge Wall",
+        defType: DefinitionType.Obstacle,
+        material: "metal_heavy",
+        hitbox: RectangleHitbox.fromRect(6.98, 68.94, Vec(-0.01, 0.78)),
+        reflectBullets: true,
+        health: 100,
+        indestructible: true,
+        isWall: true,
+        rotationMode: RotationMode.Limited
+    },
+    {
+        idString: "train_engine_collider",
+        name: "Regular Train Engine Collider",
+        defType: DefinitionType.Obstacle,
+        material: "metal_heavy",
+        health: 100,
+        reflectBullets: true,
+        rotationMode: RotationMode.Limited,
+        indestructible: true,
+        invisible: true,
+        hitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(55.1, 16.05, Vec(-21.03, -0.07)),
+            RectangleHitbox.fromRect(13.59, 16.22, Vec(40.8, -0.18))
+        )
+    },
+    {
+        idString: "passenger_train_back_collider",
+        name: "Passenger Train Back Collider",
+        defType: DefinitionType.Obstacle,
+        material: "metal_heavy",
+        health: 100,
+        reflectBullets: true,
+        rotationMode: RotationMode.Limited,
+        indestructible: true,
+        invisible: true,
+        hitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(4.73, 0.92, Vec(-53.03, 15.12)),
+            RectangleHitbox.fromRect(4.73, 0.92, Vec(-53.03, -14.34)),
+            new CircleHitbox(0.77, Vec(-55.51, -14.34)),
+            new CircleHitbox(0.77, Vec(-55.51, 15.11))
+        ),
+        frames: {
+            particle: "metal_particle"
+        }
+    },
+    {
+        idString: "train_connector",
+        name: "Train Connector",
+        defType: DefinitionType.Obstacle,
+        material: "metal_heavy",
+        health: 100,
+        reflectBullets: true,
+        rotationMode: RotationMode.Limited,
+        indestructible: true,
+        zIndex: ZIndexes.BuildingsFloor + 0.01,
+        hitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(1.15, 2.8, Vec(1.05, -0.01)),
+            RectangleHitbox.fromRect(2.99, 1.98, Vec(-0.1, -0.04))
+        ),
+        frames: {
+            particle: "metal_particle"
+        }
+    },
+    {
+        idString: "train_barricade_line",
+        name: "barricade line because floor image zindex no work",
+        defType: DefinitionType.Obstacle,
+        rotationMode: RotationMode.Limited,
+        hitbox: new CircleHitbox(4),
+        noCollisions: true,
+        noHitEffect: true,
+        noMeleeCollision: true,
+        zIndex: ZIndexes.BuildingsFloor + 0.005,
+        noBulletCollision: true,
+        material: "ice",
+        health: 1,
+        indestructible: true,
+        frames: {
+            base: "train_barricade_line"
+        }
+    },
+    {
+        ...controlPanel("control_panel_train", "Control Panel (Supreme TRAIN Edition)"),
+        isActivatable: true,
+        sound: {
+            names: ["button_press", "train_horn"],
+            falloff: 1,
+            maxRange: 300
+        },
+        frames: {
+            base: "control_panel",
+            activated: "control_panel_activated",
+            particle: "metal_particle",
+            residue: "barrel_residue"
+        },
+        interactObstacleIdString: "control_panel"
+    },
+    {
+        idString: "graveyard_basement_collider_hack",
+        name: "Graveyard Basement Collider Hack",
+        defType: DefinitionType.Obstacle,
+        material: "stone",
+        health: 100,
+        indestructible: true,
+        invisible: true,
+        hitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(12.45, 1.99, Vec(-26.11, 21.31)),
+            RectangleHitbox.fromRect(12.14, 2.01, Vec(26.21, -9.75)),
+            RectangleHitbox.fromRect(12.47, 2.02, Vec(-26.1, 8.72)),
+            RectangleHitbox.fromRect(12.15, 2.07, Vec(26.27, -22.13))
+        ),
+        frames: {
+            particle: "graveyard_basement_particle"
+        },
+        rotationMode: RotationMode.Limited,
+        collideWithLayers: Layers.Equal
+    },
+    {
+        idString: "small_coffin",
+        name: "Small Coffin",
+        defType: DefinitionType.Obstacle,
+        material: "wood",
+        health: 150,
+        rotationMode: RotationMode.Limited,
+        hitbox: RectangleHitbox.fromRect(13.67, 6.48),
+        scale: {
+            spawnMax: 1,
+            spawnMin: 1,
+            destroy: 0.8
+        }
+    },
+    {
+        idString: "large_coffin",
+        name: "Large Coffin",
+        defType: DefinitionType.Obstacle,
+        material: "wood",
+        health: 300,
+        rotationMode: RotationMode.Limited,
+        hitbox: RectangleHitbox.fromRect(20.66, 10),
+        scale: {
+            spawnMax: 1,
+            spawnMin: 1,
+            destroy: 0.8
+        }
+    },
+    {
+        idString: "seedshot_case",
+        name: "Seedshot Case",
+        defType: DefinitionType.Obstacle,
+        material: "crate",
+        health: 150,
+        hitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(8.5, 5.5),
+            RectangleHitbox.fromRect(1.3, 6, Vec(-2.7, 0)),
+            RectangleHitbox.fromRect(1.3, 6, Vec(2.7, 0))
+        ),
+        scale: {
+            spawnMax: 1,
+            spawnMin: 1,
+            destroy: 0.8
+        },
+        rotationMode: RotationMode.Limited,
+        hasLoot: true
     }
 ] satisfies readonly RawObstacleDefinition[] as readonly RawObstacleDefinition[]).flatMap((def: Mutable<RawObstacleDefinition>) => {
     if (def.variations !== undefined) (def as Mutable<ObstacleDefinition>).variationBits = Math.ceil(Math.log2(def.variations));

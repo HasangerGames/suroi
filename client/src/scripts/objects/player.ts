@@ -17,7 +17,7 @@ import { Angle, EaseFunctions, Geometry, Numeric } from "@common/utils/math";
 import { removeFrom, type Timeout } from "@common/utils/misc";
 import { DefinitionType, type ReferenceTo } from "@common/utils/objectDefinitions";
 import { type ObjectsNetData } from "@common/utils/objectsSerializations";
-import { random, randomBoolean, randomFloat, randomPointInsideCircle, randomRotation, randomSign, randomVector } from "@common/utils/random";
+import { pickRandomInArray, random, randomBoolean, randomFloat, randomPointInsideCircle, randomRotation, randomSign, randomVector } from "@common/utils/random";
 import { FloorNames, FloorTypes } from "@common/utils/terrain";
 import { Vec, type Vector } from "@common/utils/vector";
 import $ from "jquery";
@@ -109,6 +109,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
     private _skin: ReferenceTo<SkinDefinition> = "";
 
+    private _lastParticleTrail = Date.now();
+
     readonly images: {
         aimTrail?: Graphics
         altAimTrail?: Graphics
@@ -179,6 +181,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
     floorType: FloorNames = FloorNames.Grass;
 
     sizeMod = 1;
+
+    reloadMod = 1;
 
     constructor(id: number, data: ObjectsNetData[ObjectCategory.Player]) {
         super(id);
@@ -548,6 +552,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     invulnerable,
                     activeItem,
                     sizeMod,
+                    reloadMod,
                     skin,
                     helmet,
                     vest,
@@ -724,6 +729,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     }
                 });
             }
+
+            if (reloadMod !== undefined && this.reloadMod !== reloadMod) this.reloadMod = reloadMod;
 
             const { hideEquipment, helmetLevel, vestLevel, backpackLevel } = this;
 
@@ -928,7 +935,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     if (this.isActivePlayer) {
                         UIManager.animateAction(
                             getTranslatedString("action_reloading"),
-                            (reloadFullClip ? weaponDef.fullReloadTime : weaponDef.reloadTime) / (PerkManager.mapOrDefault(PerkIds.CombatExpert, ({ reloadMod }) => reloadMod, 1))
+                            (reloadFullClip ? weaponDef.fullReloadTime : weaponDef.reloadTime) / (this.reloadMod === 0 ? 1 : this.reloadMod)
                         );
                     }
 
@@ -961,10 +968,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             }
 
             if (actionSoundName) {
-                let speed = 1;
-                if (PerkManager.has(PerkIds.CombatExpert) && action.type === PlayerActions.Reload) {
-                    speed = PerkData[PerkIds.CombatExpert].reloadMod;
-                } else if (PerkManager.has(PerkIds.FieldMedic) && actionSoundName === action.item?.idString) {
+                let speed = action.type === PlayerActions.Reload ? this.reloadMod : 1;
+                if (PerkManager.has(PerkIds.FieldMedic) && actionSoundName === action.item?.idString) {
                     speed = PerkData[PerkIds.FieldMedic].usageMod;
                 }
                 this.actionSound = this.playSound(
@@ -1418,6 +1423,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             }
 
             container.children(".item-tooltip").html(itemTooltip);
+            container.css("outline", def.noDrop ? "none" : "");
         }
 
         container.css("visibility", (def?.level ?? 0) > 0 || UI_DEBUG_MODE ? "visible" : "hidden");
@@ -1596,53 +1602,75 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     this.images.weapon.setFrame(`${weaponDef.idString}${this.meleeAttackCounter <= 0 ? "_used" : ""}`);
                 }
 
+                const hitDelay = weaponDef.hitDelay ?? 50;
                 this.addTimeout(() => {
                     // Play hit effect on closest object
                     // TODO: share this logic with the server
 
-                    type MeleeObject = Player | Obstacle | Building | Projectile;
+                    let hitCount = 0;
+                    for (let i = 0; i < (weaponDef.numberOfHits ?? 1); i++) {
+                        this.addTimeout((): void => {
+                            if (this.activeItem.defType !== DefinitionType.Melee) return;
 
-                    const position = Vec.add(
-                        this.position,
-                        Vec.scale(Vec.rotate(weaponDef.offset, this.rotation), this.sizeMod)
-                    );
-                    const hitbox = new CircleHitbox(weaponDef.radius * this.sizeMod, position);
-                    const targets: MeleeObject[] = [];
+                            if (hitCount > 0) {
+                                this.playSound(
+                                    weaponDef.swingSound ?? "swing",
+                                    {
+                                        falloff: 0.4,
+                                        maxRange: 96
+                                    }
+                                );
+                            }
 
-                    for (const object of Game.objects) {
-                        if (
-                            (object.dead && !(object.isBuilding && object.definition.hasDamagedCeiling))
-                            || object === this
-                            || !(object.isPlayer || object.isObstacle || object.isBuilding || object.isProjectile)
-                            || !object.damageable
-                            || (object.isObstacle && (object.definition.isStair || object.definition.noMeleeCollision))
-                            || !adjacentOrEquivLayer(object, this.layer)
-                            || !object.hitbox?.collidesWith(hitbox)
-                        ) continue;
+                            type MeleeObject = Player | Obstacle | Building | Projectile;
 
-                        targets.push(object);
+                            const position = Vec.add(
+                                this.position,
+                                Vec.scale(Vec.rotate(weaponDef.offset, this.rotation), this.sizeMod)
+                            );
+                            const hitbox = new CircleHitbox(weaponDef.radius * this.sizeMod, position);
+                            const targets: MeleeObject[] = [];
+
+                            hitCount++;
+                            for (const object of Game.objects) {
+                                if (
+                                    (object.dead && !(object.isBuilding && object.definition.hasDamagedCeiling))
+                                    || object === this
+                                    || !(object.isPlayer || object.isObstacle || object.isBuilding || object.isProjectile)
+                                    || !object.damageable
+                                    || (object.isObstacle && (object.definition.isStair || object.definition.noMeleeCollision))
+                                    || !adjacentOrEquivLayer(object, this.layer)
+                                    || !object.hitbox?.collidesWith(hitbox)
+                                ) continue;
+
+                                targets.push(object);
+                            }
+
+                            targets.sort((a, b) => {
+                                if (Game.isTeamMode && a.isPlayer && a.teamID === this.teamID) return Infinity;
+                                if (Game.isTeamMode && b.isPlayer && b.teamID === this.teamID) return -Infinity;
+
+                                return (a.hitbox?.distanceTo(this.hitbox).distance ?? 0) - (b.hitbox?.distanceTo(this.hitbox).distance ?? 0);
+                            });
+
+                            const angleToPos = Angle.betweenPoints(this.position, position);
+                            const numTargets = Numeric.min(targets.length, weaponDef.maxTargets ?? 1);
+                            for (let i = 0; i < numTargets; i++) {
+                                const target = targets[i];
+
+                                if (target.isPlayer) {
+                                    let sound = this.activeItem.hitSound;
+                                    if (sound && weaponDef.numberOfHits !== undefined && weaponDef.numberOfHits > 1) {
+                                        sound += `_${hitCount}`;
+                                    }
+                                    target.hitEffect(position, angleToPos, sound);
+                                } else {
+                                    target.hitEffect(position, angleToPos);
+                                }
+                            }
+                        }, (i === 0 ? 0 : (weaponDef.delayBetweenHits ?? 0)));
                     }
-
-                    targets.sort((a, b) => {
-                        if (Game.isTeamMode && a.isPlayer && a.teamID === this.teamID) return Infinity;
-                        if (Game.isTeamMode && b.isPlayer && b.teamID === this.teamID) return -Infinity;
-
-                        return (a.hitbox?.distanceTo(this.hitbox).distance ?? 0) - (b.hitbox?.distanceTo(this.hitbox).distance ?? 0);
-                    });
-
-                    const angleToPos = Angle.betweenPoints(this.position, position);
-                    const numTargets = Numeric.min(targets.length, weaponDef.maxTargets ?? 1);
-                    for (let i = 0; i < numTargets; i++) {
-                        const target = targets[i];
-
-                        if (target.isPlayer) {
-                            target.hitEffect(position, angleToPos, (this.activeItem as MeleeDefinition).hitSound);
-                        } else {
-                            target.hitEffect(position, angleToPos);
-                        }
-                    }
-                }, weaponDef.hitDelay ?? 50);
-
+                }, hitDelay);
                 break;
             }
             case AnimationType.Downed: {
@@ -1827,6 +1855,49 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                             this.anims.rightFist = undefined;
                         }
                     });
+                }
+
+                if (weaponDef.cameraShake !== undefined) {
+                    CameraManager.shake(weaponDef.cameraShake.duration, weaponDef.cameraShake.intensity);
+                }
+
+                if (weaponDef.backblast !== undefined) {
+                    const trail = weaponDef.ballistics.trail,
+                        backblast = weaponDef.backblast;
+
+                    if (trail && Date.now() - this._lastParticleTrail >= trail.interval) {
+                        const offset = weaponDef.isDual
+                            ? (isAltFire ? -1 : 1) * weaponDef.leftRightOffset
+                            : (weaponDef.bulletOffset ?? 0);
+
+                        const position = Vec.add(
+                            this.position,
+                            Vec.scale(Vec.rotate(Vec(-backblast.length, offset), this.rotation), this.sizeMod)
+                        );
+
+                        ParticleManager.spawnParticles(
+                            backblast.particlesAmount,
+                            () => ({
+                                frames: trail.frame,
+                                speed: Vec.fromPolar(
+                                    randomRotation(),
+                                    randomFloat(backblast.min, backblast.max)
+                                ),
+                                position,
+                                lifetime: backblast.duration,
+                                zIndex: ZIndexes.Bullets - 1,
+                                scale: randomFloat(backblast.scale.min, backblast.scale.max),
+                                alpha: {
+                                    start: randomFloat(trail.alpha.min, trail.alpha.max),
+                                    end: 0
+                                },
+                                layer: this.layer,
+                                tint: pickRandomInArray([0x8a8a8a, 0x3d3d3d, 0x858585])
+                            })
+                        );
+
+                        this._lastParticleTrail = Date.now();
+                    }
                 }
 
                 this.spawnCasingParticles("fire", isAltFire);

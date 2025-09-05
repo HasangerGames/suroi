@@ -20,6 +20,8 @@ import { type TranslationKeys } from "../utils/translations/typings";
 import { CameraManager } from "./cameraManager";
 import { SoundManager } from "./soundManager";
 import { UIManager } from "./uiManager";
+import { PerkIds } from "@common/definitions/items/perks";
+import { PerkManager } from "./perkManager";
 
 class InputMapper {
     // These two maps must be kept in sync!!
@@ -214,12 +216,18 @@ class InputManagerClass {
         if (action.type === InputActions.DropItem || action.type === InputActions.DropWeapon) {
             const inventory = UIManager.inventory;
 
-            let item!: ItemDefinition;
+            let item!: ItemDefinition | WeaponDefinition;
             if (action.type === InputActions.DropItem) {
                 item = action.item;
-            } else if (action.type === InputActions.DropWeapon) {
-                item = inventory.weapons[action.slot] as unknown as WeaponDefinition;
+            } else if (action.type === InputActions.DropWeapon && inventory.weapons?.[action.slot]) {
+                const weapon = inventory.weapons[action.slot];
+                if (weapon !== undefined) item = weapon.definition;
             }
+
+            if (
+                (item.defType === DefinitionType.Perk && PerkManager.has(PerkIds.Infected)) // locked perks?
+                || item.noDrop
+            ) return;
 
             // TODO always play sound, detect this elsewhere so the input action is never sent
             let playSound = !item.noDrop;

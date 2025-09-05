@@ -8,6 +8,8 @@ export interface PlayerModifiers {
     maxShield: number
     baseSpeed: number
     size: number
+    reload: number
+    fireRate: number
     adrenDrain: number
 
     // Additive

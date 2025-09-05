@@ -23,6 +23,8 @@ export type BaseBulletDefinition = {
     readonly lastShotFX?: boolean
     readonly noCollision?: boolean
     readonly noReflect?: boolean
+    readonly ignoreCoolerGraphics?: boolean
+    readonly infection?: number
 
     readonly teammateHeal?: number
     readonly enemySpeedMultiplier?: {
@@ -56,6 +58,11 @@ export type BaseBulletDefinition = {
          */
         readonly color?: number
         readonly saturatedColor?: number
+
+        /**
+         * How fast tracer images spin (useful for projectiles)
+        */
+        readonly spinSpeed?: number
     }
 
     readonly trail?: {

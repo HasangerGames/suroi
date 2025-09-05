@@ -23,7 +23,7 @@ import { GameConsole } from "../console/gameConsole";
 import { Game } from "../game";
 import { type GameObject } from "../objects/gameObject";
 import { Player } from "../objects/player";
-import { TEAMMATE_COLORS, UI_DEBUG_MODE } from "../utils/constants";
+import { PERK_MESSAGE_FADE_TIME, TEAMMATE_COLORS, UI_DEBUG_MODE } from "../utils/constants";
 import { formatDate, html } from "../utils/misc";
 import { SuroiSprite } from "../utils/pixi";
 import { getTranslatedString, TRANSLATIONS } from "../utils/translations/translations";
@@ -177,6 +177,8 @@ class UIManagerClass {
         adrenalineBarAmount: $<HTMLSpanElement>("#adrenaline-bar-amount"),
 
         shieldBar: $<HTMLDivElement>("#shield-bar"),
+
+        infectionBar: $<HTMLDivElement>("#infection-bar"),
 
         killFeed: $<HTMLDivElement>("#kill-feed"),
 
@@ -605,6 +607,7 @@ class UIManagerClass {
             health,
             adrenaline,
             shield,
+            infection,
             zoom,
             id,
             teammates,
@@ -811,6 +814,10 @@ class UIManagerClass {
 
         if (shield !== undefined) {
             this.ui.shieldBar.css("clip-path", `inset(0 ${(1 - shield) * 100}% 0 0)`);
+        }
+
+        if (infection !== undefined) {
+            this.ui.infectionBar.css("clip-path", `inset(0 ${(1 - infection) * 100}% 0 0)`);
         }
 
         if (inventory?.weapons) {
@@ -1086,14 +1093,40 @@ class UIManagerClass {
         if (index > GameConstants.player.maxPerks) index = 0; // overwrite stuff ig?
         // no, write a hud that can handle it
 
+        if (perkDef.hideInHUD) {
+            this.resetPerkSlot(index);
+            return;
+        }
+
+        const folder = perkDef.category === PerkCategories.Halloween ? "halloween" : "shared",
+            perkSrc = `./img/game/${folder}/perks/${perkDef.idString}.svg`,
+            lootBg = `./img/game/shared/loot/loot_background_${perkDef.idString === PerkIds.PlumpkinGamble ? PerkIds.PlumpkinGamble : "perk"}.svg`,
+            perkName = getTranslatedString(perkDef.idString as unknown as TranslationKeys);
+
+        const { killMsgModal, inventoryMsg, interactMsg } = this.ui;
+
+        clearTimeout(Game.inventoryMsgTimeout);
+        killMsgModal.fadeOut(PERK_MESSAGE_FADE_TIME);
+        interactMsg.fadeOut(PERK_MESSAGE_FADE_TIME);
+
+        inventoryMsg
+            .fadeOut(0)
+            .html(`
+                <div id="perk" style="background-image: url(${lootBg});">
+                    <img class="perk-img" src="${perkSrc}" draggable="false"/>
+                </div>
+                <strong class="perk-name">${perkName}</strong>
+            `)
+            .fadeIn(PERK_MESSAGE_FADE_TIME);
+
         const container = this._perkSlots[index] ??= $<HTMLDivElement>(`#perk-slot-${index}`);
         container.attr("data-idString", perkDef.idString);
-        container.children(".item-tooltip").html(`<strong>${getTranslatedString(perkDef.idString as unknown as TranslationKeys)}</strong><br>${getTranslatedString(`${perkDef.idString}_desc` as TranslationKeys)}`);
-        container.children(".item-image").attr("src", `./img/game/${perkDef.category === PerkCategories.Halloween ? "halloween" : "shared"}/perks/${perkDef.idString}.svg`);
+        container.children(".item-tooltip").html(`<strong>${perkName}</strong><br>${getTranslatedString(`${perkDef.idString}_desc` as TranslationKeys)}`);
+        container.children(".item-image").attr("src", perkSrc);
         container.css("visibility", PerkManager.has(perkDef) ? "visible" : "hidden");
         if (container.hasClass("deactivated")) container.toggleClass("deactivated");
 
-        container.css("outline", !perkDef.noDrop ? "" : "none");
+        container.css("outline", perkDef.noDrop || PerkManager.has(PerkIds.Infected) ? "none" : "");
 
         const flashAnimationDuration = 3000; // ms
 
@@ -1105,6 +1138,7 @@ class UIManagerClass {
 
         this._animationTimeouts[index] = window.setTimeout(() => {
             container.css("animation", "none");
+            inventoryMsg.fadeOut(PERK_MESSAGE_FADE_TIME);
         }, flashAnimationDuration);
     }
 
@@ -1130,6 +1164,8 @@ class UIManagerClass {
             const isPresent = count > 0 || UI_DEBUG_MODE;
 
             itemSlot.toggleClass("has-item", isPresent);
+
+            itemSlot.css("outline", count === 0 || itemDef.noDrop ? "none" : "");
 
             if ((itemDef.defType === DefinitionType.Ammo || itemDef.defType === DefinitionType.HealingItem) && itemDef.hideUnlessPresent) {
                 itemSlot.css("visibility", isPresent ? "visible" : "hidden");

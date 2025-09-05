@@ -125,9 +125,14 @@ Guns:
     Killfeed Image: eiπ
 
   M1895:
-    Loot Image: cobby
+    Loot Image: AnnihilatingFox
     World Image: Winter
-    Killfeed Image: eiπ
+    Killfeed Image: AnnihilatingFox
+
+  M202-F:
+    Loot Image: Skullboi249
+    World Image: Skullboi249
+    Killfeed: AnnihilatingFox
 
   M3K:
     Loot Image: Wampi
@@ -330,6 +335,7 @@ Melees:
   K-bar: Radians
   Maul: Radians
   Pipe Wrench: sovietnuclearfridgebomb
+  Hand Saw (Art, Killfeed, Animation): AnnihilatingFox
 
 
 Obstacles:
@@ -373,6 +379,8 @@ Obstacles:
 
   Pumpkin: RedCoder09
 
+  Powered Metal Door: TjCj/sniperboi4
+
 Buildings:
   Red House: platonthek
   Green House: platonthek
@@ -399,6 +407,9 @@ Buildings:
   Shooting Range: TimoPro
   Docks: TimoPro
   Hunting Stand: TimoPro
+  Decayed Bridge: TimoPro
+  Train Station (and all train variations): TimoPro
+  Graveyard: TimoPro
 
 Emotes:
   Primary Artists: EndermanKing, Slapdap, Tofi38
@@ -422,3 +433,13 @@ Perk Icons:
   Thermal Goggles: Skullboi249
   Overdrive: AnnihilatingFox
   Loot Baron: Skullboi249
+  Butterfingers: Skullboi249
+  Overclocked: sniperboi4/TjCj, AnnihilatingFox
+  Overweight: sniperboi4/TjCj
+
+Saw Killfeed - AnnihilatingFox
+
+S.E.E.D.
+  - Loot: Skullboi249
+  - Projectile: Skullboi249
+  - Pin/Lever: Skullboi249

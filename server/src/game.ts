@@ -423,8 +423,11 @@ export class Game implements GameData {
             if (object.isPlayer && source.isPlayer && source.hasPerk(PerkIds.HollowPoints)) {
                 (source.recentlyHitPlayers ??= new Map<Player, number>())
                     .set(object, this.now);
-                (source.highlightedIndicators ??= new Map<Player, MapIndicator>())
-                    .set(object, new MapIndicator(this, "player_indicator", object.position));
+
+                if (source.highlightedIndicators?.get(object) === undefined && source.id !== object.id) {
+                    (source.highlightedIndicators ??= new Map<Player, MapIndicator>())
+                        .set(object, new MapIndicator(this, "player_indicator", object.position));
+                }
             }
         }
 
@@ -948,6 +951,9 @@ export class Game implements GameData {
         };
 
         definition = Loots.reify<Def>(definition);
+
+        // no ephemeral shit
+        if (definition.defType === DefinitionType.Ammo && definition.ephemeral) return;
 
         if (
             this.pluginManager.emit(

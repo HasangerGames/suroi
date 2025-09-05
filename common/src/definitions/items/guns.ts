@@ -5,7 +5,6 @@ import { DefinitionType, type InventoryItemDefinition, type ReferenceTo } from "
 import { Vec, type Vector } from "../../utils/vector";
 import { type AmmoDefinition } from "./ammos";
 import { InventoryItemDefinitions } from "./items";
-import { PerkIds } from "./perks";
 import { ScopeDefinition } from "./scopes";
 
 export enum Tier { S, A, B, C, D }
@@ -31,6 +30,7 @@ type BaseGunDefinition = InventoryItemDefinition & {
     readonly shotSpread: number
     readonly moveSpread: number
     readonly bulletOffset?: number
+    readonly bulletOffsets?: number[]
     readonly fsaReset?: number // first-shot-accuracy reset (ms)
     readonly jitterRadius?: number // Jitters the bullet position, mainly for shotguns
     readonly consistentPatterning?: boolean
@@ -92,6 +92,23 @@ type BaseGunDefinition = InventoryItemDefinition & {
         readonly zIndex?: number
     }
     readonly inventoryScale?: number
+
+    readonly cameraShake?: {
+        readonly duration: number
+        readonly intensity: number
+    }
+
+    readonly backblast?: {
+        readonly length: number
+        readonly particlesAmount: number
+        readonly duration: number
+        readonly min: number
+        readonly max: number
+        readonly scale: {
+            readonly min: number
+            readonly max: number
+        }
+    }
 
     readonly noMuzzleFlash?: boolean
     readonly ballistics: BaseBulletDefinition
@@ -1326,7 +1343,8 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
             tracer: {
                 width: 1.1,
                 length: 1.4
-            }
+            },
+            infection: 100
         }
     },
     {
@@ -2736,7 +2754,91 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
             range: 250
         }
     },
-
+    //
+    // RPGs (Rocket Launchers)
+    //
+    {
+        idString: "m202",
+        name: "M202-F",
+        defType: DefinitionType.Gun,
+        fireMode: FireMode.Auto,
+        tier: Tier.S,
+        ammoType: "plumpkin_ammo",
+        ammoSpawnAmount: 0,
+        capacity: 4,
+        reloadTime: 6.3,
+        shootOnRelease: true,
+        noSwap: true,
+        fireDelay: 850,
+        switchDelay: 900,
+        noMuzzleFlash: true,
+        speedMultiplier: 0.495,
+        recoilMultiplier: 0.01,
+        recoilDuration: 0,
+        bulletOffset: 3,
+        bulletOffsets: [2.2, 3.95, 2.2, 3.95],
+        shotSpread: 0,
+        moveSpread: 0,
+        length: 7.35,
+        fists: {
+            left: Vec(119, 28),
+            right: Vec(65, 87),
+            animationDuration: 100
+        },
+        image: {
+            position: Vec(29.7, 53.5),
+            zIndex: 4
+        },
+        gasParticles: {
+            spread: 360,
+            amount: 75,
+            minLife: 7500,
+            maxLife: 20000,
+            minSpeed: 3,
+            maxSpeed: 7,
+            minSize: 0.4,
+            maxSize: 0.6
+        },
+        ballistics: {
+            damage: 20,
+            obstacleMultiplier: 1,
+            speed: 0.15,
+            range: 135,
+            onHitExplosion: "m202_explosion",
+            explodeOnImpact: true,
+            tracer: {
+                image: "baby_plumpkin_trail",
+                spinSpeed: 0.075
+            },
+            trail: {
+                frame: "small_gas",
+                interval: 5,
+                amount: 3,
+                tint: 0x707070,
+                alpha: { min: 0.6, max: 0.85 },
+                scale: { min: 0.1, max: 0.2 },
+                spreadSpeed: { min: 1, max: 3 },
+                lifetime: { min: 1500, max: 3000 }
+            },
+            ignoreCoolerGraphics: true, // we want smoke trail when it launches plumpkins
+            infection: 100
+        },
+        cameraShake: {
+            duration: 150,
+            intensity: 12.5
+        },
+        backblast: {
+            length: 7,
+            min: 9,
+            max: 12,
+            particlesAmount: 32,
+            duration: 800,
+            scale: {
+                min: 0.1,
+                max: 0.5
+            }
+        }
+    },
     //
     // Fictional weapons
     //
@@ -2824,10 +2926,9 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
                 length: 1.4
             },
             enemySpeedMultiplier: {
-                duration: 2000,
-                multiplier: 0.7
-            },
-            removePerk: PerkIds.Infected
+                duration: 1250,
+                multiplier: 0.9
+            }
         },
         noSwap: true
     },
@@ -2900,7 +3001,6 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
         },
         noSwap: true
     },
-
     //
     // Dev weapons
     //

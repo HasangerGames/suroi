@@ -653,10 +653,22 @@
     }
 
     @media screen and (max-width: 900px) and (max-height: 500px) {
-        transform: scale(80%);
-        transform-origin: 0% 0%;
-        left: 45.5%;
         top: 59%;
+
+        #interact-text {
+            font-size: 10px;
+        }
+
+        #interact-key {
+            width: 15px;
+            height: 15px;
+            font-size: 12px;
+
+            img {
+                width: 14px;
+                height: 14px;
+            }
+        }
     }
 }
 
@@ -847,6 +859,34 @@
         padding: 8px;
         border-radius: 8px;
         background: linear-gradient(90deg, #0790ac 0%, #1bd1f6 100%);
+        mask:
+            linear-gradient(#000 0 0) exclude,
+            linear-gradient(#000 0 0) content-box;
+    }
+
+    #infection-bar {
+        position: absolute;
+        width: calc(100% + 16px);
+        height: calc(100% + 16px);
+        left: -8px;
+        transition: clip-path ease-in-out 50ms;
+        z-index: 2;
+
+        @media screen and (max-width: variables.$screen_large) {
+            width: calc(100% + 9px);
+            height: calc(100% + 9px);
+            left: -5px;
+        }
+    }
+
+    #infection-bar::before {
+        content: "";
+        position: absolute;
+        z-index: -1;
+        inset: 0;
+        padding: 8px;
+        border-radius: 8px;
+        background: linear-gradient(45deg, #ac0793 -10%, #29011c 100%);
         mask:
             linear-gradient(#000 0 0) exclude,
             linear-gradient(#000 0 0) content-box;
@@ -1266,7 +1306,6 @@
         cursor: pointer;
     }
 }
-
 #inventory-message {
     position: absolute;
     top: calc(60% + 100px);
@@ -1275,6 +1314,52 @@
     font-size: 30px;
     font-weight: bold;
     @include variables.text-shadow;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+
+    #perk {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: 75px;
+        width: 100%;
+        height: 80px;
+
+        .perk-img {
+            width: 42px;
+        }
+    }
+
+    .perk-name {
+        font-size: 20px;
+        padding: 5px;
+    }
+
+    @media screen and (max-width: variables.$screen_large) and (max-height: 750px) {
+        top: calc(60% - 55px);
+        padding: 0;
+        margin: 0;
+        
+        #perk {
+            background-size: 45px;
+            height: 68px;
+
+            .perk-img {
+                width: 25px;
+            }
+        }
+
+        .perk-name {
+            font-size: 12px;
+            margin-top: -15px;
+        }
+    }
 
     @media screen and (max-height: 750px) {
         font-size: 20px;
@@ -2049,7 +2134,7 @@
         }
 
         &.active {
-            outline: none;
+            outline-width: 0;
             opacity: 1;
 
             .item-image {
@@ -2221,8 +2306,6 @@
             opacity: 0.95;
 
             &.dead {
-                width: 175px;
-                height: 175px;
                 transform: translate(0%, 50%);
             }
 
@@ -2231,6 +2314,11 @@
                 width: 150px;
                 height: 150px;
                 position: absolute;
+
+                &.dead {
+                    width: 120px;
+                    height: 120px;
+                }
             }
         }
 

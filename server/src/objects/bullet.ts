@@ -165,12 +165,17 @@ export class Bullet extends BaseBullet {
                     position: this.position
                 });
 
+                if (object.isPlayer) {
+                    if (this.shooter.isPlayer && definition.infection !== undefined && object.teamID !== this.shooter.teamID) object.infection += definition.infection; // evil 1
+                    if (definition.teammateHeal !== undefined) object.infection -= definition.teammateHeal * 10; // evil 2
+                }
+
                 if (
                     this.sourceGun.definition.defType === DefinitionType.Gun
                     && this.shooter.isPlayer
                     && this.shooter.hasPerk(PerkIds.PrecisionRecycling)
                 ) {
-                    if (object.isPlayer) {
+                    if (object.isPlayer && object.teamID !== this.shooter.teamID) {
                         this.shooter.tryRefund(this.sourceGun as GunItem);
                     } else {
                         this.shooter.bulletTargetHitCount = 0;

@@ -361,6 +361,14 @@ export async function setUpUI(): Promise<void> {
 
         ui.ammoCounterContainer.show();
 
+        // Perk message
+        // ui.perkMsg.html(`
+        //     <div id="perk" style="background-image: url(./img/game/shared/loot/loot_background_perk.svg);">
+        //         <img class="perk-img" src="./img/game/shared/perks/loot_baron.svg" draggable="false" width="50" height="50"/>
+        //     </div>
+        //     <strong class="perk-name">Loot Baron</strong>
+        // `);
+
         // Kill feed messages
         const killFeed = ui.killFeed;
         for (let i = 0; i < 5; i++) {

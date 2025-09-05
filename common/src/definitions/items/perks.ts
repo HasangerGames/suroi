@@ -10,6 +10,8 @@ interface BasePerkDefinition extends ItemDefinition {
     readonly noSwap?: boolean
     readonly alwaysAllowSwap?: boolean
     readonly plumpkinGambleIgnore?: boolean
+    readonly infectedEffectIgnore?: boolean
+    readonly hideInHUD?: boolean
 }
 
 /**
@@ -32,7 +34,8 @@ export type PerkDefinition = LoosenNumerics<typeof perks[number]> & BasePerkDefi
 export const enum PerkCategories {
     Normal,
     Halloween,
-    Hunted
+    Hunted,
+    Infection
 }
 
 export const enum PerkQualities {
@@ -60,6 +63,7 @@ export const enum PerkIds {
     CombatExpert = "combat_expert",
     PrecisionRecycling = "precision_recycling",
     LootBaron = "loot_baron",
+    Overclocked = "overclocked",
 
     //
     // Halloween Perks
@@ -77,12 +81,15 @@ export const enum PerkIds {
     Claustrophobic = "claustrophobic",
     LacedStimulants = "laced_stimulants",
     RottenPlumpkin = "rotten_plumpkin",
-    // PriorityTarget = "priority_target",
+    PriorityTarget = "priority_target",
+    Butterfingers = "butterfingers",
+    Overweight = "overweight",
 
     //
     // Infection
     //
     Infected = "infected",
+    Necrosis = "necrosis",
     Immunity = "immunity",
 
     // H.U.N.T.E.D.
@@ -235,6 +242,14 @@ const perks = [
         category: PerkCategories.Normal,
         lootBonus: 1
     },
+    {
+        idString: PerkIds.Overclocked,
+        name: "Overclocked",
+        defType: DefinitionType.Perk,
+        category: PerkCategories.Normal,
+        fireRateMod: 0.5,
+        spreadMod: 2.5
+    },
     //
     // Halloween perks
     //
@@ -245,7 +260,8 @@ const perks = [
         category: PerkCategories.Halloween,
 
         noDrop: true,
-        plumpkinGambleIgnore: true
+        plumpkinGambleIgnore: true,
+        infectedEffectIgnore: true
 
         /*
             krr krr krr *buzzer* aw dang it! krr krr krr *buzzer* aw dang it!
@@ -280,7 +296,8 @@ const perks = [
         healthMod: 1.5,
         regenRate: 1,
         damageMod: 2,
-        noDrop: true
+        noDrop: true,
+        infectedEffectIgnore: true
     },
     {
         idString: PerkIds.Bloodthirst,
@@ -327,7 +344,8 @@ const perks = [
         adrenDecay: 0,
         adrenSet: 1,
         healthMod: 0.8,
-        noDrop: true
+        noDrop: true,
+        infectedEffectIgnore: true
     },
     {
         idString: PerkIds.Engorged,
@@ -339,7 +357,8 @@ const perks = [
         healthMod: 10, // additive
         sizeMod: 1.05, // multiplicative
         killsLimit: 10,
-        noDrop: true
+        noDrop: true,
+        infectedEffectIgnore: true
     },
     {
         idString: PerkIds.BabyPlumpkinPie,
@@ -382,7 +401,8 @@ const perks = [
             diseased_plumpkin: 0.01
         },
         noDrop: true,
-        alwaysAllowSwap: true
+        alwaysAllowSwap: true,
+        infectedEffectIgnore: true
     },
     {
         idString: PerkIds.TornPockets,
@@ -429,17 +449,33 @@ const perks = [
         healthLoss: 5, // absolute
         noDrop: true
     },
-    /* {
+    {
         idString: PerkIds.PriorityTarget,
         name: "Priority Target",
         defType: DefinitionType.Perk,
-                description: "All players on the map can see your location.",
         category: PerkCategories.Halloween,
-        type: PerkQualities.Negative,
-
-        noDrop: true,
-        plumpkinGambleIgnore: true
-    }, */
+        quality: PerkQualities.Negative,
+        mapIndicator: PerkIds.PriorityTarget,
+        noDrop: true
+    },
+    {
+        idString: PerkIds.Butterfingers,
+        name: "Butterfingers",
+        defType: DefinitionType.Perk,
+        category: PerkCategories.Halloween,
+        quality: PerkQualities.Negative,
+        reloadMod: 0.75,
+        noDrop: true
+    },
+    {
+        idString: PerkIds.Overweight,
+        name: "Overweight",
+        defType: DefinitionType.Perk,
+        category: PerkCategories.Halloween,
+        quality: PerkQualities.Negative,
+        sizeMod: 1.5,
+        noDrop: true
+    },
     //
     // Infection Mode
     //
@@ -447,25 +483,31 @@ const perks = [
         idString: PerkIds.Infected,
         name: "Infected",
         defType: DefinitionType.Perk,
-        category: PerkCategories.Normal,
+        category: PerkCategories.Infection,
         quality: PerkQualities.Negative,
-        updateInterval: 1000,
-        dps: 0.78,
-        minHealth: 5,
-        healthMod: 0.75,
-        speedMod: 1.25,
-        damageMod: 1.2,
-        adrenDrainMod: 10,
-        infectionRadius: 20,
-        infectionChance: 0.05,
+        updateInterval: 15000,
         noDrop: true,
         plumpkinGambleIgnore: true
+    },
+    {
+        idString: PerkIds.Necrosis,
+        name: "Necrosis",
+        defType: DefinitionType.Perk,
+        category: PerkCategories.Infection,
+        updateInterval: 1000,
+        dps: 0.78,
+        infectionRadius: 20,
+        infectionUnits: 5,
+        minHealth: 5,
+        hideInHUD: true,
+        noDrop: true
+        // what are you looking at? i dont wanna be added in the wiki im not even visible to you
     },
     {
         idString: PerkIds.Immunity,
         name: "Immunity",
         defType: DefinitionType.Perk,
-        category: PerkCategories.Normal,
+        category: PerkCategories.Infection,
         quality: PerkQualities.Positive,
         duration: 15000,
         noDrop: true,
@@ -482,7 +524,8 @@ const perks = [
         damageMod: 1.1,
         soundMod: 75,
         highlightDuration: 5000,
-        noDrop: true
+        noDrop: true,
+        infectedEffectIgnore: true
     },
     {
         idString: PerkIds.ExperimentalForcefield,
@@ -496,7 +539,8 @@ const perks = [
         shieldObtainSound: "shield_obtained",
         shieldDestroySound: "shield_destroyed",
         shieldHitSound: "glass", // "_hit_1/2" is added by the client
-        shieldParticle: "window_particle"
+        shieldParticle: "window_particle",
+        infectedEffectIgnore: true
     },
     {
         idString: PerkIds.ThermalGoggles,
@@ -504,7 +548,8 @@ const perks = [
         defType: DefinitionType.Perk,
         category: PerkCategories.Hunted,
         noDrop: true,
-        detectionRadius: 100
+        detectionRadius: 100,
+        infectedEffectIgnore: true
     },
     {
         idString: PerkIds.Overdrive,
@@ -513,6 +558,7 @@ const perks = [
         category: PerkCategories.Hunted,
         quality: PerkQualities.Negative,
         plumpkinGambleIgnore: true,
+        infectedEffectIgnore: true,
         noDrop: true,
 
         particle: "charged_particle",

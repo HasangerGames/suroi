@@ -18,6 +18,7 @@ import { InventoryItemBase } from "./inventoryItem";
 import { MeleeItem } from "./meleeItem";
 import { ThrowableItem } from "./throwableItem";
 import { DEFAULT_INVENTORY } from "@common/defaultInventory";
+import { PerkIds } from "@common/definitions/items/perks";
 
 export type ReifiableItem = InventoryItem | ReifiableDef<InventoryItem["definition"]>;
 
@@ -679,7 +680,7 @@ export class Inventory {
             }
 
             case DefinitionType.Perk: {
-                if (!this.owner.hasPerk(definition)) return;
+                if (!this.owner.hasPerk(definition) || this.owner.hasPerk(PerkIds.Infected)) return;
                 this.owner.removePerk(definition);
                 this._dropItem(definition);
                 this.owner.dirty.perks = true;
