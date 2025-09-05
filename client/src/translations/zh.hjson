@@ -519,7 +519,7 @@
 "pan": "平底锅"
 "kukri": "库克力弯刀"
 "pipe_wrench": "管钳"
-
+"handsaw": "手锯"
 
 
 /*
@@ -984,7 +984,15 @@
 "experimental_forcefield_desc": "获得一个能阻挡伤害的护盾。护盾每二十秒重置。"
 "thermal_goggles": "热能护目镜"
 "thermal_goggles_desc": "揭示周围玩家的生命条和在地图上的位置。"
-"overdrive": "超频"
+"overdrive": "过载"
 "overdrive_desc": "击杀玩家后短暂提升速度并恢复生命值和肾上腺素。冷却时间为十二秒。"
 "loot_baron": "战利品领主"
 "loot_baron_desc": "增加战利品掉落。"
+"priority_target": "优先目标"
+"priority_target_desc": "所有玩家都可在地图上看到你的位置。"
+"butterfingers": "笨手笨脚"
+"butterfingers_desc": "提升装填时间。"
+"overweight": "超重"
+"overweight_desc": "增加玩家的大小。"
+"overclocked": "超频"
+"overclocked_desc": "提高枪械射速，但是增加子弹扩散。"
