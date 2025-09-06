@@ -2454,21 +2454,11 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `username_placeholder` is not defined
 - Key `msg_contact` is not defined
 
-## 🇷🇴 Română (98% Complete) - ro.hjson
+## 🇷🇴 Română (100% Complete) - ro.hjson
 
-### Invalid Keys
+### (No Invalid Keys)
 
-- Key `create_team_waiting` is not a valid key
-- Key `m16a4` is not a valid key
-
-### Undefined Keys
-
-- Key `settings_shake_to_reload` is not defined
-- Key `settings_shake_count` is not defined
-- Key `settings_shake_force` is not defined
-- Key `settings_shake_delay` is not defined
-- Key `baby_plumpkin_pie_desc` is not defined
-- Key `msg_contact` is not defined
+### (No Undefined Keys)
 
 ## 🇷🇺 Русский (93% Complete) - ru.hjson
 

@@ -1430,6 +1430,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
             tint: 0x643554,
             scale: 0.6,
             alpha: 0.8,
+            zIndex: ZIndexes.BuildingsFloor + 0.1,
             scaleAnim: {
                 to: 0.5,
                 duration: 1e3
