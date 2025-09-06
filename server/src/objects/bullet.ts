@@ -175,7 +175,7 @@ export class Bullet extends BaseBullet {
                     && this.shooter.isPlayer
                     && this.shooter.hasPerk(PerkIds.PrecisionRecycling)
                 ) {
-                    if (object.isPlayer && object.teamID !== this.shooter.teamID) {
+                    if (object.isPlayer) {
                         this.shooter.tryRefund(this.sourceGun as GunItem);
                     } else {
                         this.shooter.bulletTargetHitCount = 0;
