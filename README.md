@@ -29,6 +29,10 @@ Any amount helps! All donation money goes towards the game directly.
 ## Join the Discord!
 [discord.suroi.io](https://discord.suroi.io)
 
+## FAQ Development
+1. cannot `pnpm install` because: "stack Error: **gyp** failed with exit code"
+> If you don't have a supported OS or processor architecture, or you use --build-from-source, the module will be compiled on your system. This requires... [read more](https://www.npmjs.com/package/canvas#Compiling)
+
 ## Installation and setup
 Start by installing [Node.js](https://nodejs.org). If you're running macOS or Linux, [nvm](https://github.com/nvm-sh/nvm) is recommended for ease of installation.
 
