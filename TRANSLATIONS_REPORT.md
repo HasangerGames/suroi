@@ -2818,7 +2818,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive_desc` is not defined
 - Key `msg_contact` is not defined
 
-## 🇨🇳 中文（简体） (98% Complete) - zh.hjson
+## 🇨🇳 中文（简体） (100% Complete) - zh.hjson
 
 ### Invalid Keys
 
@@ -2828,6 +2828,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `developr_vest` is not a valid key
 - Key `power_helmet` is not a valid key
 - Key `power_pack` is not a valid key
+- Key `handsaw` is not a valid key
 - Key `destroyer_of_worlds` is not a valid key
 - Key `deathray` is not a valid key
 - Key `C4` is not a valid key
@@ -3082,14 +3083,5 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `time_minute` is not a valid key
 - Key `time_second` is not a valid key
 
-### Undefined Keys
-
-- Key `overclocked` is not defined
-- Key `overclocked_desc` is not defined
-- Key `priority_target` is not defined
-- Key `priority_target_desc` is not defined
-- Key `butterfingers` is not defined
-- Key `butterfingers_desc` is not defined
-- Key `overweight` is not defined
-- Key `overweight_desc` is not defined
+### (No Undefined Keys)
 

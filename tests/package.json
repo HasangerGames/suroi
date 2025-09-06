@@ -17,7 +17,7 @@
     "@jest/globals": "^29.7.0",
     "@swc/core": "^1.13.5",
     "@swc/helpers": "^0.5.17",
-    "@types/node": "^22.18.0",
+    "@types/node": "^22.18.1",
     "@types/svg-parser": "^2.0.6",
     "@types/ws": "^8.18.1",
     "nodemon": "^3.1.10",
