@@ -625,13 +625,13 @@ const maps = {
         buildings: {
             large_bridge: 2,
             small_bridge: Infinity,
+            refinery: 1,
             river_hut_1: 2,
             river_hut_2: 2,
             river_hut_3: 2,
             lighthouse: 1,
             tugboat_red: 1,
             tugboat_white: 5,
-            armory: 1,
             fulcrum_bunker: 1,
             small_bunker: 1,
             warehouse: 5,
@@ -654,7 +654,12 @@ const maps = {
             memorial: 1,
             buoy: 12
         },
-        majorBuildings: ["armory", "port", "headquarters", "graveyard"],
+        majorBuildings: [
+            "port",
+            "armory",
+            "headquarters",
+            "graveyard"
+        ],
         quadBuildingLimit: {
             warehouse: 2,
             mobile_home: 2,
