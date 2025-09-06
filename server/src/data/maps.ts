@@ -625,7 +625,6 @@ const maps = {
         buildings: {
             large_bridge: 2,
             small_bridge: Infinity,
-            port: 1,
             river_hut_1: 2,
             river_hut_2: 2,
             river_hut_3: 2,
@@ -633,10 +632,8 @@ const maps = {
             tugboat_red: 1,
             tugboat_white: 5,
             armory: 1,
-            headquarters: 1,
             fulcrum_bunker: 1,
             small_bunker: 1,
-            // refinery: 1,
             warehouse: 5,
             mini_warehouse: 1,
             green_house: 3,
@@ -655,7 +652,6 @@ const maps = {
             container_9: 1,
             container_10: 2,
             memorial: 1,
-            graveyard: 1,
             buoy: 12
         },
         majorBuildings: ["armory", "port", "headquarters", "graveyard"],
