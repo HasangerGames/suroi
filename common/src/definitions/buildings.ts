@@ -63,6 +63,7 @@ export interface BuildingImageDefinition {
 interface BuildingGraphicsDefinition {
     readonly color: number | `#${string}`
     readonly hitbox: Hitbox
+    readonly waterTint?: boolean
 }
 
 export interface BuildingDefinition extends ObjectDefinition {
@@ -3995,7 +3996,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 hitbox: new GroupHitbox(
                     RectangleHitbox.fromRect(135, 388, Vec(0, 24.5)),
                     RectangleHitbox.fromRect(148.72, 55.77, Vec(-0.32, 216.9))
-                )
+                ),
+                waterTint: true
             }
         ],
         groundGraphics: [

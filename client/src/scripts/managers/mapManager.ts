@@ -197,7 +197,7 @@ class MapManagerClass {
                 ctx.beginPath();
                 drawGroundGraphics(ground.hitbox.transform(building.position, 1, building.orientation), ctx, scale);
                 ctx.closePath();
-                ctx.fill(ground.color);
+                ctx.fill(ground.waterTint ? Game.mode.colors.water : ground.color);
             }
         }
 
