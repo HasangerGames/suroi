@@ -1803,7 +1803,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             RectangleHitbox.fromRect(1.75, 18, Vec(-32.3, -15))
         ),
         spawnHitbox: RectangleHitbox.fromRect(110, 70),
-        ceilingHitbox: RectangleHitbox.fromRect(65, 48),
+        ceilingHitbox: RectangleHitbox.fromRect(65, 45),
         floorImages: [
             {
                 key: "mini_warehouse_floor_1_top",
