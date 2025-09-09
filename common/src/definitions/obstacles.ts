@@ -452,7 +452,11 @@ export const TintedParticles: Record<string, { readonly base: string, readonly t
     seedshot_case_particle: { base: "wood_particle", tint: 0x764e0a },
     graveyard_particle_1: { base: "stone_particle_1", tint: 0x4e4e4e },
     graveyard_particle_2: { base: "stone_particle_2", tint: 0x4e4e4e },
-    graveyard_basement_entrance_particle: { base: "wood_particle", tint: 0x553b24 }
+    graveyard_basement_entrance_particle: { base: "wood_particle", tint: 0x553b24 },
+    medical_camp_particle_1: { base: "stone_particle_1", tint: 0xa0a0a0 },
+    medical_camp_particle_2: { base: "stone_particle_2", tint: 0xa0a0a0 },
+    medical_camp_passage_particle: { base: "metal_particle_1", tint: 0x22616f },
+    infected_wall_particle: { base: "wood_particle", tint: 0x554255 }
 };
 
 const houseWall = (
@@ -5055,7 +5059,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         material: "stone",
         health: 1000,
         indestructible: true,
-        variations: 2,
+        variations: 3,
         isActivatable: true,
         sound: {
             name: "button_press"
@@ -7272,6 +7276,80 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         },
         rotationMode: RotationMode.Limited,
         hasLoot: true
+    },
+    {
+        idString: "small_medical_bed",
+        name: "Small Medical Bed",
+        defType: DefinitionType.Obstacle,
+        material: "wood",
+        health: 100,
+        scale: {
+            spawnMin: 1,
+            spawnMax: 1,
+            destroy: 0.9
+        },
+        hideOnMap: true,
+        hitbox: RectangleHitbox.fromRect(16.06, 7.12),
+        rotationMode: RotationMode.Limited,
+        allowFlyover: FlyoverPref.Always,
+        frames: {
+            particle: "medical_bed_particle"
+        }
+    },
+    {
+        idString: "large_medical_bed",
+        name: "Large Medical Bed",
+        defType: DefinitionType.Obstacle,
+        material: "wood",
+        health: 101, // hahah
+        scale: {
+            spawnMin: 1,
+            spawnMax: 1,
+            destroy: 0.9
+        },
+        hideOnMap: true,
+        hitbox: RectangleHitbox.fromRect(16, 11.2),
+        rotationMode: RotationMode.Limited,
+        allowFlyover: FlyoverPref.Always,
+        frames: {
+            particle: "medical_bed_particle"
+        }
+    },
+    {
+        idString: "vaccinator_case",
+        name: "Vaccinator Case",
+        defType: DefinitionType.Obstacle,
+        material: "wood",
+        health: 150,
+        scale: {
+            spawnMin: 1,
+            spawnMax: 1,
+            destroy: 0.9
+        },
+        hitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(11, 6, Vec(0, -0.2)),
+            RectangleHitbox.fromRect(1, 0.4, Vec(-3.6, 3)),
+            RectangleHitbox.fromRect(1, 0.4, Vec(3.8, 3))
+        ),
+        rotationMode: RotationMode.Limited,
+        allowFlyover: FlyoverPref.Always,
+        hasLoot: true,
+        frames: {
+            particle: "gold_aegis_case_particle"
+        }
+    },
+    {
+        idString: "infected_wall",
+        name: "Infected Wall",
+        defType: DefinitionType.Obstacle,
+        material: "wood",
+        health: 200,
+        hideOnMap: true,
+        isWall: true,
+        noResidue: true,
+        hitbox: RectangleHitbox.fromRect(2.01, 12.03),
+        rotationMode: RotationMode.Limited,
+        allowFlyover: FlyoverPref.Never
     }
 ] satisfies readonly RawObstacleDefinition[] as readonly RawObstacleDefinition[]).flatMap((def: Mutable<RawObstacleDefinition>) => {
     if (def.variations !== undefined) (def as Mutable<ObstacleDefinition>).variationBits = Math.ceil(Math.log2(def.variations));

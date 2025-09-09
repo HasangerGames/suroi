@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="75.125595"
+   height="89.809906"
+   viewBox="0 0 19.87718 23.762212"
+   version="1.1"
+   id="svg11"
+   sodipodi:docname="medical_hazel_note.svg"
+   inkscape:version="1.4 (86a8ad7, 2024-10-11)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview11"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="5.6896525"
+     inkscape:cx="23.112132"
+     inkscape:cy="57.03336"
+     inkscape:window-width="1920"
+     inkscape:window-height="991"
+     inkscape:window-x="-9"
+     inkscape:window-y="-9"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg11" />
+  <defs
+     id="defs7">
+    <clipPath
+       id="b">
+      <circle
+         cy="-15"
+         r="9.5"
+         id="circle1"
+         cx="0" />
+      <circle
+         cy="-15"
+         r="9.5"
+         transform="rotate(120)"
+         id="circle2"
+         cx="0" />
+      <circle
+         cy="-15"
+         r="9.5"
+         transform="rotate(-120)"
+         id="circle3"
+         cx="0" />
+    </clipPath>
+    <mask
+       id="a"
+       width="60"
+       height="60"
+       x="-30"
+       y="-30"
+       maskUnits="userSpaceOnUse">
+      <path
+         fill="#ffffff"
+         d="M -27,-27 H 27 V 27 H -27 Z"
+         id="path3" />
+      <path
+         d="m 2,-23 v -4 h -4 v 4 m 1.5,17 v 4 h 1 v -4"
+         id="path4" />
+      <circle
+         cy="-15"
+         r="10.5"
+         id="circle4"
+         cx="0" />
+      <g
+         transform="rotate(120)"
+         id="g5">
+        <path
+           d="m 2,-23 v -4 h -4 v 4 m 1.5,17 v 4 h 1 v -4"
+           id="path5" />
+        <circle
+           cy="-15"
+           r="10.5"
+           id="circle5"
+           cx="0" />
+      </g>
+      <g
+         transform="rotate(-120)"
+         id="g6">
+        <path
+           d="m 2,-23 v -4 h -4 v 4 m 1.5,17 v 4 h 1 v -4"
+           id="path6" />
+        <circle
+           cy="-15"
+           r="10.5"
+           id="circle6"
+           cx="0" />
+      </g>
+      <circle
+         r="3"
+         id="circle7"
+         cx="0"
+         cy="0" />
+    </mask>
+  </defs>
+  <path
+     d="M 0.78101916,0.8778127 18.860945,0.780896 19.096161,22.884381 1.0162402,22.9813 Z"
+     style="fill:#cccccc;fill-rule:evenodd;stroke:#666666;stroke-width:1.56204;stroke-linecap:round;stroke-linejoin:round"
+     id="path401" />
+  <path
+     d="m 178.79879,-329.51171 19.229,-6.7e-4 8.3e-4,23.683 -19.229,6.7e-4 z"
+     style="fill:#b5b5b5;fill-opacity:1;stroke:#585858;stroke-width:1.73461;stroke-dasharray:none;stroke-opacity:1"
+     id="path7" />
+  <g
+     style="fill:#585858;fill-opacity:1"
+     transform="matrix(0.20627,0,0,0.20627,9.9245072,7.5664144)"
+     id="g11">
+    <g
+       mask="url(#a)"
+       style="fill:#585858;fill-opacity:1"
+       id="g10">
+      <circle
+         cy="-11"
+         r="15"
+         style="fill:#585858;fill-opacity:1"
+         id="circle8"
+         cx="0" />
+      <circle
+         cy="-11"
+         r="15"
+         style="fill:#585858;fill-opacity:1"
+         transform="rotate(120)"
+         id="circle9"
+         cx="0" />
+      <circle
+         cy="-11"
+         r="15"
+         style="fill:#585858;fill-opacity:1"
+         transform="rotate(-120)"
+         id="circle10"
+         cx="0" />
+    </g>
+    <circle
+       r="11.75"
+       fill="none"
+       stroke="#000"
+       stroke-width="3.5"
+       clip-path="url(#b)"
+       style="fill:#585858;fill-opacity:1;stroke:#353535;stroke-opacity:1"
+       id="circle11"
+       cx="0"
+       cy="0" />
+  </g>
+  <path
+     d="m 14.467819,15.565392 -9.4511891,3.3e-4 m 9.2123151,3.654006 -9.2121863,0.03709"
+     style="fill:#585858;fill-opacity:1;stroke:#585858;stroke-width:1.3;stroke-linecap:round;stroke-dasharray:none;stroke-opacity:1"
+     id="path11" />
+</svg>

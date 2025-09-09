@@ -626,6 +626,7 @@ const maps = {
             large_bridge: 2,
             small_bridge: Infinity,
             graveyard: 1,
+            medical_camp: 1,
             river_hut_1: 2,
             river_hut_2: 2,
             river_hut_3: 2,
