@@ -436,6 +436,7 @@ Perk Icons:
   Butterfingers: Skullboi249
   Overclocked: sniperboi4/TjCj, AnnihilatingFox
   Overweight: sniperboi4/TjCj
+  Priority Target: sniperboi4/TjCj
 
 Saw Killfeed - AnnihilatingFox
 
