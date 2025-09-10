@@ -1408,7 +1408,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 switch (perk.idString) {
                     case PerkIds.Bloodthirst: {
                         this.piercingDamage({
-                            amount: perk.healthLoss
+                            amount: perk.healthLoss,
+                            source: DamageSources.BleedOut
                         });
                         break;
                     }
@@ -1448,7 +1449,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                     case PerkIds.RottenPlumpkin: {
                         this.sendEmote(Emotes.fromStringSafe(perk.emote), true);
                         this.piercingDamage({
-                            amount: perk.healthLoss
+                            amount: perk.healthLoss,
+                            source: DamageSources.BleedOut
                         });
                         this.adrenaline -= this.adrenaline * (perk.adrenLoss / 100);
                         break;
