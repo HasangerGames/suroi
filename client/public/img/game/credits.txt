@@ -410,6 +410,7 @@ Buildings:
   Decayed Bridge: TimoPro
   Train Station (and all train variations): TimoPro
   Graveyard: TimoPro
+  Medical Camp: TimoPro
 
 Emotes:
   Primary Artists: EndermanKing, Slapdap, Tofi38
