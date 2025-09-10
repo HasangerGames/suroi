@@ -130,6 +130,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         readonly backMeleeSprite: SuroiSprite
         readonly bubbleSprite: SuroiSprite
         disguiseSprite?: SuroiSprite
+        disguiseSpriteTrunk?: SuroiSprite
         healthBar?: Graphics
     };
 
@@ -310,6 +311,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         this.emote.container.position.copyFrom(Vec.addComponent(this.container.position, 0, -175));
         this.teammateName?.container.position.copyFrom(Vec.addComponent(this.container.position, 0, 95));
         this.images.healthBar?.position.copyFrom(Vec.addComponent(this.container.position, 0, -90));
+
+        if (this.disguiseContainer) this.disguiseContainer.position.copyFrom(this.container.position);
     }
 
     override update(): void { /* bleh */ }
@@ -664,6 +667,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     this.images.healthBar.destroy();
                     this.images.healthBar = undefined;
                 }
+
+                if (this.disguiseContainer) this.disguiseContainer.visible = false;
             }
 
             this._oldItem = this.activeItem;
@@ -761,18 +766,41 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             }
 
             if (this.activeDisguise !== activeDisguise) {
+                const disguiseContainer = this.disguiseContainer;
+
                 const def = this.activeDisguise = activeDisguise;
-                let disguiseSprite = this.images.disguiseSprite;
-                if (def !== undefined) {
+                let disguiseSprite = this.images.disguiseSprite,
+                    trunkSprite = this.images.disguiseSpriteTrunk;
+
+                if (def !== undefined && disguiseContainer) {
                     if (!disguiseSprite) {
                         disguiseSprite = this.images.disguiseSprite = new SuroiSprite();
                         disguiseSprite.zIndex = 999; // this only applies within the player container, not globally
-                        this.container.addChild(disguiseSprite);
+                        disguiseContainer.zIndex = PLAYER_PARTICLE_ZINDEX;
+                        disguiseContainer.addChild(disguiseSprite);
                     }
-                    disguiseSprite.setFrame(`${def.frames?.base ?? def.idString}${def.variations !== undefined ? `_${random(1, def.variations)}` : ""}`);
-                    disguiseSprite.setVisible(true);
-                } else {
-                    disguiseSprite?.setVisible(false);
+
+                    let frame = `${def.frames?.base ?? def.idString}${def.variations !== undefined ? `_${random(1, def.variations)}` : ""}`;
+
+                    if (def.isTree) {
+                        const trunkFrame = `${def.frames?.base ?? def.idString}${def.trunkVariations !== undefined && def.trunkVariations !== 1 ? `_${random(1, def.trunkVariations)}` : ""}`;
+                        const leavesFrame = `${def.frames?.leaves}${def.leavesVariations !== undefined && def.leavesVariations !== 1 ? `_${random(1, def.leavesVariations)}` : ""}`;
+
+                        if (!trunkSprite) {
+                            trunkSprite = this.images.disguiseSpriteTrunk = new SuroiSprite();
+                            trunkSprite.zIndex = 998; // meow
+                            disguiseContainer.addChild(trunkSprite);
+                        }
+
+                        trunkSprite.setFrame(trunkFrame);
+                        frame = leavesFrame;
+                    }
+
+                    disguiseSprite.setFrame(frame);
+                    if (!this.dead) disguiseContainer.visible = true;
+                    trunkSprite?.setVisible(def.isTree ?? false);
+                } else if (disguiseContainer) {
+                    disguiseContainer.visible = false;
                 }
             }
 
@@ -2221,7 +2249,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         images.muzzleFlash.destroy();
         images.waterOverlay.destroy();
         images.blood.destroy();
-        images.disguiseSprite?.destroy();
+        this.disguiseContainer?.destroy();
         this.healthBarFadeTimeout?.kill();
         this.healthBarTween?.kill();
         images.healthBar?.destroy();
