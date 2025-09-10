@@ -15572,7 +15572,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         ceilingImages: [{
             key: "medical_camp_lab_sub_ceiling",
             position: Vec(0, 0),
-            scale: Vec(4.05, 4.01)
+            scale: Vec(4.05, 4.07)
         }]
     },
     {
@@ -15622,7 +15622,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         ],
         subBuildings: IS_CLIENT ? undefined : [{
             idString: "medical_camp_lab_sub_ceiling",
-            position: Vec(0, 0)
+            position: Vec(0, -0.15)
         }]
     },
     {
@@ -15740,7 +15740,14 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         ],
         puzzle: {
             triggerOnSolve: "pink_metal_auto_door",
-            delay: 2000
+            delay: 3000,
+            setSolvedImmediately: true
+        },
+        sounds: {
+            solved: "medical_camp_alarm",
+            position: Vec(46.72, 36.77),
+            falloff: 0.95,
+            maxRange: 200
         },
         obstacles: IS_CLIENT ? undefined : [
             { idString: "button", position: Vec(-37.63, 51.08), rotation: 3, variation: 2, puzzlePiece: true },
