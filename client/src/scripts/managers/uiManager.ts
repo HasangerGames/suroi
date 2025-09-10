@@ -849,8 +849,7 @@ class UIManagerClass {
             const oldPerks = Array.from(PerkManager.perks);
             PerkManager.perks = perks;
             for (let i = 0; i < GameConstants.player.maxPerks; i++) {
-                const newPerk = perks[i],
-                    oldPerk = oldPerks[i];
+                const newPerk = perks[i];
 
                 if (newPerk === undefined) {
                     this.resetPerkSlot(i);
@@ -860,8 +859,6 @@ class UIManagerClass {
                 if (oldPerks[i] !== newPerk) {
                     this.updatePerkSlot(newPerk, i);
                 }
-
-                if (oldPerk.idString === PerkIds.PlumpkinBomb) this.updateWeaponSlots(true);
             }
         }
 
@@ -1102,8 +1099,6 @@ class UIManagerClass {
             this.resetPerkSlot(index);
             return;
         }
-
-        if (PerkManager.has(PerkIds.PlumpkinBomb) && perkDef.idString === PerkIds.PlumpkinBomb) this.updateWeaponSlots(true);
 
         const folder = perkDef.category === PerkCategories.Halloween ? "halloween" : "shared",
             perkSrc = `./img/game/${folder}/perks/${perkDef.idString}.svg`,

@@ -591,6 +591,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 && !this.activeItem.noSkin
             ) {
                 this.images.weapon.setFrame(`${this.activeItem.idString}${this.halloweenThrowableSkin ? "_halloween" : ""}`);
+                UIManager.updateWeaponSlots(true);
             }
 
             // Blood particles on death (cooler graphics only)
