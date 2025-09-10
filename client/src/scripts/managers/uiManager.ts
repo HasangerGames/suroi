@@ -849,14 +849,19 @@ class UIManagerClass {
             const oldPerks = Array.from(PerkManager.perks);
             PerkManager.perks = perks;
             for (let i = 0; i < GameConstants.player.maxPerks; i++) {
-                const newPerk = perks[i];
+                const newPerk = perks[i],
+                    oldPerk = oldPerks[i];
+
                 if (newPerk === undefined) {
                     this.resetPerkSlot(i);
                     continue;
                 }
+
                 if (oldPerks[i] !== newPerk) {
                     this.updatePerkSlot(newPerk, i);
                 }
+
+                if (oldPerk.idString === PerkIds.PlumpkinBomb) this.updateWeaponSlots(true);
             }
         }
 
@@ -956,7 +961,7 @@ class UIManagerClass {
         this.weaponCache.length = 0;
     }
 
-    updateWeaponSlots(): void {
+    updateWeaponSlots(force = false): void {
         const inventory = this.inventory;
 
         for (let i = 0, max = GameConstants.player.maxWeapons; i < max; i++) {
@@ -985,7 +990,7 @@ class UIManagerClass {
 
             const definition = weapon?.definition;
             const idString = definition?.idString;
-            if (idString !== cache.idString || isNew) {
+            if (idString !== cache.idString || isNew || force) {
                 cache.idString = idString;
 
                 if (definition) {
@@ -1097,6 +1102,8 @@ class UIManagerClass {
             this.resetPerkSlot(index);
             return;
         }
+
+        if (PerkManager.has(PerkIds.PlumpkinBomb) && perkDef.idString === PerkIds.PlumpkinBomb) this.updateWeaponSlots(true);
 
         const folder = perkDef.category === PerkCategories.Halloween ? "halloween" : "shared",
             perkSrc = `./img/game/${folder}/perks/${perkDef.idString}.svg`,
