@@ -438,6 +438,7 @@ Perk Icons:
   Overclocked: sniperboi4/TjCj, AnnihilatingFox
   Overweight: sniperboi4/TjCj
   Priority Target: sniperboi4/TjCj
+  Reflective Rounds: Skullboi249
 
 Saw Killfeed - AnnihilatingFox
 
