@@ -936,11 +936,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
             switch (action.type) {
                 case PlayerActions.None: {
-                    // Reset fists after reviving
-                    if (this.action.type === PlayerActions.Revive) {
-                        this.updateFistsPosition(true);
-                        this.updateWeapon();
-                    }
+                    this.updateFistsPosition(false);
+                    this.updateWeapon();
 
                     if (this.isActivePlayer) {
                         UIManager.cancelAction();
@@ -1534,6 +1531,11 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
     playAnimation(anim: AnimationType): void {
         switch (anim) {
+            case AnimationType.None: {
+                this.updateFistsPosition(true);
+                this.updateWeapon();
+                break;
+            }
             case AnimationType.Melee: {
                 if (this.activeItem.defType !== DefinitionType.Melee) {
                     console.warn(`Attempted to play melee animation with non-melee item '${this.activeItem.idString}'`);
