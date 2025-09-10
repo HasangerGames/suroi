@@ -74,6 +74,8 @@ export class MeleeItem extends InventoryItemBase.derive(DefinitionType.Melee) {
             if (!satisfiesPreflights()) return;
             for (let i = 0; i < (definition.numberOfHits ?? 1); i++) {
                 this.owner.game.addTimeout((): void => {
+                    if (this.owner.activeItem.definition.defType !== DefinitionType.Melee) return;
+
                     type MeleeObject = Player | Obstacle | Building | Projectile;
 
                     const position = Vec.add(

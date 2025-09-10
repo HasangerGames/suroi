@@ -937,7 +937,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             switch (action.type) {
                 case PlayerActions.None: {
                     this.updateFistsPosition(false);
-                    this.updateWeapon();
+                    this.updateWeapon(true);
 
                     if (this.isActivePlayer) {
                         UIManager.cancelAction();
@@ -1542,6 +1542,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     return;
                 }
                 this.updateFistsPosition(false);
+                this.updateWeapon(true);
                 const weaponDef = this.activeItem;
 
                 let altFist = Math.random() < 0.5;
@@ -1553,7 +1554,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                         const duration = frame.duration;
                         const currentWeapon = this.activeItem;
                         this.addTimeout(() => {
-                            if (this.activeItem === currentWeapon) {
+                            if (this.activeItem.idString === currentWeapon.idString) {
                                 if (!weaponDef.fists.randomFist || !altFist) {
                                     this.anims.leftFist = Game.addTween({
                                         target: this.images.leftFist,
@@ -1783,6 +1784,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     : undefined;
 
                 this.updateFistsPosition(false);
+                this.updateWeapon(true);
                 const recoilAmount = PIXI_SCALE * (1 - weaponDef.recoilMultiplier);
 
                 this.anims.weapon = Game.addTween({
