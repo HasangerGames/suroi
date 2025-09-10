@@ -91,6 +91,7 @@ export interface BuildingDefinition extends ObjectDefinition {
     readonly bunkerSpawnHitbox?: Hitbox
     readonly ceilingHitbox?: Hitbox
     readonly ceilingScope?: ReferenceTo<ScopeDefinition>
+    readonly ceilingInfectionUnits?: number
     /**
      * @default {FlyoverPref.Never}
      */
@@ -15581,6 +15582,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         floorZIndex: ZIndexes.BuildingsFloor + 0.8,
         spawnHitbox: RectangleHitbox.fromRect(68.22, 42, Vec(0.13, 0.36)),
         ceilingHitbox: RectangleHitbox.fromRect(59.71, 33.53, Vec(0.28, -0.03)),
+        ceilingInfectionUnits: 0.05,
         material: "stone",
         particleVariations: 2,
         particle: "medical_camp_particle",

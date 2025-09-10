@@ -1079,6 +1079,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             ) {
                 isInsideBuilding = true;
                 scopeTarget ??= object.definition.ceilingScope;
+
+                if (object.definition.ceilingInfectionUnits) this.infection += object.definition.ceilingInfectionUnits;
             } else if (
                 object.isSyncedParticle
                 && object.hitbox?.collidesWith(this._hitbox)
