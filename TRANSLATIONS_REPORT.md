@@ -54,6 +54,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined
 - Key `bindings_explode_c4` is not defined
+- Key `bindings_use_consumable vaccine_syringe` is not defined
 - Key `bindings_screen_record` is not defined
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 - Key `kf_suicide_finished_off` is not defined
@@ -201,6 +202,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `action_vaccine_syringe_use` is not defined
 - Key `interact_monument` is not defined
 - Key `interact_recorder_interactable` is not defined
+- Key `bindings_use_consumable vaccine_syringe` is not defined
 - Key `bindings_screen_record` is not defined
 - Key `kf_were_finally_killed` is not defined
 - Key `tt_desc` is not defined
@@ -275,6 +277,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined
 - Key `bindings_explode_c4` is not defined
+- Key `bindings_use_consumable vaccine_syringe` is not defined
 - Key `bindings_screen_record` is not defined
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 - Key `kf_suicide_finished_off` is not defined
@@ -425,6 +428,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `interact_recorder_interactable` is not defined
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined
+- Key `bindings_use_consumable vaccine_syringe` is not defined
 - Key `bindings_screen_record` is not defined
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 - Key `kf_were_finally_killed` is not defined
@@ -565,6 +569,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `interact_recorder_interactable` is not defined
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined
+- Key `bindings_use_consumable vaccine_syringe` is not defined
 - Key `bindings_screen_record` is not defined
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 - Key `kf_suicide_finished_off` is not defined
@@ -842,6 +847,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_shake_delay` is not defined
 - Key `interact_server` is not defined
 - Key `interact_recorder_interactable` is not defined
+- Key `bindings_use_consumable vaccine_syringe` is not defined
 - Key `kf_suicide_finished_off` is not defined
 - Key `kf_were_finally_killed` is not defined
 - Key `kf_saw_kill` is not defined
@@ -878,6 +884,7 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### Undefined Keys
 
+- Key `bindings_use_consumable vaccine_syringe` is not defined
 - Key `overclocked` is not defined
 - Key `overclocked_desc` is not defined
 - Key `reflective_rounds` is not defined
@@ -935,6 +942,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `interact_recorder_interactable` is not defined
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined
+- Key `bindings_use_consumable vaccine_syringe` is not defined
 - Key `bindings_screen_record` is not defined
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 - Key `kf_suicide_finished_off` is not defined
@@ -1044,7 +1052,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `username_placeholder` is not defined
 - Key `msg_contact` is not defined
 
-## 🇫🇷 Français (93% Complete) - fr.hjson
+## 🇫🇷 Français (92% Complete) - fr.hjson
 
 ### Invalid Keys
 
@@ -1064,6 +1072,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_shake_delay` is not defined
 - Key `action_vaccine_syringe_use` is not defined
 - Key `interact_recorder_interactable` is not defined
+- Key `bindings_use_consumable vaccine_syringe` is not defined
 - Key `kf_saw_kill` is not defined
 - Key `kf_saw_down` is not defined
 - Key `km_saw_kill_you` is not defined
@@ -1096,6 +1105,7 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### Undefined Keys
 
+- Key `bindings_use_consumable vaccine_syringe` is not defined
 - Key `second_wind_desc` is not defined
 - Key `flechettes` is not defined
 - Key `flechettes_desc` is not defined
@@ -1228,6 +1238,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined
 - Key `bindings_explode_c4` is not defined
+- Key `bindings_use_consumable vaccine_syringe` is not defined
 - Key `bindings_screen_record` is not defined
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 - Key `kf_suicide_finished_off` is not defined
@@ -1356,6 +1367,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_cannot_use_flare` is not defined
 - Key `interact_server` is not defined
 - Key `interact_recorder_interactable` is not defined
+- Key `bindings_use_consumable vaccine_syringe` is not defined
 - Key `kf_were_finally_killed` is not defined
 - Key `kf_saw_kill` is not defined
 - Key `kf_saw_down` is not defined
@@ -1457,6 +1469,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined
 - Key `bindings_explode_c4` is not defined
+- Key `bindings_use_consumable vaccine_syringe` is not defined
 - Key `bindings_screen_record` is not defined
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 - Key `kf_suicide_finished_off` is not defined
@@ -1847,6 +1860,7 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### Undefined Keys
 
+- Key `bindings_use_consumable vaccine_syringe` is not defined
 - Key `overclocked` is not defined
 - Key `overclocked_desc` is not defined
 - Key `reflective_rounds` is not defined
@@ -1914,6 +1928,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined
 - Key `bindings_explode_c4` is not defined
+- Key `bindings_use_consumable vaccine_syringe` is not defined
 - Key `bindings_screen_record` is not defined
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 - Key `kf_suicide_finished_off` is not defined
@@ -2079,6 +2094,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined
 - Key `bindings_explode_c4` is not defined
+- Key `bindings_use_consumable vaccine_syringe` is not defined
 - Key `bindings_screen_record` is not defined
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 - Key `kf_suicide_finished_off` is not defined
@@ -2197,6 +2213,7 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### Undefined Keys
 
+- Key `bindings_use_consumable vaccine_syringe` is not defined
 - Key `reflective_rounds` is not defined
 - Key `reflective_rounds_desc` is not defined
 
@@ -2245,6 +2262,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `interact_recorder_interactable` is not defined
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined
+- Key `bindings_use_consumable vaccine_syringe` is not defined
 - Key `bindings_screen_record` is not defined
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 - Key `kf_suicide_finished_off` is not defined
@@ -2385,6 +2403,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `interact_monument` is not defined
 - Key `interact_recorder_interactable` is not defined
 - Key `bindings_explode_c4` is not defined
+- Key `bindings_use_consumable vaccine_syringe` is not defined
 - Key `bindings_screen_record` is not defined
 - Key `kf_suicide_finished_off` is not defined
 - Key `kf_were_finally_killed` is not defined
@@ -2499,6 +2518,7 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### Undefined Keys
 
+- Key `bindings_use_consumable vaccine_syringe` is not defined
 - Key `reflective_rounds` is not defined
 - Key `reflective_rounds_desc` is not defined
 
@@ -2521,6 +2541,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_shake_delay` is not defined
 - Key `action_vaccine_syringe_use` is not defined
 - Key `interact_recorder_interactable` is not defined
+- Key `bindings_use_consumable vaccine_syringe` is not defined
 - Key `kf_saw_kill` is not defined
 - Key `kf_saw_down` is not defined
 - Key `km_saw_kill_you` is not defined
@@ -2558,6 +2579,7 @@ This file is a report of all errors and missing keys in the translation files of
 
 - Key `settings_shake_delay` is not defined
 - Key `interact_recorder_interactable` is not defined
+- Key `bindings_use_consumable vaccine_syringe` is not defined
 - Key `kf_impact_of` is not defined
 - Key `berserker` is not defined
 - Key `berserker_desc` is not defined
@@ -2596,6 +2618,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `action_vaccine_syringe_use` is not defined
 - Key `interact_server` is not defined
 - Key `interact_recorder_interactable` is not defined
+- Key `bindings_use_consumable vaccine_syringe` is not defined
 - Key `kf_were_finally_killed` is not defined
 - Key `kf_saw_kill` is not defined
 - Key `kf_saw_down` is not defined
@@ -2709,6 +2732,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `action_vaccine_syringe_use` is not defined
 - Key `interact_server` is not defined
 - Key `interact_recorder_interactable` is not defined
+- Key `bindings_use_consumable vaccine_syringe` is not defined
 - Key `kf_suicide_finished_off` is not defined
 - Key `kf_were_finally_killed` is not defined
 - Key `kf_saw_kill` is not defined
@@ -2831,6 +2855,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_shake_delay` is not defined
 - Key `interact_server` is not defined
 - Key `interact_recorder_interactable` is not defined
+- Key `bindings_use_consumable vaccine_syringe` is not defined
 - Key `kf_were_finally_killed` is not defined
 - Key `kf_saw_kill` is not defined
 - Key `kf_saw_down` is not defined
@@ -3127,6 +3152,7 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### Undefined Keys
 
+- Key `bindings_use_consumable vaccine_syringe` is not defined
 - Key `reflective_rounds` is not defined
 - Key `reflective_rounds_desc` is not defined
 

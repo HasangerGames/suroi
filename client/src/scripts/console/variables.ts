@@ -389,6 +389,7 @@ export const defaultBinds = Object.freeze({
     "use_consumable medikit": ["8"],
     "use_consumable cola": ["9"],
     "use_consumable tablets": ["0"],
+    "use_consumable vaccine_syringe": ["6"],
     "cancel_action": ["X"],
     "+view_map": [],
     "toggle_map": ["G", "M"],
