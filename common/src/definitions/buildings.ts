@@ -15013,7 +15013,14 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             RectangleHitbox.fromRect(3.38, 3.37, Vec(1.33, 46.91)),
             RectangleHitbox.fromRect(1.61, 8.08, Vec(-68.97, 29.64)),
             new CircleHitbox(1.62, Vec(-69.15, 46.87)),
-            new CircleHitbox(0.8, Vec(-68.97, 33.68))
+            new CircleHitbox(0.8, Vec(-68.97, 33.68)),
+            RectangleHitbox.fromRect(8.08, 2.92, Vec(6.04, -24.44)),
+            RectangleHitbox.fromRect(2.94, 8.07, Vec(-16.31, -53.25)),
+            RectangleHitbox.fromRect(2.93, 8.08, Vec(42.84, 13.43)),
+            RectangleHitbox.fromRect(2.93, 8.08, Vec(66.71, -62.5)),
+            RectangleHitbox.fromRect(2.93, 8.08, Vec(51.13, -48.76)),
+            RectangleHitbox.fromRect(2.93, 8.08, Vec(46.4, 11.81)),
+            RectangleHitbox.fromRect(2.93, 8.07, Vec(-31.11, -27.25))
         ),
         floors: [
             {
