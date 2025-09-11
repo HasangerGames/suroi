@@ -458,3 +458,6 @@
 "km_saw_kill_you": "Você foi morto por uma serra"
 "km_saw_down_you": "Você foi derrubado por uma serra"
 "contact": "Contate-nos"
+"bindings_use_consumable vaccine_syringe": "Usar Seringa de Vacina"
+"reflective_rounds": "Munição Reflexiva"
+"reflective_rounds_desc": "Balas ricocheteiam em qualquer superfície.<br>Não se aplica a projéteis."

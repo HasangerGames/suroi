@@ -996,3 +996,6 @@
 "overweight_desc": "增加玩家的大小。"
 "overclocked": "超频"
 "overclocked_desc": "提高枪械射速，但是增加子弹扩散。"
+"bindings_use_consumable vaccine_syringe": "使用疫苗注射器"
+"reflective_rounds": "弹力子弹"
+"reflective_rounds_desc": "子弹将在所有表面反弹。<br>不适用于投掷物。"

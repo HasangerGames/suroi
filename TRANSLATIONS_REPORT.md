@@ -177,7 +177,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `username_placeholder` is not defined
 - Key `msg_contact` is not defined
 
-## 🇧🇷 Português (Brasil) (91% Complete) - br.hjson
+## 🇧🇷 Português (Brasil) (92% Complete) - br.hjson
 
 ### Invalid Keys
 
@@ -202,7 +202,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `action_vaccine_syringe_use` is not defined
 - Key `interact_monument` is not defined
 - Key `interact_recorder_interactable` is not defined
-- Key `bindings_use_consumable vaccine_syringe` is not defined
 - Key `bindings_screen_record` is not defined
 - Key `kf_were_finally_killed` is not defined
 - Key `tt_desc` is not defined
@@ -212,8 +211,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `vaccine_syringe_desc` is not defined
 - Key `overclocked` is not defined
 - Key `overclocked_desc` is not defined
-- Key `reflective_rounds` is not defined
-- Key `reflective_rounds_desc` is not defined
 - Key `priority_target` is not defined
 - Key `priority_target_desc` is not defined
 - Key `butterfingers` is not defined
@@ -2885,7 +2882,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive_desc` is not defined
 - Key `msg_contact` is not defined
 
-## 🇨🇳 中文（简体） (99% Complete) - zh.hjson
+## 🇨🇳 中文（简体） (100% Complete) - zh.hjson
 
 ### Invalid Keys
 
@@ -3150,9 +3147,5 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `time_minute` is not a valid key
 - Key `time_second` is not a valid key
 
-### Undefined Keys
-
-- Key `bindings_use_consumable vaccine_syringe` is not defined
-- Key `reflective_rounds` is not defined
-- Key `reflective_rounds_desc` is not defined
+### (No Undefined Keys)
 
