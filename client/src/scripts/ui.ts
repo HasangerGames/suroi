@@ -295,7 +295,7 @@ export async function fetchServerData(): Promise<void> {
 
 // Take the stuff that needs fetchServerData out of setUpUI and put it here
 export async function finalizeUI(): Promise<void> {
-    const { mode: { specialLogo, playButtonImage, darkShaders, brigthness }, modeName } = Game;
+    const { mode: { specialLogo, playButtonImage, canvasFilters }, modeName } = Game;
 
     // Change the menu based on the mode.
     $("#splash-ui").css("background-image", `url(./img/backgrounds/menu/${modeName}.png)`);
@@ -315,9 +315,9 @@ export async function finalizeUI(): Promise<void> {
 
     // Darken canvas (halloween mode)
     // TODO Use pixi for this
-    if (darkShaders) {
+    if (canvasFilters !== undefined) {
         $("#game-canvas").css({
-            "filter": `brightness(${brigthness ?? 0.65}) saturate(0.85)`,
+            "filter": `brightness(${canvasFilters.brightness}) saturate(${canvasFilters.saturation})`,
             "position": "relative",
             "z-index": "-1"
         });
