@@ -30,6 +30,7 @@ export interface ModeDefinition {
     readonly defaultScope?: ReferenceTo<ScopeDefinition>
     readonly obstacleVariants?: boolean
     readonly darkShaders?: boolean
+    readonly brigthness?: number
     /** will be multiplied by the bullet trail color */
     readonly bulletTrailAdjust?: string
     readonly particleEffects?: {
@@ -115,7 +116,9 @@ export const Modes: Record<ModeName, ModeDefinition> = {
         ambience: "wind_ambience",
         spriteSheets: ["shared", "normal", "infection"],
         playButtonImage: "./img/game/shared/perks/infected.svg",
-        weaponSwap: true
+        weaponSwap: true,
+        darkShaders: true,
+        brigthness: 0.9
     },
     birthday: { // copy of normal
         colors: {

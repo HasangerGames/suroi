@@ -399,6 +399,12 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
         bombed_armory_skin: [
             { item: "one_at_nsd", weight: 1 }
         ],
+        medical_camp_skins: [
+            { item: "medical_suit", weight: 1 }
+        ],
+        graveyard_skins: [
+            { item: "groundskeeper", weight: 1 }
+        ],
         rsh_case_single: [
             { item: "rsh12", weight: 1 }
         ],

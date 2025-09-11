@@ -15261,6 +15261,12 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 layer: Layer.ToBasement
             }
         ],
+        sounds: {
+            normal: "graveyard_ambience",
+            position: Vec(0, 0),
+            maxRange: 300,
+            falloff: 0.75
+        },
         obstacles: IS_CLIENT ? undefined : [
             { idString: "regular_crate", position: Vec(-13.84, 25.56) },
             { idString: "aegis_crate", position: Vec(14.96, -25.39) },
@@ -15273,7 +15279,11 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "seedshot_case", position: Vec(15.13, 24.84), rotation: 3 },
             { idString: "graveyard_light", position: Vec(-0.17, 27.03) },
             { idString: "graveyard_light", position: Vec(0.69, -27.27) }
-        ]
+        ],
+        lootSpawners: IS_CLIENT ? undefined : [{
+            table: "graveyard_skins",
+            position: Vec(-12, -5)
+        }]
     },
     {
         idString: "graveyard_storage",
@@ -15623,6 +15633,10 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         subBuildings: IS_CLIENT ? undefined : [{
             idString: "medical_camp_lab_sub_ceiling",
             position: Vec(0, -0.15)
+        }],
+        lootSpawners: IS_CLIENT ? undefined : [{
+            table: "medical_camp_skins",
+            position: Vec(5, 9)
         }]
     },
     {
