@@ -1095,10 +1095,7 @@ This file is a report of all errors and missing keys in the translation files of
 
 ## 🇬🇷 Ελληνικά (81% Complete) - gr.hjson
 
-### Invalid Keys
-
-- Key `create_team_waiting` is not a valid key
-- Key `m16a4` is not a valid key
+### (No Invalid Keys)
 
 ### Undefined Keys
 
