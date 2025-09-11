@@ -2,7 +2,7 @@
 
 This file is a report of all errors and missing keys in the translation files of this game.
 
-## 🇦🇱 Shqip (58% Complete) - ab.hjson
+## 🇦🇱 Shqip (57% Complete) - ab.hjson
 
 ### Invalid Keys
 
@@ -93,7 +93,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `create_team_not_ready` is not defined
 - Key `region_ea` is not defined
 - Key `region_oc` is not defined
-- Key `vaccine_syringe` is not defined
 - Key `vaccine_syringe_desc` is not defined
 - Key `second_wind` is not defined
 - Key `second_wind_desc` is not defined
@@ -177,7 +176,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `username_placeholder` is not defined
 - Key `msg_contact` is not defined
 
-## 🇧🇷 Português (Brasil) (92% Complete) - br.hjson
+## 🇧🇷 Português (Brasil) (94% Complete) - br.hjson
 
 ### Invalid Keys
 
@@ -207,16 +206,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `tt_desc` is not defined
 - Key `region_ea` is not defined
 - Key `region_oc` is not defined
-- Key `vaccine_syringe` is not defined
 - Key `vaccine_syringe_desc` is not defined
-- Key `overclocked` is not defined
-- Key `overclocked_desc` is not defined
-- Key `priority_target` is not defined
-- Key `priority_target_desc` is not defined
-- Key `butterfingers` is not defined
-- Key `butterfingers_desc` is not defined
-- Key `overweight` is not defined
-- Key `overweight_desc` is not defined
 - Key `msg_contact` is not defined
 
 ## 🇨🇿 Čeština (60% Complete) - cz.hjson
@@ -301,7 +291,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `create_team_not_ready` is not defined
 - Key `region_ea` is not defined
 - Key `region_oc` is not defined
-- Key `vaccine_syringe` is not defined
 - Key `vaccine_syringe_desc` is not defined
 - Key `second_wind` is not defined
 - Key `second_wind_desc` is not defined
@@ -436,7 +425,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `tt_desc` is not defined
 - Key `region_ea` is not defined
 - Key `region_oc` is not defined
-- Key `vaccine_syringe` is not defined
 - Key `vaccine_syringe_desc` is not defined
 - Key `second_wind` is not defined
 - Key `second_wind_desc` is not defined
@@ -592,7 +580,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `create_team_not_ready` is not defined
 - Key `region_ea` is not defined
 - Key `region_oc` is not defined
-- Key `vaccine_syringe` is not defined
 - Key `vaccine_syringe_desc` is not defined
 - Key `second_wind` is not defined
 - Key `second_wind_desc` is not defined
@@ -676,7 +663,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `username_placeholder` is not defined
 - Key `msg_contact` is not defined
 
-## 🇪🇪 eesti (91% Complete) - et.hjson
+## 🇪🇪 eesti (90% Complete) - et.hjson
 
 ### Invalid Keys
 
@@ -693,7 +680,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `desert_camo` is not a valid key
 - Key `arctic_camo` is not a valid key
 - Key `bloodlust` is not a valid key
-- Key `tomato` is not a valid key
 - Key `greenhorn` is not a valid key
 - Key `blue_blood` is not a valid key
 - Key `silver_lining` is not a valid key
@@ -965,7 +951,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `create_team_not_ready` is not defined
 - Key `region_ea` is not defined
 - Key `region_oc` is not defined
-- Key `vaccine_syringe` is not defined
 - Key `vaccine_syringe_desc` is not defined
 - Key `second_wind` is not defined
 - Key `second_wind_desc` is not defined
@@ -1049,7 +1034,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `username_placeholder` is not defined
 - Key `msg_contact` is not defined
 
-## 🇫🇷 Français (92% Complete) - fr.hjson
+## 🇫🇷 Français (93% Complete) - fr.hjson
 
 ### Invalid Keys
 
@@ -1076,7 +1061,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `km_saw_down_you` is not defined
 - Key `tt_desc` is not defined
 - Key `region_ea` is not defined
-- Key `vaccine_syringe` is not defined
 - Key `vaccine_syringe_desc` is not defined
 - Key `loot_baron` is not defined
 - Key `loot_baron_desc` is not defined
@@ -1261,7 +1245,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `create_team_not_ready` is not defined
 - Key `region_ea` is not defined
 - Key `region_oc` is not defined
-- Key `vaccine_syringe` is not defined
 - Key `vaccine_syringe_desc` is not defined
 - Key `second_wind` is not defined
 - Key `second_wind_desc` is not defined
@@ -1492,7 +1475,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `create_team_not_ready` is not defined
 - Key `region_ea` is not defined
 - Key `region_oc` is not defined
-- Key `vaccine_syringe` is not defined
 - Key `vaccine_syringe_desc` is not defined
 - Key `second_wind` is not defined
 - Key `second_wind_desc` is not defined
@@ -1576,64 +1558,12 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `username_placeholder` is not defined
 - Key `msg_contact` is not defined
 
-## 🇯🇵 日本語 (97% Complete) - jp.hjson
+## 🇯🇵 日本語 (99% Complete) - jp.hjson
 
 ### Invalid Keys
 
-- Key `power_vest` is not a valid key
-- Key `power_helmet` is not a valid key
-- Key `power_pack` is not a valid key
-- Key `12g` is not a valid key
-- Key `556mm` is not a valid key
-- Key `762mm` is not a valid key
-- Key `9mm` is not a valid key
-- Key `50cal` is not a valid key
-- Key `338lap` is not a valid key
-- Key `545mm` is not a valid key
-- Key `firework_rocket` is not a valid key
-- Key `power_cell` is not a valid key
-- Key `bb` is not a valid key
-- Key `seed` is not a valid key
-- Key `needle` is not a valid key
-- Key `plumpkin_ammo` is not a valid key
-- Key `barrel_explosion` is not a valid key
-- Key `stove_explosion` is not a valid key
-- Key `fireplace_explosion` is not a valid key
-- Key `control_panel_explosion` is not a valid key
-- Key `super_barrel_explosion` is not a valid key
-- Key `small_refinery_barrel_explosion` is not a valid key
-- Key `large_refinery_barrel_explosion` is not a valid key
-- Key `silo_explosion` is not a valid key
-- Key `propane_tank_explosion` is not a valid key
-- Key `firework_launcher_explosion` is not a valid key
-- Key `seed_explosion` is not a valid key
-- Key `coal_explosion` is not a valid key
-- Key `frag_grenade_explosion` is not a valid key
-- Key `confetti_grenade_explosion` is not a valid key
-- Key `pumpkin_explosion` is not a valid key
-- Key `bdg_developr` is not a valid key
-- Key `bdg_dev_managr` is not a valid key
-- Key `bdg_designr` is not a valid key
 - Key `bdg_lead_designr` is not a valid key
-- Key `bdg_vip_designr` is not a valid key
-- Key `bdg_composr` is not a valid key
-- Key `bdg_lead_composr` is not a valid key
-- Key `bdg_moderatr` is not a valid key
-- Key `bdg_administratr` is not a valid key
-- Key `bdg_youtubr` is not a valid key
 - Key `bdg_boostr` is not a valid key
-- Key `bdg_ownr` is not a valid key
-- Key `bdg_marketr` is not a valid key
-- Key `bdg_bleh` is not a valid key
-- Key `bdg_froog` is not a valid key
-- Key `bdg_aegis_logo` is not a valid key
-- Key `bdg_flint_logo` is not a valid key
-- Key `bdg_nsd_logo` is not a valid key
-- Key `bdg_suroi_logo` is not a valid key
-- Key `bdg_duel` is not a valid key
-- Key `bdg_fire` is not a valid key
-- Key `bdg_colon_three` is not a valid key
-- Key `bdg_suroi_general_chat` is not a valid key
 - Key `emote_happy_face` is not a valid key
 - Key `emote_sad_face` is not a valid key
 - Key `emote_thumbs_up` is not a valid key
@@ -1851,21 +1781,25 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `region_1v1` is not a valid key
 - Key `region_ea1v1` is not a valid key
 - Key `region_test` is not a valid key
+- Key `fps` is not a valid key
+- Key `ping` is not a valid key
+- Key `special_developer_cheats` is not a valid key
+- Key `special_login` is not a valid key
+- Key `special_name_color` is not a valid key
+- Key `special_note_1` is not a valid key
+- Key `special_note_2` is not a valid key
+- Key `special_role_name` is not a valid key
+- Key `special_role_password` is not a valid key
+- Key `special_weapon_preset` is not a valid key
+- Key `special_weapon_preset_placeholder` is not a valid key
+- Key `time_minute` is not a valid key
+- Key `time_second` is not a valid key
 
 ### Undefined Keys
 
 - Key `bindings_use_consumable vaccine_syringe` is not defined
-- Key `overclocked` is not defined
-- Key `overclocked_desc` is not defined
 - Key `reflective_rounds` is not defined
 - Key `reflective_rounds_desc` is not defined
-- Key `priority_target` is not defined
-- Key `priority_target_desc` is not defined
-- Key `butterfingers` is not defined
-- Key `butterfingers_desc` is not defined
-- Key `overweight` is not defined
-- Key `overweight_desc` is not defined
-- Key `msg_contact` is not defined
 
 ## 🇱🇹 Lietuvių (60% Complete) - lt.hjson
 
@@ -1949,7 +1883,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `create_team_not_ready` is not defined
 - Key `region_ea` is not defined
 - Key `region_oc` is not defined
-- Key `vaccine_syringe` is not defined
 - Key `vaccine_syringe_desc` is not defined
 - Key `second_wind` is not defined
 - Key `second_wind_desc` is not defined
@@ -2115,7 +2048,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `create_team_not_ready` is not defined
 - Key `region_ea` is not defined
 - Key `region_oc` is not defined
-- Key `vaccine_syringe` is not defined
 - Key `vaccine_syringe_desc` is not defined
 - Key `second_wind` is not defined
 - Key `second_wind_desc` is not defined
@@ -2282,7 +2214,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `create_team_not_ready` is not defined
 - Key `region_ea` is not defined
 - Key `region_oc` is not defined
-- Key `vaccine_syringe` is not defined
 - Key `vaccine_syringe_desc` is not defined
 - Key `second_wind` is not defined
 - Key `second_wind_desc` is not defined
@@ -2422,7 +2353,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `create_team_not_ready` is not defined
 - Key `region_ea` is not defined
 - Key `region_oc` is not defined
-- Key `vaccine_syringe` is not defined
 - Key `vaccine_syringe_desc` is not defined
 - Key `second_wind` is not defined
 - Key `second_wind_desc` is not defined
@@ -2516,7 +2446,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `reflective_rounds` is not defined
 - Key `reflective_rounds_desc` is not defined
 
-## 🇷🇺 Русский (92% Complete) - ru.hjson
+## 🇷🇺 Русский (94% Complete) - ru.hjson
 
 ### Invalid Keys
 
@@ -2524,6 +2454,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `power_helmet` is not a valid key
 - Key `power_vest` is not a valid key
 - Key `power_pack` is not a valid key
+- Key `handsaw` is not a valid key
 
 ### Undefined Keys
 
@@ -2542,21 +2473,12 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `km_saw_down_you` is not defined
 - Key `tt_desc` is not defined
 - Key `region_ea` is not defined
-- Key `vaccine_syringe` is not defined
 - Key `vaccine_syringe_desc` is not defined
 - Key `loot_baron` is not defined
 - Key `loot_baron_desc` is not defined
-- Key `overclocked` is not defined
-- Key `overclocked_desc` is not defined
 - Key `reflective_rounds` is not defined
 - Key `reflective_rounds_desc` is not defined
 - Key `baby_plumpkin_pie_desc` is not defined
-- Key `priority_target` is not defined
-- Key `priority_target_desc` is not defined
-- Key `butterfingers` is not defined
-- Key `butterfingers_desc` is not defined
-- Key `overweight` is not defined
-- Key `overweight_desc` is not defined
 - Key `msg_contact` is not defined
 
 ## 🇮🇳 தமிழ் (95% Complete) - ta.hjson
@@ -2622,7 +2544,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `create_team_force_start` is not defined
 - Key `create_team_not_ready` is not defined
 - Key `region_ea` is not defined
-- Key `vaccine_syringe` is not defined
 - Key `vaccine_syringe_desc` is not defined
 - Key `second_wind` is not defined
 - Key `second_wind_desc` is not defined
@@ -2749,7 +2670,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `create_team_force_start` is not defined
 - Key `create_team_not_ready` is not defined
 - Key `region_ea` is not defined
-- Key `vaccine_syringe` is not defined
 - Key `vaccine_syringe_desc` is not defined
 - Key `second_wind` is not defined
 - Key `second_wind_desc` is not defined
@@ -2893,40 +2813,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `destroyer_of_worlds` is not a valid key
 - Key `deathray` is not a valid key
 - Key `C4` is not a valid key
-- Key `12g` is not a valid key
-- Key `556mm` is not a valid key
-- Key `762mm` is not a valid key
-- Key `9mm` is not a valid key
-- Key `50cal` is not a valid key
-- Key `338lap` is not a valid key
-- Key `545mm` is not a valid key
-- Key `firework_rocket` is not a valid key
-- Key `seed` is not a valid key
-- Key `needle` is not a valid key
-- Key `plumpkin_ammo` is not a valid key
-- Key `power_cell` is not a valid key
-- Key `bb` is not a valid key
-- Key `bdg_developr` is not a valid key
-- Key `bdg_dev_managr` is not a valid key
-- Key `bdg_designr` is not a valid key
-- Key `bdg_vip_designr` is not a valid key
-- Key `bdg_sound_designr` is not a valid key
-- Key `bdg_moderatr` is not a valid key
-- Key `bdg_administratr` is not a valid key
-- Key `bdg_content_creatr` is not a valid key
-- Key `bdg_marketr` is not a valid key
-- Key `bdg_donatr` is not a valid key
-- Key `bdg_ownr` is not a valid key
-- Key `bdg_bleh` is not a valid key
-- Key `bdg_froog` is not a valid key
-- Key `bdg_aegis_logo` is not a valid key
-- Key `bdg_flint_logo` is not a valid key
-- Key `bdg_nsd_logo` is not a valid key
-- Key `bdg_duel` is not a valid key
-- Key `bdg_suroi_logo` is not a valid key
-- Key `bdg_fire` is not a valid key
-- Key `bdg_colon_three` is not a valid key
-- Key `bdg_suroi_general_chat` is not a valid key
 - Key `emote_happy_face` is not a valid key
 - Key `emote_sad_face` is not a valid key
 - Key `emote_thumbs_up` is not a valid key

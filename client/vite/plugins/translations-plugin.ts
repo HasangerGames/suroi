@@ -1,3 +1,5 @@
+import { Badges } from "../../../common/src/definitions/badges";
+import { Emotes } from "../../../common/src/definitions/emotes";
 import { Guns } from "../../../common/src/definitions/items/guns";
 import { Melees } from "../../../common/src/definitions/items/melees";
 import { Throwables } from "../../../common/src/definitions/items/throwables";
@@ -34,6 +36,8 @@ const keyFilter = (key: string): boolean => (
     && !Guns.hasString(key)
     && !Melees.hasString(key)
     && !Throwables.hasString(key)
+    && !Emotes.hasString(key)
+    && !Badges.hasString(key)
 );
 
 function calculateValidRatio(keys: string[], validKeys: readonly string[]): number {
