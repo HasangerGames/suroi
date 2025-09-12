@@ -1107,19 +1107,21 @@ class UIManagerClass {
 
         const { killMsgModal, inventoryMsg, interactMsg } = this.ui;
 
-        clearTimeout(Game.inventoryMsgTimeout);
-        killMsgModal.fadeOut(PERK_MESSAGE_FADE_TIME);
-        interactMsg.fadeOut(PERK_MESSAGE_FADE_TIME);
+        if (!Game.spectating) {
+            clearTimeout(Game.inventoryMsgTimeout);
+            killMsgModal.fadeOut(PERK_MESSAGE_FADE_TIME);
+            interactMsg.fadeOut(PERK_MESSAGE_FADE_TIME);
 
-        inventoryMsg
-            .fadeOut(0)
-            .html(`
-                <div id="perk" style="background-image: url(${lootBg});">
-                    <img class="perk-img" src="${perkSrc}" draggable="false"/>
-                </div>
-                <strong class="perk-name">${perkName}</strong>
-            `)
-            .fadeIn(PERK_MESSAGE_FADE_TIME);
+            inventoryMsg
+                .fadeOut(0)
+                .html(`
+                    <div id="perk" style="background-image: url(${lootBg});">
+                        <img class="perk-img" src="${perkSrc}" draggable="false"/>
+                    </div>
+                    <strong class="perk-name">${perkName}</strong>
+                `)
+                .fadeIn(PERK_MESSAGE_FADE_TIME);
+        }
 
         const container = this._perkSlots[index] ??= $<HTMLDivElement>(`#perk-slot-${index}`);
         container.attr("data-idString", perkDef.idString);
@@ -1128,7 +1130,7 @@ class UIManagerClass {
         container.css("visibility", PerkManager.has(perkDef) ? "visible" : "hidden");
         if (container.hasClass("deactivated")) container.toggleClass("deactivated");
 
-        container.css("outline", perkDef.noDrop || PerkManager.has(PerkIds.Infected) ? "none" : "");
+        container.css("outline", perkDef.noDrop || PerkManager.has(PerkIds.Infected) || Game.spectating ? "none" : "");
 
         const flashAnimationDuration = 3000; // ms
 
@@ -1140,7 +1142,7 @@ class UIManagerClass {
 
         this._animationTimeouts[index] = window.setTimeout(() => {
             container.css("animation", "none");
-            inventoryMsg.fadeOut(PERK_MESSAGE_FADE_TIME);
+            if (!Game.spectating) inventoryMsg.fadeOut(PERK_MESSAGE_FADE_TIME);
         }, flashAnimationDuration);
     }
 
@@ -1167,7 +1169,7 @@ class UIManagerClass {
 
             itemSlot.toggleClass("has-item", isPresent);
 
-            itemSlot.css("outline", count === 0 || itemDef.noDrop ? "none" : "");
+            itemSlot.css("outline", count === 0 || itemDef.noDrop || Game.spectating ? "none" : "");
 
             if ((itemDef.defType === DefinitionType.Ammo || itemDef.defType === DefinitionType.HealingItem) && itemDef.hideUnlessPresent) {
                 itemSlot.css("visibility", isPresent ? "visible" : "hidden");
