@@ -372,6 +372,7 @@ Obstacles:
   Ducktub: Wampi
   Stove: 1092384
   Residues for above obstacles: platonthek
+  Medical Beds (Large, Small): TimoPro
 
   Toolbox: Katloo
 

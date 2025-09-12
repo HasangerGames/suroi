@@ -227,6 +227,7 @@ class InputManagerClass {
             if (
                 (item.defType === DefinitionType.Perk && PerkManager.has(PerkIds.Infected)) // locked perks?
                 || item.noDrop
+                || Game.spectating
             ) return;
 
             // TODO always play sound, detect this elsewhere so the input action is never sent

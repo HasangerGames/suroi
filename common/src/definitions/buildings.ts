@@ -15334,6 +15334,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         spawnHitbox: RectangleHitbox.fromRect(51.36, 68.56, Vec(-0.15, -0.05)),
         ceilingHitbox: RectangleHitbox.fromRect(43.46, 57.43, Vec(0.51, 0.34)),
         particle: "medical_camp_particle",
+        material: "stone",
         graphicsZIndex: ZIndexes.BuildingsFloor + 0.5,
         floorZIndex: ZIndexes.BuildingsFloor + 0.6,
         particleVariations: 2,
