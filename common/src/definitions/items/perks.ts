@@ -492,7 +492,7 @@ const perks = [
         defType: DefinitionType.Perk,
         category: PerkCategories.Infection,
         quality: PerkQualities.Negative,
-        updateInterval: 15000,
+        updateInterval: 30000,
         noDrop: true,
         plumpkinGambleIgnore: true
     },
