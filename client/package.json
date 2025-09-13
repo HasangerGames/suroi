@@ -5,10 +5,9 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "build": "vite build",
-    "dev": "vite",
-    "preview": "vite preview",
-    "start": "sirv dist --no-clear -p 3000"
+    "build": "bunx --bun vite build",
+    "dev": "bunx --bun vite",
+    "preview": "bunx --bun vite preview"
   },
   "keywords": [
     "nodejs",
@@ -33,12 +32,9 @@
     "postcss-loader": "^8.2.0",
     "postcss-preset-env": "^10.3.1",
     "sass": "^1.92.1",
-    "sirv-cli": "^3.0.1",
     "skia-canvas": "^2.0.2",
     "svelte": "^5.38.10",
     "svgo": "^3.3.2",
-    "ts-node": "^10.9.2",
-    "tslib": "^2.8.1",
     "typescript": "^5.9.2",
     "vite": "^6.3.6",
     "vite-plugin-minify": "^2.1.0"
