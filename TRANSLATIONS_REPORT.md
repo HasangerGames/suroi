@@ -2809,7 +2809,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `developr_vest` is not a valid key
 - Key `power_helmet` is not a valid key
 - Key `power_pack` is not a valid key
-- Key `handsaw` is not a valid key
 - Key `destroyer_of_worlds` is not a valid key
 - Key `deathray` is not a valid key
 - Key `C4` is not a valid key

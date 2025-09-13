@@ -129,7 +129,7 @@ export class Bullet extends BaseBullet {
             );
 
             const isBlockedReflectionGun = this.sourceGun.definition.ballistics.onHitExplosion || this.sourceGun.definition.ballistics.onHitProjectile;
-            const reflectiveRounds = this.shooter.isPlayer && this.shooter.hasPerk(PerkIds.ReflectiveRounds) && !isBlockedReflectionGun;
+            const reflectiveRounds = !object.isPlayer && this.shooter.isPlayer && this.shooter.hasPerk(PerkIds.ReflectiveRounds) && !isBlockedReflectionGun;
 
             let rotation: number | undefined;
             if (reflected || definition.onHitExplosion || definition.onHitProjectile || reflectiveRounds) {
