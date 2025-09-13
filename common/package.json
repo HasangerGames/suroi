@@ -2,7 +2,6 @@
   "name": "@suroi/common",
   "description": "",
   "private": true,
-  "main": "index.js",
   "scripts": {},
   "keywords": [],
   "license": "GPL-3.0",

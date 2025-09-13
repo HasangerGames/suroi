@@ -1,7 +1,6 @@
 import { CustomTeamMessages, CustomTeamPlayerInfo, type CustomTeamMessage } from "@common/typings";
 import { removeFrom } from "@common/utils/misc";
 import { random } from "@common/utils/random";
-import { WebSocket } from "uWebSockets.js";
 import { GameManager } from "./gameManager";
 import { type Player } from "./objects/player";
 
@@ -205,7 +204,7 @@ export class CustomTeam {
                 const toRemove = this.players[id];
                 if (!toRemove || toRemove.isLeader) break;
 
-                toRemove.socket?.end(1000, "kicked");
+                toRemove.socket?.close(1000, "kicked");
                 this.players.splice(id, 1);
                 this._publishPlayerUpdate();
                 break;
@@ -276,7 +275,7 @@ export class CustomTeam {
 export class CustomTeamPlayer {
     get id(): number { return this.team.players.indexOf(this); }
     get isLeader(): boolean { return this.id === 0; }
-    socket?: WebSocket<CustomTeamPlayerContainer>;
+    socket?: Bun.ServerWebSocket<CustomTeamPlayerContainer>;
     ready = false;
 
     constructor(

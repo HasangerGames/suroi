@@ -23,7 +23,6 @@ import { SuroiByteStream } from "@common/utils/suroiByteStream";
 import { Vec, type Vector } from "@common/utils/vector";
 
 import { DecalDefinition } from "@common/definitions/decals";
-import type { WebSocket } from "uWebSockets.js";
 import { GAME_SPAWN_WINDOW } from "./data/gasStages";
 import { MapName, Maps } from "./data/maps";
 import { type GameData } from "./gameManager";
@@ -112,7 +111,7 @@ export class Game implements GameData {
             this._valueCache = undefined;
         }
 
-        values(): IterableIterator<T> {
+        values(): SetIterator<T> {
             const iterator = this.values();
             this._valueCache ??= Array.from(iterator);
 
@@ -601,10 +600,10 @@ export class Game implements GameData {
         this.killLeaderDirty = true;
     }
 
-    addPlayer(socket?: WebSocket<PlayerSocketData>): Player | undefined {
+    addPlayer(socket?: Bun.ServerWebSocket<PlayerSocketData>): Player | undefined {
         const rejectedBy = this.pluginManager.emit("player_will_connect");
         if (rejectedBy) {
-            socket?.end(1000, `Connection rejected by server plugin '${rejectedBy.constructor.name}'`);
+            socket?.close(1000, `Connection rejected by server plugin '${rejectedBy.constructor.name}'`);
             return;
         }
 
@@ -613,7 +612,7 @@ export class Game implements GameData {
 
         let team: Team | undefined;
         if (this.isTeamMode) {
-            const { teamID, autoFill } = socket?.getUserData() ?? {};
+            const { teamID, autoFill } = socket?.data ?? {};
 
             if (teamID) {
                 team = this.customTeams.get(teamID);
@@ -874,7 +873,7 @@ export class Game implements GameData {
 
         try {
             if (reason) {
-                player.socket?.end(1000, reason);
+                player.socket?.close(1000, reason);
             } else {
                 player.socket?.close();
             }

@@ -36,7 +36,6 @@ import { SuroiByteStream } from "@common/utils/suroiByteStream";
 import { FloorNames, FloorTypes } from "@common/utils/terrain";
 import { Vec, type Vector } from "@common/utils/vector";
 import { randomBytes } from "crypto";
-import { WebSocket } from "uWebSockets.js";
 import { type Game } from "../game";
 import { HealingAction, ReloadAction, ReviveAction, type Action } from "../inventory/action";
 import { GunItem } from "../inventory/gunItem";
@@ -46,6 +45,7 @@ import { MeleeItem } from "../inventory/meleeItem";
 import { ThrowableItem } from "../inventory/throwableItem";
 import { type Team } from "../team";
 import { Config } from "../utils/config";
+import { serverWarn } from "../utils/serverHelpers";
 import { DeathMarker } from "./deathMarker";
 import { Emote } from "./emote";
 import { Explosion } from "./explosion";
@@ -55,7 +55,6 @@ import { MapIndicator } from "./mapIndicator";
 import { Obstacle } from "./obstacle";
 import { Projectile } from "./projectile";
 import { type SyncedParticle } from "./syncedParticle";
-import { serverWarn } from "../utils/serverHelpers";
 
 export interface PlayerSocketData {
     player?: Player
@@ -491,7 +490,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         this.dirty.zoom = true;
     }
 
-    readonly socket: WebSocket<PlayerSocketData> | undefined;
+    readonly socket: Bun.ServerWebSocket<PlayerSocketData> | undefined;
 
     private readonly _action: { type?: Action, dirty: boolean } = {
         type: undefined,
@@ -606,7 +605,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
     recentlyHitPlayers?: Map<Player, number>;
 
-    constructor(game: Game, socket: WebSocket<PlayerSocketData> | undefined, position: Vector, layer?: Layer, team?: Team) {
+    constructor(game: Game, socket: Bun.ServerWebSocket<PlayerSocketData> | undefined, position: Vector, layer?: Layer, team?: Team) {
         super(game, position);
 
         if (layer !== undefined) {
@@ -623,7 +622,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         }
 
         this.socket = socket;
-        const data = socket?.getUserData() ?? {} as Partial<PlayerSocketData>;
+        const data = socket?.data ?? {} as Partial<PlayerSocketData>;
         this.name = GameConstants.player.defaultName;
         this.ip = data.ip;
         this.role = data.role;
@@ -2338,7 +2337,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
     sendData(buffer: ArrayBuffer): void {
         try {
-            this.socket?.send(buffer, true, false);
+            this.socket?.send(buffer);
         } catch (e) {
             console.warn("Error sending packet. Details:", e);
         }

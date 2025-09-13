@@ -1,7 +1,6 @@
 import { ColorStyles, Logger, styleText } from "@common/utils/logging";
 import { Cron } from "croner";
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
-import { HttpRequest, HttpResponse } from "uWebSockets.js";
 import { Numeric } from "@common/utils/math";
 import { PunishmentMessage } from "@common/typings";
 import { Config } from "./config";
@@ -18,25 +17,25 @@ export function serverError(...message: unknown[]): void {
     Logger.warn(styleText("[Server] [ERROR]", ColorStyles.foreground.red.normal), ...message);
 }
 
-export function writeCorsHeaders(resp: HttpResponse): void {
-    resp.writeHeader("Access-Control-Allow-Origin", "*")
-        .writeHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
-        .writeHeader("Access-Control-Allow-Headers", "origin, content-type, accept, x-requested-with")
-        .writeHeader("Access-Control-Max-Age", "3600");
+export function getSearchParams(req: Bun.BunRequest): URLSearchParams {
+    return new URLSearchParams(req.url.slice(req.url.indexOf("?")));
 }
 
-export function forbidden(resp: HttpResponse): void {
-    resp.cork(() => {
-        resp.writeStatus("403 Forbidden")
-            .writeHeader("Content-Type", "text/plain")
-            .end("403 Forbidden");
-    });
-}
+export const corsHeaders = {
+    headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+        "Access-Control-Allow-Headers": "origin, content-type, accept, x-requested-with",
+        "Access-Control-Max-Age": "3600"
+    }
+};
 
-export const textDecoder = new TextDecoder();
-
-export function getIP(res: HttpResponse, req: HttpRequest): string {
-    return Config.ipHeader ? req.getHeader(Config.ipHeader) : textDecoder.decode(res.getRemoteAddressAsText());
+export function getIP(req: Bun.BunRequest, res: Bun.Server): string {
+    return (
+        Config.ipHeader
+            ? req.headers.get(Config.ipHeader)
+            : res.requestIP(req)?.address
+    ) ?? "";
 }
 
 interface IPCheckResponse {

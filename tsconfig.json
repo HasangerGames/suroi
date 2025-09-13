@@ -4,9 +4,8 @@
     "./common/tsconfig.json",
     "./server/tsconfig.json"
   ],
-  "include": [
-    "package.json"
-  ],
+  "include": ["package.json", "client/src", "common/src", "server/src"],
+  "exclude": ["node_modules"],
   "compilerOptions": {
     "paths": {
       "@common/*": ["./common/src/*"]
