@@ -5,10 +5,9 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc --project tsconfig.json && tsc-alias -p tsconfig.json",
-    "start": "node dist/server/src/server.js",
-    "dev": "nodemon -r ts-node/register -r tsconfig-paths/register --watch ./src --watch ../common --watch config.json src/server.ts",
-    "updateConfigSchema": "json2ts -i config.schema.json -o src/utils/config.d.ts",
-    "validateDefinitions": "node dist/server/src/validateDefinitions.js"
+    "start": "bun src/server.ts",
+    "dev": "bun src/server.ts --watch ./src ../common config.json",
+    "updateConfigSchema": "json2ts -i config.schema.json -o src/utils/config.d.ts"
   },
   "keywords": [],
   "license": "GPL-3.0",
@@ -26,7 +25,6 @@
     "typescript": "^5.9.2"
   },
   "dependencies": {
-    "croner": "^9.1.0",
-    "uWebSockets.js": "github:uNetworking/uWebSockets.js#v20.52.0"
+    "croner": "^9.1.0"
   }
 }

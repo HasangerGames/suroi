@@ -4,11 +4,10 @@
   "private": true,
   "main": "index.js",
   "scripts": {
-    "build": "tsc --project tsconfig.json && tsc-alias -p tsconfig.json",
-    "mathUnitTests": "tsc --project tsconfig.json && tsc-alias -p tsconfig.json && cd dist/tests/src && jest",
-    "validateDefinitions": "node dist/tests/src/validateDefinitions.js -print-top -print-bottom",
-    "validateSvgs": "node -r ts-node/register -r tsconfig-paths/register ./src/validateSvgs.ts",
-    "stressTest:start": "tsc --project tsconfig.json && tsc-alias -p tsconfig.json && node --enable-source-maps dist/server/src/stressTest.js",
+    "mathUnitTests": "cd src && jest",
+    "validateDefinitions": "bun src/validateDefinitions.ts -print-top -print-bottom",
+    "validateSvgs": "bun src/validateSvgs.ts",
+    "stressTest:start": "bun src/stressTest.ts",
     "stressTest": "nodemon -r ts-node/register -r tsconfig-paths/register --watch ./src --watch ../common src/stressTest.ts"
   },
   "keywords": [],
