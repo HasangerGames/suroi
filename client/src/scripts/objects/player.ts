@@ -717,7 +717,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 ?.setFrame(fistFrame)
                 .setTint(fistTint);
 
-            if (sizeMod !== undefined && this.sizeMod !== sizeMod) {
+            if (this.sizeMod !== sizeMod) {
                 // reset the size modifier before tweening
                 this.sizeMod = GameConstants.player.defaultModifiers().size;
                 this._hitbox = new CircleHitbox(GameConstants.player.radius * this.sizeMod, this._hitbox.position);

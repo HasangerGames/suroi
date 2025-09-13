@@ -3294,6 +3294,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 teamID: this.teamID ?? 0,
                 invulnerable: this.invulnerable,
                 activeItem: this.activeItem.definition,
+                sizeMod: this.sizeMod,
                 skin: this.loadout.skin,
                 helmet: this.inventory.helmet,
                 vest: this.inventory.vest,
