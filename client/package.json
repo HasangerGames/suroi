@@ -5,7 +5,7 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "build": "bunx --bun vite build",
+    "build:client": "bunx --bun vite build",
     "dev": "bunx --bun vite",
     "preview": "bunx --bun vite preview"
   },

@@ -61,7 +61,7 @@ To open the game, go to http://127.0.0.1:3000 in your browser.
 ## Production
 To build the client for production, run this command in the project root:
 ```sh
-bun build
+bun build:client
 ```
 
 To start the game server, run this command:
