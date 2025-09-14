@@ -6,14 +6,8 @@
   "private": true,
   "scripts": {
     "build:client": "bunx --bun vite build",
-    "dev": "bunx --bun vite",
-    "preview": "bunx --bun vite preview"
+    "dev": "vite"
   },
-  "keywords": [
-    "nodejs",
-    "typescript",
-    "pixi"
-  ],
   "license": "GPL-3.0",
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^5.1.1",

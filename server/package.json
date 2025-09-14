@@ -4,8 +4,7 @@
   "private": true,
   "main": "src/server.ts",
   "scripts": {
-    "start": "bun src/server.ts",
-    "dev": "bun --hot --no-clear-screen src/server.ts",
+    "dev": "bun --hot src/server.ts",
     "updateConfigSchema": "json2ts -i config.schema.json -o src/utils/config.d.ts"
   },
   "keywords": [],

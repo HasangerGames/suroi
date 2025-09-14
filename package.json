@@ -9,14 +9,14 @@
     "dev:client": "cd client && bun dev",
     "dev:server": "cd server && bun dev",
     "dev:test": "cd tests && bun stressTest",
-    "watch:server": "cd server && tsc --noEmit --watch",
+    "watch:server": "cd server && bunx --bun tsc --noEmit --watch",
     "updateConfigSchema": "cd server && bun updateConfigSchema",
     "lint": "bunx --bun biome lint --fix",
     "lint:check": "bunx --bun biome lint",
     "validateDefinitions": "cd tests && bun validateDefinitions",
     "validateSvgs": "cd tests && bun validateSvgs",
-    "fullReinstall": "rm -r node_modules bun.lock client/node_modules server/node_modules common/node_modules tests/node_modules && bun install",
-    "fullReinstallWin": "del /f /s /q node_modules\\* bun.lock client\\node_modules\\* server\\node_modules\\* common\\node_modules\\* tests\\node_modules\\* & bun install"
+    "fullReinstall": "rm -r bun.lock node_modules server/node_modules && bun install",
+    "fullReinstallWin": "del /f /s /q bun.lock node_modules\\* server\\node_modules\\* & bun install"
   },
   "keywords": [
     "bun",
