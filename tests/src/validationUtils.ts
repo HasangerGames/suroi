@@ -38,7 +38,6 @@ export function safeString(value: unknown): string {
             case !Number.isFinite(value) || Number.isNaN(value): return `${value as number}`;
             default: return JSON.stringify(value);
         }
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (_) {
         return String(value);
     }

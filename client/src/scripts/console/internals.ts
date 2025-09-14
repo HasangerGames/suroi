@@ -1056,7 +1056,6 @@ export function evalQuery(query: ParserNode): boolean {
 // ! experimental compiler code for future reference !
 // !-------------------------------------------------!
 
-// /* eslint-disable @typescript-eslint/unified-signatures */
 // // split for clarity (different parameter names)
 
 // function makeCompiledAction(cb: () => boolean, original: string): CompiledAction;

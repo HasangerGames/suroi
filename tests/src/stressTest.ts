@@ -125,7 +125,6 @@ class Bot {
 
         switch (packet.type) {
             case PacketType.GameOver: {
-                // eslint-disable-next-line @typescript-eslint/no-unused-expressions
                 const kills = packet.teammates.find(teammate => { teammate.playerID === this.id; })?.kills;
                 console.log(`Bot ${this.id} ${packet.rank === 1 ? "won" : "died"} | kills: ${kills} | rank: ${packet.rank}`);
                 this._disconnected = true;
@@ -344,7 +343,6 @@ void (async() => {
 })();
 
 console.log("setting up loop");
-// eslint-disable-next-line @typescript-eslint/no-misused-promises
 setInterval(async() => {
     for (const bot of bots) {
         if (Math.random() < 0.02) bot.updateInputs();

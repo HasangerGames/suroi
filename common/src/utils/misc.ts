@@ -1,7 +1,5 @@
 import type { ObjectDefinition } from "./objectDefinitions";
 
-/* eslint-disable @stylistic/indent */
-
 declare global {
     // taken from https://github.com/microsoft/TypeScript/issues/45602#issuecomment-934427206
     interface Promise<T = void> {
@@ -207,7 +205,6 @@ export function cloneDeep<T>(object: T): T {
             if (typeof clone === "function" && clone.length === 0) {
                 // basically we hope that the caller isn't a dumbass and hasn't
                 // passed in an object with a nonsensical cloning method
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-return
                 return clone.call(target);
             } else {
                 console.warn(`Inappropriate use of ${cloneDeepSymbol.toString()}: it should be a no-arg function`);
@@ -519,7 +516,6 @@ export class Queue<T> implements DeepCloneable<Queue<T>>, Cloneable<Queue<T>> {
         if (this._head === undefined) throw new Error("Empty queue");
 
         const value = this._head.value;
-        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
         (this._head = this._head.next) ?? delete this._tail;
 
         return value;

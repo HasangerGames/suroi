@@ -106,7 +106,6 @@ function getLoot(modeName: ModeName, items: WeightedItem[], noDuplicates?: boole
     }
 
     if (definition.defType === DefinitionType.Gun) {
-        // eslint-disable-next-line prefer-const
         let { ammoType, ammoSpawnAmount } = definition;
 
         if (selection.spawnSeparately) {

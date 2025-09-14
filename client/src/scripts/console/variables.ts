@@ -47,14 +47,6 @@ export type CVarChangeListener<Value> = (
     cvar: ConVar<Value>
 ) => void;
 
-/*
-    eslint-disable
-    @stylistic/indent-binary-ops
-*/
-
-/*
-    `@stylistic/indent-binary-ops`: ESLint sucks at indenting types correctly
-*/
 export interface JSONCVar<Value extends Stringable> {
     readonly value: Value
     readonly flags: Partial<CVarFlags>

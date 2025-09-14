@@ -28,7 +28,6 @@ export const enum DataSplitTypes {
 }
 
 export function getSplitTypeForCategory(category: ObjectCategory): DataSplitTypes {
-    /* eslint-disable @stylistic/no-multi-spaces */
     switch (category) {
         case ObjectCategory.Player:              return DataSplitTypes.Players;
         case ObjectCategory.Obstacle:            return DataSplitTypes.Obstacles;
@@ -40,7 +39,6 @@ export function getSplitTypeForCategory(category: ObjectCategory): DataSplitType
         case ObjectCategory.Projectile: return DataSplitTypes.GameObjects;
         case ObjectCategory.SyncedParticle:      return DataSplitTypes.SyncedParticles;
     }
-    /* eslint-enable @stylistic/no-multi-spaces */
 };
 
 export type DataSplit = Record<DataSplitTypes, number>;
@@ -48,7 +46,6 @@ export type DataSplit = Record<DataSplitTypes, number>;
 export type AnyPacket = typeof Packets[number]; // Packets is declared in a separate file (packetStream.ts) to prevent circular imports
 
 export type PacketDataIn<T extends AnyPacket = AnyPacket> = T extends Packet<infer DataIn> ? DataIn : never;
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export type PacketDataOut<T extends AnyPacket = AnyPacket> = T extends Packet<infer _DataIn, infer DataOut> ? DataOut : never;
 
 export type MutablePacketDataIn = PacketDataIn | SDeepMutable<PacketDataIn>;

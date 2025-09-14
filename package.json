@@ -11,9 +11,8 @@
     "dev:test": "cd tests && bun stressTest",
     "watch:server": "cd server && tsc --noEmit --watch",
     "updateConfigSchema": "cd server && bun updateConfigSchema",
-    "lint": "eslint . --fix",
-    "lint:check": "eslint .",
-    "lint:ci": "eslint . --max-warnings 0",
+    "lint": "bunx --bun biome lint --fix",
+    "lint:check": "bunx --bun biome lint",
     "validateDefinitions": "cd tests && bun validateDefinitions",
     "validateSvgs": "cd tests && bun validateSvgs",
     "fullReinstall": "rm -r node_modules bun.lock client/node_modules server/node_modules common/node_modules tests/node_modules && bun install",
@@ -29,12 +28,8 @@
   "license": "GPL-3.0",
   "devDependencies": {
     "@biomejs/biome": "2.2.4",
-    "@eslint/js": "^9.35.0",
-    "@stylistic/eslint-plugin": "^4.4.1",
     "@types/node": "^22.18.1",
-    "eslint": "^9.35.0",
-    "typescript": "^5.9.2",
-    "typescript-eslint": "^8.43.0"
+    "typescript": "^5.9.2"
   },
   "workspaces": ["client", "common", "server", "tests"],
   "trustedDependencies": [

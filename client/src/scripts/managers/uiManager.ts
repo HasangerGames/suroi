@@ -1074,7 +1074,6 @@ class UIManagerClass {
 
     private _playSlotAnimation(element: JQuery): void {
         element.toggleClass("active");
-        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
         element[0].offsetWidth; // causes browser reflow
         element.toggleClass("active");
     }

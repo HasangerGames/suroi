@@ -634,7 +634,6 @@ export const Game = new (class Game {
             this.gameOver = true;
             this._socket?.close();
 
-            // eslint-disable-next-line @typescript-eslint/no-misused-promises
             ui.splashUi.fadeIn(400, async() => {
                 this.pixi.stop();
                 void this.music?.play();

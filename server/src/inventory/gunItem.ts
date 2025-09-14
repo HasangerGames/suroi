@@ -418,8 +418,6 @@ export class GunItem extends InventoryItemBase.derive(DefinitionType.Gun) {
     }
 
     override destroy(): void {
-        /* eslint-disable @typescript-eslint/no-meaningless-void-operator */
-        // shut the fuck up, i'm using it to turn smth into undefined
         this._reloadTimeout = void this._reloadTimeout?.kill();
         this._burstTimeout = void clearTimeout(this._burstTimeout);
         this._autoFireTimeout = void clearTimeout(this._autoFireTimeout);

@@ -442,7 +442,7 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
         const definition = this.definition;
 
         if (definition.isDoor) {
-            // optional chaining not required but makes both eslint and tsc happy
+            // optional chaining not required but makes both biome and tsc happy
             if (!(this.door?.isOpen && definition.openOnce)) {
                 this.toggleDoor(player);
             }

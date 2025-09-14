@@ -3162,7 +3162,6 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 case InputActions.ToggleSlotLock: {
                     const slot = action.slot;
 
-                    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
                     inventory.isLocked(slot)
                         ? (this.hasPerk(PerkIds.Lycanthropy) || inventory.unlock(slot))
                         : inventory.lock(slot);

@@ -38,7 +38,6 @@ function serializePlayerData(
         blockEmoting
     }: PlayerData
 ): void {
-    /* eslint-disable @stylistic/no-multi-spaces */
     const hasMinMax             = minMax !== undefined;
     const hasHealth             = health !== undefined;
     const hasAdrenaline         = adrenaline !== undefined;
@@ -55,7 +54,6 @@ function serializePlayerData(
     const hasActiveC4s          = activeC4s !== undefined;
     const hasPerks              = perks !== undefined;
     const hasTeamID             = teamID !== undefined;
-    /* eslint-enable @stylistic/no-multi-spaces */
 
     strm.writeBooleanGroup2(
         hasMinMax,

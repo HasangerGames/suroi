@@ -36,16 +36,6 @@ import { TRANSLATIONS, getTranslatedString } from "./utils/translations/translat
 import type { TranslationKeys } from "./utils/translations/typings";
 import type { BackpackDefinition } from "@common/definitions/items/backpacks";
 
-/*
-    eslint-disable
-
-    @stylistic/indent
-*/
-
-/*
-    `@stylistic/indent`: can eslint stop [expletive redacted] at indenting stuff
-*/
-
 interface RegionInfo extends Region {
     readonly playerCount?: number
 
@@ -265,7 +255,6 @@ export async function fetchServerData(): Promise<void> {
     selectedRegion = regionInfo[GameConsole.getBuiltInCVar("cv_region") ?? Config.defaultRegion];
     updateServerSelectors();
 
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
     serverList.children("li.server-list-item").on("click", function(this: HTMLLIElement) {
         const region = this.getAttribute("data-region");
 
@@ -969,7 +958,6 @@ export async function setUpUI(): Promise<void> {
         void Game.endGame();
     });
 
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     $("#btn-play-again, #btn-spectate-replay").on("click", async() => {
         await Game.endGame();
         if (teamSocket) teamSocket.send(JSON.stringify({ type: CustomTeamMessages.Start })); // TODO Check if player is team leader
@@ -1894,7 +1882,6 @@ export async function setUpUI(): Promise<void> {
             localStorage.setItem("suroi_config", input);
             alert("Settings loaded successfully.");
             window.location.reload();
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (_) {
             error();
         }

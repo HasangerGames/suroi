@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-expressions */
 import { Badges } from "@common/definitions/badges";
 import { Numeric } from "@common/utils/math";
 import $ from "jquery";
@@ -484,7 +483,6 @@ export const GameConsole = new (class GameConsole {
                 gameConsoleMethod: "log" | "warn" | "error",
                 altMode?: boolean
             ): void {
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 (window.console as C)[nativeKey] = function(this: typeof window["console"], ...contents: any[]) {
                     nativeMethod.call(console, ...contents);
                     contents.forEach(c => { T[gameConsoleMethod](`${c}`, altMode); });
@@ -505,11 +503,7 @@ export const GameConsole = new (class GameConsole {
             if (err.filename) {
                 this.error(
                     {
-                        // lol ok
-                        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
                         main: `Javascript ${err.error ? `'${Object.getPrototypeOf(err.error)?.constructor?.name}'` : err.type} occurred at ${err.filename.replace(location.origin + location.pathname, "./")}:${err.lineno}:${err.colno}`,
-                        // this is just peak ????? lol
-                        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                         detail: err.error ?? err.message
                     },
                     true

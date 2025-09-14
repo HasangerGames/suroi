@@ -2229,7 +2229,6 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
             this.images.blood.addChild(bodyBlood);
 
-            // eslint-disable-next-line @typescript-eslint/no-unused-expressions
             setTimeout(() => { bodyBlood.destroyed || bodyBlood.destroy(); }, 30000);
         }
     }

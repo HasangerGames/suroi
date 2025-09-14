@@ -6,7 +6,6 @@ import type { CVarChangeListener } from "../../console/variables";
 import { GameConsole } from "../../console/gameConsole";
 import { Game } from "../../game";
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function setUpNetGraph() {
     const makeFormatter = ([big, small]: readonly [big: string, small: string], cutoff = 1000, fixedPlaces = 2) =>
         (n: number): string => n > cutoff
