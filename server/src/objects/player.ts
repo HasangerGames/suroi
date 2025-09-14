@@ -2942,10 +2942,12 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             const disguiseObstacle = this.game.map.generateObstacle(this.activeDisguise?.idString, this.position, { layer: this.layer });
             const disguiseDef = Obstacles.reify(this.activeDisguise);
 
+            if (disguiseObstacle?.collidable) disguiseObstacle.collidable = false;
+
             if (disguiseObstacle !== undefined) {
                 this.game.addTimeout(() => {
                     disguiseObstacle.damage({
-                        amount: disguiseObstacle.health
+                        amount: disguiseObstacle.health,
                     });
                 }, 10); // small delay so sound plays
             }

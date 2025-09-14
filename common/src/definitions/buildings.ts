@@ -15112,7 +15112,11 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "trash_bag", position: Vec(-45.97, 29.43), rotation: 0 },
             { idString: "super_barrel", position: Vec(26.57, 41.73) },
             { idString: "dumpster", position: Vec(-56.86, 30.23), rotation: 3 },
-            { idString: "large_coffin", position: Vec(21.61, 20.71), rotation: 2 }
+            { idString: "large_coffin", position: Vec(21.61, 20.71), rotation: 2 },
+
+            // halloween only
+            // { idString: "cobweb", position: Vec(-15.09, -26.11), rotation: 0 },
+            // { idString: "cobweb", position: Vec(15.48, -26.12), rotation: 3 },
         ],
         subBuildings: IS_CLIENT ? undefined : [
             { idString: "graveyard_basement", position: Vec(-18, -45.25), layer: Layer.Basement },
@@ -15822,6 +15826,144 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "medical_camp_kitchen", position: Vec(-57.9, 27.82) },
             { idString: "medical_camp_passage", position: Vec(-11.95, 27.63) },
             { idString: "medical_camp_lab", position: Vec(46.72, 36.77) }
+        ]
+    },
+    {
+        idString: "graveyard_halloween",
+        name: "Graveyard",
+        defType: DefinitionType.Building,
+        spawnHitbox: RectangleHitbox.fromRect(161.81, 158.59, Vec(2.61, -3.32)),
+        bunkerSpawnHitbox: RectangleHitbox.fromRect(73.2, 78.77, Vec(-17.78, -45.92)),
+        material: "stone",
+        particleVariations: 2,
+        particle: "graveyard_particle",
+        allowFlyover: FlyoverPref.Always,
+        graphicsZIndex: ZIndexes.BuildingsFloor + 0.25,
+        hitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(1.6, 33.6, Vec(-36.88, -54.22)),
+            RectangleHitbox.fromRect(68.87, 1.6, Vec(37.03, -71.31)),
+            RectangleHitbox.fromRect(18.35, 1.6, Vec(-26.99, -71.39)),
+            RectangleHitbox.fromRect(3.38, 3.37, Vec(-16.37, 46.91)),
+            RectangleHitbox.fromRect(3.38, 3.36, Vec(-16.4, -71.32)),
+            RectangleHitbox.fromRect(1.61, 45.53, Vec(71.73, -47.89)),
+            new CircleHitbox(1.62, Vec(71.73, -71.39)),
+            new CircleHitbox(1.62, Vec(-36.87, -71.39)),
+            RectangleHitbox.fromRect(3.38, 3.37, Vec(1.29, -71.32)),
+            RectangleHitbox.fromRect(1.61, 25.1, Vec(71.73, 6.12)),
+            RectangleHitbox.fromRect(3.38, 3.37, Vec(71.73, -24.46)),
+            RectangleHitbox.fromRect(39.19, 1.6, Vec(21.69, 46.91)),
+            RectangleHitbox.fromRect(51.32, 1.61, Vec(-43, 46.86)),
+            RectangleHitbox.fromRect(3.38, 3.37, Vec(71.73, -6.78)),
+            RectangleHitbox.fromRect(3.38, 3.37, Vec(1.33, 46.91)),
+            RectangleHitbox.fromRect(1.61, 8.08, Vec(-68.97, 29.64)),
+            new CircleHitbox(1.62, Vec(-69.15, 46.87)),
+            new CircleHitbox(0.8, Vec(-68.97, 33.68)),
+            RectangleHitbox.fromRect(8.08, 2.92, Vec(6.04, -24.44)),
+            RectangleHitbox.fromRect(2.94, 8.07, Vec(-16.31, -53.25)),
+            RectangleHitbox.fromRect(2.93, 8.08, Vec(42.84, 13.43)),
+            RectangleHitbox.fromRect(2.93, 8.08, Vec(66.71, -62.5)),
+            RectangleHitbox.fromRect(2.93, 8.08, Vec(51.13, -48.76)),
+            RectangleHitbox.fromRect(2.93, 8.08, Vec(46.4, 11.81)),
+            RectangleHitbox.fromRect(2.93, 8.07, Vec(-31.11, -27.25))
+        ),
+        floors: [
+            {
+                type: FloorNames.Stone,
+                hitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(5.22, 10.42, Vec(39.63, 40.69)),
+                    RectangleHitbox.fromRect(10.45, 5.04, Vec(65.53, 17.01)),
+                    RectangleHitbox.fromRect(4.05, 10.39, Vec(-71.76, 18.65)),
+                    RectangleHitbox.fromRect(10.99, 119.53, Vec(-7.66, -12.39)),
+                    RectangleHitbox.fromRect(74.33, 11.26, Vec(34.22, -15.61)),
+                    RectangleHitbox.fromRect(25.2, 25.67, Vec(-22.99, 7.4))
+                )
+            },
+            {
+                type: FloorNames.Sand,
+                hitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(107.32, 119.76, Vec(17.69, -11.79)),
+                    RectangleHitbox.fromRect(34.72, 21.14, Vec(-52.41, 35.78))
+                )
+            }
+        ],
+        floorImages: [
+            {
+                key: "graveyard_floor_1",
+                position: Vec(1.44, 8.39)
+            },
+            {
+                key: "graveyard_floor_2",
+                position: Vec(17.15, -51.79)
+            }
+        ],
+        graphics: [
+            { // stroke
+                color: 0x4d4d4d,
+                hitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(5.22, 10.42, Vec(39.63, 40.69)),
+                    RectangleHitbox.fromRect(10.45, 5.04, Vec(65.53, 17.01)),
+                    RectangleHitbox.fromRect(4.05, 10.39, Vec(-71.76, 18.65))
+                )
+            },
+            { // fill
+                color: 0x666666,
+                hitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(3.57, 4.67, Vec(-71.75, 21.26)),
+                    RectangleHitbox.fromRect(3.99, 4.64, Vec(39.31, 38.15)),
+                    RectangleHitbox.fromRect(4, 4.66, Vec(39.33, 43.31)),
+                    RectangleHitbox.fromRect(4.65, 4.1, Vec(62.9, 16.81)),
+                    RectangleHitbox.fromRect(4.65, 4.1, Vec(68.07, 16.83)),
+                    RectangleHitbox.fromRect(3.57, 4.67, Vec(-71.75, 16.09))
+                )
+            }
+        ],
+        obstacles: IS_CLIENT ? undefined : [
+            { idString: "graveyard_basement_collider_hack", position: Vec(-18, -45.25), rotation: 0, layer: Layer.ToBasement },
+            { idString: "dormant_oak_tree", position: Vec(13.57, 60.23) },
+            { idString: "dormant_oak_tree", position: Vec(-30.26, 60.23) },
+            { idString: "pumpkin", position: Vec(20.08, -32.71) },
+            { idString: "pumpkin", position: Vec(56.18, -49.45) },
+            { idString: "pumpkin", position: Vec(-26.12, -28) },
+            { idString: "pumpkin", position: Vec(62.08, -48.02) },
+            { idString: "pumpkin", position: Vec(-20.2, -26.25) },
+            { idString: "pumpkin", position: Vec(57.67, -35.37), variation: 2 },
+            { idString: "sandbags", position: Vec(33.12, -26.9), rotation: 0 },
+            { idString: "sandbags", position: Vec(13.43, -4.85), rotation: 0 },
+            { idString: "smaller_sandbags", position: Vec(43.88, -25.73), rotation: 0 },
+            { idString: "smaller_sandbags", position: Vec(64.76, -6.84), rotation: 0 },
+            { idString: "smaller_sandbags", position: Vec(10.87, 2.27), rotation: 0 },
+            { idString: "smaller_sandbags", position: Vec(-17.98, -8.98), rotation: 0 },
+            { idString: "smaller_sandbags", position: Vec(3.41, -49.91), rotation: 0 },
+            { idString: "roadblock", position: Vec(1.77, 9.9), rotation: 0 },
+            { idString: "roadblock", position: Vec(1.92, 31.65), rotation: 0 },
+            { idString: "roadblock", position: Vec(29.23, -6.78), rotation: 1 },
+            { idString: "roadblock", position: Vec(49.33, -6.77), rotation: 1 },
+            { idString: "box", position: Vec(-32.44, -67.32) },
+            { idString: "box", position: Vec(10.65, -50.05) },
+            { idString: "box", position: Vec(15.66, -48.91) },
+            { idString: "box", position: Vec(61.17, -62.41) },
+            { idString: "box", position: Vec(36.56, -33.7) },
+            { idString: "box", position: Vec(56.75, -0.69) },
+            { idString: "box", position: Vec(3.76, 0.44) },
+            { idString: "box", position: Vec(2.61, -4.77) },
+            { idString: "box", position: Vec(14.19, 39.06) },
+            { idString: "box", position: Vec(18.77, 42.81) },
+            { idString: "pallet", position: Vec(16.4, 41.18), rotation: 0 },
+            { idString: "regular_crate", position: Vec(-44.96, -43.25) },
+            { idString: "regular_crate", position: Vec(-55.39, -45.88) },
+            { idString: "regular_crate", position: Vec(64.57, 1.73) },
+            { idString: "grenade_crate", position: Vec(-25.92, -65.88) },
+            { idString: "trash_bag", position: Vec(54.64, -62.21), rotation: 1 },
+            { idString: "trash_bag", position: Vec(-45.97, 29.43), rotation: 0 },
+            { idString: "super_barrel", position: Vec(26.57, 41.73) },
+            { idString: "dumpster", position: Vec(-56.86, 30.23), rotation: 3 },
+            { idString: "large_coffin", position: Vec(21.61, 20.71), rotation: 2 }
+        ],
+        subBuildings: IS_CLIENT ? undefined : [
+            { idString: "graveyard_basement", position: Vec(-18, -45.25), layer: Layer.Basement },
+            { idString: "graveyard_basement_entrance", position: Vec(12.3, -61.4) },
+            { idString: "graveyard_basement_entrance_main", position: Vec(-52.78, -5.94) },
+            { idString: "graveyard_storage", position: Vec(56.99, 33.4) }
         ]
     }
 ]);

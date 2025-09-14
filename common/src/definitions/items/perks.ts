@@ -402,6 +402,13 @@ const perks = [
             vibrant_bush: 1,
             oak_leaf_pile: 1,
             hay_bale: 1,
+            large_pumpkin: 1,
+
+            clearing_boulder: 0.95,
+
+            grenade_crate: 0.75,
+            flint_crate: 0.75,
+            aegis_crate: 0.75,
 
             baby_plumpkin: 0.01,
             plumpkin: 0.01,
