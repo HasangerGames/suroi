@@ -124,7 +124,7 @@ export const Armors = new ObjectDefinitions<ArmorDefinition>([
         armorType: ArmorType.Vest,
         level: 1,
         damageReduction: 0.2,
-        color: 0x333333,
+        color: 0x4d4d4d,
         noDrop: true,
         hideInHUD: true
     },
