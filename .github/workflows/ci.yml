@@ -22,7 +22,7 @@ jobs:
 
       - name: Build Client
         working-directory: ./client
-        run: bun build
+        run: bun build:client
 
       - name: Build Server
         working-directory: ./server
