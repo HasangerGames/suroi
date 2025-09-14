@@ -94,6 +94,62 @@ export type ThrowableDefinition = InventoryItemDefinition & {
     readonly activeSound?: string
 };
 
+const seed = (idString: string, options: {
+    readonly killfeedFrame: string
+    readonly liveImage: string
+    readonly explosion: string
+}): ThrowableDefinition => ({
+    idString: `proj_${idString}`,
+    name: "Seed",
+    defType: DefinitionType.Throwable,
+    tier: Tier.S,
+    cookable: true,
+    fuseTime: 1500,
+    cookTime: 0,
+    throwTime: 0,
+    devItem: true,
+    noSwap: true,
+    speedMultiplier: 1,
+    cookSpeedMultiplier: 0.7,
+    impactDamage: 1,
+    killfeedFrame: options.killfeedFrame,
+    obstacleMultiplier: 20,
+    hitboxRadius: 1,
+    fireDelay: 250,
+    physics: {
+        maxThrowDistance: 128,
+        initialZVelocity: 4,
+        initialAngularVelocity: 0,
+        initialHeight: 0.5,
+        noSpin: true,
+        drag: {
+            air: Infinity,
+            ground: Infinity,
+            water: Infinity
+        }
+    },
+    image: {
+        position: Vec(60, 43),
+        angle: 60,
+        zIndex: 5,
+        anchor: Vec(0.5, 0.68)
+    },
+    detonation: {
+        explosion: options.explosion
+    },
+    animation: {
+        liveImage: options.liveImage,
+        cook: {
+            leftFist: Vec(2.5, 0),
+            rightFist: Vec(-0.5, 2.15)
+        },
+        throw: {
+            leftFist: Vec(1.9, -1.75),
+            rightFist: Vec(4, 2.15)
+        }
+    }
+});
+
 export const Throwables = new InventoryItemDefinitions<ThrowableDefinition>([
     {
         idString: "frag_grenade",
@@ -332,108 +388,6 @@ export const Throwables = new InventoryItemDefinitions<ThrowableDefinition>([
         activeSound: "flare"
     },
     {
-        idString: "proj_seed",
-        name: "Seed",
-        defType: DefinitionType.Throwable,
-        tier: Tier.S,
-        cookable: true,
-        fuseTime: 1500,
-        cookTime: 0,
-        throwTime: 0,
-        devItem: true,
-        noSwap: true,
-        speedMultiplier: 1,
-        cookSpeedMultiplier: 0.7,
-        impactDamage: 1,
-        killfeedFrame: "seedshot",
-        obstacleMultiplier: 20,
-        hitboxRadius: 1,
-        fireDelay: 250,
-        physics: {
-            maxThrowDistance: 128,
-            initialZVelocity: 4,
-            initialAngularVelocity: 0,
-            initialHeight: 0.5,
-            noSpin: true,
-            drag: {
-                air: Infinity,
-                ground: Infinity,
-                water: Infinity
-            }
-        },
-        image: {
-            position: Vec(60, 43),
-            angle: 60,
-            zIndex: 5,
-            anchor: Vec(0.5, 0.68)
-        },
-        detonation: {
-            explosion: "seed_explosion"
-        },
-        animation: {
-            liveImage: "proj_seed",
-            cook: {
-                leftFist: Vec(2.5, 0),
-                rightFist: Vec(-0.5, 2.15)
-            },
-            throw: {
-                leftFist: Vec(1.9, -1.75),
-                rightFist: Vec(4, 2.15)
-            }
-        }
-    },
-    {
-        idString: "proj_seed_infected",
-        name: "Seed",
-        defType: DefinitionType.Throwable,
-        tier: Tier.S,
-        cookable: true,
-        devItem: true,
-        noSwap: true,
-        fuseTime: 1500,
-        cookTime: 0,
-        throwTime: 0,
-        speedMultiplier: 1,
-        cookSpeedMultiplier: 0.7,
-        impactDamage: 1,
-        killfeedFrame: "m202",
-        obstacleMultiplier: 20,
-        hitboxRadius: 1,
-        fireDelay: 250,
-        physics: {
-            maxThrowDistance: 128,
-            initialZVelocity: 4,
-            initialAngularVelocity: 0,
-            initialHeight: 0.5,
-            noSpin: true,
-            drag: {
-                air: Infinity,
-                ground: Infinity,
-                water: Infinity
-            }
-        },
-        image: {
-            position: Vec(60, 43),
-            angle: 60,
-            zIndex: 5,
-            anchor: Vec(0.5, 0.68)
-        },
-        detonation: {
-            explosion: "infected_seed_explosion"
-        },
-        animation: {
-            liveImage: "proj_seed_infected",
-            cook: {
-                leftFist: Vec(2.5, 0),
-                rightFist: Vec(-0.5, 2.15)
-            },
-            throw: {
-                leftFist: Vec(1.9, -1.75),
-                rightFist: Vec(4, 2.15)
-            }
-        }
-    },
-    {
         idString: "sm56",
         name: "S.E.E.D.",
         defType: DefinitionType.Throwable,
@@ -477,5 +431,20 @@ export const Throwables = new InventoryItemDefinitions<ThrowableDefinition>([
                 rightFist: Vec(4, 2.15)
             }
         }
-    }
+    },
+    seed("seed", {
+        killfeedFrame: "seedshot",
+        explosion: "seed_explosion",
+        liveImage: "proj_seed"
+    }),
+    seed("seed_infected", {
+        killfeedFrame: "sm56_explosion",
+        explosion: "infected_seed_explosion",
+        liveImage: "proj_seed_infected"
+    }),
+    seed("seed_infected_m202", {
+        killfeedFrame: "m202",
+        explosion: "infected_seed_explosion_m202",
+        liveImage: "proj_seed_infected"
+    })
 ]);

@@ -128,7 +128,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         readonly waterOverlay: SuroiSprite
         readonly blood: Container
         readonly backMeleeSprite: SuroiSprite
-        readonly bubbleSprite: SuroiSprite
+        bubbleSprite?: SuroiSprite
         disguiseSprite?: SuroiSprite
         disguiseSpriteTrunk?: SuroiSprite
         healthBar?: Graphics
@@ -200,8 +200,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             muzzleFlash: new SuroiSprite("muzzle_flash").setVisible(false).setZIndex(7).setAnchor(Vec(0, 0.5)),
             waterOverlay: new SuroiSprite("water_overlay").setVisible(false).setTint(Game.colors.water),
             blood: new Container(),
-            backMeleeSprite: new SuroiSprite(),
-            bubbleSprite: new SuroiSprite().setFrame("shield").setVisible(false).setZIndex(7)
+            backMeleeSprite: new SuroiSprite()
         };
 
         if (Game.isTeamMode) {
@@ -238,8 +237,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             this.images.muzzleFlash,
             this.images.waterOverlay,
             this.images.blood,
-            this.images.backMeleeSprite,
-            this.images.bubbleSprite
+            this.images.backMeleeSprite
         );
 
         this.container.zIndex = ZIndexes.Players;
@@ -817,8 +815,20 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             // Shield
             if (hasBubble !== this.hasBubble) {
                 this.hasBubble = hasBubble;
-                const bubbleSprite = this.images.bubbleSprite;
+                
+                let bubbleSprite = this.images.bubbleSprite;
+
+                // Initialize sprite
+                if (bubbleSprite === undefined) {
+                    bubbleSprite = this.images.bubbleSprite = new SuroiSprite()
+                        .setFrame("shield")
+                        .setZIndex(7);
+
+                    this.container.addChild(bubbleSprite);
+                }
+                
                 bubbleSprite.setVisible(this.hasBubble);
+
                 if (!isNew) {
                     if (!hasBubble) {
                         const perkDef = PerkData[PerkIds.ExperimentalForcefield];
@@ -848,16 +858,19 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     } else {
                         this.anims.shieldScale?.kill();
                         this.playSound(PerkData[PerkIds.ExperimentalForcefield].shieldObtainSound);
-                        this.images.bubbleSprite.setScale(0.25);
-                        this.anims.sizeMod = Game.addTween({
-                            target: this.images.bubbleSprite.scale,
-                            to: { x: 1, y: 1 },
-                            duration: 800,
-                            ease: EaseFunctions.backOut,
-                            onComplete: () => {
-                                this.anims.shieldScale = undefined;
-                            }
-                        });
+
+                        if (this.images.bubbleSprite !== undefined) {
+                            this.images.bubbleSprite.setScale(0.25);
+                            this.anims.sizeMod = Game.addTween({
+                                target: this.images.bubbleSprite.scale,
+                                to: { x: 1, y: 1 },
+                                duration: 800,
+                                ease: EaseFunctions.backOut,
+                                onComplete: () => {
+                                    this.anims.shieldScale = undefined;
+                                }
+                            });
+                        }
                     }
                 }
             }

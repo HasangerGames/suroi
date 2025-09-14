@@ -472,6 +472,42 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>([
     },
     {
         idString: "infected_seed_explosion",
+        name: "Seed",
+        defType: DefinitionType.Explosion,
+        killfeedFrame: "sm56_explosion",
+        damage: 10,
+        obstacleMultiplier: 3,
+        radius: {
+            min: 8,
+            max: 16
+        },
+        cameraShake: {
+            duration: 160,
+            intensity: 5
+        },
+        animation: {
+            duration: 1500,
+            tint: 0x8a4c70,
+            scale: 0.8
+        },
+        shrapnelCount: 10,
+        ballistics: {
+            shrapnel: true,
+            damage: 1,
+            obstacleMultiplier: 3,
+            speed: 0.04,
+            range: 8,
+            rangeVariance: 1,
+            tracer: {
+                color: 0x8a4c70
+            }
+        },
+        sound: "seed_explode",
+        decal: "seed_explosion_decal_infected",
+        decalFadeTime: 30000
+    },
+    {
+        idString: "infected_seed_explosion_m202",
         name: "M202-F",
         defType: DefinitionType.Explosion,
         killfeedFrame: "m202",
@@ -695,7 +731,7 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>([
                 length: 1.4,
                 color: 0x8a4c70
             },
-            onHitProjectile: "proj_seed_infected"
+            onHitProjectile: "proj_seed_infected_m202"
         },
         sound: "firework_rocket_explode",
         decal: "explosion_decal"
