@@ -437,7 +437,7 @@
 "overweight": "Overweight"
 "overweight_desc": "Increased size."
 "infected": "Infected"
-"infected_desc": "Swaps to a random perk every 15 seconds.<br>Lose health every second.<br>Infect nearby players."
+"infected_desc": "Swaps to a random perk every 30 seconds.<br>Lose health every second.<br>Infect nearby players."
 "immunity": "Immunity"
 "immunity_desc": "Immune to infection for 15 seconds."
 "hollow_points": "Hollow Points"
@@ -451,3 +451,4 @@
 "partners": "Partners"
 "username_placeholder": "Enter a nickname"
 "msg_contact": "Want to partner with us?"
+"sm56": "S.E.E.D"
