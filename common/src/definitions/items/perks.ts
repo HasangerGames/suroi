@@ -11,7 +11,6 @@ interface BasePerkDefinition extends ItemDefinition {
     readonly alwaysAllowSwap?: boolean
     readonly plumpkinGambleIgnore?: boolean
     readonly infectedEffectIgnore?: boolean
-    readonly hideInHUD?: boolean
 }
 
 /**

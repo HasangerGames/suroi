@@ -1099,9 +1099,10 @@ const maps = {
                         ((item.defType === DefinitionType.Melee || item.defType === DefinitionType.Scope) && item.noDrop)
                         || (item.defType === DefinitionType.Ammo && item.ephemeral)
                         || (item.defType === DefinitionType.Backpack && item.level === 0)
-                        || (item.defType === DefinitionType.Perk && (item.hideInHUD || item.category === (game.modeName === "halloween" ? PerkCategories.Normal : PerkCategories.Halloween)))
+                        || (item.defType === DefinitionType.Perk && item.category === (game.modeName === "halloween" ? PerkCategories.Normal : PerkCategories.Halloween))
                         || item.defType === DefinitionType.Skin
                         || item.devItem
+                        || item.hideInHUD
                         || ((item.defType === DefinitionType.Armor || item.defType === DefinitionType.Backpack) && item.perk)
                     ) continue;
 

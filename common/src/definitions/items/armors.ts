@@ -64,7 +64,6 @@ export const Armors = new ObjectDefinitions<ArmorDefinition>([
         perk: PerkIds.ThermalGoggles,
         mapIndicator: "helmet_indicator"
     },
-
     //
     // Vests
     //
@@ -117,5 +116,16 @@ export const Armors = new ObjectDefinitions<ArmorDefinition>([
         damageReduction: 0.72,
         color: 0x2f0000,
         noDrop: true
-    }
+    },
+    {
+        idString: "werewolf_fur",
+        name: "Werewolf Fur",
+        defType: DefinitionType.Armor,
+        armorType: ArmorType.Vest,
+        level: 1,
+        damageReduction: 0.2,
+        color: 0x333333,
+        noDrop: true,
+        hideInHUD: true
+    },
 ]);

@@ -143,6 +143,7 @@ export interface ItemDefinition extends ObjectDefinition {
     readonly devItem?: boolean
     readonly reskins?: ModeName[]
     readonly mapIndicator?: string
+    readonly hideInHUD?: boolean
 }
 
 export interface InventoryItemDefinition extends ItemDefinition {

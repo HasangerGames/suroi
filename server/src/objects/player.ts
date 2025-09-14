@@ -1951,6 +1951,11 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 inventory.dropWeapon(1, true)?.destroy();
                 inventory.dropWeapon(2, true)?.destroy();
 
+                if (inventory.helmet) inventory.dropItem(inventory.helmet);
+                if (inventory.vest) inventory.dropItem(inventory.vest);
+
+                inventory.vest = Armors.fromString("werewolf_fur");
+
                 // Drop all throwables
                 while (inventory.getWeapon(3)) {
                     inventory.dropWeapon(3, true)?.destroy();
@@ -2047,6 +2052,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         // some perks need to perform cleanup on removal
         switch (perkDef.idString) {
             case PerkIds.Lycanthropy: {
+                this.inventory.vest = undefined;
                 this.loadout.skin = Skins.fromStringSafe(this._perkData["Lycanthropy::old_skin"] as string) ?? Skins.fromString("hazel_jumpsuit");
                 this.inventory.unlockAllSlots();
                 this.setDirty();
@@ -3195,7 +3201,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                         if (
                             (isLoot || (type === InputActions.Interact && isInteractable))
                             && object.hitbox?.collidesWith(detectionHitbox)
-                            && !(isLoot && [DefinitionType.Throwable, DefinitionType.Gun].includes(object.definition.defType) && this.hasPerk(PerkIds.Lycanthropy))
+                            && !(isLoot && [DefinitionType.Throwable, DefinitionType.Gun, DefinitionType.Armor].includes(object.definition.defType) && this.hasPerk(PerkIds.Lycanthropy))
                         ) {
                             const dist = Geometry.distanceSquared(object.position, this.position);
                             if (isInteractable) {

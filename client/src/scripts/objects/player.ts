@@ -1448,6 +1448,11 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         const container = $(`#${equipmentType}-slot`);
         const def = this.equipment[equipmentType];
 
+        if (def?.hideInHUD) {
+            container.css("visibility", "hidden");
+            return;
+        }
+
         if (def && def.level > 0) {
             container.children(".item-name").text(`Lvl. ${def.level}`);
             container.children(".item-image").attr("src", `./img/game/shared/loot/${def.idString}.svg`);

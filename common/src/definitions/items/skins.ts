@@ -135,7 +135,7 @@ export const Skins = new ObjectDefinitions<SkinDefinition>([
 
     // Special skins
     {
-        ...skin("Werewolf", 0x323232),
+        ...skin("Werewolf", undefined, undefined, 0x323232),
         hideFromLoadout: true,
         noSwap: true,
         noDrop: true
