@@ -34,7 +34,7 @@ jobs:
 
       - name: Validate Definitions
         working-directory: ./tests
-        run: bun validateDefinitions
+        run: cp ../server/config.example.json ../server/config.json && bun validateDefinitions
 
       - name: Validate SVGs
         working-directory: ./tests
