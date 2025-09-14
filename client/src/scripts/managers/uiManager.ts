@@ -100,7 +100,7 @@ class UIManagerClass {
 
         const name = this.getRawPlayerName(id);
 
-        if (player && player.hasColor && !GameConsole.getBuiltInCVar("cv_anonymize_player_names")) {
+        if (player?.hasColor && !GameConsole.getBuiltInCVar("cv_anonymize_player_names")) {
             element.css("color", player.nameColor?.toHex() ?? "");
         }
 
@@ -773,8 +773,7 @@ class UIManagerClass {
             });
 
             for (const outdated of notVisited) {
-                // the `notVisited` set is exclusively populated with keys from this map
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                // biome-ignore lint/style/noNonNullAssertion: the `notVisited` set is exclusively populated with keys from this map
                 _teammateDataCache.get(outdated)!.destroy();
                 _teammateDataCache.delete(outdated);
             }

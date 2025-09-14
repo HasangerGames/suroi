@@ -673,7 +673,7 @@ type EventData<Key extends EventTypes> = [
 export type EventHandler<Ev extends EventTypes = EventTypes> = (...[data, event]: [...ArgsFor<Ev>, ...EventData<Ev>]) => void;
 
 type EventHandlers = {
-    [K in EventTypes]?: Array<EventHandler<K>>
+    [K in EventTypes]?: EventHandler<K>[]
 };
 
 // basically file-scoped access to an emit method

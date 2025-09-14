@@ -136,7 +136,6 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
             }
         }
 
-        // noinspection JSAssignmentUsedAsCondition
         if (this.isDoor = (definition.isDoor === true)) {
             const hitboxes = calculateDoorHitboxes(definition, this.position, this.rotation as Orientation);
 
@@ -518,14 +517,13 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
                         if (isOnOtherSide) {
                             this.door.offset = 3;
 
-                            // swivel door => alt hitbox
-                            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                            // biome-ignore lint/style/noNonNullAssertion: swivel door => alt hitbox
                             hitbox = this.door.openAltHitbox!.clone();
                         } else {
                             this.door.offset = 1;
                             if (this.definition.requiresPower && !this.door.locked && this.door.openOnce) {
                                 this.door.offset = 3;
-                                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                                // biome-ignore lint/style/noNonNullAssertion: yes
                                 hitbox = this.door.openAltHitbox!.clone();
                             } else hitbox = this.door.openHitbox.clone();
                         }

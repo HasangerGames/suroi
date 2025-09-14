@@ -59,7 +59,7 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
         this.updateFromData(data, true);
     }
 
-    ceilingRaycastLines?: Array<[Vector, Vector]>;
+    ceilingRaycastLines?: [Vector, Vector][];
 
     toggleCeiling(): void {
         if (this.ceilingRaycastLines) this.ceilingRaycastLines.length = 0;

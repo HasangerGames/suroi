@@ -51,10 +51,10 @@ function convertUnknownErrorToString(err: unknown): string {
 }
 
 export const tester = (() => {
-    type Helper<
+    interface Helper<
         PlainValue,
         OtherParams extends object
-    > = {
+    > {
         <Target extends object>(
             params: {
                 readonly obj: Target
@@ -68,7 +68,7 @@ export const tester = (() => {
                 readonly errorPath: string
             } & OtherParams
         ): void
-    };
+    }
 
     type ValidationResult = {
         readonly warnings?: string[]
@@ -1133,7 +1133,7 @@ export const validators = Object.freeze({
             case "number": {
                 tester.assert(
 
-                    !(color % 1) && 0 <= color && color <= 0xffffff,
+                    !(color % 1) && color >= 0 && color <= 0xffffff,
                     `Color '${color}' is not a valid hexadecimal color`,
                     baseErrorPath
                 );

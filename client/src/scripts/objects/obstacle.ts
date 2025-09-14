@@ -469,7 +469,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
         }
 
         if (this.variation !== undefined && !this.dead && !(definition.isTree && !definition.trunkVariations)) {
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            // biome-ignore lint/style/noNonNullAssertion: idk man I'm tired
             texture += `_${definition.isTree && definition.leavesVariations ? Math.ceil((this.variation + 1) / definition.trunkVariations!) : this.variation + 1}`;
         }
 
@@ -649,8 +649,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
                 break;
             }
             case 3: {
-                // offset 3 means that this is a "swivel" door, meaning that there is an altHitbox
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                // biome-ignore lint/style/noNonNullAssertion: offset 3 means that this is a "swivel" door, meaning that there is an altHitbox
                 backupHitbox = this._door.openAltHitbox!.clone();
                 break;
             }
@@ -749,7 +748,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
     }
 
     canInteract(player: Player): boolean {
-        type DoorDef = { openOnce?: boolean, automatic?: boolean };
+        interface DoorDef { openOnce?: boolean, automatic?: boolean }
         if (this._door !== undefined
             && (this.definition as DoorDef).openOnce
             && !this._door.locked

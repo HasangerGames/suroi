@@ -65,7 +65,7 @@ export interface MapDefinition {
         readonly maxWidth: number
         readonly maxHeight: number
         readonly count: number
-        readonly allowedObstacles: ReadonlyArray<ReferenceTo<ObstacleDefinition>>
+        readonly allowedObstacles: readonly ReferenceTo<ObstacleDefinition>[]
         readonly obstacles: ReadonlyArray<{
             readonly idString: ReferenceTo<ObstacleDefinition>
             readonly min: number
@@ -73,8 +73,8 @@ export interface MapDefinition {
         }>
     }
 
-    readonly bridges?: ReadonlyArray<ReferenceTo<BuildingDefinition>>
-    readonly majorBuildings?: ReadonlyArray<ReferenceTo<BuildingDefinition>>
+    readonly bridges?: readonly ReferenceTo<BuildingDefinition>[]
+    readonly majorBuildings?: readonly ReferenceTo<BuildingDefinition>[]
     readonly buildings?: Record<ReferenceTo<BuildingDefinition>, number>
     readonly quadBuildingLimit?: Record<ReferenceTo<BuildingDefinition>, number>
     readonly obstacles?: Record<ReferenceTo<ObstacleDefinition>, number>
@@ -89,7 +89,7 @@ export interface MapDefinition {
     readonly onGenerate?: (map: GameMap, params: string[]) => void
 }
 
-export type ObstacleClump = {
+export interface ObstacleClump {
     /**
      * How many of these clumps per map
      */
@@ -101,13 +101,13 @@ export type ObstacleClump = {
         /**
          * Id's of obstacles that may appear in the clump
          */
-        readonly obstacles: ReadonlyArray<ReferenceTo<ObstacleDefinition>>
+        readonly obstacles: readonly ReferenceTo<ObstacleDefinition>[]
         readonly minAmount: number
         readonly maxAmount: number
         readonly radius: number
         readonly jitter: number
     }
-};
+}
 
 export const enum SpawnMode {
     Normal,

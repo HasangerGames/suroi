@@ -24,7 +24,7 @@ export interface HitboxJSONMapping {
     }
     [HitboxType.Group]: {
         readonly type: HitboxType.Group
-        readonly hitboxes: Array<HitboxJSONMapping[HitboxType.Circle | HitboxType.Rect]>
+        readonly hitboxes: HitboxJSONMapping[HitboxType.Circle | HitboxType.Rect][]
     }
     [HitboxType.Polygon]: {
         readonly type: HitboxType.Polygon
@@ -589,8 +589,7 @@ export class GroupHitbox<GroupType extends ShapeHitbox[] = ShapeHitbox[]> extend
             }
         }
 
-        // we pray that this nna is okay (if this.hitboxes is empty, it won't be okay)
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        // biome-ignore lint/style/noNonNullAssertion: we pray that this nna is okay (if this.hitboxes is empty, it won't be okay)
         return record!;
     }
 

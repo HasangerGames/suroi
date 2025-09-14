@@ -895,6 +895,7 @@ export class Game implements GameData {
     // ! this.addLoot(HealingItems.fromString("cola"), Vec(0, 0), Layer.Ground) does two things:
     // ! a) it does not raise type errors
     // ! b) Def is inferred as HealingItemDefinition
+    // biome-ignore lint/style/useUnifiedTypeSignatures: we're ignoring this for now
     addLoot<Def extends LootDefinition = LootDefinition>(
         definition: Def,
         position: Vector,
@@ -902,7 +903,6 @@ export class Game implements GameData {
         opts?: { readonly count?: number, readonly pushVel?: number, readonly jitterSpawn?: boolean, readonly data?: ItemData<Def> }
     ): Loot<Def> | undefined;
     addLoot<Def extends LootDefinition = LootDefinition>(
-        // eslint-disable-next-line @typescript-eslint/unified-signatures
         definition: ReferenceTo<Def>,
         position: Vector,
         layer: Layer,
@@ -911,7 +911,6 @@ export class Game implements GameData {
     // ! and for any calling code using ReifiableDef, we gotta support that too
     // ! yes, this is a duplicate of the implementation signature
     addLoot<Def extends LootDefinition = LootDefinition>(
-        // eslint-disable-next-line @typescript-eslint/unified-signatures
         definition: ReifiableDef<Def>,
         position: Vector,
         layer: Layer,

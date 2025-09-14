@@ -759,8 +759,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         inventory.items.incrementItem(idString, count ?? inventory.backpack.maxCapacity[idString]);
         inventory.useItem(idString);
 
-        // we hope `throwableItemMap` is correctly sync'd
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        // biome-ignore lint/style/noNonNullAssertion: we hope `throwableItemMap` is correctly sync'd
         inventory.throwableItemMap.get(idString)!.count = inventory.items.getItem(idString);
     }
 
@@ -965,8 +964,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             items.setItem(item, maxCapacity);
 
             if (inventory.throwableItemMap.has(item)) {
-                // we hope `throwableItemMap` is correctly sync'd
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                // biome-ignore lint/style/noNonNullAssertion: we hope `throwableItemMap` is correctly sync'd
                 inventory.throwableItemMap.get(item)!.count = maxCapacity;
             }
         }
@@ -2518,8 +2516,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 {
                     item: weaponUsed,
 
-                    // canTrackStats ensures this object's existence
-                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                    // biome-ignore lint/style/noNonNullAssertion: canTrackStats ensures this object's existence
                     oldStats: oldStats!,
                     newStats: { ...weaponUsed.stats },
                     diff: {
@@ -2997,8 +2994,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 });
             }
 
-            // team can't be nullish here because if it were, it would fail the conditional this code is wrapped in
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            // biome-ignore lint/style/noNonNullAssertion: team can't be nullish here because if it were, it would fail the conditional this code is wrapped in
             this.game.teams.delete(team!);
         }
     }

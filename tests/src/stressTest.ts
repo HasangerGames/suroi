@@ -23,7 +23,7 @@ const config = {
     rejoinOnDeath: false
 };
 
-const skins: ReadonlyArray<ReferenceTo<SkinDefinition>> = Skins.definitions
+const skins: readonly ReferenceTo<SkinDefinition>[] = Skins.definitions
     .filter(({ hideFromLoadout, rolesRequired }) => !hideFromLoadout && !rolesRequired)
     .map(({ idString }) => idString);
 
@@ -63,7 +63,8 @@ class Bot {
 
     private _angle = random(-Math.PI, Math.PI);
 
-    private ["admin he doing it sideways"] = false;
+    // biome-ignore lint/style/useReadonlyClassProperties: it is, in fact, reassigned
+    private "admin he doing it sideways" = false;
 
     private readonly _angularSpeed = random(0.02, 0.1) * randomSign();
 

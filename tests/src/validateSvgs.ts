@@ -118,7 +118,7 @@ function checkNode(path: string, node: svgParser.ElementNode): void {
 for (const path of svgPaths) {
     const stats = fs.statSync(path);
 
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    // biome-ignore lint/style/noNonNullAssertion: yes
     const baseDir = path.split("/").at(-2)!;
 
     let maxSize = MAX_SIZES[baseDir];

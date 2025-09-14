@@ -230,7 +230,7 @@ type SimpleCVarMapping = {
                 readonly value: Val
             } & (
                 {
-                    readonly changeListeners: CVarChangeListener<Val> | Array<CVarChangeListener<Val>>
+                    readonly changeListeners: CVarChangeListener<Val> | CVarChangeListener<Val>[]
                 } |
                 {
                     readonly changeListeners?: never
@@ -492,7 +492,7 @@ export class ConsoleVariables {
             const defaultVar = defaultClientCVars[name];
             const defaultValue = typeof defaultVar === "object" ? defaultVar.value : defaultVar;
             const changeListeners = typeof defaultVar === "object" && defaultVar.changeListeners
-                ? [defaultVar.changeListeners].flat() as unknown as Array<CVarChangeListener<Stringable>>
+                ? [defaultVar.changeListeners].flat() as unknown as CVarChangeListener<Stringable>[]
                 : [];
             const flags = typeof defaultVar === "object" && defaultVar.flags
                 ? defaultVar.flags
@@ -610,7 +610,7 @@ export class ConsoleVariables {
 
     private readonly _changeListeners = new ExtendedMap<
         keyof CVarTypeMapping,
-        Array<CVarChangeListener<Stringable>>
+        CVarChangeListener<Stringable>[]
     >();
 
     addChangeListener<K extends keyof CVarTypeMapping>(

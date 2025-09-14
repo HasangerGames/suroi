@@ -761,13 +761,13 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
 
             if (typeof definition.lifetime === "object") {
                 const { min, max } = definition.lifetime;
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                // biome-ignore lint/style/noNonNullAssertion: cannot be undefined here
                 stream.writeFloat(lifetime!, min, max, 1);
             }
 
             if (typeof definition.angularVelocity === "object") {
                 const { min, max } = definition.angularVelocity;
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                // biome-ignore lint/style/noNonNullAssertion: cannot be undefined here
                 stream.writeFloat(angularVelocity!, min, max, 1);
             }
 

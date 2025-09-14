@@ -69,8 +69,7 @@ export interface GraphLabel<Stats extends object> {
     forceY?: number
 }
 
-// variance says hello
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+// biome-ignore lint/suspicious/noExplicitAny: variance says hello
 export interface Graph<DataType extends readonly any[], Stats extends object> {
     readonly container: Container
     readonly gfx: Graphics
@@ -78,7 +77,7 @@ export interface Graph<DataType extends readonly any[], Stats extends object> {
 
     get history(): ReadonlyArray<readonly [number, ...DataType]>
     //                           timestamp ^^^^^^  ^^^^^^^^^^^ value
-    get labels(): ReadonlyArray<GraphLabel<Stats>>
+    get labels(): readonly GraphLabel<Stats>[]
 
     get stats(): Stats
 
@@ -111,8 +110,7 @@ export interface Graph<DataType extends readonly any[], Stats extends object> {
 /**
  * Minimal implementation of {@link Graph}
  */
-// variance says hello
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+// biome-ignore lint/suspicious/noExplicitAny: variance says hello
 export abstract class BaseGraph<DataType extends readonly any[], Stats extends object> implements Graph<DataType, Stats> {
     readonly container = new Container();
     readonly gfx = new Graphics();
@@ -122,8 +120,8 @@ export abstract class BaseGraph<DataType extends readonly any[], Stats extends o
     stroke: StrokeStyle;
     background: GraphOptions["background"];
 
-    private readonly _labels: Array<GraphLabel<Stats>> = [];
-    get labels(): ReadonlyArray<GraphLabel<Stats>> { return this._labels; }
+    private readonly _labels: GraphLabel<Stats>[] = [];
+    get labels(): readonly GraphLabel<Stats>[] { return this._labels; }
 
     get x(): number { return this.container.x; }
     set x(x: number) { this.container.x = x; }
@@ -250,7 +248,7 @@ export interface SingleValueStats {
 }
 
 export abstract class SVSGraph<
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // biome-ignore lint/suspicious/noExplicitAny: shut
     DataType extends readonly [data: number, ...rest: any[]]
     //                         ^^^^^^^^^^^^ the value to add to the stats
 > extends BaseGraph<DataType, SingleValueStats> {
@@ -281,8 +279,7 @@ export abstract class SVSGraph<
         const now = Date.now();
         const histLength = this._history.push([now, ...data]);
         if (histLength > this.maxHistory) {
-            // history must have at least 1 entry
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            // biome-ignore lint/style/noNonNullAssertion: history must have at least 1 entry
             const [, rm] = this._history.shift()!;
 
             this._start = this._history[0][0];
@@ -397,7 +394,11 @@ export class SingleGraph extends SVSGraph<readonly [number]> {
     }
 }
 
-export type SegmentSpec = { readonly name: string, readonly color: ColorSource, readonly alpha?: number };
+export interface SegmentSpec {
+    readonly name: string
+    readonly color: ColorSource
+    readonly alpha?: number
+}
 
 /**
  * General graph class for a value made up of smaller parts

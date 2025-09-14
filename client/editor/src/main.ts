@@ -3,7 +3,6 @@ import App from "./App.svelte";
 import { mount } from "svelte";
 
 mount(App, {
-    // This element should always be present unless someone who lacks braincells has been authorized to make changes to the codebase.
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    // biome-ignore lint/style/noNonNullAssertion: This element should always be present unless someone who lacks braincells has been authorized to make changes to the codebase.
     target: document.getElementById("app")!
 });

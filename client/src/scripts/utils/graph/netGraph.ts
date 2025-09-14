@@ -90,7 +90,7 @@ export function setUpNetGraph() {
             .addLabel(({ max }) => `max: ${max.toFixed(2).padStart(5)}`, { style: { fill: "pink" } }, { y: -38 })
     });
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // biome-ignore lint/suspicious/noExplicitAny: shut
     function updateGraphVis(graph: BaseGraph<any[], any>, val: 0 | 1 | 2, doUpdate = true): void {
         graph._showGraph = val >= 2;
         graph._showLabels = val >= 1;
@@ -166,9 +166,9 @@ export function setUpNetGraph() {
 
     const generateListener = (
         targetForceY: number,
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        // biome-ignore lint/suspicious/noExplicitAny: shut
         self: BaseGraph<any[], any>,
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        // biome-ignore lint/suspicious/noExplicitAny: shut
         other: BaseGraph<any[], any>
     ): CVarChangeListener<boolean> => val => {
         if (val) {

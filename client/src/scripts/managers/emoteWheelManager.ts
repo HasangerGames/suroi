@@ -60,7 +60,7 @@ class EmoteWheelManagerClass {
     active = false;
     selection?: number;
 
-    emotes: Array<ReferenceTo<EmoteDefinition>> = [];
+    emotes: ReferenceTo<EmoteDefinition>[] = [];
     _slotAngle = 0;
 
     private _initialized = false;
@@ -169,8 +169,7 @@ class EmoteWheelManagerClass {
                 setTimeout(() => {
                     UIManager.ui.game.one("pointerdown", e => {
                         let position: Vector | undefined;
-                        // fuck you
-                        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                        // biome-ignore lint/style/noNonNullAssertion: fuck you
                         const globalPos = Vec(e.clientX!, e.clientY!);
                         MapPingWheelManager.updatePosition(globalPos);
                         position = MapPingWheelManager.position;

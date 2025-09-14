@@ -706,7 +706,7 @@ export const GameConsole = new (class GameConsole {
     }
 
     private readonly _autocmpData: {
-        nodes: Array<JQuery<HTMLDivElement>>
+        nodes: JQuery<HTMLDivElement>[]
         activeIndex: number | undefined
         readonly cache: {
             get commands(): string[]
@@ -873,7 +873,7 @@ export const GameConsole = new (class GameConsole {
 
             const makeDivider = (): JQuery<HTMLDivElement> => $<HTMLDivElement>("<div class=\"console-autocomplete-divider\"></div>");
 
-            const autocmpNodes: Array<JQuery<HTMLDivElement>> = [];
+            const autocmpNodes: JQuery<HTMLDivElement>[] = [];
             const nodes = [
                 historyCandidates,
                 commandCandidates,

@@ -816,14 +816,12 @@ export const UpdatePacket = new Packet<UpdateDataIn, UpdateDataOut>(PacketType.U
                 );
 
                 if (positionDirty) {
-                    // can't be undefined on server
-                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                    // biome-ignore lint/style/noNonNullAssertion: can't be undefined on server
                     strm.writePosition(position!);
                 }
 
                 if (definitionDirty) {
-                    // also can't be undefined on server
-                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                    // biome-ignore lint/style/noNonNullAssertion: also can't be undefined on server
                     MapIndicators.writeToStream(strm, definition!);
                 }
             });

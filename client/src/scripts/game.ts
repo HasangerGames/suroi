@@ -59,9 +59,7 @@ import { getTranslatedString, initTranslation } from "./utils/translations/trans
 import { type TranslationKeys } from "./utils/translations/typings";
 import { Tween, type TweenOptions } from "./utils/tween";
 
-/* eslint-disable @stylistic/indent */
-
-type ObjectClassMapping = {
+interface ObjectClassMapping {
     readonly [ObjectCategory.Player]: typeof Player
     readonly [ObjectCategory.Obstacle]: typeof Obstacle
     readonly [ObjectCategory.DeathMarker]: typeof DeathMarker
@@ -71,7 +69,7 @@ type ObjectClassMapping = {
     readonly [ObjectCategory.Parachute]: typeof Parachute
     readonly [ObjectCategory.Projectile]: typeof Projectile
     readonly [ObjectCategory.SyncedParticle]: typeof SyncedParticle
-};
+}
 
 const ObjectClassMapping: ObjectClassMapping = Object.freeze({
     [ObjectCategory.Player]: Player,
@@ -133,7 +131,7 @@ export const Game = new (class Game {
         this._mode = Modes[this.modeName];
 
         // Converts the strings in the mode definition to Color objects
-        this._colors = (Object.entries(this.mode.colors) as Array<[ColorKeys, string]>).reduce(
+        this._colors = (Object.entries(this.mode.colors) as [ColorKeys, string][]).reduce(
             (result, [key, color]) => {
                 result[key] = new Color(color);
                 return result;

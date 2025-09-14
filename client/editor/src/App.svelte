@@ -1,21 +1,19 @@
 <script lang="ts">
+    import { removeFrom } from "@common/utils/misc";
     import { onMount } from "svelte";
     import {
-        BaseHitbox,
-        CircleHitbox,
-        GroupHitbox,
-        type HitboxJSON,
-        HitboxType,
-        RectangleHitbox,
-
-        type ShapeHitbox
-
+      BaseHitbox,
+      CircleHitbox,
+      GroupHitbox,
+      type HitboxJSON,
+      HitboxType,
+      RectangleHitbox,
+      type ShapeHitbox
     } from "../../../common/src/utils/hitbox";
-    import { Geometry, Numeric } from "../../../common/src/utils/math";
+    import { Numeric } from "../../../common/src/utils/math";
     import { Vec } from "../../../common/src/utils/vector";
     import { PIXI_SCALE } from "../../src/scripts/utils/constants";
     import Hitbox from "./lib/hitbox.svelte";
-  import { removeFrom } from "@common/utils/misc";
 
     let hitboxes: HitboxJSON[] = [
         ...new GroupHitbox(
@@ -34,6 +32,7 @@
     let pointerY = 0;
 
     let hitboxesContainer: HTMLElement;
+    // biome-ignore lint/style/noNonNullAssertion: we're assuming this element exists
     onMount(() => { hitboxesContainer = document.getElementById("hitboxes-container")!; });
 
     let nudgeStep = 0.01; // world units to move per arrow key
@@ -266,11 +265,12 @@
         const target = event.target as HTMLTextAreaElement;
         try {
             hitboxes = JSON.parse(target.value);
+        // biome-ignore lint/suspicious/noEmptyBlockStatements: ignore exception
         } catch {}
         convertHitboxes();
     }
 
-    async function loadImage(src: string): Promise<{ width: number, height: number, src: string }> {
+    function loadImage(src: string): Promise<{ width: number, height: number, src: string }> {
         const img = new Image();
         img.src = src;
 
@@ -436,7 +436,7 @@
         on:wheel={mouseWheel}
         on:contextmenu={contextMenu_}
         on:keydown={handleKeydown}
-        tabindex="0"
+        tabindex="-1"
         role="application"
         aria-label="Hitbox editor canvas"
     >
@@ -547,11 +547,5 @@
 
     #hitboxes-container:focus {
         outline: none;
-    }
-
-    .snap-guide {
-        stroke: red;
-        stroke-width: 1;
-        opacity: 0.7;
     }
 </style>

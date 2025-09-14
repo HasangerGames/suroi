@@ -35,8 +35,7 @@ class InputMapper {
     private static readonly _generateGetAndSetIfAbsent
         = <K, V>(map: Map<K, V>, defaultValue: () => V) =>
             (key: K) =>
-                // trivially safe
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                // biome-ignore lint/style/noNonNullAssertion: trivially safe
                 map.get(key) ?? map.set(key, defaultValue()).get(key)!;
 
     private static readonly _generateAdder
@@ -82,8 +81,7 @@ class InputMapper {
 
         actions.delete(action);
 
-        // safe because the backward map has already been checked
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        // biome-ignore lint/style/noNonNullAssertion: safe because the backward map has already been checked
         this._actionToInput.get(action)!.delete(input);
         return true;
     }

@@ -110,7 +110,7 @@ export interface BuildingDefinition extends ObjectDefinition {
     /** If true, the hitbox will be tested in more orientations */
     readonly asymmetricalBridgeHitbox?: boolean
     readonly bridgeMinRiverWidth?: number
-    readonly bridgeSpawnRanges?: Array<[number, number]>
+    readonly bridgeSpawnRanges?: [number, number][]
 
     readonly noCeilingScopeEffect?: boolean
     readonly hasSecondFloor?: boolean
@@ -479,8 +479,7 @@ const container = (
     let upperCeilingImage;
     let lowerCeilingImage;
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const snowDecalDefinitions = {
+    const _snowDecalDefinitions = {
         closed: pickRandomInArray([
             [
                 {

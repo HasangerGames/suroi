@@ -45,7 +45,7 @@ export function cleanUsername(name?: string | null): string {
 export function getRandomIDString<T extends ObjectDefinition>(ref: ReferenceOrRandom<T>): ReferenceOrNull<T> {
     if (typeof ref === "string") return ref;
 
-    const items: Array<ReferenceOrNull<T>> = [];
+    const items: ReferenceOrNull<T>[] = [];
     const weights: number[] = [];
     for (const [item, weight] of Object.entries(ref) as ReadonlyArray<readonly [ReferenceOrNull<T>, number]>) {
         items.push(item);

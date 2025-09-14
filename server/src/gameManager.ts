@@ -152,6 +152,7 @@ export class GameManager {
         if (this.creating) return this.creating.id;
 
         const eligibleGames = this.games.filter((g?: GameContainer): g is GameContainer =>
+            // biome-ignore lint/complexity/useOptionalChain: can't use an optional chain because the return type must be a boolean
             g !== undefined
             && g.allowJoin
             && g.aliveCount < (Config.maxPlayersPerGame ?? Infinity)
@@ -164,7 +165,7 @@ export class GameManager {
         )?.id;
     }
 
-    async newGame(id: number | undefined): Promise<GameContainer | undefined> {
+    newGame(id: number | undefined): Promise<GameContainer | undefined> {
         return new Promise<GameContainer | undefined>(resolve => {
             if (this.creating) {
                 this.creating.promiseCallbacks.push(resolve);
