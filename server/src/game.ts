@@ -1125,7 +1125,9 @@ export class Game implements GameData {
 
         const paddingFactor = 1.25;
 
-        const crateDef = Obstacles.fromString(`airdrop_crate_locked${forceGold ? "_force" : ""}`);
+        const str = forceGold && this.modeName === "halloween" ? "pumpkin_airdrop_locked" : `airdrop_crate_locked${forceGold ? "_force" : ""}`;
+
+        const crateDef = Obstacles.fromString(str);
         const crateHitbox = (crateDef.spawnHitbox ?? crateDef.hitbox).clone();
         let thisHitbox = crateHitbox.clone();
 

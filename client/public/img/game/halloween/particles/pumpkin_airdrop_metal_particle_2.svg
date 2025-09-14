@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="91.109123"
+   height="65.562469"
+   viewBox="0 0 24.105955 17.346737"
+   version="1.1"
+   id="svg1"
+   inkscape:version="1.4 (86a8ad7, 2024-10-11)"
+   sodipodi:docname="pumpkin_airdrop_metal_particle.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     inkscape:zoom="1.3772587"
+     inkscape:cx="-64.25808"
+     inkscape:cy="181.15696"
+     inkscape:window-width="1920"
+     inkscape:window-height="991"
+     inkscape:window-x="-9"
+     inkscape:window-y="-9"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs1" />
+  <g
+     inkscape:label="Στρώση 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-157.59544,-67.803589)">
+    <g
+       id="g20"
+       transform="rotate(36.899039,50.292488,79.257827)">
+      <path
+         style="fill:#727679;fill-opacity:1;stroke:none;stroke-width:1.98437;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
+         d="m 139.63384,17.881045 c 6.67023,-4.092542 10.18599,-7.9378762 17.1873,-12.4796922 -2.11991,-7.281823 -9.88534,-11.275856 -14.13602,-8.597045 -2.12382,13.3164112 -2.89231,16.4323302 -3.05128,21.0767372 z"
+         id="path57787-5-9-5-2"
+         sodipodi:nodetypes="cccc" />
+      <circle
+         style="fill:#454545;fill-opacity:1;stroke:#333333;stroke-width:1.73334;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1;paint-order:fill markers stroke"
+         id="path183-8-3-1-9-2-1-77-7"
+         cx="103.23045"
+         cy="-103.80512"
+         r="0.54048187"
+         transform="rotate(45)" />
+      <circle
+         style="fill:#454545;fill-opacity:1;stroke:#333333;stroke-width:1.73334;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1;paint-order:fill markers stroke"
+         id="path183-8-3-1-9-6-4-2-6"
+         cx="109.06992"
+         cy="-105.04979"
+         r="0.54048187"
+         transform="rotate(45)" />
+      <path
+         id="path15-2-9"
+         style="fill:#d9d9d9;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:2.17359;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:29;stroke-dasharray:none;stroke-opacity:1"
+         d="m 141.76688,2.511831 -0.32148,1.8176087 c 2.63904,0.57948 5.14784,1.896527 7.19152,3.958165 0.55003,0.55486 1.04462,1.143575 1.48683,1.7582853 l 1.55043,-0.9999293 c -0.51169,-0.719729 -1.0854,-1.409115 -1.72745,-2.056775 -2.32253,-2.34289 -5.17825,-3.8331036 -8.17985,-4.4773547 z"
+         sodipodi:nodetypes="ccsccsc" />
+      <path
+         style="fill:none;fill-opacity:1;stroke:#323232;stroke-width:1.98437;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
+         d="m 139.63385,17.884067 c 6.67023,-4.092542 10.18599,-7.9378756 17.1873,-12.4796919 -2.11991,-7.2818229 -9.88534,-11.275856 -14.13602,-8.597045 -2.12382,13.3164109 -2.89231,16.4323299 -3.05128,21.0767369 z"
+         id="path57787-5-9-5"
+         sodipodi:nodetypes="cccc" />
+    </g>
+  </g>
+</svg>

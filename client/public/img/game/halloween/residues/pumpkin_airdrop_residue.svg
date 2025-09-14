@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="142.59193"
+   height="120.95925"
+   viewBox="0 0 37.727448 32.003802"
+   version="1.1"
+   id="svg1"
+   inkscape:version="1.4 (86a8ad7, 2024-10-11)"
+   sodipodi:docname="pumpkin_airdrop_residue.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     inkscape:zoom="0.97386896"
+     inkscape:cx="305.48258"
+     inkscape:cy="313.69723"
+     inkscape:window-width="1920"
+     inkscape:window-height="991"
+     inkscape:window-x="-9"
+     inkscape:window-y="-9"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs1" />
+  <g
+     inkscape:label="Στρώση 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-145.21602,-197.83381)">
+    <path
+       d="m 158.30016,207.80644 c -3.64295,-4.34416 -5.41872,-4.48252 -9.05025,-5.02703 -3.38867,3.23432 -3.25438,8.54698 -0.4943,10.04215 4.98586,-1.13811 7.86879,-1.13514 9.54312,-5.01364 z m -4.54869,7.97716 c -5.47159,1.82098 -6.2159,3.38457 -7.98595,6.49541 1.9872,4.18199 7.20164,5.87651 9.60028,3.88296 0.59859,-4.91544 1.58575,-7.52938 -1.61433,-10.37837 z m 18.47337,-15.85019 c -1.10289,5.4882 -0.0743,6.89262 1.83006,9.92757 4.74299,0.42996 8.87024,-3.08554 8.28166,-6.08777 -4.10725,-2.95906 -5.95731,-5.09246 -10.11172,-3.83831 z m -4.25868,19.39098 c -1.10289,5.48821 -0.0743,6.89262 1.83004,9.92757 4.743,0.42995 8.87026,-3.08553 8.28167,-6.08776 -4.10726,-2.95908 -5.95732,-5.09248 -10.11171,-3.83833 z m -6.96857,-12.27965 c -1.10289,5.4882 -0.0743,6.89262 1.83006,9.92757 4.74299,0.42996 5.1346,0.0388 4.54602,-2.96342 -4.10725,-2.95906 -2.22167,-8.21681 -6.37608,-6.96266 z m -2.90947,-8.66145 c -1.10289,5.4882 0.40115,2.47778 2.30551,5.51273 4.74299,0.42996 8.87024,2.48396 8.28166,-0.51827 -4.10725,-2.95906 -2.01791,-3.80197 -6.17232,-2.54782 z"
+       style="fill:#b84b14;fill-opacity:1;stroke:#641100;stroke-width:1.09901;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
+       id="path8"
+       sodipodi:nodetypes="ccccccccccccccccccccccccccccc" />
+  </g>
+</svg>

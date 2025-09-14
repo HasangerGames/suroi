@@ -201,7 +201,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
                         else this.playSound(definition.sound.name, definition.sound);
                     }
 
-                    if (this.definition.airdropUnlock) {
+                    if (this.definition.airdrop !== undefined) {
                         const options = (minSpeed: number, maxSpeed: number): Partial<ParticleOptions> => ({
                             zIndex: Numeric.max((this.definition.zIndex ?? ZIndexes.Players) + 1, 4),
                             lifetime: 1000,
@@ -220,39 +220,41 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
                         });
 
                         ParticleManager.spawnParticle({
-                            frames: "airdrop_particle_1",
+                            frames: `${this.definition.airdrop.particle}_1`,
                             position: this.position,
                             ...options(8, 18),
                             rotation: { start: 0, end: randomFloat(Math.PI / 2, Math.PI * 2) }
                         } as ParticleOptions);
 
-                        texture = "airdrop_crate_unlocking";
+                        texture = this.definition.airdrop.unlockFrame;
 
-                        if (Game.modeName === "winter") {
-                            ParticleManager.spawnParticles(1, () => ({
-                                frames: "airdrop_particle_4",
-                                position: this.hitbox.randomPoint(),
-                                ...options(7, 9)
-                            } as ParticleOptions));
-                            ParticleManager.spawnParticles(2, () => ({
-                                frames: "airdrop_particle_5",
-                                position: this.hitbox.randomPoint(),
-                                ...options(4, 9)
-                            } as ParticleOptions));
+                        if ((this.definition.particleVariations ?? 2) > 1) {
+                            if (Game.modeName === "winter") {
+                                ParticleManager.spawnParticles(1, () => ({
+                                    frames: "airdrop_particle_4",
+                                    position: this.hitbox.randomPoint(),
+                                    ...options(7, 9)
+                                } as ParticleOptions));
+                                ParticleManager.spawnParticles(2, () => ({
+                                    frames: "airdrop_particle_5",
+                                    position: this.hitbox.randomPoint(),
+                                    ...options(4, 9)
+                                } as ParticleOptions));
+                            }
+
+                            this.addTimeout(() => {
+                                ParticleManager.spawnParticles(2, () => ({
+                                    frames: `${this.definition.airdrop?.particle}_2`,
+                                    position: this.hitbox.randomPoint(),
+                                    ...options(4, 9)
+                                } as ParticleOptions));
+                                ParticleManager.spawnParticles(2, () => ({
+                                    frames: `${this.definition.airdrop?.particle}_3`,
+                                    position: this.hitbox.randomPoint(),
+                                    ...options(4, 9)
+                                } as ParticleOptions));
+                            }, 800);
                         }
-
-                        this.addTimeout(() => {
-                            ParticleManager.spawnParticles(2, () => ({
-                                frames: "airdrop_particle_2",
-                                position: this.hitbox.randomPoint(),
-                                ...options(4, 9)
-                            } as ParticleOptions));
-                            ParticleManager.spawnParticles(2, () => ({
-                                frames: "airdrop_particle_3",
-                                position: this.hitbox.randomPoint(),
-                                ...options(4, 9)
-                            } as ParticleOptions));
-                        }, 800);
                     }
                 }
             }

@@ -925,10 +925,10 @@ class UIManagerClass {
 
         if (activeWeapon?.stats?.kills === undefined) { // killstreaks
             this.ui.killStreakIndicator.hide();
-        } else {
+        } /*else {
             this.ui.killStreakIndicator.show();
             this.ui.killStreakCounter.text(`Streak: ${activeWeapon.stats.kills}`);
-        }
+        }*/
 
         this.updateWeaponSlots();
     }

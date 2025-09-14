@@ -550,7 +550,6 @@ export const Melees = new InventoryItemDefinitions<MeleeDefinition>([
         devItem: true,
         noSwap: true,
         damage: 40,
-        noDrop: true,
         stonePiercing: true,
         speedMultiplier: 1,
         obstacleMultiplier: 1,

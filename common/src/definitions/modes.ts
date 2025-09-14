@@ -101,6 +101,7 @@ export const Modes: Record<ModeName, ModeDefinition> = {
         defaultScope: "2x_scope",
         spriteSheets: ["shared", "fall", "halloween"],
         specialLogo: true,
+        forcedGoldAirdropStage: 5,
         playButtonImage: "./img/game/halloween/obstacles/jack_o_lantern.svg",
         canvasFilters: {
             brightness: 0.65,

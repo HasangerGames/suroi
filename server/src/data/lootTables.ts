@@ -1029,7 +1029,28 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { table: "hunted_skins", weight: 0.25 }
         ],
         seedshot_case: [{ item: "seedshot", weight: 1 }],
-        vaccinator_case: [{ item: "vaccinator", weight: 1 }]
+        vaccinator_case: [{ item: "vaccinator", weight: 1 }],
+        silly_guns: [
+            { item: "revitalizer", weight: 0.33 },
+            { item: "g17_scoped", weight: 0.33 },
+            { item: "firework_launcher", weight: 0.33 }
+        ],
+        pumpkin_airdrop: [
+            [{ table: "airdrop_equipment", weight: 1 }],
+            [{ table: "airdrop_scopes", weight: 1 }],
+            [{ table: "airdrop_healing_items", weight: 1 }],
+            [{ table: "airdrop_skins", weight: 1 }],
+            [
+                { table: "airdrop_melee", weight: 1 },
+                { item: "steelfang", weight: 0.5 }
+            ],
+            [{ table: "ammo", weight: 1 }],
+            [{ table: "silly_guns", weight: 1 }],
+            [
+                { item: "sm56", count: 3, weight: 1 },
+                { item: "confetti_grenade", count: 3, weight: 1 }
+            ]
+        ],
     },
 
     halloween: {
@@ -1150,10 +1171,15 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { item: "hand_saw", weight: 0.075 },
             { item: "pan", weight: 0.075 }
         ],
-        seedshot_case: [
-            { item: "revitalizer", weight: 0.5 },
-            { item: "g17_scoped", weight: 0.5 }
+        airdrop_skins: [
+            { item: NullString, weight: 1 },
+            { item: "diseased", weight: 0.2 },
+            { item: "sky", weight: 0.7 },
+            { item: "nebula", weight: 0.6 },
+            { item: "ghillie_suit", weight: 0.1 },
+            { item: "ancestral_garb", weight: 0.001 }
         ],
+        seedshot_case: [{ table: "silly_guns", weight: 1 }]
     },
 
     winter: {

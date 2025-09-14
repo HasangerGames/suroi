@@ -37,12 +37,17 @@ type CommonObstacleDefinition = ObjectDefinition & {
     readonly rotationMode: RotationMode // for obstacles with a role, this cannot be RotationMode.Full
     readonly particleVariations?: number
     readonly zIndex?: ZIndexes
-    readonly airdropUnlock?: boolean
     readonly interactObstacleIdString?: ReferenceTo<ObstacleDefinition>
     readonly spawnWithWaterOverlay?: boolean
     readonly waterOverlay?: {
         readonly scaleX: number
         readonly scaleY: number
+    }
+
+    readonly airdrop?: {
+        readonly unlockFrame: string
+        readonly particle: string
+        readonly particleVariations: number
     }
 
     readonly graphics?: ReadonlyArray<{
@@ -290,6 +295,7 @@ export const TintedParticles: Record<string, { readonly base: string, readonly t
     aegis_crate_particle: { base: "wood_particle", tint: 0x2687d9 },
     log_particle: { base: "stone_particle_1", tint: 0x5b3e24 },
     airdrop_crate_particle: { base: "wood_particle", tint: aidrTint },
+    pumpkin_airdrop_particle: { base: "pumpkin_particle_base", tint: 0xb84b14 },
     chest_particle: { base: "wood_particle", tint: 0xa87e5a },
     cooler_particle: { base: "wood_particle", tint: 0x357d99 },
     crate_particle: { base: "wood_particle", tint: 0x9e7437 },
@@ -2254,7 +2260,45 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         frames: {
             particle: "metal_particle"
         },
-        airdropUnlock: true
+        airdrop: {
+            unlockFrame: "airdrop_crate_unlocking",
+            particle: "airdrop_particle",
+            particleVariations: 2
+        }
+    },
+    {
+        idString: "pumpkin_airdrop_locked",
+        name: "Pumpkin Airdrop",
+        defType: DefinitionType.Obstacle,
+        material: "metal_light",
+        health: 10000,
+        indestructible: true,
+        reflectBullets: true,
+        hitbox: new CircleHitbox(4.22),
+        spawnHitbox: new CircleHitbox(5.22),
+        rotationMode: RotationMode.None,
+        hideOnMap: true,
+        isActivatable: true,
+        zIndex: ZIndexes.ObstaclesLayer2,
+        sound: {
+            name: "airdrop_unlock",
+            maxRange: 64,
+            falloff: 0.3
+        },
+        replaceWith: {
+            idString: "pumpkin_airdrop",
+            delay: 800
+        },
+        noResidue: true,
+        frames: {
+            particle: "metal_particle"
+        },
+        airdrop: {
+            unlockFrame: "pumpkin_airdrop_unlocking",
+            particle: "pumpkin_airdrop_metal_particle",
+            particleVariations: 3
+        },
+        interactObstacleIdString: "airdrop_crate_locked"
     },
     {
         idString: "airdrop_crate_locked_force",
@@ -2285,7 +2329,11 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
             base: "airdrop_crate_locked",
             particle: "metal_particle"
         },
-        airdropUnlock: true
+        airdrop: {
+            unlockFrame: "airdrop_crate_unlocking",
+            particle: "airdrop_particle",
+            particleVariations: 3
+        }
     },
     {
         idString: "airdrop_crate",
@@ -2323,6 +2371,23 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         frames: {
             particle: "airdrop_crate_particle"
         }
+    },
+    {
+        idString: "pumpkin_airdrop",
+        name: "Pumpkin Airdrop",
+        defType: DefinitionType.Obstacle,
+        material: "pumpkin",
+        health: 150,
+        scale: {
+            spawnMin: 1,
+            spawnMax: 1,
+            destroy: 0.5
+        },
+        hitbox: new CircleHitbox(4.22),
+        spawnHitbox: new CircleHitbox(5.22),
+        hideOnMap: true,
+        rotationMode: RotationMode.None,
+        hasLoot: true
     },
     {
         idString: "gold_rock",

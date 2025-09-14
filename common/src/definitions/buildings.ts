@@ -15926,7 +15926,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "pumpkin", position: Vec(-26.12, -28) },
             { idString: "pumpkin", position: Vec(62.08, -48.02) },
             { idString: "pumpkin", position: Vec(-20.2, -26.25) },
-            { idString: "pumpkin", position: Vec(57.67, -35.37), variation: 2 },
+            { idString: "pumpkin", position: Vec(57.67, -35.37) },
             { idString: "sandbags", position: Vec(33.12, -26.9), rotation: 0 },
             { idString: "sandbags", position: Vec(13.43, -4.85), rotation: 0 },
             { idString: "smaller_sandbags", position: Vec(43.88, -25.73), rotation: 0 },
