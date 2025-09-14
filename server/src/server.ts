@@ -25,48 +25,62 @@ export function resetTeams(): void {
     teamsCreated?.reset();
 }
 
+declare global {
+    var initialSetupComplete: boolean | undefined
+}
+
 if (Cluster.isPrimary && require.main === module) {
     //                   ^^^^^^^^^^^^^^^^^^^^^^^ only starts server if called directly from command line (not imported)
 
-    process.on("uncaughtException", e => serverError("An unhandled error occurred. Details:", e));
-
-    // Cleans up workers from previous runs if using dev server
+    // Cleans up workers from previous runs if the process is hot reloaded
     for (const worker of Object.values(Cluster.workers ?? {})) {
         worker?.kill();
     }
 
     const gameManager = new GameManager();
 
-    let exiting = false;
-    const exit = (): void => {
-        if (exiting) return;
-        exiting = true;
-        serverLog("Shutting down...");
-        for (const game of gameManager.games) {
-            game?.worker.kill();
-        }
-        process.exit();
-    };
-    process.on("exit", exit);
-    process.on("SIGINT", exit);
-    process.on("SIGTERM", exit);
-    process.on("SIGUSR2", exit);
+    // Prevents multiple listeners from piling up if the process is hot reloaded
+    if (!globalThis.initialSetupComplete) {
+        let exiting = false;
+        const exit = (): void => {
+            if (exiting) return;
+            exiting = true;
+            serverLog("Shutting down...");
+            for (const game of gameManager.games) {
+                game?.worker.kill();
+            }
+            process.exit();
+        };
+        process.on("exit", exit);
+        process.on("SIGINT", exit);
+        process.on("SIGTERM", exit);
+        process.on("SIGUSR2", exit);
 
-    setInterval(() => {
-        const memoryUsage = process.memoryUsage().rss;
+        process.on("uncaughtException", e => {
+            serverError("An unhandled error occurred. Details:", e);
+            for (const game of gameManager.games) {
+                game?.worker.kill();
+            }
+            process.exit(1);
+        });
 
-        let perfString = `RAM usage: ${Math.round(memoryUsage / 1024 / 1024 * 100) / 100} MB`;
+        setInterval(() => {
+            const memoryUsage = process.memoryUsage().rss;
 
-        // windows L
-        if (os.platform() !== "win32") {
-            const load = os.loadavg().join("%, ");
-            perfString += ` | CPU usage (1m, 5m, 15m): ${load}%`;
-        }
+            let perfString = `RAM usage: ${Math.round(memoryUsage / 1024 / 1024 * 100) / 100} MB`;
 
-        serverLog(perfString);
+            // windows L
+            if (os.platform() !== "win32") {
+                const load = os.loadavg().join("%, ");
+                perfString += ` | CPU usage (1m, 5m, 15m): ${load}%`;
+            }
 
-        gameManager.updateMapScaleRange();
-    }, 60000);
+            serverLog(perfString);
+
+            gameManager.updateMapScaleRange();
+        }, 60000);
+    }
+    globalThis.initialSetupComplete = true;
 
     customTeams = new Map<string, CustomTeam>();
 
