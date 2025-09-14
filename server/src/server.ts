@@ -39,7 +39,7 @@ if (Cluster.isPrimary && require.main === module) {
 
     const gameManager = new GameManager();
 
-    // Prevents multiple listeners from piling up if the process is hot reloaded
+    // Prevents multiple loops from piling up if the process is hot reloaded
     if (!globalThis.initialSetupComplete) {
         let exiting = false;
         const exit = (): void => {

@@ -28,13 +28,14 @@
   "license": "GPL-3.0",
   "devDependencies": {
     "@biomejs/biome": "2.2.4",
-    "@types/node": "^22.18.1",
+    "@types/node": "^22.18.3",
     "typescript": "^5.9.2"
   },
   "workspaces": ["client", "common", "server", "tests"],
   "trustedDependencies": [
     "@parcel/watcher",
     "@swc/core",
+    "esbuild",
     "skia-canvas",
     "unrs-resolver"
   ]
