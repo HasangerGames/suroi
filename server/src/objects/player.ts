@@ -1475,6 +1475,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                                 !player.isPlayer
                                 || !player.hitbox.collidesWith(detectionHitbox)
                                 || player.hasPerk(PerkIds.Immunity)
+                                || !adjacentOrEqualLayer(this.layer, player.layer)
                             ) continue;
                             player.infection += perk.infectionUnits;
                         }
