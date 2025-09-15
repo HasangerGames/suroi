@@ -861,7 +861,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
                         if (this.images.bubbleSprite !== undefined) {
                             this.images.bubbleSprite.setScale(0.25);
-                            this.anims.sizeMod = Game.addTween({
+                            this.anims.shieldScale = Game.addTween({
                                 target: this.images.bubbleSprite.scale,
                                 to: { x: 1, y: 1 },
                                 duration: 800,
