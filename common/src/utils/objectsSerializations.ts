@@ -61,6 +61,7 @@ export interface ObjectsNetData extends BaseObjectsNetData {
             readonly backEquippedMelee?: MeleeDefinition
             readonly hasBubble: boolean
             readonly activeOverdrive: boolean
+            readonly hasMagneticField: boolean
         }
     }
     //
@@ -255,7 +256,8 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 infected,
                 backEquippedMelee,
                 hasBubble,
-                activeOverdrive
+                activeOverdrive,
+                hasMagneticField
             } }
         ): void {
             stream.writeLayer(layer);
@@ -278,7 +280,8 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 infected,
                 hasBackEquippedMelee,
                 hasBubble,
-                activeOverdrive
+                activeOverdrive,
+                hasMagneticField
             );
             stream.writeUint8(teamID);
             Loots.writeToStream(stream, activeItem);
@@ -341,7 +344,8 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 infected,
                 hasBackEquippedMelee,
                 hasBubble,
-                activeOverdrive
+                activeOverdrive,
+                hasMagneticField
             ] = stream.readBooleanGroup2();
 
             return {
@@ -363,7 +367,8 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 infected,
                 backEquippedMelee: hasBackEquippedMelee ? Melees.readFromStream(stream) : undefined,
                 hasBubble,
-                activeOverdrive
+                activeOverdrive,
+                hasMagneticField
             };
         }
     },

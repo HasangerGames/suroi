@@ -184,6 +184,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `butterfingers_desc` is not defined
 - Key `overweight` is not defined
 - Key `overweight_desc` is not defined
+- Key `enternal_magnetism` is not defined
+- Key `enternal_magnetism_desc` is not defined
 - Key `infected` is not defined
 - Key `infected_desc` is not defined
 - Key `immunity` is not defined
@@ -250,6 +252,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `region_1v1` is not defined
 - Key `region_ea1v1` is not defined
 - Key `region_test` is not defined
+- Key `enternal_magnetism` is not defined
+- Key `enternal_magnetism_desc` is not defined
 
 ## 🇨🇿 Čeština (57% Complete) - cz.hjson
 
@@ -424,6 +428,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `butterfingers_desc` is not defined
 - Key `overweight` is not defined
 - Key `overweight_desc` is not defined
+- Key `enternal_magnetism` is not defined
+- Key `enternal_magnetism_desc` is not defined
 - Key `infected` is not defined
 - Key `infected_desc` is not defined
 - Key `immunity` is not defined
@@ -579,6 +585,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `butterfingers_desc` is not defined
 - Key `overweight` is not defined
 - Key `overweight_desc` is not defined
+- Key `enternal_magnetism` is not defined
+- Key `enternal_magnetism_desc` is not defined
 - Key `infected` is not defined
 - Key `infected_desc` is not defined
 - Key `immunity` is not defined
@@ -598,7 +606,7 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### (No Undefined Keys)
 
-## 🇪🇸 Español (61% Complete) - es.hjson
+## 🇪🇸 Español (60% Complete) - es.hjson
 
 ### Invalid Keys
 
@@ -755,6 +763,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `butterfingers_desc` is not defined
 - Key `overweight` is not defined
 - Key `overweight_desc` is not defined
+- Key `enternal_magnetism` is not defined
+- Key `enternal_magnetism_desc` is not defined
 - Key `infected` is not defined
 - Key `infected_desc` is not defined
 - Key `immunity` is not defined
@@ -768,7 +778,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
 
-## 🇪🇪 eesti (86% Complete) - et.hjson
+## 🇪🇪 eesti (85% Complete) - et.hjson
 
 ### Invalid Keys
 
@@ -978,6 +988,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `butterfingers_desc` is not defined
 - Key `overweight` is not defined
 - Key `overweight_desc` is not defined
+- Key `enternal_magnetism` is not defined
+- Key `enternal_magnetism_desc` is not defined
 - Key `hollow_points` is not defined
 - Key `hollow_points_desc` is not defined
 - Key `experimental_forcefield` is not defined
@@ -987,7 +999,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
 
-## 🇮🇷 فارسی (92% Complete) - fa.hjson
+## 🇮🇷 فارسی (91% Complete) - fa.hjson
 
 ### (No Invalid Keys)
 
@@ -1026,8 +1038,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `butterfingers_desc` is not defined
 - Key `overweight` is not defined
 - Key `overweight_desc` is not defined
+- Key `enternal_magnetism` is not defined
+- Key `enternal_magnetism_desc` is not defined
 
-## 🇫🇮 suomi (60% Complete) - fi.hjson
+## 🇫🇮 suomi (59% Complete) - fi.hjson
 
 ### Invalid Keys
 
@@ -1189,6 +1203,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `butterfingers_desc` is not defined
 - Key `overweight` is not defined
 - Key `overweight_desc` is not defined
+- Key `enternal_magnetism` is not defined
+- Key `enternal_magnetism_desc` is not defined
 - Key `infected` is not defined
 - Key `infected_desc` is not defined
 - Key `immunity` is not defined
@@ -1202,7 +1218,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
 
-## 🇫🇷 Français (88% Complete) - fr.hjson
+## 🇫🇷 Français (87% Complete) - fr.hjson
 
 ### Invalid Keys
 
@@ -1265,6 +1281,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `butterfingers_desc` is not defined
 - Key `overweight` is not defined
 - Key `overweight_desc` is not defined
+- Key `enternal_magnetism` is not defined
+- Key `enternal_magnetism_desc` is not defined
 
 ## 🇬🇷 Ελληνικά (76% Complete) - gr.hjson
 
@@ -1356,6 +1374,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `butterfingers_desc` is not defined
 - Key `overweight` is not defined
 - Key `overweight_desc` is not defined
+- Key `enternal_magnetism` is not defined
+- Key `enternal_magnetism_desc` is not defined
 - Key `infected` is not defined
 - Key `infected_desc` is not defined
 - Key `immunity` is not defined
@@ -1546,6 +1566,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `butterfingers_desc` is not defined
 - Key `overweight` is not defined
 - Key `overweight_desc` is not defined
+- Key `enternal_magnetism` is not defined
+- Key `enternal_magnetism_desc` is not defined
 - Key `infected` is not defined
 - Key `infected_desc` is not defined
 - Key `immunity` is not defined
@@ -1619,6 +1641,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `butterfingers_desc` is not defined
 - Key `overweight` is not defined
 - Key `overweight_desc` is not defined
+- Key `enternal_magnetism` is not defined
+- Key `enternal_magnetism_desc` is not defined
 - Key `hollow_points` is not defined
 - Key `hollow_points_desc` is not defined
 - Key `experimental_forcefield` is not defined
@@ -1628,7 +1652,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
 
-## 🇮🇹 Italiano (55% Complete) - it.hjson
+## 🇮🇹 Italiano (54% Complete) - it.hjson
 
 ### Invalid Keys
 
@@ -1818,6 +1842,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `butterfingers_desc` is not defined
 - Key `overweight` is not defined
 - Key `overweight_desc` is not defined
+- Key `enternal_magnetism` is not defined
+- Key `enternal_magnetism_desc` is not defined
 - Key `infected` is not defined
 - Key `infected_desc` is not defined
 - Key `immunity` is not defined
@@ -2065,7 +2091,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `time_minute` is not a valid key
 - Key `time_second` is not a valid key
 
-### (No Undefined Keys)
+### Undefined Keys
+
+- Key `enternal_magnetism` is not defined
+- Key `enternal_magnetism_desc` is not defined
 
 ## 🇱🇹 Lietuvių (57% Complete) - lt.hjson
 
@@ -2240,6 +2269,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `butterfingers_desc` is not defined
 - Key `overweight` is not defined
 - Key `overweight_desc` is not defined
+- Key `enternal_magnetism` is not defined
+- Key `enternal_magnetism_desc` is not defined
 - Key `infected` is not defined
 - Key `infected_desc` is not defined
 - Key `immunity` is not defined
@@ -2426,6 +2457,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `butterfingers_desc` is not defined
 - Key `overweight` is not defined
 - Key `overweight_desc` is not defined
+- Key `enternal_magnetism` is not defined
+- Key `enternal_magnetism_desc` is not defined
 - Key `infected` is not defined
 - Key `infected_desc` is not defined
 - Key `immunity` is not defined
@@ -2471,8 +2504,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `region_test` is not defined
 - Key `reflective_rounds` is not defined
 - Key `reflective_rounds_desc` is not defined
+- Key `enternal_magnetism` is not defined
+- Key `enternal_magnetism_desc` is not defined
 
-## 🇵🇱 Polski (60% Complete) - pl.hjson
+## 🇵🇱 Polski (59% Complete) - pl.hjson
 
 ### Invalid Keys
 
@@ -2634,6 +2669,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `butterfingers_desc` is not defined
 - Key `overweight` is not defined
 - Key `overweight_desc` is not defined
+- Key `enternal_magnetism` is not defined
+- Key `enternal_magnetism_desc` is not defined
 - Key `infected` is not defined
 - Key `infected_desc` is not defined
 - Key `immunity` is not defined
@@ -2794,6 +2831,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `butterfingers_desc` is not defined
 - Key `overweight` is not defined
 - Key `overweight_desc` is not defined
+- Key `enternal_magnetism` is not defined
+- Key `enternal_magnetism_desc` is not defined
 - Key `infected` is not defined
 - Key `infected_desc` is not defined
 - Key `immunity` is not defined
@@ -2837,6 +2876,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `region_test` is not defined
 - Key `reflective_rounds` is not defined
 - Key `reflective_rounds_desc` is not defined
+- Key `enternal_magnetism` is not defined
+- Key `enternal_magnetism_desc` is not defined
 
 ## 🇷🇺 Русский (90% Complete) - ru.hjson
 
@@ -2887,6 +2928,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `reflective_rounds` is not defined
 - Key `reflective_rounds_desc` is not defined
 - Key `baby_plumpkin_pie_desc` is not defined
+- Key `enternal_magnetism` is not defined
+- Key `enternal_magnetism_desc` is not defined
 
 ## 🇮🇳 தமிழ் (90% Complete) - ta.hjson
 
@@ -2940,6 +2983,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `butterfingers_desc` is not defined
 - Key `overweight` is not defined
 - Key `overweight_desc` is not defined
+- Key `enternal_magnetism` is not defined
+- Key `enternal_magnetism_desc` is not defined
 - Key `experimental_forcefield_desc` is not defined
 
 ## 🇹🇷 Turkısh (70% Complete) - tr.hjson
@@ -3063,6 +3108,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `butterfingers_desc` is not defined
 - Key `overweight` is not defined
 - Key `overweight_desc` is not defined
+- Key `enternal_magnetism` is not defined
+- Key `enternal_magnetism_desc` is not defined
 - Key `infected` is not defined
 - Key `infected_desc` is not defined
 - Key `immunity` is not defined
@@ -3210,6 +3257,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `butterfingers_desc` is not defined
 - Key `overweight` is not defined
 - Key `overweight_desc` is not defined
+- Key `enternal_magnetism` is not defined
+- Key `enternal_magnetism_desc` is not defined
 - Key `infected` is not defined
 - Key `infected_desc` is not defined
 - Key `immunity` is not defined
@@ -3281,6 +3330,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `butterfingers_desc` is not defined
 - Key `overweight` is not defined
 - Key `overweight_desc` is not defined
+- Key `enternal_magnetism` is not defined
+- Key `enternal_magnetism_desc` is not defined
 - Key `hollow_points` is not defined
 - Key `hollow_points_desc` is not defined
 - Key `experimental_forcefield` is not defined
@@ -3509,4 +3560,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `region_1v1` is not defined
 - Key `region_ea1v1` is not defined
 - Key `region_test` is not defined
+- Key `enternal_magnetism` is not defined
+- Key `enternal_magnetism_desc` is not defined
 

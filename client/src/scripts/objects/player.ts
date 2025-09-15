@@ -69,6 +69,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
     hasBubble = false;
 
+    hasMagneticField = false;
+
     activeOverdrive = false;
     overdriveCooldown?: Timeout;
 
@@ -131,6 +133,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         bubbleSprite?: SuroiSprite
         disguiseSprite?: SuroiSprite
         disguiseSpriteTrunk?: SuroiSprite
+        magneticFieldSprite?: SuroiSprite
         healthBar?: Graphics
     };
 
@@ -163,6 +166,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         waterOverlay?: Tween<SuroiSprite>
         sizeMod?: Tween<ObservablePoint>
         shieldScale?: Tween<ObservablePoint>
+        magneticField?: Tween<ObservablePoint>
     } = {};
 
     private _emoteHideTimeout?: Timeout;
@@ -563,7 +567,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     infected,
                     backEquippedMelee,
                     hasBubble,
-                    activeOverdrive
+                    activeOverdrive,
+                    hasMagneticField
                 }
             } = data;
 
@@ -861,13 +866,68 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
                         if (this.images.bubbleSprite !== undefined) {
                             this.images.bubbleSprite.setScale(0.25);
-                            this.anims.sizeMod = Game.addTween({
+                            this.anims.shieldScale = Game.addTween({
                                 target: this.images.bubbleSprite.scale,
                                 to: { x: 1, y: 1 },
                                 duration: 800,
                                 ease: EaseFunctions.backOut,
                                 onComplete: () => {
                                     this.anims.shieldScale = undefined;
+                                }
+                            });
+                        }
+                    }
+                }
+            }
+
+            // Magnetic Field
+            if (hasMagneticField !== this.hasMagneticField) {
+                this.hasMagneticField = hasMagneticField;
+
+                let magneticFieldSprite = this.images.magneticFieldSprite;
+
+                const spriteScale = PerkData[PerkIds.EnternalMagnetism].spriteScale;
+
+                // Initialize sprite
+                if (magneticFieldSprite === undefined) {
+                    magneticFieldSprite = this.images.magneticFieldSprite = new SuroiSprite()
+                        .setFrame("_glow_")
+                        .setScale(spriteScale)
+                        .setAlpha(0.75)
+                        .setTint(0xfc0303);
+
+                    this.container.addChild(magneticFieldSprite);
+                }
+                
+                magneticFieldSprite.setVisible(this.hasMagneticField);
+
+                if (!isNew) {
+
+                    if (this.images.magneticFieldSprite !== undefined) {
+                        this.anims.magneticField?.kill();
+                        if (hasMagneticField) {
+                            this.images.magneticFieldSprite.setScale(0);
+
+                            this.anims.magneticField = Game.addTween({
+                                target: this.images.magneticFieldSprite.scale,
+                                to: { x: spriteScale, y: spriteScale },
+                                duration: 1000,
+                                ease: EaseFunctions.backOut,
+                                onComplete: () => {
+                                    this.anims.magneticField = undefined;
+                                }
+                            });
+                        }
+                        else {
+                            this.images.magneticFieldSprite.setScale(spriteScale);
+
+                            this.anims.magneticField = Game.addTween({
+                                target: this.images.magneticFieldSprite.scale,
+                                to: { x: 0, y: 0 },
+                                duration: 1000,
+                                ease: EaseFunctions.backIn,
+                                onComplete: () => {
+                                    this.anims.magneticField = undefined;
                                 }
                             });
                         }

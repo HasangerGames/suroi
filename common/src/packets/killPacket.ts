@@ -1,6 +1,7 @@
 import { Explosions, type ExplosionDefinition } from "../definitions/explosions";
 import { Guns, type GunDefinition } from "../definitions/items/guns";
 import { Melees, type MeleeDefinition } from "../definitions/items/melees";
+import { PerkDefinition, Perks } from "../definitions/items/perks";
 import { Throwables, type ThrowableDefinition } from "../definitions/items/throwables";
 import { ObstacleDefinition, Obstacles } from "../definitions/obstacles";
 import { DefinitionType } from "../utils/objectDefinitions";
@@ -13,6 +14,7 @@ export enum DamageSources {
     Explosion,
     Gas,
     Obstacle,
+    Perk,
     BleedOut,
     FinallyKilled
 }
@@ -24,7 +26,7 @@ export interface KillData {
     readonly creditedId?: number
     readonly kills?: number
     readonly damageSource: DamageSources
-    readonly weaponUsed?: GunDefinition | MeleeDefinition | ThrowableDefinition | ExplosionDefinition | ObstacleDefinition
+    readonly weaponUsed?: GunDefinition | MeleeDefinition | ThrowableDefinition | ExplosionDefinition | ObstacleDefinition | PerkDefinition
     readonly killstreak?: number
     readonly downed: boolean
     readonly killed: boolean
@@ -89,6 +91,9 @@ export const KillPacket = new Packet<KillData>(PacketType.Kill, {
             case DamageSources.Obstacle:
                 Obstacles.writeToStream(stream, data.weaponUsed as ObstacleDefinition);
                 break;
+            case DamageSources.Perk:
+                Perks.writeToStream(stream, data.weaponUsed as PerkDefinition);
+                break;
         }
 
         if (
@@ -147,6 +152,9 @@ export const KillPacket = new Packet<KillData>(PacketType.Kill, {
                 break;
             case DamageSources.Obstacle:
                 data.weaponUsed = Obstacles.readFromStream(stream);
+                break;
+            case DamageSources.Perk:
+                data.weaponUsed = Perks.readFromStream(stream);
                 break;
         }
 

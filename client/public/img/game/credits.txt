@@ -442,6 +442,7 @@ Perk Icons:
   Overweight: sniperboi4/TjCj
   Priority Target: sniperboi4/TjCj
   Reflective Rounds: Skullboi249
+  Enternal Magnetism: sniperboi4/TjCj
 
 Saw Killfeed - AnnihilatingFox
 

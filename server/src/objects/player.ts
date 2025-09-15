@@ -583,6 +583,10 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
     hasBubble = false;
 
+    infected = false;
+
+    hasMagneticField = false;
+
     readonly perks: PerkDefinition[] = [];
 
     perkUpdateMap?: Map<PerkDefinition, number>; // key = perk, value = last updated
@@ -1566,6 +1570,39 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             }
         }
 
+        if (this.hasPerk(PerkIds.EnternalMagnetism)) {
+            const perk = PerkData[PerkIds.EnternalMagnetism];
+            const detectionHitbox = new CircleHitbox(perk.radius, this.position);
+
+            for (const player of this.game.grid.intersectsHitbox(detectionHitbox)) {
+                if (
+                    !player.isPlayer
+                    || !adjacentOrEqualLayer(this.layer, player.layer)
+                    || !(this.game.teamMode && this.teamID === player.teamID)
+                    || player.id === this.id
+                ) continue;
+
+                const canDamage = player.health > perk.minHealth && this.health < this.maxHealth;
+                const collision = player.hitbox.collidesWith(detectionHitbox) && canDamage;
+                        
+                if (this.hasMagneticField !== collision) {
+                    this.hasMagneticField = collision;
+                    this.setDirty();
+                }
+
+                if (player.infected !== collision) {
+                    player.infected = collision;
+                    player.setDirty();
+                }
+
+                if (player.health > perk.minHealth && collision) {
+                    const depl = perk.depletion;
+                    player.health = Numeric.max(player.health - depl, perk.minHealth);
+                    this.health = Numeric.max(this.health + depl, perk.minHealth);
+                }
+            }
+        }
+
         // Update stuck projectiles (currently only seedshot seeds)
         if (this.stuckProjectiles) {
             for (const [proj, angle] of this.stuckProjectiles) {
@@ -2131,6 +2168,11 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             }
             case PerkIds.PriorityTarget: {
                 this.updateMapIndicator();
+                break;
+            }
+            case PerkIds.EnternalMagnetism: {
+                this.hasMagneticField = false;
+                this.setDirty();
                 break;
             }
         }
@@ -3304,10 +3346,11 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 backpack: this.inventory.backpack,
                 halloweenThrowableSkin: this.halloweenThrowableSkin,
                 activeDisguise: this.activeDisguise,
-                infected: this.hasPerk(PerkIds.Infected),
+                infected: this.infected || this.hasPerk(PerkIds.Infected),
                 backEquippedMelee: this.backEquippedMelee,
                 hasBubble: this.hasBubble,
-                activeOverdrive: this.activeOverdrive
+                activeOverdrive: this.activeOverdrive,
+                hasMagneticField: this.hasMagneticField
             }
         };
 

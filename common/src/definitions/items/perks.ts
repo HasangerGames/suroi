@@ -84,6 +84,7 @@ export const enum PerkIds {
     PriorityTarget = "priority_target",
     Butterfingers = "butterfingers",
     Overweight = "overweight",
+    EnternalMagnetism = "enternal_magnetism",
 
     //
     // Infection
@@ -489,6 +490,18 @@ const perks = [
         category: PerkCategories.Halloween,
         quality: PerkQualities.Negative,
         sizeMod: 1.5,
+        noDrop: true
+    },
+    {
+        idString: PerkIds.EnternalMagnetism,
+        name: "Enternal Magnetism",
+        defType: DefinitionType.Perk,
+        category: PerkCategories.Halloween,
+        quality: PerkQualities.Positive,
+        radius: 20,
+        depletion: 0.05,
+        spriteScale: 1.5,
+        minHealth: 5,
         noDrop: true
     },
     //
