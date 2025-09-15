@@ -2,7 +2,7 @@
 
 This file is a report of all errors and missing keys in the translation files of this game.
 
-## 🇦🇱 Shqip (57% Complete) - ab.hjson
+## 🇦🇱 Shqip (54% Complete) - ab.hjson
 
 ### Invalid Keys
 
@@ -88,12 +88,36 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `themselves` is not defined
 - Key `kf_message` is not defined
 - Key `tt_desc` is not defined
+- Key `vaccine_syringe_desc` is not defined
 - Key `create_team_force_start` is not defined
 - Key `create_team_ready` is not defined
 - Key `create_team_not_ready` is not defined
+- Key `partners` is not defined
+- Key `username_placeholder` is not defined
+- Key `msg_contact` is not defined
+- Key `power_vest` is not defined
+- Key `power_helmet` is not defined
+- Key `power_pack` is not defined
+- Key `barrel_explosion` is not defined
+- Key `stove_explosion` is not defined
+- Key `fireplace_explosion` is not defined
+- Key `control_panel_explosion` is not defined
+- Key `super_barrel_explosion` is not defined
+- Key `small_refinery_barrel_explosion` is not defined
+- Key `large_refinery_barrel_explosion` is not defined
+- Key `silo_explosion` is not defined
+- Key `propane_tank_explosion` is not defined
+- Key `firework_launcher_explosion` is not defined
+- Key `seed_explosion` is not defined
+- Key `coal_explosion` is not defined
+- Key `frag_grenade_explosion` is not defined
+- Key `confetti_grenade_explosion` is not defined
+- Key `pumpkin_explosion` is not defined
 - Key `region_ea` is not defined
 - Key `region_oc` is not defined
-- Key `vaccine_syringe_desc` is not defined
+- Key `region_1v1` is not defined
+- Key `region_ea1v1` is not defined
+- Key `region_test` is not defined
 - Key `second_wind` is not defined
 - Key `second_wind_desc` is not defined
 - Key `flechettes` is not defined
@@ -172,11 +196,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `thermal_goggles_desc` is not defined
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
-- Key `partners` is not defined
-- Key `username_placeholder` is not defined
-- Key `msg_contact` is not defined
 
-## 🇧🇷 Português (Brasil) (94% Complete) - br.hjson
+## 🇧🇷 Português (Brasil) (89% Complete) - br.hjson
 
 ### Invalid Keys
 
@@ -204,12 +225,33 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_screen_record` is not defined
 - Key `kf_were_finally_killed` is not defined
 - Key `tt_desc` is not defined
-- Key `region_ea` is not defined
-- Key `region_oc` is not defined
 - Key `vaccine_syringe_desc` is not defined
 - Key `msg_contact` is not defined
+- Key `power_vest` is not defined
+- Key `power_helmet` is not defined
+- Key `power_pack` is not defined
+- Key `barrel_explosion` is not defined
+- Key `stove_explosion` is not defined
+- Key `fireplace_explosion` is not defined
+- Key `control_panel_explosion` is not defined
+- Key `super_barrel_explosion` is not defined
+- Key `small_refinery_barrel_explosion` is not defined
+- Key `large_refinery_barrel_explosion` is not defined
+- Key `silo_explosion` is not defined
+- Key `propane_tank_explosion` is not defined
+- Key `firework_launcher_explosion` is not defined
+- Key `seed_explosion` is not defined
+- Key `coal_explosion` is not defined
+- Key `frag_grenade_explosion` is not defined
+- Key `confetti_grenade_explosion` is not defined
+- Key `pumpkin_explosion` is not defined
+- Key `region_ea` is not defined
+- Key `region_oc` is not defined
+- Key `region_1v1` is not defined
+- Key `region_ea1v1` is not defined
+- Key `region_test` is not defined
 
-## 🇨🇿 Čeština (60% Complete) - cz.hjson
+## 🇨🇿 Čeština (57% Complete) - cz.hjson
 
 ### Invalid Keys
 
@@ -286,12 +328,36 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `km_suicide_down` is not defined
 - Key `km_suicide_finished_off` is not defined
 - Key `tt_desc` is not defined
+- Key `vaccine_syringe_desc` is not defined
 - Key `create_team_force_start` is not defined
 - Key `create_team_ready` is not defined
 - Key `create_team_not_ready` is not defined
+- Key `partners` is not defined
+- Key `username_placeholder` is not defined
+- Key `msg_contact` is not defined
+- Key `power_vest` is not defined
+- Key `power_helmet` is not defined
+- Key `power_pack` is not defined
+- Key `barrel_explosion` is not defined
+- Key `stove_explosion` is not defined
+- Key `fireplace_explosion` is not defined
+- Key `control_panel_explosion` is not defined
+- Key `super_barrel_explosion` is not defined
+- Key `small_refinery_barrel_explosion` is not defined
+- Key `large_refinery_barrel_explosion` is not defined
+- Key `silo_explosion` is not defined
+- Key `propane_tank_explosion` is not defined
+- Key `firework_launcher_explosion` is not defined
+- Key `seed_explosion` is not defined
+- Key `coal_explosion` is not defined
+- Key `frag_grenade_explosion` is not defined
+- Key `confetti_grenade_explosion` is not defined
+- Key `pumpkin_explosion` is not defined
 - Key `region_ea` is not defined
 - Key `region_oc` is not defined
-- Key `vaccine_syringe_desc` is not defined
+- Key `region_1v1` is not defined
+- Key `region_ea1v1` is not defined
+- Key `region_test` is not defined
 - Key `second_wind` is not defined
 - Key `second_wind_desc` is not defined
 - Key `flechettes` is not defined
@@ -370,11 +436,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `thermal_goggles_desc` is not defined
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
-- Key `partners` is not defined
-- Key `username_placeholder` is not defined
-- Key `msg_contact` is not defined
 
-## 🇩🇪 Deutsch (68% Complete) - de.hjson
+## 🇩🇪 Deutsch (64% Complete) - de.hjson
 
 ### Invalid Keys
 
@@ -423,9 +486,33 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `km_saw_kill_you` is not defined
 - Key `km_saw_down_you` is not defined
 - Key `tt_desc` is not defined
+- Key `vaccine_syringe_desc` is not defined
+- Key `partners` is not defined
+- Key `username_placeholder` is not defined
+- Key `msg_contact` is not defined
+- Key `power_vest` is not defined
+- Key `power_helmet` is not defined
+- Key `power_pack` is not defined
+- Key `barrel_explosion` is not defined
+- Key `stove_explosion` is not defined
+- Key `fireplace_explosion` is not defined
+- Key `control_panel_explosion` is not defined
+- Key `super_barrel_explosion` is not defined
+- Key `small_refinery_barrel_explosion` is not defined
+- Key `large_refinery_barrel_explosion` is not defined
+- Key `silo_explosion` is not defined
+- Key `propane_tank_explosion` is not defined
+- Key `firework_launcher_explosion` is not defined
+- Key `seed_explosion` is not defined
+- Key `coal_explosion` is not defined
+- Key `frag_grenade_explosion` is not defined
+- Key `confetti_grenade_explosion` is not defined
+- Key `pumpkin_explosion` is not defined
 - Key `region_ea` is not defined
 - Key `region_oc` is not defined
-- Key `vaccine_syringe_desc` is not defined
+- Key `region_1v1` is not defined
+- Key `region_ea1v1` is not defined
+- Key `region_test` is not defined
 - Key `second_wind` is not defined
 - Key `second_wind_desc` is not defined
 - Key `flechettes` is not defined
@@ -504,9 +591,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `thermal_goggles_desc` is not defined
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
-- Key `partners` is not defined
-- Key `username_placeholder` is not defined
-- Key `msg_contact` is not defined
 
 ## 🇬🇧 English (100% Complete) - en.hjson
 
@@ -514,7 +598,7 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### (No Undefined Keys)
 
-## 🇪🇸 Español (64% Complete) - es.hjson
+## 🇪🇸 Español (61% Complete) - es.hjson
 
 ### Invalid Keys
 
@@ -576,11 +660,35 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `km_suicide_down` is not defined
 - Key `km_suicide_finished_off` is not defined
 - Key `tt_desc` is not defined
+- Key `vaccine_syringe_desc` is not defined
 - Key `create_team_force_start` is not defined
 - Key `create_team_not_ready` is not defined
+- Key `partners` is not defined
+- Key `username_placeholder` is not defined
+- Key `msg_contact` is not defined
+- Key `power_vest` is not defined
+- Key `power_helmet` is not defined
+- Key `power_pack` is not defined
+- Key `barrel_explosion` is not defined
+- Key `stove_explosion` is not defined
+- Key `fireplace_explosion` is not defined
+- Key `control_panel_explosion` is not defined
+- Key `super_barrel_explosion` is not defined
+- Key `small_refinery_barrel_explosion` is not defined
+- Key `large_refinery_barrel_explosion` is not defined
+- Key `silo_explosion` is not defined
+- Key `propane_tank_explosion` is not defined
+- Key `firework_launcher_explosion` is not defined
+- Key `seed_explosion` is not defined
+- Key `coal_explosion` is not defined
+- Key `frag_grenade_explosion` is not defined
+- Key `confetti_grenade_explosion` is not defined
+- Key `pumpkin_explosion` is not defined
 - Key `region_ea` is not defined
 - Key `region_oc` is not defined
-- Key `vaccine_syringe_desc` is not defined
+- Key `region_1v1` is not defined
+- Key `region_ea1v1` is not defined
+- Key `region_test` is not defined
 - Key `second_wind` is not defined
 - Key `second_wind_desc` is not defined
 - Key `flechettes` is not defined
@@ -659,11 +767,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `thermal_goggles_desc` is not defined
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
-- Key `partners` is not defined
-- Key `username_placeholder` is not defined
-- Key `msg_contact` is not defined
 
-## 🇪🇪 eesti (90% Complete) - et.hjson
+## 🇪🇪 eesti (86% Complete) - et.hjson
 
 ### Invalid Keys
 
@@ -837,7 +942,29 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `kf_saw_down` is not defined
 - Key `km_saw_kill_you` is not defined
 - Key `km_saw_down_you` is not defined
+- Key `msg_contact` is not defined
+- Key `power_vest` is not defined
+- Key `power_helmet` is not defined
+- Key `power_pack` is not defined
+- Key `barrel_explosion` is not defined
+- Key `stove_explosion` is not defined
+- Key `fireplace_explosion` is not defined
+- Key `control_panel_explosion` is not defined
+- Key `super_barrel_explosion` is not defined
+- Key `small_refinery_barrel_explosion` is not defined
+- Key `large_refinery_barrel_explosion` is not defined
+- Key `silo_explosion` is not defined
+- Key `propane_tank_explosion` is not defined
+- Key `firework_launcher_explosion` is not defined
+- Key `seed_explosion` is not defined
+- Key `coal_explosion` is not defined
+- Key `frag_grenade_explosion` is not defined
+- Key `confetti_grenade_explosion` is not defined
+- Key `pumpkin_explosion` is not defined
 - Key `region_ea` is not defined
+- Key `region_1v1` is not defined
+- Key `region_ea1v1` is not defined
+- Key `region_test` is not defined
 - Key `loot_baron` is not defined
 - Key `loot_baron_desc` is not defined
 - Key `overclocked` is not defined
@@ -859,15 +986,36 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `thermal_goggles_desc` is not defined
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
-- Key `msg_contact` is not defined
 
-## 🇮🇷 فارسی (97% Complete) - fa.hjson
+## 🇮🇷 فارسی (92% Complete) - fa.hjson
 
 ### (No Invalid Keys)
 
 ### Undefined Keys
 
 - Key `bindings_use_consumable vaccine_syringe` is not defined
+- Key `msg_contact` is not defined
+- Key `power_vest` is not defined
+- Key `power_helmet` is not defined
+- Key `power_pack` is not defined
+- Key `barrel_explosion` is not defined
+- Key `stove_explosion` is not defined
+- Key `fireplace_explosion` is not defined
+- Key `control_panel_explosion` is not defined
+- Key `super_barrel_explosion` is not defined
+- Key `small_refinery_barrel_explosion` is not defined
+- Key `large_refinery_barrel_explosion` is not defined
+- Key `silo_explosion` is not defined
+- Key `propane_tank_explosion` is not defined
+- Key `firework_launcher_explosion` is not defined
+- Key `seed_explosion` is not defined
+- Key `coal_explosion` is not defined
+- Key `frag_grenade_explosion` is not defined
+- Key `confetti_grenade_explosion` is not defined
+- Key `pumpkin_explosion` is not defined
+- Key `region_1v1` is not defined
+- Key `region_ea1v1` is not defined
+- Key `region_test` is not defined
 - Key `overclocked` is not defined
 - Key `overclocked_desc` is not defined
 - Key `reflective_rounds` is not defined
@@ -878,9 +1026,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `butterfingers_desc` is not defined
 - Key `overweight` is not defined
 - Key `overweight_desc` is not defined
-- Key `msg_contact` is not defined
 
-## 🇫🇮 suomi (63% Complete) - fi.hjson
+## 🇫🇮 suomi (60% Complete) - fi.hjson
 
 ### Invalid Keys
 
@@ -947,11 +1094,35 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `km_suicide_down` is not defined
 - Key `km_suicide_finished_off` is not defined
 - Key `tt_desc` is not defined
+- Key `vaccine_syringe_desc` is not defined
 - Key `create_team_force_start` is not defined
 - Key `create_team_not_ready` is not defined
+- Key `partners` is not defined
+- Key `username_placeholder` is not defined
+- Key `msg_contact` is not defined
+- Key `power_vest` is not defined
+- Key `power_helmet` is not defined
+- Key `power_pack` is not defined
+- Key `barrel_explosion` is not defined
+- Key `stove_explosion` is not defined
+- Key `fireplace_explosion` is not defined
+- Key `control_panel_explosion` is not defined
+- Key `super_barrel_explosion` is not defined
+- Key `small_refinery_barrel_explosion` is not defined
+- Key `large_refinery_barrel_explosion` is not defined
+- Key `silo_explosion` is not defined
+- Key `propane_tank_explosion` is not defined
+- Key `firework_launcher_explosion` is not defined
+- Key `seed_explosion` is not defined
+- Key `coal_explosion` is not defined
+- Key `frag_grenade_explosion` is not defined
+- Key `confetti_grenade_explosion` is not defined
+- Key `pumpkin_explosion` is not defined
 - Key `region_ea` is not defined
 - Key `region_oc` is not defined
-- Key `vaccine_syringe_desc` is not defined
+- Key `region_1v1` is not defined
+- Key `region_ea1v1` is not defined
+- Key `region_test` is not defined
 - Key `second_wind` is not defined
 - Key `second_wind_desc` is not defined
 - Key `flechettes` is not defined
@@ -1030,11 +1201,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `thermal_goggles_desc` is not defined
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
-- Key `partners` is not defined
-- Key `username_placeholder` is not defined
-- Key `msg_contact` is not defined
 
-## 🇫🇷 Français (93% Complete) - fr.hjson
+## 🇫🇷 Français (88% Complete) - fr.hjson
 
 ### Invalid Keys
 
@@ -1060,8 +1228,30 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `km_saw_kill_you` is not defined
 - Key `km_saw_down_you` is not defined
 - Key `tt_desc` is not defined
-- Key `region_ea` is not defined
 - Key `vaccine_syringe_desc` is not defined
+- Key `msg_contact` is not defined
+- Key `power_vest` is not defined
+- Key `power_helmet` is not defined
+- Key `power_pack` is not defined
+- Key `barrel_explosion` is not defined
+- Key `stove_explosion` is not defined
+- Key `fireplace_explosion` is not defined
+- Key `control_panel_explosion` is not defined
+- Key `super_barrel_explosion` is not defined
+- Key `small_refinery_barrel_explosion` is not defined
+- Key `large_refinery_barrel_explosion` is not defined
+- Key `silo_explosion` is not defined
+- Key `propane_tank_explosion` is not defined
+- Key `firework_launcher_explosion` is not defined
+- Key `seed_explosion` is not defined
+- Key `coal_explosion` is not defined
+- Key `frag_grenade_explosion` is not defined
+- Key `confetti_grenade_explosion` is not defined
+- Key `pumpkin_explosion` is not defined
+- Key `region_ea` is not defined
+- Key `region_1v1` is not defined
+- Key `region_ea1v1` is not defined
+- Key `region_test` is not defined
 - Key `loot_baron` is not defined
 - Key `loot_baron_desc` is not defined
 - Key `overclocked` is not defined
@@ -1075,15 +1265,38 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `butterfingers_desc` is not defined
 - Key `overweight` is not defined
 - Key `overweight_desc` is not defined
-- Key `msg_contact` is not defined
 
-## 🇬🇷 Ελληνικά (81% Complete) - gr.hjson
+## 🇬🇷 Ελληνικά (76% Complete) - gr.hjson
 
 ### (No Invalid Keys)
 
 ### Undefined Keys
 
 - Key `bindings_use_consumable vaccine_syringe` is not defined
+- Key `partners` is not defined
+- Key `username_placeholder` is not defined
+- Key `msg_contact` is not defined
+- Key `power_vest` is not defined
+- Key `power_helmet` is not defined
+- Key `power_pack` is not defined
+- Key `barrel_explosion` is not defined
+- Key `stove_explosion` is not defined
+- Key `fireplace_explosion` is not defined
+- Key `control_panel_explosion` is not defined
+- Key `super_barrel_explosion` is not defined
+- Key `small_refinery_barrel_explosion` is not defined
+- Key `large_refinery_barrel_explosion` is not defined
+- Key `silo_explosion` is not defined
+- Key `propane_tank_explosion` is not defined
+- Key `firework_launcher_explosion` is not defined
+- Key `seed_explosion` is not defined
+- Key `coal_explosion` is not defined
+- Key `frag_grenade_explosion` is not defined
+- Key `confetti_grenade_explosion` is not defined
+- Key `pumpkin_explosion` is not defined
+- Key `region_1v1` is not defined
+- Key `region_ea1v1` is not defined
+- Key `region_test` is not defined
 - Key `second_wind_desc` is not defined
 - Key `flechettes` is not defined
 - Key `flechettes_desc` is not defined
@@ -1155,11 +1368,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `thermal_goggles_desc` is not defined
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
-- Key `partners` is not defined
-- Key `username_placeholder` is not defined
-- Key `msg_contact` is not defined
 
-## 🇭🇰 🇲🇴 廣東話(香港/澳門) (59% Complete) - hk_mo.hjson
+## 🇭🇰 🇲🇴 廣東話(香港/澳門) (56% Complete) - hk_mo.hjson
 
 ### Invalid Keys
 
@@ -1240,12 +1450,36 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `km_suicide_down` is not defined
 - Key `km_suicide_finished_off` is not defined
 - Key `tt_desc` is not defined
+- Key `vaccine_syringe_desc` is not defined
 - Key `create_team_force_start` is not defined
 - Key `create_team_ready` is not defined
 - Key `create_team_not_ready` is not defined
+- Key `partners` is not defined
+- Key `username_placeholder` is not defined
+- Key `msg_contact` is not defined
+- Key `power_vest` is not defined
+- Key `power_helmet` is not defined
+- Key `power_pack` is not defined
+- Key `barrel_explosion` is not defined
+- Key `stove_explosion` is not defined
+- Key `fireplace_explosion` is not defined
+- Key `control_panel_explosion` is not defined
+- Key `super_barrel_explosion` is not defined
+- Key `small_refinery_barrel_explosion` is not defined
+- Key `large_refinery_barrel_explosion` is not defined
+- Key `silo_explosion` is not defined
+- Key `propane_tank_explosion` is not defined
+- Key `firework_launcher_explosion` is not defined
+- Key `seed_explosion` is not defined
+- Key `coal_explosion` is not defined
+- Key `frag_grenade_explosion` is not defined
+- Key `confetti_grenade_explosion` is not defined
+- Key `pumpkin_explosion` is not defined
 - Key `region_ea` is not defined
 - Key `region_oc` is not defined
-- Key `vaccine_syringe_desc` is not defined
+- Key `region_1v1` is not defined
+- Key `region_ea1v1` is not defined
+- Key `region_test` is not defined
 - Key `second_wind` is not defined
 - Key `second_wind_desc` is not defined
 - Key `flechettes` is not defined
@@ -1324,11 +1558,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `thermal_goggles_desc` is not defined
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
-- Key `partners` is not defined
-- Key `username_placeholder` is not defined
-- Key `msg_contact` is not defined
 
-## 🇭🇺 Magyar (90% Complete) - hu.hjson
+## 🇭🇺 Magyar (85% Complete) - hu.hjson
 
 ### Invalid Keys
 
@@ -1350,7 +1581,31 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `kf_saw_down` is not defined
 - Key `km_saw_kill_you` is not defined
 - Key `km_saw_down_you` is not defined
+- Key `partners` is not defined
+- Key `username_placeholder` is not defined
+- Key `msg_contact` is not defined
+- Key `power_vest` is not defined
+- Key `power_helmet` is not defined
+- Key `power_pack` is not defined
+- Key `barrel_explosion` is not defined
+- Key `stove_explosion` is not defined
+- Key `fireplace_explosion` is not defined
+- Key `control_panel_explosion` is not defined
+- Key `super_barrel_explosion` is not defined
+- Key `small_refinery_barrel_explosion` is not defined
+- Key `large_refinery_barrel_explosion` is not defined
+- Key `silo_explosion` is not defined
+- Key `propane_tank_explosion` is not defined
+- Key `firework_launcher_explosion` is not defined
+- Key `seed_explosion` is not defined
+- Key `coal_explosion` is not defined
+- Key `frag_grenade_explosion` is not defined
+- Key `confetti_grenade_explosion` is not defined
+- Key `pumpkin_explosion` is not defined
 - Key `region_ea` is not defined
+- Key `region_1v1` is not defined
+- Key `region_ea1v1` is not defined
+- Key `region_test` is not defined
 - Key `loot_baron` is not defined
 - Key `loot_baron_desc` is not defined
 - Key `overclocked` is not defined
@@ -1372,11 +1627,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `thermal_goggles_desc` is not defined
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
-- Key `partners` is not defined
-- Key `username_placeholder` is not defined
-- Key `msg_contact` is not defined
 
-## 🇮🇹 Italiano (58% Complete) - it.hjson
+## 🇮🇹 Italiano (55% Complete) - it.hjson
 
 ### Invalid Keys
 
@@ -1470,12 +1722,36 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `km_suicide_down` is not defined
 - Key `km_suicide_finished_off` is not defined
 - Key `tt_desc` is not defined
+- Key `vaccine_syringe_desc` is not defined
 - Key `create_team_force_start` is not defined
 - Key `create_team_ready` is not defined
 - Key `create_team_not_ready` is not defined
+- Key `partners` is not defined
+- Key `username_placeholder` is not defined
+- Key `msg_contact` is not defined
+- Key `power_vest` is not defined
+- Key `power_helmet` is not defined
+- Key `power_pack` is not defined
+- Key `barrel_explosion` is not defined
+- Key `stove_explosion` is not defined
+- Key `fireplace_explosion` is not defined
+- Key `control_panel_explosion` is not defined
+- Key `super_barrel_explosion` is not defined
+- Key `small_refinery_barrel_explosion` is not defined
+- Key `large_refinery_barrel_explosion` is not defined
+- Key `silo_explosion` is not defined
+- Key `propane_tank_explosion` is not defined
+- Key `firework_launcher_explosion` is not defined
+- Key `seed_explosion` is not defined
+- Key `coal_explosion` is not defined
+- Key `frag_grenade_explosion` is not defined
+- Key `confetti_grenade_explosion` is not defined
+- Key `pumpkin_explosion` is not defined
 - Key `region_ea` is not defined
 - Key `region_oc` is not defined
-- Key `vaccine_syringe_desc` is not defined
+- Key `region_1v1` is not defined
+- Key `region_ea1v1` is not defined
+- Key `region_test` is not defined
 - Key `second_wind` is not defined
 - Key `second_wind_desc` is not defined
 - Key `flechettes` is not defined
@@ -1554,16 +1830,11 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `thermal_goggles_desc` is not defined
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
-- Key `partners` is not defined
-- Key `username_placeholder` is not defined
-- Key `msg_contact` is not defined
 
-## 🇯🇵 日本語 (99% Complete) - jp.hjson
+## 🇯🇵 日本語 (100% Complete) - jp.hjson
 
 ### Invalid Keys
 
-- Key `bdg_lead_designr` is not a valid key
-- Key `bdg_boostr` is not a valid key
 - Key `emote_happy_face` is not a valid key
 - Key `emote_sad_face` is not a valid key
 - Key `emote_thumbs_up` is not a valid key
@@ -1704,6 +1975,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `gingerbread` is not a valid key
 - Key `gold_tie_event` is not a valid key
 - Key `greenhorn` is not a valid key
+- Key `groundskeeper` is not a valid key
 - Key `gunmetal` is not a valid key
 - Key `hazel_jumpsuit` is not a valid key
 - Key `henrys_little_helper` is not a valid key
@@ -1713,6 +1985,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `lobotomy` is not a valid key
 - Key `lumberjack` is not a valid key
 - Key `mango` is not a valid key
+- Key `medical_suit` is not a valid key
 - Key `military_camo` is not a valid key
 - Key `nebula` is not a valid key
 - Key `no_kil_pls` is not a valid key
@@ -1778,9 +2051,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `switchback` is not a valid key
 - Key `black_hill` is not a valid key
 - Key `the_grove` is not a valid key
-- Key `region_1v1` is not a valid key
-- Key `region_ea1v1` is not a valid key
-- Key `region_test` is not a valid key
 - Key `fps` is not a valid key
 - Key `ping` is not a valid key
 - Key `special_developer_cheats` is not a valid key
@@ -1795,13 +2065,9 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `time_minute` is not a valid key
 - Key `time_second` is not a valid key
 
-### Undefined Keys
+### (No Undefined Keys)
 
-- Key `bindings_use_consumable vaccine_syringe` is not defined
-- Key `reflective_rounds` is not defined
-- Key `reflective_rounds_desc` is not defined
-
-## 🇱🇹 Lietuvių (60% Complete) - lt.hjson
+## 🇱🇹 Lietuvių (57% Complete) - lt.hjson
 
 ### Invalid Keys
 
@@ -1878,12 +2144,36 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `km_suicide_down` is not defined
 - Key `km_suicide_finished_off` is not defined
 - Key `tt_desc` is not defined
+- Key `vaccine_syringe_desc` is not defined
 - Key `create_team_force_start` is not defined
 - Key `create_team_ready` is not defined
 - Key `create_team_not_ready` is not defined
+- Key `partners` is not defined
+- Key `username_placeholder` is not defined
+- Key `msg_contact` is not defined
+- Key `power_vest` is not defined
+- Key `power_helmet` is not defined
+- Key `power_pack` is not defined
+- Key `barrel_explosion` is not defined
+- Key `stove_explosion` is not defined
+- Key `fireplace_explosion` is not defined
+- Key `control_panel_explosion` is not defined
+- Key `super_barrel_explosion` is not defined
+- Key `small_refinery_barrel_explosion` is not defined
+- Key `large_refinery_barrel_explosion` is not defined
+- Key `silo_explosion` is not defined
+- Key `propane_tank_explosion` is not defined
+- Key `firework_launcher_explosion` is not defined
+- Key `seed_explosion` is not defined
+- Key `coal_explosion` is not defined
+- Key `frag_grenade_explosion` is not defined
+- Key `confetti_grenade_explosion` is not defined
+- Key `pumpkin_explosion` is not defined
 - Key `region_ea` is not defined
 - Key `region_oc` is not defined
-- Key `vaccine_syringe_desc` is not defined
+- Key `region_1v1` is not defined
+- Key `region_ea1v1` is not defined
+- Key `region_test` is not defined
 - Key `second_wind` is not defined
 - Key `second_wind_desc` is not defined
 - Key `flechettes` is not defined
@@ -1962,11 +2252,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `thermal_goggles_desc` is not defined
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
-- Key `partners` is not defined
-- Key `username_placeholder` is not defined
-- Key `msg_contact` is not defined
 
-## 🇱🇻 Latviešu (60% Complete) - lv.hjson
+## 🇱🇻 Latviešu (57% Complete) - lv.hjson
 
 ### Invalid Keys
 
@@ -2043,12 +2330,36 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `km_suicide_down` is not defined
 - Key `km_suicide_finished_off` is not defined
 - Key `tt_desc` is not defined
+- Key `vaccine_syringe_desc` is not defined
 - Key `create_team_force_start` is not defined
 - Key `create_team_ready` is not defined
 - Key `create_team_not_ready` is not defined
+- Key `partners` is not defined
+- Key `username_placeholder` is not defined
+- Key `msg_contact` is not defined
+- Key `power_vest` is not defined
+- Key `power_helmet` is not defined
+- Key `power_pack` is not defined
+- Key `barrel_explosion` is not defined
+- Key `stove_explosion` is not defined
+- Key `fireplace_explosion` is not defined
+- Key `control_panel_explosion` is not defined
+- Key `super_barrel_explosion` is not defined
+- Key `small_refinery_barrel_explosion` is not defined
+- Key `large_refinery_barrel_explosion` is not defined
+- Key `silo_explosion` is not defined
+- Key `propane_tank_explosion` is not defined
+- Key `firework_launcher_explosion` is not defined
+- Key `seed_explosion` is not defined
+- Key `coal_explosion` is not defined
+- Key `frag_grenade_explosion` is not defined
+- Key `confetti_grenade_explosion` is not defined
+- Key `pumpkin_explosion` is not defined
 - Key `region_ea` is not defined
 - Key `region_oc` is not defined
-- Key `vaccine_syringe_desc` is not defined
+- Key `region_1v1` is not defined
+- Key `region_ea1v1` is not defined
+- Key `region_test` is not defined
 - Key `second_wind` is not defined
 - Key `second_wind_desc` is not defined
 - Key `flechettes` is not defined
@@ -2127,11 +2438,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `thermal_goggles_desc` is not defined
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
-- Key `partners` is not defined
-- Key `username_placeholder` is not defined
-- Key `msg_contact` is not defined
 
-## 🇳🇱 Nederlands (99% Complete) - nl.hjson
+## 🇳🇱 Nederlands (94% Complete) - nl.hjson
 
 ### Invalid Keys
 
@@ -2140,10 +2448,31 @@ This file is a report of all errors and missing keys in the translation files of
 ### Undefined Keys
 
 - Key `bindings_use_consumable vaccine_syringe` is not defined
+- Key `power_vest` is not defined
+- Key `power_helmet` is not defined
+- Key `power_pack` is not defined
+- Key `barrel_explosion` is not defined
+- Key `stove_explosion` is not defined
+- Key `fireplace_explosion` is not defined
+- Key `control_panel_explosion` is not defined
+- Key `super_barrel_explosion` is not defined
+- Key `small_refinery_barrel_explosion` is not defined
+- Key `large_refinery_barrel_explosion` is not defined
+- Key `silo_explosion` is not defined
+- Key `propane_tank_explosion` is not defined
+- Key `firework_launcher_explosion` is not defined
+- Key `seed_explosion` is not defined
+- Key `coal_explosion` is not defined
+- Key `frag_grenade_explosion` is not defined
+- Key `confetti_grenade_explosion` is not defined
+- Key `pumpkin_explosion` is not defined
+- Key `region_1v1` is not defined
+- Key `region_ea1v1` is not defined
+- Key `region_test` is not defined
 - Key `reflective_rounds` is not defined
 - Key `reflective_rounds_desc` is not defined
 
-## 🇵🇱 Polski (63% Complete) - pl.hjson
+## 🇵🇱 Polski (60% Complete) - pl.hjson
 
 ### Invalid Keys
 
@@ -2210,11 +2539,35 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `km_suicide_down` is not defined
 - Key `km_suicide_finished_off` is not defined
 - Key `tt_desc` is not defined
+- Key `vaccine_syringe_desc` is not defined
 - Key `create_team_force_start` is not defined
 - Key `create_team_not_ready` is not defined
+- Key `partners` is not defined
+- Key `username_placeholder` is not defined
+- Key `msg_contact` is not defined
+- Key `power_vest` is not defined
+- Key `power_helmet` is not defined
+- Key `power_pack` is not defined
+- Key `barrel_explosion` is not defined
+- Key `stove_explosion` is not defined
+- Key `fireplace_explosion` is not defined
+- Key `control_panel_explosion` is not defined
+- Key `super_barrel_explosion` is not defined
+- Key `small_refinery_barrel_explosion` is not defined
+- Key `large_refinery_barrel_explosion` is not defined
+- Key `silo_explosion` is not defined
+- Key `propane_tank_explosion` is not defined
+- Key `firework_launcher_explosion` is not defined
+- Key `seed_explosion` is not defined
+- Key `coal_explosion` is not defined
+- Key `frag_grenade_explosion` is not defined
+- Key `confetti_grenade_explosion` is not defined
+- Key `pumpkin_explosion` is not defined
 - Key `region_ea` is not defined
 - Key `region_oc` is not defined
-- Key `vaccine_syringe_desc` is not defined
+- Key `region_1v1` is not defined
+- Key `region_ea1v1` is not defined
+- Key `region_test` is not defined
 - Key `second_wind` is not defined
 - Key `second_wind_desc` is not defined
 - Key `flechettes` is not defined
@@ -2293,11 +2646,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `thermal_goggles_desc` is not defined
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
-- Key `partners` is not defined
-- Key `username_placeholder` is not defined
-- Key `msg_contact` is not defined
 
-## 🎀 Cute Engwish (67% Complete) - qen.hjson
+## 🎀 Cute Engwish (63% Complete) - qen.hjson
 
 ### Invalid Keys
 
@@ -2349,11 +2699,35 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `km_suicide_down` is not defined
 - Key `km_suicide_finished_off` is not defined
 - Key `tt_desc` is not defined
+- Key `vaccine_syringe_desc` is not defined
 - Key `create_team_force_start` is not defined
 - Key `create_team_not_ready` is not defined
+- Key `partners` is not defined
+- Key `username_placeholder` is not defined
+- Key `msg_contact` is not defined
+- Key `power_vest` is not defined
+- Key `power_helmet` is not defined
+- Key `power_pack` is not defined
+- Key `barrel_explosion` is not defined
+- Key `stove_explosion` is not defined
+- Key `fireplace_explosion` is not defined
+- Key `control_panel_explosion` is not defined
+- Key `super_barrel_explosion` is not defined
+- Key `small_refinery_barrel_explosion` is not defined
+- Key `large_refinery_barrel_explosion` is not defined
+- Key `silo_explosion` is not defined
+- Key `propane_tank_explosion` is not defined
+- Key `firework_launcher_explosion` is not defined
+- Key `seed_explosion` is not defined
+- Key `coal_explosion` is not defined
+- Key `frag_grenade_explosion` is not defined
+- Key `confetti_grenade_explosion` is not defined
+- Key `pumpkin_explosion` is not defined
 - Key `region_ea` is not defined
 - Key `region_oc` is not defined
-- Key `vaccine_syringe_desc` is not defined
+- Key `region_1v1` is not defined
+- Key `region_ea1v1` is not defined
+- Key `region_test` is not defined
 - Key `second_wind` is not defined
 - Key `second_wind_desc` is not defined
 - Key `flechettes` is not defined
@@ -2432,28 +2806,43 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `thermal_goggles_desc` is not defined
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
-- Key `partners` is not defined
-- Key `username_placeholder` is not defined
-- Key `msg_contact` is not defined
 
-## 🇷🇴 Română (99% Complete) - ro.hjson
+## 🇷🇴 Română (94% Complete) - ro.hjson
 
 ### (No Invalid Keys)
 
 ### Undefined Keys
 
 - Key `bindings_use_consumable vaccine_syringe` is not defined
+- Key `power_vest` is not defined
+- Key `power_helmet` is not defined
+- Key `power_pack` is not defined
+- Key `barrel_explosion` is not defined
+- Key `stove_explosion` is not defined
+- Key `fireplace_explosion` is not defined
+- Key `control_panel_explosion` is not defined
+- Key `super_barrel_explosion` is not defined
+- Key `small_refinery_barrel_explosion` is not defined
+- Key `large_refinery_barrel_explosion` is not defined
+- Key `silo_explosion` is not defined
+- Key `propane_tank_explosion` is not defined
+- Key `firework_launcher_explosion` is not defined
+- Key `seed_explosion` is not defined
+- Key `coal_explosion` is not defined
+- Key `frag_grenade_explosion` is not defined
+- Key `confetti_grenade_explosion` is not defined
+- Key `pumpkin_explosion` is not defined
+- Key `region_1v1` is not defined
+- Key `region_ea1v1` is not defined
+- Key `region_test` is not defined
 - Key `reflective_rounds` is not defined
 - Key `reflective_rounds_desc` is not defined
 
-## 🇷🇺 Русский (94% Complete) - ru.hjson
+## 🇷🇺 Русский (90% Complete) - ru.hjson
 
 ### Invalid Keys
 
 - Key `create_team_waiting` is not a valid key
-- Key `power_helmet` is not a valid key
-- Key `power_vest` is not a valid key
-- Key `power_pack` is not a valid key
 - Key `handsaw` is not a valid key
 
 ### Undefined Keys
@@ -2472,16 +2861,34 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `km_saw_kill_you` is not defined
 - Key `km_saw_down_you` is not defined
 - Key `tt_desc` is not defined
-- Key `region_ea` is not defined
 - Key `vaccine_syringe_desc` is not defined
+- Key `msg_contact` is not defined
+- Key `barrel_explosion` is not defined
+- Key `stove_explosion` is not defined
+- Key `fireplace_explosion` is not defined
+- Key `control_panel_explosion` is not defined
+- Key `super_barrel_explosion` is not defined
+- Key `small_refinery_barrel_explosion` is not defined
+- Key `large_refinery_barrel_explosion` is not defined
+- Key `silo_explosion` is not defined
+- Key `propane_tank_explosion` is not defined
+- Key `firework_launcher_explosion` is not defined
+- Key `seed_explosion` is not defined
+- Key `coal_explosion` is not defined
+- Key `frag_grenade_explosion` is not defined
+- Key `confetti_grenade_explosion` is not defined
+- Key `pumpkin_explosion` is not defined
+- Key `region_ea` is not defined
+- Key `region_1v1` is not defined
+- Key `region_ea1v1` is not defined
+- Key `region_test` is not defined
 - Key `loot_baron` is not defined
 - Key `loot_baron_desc` is not defined
 - Key `reflective_rounds` is not defined
 - Key `reflective_rounds_desc` is not defined
 - Key `baby_plumpkin_pie_desc` is not defined
-- Key `msg_contact` is not defined
 
-## 🇮🇳 தமிழ் (95% Complete) - ta.hjson
+## 🇮🇳 தமிழ் (90% Complete) - ta.hjson
 
 ### Invalid Keys
 
@@ -2497,6 +2904,28 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `interact_recorder_interactable` is not defined
 - Key `bindings_use_consumable vaccine_syringe` is not defined
 - Key `kf_impact_of` is not defined
+- Key `msg_contact` is not defined
+- Key `power_vest` is not defined
+- Key `power_helmet` is not defined
+- Key `power_pack` is not defined
+- Key `barrel_explosion` is not defined
+- Key `stove_explosion` is not defined
+- Key `fireplace_explosion` is not defined
+- Key `control_panel_explosion` is not defined
+- Key `super_barrel_explosion` is not defined
+- Key `small_refinery_barrel_explosion` is not defined
+- Key `large_refinery_barrel_explosion` is not defined
+- Key `silo_explosion` is not defined
+- Key `propane_tank_explosion` is not defined
+- Key `firework_launcher_explosion` is not defined
+- Key `seed_explosion` is not defined
+- Key `coal_explosion` is not defined
+- Key `frag_grenade_explosion` is not defined
+- Key `confetti_grenade_explosion` is not defined
+- Key `pumpkin_explosion` is not defined
+- Key `region_1v1` is not defined
+- Key `region_ea1v1` is not defined
+- Key `region_test` is not defined
 - Key `berserker` is not defined
 - Key `berserker_desc` is not defined
 - Key `overclocked` is not defined
@@ -2512,9 +2941,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overweight` is not defined
 - Key `overweight_desc` is not defined
 - Key `experimental_forcefield_desc` is not defined
-- Key `msg_contact` is not defined
 
-## 🇹🇷 Turkısh (74% Complete) - tr.hjson
+## 🇹🇷 Turkısh (70% Complete) - tr.hjson
 
 ### Invalid Keys
 
@@ -2541,10 +2969,34 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `km_saw_kill_you` is not defined
 - Key `km_saw_down_you` is not defined
 - Key `tt_desc` is not defined
+- Key `vaccine_syringe_desc` is not defined
 - Key `create_team_force_start` is not defined
 - Key `create_team_not_ready` is not defined
+- Key `partners` is not defined
+- Key `username_placeholder` is not defined
+- Key `msg_contact` is not defined
+- Key `power_vest` is not defined
+- Key `power_helmet` is not defined
+- Key `power_pack` is not defined
+- Key `barrel_explosion` is not defined
+- Key `stove_explosion` is not defined
+- Key `fireplace_explosion` is not defined
+- Key `control_panel_explosion` is not defined
+- Key `super_barrel_explosion` is not defined
+- Key `small_refinery_barrel_explosion` is not defined
+- Key `large_refinery_barrel_explosion` is not defined
+- Key `silo_explosion` is not defined
+- Key `propane_tank_explosion` is not defined
+- Key `firework_launcher_explosion` is not defined
+- Key `seed_explosion` is not defined
+- Key `coal_explosion` is not defined
+- Key `frag_grenade_explosion` is not defined
+- Key `confetti_grenade_explosion` is not defined
+- Key `pumpkin_explosion` is not defined
 - Key `region_ea` is not defined
-- Key `vaccine_syringe_desc` is not defined
+- Key `region_1v1` is not defined
+- Key `region_ea1v1` is not defined
+- Key `region_test` is not defined
 - Key `second_wind` is not defined
 - Key `second_wind_desc` is not defined
 - Key `flechettes` is not defined
@@ -2623,11 +3075,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `thermal_goggles_desc` is not defined
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
-- Key `partners` is not defined
-- Key `username_placeholder` is not defined
-- Key `msg_contact` is not defined
 
-## 🇹🇼 中文（繁體） (70% Complete) - tw.hjson
+## 🇹🇼 中文（繁體） (66% Complete) - tw.hjson
 
 ### Invalid Keys
 
@@ -2667,10 +3116,34 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `km_suicide_down` is not defined
 - Key `km_suicide_finished_off` is not defined
 - Key `tt_desc` is not defined
+- Key `vaccine_syringe_desc` is not defined
 - Key `create_team_force_start` is not defined
 - Key `create_team_not_ready` is not defined
+- Key `partners` is not defined
+- Key `username_placeholder` is not defined
+- Key `msg_contact` is not defined
+- Key `power_vest` is not defined
+- Key `power_helmet` is not defined
+- Key `power_pack` is not defined
+- Key `barrel_explosion` is not defined
+- Key `stove_explosion` is not defined
+- Key `fireplace_explosion` is not defined
+- Key `control_panel_explosion` is not defined
+- Key `super_barrel_explosion` is not defined
+- Key `small_refinery_barrel_explosion` is not defined
+- Key `large_refinery_barrel_explosion` is not defined
+- Key `silo_explosion` is not defined
+- Key `propane_tank_explosion` is not defined
+- Key `firework_launcher_explosion` is not defined
+- Key `seed_explosion` is not defined
+- Key `coal_explosion` is not defined
+- Key `frag_grenade_explosion` is not defined
+- Key `confetti_grenade_explosion` is not defined
+- Key `pumpkin_explosion` is not defined
 - Key `region_ea` is not defined
-- Key `vaccine_syringe_desc` is not defined
+- Key `region_1v1` is not defined
+- Key `region_ea1v1` is not defined
+- Key `region_test` is not defined
 - Key `second_wind` is not defined
 - Key `second_wind_desc` is not defined
 - Key `flechettes` is not defined
@@ -2749,11 +3222,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `thermal_goggles_desc` is not defined
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
-- Key `partners` is not defined
-- Key `username_placeholder` is not defined
-- Key `msg_contact` is not defined
 
-## 🇻🇳 Tiếng Việt (91% Complete) - vi.hjson
+## 🇻🇳 Tiếng Việt (86% Complete) - vi.hjson
 
 ### Invalid Keys
 
@@ -2775,7 +3245,29 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `kf_saw_down` is not defined
 - Key `km_saw_kill_you` is not defined
 - Key `km_saw_down_you` is not defined
+- Key `msg_contact` is not defined
+- Key `power_vest` is not defined
+- Key `power_helmet` is not defined
+- Key `power_pack` is not defined
+- Key `barrel_explosion` is not defined
+- Key `stove_explosion` is not defined
+- Key `fireplace_explosion` is not defined
+- Key `control_panel_explosion` is not defined
+- Key `super_barrel_explosion` is not defined
+- Key `small_refinery_barrel_explosion` is not defined
+- Key `large_refinery_barrel_explosion` is not defined
+- Key `silo_explosion` is not defined
+- Key `propane_tank_explosion` is not defined
+- Key `firework_launcher_explosion` is not defined
+- Key `seed_explosion` is not defined
+- Key `coal_explosion` is not defined
+- Key `frag_grenade_explosion` is not defined
+- Key `confetti_grenade_explosion` is not defined
+- Key `pumpkin_explosion` is not defined
 - Key `region_ea` is not defined
+- Key `region_1v1` is not defined
+- Key `region_ea1v1` is not defined
+- Key `region_test` is not defined
 - Key `loot_baron` is not defined
 - Key `loot_baron_desc` is not defined
 - Key `overclocked` is not defined
@@ -2797,18 +3289,14 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `thermal_goggles_desc` is not defined
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
-- Key `msg_contact` is not defined
 
-## 🇨🇳 中文（简体） (100% Complete) - zh.hjson
+## 🇨🇳 中文（简体） (99% Complete) - zh.hjson
 
 ### Invalid Keys
 
 - Key `msg_lost_connection` is not a valid key
 - Key `create_team_waiting` is not a valid key
-- Key `power_vest` is not a valid key
 - Key `developr_vest` is not a valid key
-- Key `power_helmet` is not a valid key
-- Key `power_pack` is not a valid key
 - Key `destroyer_of_worlds` is not a valid key
 - Key `deathray` is not a valid key
 - Key `C4` is not a valid key
@@ -2920,20 +3408,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `emote_tomato` is not a valid key
 - Key `emote_logged` is not a valid key
 - Key `emote_sun_and_moon` is not a valid key
-- Key `barrel_explosion` is not a valid key
-- Key `confetti_grenade_explosion` is not a valid key
-- Key `control_panel_explosion` is not a valid key
-- Key `fireplace_explosion` is not a valid key
-- Key `firework_launcher_explosion` is not a valid key
-- Key `frag_grenade_explosion` is not a valid key
-- Key `large_refinery_barrel_explosion` is not a valid key
-- Key `propane_tank_explosion` is not a valid key
-- Key `silo_explosion` is not a valid key
-- Key `pumpkin_explosion` is not a valid key
-- Key `seed_explosion` is not a valid key
-- Key `small_refinery_barrel_explosion` is not a valid key
-- Key `stove_explosion` is not a valid key
-- Key `super_barrel_explosion` is not a valid key
 - Key `developr_swag` is not a valid key
 - Key `designr_swag` is not a valid key
 - Key `sound_designr_swag` is not a valid key
@@ -3029,5 +3503,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `time_minute` is not a valid key
 - Key `time_second` is not a valid key
 
-### (No Undefined Keys)
+### Undefined Keys
+
+- Key `coal_explosion` is not defined
+- Key `region_1v1` is not defined
+- Key `region_ea1v1` is not defined
+- Key `region_test` is not defined
 
