@@ -516,7 +516,10 @@ const maps = {
             outhouse: 5,
             porta_potty: 5,
             mobile_home: 8,
-            buoy: 14
+            buoy: 14,
+            hollow_log_1: 5,
+            hollow_log_2: 5,
+            hollow_log_3: 5
         },
         majorBuildings: ["armory", "lodge", "headquarters", "refinery"],
         quadBuildingLimit: {
@@ -532,7 +535,10 @@ const maps = {
             tent_1: 1,
             tent_2: 1,
             tent_3: 1,
-            tent_4: 1
+            tent_4: 1,
+            hollow_log_1: 3,
+            hollow_log_2: 3,
+            hollow_log_3: 3
         },
         obstacles: {
             big_oak_tree: 40,

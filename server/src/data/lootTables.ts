@@ -1033,7 +1033,8 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
         silly_guns: [
             { item: "revitalizer", weight: 0.33 },
             { item: "g17_scoped", weight: 0.33 },
-            { item: "firework_launcher", weight: 0.33 }
+            { item: "firework_launcher", weight: 0.33 },
+            { item: "545mm", weight: 0.005 }
         ],
         pumpkin_airdrop: [
             [{ table: "airdrop_equipment", weight: 1 }],
@@ -1044,7 +1045,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
                 { table: "airdrop_melee", weight: 1 },
                 { item: "steelfang", weight: 0.5 }
             ],
-            [{ table: "ammo", weight: 1 }],
+            [{ item: PerkIds.PlumpkinGamble, weight: 1 }],
             [{ table: "silly_guns", weight: 1 }],
             [
                 { item: "sm56", count: 3, weight: 1 },
@@ -1131,6 +1132,24 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { item: "mg5", weight: 0.005 },
             { item: "tango_51", weight: 0.004 },
             { item: "dual_deagle", weight: 0.003 }
+        ],
+        airdrop_crate: [
+            [{ table: "airdrop_equipment", weight: 1 }],
+            [{ table: "airdrop_scopes", weight: 1 }],
+            [{ table: "airdrop_healing_items", weight: 1 }],
+            [{ table: "airdrop_skins", weight: 1 }],
+            [{ table: "airdrop_melee", weight: 1 }],
+            [{ table: "ammo", weight: 1 }],
+            [{ table: "airdrop_guns", weight: 1 }],
+            [
+                { table: "fall_perks", weight: 0.25 },
+                { item: PerkIds.Costumed, weight: 0.25 },
+                { item: NullString, weight: 0.5 }
+            ],
+            [
+                { item: "frag_grenade", count: 3, weight: 2 },
+                { item: NullString, weight: 1 }
+            ]
         ],
         airdrop_guns: [
             { item: "mg36", weight: 1 },

@@ -409,6 +409,8 @@ const perks = [
             flint_crate: 0.75,
             aegis_crate: 0.75,
 
+            airdrop_crate: 0.1,
+
             baby_plumpkin: 0.01,
             plumpkin: 0.01,
             diseased_plumpkin: 0.01

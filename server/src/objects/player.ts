@@ -1925,6 +1925,15 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         // ! evil starts here
         // some perks need to perform setup when added
         switch (perkDef.idString) {
+            case PerkIds.PlumpkinGamble: { // AW DANG IT
+                this.removePerk(perk);
+
+                const halloweenPerks = Perks.definitions.filter(perkDef =>
+                    !perkDef.plumpkinGambleIgnore && perkDef.category === PerkCategories.Halloween
+                );
+                this.addPerk(pickRandomInArray(halloweenPerks));
+                break;
+            }
             case PerkIds.Costumed: {
                 const { choices } = PerkData[PerkIds.Costumed];
 
@@ -2567,15 +2576,6 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         // ! evil starts here
         for (const perk of this.perks) {
             switch (perk.idString) {
-                case PerkIds.PlumpkinGamble: { // AW DANG IT
-                    this.removePerk(perk);
-
-                    const halloweenPerks = Perks.definitions.filter(perkDef =>
-                        !perkDef.plumpkinGambleIgnore && perkDef.category === PerkCategories.Halloween
-                    );
-                    this.addPerk(pickRandomInArray(halloweenPerks));
-                    break;
-                }
                 case PerkIds.Lycanthropy: {
                     newModifiers.baseSpeed *= perk.speedMod;
                     newModifiers.maxHealth *= perk.healthMod;
