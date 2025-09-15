@@ -4,7 +4,7 @@
   "description": "An open-source 2D battle royale game inspired by surviv.io.",
   "scripts": {
     "build:client": "cd client && bun build:client",
-    "start": "cd server && bun start",
+    "start": "cd server && bun .",
     "dev": "bun -F '*' dev",
     "dev:client": "cd client && bun dev",
     "dev:server": "cd server && bun dev",
