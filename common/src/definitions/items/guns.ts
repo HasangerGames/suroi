@@ -2377,7 +2377,53 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
             }
         }
     },
-
+    {
+        idString: "ulr338",
+        name: "ULR-338",
+        defType: DefinitionType.Gun,
+        tier: Tier.S,
+        ammoType: "338lap",
+        ammoSpawnAmount: 5,
+        spawnScope: "16x_scope",
+        fireDelay: 2000,
+        switchDelay: 900,
+        speedMultiplier: 0.7,
+        cameraShake: {
+            duration: 500,
+            intensity: 20
+        },
+        recoilMultiplier: 0.65,
+        recoilDuration: 3200,
+        fireMode: FireMode.Single,
+        shotSpread: 0.1,
+        moveSpread: 0.7,
+        shootOnRelease: true,
+        length: 11.68,
+        casingParticles: [{
+            position: Vec(5, 0.2),
+            ejectionDelay: 900
+        }],
+        fists: {
+            left: Vec(90, 1),
+            right: Vec(40, 0),
+            rightZIndex: 4,
+            animationDuration: 100
+        },
+        image: { position: Vec(142.5, 0) },
+        gasParticles: gasParticlePresets.rifle,
+        capacity: 1,
+        reloadTime: 4.3,
+        ballistics: {
+            damage: 185,
+            obstacleMultiplier: 1.5,
+            speed: 0.45,
+            tracer: {
+                width: 2.5,
+                length: 4
+            },
+            range: 450
+        }
+    },
     //
     // Designated marksman rifles (DMRs)
     //
