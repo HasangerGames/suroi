@@ -522,6 +522,8 @@
 "overweight_desc": "Increased size."
 "enternal_magnetism": "Enternal Magnetism"
 "enternal_magnetism_desc": "Absorb nearby players' healthpoints."
+"weak_stomach": "Weak Stomach"
+"weak_stomach_desc": "Leave pools of vomit on the ground every 5 seconds.<br>Your weapon spread will also be increased."
 "infected": "Infected"
 "infected_desc": "Swaps to a random perk every 30 seconds.<br>Lose health every second.<br>Infect nearby players."
 "immunity": "Immunity"

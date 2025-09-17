@@ -894,6 +894,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                         .setFrame("_glow_")
                         .setScale(spriteScale)
                         .setAlpha(0.75)
+                        .setZIndex(-1.2)
                         .setTint(0xfc0303);
 
                     this.container.addChild(magneticFieldSprite);

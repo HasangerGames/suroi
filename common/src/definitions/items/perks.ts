@@ -73,6 +73,7 @@ export const enum PerkIds {
     Bloodthirst = "bloodthirst",
     PlumpkinBomb = "plumpkin_bomb",
     Shrouded = "shrouded",
+    EnternalMagnetism = "enternal_magnetism",
     ExperimentalTreatment = "experimental_treatment",
     Engorged = "engorged",
     BabyPlumpkinPie = "baby_plumpkin_pie",
@@ -84,7 +85,7 @@ export const enum PerkIds {
     PriorityTarget = "priority_target",
     Butterfingers = "butterfingers",
     Overweight = "overweight",
-    EnternalMagnetism = "enternal_magnetism",
+    WeakStomach = "weak_stomach",
 
     //
     // Infection
@@ -502,6 +503,18 @@ const perks = [
         depletion: 0.05,
         spriteScale: 1.5,
         minHealth: 5,
+        noDrop: true
+    },
+    {
+        idString: PerkIds.WeakStomach,
+        name: "Weak Stomach",
+        defType: DefinitionType.Perk,
+        category: PerkCategories.Halloween,
+        quality: PerkQualities.Negative,
+        updateInterval: 5e3, // ms
+        spreadIcrementMod: 1.00585,
+        decal: "vomit_pool",
+        emote: "vomiting_face",
         noDrop: true
     },
     //

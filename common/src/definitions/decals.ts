@@ -57,6 +57,12 @@ export const Decals = new ObjectDefinitions<DecalDefinition>([
         defType: DefinitionType.Decal,
         rotationMode: RotationMode.Full
     },
+    {
+        idString: "vomit_pool",
+        name: "Vomit Pool",
+        defType: DefinitionType.Decal,
+        rotationMode: RotationMode.Full
+    },
     ...HealingItems.definitions.map(healingItem => {
         return {
             idString: `${healingItem.idString}_residue`,

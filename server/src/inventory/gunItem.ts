@@ -249,6 +249,11 @@ export class GunItem extends InventoryItemBase.derive(DefinitionType.Gun) {
                     modifiersModified = true;
                     break;
                 }
+                case PerkIds.WeakStomach: {
+                    spread *= owner.storedSpreadMod;
+                    modifiersModified = true;
+                    break;
+                }
             }
         }
         // ! evil ends here

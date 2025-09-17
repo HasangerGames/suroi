@@ -99,6 +99,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
     isConsumingItem = false;
 
+    storedSpreadMod = 1;
+
     // Rate Limiting: Team Pings & Emotes.
     emoteCount = 0;
     lastRateLimitUpdate = 0;
@@ -1499,6 +1501,12 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                         this.addPerk(randomPerk);
                         break;
                     }
+                    case PerkIds.WeakStomach: {
+                        this.storedSpreadMod *= perk.spreadIcrementMod;
+                        this.sendEmote(Emotes.fromStringSafe(perk.emote), true);
+                        this.game.addDecal(perk.decal, this.position, this.rotation, this.layer);
+                        break;
+                    }
                 }
                 // ! evil ends here
             }
@@ -2173,6 +2181,10 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             case PerkIds.EnternalMagnetism: {
                 this.hasMagneticField = false;
                 this.setDirty();
+                break;
+            }
+            case PerkIds.WeakStomach: {
+                this.storedSpreadMod = 1;
                 break;
             }
         }
