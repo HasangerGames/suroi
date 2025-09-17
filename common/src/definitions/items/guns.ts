@@ -600,6 +600,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
             shotSpread: 4,
             moveSpread: 6.75,
             capacity: 40,
+            extendedCapacity: 60,
             reloadTime: 3.2
         }
     },
