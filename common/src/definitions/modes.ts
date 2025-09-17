@@ -92,7 +92,7 @@ export const Modes: Record<ModeName, ModeDefinition> = {
             water: "hsl(4, 100%, 14%)",
             border: "hsl(4, 90%, 12%)",
             beach: "hsl(33, 77%, 21%)",
-            riverBank: "hsl(33, 50%, 25%)",
+            riverBank: "hsl(33, 77%, 21%)",
             trail: "hsl(35, 50%, 20%)",
             gas: "hsla(17, 100%, 50%, 0.55)",
             void: "hsl(25, 80%, 6%)"
