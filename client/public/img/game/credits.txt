@@ -430,7 +430,34 @@ Other:
   Tap Icon - "One Finger Tap Gesture Of Outlined Hand Symbol" from OnlineWebFonts: https://www.onlinewebfonts.com/icon/57341
 
 Perk Icons:
-  All harvest (except combat expert), halloween perk icons: Winter
+  Advanced Athletics: Winter
+  Berserker: Winter
+  Close Quarters Combat: Winter
+  Demo Expert: Winter
+  Extended Mags: Winter
+  Field Medic: Winter
+  Fléchettes: Winter
+  Infinite Ammo: Winter
+  Low Profile: Winter
+  Sabot Rounds: Winter
+  Second Wind: Winter
+  Toploaded: Winter
+  Precision Recycling: eiπ, pap
+  Plumpkin Gamble: eiπ, Winter
+  Baby Plumpkin Pie: Winter
+  Bloodthirst: Winter
+  Claustrophobic: Winter
+  Costumed: Winter
+  Engorged: Winter
+  Experimental Treatment: Winter
+  Laced Stimulants: Winter
+  Lycanthropy: Winter
+  Plumpkin Bomb: Winter
+  Rotten Plumpkin: Winter
+  Shrouded: Winter
+  Torn Pockets: Winter
+  Infected: Skullboi249, AnnihilatingFox
+  Immunity: Skullboi249, AnnihilatingFox
   Combat Expert: Skullboi249
   Experimental Forcefield: Skullboi249
   Hollow Points: Skullboi249
@@ -440,9 +467,10 @@ Perk Icons:
   Butterfingers: Skullboi249
   Overclocked: sniperboi4/TjCj, AnnihilatingFox
   Overweight: sniperboi4/TjCj
-  Priority Target: sniperboi4/TjCj
+  Priority Target: Winter, sniperboi4/TjCj
   Reflective Rounds: Skullboi249
   Enternal Magnetism: sniperboi4/TjCj
+  Weak Stomach: Skullboi249
 
 Saw Killfeed - AnnihilatingFox
 

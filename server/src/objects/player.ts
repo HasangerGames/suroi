@@ -1504,7 +1504,12 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                     case PerkIds.WeakStomach: {
                         this.storedSpreadMod *= perk.spreadIcrementMod;
                         this.sendEmote(Emotes.fromStringSafe(perk.emote), true);
-                        this.game.addDecal(perk.decal, this.position, this.rotation, this.layer);
+                        this.game.addDecal(
+                            this.floor === FloorNames.Water ? perk.decals.water : perk.decals.ground, // todo: add a `isWater` boolean on decals instead of using a seperate def, I couldn't figure it out without breaking the decals
+                            this.position,
+                            this.rotation,
+                            this.layer
+                        );
                         break;
                     }
                 }
@@ -1974,8 +1979,9 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 this.removePerk(perk);
 
                 const halloweenPerks = Perks.definitions.filter(perkDef =>
-                    !perkDef.plumpkinGambleIgnore && perkDef.category === PerkCategories.Halloween
+                    !perkDef.plumpkinGambleIgnore && perkDef.category === PerkCategories.Halloween && !this.hasPerk(perkDef)
                 );
+
                 this.addPerk(pickRandomInArray(halloweenPerks));
                 break;
             }

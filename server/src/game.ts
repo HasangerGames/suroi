@@ -1104,7 +1104,7 @@ export class Game implements GameData {
         }
     }
 
-    addDecal(def: ReifiableDef<DecalDefinition>, position: Vector, rotation?: number, layer?: Layer | number): Decal {
+    addDecal(def: ReifiableDef<DecalDefinition>, position: Vector, rotation?: number, layer?: Layer): Decal {
         const decal = new Decal(this, def, position, rotation, layer);
         this.grid.addObject(decal);
         return decal;

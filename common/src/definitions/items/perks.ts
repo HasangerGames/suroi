@@ -312,7 +312,7 @@ const perks = [
         name: "Bloodthirst",
         defType: DefinitionType.Perk,
         category: PerkCategories.Halloween,
-        quality: PerkQualities.Positive,
+        quality: PerkQualities.Neutral,
 
         updateInterval: 1e3,
         speedMod: 1.5,
@@ -513,7 +513,10 @@ const perks = [
         quality: PerkQualities.Negative,
         updateInterval: 5e3, // ms
         spreadIcrementMod: 1.00585,
-        decal: "vomit_pool",
+        decals: {
+            ground: "vomit_pool",
+            water: "vomit_pool_wtr"
+        },
         emote: "vomiting_face",
         noDrop: true
     },
