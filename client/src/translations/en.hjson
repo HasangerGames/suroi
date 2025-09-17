@@ -524,6 +524,8 @@
 "enternal_magnetism_desc": "Absorb nearby players' healthpoints."
 "weak_stomach": "Weak Stomach"
 "weak_stomach_desc": "Leave pools of vomit on the ground every 5 seconds.<br>Your weapon spread will also be increased."
+"plumpkin_blessing": "Plumpkin's Blessing"
+"plumpkin_blessing_desc": "Swapping items and breaking plumpkins or pumpkins will provide high quality loot drops.<br>Receive 1.5x more damage."
 "infected": "Infected"
 "infected_desc": "Swaps to a random perk every 30 seconds.<br>Lose health every second.<br>Infect nearby players."
 "immunity": "Immunity"

@@ -38,7 +38,7 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
 
     spawnHitbox: Hitbox;
 
-    readonly loot: LootItem[] = [];
+    loot: LootItem[] = [];
     readonly lootSpawnOffset?: Vector;
 
     readonly definition: ObstacleDefinition;
@@ -275,6 +275,11 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
             }
 
             if (this.puzzlePiece) this.parentBuilding?.solvePuzzle();
+
+            if (source instanceof BaseGameObject && source.isPlayer && source.hasPerk(PerkIds.PlumpkinBlessing) && this.definition.material === "pumpkin" && this.definition.hasLoot) {
+                const qualityValue = PerkData[PerkIds.PlumpkinBlessing].qualityValue;
+                this.loot = getLootFromTable(this.game.modeName, this.definition.lootTable ?? this.definition.idString, qualityValue);
+            }
 
             const lootSpawnPosition = position ?? (source as { readonly position?: Vector } | undefined)?.position ?? this.position;
             for (const item of this.loot) {

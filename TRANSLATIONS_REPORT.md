@@ -188,6 +188,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `enternal_magnetism_desc` is not defined
 - Key `weak_stomach` is not defined
 - Key `weak_stomach_desc` is not defined
+- Key `plumpkin_blessing` is not defined
+- Key `plumpkin_blessing_desc` is not defined
 - Key `infected` is not defined
 - Key `infected_desc` is not defined
 - Key `immunity` is not defined
@@ -258,6 +260,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `enternal_magnetism_desc` is not defined
 - Key `weak_stomach` is not defined
 - Key `weak_stomach_desc` is not defined
+- Key `plumpkin_blessing` is not defined
+- Key `plumpkin_blessing_desc` is not defined
 
 ## 🇨🇿 Čeština (56% Complete) - cz.hjson
 
@@ -436,6 +440,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `enternal_magnetism_desc` is not defined
 - Key `weak_stomach` is not defined
 - Key `weak_stomach_desc` is not defined
+- Key `plumpkin_blessing` is not defined
+- Key `plumpkin_blessing_desc` is not defined
 - Key `infected` is not defined
 - Key `infected_desc` is not defined
 - Key `immunity` is not defined
@@ -595,6 +601,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `enternal_magnetism_desc` is not defined
 - Key `weak_stomach` is not defined
 - Key `weak_stomach_desc` is not defined
+- Key `plumpkin_blessing` is not defined
+- Key `plumpkin_blessing_desc` is not defined
 - Key `infected` is not defined
 - Key `infected_desc` is not defined
 - Key `immunity` is not defined
@@ -775,6 +783,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `enternal_magnetism_desc` is not defined
 - Key `weak_stomach` is not defined
 - Key `weak_stomach_desc` is not defined
+- Key `plumpkin_blessing` is not defined
+- Key `plumpkin_blessing_desc` is not defined
 - Key `infected` is not defined
 - Key `infected_desc` is not defined
 - Key `immunity` is not defined
@@ -1002,6 +1012,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `enternal_magnetism_desc` is not defined
 - Key `weak_stomach` is not defined
 - Key `weak_stomach_desc` is not defined
+- Key `plumpkin_blessing` is not defined
+- Key `plumpkin_blessing_desc` is not defined
 - Key `hollow_points` is not defined
 - Key `hollow_points_desc` is not defined
 - Key `experimental_forcefield` is not defined
@@ -1054,6 +1066,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `enternal_magnetism_desc` is not defined
 - Key `weak_stomach` is not defined
 - Key `weak_stomach_desc` is not defined
+- Key `plumpkin_blessing` is not defined
+- Key `plumpkin_blessing_desc` is not defined
 
 ## 🇫🇮 suomi (59% Complete) - fi.hjson
 
@@ -1221,6 +1235,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `enternal_magnetism_desc` is not defined
 - Key `weak_stomach` is not defined
 - Key `weak_stomach_desc` is not defined
+- Key `plumpkin_blessing` is not defined
+- Key `plumpkin_blessing_desc` is not defined
 - Key `infected` is not defined
 - Key `infected_desc` is not defined
 - Key `immunity` is not defined
@@ -1234,7 +1250,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
 
-## 🇫🇷 Français (87% Complete) - fr.hjson
+## 🇫🇷 Français (86% Complete) - fr.hjson
 
 ### Invalid Keys
 
@@ -1301,8 +1317,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `enternal_magnetism_desc` is not defined
 - Key `weak_stomach` is not defined
 - Key `weak_stomach_desc` is not defined
+- Key `plumpkin_blessing` is not defined
+- Key `plumpkin_blessing_desc` is not defined
 
-## 🇬🇷 Ελληνικά (76% Complete) - gr.hjson
+## 🇬🇷 Ελληνικά (75% Complete) - gr.hjson
 
 ### (No Invalid Keys)
 
@@ -1396,6 +1414,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `enternal_magnetism_desc` is not defined
 - Key `weak_stomach` is not defined
 - Key `weak_stomach_desc` is not defined
+- Key `plumpkin_blessing` is not defined
+- Key `plumpkin_blessing_desc` is not defined
 - Key `infected` is not defined
 - Key `infected_desc` is not defined
 - Key `immunity` is not defined
@@ -1590,6 +1610,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `enternal_magnetism_desc` is not defined
 - Key `weak_stomach` is not defined
 - Key `weak_stomach_desc` is not defined
+- Key `plumpkin_blessing` is not defined
+- Key `plumpkin_blessing_desc` is not defined
 - Key `infected` is not defined
 - Key `infected_desc` is not defined
 - Key `immunity` is not defined
@@ -1667,6 +1689,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `enternal_magnetism_desc` is not defined
 - Key `weak_stomach` is not defined
 - Key `weak_stomach_desc` is not defined
+- Key `plumpkin_blessing` is not defined
+- Key `plumpkin_blessing_desc` is not defined
 - Key `hollow_points` is not defined
 - Key `hollow_points_desc` is not defined
 - Key `experimental_forcefield` is not defined
@@ -1870,6 +1894,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `enternal_magnetism_desc` is not defined
 - Key `weak_stomach` is not defined
 - Key `weak_stomach_desc` is not defined
+- Key `plumpkin_blessing` is not defined
+- Key `plumpkin_blessing_desc` is not defined
 - Key `infected` is not defined
 - Key `infected_desc` is not defined
 - Key `immunity` is not defined
@@ -2123,6 +2149,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `enternal_magnetism_desc` is not defined
 - Key `weak_stomach` is not defined
 - Key `weak_stomach_desc` is not defined
+- Key `plumpkin_blessing` is not defined
+- Key `plumpkin_blessing_desc` is not defined
 
 ## 🇱🇹 Lietuvių (56% Complete) - lt.hjson
 
@@ -2301,6 +2329,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `enternal_magnetism_desc` is not defined
 - Key `weak_stomach` is not defined
 - Key `weak_stomach_desc` is not defined
+- Key `plumpkin_blessing` is not defined
+- Key `plumpkin_blessing_desc` is not defined
 - Key `infected` is not defined
 - Key `infected_desc` is not defined
 - Key `immunity` is not defined
@@ -2491,6 +2521,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `enternal_magnetism_desc` is not defined
 - Key `weak_stomach` is not defined
 - Key `weak_stomach_desc` is not defined
+- Key `plumpkin_blessing` is not defined
+- Key `plumpkin_blessing_desc` is not defined
 - Key `infected` is not defined
 - Key `infected_desc` is not defined
 - Key `immunity` is not defined
@@ -2540,6 +2572,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `enternal_magnetism_desc` is not defined
 - Key `weak_stomach` is not defined
 - Key `weak_stomach_desc` is not defined
+- Key `plumpkin_blessing` is not defined
+- Key `plumpkin_blessing_desc` is not defined
 
 ## 🇵🇱 Polski (59% Complete) - pl.hjson
 
@@ -2707,6 +2741,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `enternal_magnetism_desc` is not defined
 - Key `weak_stomach` is not defined
 - Key `weak_stomach_desc` is not defined
+- Key `plumpkin_blessing` is not defined
+- Key `plumpkin_blessing_desc` is not defined
 - Key `infected` is not defined
 - Key `infected_desc` is not defined
 - Key `immunity` is not defined
@@ -2720,7 +2756,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
 
-## 🎀 Cute Engwish (63% Complete) - qen.hjson
+## 🎀 Cute Engwish (62% Complete) - qen.hjson
 
 ### Invalid Keys
 
@@ -2871,6 +2907,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `enternal_magnetism_desc` is not defined
 - Key `weak_stomach` is not defined
 - Key `weak_stomach_desc` is not defined
+- Key `plumpkin_blessing` is not defined
+- Key `plumpkin_blessing_desc` is not defined
 - Key `infected` is not defined
 - Key `infected_desc` is not defined
 - Key `immunity` is not defined
@@ -2918,6 +2956,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `enternal_magnetism_desc` is not defined
 - Key `weak_stomach` is not defined
 - Key `weak_stomach_desc` is not defined
+- Key `plumpkin_blessing` is not defined
+- Key `plumpkin_blessing_desc` is not defined
 
 ## 🇷🇺 Русский (89% Complete) - ru.hjson
 
@@ -2972,6 +3012,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `enternal_magnetism_desc` is not defined
 - Key `weak_stomach` is not defined
 - Key `weak_stomach_desc` is not defined
+- Key `plumpkin_blessing` is not defined
+- Key `plumpkin_blessing_desc` is not defined
 
 ## 🇮🇳 தமிழ் (89% Complete) - ta.hjson
 
@@ -3029,6 +3071,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `enternal_magnetism_desc` is not defined
 - Key `weak_stomach` is not defined
 - Key `weak_stomach_desc` is not defined
+- Key `plumpkin_blessing` is not defined
+- Key `plumpkin_blessing_desc` is not defined
 - Key `experimental_forcefield_desc` is not defined
 
 ## 🇹🇷 Turkısh (69% Complete) - tr.hjson
@@ -3156,6 +3200,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `enternal_magnetism_desc` is not defined
 - Key `weak_stomach` is not defined
 - Key `weak_stomach_desc` is not defined
+- Key `plumpkin_blessing` is not defined
+- Key `plumpkin_blessing_desc` is not defined
 - Key `infected` is not defined
 - Key `infected_desc` is not defined
 - Key `immunity` is not defined
@@ -3169,7 +3215,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
 
-## 🇹🇼 中文（繁體） (66% Complete) - tw.hjson
+## 🇹🇼 中文（繁體） (65% Complete) - tw.hjson
 
 ### Invalid Keys
 
@@ -3307,6 +3353,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `enternal_magnetism_desc` is not defined
 - Key `weak_stomach` is not defined
 - Key `weak_stomach_desc` is not defined
+- Key `plumpkin_blessing` is not defined
+- Key `plumpkin_blessing_desc` is not defined
 - Key `infected` is not defined
 - Key `infected_desc` is not defined
 - Key `immunity` is not defined
@@ -3382,6 +3430,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `enternal_magnetism_desc` is not defined
 - Key `weak_stomach` is not defined
 - Key `weak_stomach_desc` is not defined
+- Key `plumpkin_blessing` is not defined
+- Key `plumpkin_blessing_desc` is not defined
 - Key `hollow_points` is not defined
 - Key `hollow_points_desc` is not defined
 - Key `experimental_forcefield` is not defined
@@ -3614,4 +3664,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `enternal_magnetism_desc` is not defined
 - Key `weak_stomach` is not defined
 - Key `weak_stomach_desc` is not defined
+- Key `plumpkin_blessing` is not defined
+- Key `plumpkin_blessing_desc` is not defined
 

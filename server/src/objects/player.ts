@@ -791,6 +791,22 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         }
     };
 
+    private static readonly _qualityWeaponSwapWeights: Partial<Record<DefinitionType, Partial<Record<Tier, number>>>> = {
+        [DefinitionType.Gun]: {
+            [Tier.S]: 0.25,
+            [Tier.A]: 0.75
+        },
+        [DefinitionType.Melee]: {
+            [Tier.S]: 0.25,
+            [Tier.A]: 0.75
+        },
+        [DefinitionType.Throwable]: {
+            [Tier.S]: 0.8,
+            [Tier.C]: 1.5,
+            [Tier.D]: 0.25
+        }
+    };
+
     private static readonly _weaponTiersCache: Partial<Record<DefinitionType, Partial<Record<Tier, WeaponDefinition[]>>>> = {};
 
     tryRefund(item: InventoryItem = this.activeItem): void {
@@ -854,7 +870,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         const type = GameConstants.player.inventorySlotTypings[slot];
 
         // only used if weapon swap is weighted
-        const weights = Player._weaponSwapWeights[type] ?? {};
+        const weights = this.hasPerk(PerkIds.PlumpkinBlessing) ? Player._qualityWeaponSwapWeights[type] ?? {} : Player._weaponSwapWeights[type] ?? {};
         const chosenTier = weightedRandom<Tier>(Object.keys(weights).map(s => parseInt(s)), Object.values(weights));
         const cache = Player._weaponTiersCache[type] ??= {};
 
@@ -1504,12 +1520,13 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                     case PerkIds.WeakStomach: {
                         this.storedSpreadMod *= perk.spreadIcrementMod;
                         this.sendEmote(Emotes.fromStringSafe(perk.emote), true);
-                        this.game.addDecal(
+                        const decal = this.game.addDecal(
                             this.floor === FloorNames.Water ? perk.decals.water : perk.decals.ground, // todo: add a `isWater` boolean on decals instead of using a seperate def, I couldn't figure it out without breaking the decals
                             this.position,
                             this.rotation,
                             this.layer
                         );
+                        this.game.addTimeout(() => this.game.grid.removeObject(decal), perk.decalFadeTime);
                         break;
                     }
                 }
@@ -1979,7 +1996,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 this.removePerk(perk);
 
                 const halloweenPerks = Perks.definitions.filter(perkDef =>
-                    !perkDef.plumpkinGambleIgnore && perkDef.category === PerkCategories.Halloween && !this.hasPerk(perkDef)
+                    !perkDef.plumpkinGambleIgnore && perkDef.category === PerkCategories.Halloween
                 );
 
                 this.addPerk(pickRandomInArray(halloweenPerks));
@@ -2454,9 +2471,9 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
         if (this.shield <= 0) {
             // Reductions are merged additively
-            amount *= 1 - (
+            amount *= (1 - (
                 (this.inventory.helmet?.damageReduction ?? 0) + (this.inventory.vest?.damageReduction ?? 0)
-            );
+            )) * this.mapPerkOrDefault(PerkIds.PlumpkinBlessing, ({ damageReceivedMod }) => damageReceivedMod, 1);
 
             amount = this._clampDamageAmount(amount);
         }

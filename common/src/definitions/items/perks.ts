@@ -74,6 +74,7 @@ export const enum PerkIds {
     PlumpkinBomb = "plumpkin_bomb",
     Shrouded = "shrouded",
     EnternalMagnetism = "enternal_magnetism",
+    PlumpkinBlessing = "plumpkin_blessing",
     ExperimentalTreatment = "experimental_treatment",
     Engorged = "engorged",
     BabyPlumpkinPie = "baby_plumpkin_pie",
@@ -343,6 +344,18 @@ const perks = [
         noDrop: true
     },
     {
+        idString: PerkIds.EnternalMagnetism,
+        name: "Enternal Magnetism",
+        defType: DefinitionType.Perk,
+        category: PerkCategories.Halloween,
+        quality: PerkQualities.Positive,
+        radius: 20,
+        depletion: 0.05,
+        spriteScale: 1.5,
+        minHealth: 5,
+        noDrop: true
+    },
+    {
         idString: PerkIds.ExperimentalTreatment,
         name: "Experimental Treatment",
         defType: DefinitionType.Perk,
@@ -422,6 +435,16 @@ const perks = [
         infectedEffectIgnore: true
     },
     {
+        idString: PerkIds.PlumpkinBlessing,
+        name: "Plumpkin's Blessing",
+        defType: DefinitionType.Perk,
+        category: PerkCategories.Halloween,
+        quality: PerkQualities.Neutral,
+        qualityValue: 0.1,
+        damageReceivedMod: 1.5,
+        noDrop: true
+    },
+    {
         idString: PerkIds.TornPockets,
         name: "Torn Pockets",
         defType: DefinitionType.Perk,
@@ -494,29 +517,18 @@ const perks = [
         noDrop: true
     },
     {
-        idString: PerkIds.EnternalMagnetism,
-        name: "Enternal Magnetism",
-        defType: DefinitionType.Perk,
-        category: PerkCategories.Halloween,
-        quality: PerkQualities.Positive,
-        radius: 20,
-        depletion: 0.05,
-        spriteScale: 1.5,
-        minHealth: 5,
-        noDrop: true
-    },
-    {
         idString: PerkIds.WeakStomach,
         name: "Weak Stomach",
         defType: DefinitionType.Perk,
         category: PerkCategories.Halloween,
         quality: PerkQualities.Negative,
         updateInterval: 5e3, // ms
-        spreadIcrementMod: 1.00585,
+        spreadIcrementMod: 1.0585,
         decals: {
             ground: "vomit_pool",
             water: "vomit_pool_wtr"
         },
+        decalFadeTime: 30e3,
         emote: "vomiting_face",
         noDrop: true
     },
