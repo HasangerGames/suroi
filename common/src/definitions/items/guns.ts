@@ -2163,7 +2163,8 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
                     }
                 },
                 count: 2,
-                on: "cycle" // todo 
+                ejectionDelay: 400,
+                on: "cycle"
             },
         ],
         gasParticles: gasParticlePresets.shotgun,
