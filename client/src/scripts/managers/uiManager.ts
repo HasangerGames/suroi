@@ -1038,7 +1038,7 @@ class UIManagerClass {
                         weaponImage = `url(./img/game/${definition.reskins?.includes(Game.modeName) ? Game.modeName : "shared"}/weapons/${frame}.svg)`;
                     }
 
-                    this._playSlotAnimation(container);
+                    if (!force) this._playSlotAnimation(container);
                     itemImage
                         .css({
                             "background-image": weaponImage,

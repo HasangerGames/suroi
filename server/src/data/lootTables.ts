@@ -1035,11 +1035,11 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { item: "g17_scoped", weight: 0.25 },
             { item: "firework_launcher", weight: 0.25 },
             { item: "ulr338", weight: 0.25 },
+            { item: "seedshot", weight: 0.1  },
             { item: "545mm", weight: 0.005 }
         ],
         pumpkin_airdrop: [
             [{ table: "airdrop_equipment", weight: 1 }],
-            [{ table: "airdrop_scopes", weight: 1 }],
             [{ table: "airdrop_healing_items", weight: 1 }],
             [{ table: "airdrop_skins", weight: 1 }],
             [
@@ -1172,6 +1172,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
         gold_airdrop_guns: [
             { item: "m1_garand", weight: 1.1 },
             { item: "acr", weight: 1 },
+            { item: "svu", weight: 1 },
             { item: "pp19", weight: 1 },
             { item: "negev", weight: 1 },
             { item: "mg5", weight: 1 },

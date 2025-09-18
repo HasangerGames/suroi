@@ -588,12 +588,10 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             this.container.visible = !dead;
 
             const hadSkin = this.halloweenThrowableSkin;
-            if (
-                hadSkin !== (this.halloweenThrowableSkin = halloweenThrowableSkin)
-                && this.activeItem.defType === DefinitionType.Throwable
-                && !this.activeItem.noSkin
-            ) {
-                this.images.weapon.setFrame(`${this.activeItem.idString}${this.halloweenThrowableSkin ? "_halloween" : ""}`);
+            if (hadSkin !== (this.halloweenThrowableSkin = halloweenThrowableSkin)) {
+                if (this.activeItem.defType === DefinitionType.Throwable && !this.activeItem.noSkin) {
+                    this.images.weapon.setFrame(`${this.activeItem.idString}${this.halloweenThrowableSkin ? "_halloween" : ""}`);
+                }
                 UIManager.updateWeaponSlots(true);
             }
 
