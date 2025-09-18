@@ -71,6 +71,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
     hasMagneticField = false;
 
+    isCycling = false;
+
     activeOverdrive = false;
     overdriveCooldown?: Timeout;
 
@@ -568,7 +570,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     backEquippedMelee,
                     hasBubble,
                     activeOverdrive,
-                    hasMagneticField
+                    hasMagneticField,
+                    isCycling
                 }
             } = data;
 
@@ -981,6 +984,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     }
                 }
             }
+
+            if (isCycling !== this.isCycling) this.isCycling = isCycling;
         }
 
         if (data.action !== undefined) {
@@ -1995,6 +2000,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 }
 
                 this.spawnCasingParticles("fire", isAltFire);
+
+                if (this.isCycling) this.spawnCasingParticles("cycle", isAltFire);
                 break;
             }
             case AnimationType.GunClick: {

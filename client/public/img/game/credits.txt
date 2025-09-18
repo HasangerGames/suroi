@@ -336,7 +336,7 @@ Guns:
     Killfeed: Skullboi249
 
   DP-12
-    Loot Image: Skullboi249
+    Loot Image: Skullboi249, AnnihilatingFox
     World Image: Skullboi249
     Killfeed: AnnihilatingFox
 

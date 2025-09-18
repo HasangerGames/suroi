@@ -2157,8 +2157,8 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
                 position: Vec(4.25, 0),
                 velocity: {
                     y: {
-                        min: 2,
-                        max: 6,
+                        min: 6,
+                        max: 9, 
                         randomSign: true
                     }
                 },

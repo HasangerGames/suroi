@@ -122,7 +122,7 @@ export class Bullet extends BaseBullet {
             SoundManager.play(`${gunIdString}_fire${this.lastShot ? "_last" : ""}`, options);
 
             if (this.cycle) {
-                SoundManager.play(`${gunIdString}_cycle`, options)
+                SoundManager.play(`${gunIdString}_cycle`, options);
             }
         }
     }

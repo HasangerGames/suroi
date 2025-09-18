@@ -279,6 +279,9 @@ export class GunItem extends InventoryItemBase.derive(DefinitionType.Gun) {
                 }
             }
         }
+
+        const cycle = this.fireDelay === this.definition.cycle?.delay;
+        this.owner.isCycling = !cycle;
         // ! evil ends here
 
         const activeStair = owner.activeStair;
@@ -307,7 +310,7 @@ export class GunItem extends InventoryItemBase.derive(DefinitionType.Gun) {
                     split,
                     shotFX: shotFX,
                     lastShot: this.definition.ballistics.lastShotFX && this.ammo === 1,
-                    cycle: this.fireDelay === this.definition.cycle?.delay
+                    cycle
                 }
             );
         };

@@ -335,6 +335,14 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         }
     }
 
+    private _isCycling = false;
+    get isCycling(): boolean { return this._isCycling; }
+    set isCycling(cycling: boolean) {
+        if (this._isCycling === cycling) return;
+        this._isCycling = cycling;
+        this.setDirty();
+    }
+
     private _modifiers = GameConstants.player.defaultModifiers();
 
     killedBy?: Player;
@@ -3385,7 +3393,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 backEquippedMelee: this.backEquippedMelee,
                 hasBubble: this.hasBubble,
                 activeOverdrive: this.activeOverdrive,
-                hasMagneticField: this.hasMagneticField
+                hasMagneticField: this.hasMagneticField,
+                isCycling: this.isCycling
             }
         };
 
