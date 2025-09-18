@@ -76,6 +76,8 @@ Guns:
       - "Spray" by freesound_community from Pixabay: https://pixabay.com/users/freesound_community-46691455/
       - "Leather Stretching sound effect" by Cookie from Youtube: https://www.youtube.com/@Cookie_No
 
+  DP-12 (Fire, Switch, Reload, Cycle) - https://soundbible.com/1400-Shotgun.html, https://gamebanana.com/sounds/56970
+
   Other gun sound effects - Surviv.io Custom Sounds & Textures Resource Pack: https://github.com/humphreygaming/survivcustomsoundsandtextures
 
 Melees:

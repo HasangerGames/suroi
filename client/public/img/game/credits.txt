@@ -335,6 +335,11 @@ Guns:
     World Image: Skullboi249
     Killfeed: Skullboi249
 
+  DP-12
+    Loot Image: Skullboi249
+    World Image: Skullboi249
+    Killfeed: AnnihilatingFox
+
 Melees:
   Baseball Bat: Radians
   HE-AP Sword: Radians

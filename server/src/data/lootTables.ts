@@ -792,6 +792,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { item: "vss", weight: 1 },
             { item: "vector", weight: 1 },
             { item: "vepr12", weight: 1 },
+            { item: "dp12", weight: 1 },
             { item: "deagle", weight: 1 },
             { item: "mcx_spear", weight: 0.95 },
             { item: "mosin_nagant", weight: 0.95 },
@@ -1056,6 +1057,12 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
     },
 
     halloween: {
+        pumpkin: [
+            { table: "equipment", weight: 1 },
+            { table: "healing_items", weight: 1 },
+            { table: "ammo", weight: 1 },
+            { table: "guns", weight: 0.9 },
+       ],
        guns: [
             { item: "g19", weight: 2 },
             { item: "m1895", weight: 1.75 },
@@ -1158,6 +1165,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { item: "rgs", weight: 1 },
             { item: "vector", weight: 1 },
             { item: "vepr12", weight: 1 },
+            { item: "dp12", weight: 1 },
             { item: "deagle", weight: 1 },
             { item: "mcx_spear", weight: 0.95 },
             { item: "mosin_nagant", weight: 0.95 },
@@ -1444,6 +1452,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { item: "m590m", weight: 1 },
             { item: "rsh12", weight: 1 },
             { item: "vepr12", weight: 1 },
+            { item: "dp12", weight: 1 },
             { item: "model_89", weight: 1 },
             { item: "rgs", weight: 1 },
             { item: "vks", weight: 0.5 },

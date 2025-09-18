@@ -326,7 +326,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         }
     }
 
-    spawnCasingParticles(filterBy: "fire" | "reload", altFire = false): void {
+    spawnCasingParticles(filterBy: "fire" | "reload" | "cycle", altFire = false): void {
         const weaponDef = this.activeItem as GunDefinition;
         const reference = this._getItemReference() as SingleGunNarrowing;
         const initialRotation = this.rotation + Math.PI / 2;
@@ -367,7 +367,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
                         return {
                             frames: casingSpec.frame ?? Ammos.fromString(weaponDef.ammoType).defaultCasingFrame ?? "",
-                            zIndex: ZIndexes.Players,
+                            zIndex: ZIndexes.Players - 0.5,
                             position: Vec.add(this.position, Vec.rotate(position, this.rotation)),
                             lifetime: 400,
                             layer: this.layer,

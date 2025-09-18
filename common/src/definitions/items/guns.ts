@@ -72,7 +72,7 @@ type BaseGunDefinition = InventoryItemDefinition & {
             }
         }
 
-        readonly on?: "fire" | "reload"
+        readonly on?: "fire" | "reload" | "cycle"
     }>
 
     readonly gasParticles?: {
@@ -108,6 +108,20 @@ type BaseGunDefinition = InventoryItemDefinition & {
             readonly min: number
             readonly max: number
         }
+    }
+
+    /**
+     * Only used by DP-12 at the moment.
+     */
+    readonly cycle?: {
+        /**
+         * Will override the gun's fireDelay during the cycle (when the gun reaches the `shotRequired` amount of shots).
+        */
+        readonly delay: number
+        /**
+         * The number of shots that need to be fired in order for the fire delay to be switched in to the cycle delay.
+         */
+        readonly shotsRequired: number
     }
 
     readonly noMuzzleFlash?: boolean
@@ -2103,6 +2117,63 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
             tracer: {
                 width: 2,
                 length: 1.3
+            }
+        }
+    },
+    {
+        idString: "dp12",
+        name: "DP-12",
+        defType: DefinitionType.Gun,
+        fireMode: FireMode.Single,
+        tier: Tier.B,
+        ammoType: "12g",
+        ammoSpawnAmount: 14,
+        capacity: 14,
+        reloadTime: 1.2,
+        shotsPerReload: 2,
+        fireDelay: 250,
+        switchDelay: 250,
+        speedMultiplier: 0.8,
+        recoilMultiplier: 0.5,
+        recoilDuration: 550,
+        bulletCount: 7,
+        shotSpread: 10,
+        moveSpread: 12,
+        jitterRadius: 1,
+        length: 7.7,
+        cycle: {
+            delay: 800,
+            shotsRequired: 2
+        },
+        fists: {
+            left: Vec(117, -10),
+            right: Vec(52, 12),
+            animationDuration: 100,
+            rightZIndex: 4
+        },
+        image: { position: Vec(90, 0) },
+        casingParticles: [
+            {
+                position: Vec(4.25, 0),
+                velocity: {
+                    y: {
+                        min: 2,
+                        max: 6,
+                        randomSign: true
+                    }
+                },
+                count: 2,
+                on: "cycle" // todo 
+            },
+        ],
+        gasParticles: gasParticlePresets.shotgun,
+        ballistics: {
+            damage: 10,
+            obstacleMultiplier: 1,
+            speed: 0.165,
+            range: 50,
+            tracer: {
+                length: 0.67
             }
         }
     },

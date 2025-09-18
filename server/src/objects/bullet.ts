@@ -39,6 +39,7 @@ export interface ServerBulletOptions {
     readonly modifiers?: BulletOptions["modifiers"]
     readonly shotFX?: boolean
     readonly lastShot?: boolean
+    readonly cycle?: boolean
 }
 
 export class Bullet extends BaseBullet {
@@ -82,6 +83,8 @@ export class Bullet extends BaseBullet {
         this.shotFX = options.shotFX ?? false;
 
         this.lastShot = options.lastShot ?? false;
+
+        this.cycle = options.cycle ?? false;
     }
 
     update(): DamageRecord[] {

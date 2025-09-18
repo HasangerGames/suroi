@@ -29,6 +29,11 @@ export class GunItem extends InventoryItemBase.derive(DefinitionType.Gun) {
 
     private _reloadTimeout?: Timeout;
 
+    private _shotsCounter = 0;
+
+    private _previousFireDelay?: number;
+    fireDelay: number;
+
     // those need to be nodejs timeouts because some guns fire rate are too close to the tick rate
     private _burstTimeout?: NodeJS.Timeout;
     private _autoFireTimeout?: NodeJS.Timeout;
@@ -61,6 +66,8 @@ export class GunItem extends InventoryItemBase.derive(DefinitionType.Gun) {
             this.stats.damage = data.damage;
             this._shots = data.totalShots;
         }
+
+        this.fireDelay = this.definition.fireMode === FireMode.Burst ? this.definition.burstProperties.burstCooldown : this.definition.fireDelay;
     }
 
     /**
@@ -109,6 +116,22 @@ export class GunItem extends InventoryItemBase.derive(DefinitionType.Gun) {
 
         this._consecutiveShots++;
         this._shots++;
+
+        if (definition.cycle !== undefined) {
+            this._shotsCounter++;
+
+            if  (this._shotsCounter === definition.cycle.shotsRequired) {
+
+                if (this._previousFireDelay === undefined) {
+                    this._previousFireDelay = this.fireDelay;
+                }
+
+                this.fireDelay = definition.cycle.delay;
+                this._shotsCounter = 0;
+            }
+
+            else if (this._previousFireDelay) this.fireDelay = this._previousFireDelay;
+        }
 
         const { moveSpread, shotSpread, fsaReset } = definition;
 
@@ -283,7 +306,8 @@ export class GunItem extends InventoryItemBase.derive(DefinitionType.Gun) {
                     thin,
                     split,
                     shotFX: shotFX,
-                    lastShot: this.definition.ballistics.lastShotFX && this.ammo === 1
+                    lastShot: this.definition.ballistics.lastShotFX && this.ammo === 1,
+                    cycle: this.fireDelay === this.definition.cycle?.delay
                 }
             );
         };
@@ -345,7 +369,7 @@ export class GunItem extends InventoryItemBase.derive(DefinitionType.Gun) {
             this._consecutiveShots = 0;
             this._reloadTimeout = owner.game.addTimeout(
                 this.reload.bind(this, true),
-                definition.fireDelay * this.owner.fireRateMod
+                this.fireDelay * this.owner.fireRateMod
             );
             return;
         }
@@ -371,10 +395,16 @@ export class GunItem extends InventoryItemBase.derive(DefinitionType.Gun) {
             (definition.fireMode !== FireMode.Single || owner.isMobile)
             && owner.activeItem === this
         ) {
+
+            // bursts are stupid
+            if (definition.fireMode === FireMode.Burst && this._consecutiveShots < definition.burstProperties.shotsPerBurst) {
+                this.fireDelay = definition.fireDelay;
+            }
+
             clearTimeout(this._autoFireTimeout);
             this._autoFireTimeout = setTimeout(
                 this._useItemNoDelayCheck.bind(this, false),
-                definition.fireDelay * this.owner.fireRateMod
+                this.fireDelay * this.owner.fireRateMod
             );
         }
     }
@@ -388,12 +418,8 @@ export class GunItem extends InventoryItemBase.derive(DefinitionType.Gun) {
     }
 
     override useItem(): void {
-        const def = this.definition;
-
         super._bufferAttack(
-            (def.fireMode === FireMode.Burst
-                ? def.burstProperties.burstCooldown
-                : def.fireDelay) * this.owner.fireRateMod,
+            this.fireDelay * this.owner.fireRateMod,
             this._useItemNoDelayCheck.bind(this, true)
         );
     }
@@ -415,7 +441,7 @@ export class GunItem extends InventoryItemBase.derive(DefinitionType.Gun) {
             || (!owner.inventory.items.hasItem(definition.ammoType) && !this.owner.hasPerk(PerkIds.InfiniteAmmo))
             || owner.action !== undefined
             || owner.activeItem !== this
-            || (!skipFireDelayCheck && owner.game.now - this.lastUse < definition.fireDelay)
+            || (!skipFireDelayCheck && owner.game.now - this.lastUse < this.fireDelay)
             || owner.downed
         ) return;
 
