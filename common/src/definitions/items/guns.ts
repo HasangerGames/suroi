@@ -2151,7 +2151,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
             animationDuration: 100,
             rightZIndex: 4
         },
-        image: { position: Vec(90, 0) },
+        image: { position: Vec(80, 0) },
         casingParticles: [
             {
                 position: Vec(4.25, 0),
