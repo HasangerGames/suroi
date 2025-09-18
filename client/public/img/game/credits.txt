@@ -130,11 +130,6 @@ Guns:
     World Image: Winter
     Killfeed Image: AnnihilatingFox
 
-  M202-F:
-    Loot Image: Skullboi249
-    World Image: Skullboi249
-    Killfeed: AnnihilatingFox
-
   M3K:
     Loot Image: Wampi
     World Image: Wampi
@@ -329,6 +324,16 @@ Guns:
     Loot Image: Wampi
     World Image: Winter, Skullboi249
     Killfeed Image: Skullboi249
+
+  M202-F:
+    Loot Image: Skullboi249
+    World Image: Skullboi249
+    Killfeed: AnnihilatingFox
+
+  ULR-338
+    Loot Image: Skullboi249
+    World Image: Skullboi249
+    Killfeed: Skullboi249
 
 Melees:
   Baseball Bat: Radians

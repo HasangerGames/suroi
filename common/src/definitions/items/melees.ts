@@ -543,7 +543,7 @@ export const Melees = new InventoryItemDefinitions<MeleeDefinition>([
         ]
     },
     {
-        idString: "steelfang",
+        idString: "steelfang", // Error's favourite
         name: "Steelfang",
         defType: DefinitionType.Melee,
         tier: Tier.S,

@@ -811,7 +811,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             if (infected !== this.infected) {
                 this.infected = infected;
                 this.container.tint = infected ? 0x8a4c70 : 0xffffff;
-                if (!isNew) {
+                if (!isNew && Game.modeName === "infection") {
                     if (infected) this.playSound("infected");
                     else this.playSound("cured");
                 }
@@ -903,35 +903,19 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 magneticFieldSprite.setVisible(this.hasMagneticField);
 
                 if (!isNew) {
-
                     if (this.images.magneticFieldSprite !== undefined) {
                         this.anims.magneticField?.kill();
-                        if (hasMagneticField) {
-                            this.images.magneticFieldSprite.setScale(0);
+                        this.images.magneticFieldSprite.setScale(hasMagneticField ? 0 : spriteScale);
 
-                            this.anims.magneticField = Game.addTween({
-                                target: this.images.magneticFieldSprite.scale,
-                                to: { x: spriteScale, y: spriteScale },
-                                duration: 1000,
-                                ease: EaseFunctions.backOut,
-                                onComplete: () => {
-                                    this.anims.magneticField = undefined;
-                                }
-                            });
-                        }
-                        else {
-                            this.images.magneticFieldSprite.setScale(spriteScale);
-
-                            this.anims.magneticField = Game.addTween({
-                                target: this.images.magneticFieldSprite.scale,
-                                to: { x: 0, y: 0 },
-                                duration: 1000,
-                                ease: EaseFunctions.backIn,
-                                onComplete: () => {
-                                    this.anims.magneticField = undefined;
-                                }
-                            });
-                        }
+                        this.anims.magneticField = Game.addTween({
+                            target: this.images.magneticFieldSprite.scale,
+                            to: { x: hasMagneticField ? spriteScale : 0, y: hasMagneticField ? spriteScale : 0 },
+                            duration: 1000,
+                            ease: EaseFunctions.backOut,
+                            onComplete: () => {
+                                this.anims.magneticField = undefined;
+                            }
+                        });
                     }
                 }
             }
