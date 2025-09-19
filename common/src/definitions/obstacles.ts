@@ -48,6 +48,7 @@ type CommonObstacleDefinition = ObjectDefinition & {
         readonly unlockFrame: string
         readonly particle: string
         readonly particleVariations: number
+        readonly particleAmount?: number
     }
 
     readonly graphics?: ReadonlyArray<{
@@ -2296,7 +2297,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         airdrop: {
             unlockFrame: "pumpkin_airdrop_unlocking",
             particle: "pumpkin_airdrop_metal_particle",
-            particleVariations: 3
+            particleVariations: 3,
+            particleAmount: 4
         },
         interactObstacleIdString: "airdrop_crate_locked"
     },

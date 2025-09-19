@@ -228,7 +228,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
 
                         texture = this.definition.airdrop.unlockFrame;
 
-                        if ((this.definition.particleVariations ?? 2) > 1) {
+                        if ((this.definition.airdrop.particleVariations ?? 2) > 1) {
                             if (Game.modeName === "winter") {
                                 ParticleManager.spawnParticles(1, () => ({
                                     frames: "airdrop_particle_4",
@@ -243,12 +243,12 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
                             }
 
                             this.addTimeout(() => {
-                                ParticleManager.spawnParticles(2, () => ({
+                                ParticleManager.spawnParticles(this.definition.airdrop?.particleAmount ?? 2, () => ({
                                     frames: `${this.definition.airdrop?.particle}_2`,
                                     position: this.hitbox.randomPoint(),
                                     ...options(4, 9)
                                 } as ParticleOptions));
-                                ParticleManager.spawnParticles(2, () => ({
+                                ParticleManager.spawnParticles(this.definition.airdrop?.particleAmount ?? 2, () => ({
                                     frames: `${this.definition.airdrop?.particle}_3`,
                                     position: this.hitbox.randomPoint(),
                                     ...options(4, 9)

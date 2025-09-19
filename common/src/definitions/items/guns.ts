@@ -2146,8 +2146,8 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
             shotsRequired: 2
         },
         fists: {
-            left: Vec(117, -10),
-            right: Vec(52, 12),
+            left: Vec(110, -10),
+            right: Vec(52, 8),
             animationDuration: 100,
             rightZIndex: 4
         },
@@ -2456,6 +2456,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
         tier: Tier.S,
         ammoType: "338lap",
         ammoSpawnAmount: 5,
+        noSwap: true,
         spawnScope: "16x_scope",
         fireDelay: 2000,
         switchDelay: 900,

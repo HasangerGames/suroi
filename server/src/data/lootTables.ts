@@ -792,7 +792,6 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { item: "vss", weight: 1 },
             { item: "vector", weight: 1 },
             { item: "vepr12", weight: 1 },
-            { item: "dp12", weight: 1 },
             { item: "deagle", weight: 1 },
             { item: "mcx_spear", weight: 0.95 },
             { item: "mosin_nagant", weight: 0.95 },
@@ -805,6 +804,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
         ],
         gold_airdrop_guns: [
             { item: "m1_garand", weight: 1.1 },
+            { item: "dp12", weight: 1 },
             { item: "acr", weight: 1 },
             { item: "pp19", weight: 1 },
             { item: "negev", weight: 1 },
@@ -1036,6 +1036,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { item: "g17_scoped", weight: 0.25 },
             { item: "firework_launcher", weight: 0.25 },
             { item: "ulr338", weight: 0.25 },
+            { item: "dp12", weight: 0.1 },
             { item: "seedshot", weight: 0.1  },
             { item: "545mm", weight: 0.005 }
         ],
@@ -1165,7 +1166,6 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { item: "rgs", weight: 1 },
             { item: "vector", weight: 1 },
             { item: "vepr12", weight: 1 },
-            { item: "dp12", weight: 1 },
             { item: "deagle", weight: 1 },
             { item: "mcx_spear", weight: 0.95 },
             { item: "mosin_nagant", weight: 0.95 },
@@ -1180,6 +1180,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
         gold_airdrop_guns: [
             { item: "m1_garand", weight: 1.1 },
             { item: "acr", weight: 1 },
+            { item: "dp12", weight: 1 },
             { item: "svu", weight: 1 },
             { item: "pp19", weight: 1 },
             { item: "negev", weight: 1 },
@@ -1286,6 +1287,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { item: "m1_garand", weight: 0.5 },
             { item: "mk18", weight: 0.2 },
             { item: "l115a1", weight: 0.2 },
+            { item: "dp12", weight: 0.2 },
             { item: "g19", weight: 0.01 }
         ],
         ammo_crate: [
@@ -1452,7 +1454,6 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { item: "m590m", weight: 1 },
             { item: "rsh12", weight: 1 },
             { item: "vepr12", weight: 1 },
-            { item: "dp12", weight: 1 },
             { item: "model_89", weight: 1 },
             { item: "rgs", weight: 1 },
             { item: "vks", weight: 0.5 },
@@ -1480,6 +1481,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { item: "l115a1", weight: 1 },
             { item: "mk18", weight: 1 },
             { item: "mp153", weight: 0.75 },
+            { item: "dp12", weight: 0.6 },
             { item: "usas12", weight: 0.5 },
             { item: "g19", weight: 0.02 }
         ],
