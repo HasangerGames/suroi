@@ -3120,6 +3120,51 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
         },
         noSwap: true
     },
+    {
+        idString: "aged_seedshot",
+        name: "Seedshot",
+        defType: DefinitionType.Gun,
+        tier: Tier.A,
+        ammoType: "seed",
+        ammoSpawnAmount: 0,
+        capacity: 12,
+        extendedCapacity: 24,
+        reloadTime: 3,
+        fireDelay: 110,
+        switchDelay: 370,
+        speedMultiplier: 1,
+        recoilMultiplier: 0.75,
+        recoilDuration: 205,
+        fireMode: FireMode.Auto,
+        shotSpread: 1.15,
+        moveSpread: 5.58,
+        length: 7.9,
+        fists: {
+            left: Vec(115, -6),
+            right: Vec(40, 0),
+            rightZIndex: 4,
+            animationDuration: 100
+        },
+        cycle: {
+            delay: 120,
+            shotsRequired: 9
+        },
+        image: { position: Vec(90, 1) },
+        gasParticles: gasParticlePresets.automatic,
+        ballistics: {
+            damage: 8,
+            obstacleMultiplier: 1.65,
+            speed: 0.245,
+            range: 180,
+            tracer: {
+                image: "seed_trail",
+                length: 1.4
+            },
+            noReflect: true,
+            onHitProjectile: "proj_seed"
+        },
+        noSwap: true
+    },
     //
     // Dev weapons
     //

@@ -87,6 +87,7 @@ export const enum PerkIds {
     Butterfingers = "butterfingers",
     Overweight = "overweight",
     WeakStomach = "weak_stomach",
+    AchingKnees = "aching_knees",
 
     //
     // Infection
@@ -530,6 +531,15 @@ const perks = [
         },
         decalFadeTime: 30e3,
         emote: "vomiting_face",
+        noDrop: true
+    },
+    {
+        idString: PerkIds.AchingKnees,
+        name: "Aching Knees",
+        defType: DefinitionType.Perk,
+        category: PerkCategories.Halloween,
+        quality: PerkQualities.Negative,
+        updateInterval: 3000,
         noDrop: true
     },
     //

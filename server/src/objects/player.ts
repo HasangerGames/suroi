@@ -597,6 +597,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
     hasMagneticField = false;
 
+    reversedMovement = false;
+
     readonly perks: PerkDefinition[] = [];
 
     perkUpdateMap?: Map<PerkDefinition, number>; // key = perk, value = last updated
@@ -1204,6 +1206,12 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             movement = Vec(x, y);
         }
 
+        // el reversio
+        if (this.hasPerk(PerkIds.AchingKnees) && this.reversedMovement) {
+            movement.x = -movement.x;
+            movement.y = -movement.y;
+        }
+
         // Update position
         const oldPosition = Vec.clone(this.position);
         this._movementVector = Vec.scale(movement, speed);
@@ -1535,6 +1543,10 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                             this.layer
                         );
                         this.game.addTimeout(() => this.game.grid.removeObject(decal), perk.decalFadeTime);
+                        break;
+                    }
+                    case PerkIds.AchingKnees: {
+                        this.reversedMovement = !this.reversedMovement;
                         break;
                     }
                 }
@@ -2103,6 +2115,10 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 this.updateMapIndicator();
                 break;
             }
+            case PerkIds.AchingKnees: {
+                this.reversedMovement = false;
+                break;
+            }
         }
         // ! evil ends here
 
@@ -2216,6 +2232,10 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             }
             case PerkIds.WeakStomach: {
                 this.storedSpreadMod = 1;
+                break;
+            }
+            case PerkIds.AchingKnees: {
+                this.reversedMovement = false;
                 break;
             }
         }

@@ -1036,8 +1036,8 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { item: "g17_scoped", weight: 0.25 },
             { item: "firework_launcher", weight: 0.25 },
             { item: "ulr338", weight: 0.25 },
+            { item: "aged_seedshot", weight: 0.2 },
             { item: "dp12", weight: 0.1 },
-            { item: "seedshot", weight: 0.1  },
             { item: "545mm", weight: 0.005 }
         ],
         pumpkin_airdrop: [

@@ -255,7 +255,7 @@ Guns:
     World Image: Winter
     Killfeed Image: eiπ
 
-  Seedshot:
+  Seedshot (Aged, Normal):
     Loot Image: Skullboi249
     World Image: Skullboi249
     Killfeed Image: Skullboi249
@@ -482,6 +482,7 @@ Perk Icons:
   Enternal Magnetism: sniperboi4/TjCj
   Weak Stomach: Skullboi249
   Plumpkin's Blessing: sniperboi4/TjCj
+  Aching Knees: Skullboi249
 
 Saw Killfeed - AnnihilatingFox
 
