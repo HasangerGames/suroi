@@ -1897,6 +1897,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
 
             // 15%
             { item: "ots23", weight: 0.075 },
+            { item: "ttk_esaul", weight: 0.075 },
 
             // 10%
             { item: "mg36", weight: 0.033 },
@@ -1936,6 +1937,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
 
             // 16%
             { item: "ots23", weight: 0.032 },
+            { item: "ttk_esaul", weight: 0.032 },
             { item: "m16a2", weight: 0.032 },
             { item: "fn_fal", weight: 0.032 },
             { item: "mcx_spear", weight: 0.032 },
@@ -1988,6 +1990,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { item: "rpk74", weight: 0.95 },
             { item: "stoner_63", weight: 0.95 },
             { item: "mcx_spear", weight: 0.95 },
+            { item: "dual_ttk_esaul", weight: 0.95 },
             { item: "mosin_nagant", weight: 0.9 },
             { item: "tango_51", weight: 0.9 },
             { item: "model_89", weight: 0.6 },
@@ -2055,6 +2058,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
 
                 // 10%
                 { item: "rsh12", weight: 0.03 },
+                { item: "dual_ttk_esaul", weight: 0.03 },
                 { item: "stoner_63", weight: 0.03 },
                 { item: "mg36", weight: 0.03 },
 

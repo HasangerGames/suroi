@@ -702,6 +702,72 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
             reloadTime: 4
         }
     },
+    {
+        idString: "ttk_esaul",
+        name: "TTK Esaul",
+        defType: DefinitionType.Gun,
+        tier: Tier.B,
+        ammoType: "545mm",
+        ammoSpawnAmount: 30,
+        fireDelay: 300,
+        switchDelay: 200,
+        speedMultiplier: 1.136,
+        recoilMultiplier: 0.7,
+        recoilDuration: 125,
+        fireMode: FireMode.Single,
+        shotSpread: 2,
+        moveSpread: 5,
+        length: 6,
+        fists: {
+            left: Vec(40, 0),
+            right: Vec(40, 0),
+            leftZIndex: 4,
+            rightZIndex: 4,
+            animationDuration: 100
+        },
+        casingParticles: [{
+            position: Vec(3.5, 0.3),
+            frame: "casing_545mm",
+            on: "reload",
+            count: 5,
+            velocity: {
+                x: {
+                    min: -8,
+                    max: -2
+                },
+                y: {
+                    min: 2,
+                    max: 9,
+                    randomSign: true
+                }
+            }
+        }],
+        image: { position: Vec(77, 0) },
+        inventoryScale: 0.85,
+        gasParticles: gasParticlePresets.pistol,
+        capacity: 5,
+        reloadTime: 2.0,
+        ballistics: {
+            damage: 40,
+            obstacleMultiplier: 1,
+            speed: 0.4,
+            range: 170,
+            tracer: {
+                width: 1.1,
+                length: 1.4
+            }
+        },
+        dual: {
+            tier: Tier.A,
+            leftRightOffset: 1.3,
+            ammoSpawnAmount: 60,
+            fireDelay: 150,
+            shotSpread: 2,
+            moveSpread: 5,
+            capacity: 10,
+            reloadTime: 4.0
+        }
+    },
     //
     // Submachine guns (SMGs)
     //
