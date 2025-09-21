@@ -426,6 +426,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         layer: true,
         activeC4s: true,
         perks: true,
+        updatedPerks: true,
         teamID: true
     };
 
@@ -600,6 +601,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     reversedMovement = false;
 
     readonly perks: PerkDefinition[] = [];
+
+    updatedPerks: PerkDefinition[] = [];
 
     perkUpdateMap?: Map<PerkDefinition, number>; // key = perk, value = last updated
 
@@ -1436,9 +1439,18 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         // Update perks
         if (this.perkUpdateMap !== undefined) {
             for (const [perk, lastUpdated] of this.perkUpdateMap.entries()) {
+
+                this.updatePerk(perk);
+
                 if (this.game.now - lastUpdated <= (perk.updateInterval ?? 1000)) continue;
 
                 this.perkUpdateMap.set(perk, this.game.now);
+                
+                if (this.updatedPerks.includes(perk)) {
+                    removeFrom(this.updatedPerks, perk);
+                    this.dirty.updatedPerks = true;
+                }
+                
                 // ! evil starts here
                 switch (perk.idString) {
                     case PerkIds.Bloodthirst: {
@@ -1552,6 +1564,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 }
                 // ! evil ends here
             }
+            
         }
 
         // Update Thermal Goggles & Hollow Points perks
@@ -1864,6 +1877,10 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             playerData.perks = player.perks;
         }
 
+        if (player.dirty.updatedPerks || forceInclude) {
+            playerData.updatedPerks = player.updatedPerks;
+        }
+
         if (player.dirty.teamID || forceInclude) {
             playerData.teamID = player.teamID;
         }
@@ -1994,6 +2011,15 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         this._action.dirty = false;
     }
 
+    updatePerk(perk: ReifiableDef<PerkDefinition>): void {
+        const perkDef = Perks.reify(perk);
+
+        if (!this.updatedPerks.includes(perkDef)) {
+            this.updatedPerks.push(perkDef);
+            this.dirty.updatedPerks = true;
+        }
+    }
+
     addPerk(perk: ReifiableDef<PerkDefinition>): void {
         const perkDef = Perks.reify(perk);
         if (this.perks.includes(perkDef)) return;
@@ -2003,6 +2029,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         if ("updateInterval" in perkDef) {
             (this.perkUpdateMap ??= new Map<PerkDefinition, number>())
                 .set(perkDef, this.game.now);
+
+            this.updatePerk(perkDef);
         }
 
         if (this.hasPerk(PerkIds.HollowPoints) && this.hasPerk(PerkIds.ExperimentalForcefield) && this.hasPerk(PerkIds.ThermalGoggles)) {
@@ -2147,6 +2175,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             if (perkUpdateMap?.size === 0) {
                 this.perkUpdateMap = undefined;
             }
+
+            removeFrom(this.updatedPerks, perkDef);
         }
 
         // ! evil starts here
