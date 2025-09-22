@@ -10,8 +10,8 @@
   "keywords": [],
   "license": "GPL-3.0",
   "devDependencies": {
-    "@types/bun": "^1.2.21",
-    "@types/node": "^24.3.3",
+    "@types/bun": "^1.2.22",
+    "@types/node": "^24.5.2",
     "json-schema-to-typescript": "^15.0.4",
     "typescript": "^5.9.2"
   },
