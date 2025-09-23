@@ -30,7 +30,8 @@ export const enum CustomTeamMessages {
     Settings,
     KickPlayer,
     Start,
-    Started
+    Started,
+    KeepAlive
 }
 
 export interface CustomTeamPlayerInfo {
@@ -70,5 +71,5 @@ export type CustomTeamMessage =
         playerId: number
     }
     | {
-        type: CustomTeamMessages.Start | CustomTeamMessages.Started
+        type: CustomTeamMessages.Start | CustomTeamMessages.Started | CustomTeamMessages.KeepAlive
     };

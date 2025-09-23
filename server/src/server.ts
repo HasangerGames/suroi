@@ -182,6 +182,7 @@ if (Cluster.isPrimary && require.main === module) {
             }
         },
         websocket: {
+            idleTimeout: 960,
             open(socket: Bun.ServerWebSocket<CustomTeamPlayerContainer>) {
                 const { player } = socket.data;
                 player.socket = socket;

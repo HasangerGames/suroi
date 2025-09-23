@@ -146,9 +146,15 @@ export class CustomTeam {
 
     gameID?: number;
     resetTimeout?: NodeJS.Timeout;
+    keepAliveInterval?: NodeJS.Timeout;
 
     constructor(readonly gameManager: GameManager) {
         this.id = Array.from({ length: 4 }, () => CustomTeam._idChars.charAt(random(0, CustomTeam._idCharMax))).join("");
+
+        // Send a keep alive message every 10 minutes so the WebSocket connection isn't terminated
+        this.keepAliveInterval = setInterval(() => {
+            this._publishMessage({ type: CustomTeamMessages.KeepAlive });
+        }, 600000);
     }
 
     addPlayer(player: CustomTeamPlayer): void {
@@ -169,6 +175,7 @@ export class CustomTeam {
 
         if (!this.players.length) {
             clearTimeout(this.resetTimeout);
+            clearInterval(this.keepAliveInterval);
             return;
         }
 
