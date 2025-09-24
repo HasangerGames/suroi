@@ -987,45 +987,11 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
 
-## 🇮🇷 فارسی (92% Complete) - fa.hjson
+## 🇮🇷 فارسی (100% Complete) - fa.hjson
 
 ### (No Invalid Keys)
 
-### Undefined Keys
-
-- Key `bindings_use_consumable vaccine_syringe` is not defined
-- Key `msg_contact` is not defined
-- Key `power_vest` is not defined
-- Key `power_helmet` is not defined
-- Key `power_pack` is not defined
-- Key `barrel_explosion` is not defined
-- Key `stove_explosion` is not defined
-- Key `fireplace_explosion` is not defined
-- Key `control_panel_explosion` is not defined
-- Key `super_barrel_explosion` is not defined
-- Key `small_refinery_barrel_explosion` is not defined
-- Key `large_refinery_barrel_explosion` is not defined
-- Key `silo_explosion` is not defined
-- Key `propane_tank_explosion` is not defined
-- Key `firework_launcher_explosion` is not defined
-- Key `seed_explosion` is not defined
-- Key `coal_explosion` is not defined
-- Key `frag_grenade_explosion` is not defined
-- Key `confetti_grenade_explosion` is not defined
-- Key `pumpkin_explosion` is not defined
-- Key `region_1v1` is not defined
-- Key `region_ea1v1` is not defined
-- Key `region_test` is not defined
-- Key `overclocked` is not defined
-- Key `overclocked_desc` is not defined
-- Key `reflective_rounds` is not defined
-- Key `reflective_rounds_desc` is not defined
-- Key `priority_target` is not defined
-- Key `priority_target_desc` is not defined
-- Key `butterfingers` is not defined
-- Key `butterfingers_desc` is not defined
-- Key `overweight` is not defined
-- Key `overweight_desc` is not defined
+### (No Undefined Keys)
 
 ## 🇫🇮 suomi (60% Complete) - fi.hjson
 

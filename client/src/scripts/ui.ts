@@ -852,6 +852,10 @@ export async function setUpUI(): Promise<void> {
         {
             name: "dReammakers.",
             link: "https://www.youtube.com/channel/UCLid-yvmRUmpA5NBP34SOug"
+        },
+        {
+            name: "at6030",
+            link: "https://www.youtube.com/@aat6030"
         }
     ];
     const youtuber = pickRandomInArray(youtubers);
