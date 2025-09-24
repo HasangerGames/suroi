@@ -16,7 +16,7 @@ import { DefinitionType, type ReferenceTo, type ReifiableDef } from "@common/uti
 import { pickRandomInArray } from "@common/utils/random";
 import { sound } from "@pixi/sound";
 import $ from "jquery";
-import { Color, isWebGLSupported, isWebGPUSupported } from "pixi.js";
+import { Color, ColorMatrixFilter, isWebGLSupported, isWebGPUSupported } from "pixi.js";
 import { Config, type Region, type ServerInfo } from "./config";
 import { GameConsole } from "./console/gameConsole";
 import { defaultClientCVars, type CVarTypeMapping } from "./console/variables";
@@ -33,6 +33,7 @@ import { html, requestFullscreen } from "./utils/misc";
 import { spritesheetLoadPromise } from "./utils/pixi";
 import { TRANSLATIONS, getTranslatedString } from "./utils/translations/translations";
 import type { TranslationKeys } from "./utils/translations/typings";
+import { CameraManager } from "./managers/cameraManager";
 
 interface RegionInfo extends Region {
     readonly playerCount?: number
@@ -301,15 +302,15 @@ export async function finalizeUI(): Promise<void> {
         }
     }
 
-    // Darken canvas (halloween mode)
-    // TODO Use pixi for this
+    // Apply filters to canvas
+    let filter: ColorMatrixFilter | undefined;
     if (canvasFilters !== undefined) {
-        $("#game-canvas").css({
-            "filter": `brightness(${canvasFilters.brightness}) saturate(${canvasFilters.saturation})`,
-            "position": "relative",
-            "z-index": "-1"
-        });
+        filter = new ColorMatrixFilter();
+        filter.saturate(-(1 - canvasFilters.saturation));
+        filter.brightness(canvasFilters.brightness, true);
     }
+    CameraManager.container.filters = filter ? [filter] : [];
+    MapManager.container.filters = filter ? [filter] : [];
 }
 
 // biome-ignore lint/suspicious/useAwait: there's a lot going on in this function
