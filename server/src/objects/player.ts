@@ -1589,7 +1589,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                         !player.isPlayer
                         || player === this
                         || player.dead
-                        || (this.game.isTeamMode && player.teamID === this.teamID)
+                        || this.isSameTeam(player)
                         || !player.hitbox.collidesWith(detectionHitbox)
                     ) continue;
 
@@ -1642,11 +1642,11 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 if (
                     (!object.isPlayer && !object.isLoot)
                     || !adjacentOrEqualLayer(this.layer, object.layer)
-                    || (object.isPlayer && object.id === this.id)
+                    || (object.isPlayer && (object.id === this.id || this.isSameTeam(object)))
                 ) continue;
 
                 // Player
-                if (object.isPlayer && (this.game.isTeamMode && object.teamID !== this.teamID)) {
+                if (object.isPlayer) {
                     const canDamage = object.health > perk.minHealth && this.health < this.maxHealth;
                     const collision = object.hitbox.collidesWith(detectionHitbox) && canDamage;
 
@@ -1665,7 +1665,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 }
 
                 // Loot
-                if (object.isLoot && detectionHitbox.collidesWith(object.hitbox)) {
+                if (object.isLoot && object.hitbox.collidesWith(detectionHitbox)) {
                     const direction = Vec.sub(this.position, object.position),
                           normalizedDir = Vec.normalize(direction);
 
@@ -2024,6 +2024,14 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         }
         this._animation.dirty = false;
         this._action.dirty = false;
+    }
+
+    /**
+     * @param player 
+     * @returns true if the player is on the same team with the given player.
+     */
+    isSameTeam(player: Player): boolean {
+        return this.game.isTeamMode && player.teamID === this.teamID;
     }
 
     // updatePerk(perk: ReifiableDef<PerkDefinition>): void {
