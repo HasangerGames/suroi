@@ -1637,32 +1637,47 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             const perk = PerkData[PerkIds.EnternalMagnetism];
             const detectionHitbox = new CircleHitbox(perk.radius, this.position);
 
-            for (const player of this.game.grid.intersectsHitbox(detectionHitbox)) {
+            let hasMagneticField = false; // flag
+            for (const object of this.game.grid.intersectsHitbox(detectionHitbox)) {
                 if (
-                    !player.isPlayer
-                    || !adjacentOrEqualLayer(this.layer, player.layer)
-                    || !(this.game.teamMode && this.teamID === player.teamID)
-                    || player.id === this.id
+                    (!object.isPlayer && !object.isLoot)
+                    || !adjacentOrEqualLayer(this.layer, object.layer)
+                    || (object.isPlayer && object.id === this.id)
                 ) continue;
 
-                const canDamage = player.health > perk.minHealth && this.health < this.maxHealth;
-                const collision = player.hitbox.collidesWith(detectionHitbox) && canDamage;
-                        
-                if (this.hasMagneticField !== collision) {
-                    this.hasMagneticField = collision;
-                    this.setDirty();
+                // Player
+                if (object.isPlayer && (this.game.isTeamMode && object.teamID !== this.teamID)) {
+                    const canDamage = object.health > perk.minHealth && this.health < this.maxHealth;
+                    const collision = object.hitbox.collidesWith(detectionHitbox) && canDamage;
+
+                    // Fake infected effect for aura on the player object, indicating it's affected by the field.
+                    if (object.infected !== collision) {
+                        object.infected = collision;
+                        object.setDirty();
+                    }
+
+                    if (object.health > perk.minHealth && collision) {
+                        const depl = perk.depletion;
+                        object.health = Numeric.max(object.health - depl, perk.minHealth);
+                        this.health = Numeric.max(this.health + depl, perk.minHealth);
+                        hasMagneticField = true;
+                    }
                 }
 
-                if (player.infected !== collision) {
-                    player.infected = collision;
-                    player.setDirty();
-                }
+                // Loot
+                if (object.isLoot && detectionHitbox.collidesWith(object.hitbox)) {
+                    const direction = Vec.sub(this.position, object.position),
+                          normalizedDir = Vec.normalize(direction);
 
-                if (player.health > perk.minHealth && collision) {
-                    const depl = perk.depletion;
-                    player.health = Numeric.max(player.health - depl, perk.minHealth);
-                    this.health = Numeric.max(this.health + depl, perk.minHealth);
+                    object.push(Math.atan2(normalizedDir.y, normalizedDir.x), perk.lootPush);
+                    hasMagneticField = true;
                 }
+            }
+
+            // Field/Aura
+            if (hasMagneticField !== this.hasMagneticField) {
+                this.hasMagneticField = hasMagneticField;
+                this.setDirty();
             }
         }
 
@@ -2030,7 +2045,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             (this.perkUpdateMap ??= new Map<PerkDefinition, number>())
                 .set(perkDef, this.game.now);
 
-            this.updatePerk(perkDef);
+           // this.updatePerk(perkDef);
         }
 
         if (this.hasPerk(PerkIds.HollowPoints) && this.hasPerk(PerkIds.ExperimentalForcefield) && this.hasPerk(PerkIds.ThermalGoggles)) {

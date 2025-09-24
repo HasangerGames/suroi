@@ -354,6 +354,7 @@ const perks = [
         depletion: 0.05,
         spriteScale: 1.5,
         minHealth: 5,
+        lootPush: 0.0005,
         noDrop: true
     },
     {
