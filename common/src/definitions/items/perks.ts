@@ -539,7 +539,7 @@ const perks = [
         defType: DefinitionType.Perk,
         category: PerkCategories.Halloween,
         quality: PerkQualities.Negative,
-        updateInterval: 3000,
+        updateInterval: 10000,
         noDrop: true
     },
     //

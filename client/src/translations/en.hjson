@@ -525,7 +525,7 @@
 "weak_stomach": "Weak Stomach"
 "weak_stomach_desc": "Leave pools of vomit on the ground every 5 seconds.<br>Your weapon spread will also be increased."
 "aching_knees": "Aching Knees"
-"aching_knees_desc": "Every 3 seconds, your movement controls will be reversed."
+"aching_knees_desc": "Every 10 seconds, your movement controls will be reversed."
 "plumpkin_blessing": "Plumpkin's Blessing"
 "plumpkin_blessing_desc": "Swapping items and looting pumpkin-material obstacles will provide high quality drops.<br>Receive 1.5x more damage."
 "infected": "Infected"

@@ -52,11 +52,11 @@ class UIManagerClass {
     private minAdrenaline = 0;
     private adrenaline = 0;
 
-    private perkTimers?: Map<PerkDefinition, {
-        startTime: number,
-        endTime: number,
-        ended?: boolean
-    }>;
+    // private perkTimers?: Map<PerkDefinition, {
+    //     startTime: number,
+    //     endTime: number,
+    //     ended?: boolean
+    // }>;
 
     readonly inventory: {
         activeWeaponIndex: number
@@ -623,7 +623,7 @@ class UIManagerClass {
             items,
             activeC4s,
             perks,
-            updatedPerks,
+           // updatedPerks,
             blockEmoting
         } = data;
 
@@ -863,47 +863,46 @@ class UIManagerClass {
                 }
 
                 if (oldPerks[i] !== newPerk) {
-                    this.perkTimers?.delete(oldPerks[i]);
+                    // this.perkTimers?.delete(oldPerks[i]);
                     this.updatePerkSlot(newPerk, i);
                 }
             }
         }
 
-        if (this.perkTimers !== undefined) {
-            const currentTime = Date.now();
+        // if (this.perkTimers !== undefined) {
+        //     const currentTime = Date.now();
 
-            for (const [perk, timer] of this.perkTimers) {
-                const timeLeft = Math.max(timer.endTime - currentTime, 0),
-                    seconds = Math.ceil(timeLeft / 1000),
-                    totalSeconds = Math.ceil((timer.endTime - timer.startTime) / 1000);
+        //     for (const [perk, timer] of this.perkTimers) {
+        //         const timeLeft = Math.max(timer.endTime - currentTime, 0),
+        //             seconds = Math.ceil(timeLeft / 1000),
+        //             totalSeconds = Math.ceil((timer.endTime - timer.startTime) / 1000);
 
-                const index = PerkManager.perks.indexOf(perk);
+        //         if (seconds === 0) {
+        //             this.perkTimers.delete(perk);
+        //             continue;
+        //         }
 
-                if (seconds === 0) {
-                    this.perkTimers.delete(perk);
-                } else {
-                    const percentage = (1 - seconds / totalSeconds) * 100;
-                    this._perkSlots[index]?.children('.item-timer').css(
-                        'background',
-                        `linear-gradient(to left, #9e9e9e ${percentage}%, transparent ${percentage}%)`
-                    );
-                }
-            }
-        }
+        //         const percentage = (1 - seconds / totalSeconds) * 100;
+        //         const index = PerkManager.perks.indexOf(perk);
+                    
+        //         this._perkSlots[index]?.children('.item-timer-text').text(seconds);
+        //         this._perkSlots[index]?.children('.item-timer').css("background-size", `${percentage}% 100%`);
+        //     }
+        // }
 
-        if (updatedPerks) {
-            for (const perk of updatedPerks) {
-                if (perk === undefined) continue;
-                const time = perk.updateInterval ?? 1000;
+        // if (updatedPerks) {
+        //     for (const perk of updatedPerks) {
+        //         if (perk === undefined) continue;
+        //         const time = perk.updateInterval ?? 1000;
 
-                if (this.perkTimers?.get(perk) === undefined) {  
-                    (this.perkTimers ??= new Map<PerkDefinition, { startTime: number; endTime: number }>()).set(perk, {
-                        startTime: Date.now(),
-                        endTime: Date.now() + time
-                    });      
-                }
-            }
-        }
+        //         if (this.perkTimers?.get(perk) === undefined) {  
+        //             (this.perkTimers ??= new Map<PerkDefinition, { startTime: number; endTime: number }>()).set(perk, {
+        //                 startTime: Date.now(),
+        //                 endTime: Date.now() + time
+        //             });      
+        //         }
+        //     }
+        // }
 
         this.blockEmoting = blockEmoting;
     }
@@ -1172,12 +1171,14 @@ class UIManagerClass {
         container.css("visibility", PerkManager.has(perkDef) ? "visible" : "hidden");
         if (container.hasClass("deactivated")) container.toggleClass("deactivated");
 
-        if (perkDef.updateInterval === undefined) {
-            this._perkSlots[index]?.children(".item-timer").hide();
-        }
-        else {
-            this._perkSlots[index]?.children(".item-timer").show();
-        }
+        // if (perkDef.updateInterval === undefined) {
+        //     this._perkSlots[index]?.children(".item-timer").hide();
+        //     this._perkSlots[index]?.children(".item-timer-text").hide();
+        // }
+        // else {
+        //     this._perkSlots[index]?.children(".item-timer").show();
+        //     this._perkSlots[index]?.children(".item-timer-text").show();
+        // }
 
         container.css("outline", perkDef.noDrop || PerkManager.has(PerkIds.Infected) || Game.spectating ? "none" : "");
 
