@@ -2735,6 +2735,38 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     mansionWall(3, RectangleHitbox.fromRect(13.39, 2)),
 
     {
+        idString: "mansion_damaged_wall_1",
+        name: "Mansion Damaged Wall 1",
+        defType: DefinitionType.Obstacle,
+        material: "wood",
+        hideOnMap: true,
+        noResidue: true,
+        health: 200,
+        hitbox: RectangleHitbox.fromRect(2, 7.77, Vec(0, 0.22)),
+        rotationMode: RotationMode.Limited,
+        allowFlyover: FlyoverPref.Never,
+        frames: {
+            particle: "mansion_wall_particle"
+        },
+        isWall: true,
+    },
+    {
+        idString: "mansion_damaged_wall_2",
+        name: "Mansion Damaged Wall 2",
+        defType: DefinitionType.Obstacle,
+        material: "wood",
+        hideOnMap: true,
+        noResidue: true,
+        health: 200,
+        hitbox: RectangleHitbox.fromRect(2.01, 7.07, Vec(0, -0.29)),
+        rotationMode: RotationMode.Limited,
+        allowFlyover: FlyoverPref.Never,
+        frames: {
+            particle: "mansion_wall_particle"
+        },
+        isWall: true,
+    },
+    {
         idString: "fridge",
         name: "Fridge",
         defType: DefinitionType.Obstacle,

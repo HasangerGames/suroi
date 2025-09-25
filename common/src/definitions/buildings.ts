@@ -16339,6 +16339,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "mansion_bottom_floor_colliders", position: Vec(0, 0), rotation: 0 },
             { idString: "mansion_collider_hack", position: Vec(0, 0), rotation: 0, layer: Layer.ToUpstairs },
             { idString: "mansion_stair", position: Vec(-59.76, -4.31), rotation: 0, layer: Layer.ToUpstairs },
+            { idString: "mansion_damaged_wall_1", position: Vec(-15.14, 10.66), rotation: 0 },
+            { idString: "mansion_damaged_wall_2", position: Vec(-15.14, -4.96), rotation: 0 },
             { idString: "cobweb", position: Vec(-9.19, 26.33), rotation: 1 },
             { idString: "cobweb", position: Vec(-60.35, -21.76), rotation: 0 },
             { idString: "bookshelf", position: Vec(6.26, 0.08), rotation: 1 },

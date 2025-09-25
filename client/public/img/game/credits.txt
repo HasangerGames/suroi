@@ -424,6 +424,7 @@ Buildings:
   Train Station (and all train variations): TimoPro
   Graveyard: TimoPro
   Medical Camp: TimoPro
+  Mansion: TimoPro
 
 Emotes:
   Primary Artists: EndermanKing, Slapdap, Tofi38
