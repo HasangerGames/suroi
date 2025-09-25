@@ -154,6 +154,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `reflective_rounds_desc` is not defined
 - Key `plumpkin_gamble` is not defined
 - Key `plumpkin_gamble_desc` is not defined
+- Key `plumpkin_shuffle` is not defined
+- Key `plumpkin_shuffle_desc` is not defined
 - Key `lycanthropy` is not defined
 - Key `lycanthropy_desc` is not defined
 - Key `bloodthirst` is not defined
@@ -205,7 +207,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
 
-## 🇧🇷 Português (Brasil) (88% Complete) - br.hjson
+## 🇧🇷 Português (Brasil) (87% Complete) - br.hjson
 
 ### Invalid Keys
 
@@ -258,6 +260,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `region_1v1` is not defined
 - Key `region_ea1v1` is not defined
 - Key `region_test` is not defined
+- Key `plumpkin_shuffle` is not defined
+- Key `plumpkin_shuffle_desc` is not defined
 - Key `enternal_magnetism` is not defined
 - Key `enternal_magnetism_desc` is not defined
 - Key `weak_stomach` is not defined
@@ -410,6 +414,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `reflective_rounds_desc` is not defined
 - Key `plumpkin_gamble` is not defined
 - Key `plumpkin_gamble_desc` is not defined
+- Key `plumpkin_shuffle` is not defined
+- Key `plumpkin_shuffle_desc` is not defined
 - Key `lycanthropy` is not defined
 - Key `lycanthropy_desc` is not defined
 - Key `bloodthirst` is not defined
@@ -573,6 +579,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `reflective_rounds_desc` is not defined
 - Key `plumpkin_gamble` is not defined
 - Key `plumpkin_gamble_desc` is not defined
+- Key `plumpkin_shuffle` is not defined
+- Key `plumpkin_shuffle_desc` is not defined
 - Key `lycanthropy` is not defined
 - Key `lycanthropy_desc` is not defined
 - Key `bloodthirst` is not defined
@@ -630,7 +638,7 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### (No Undefined Keys)
 
-## 🇪🇸 Español (60% Complete) - es.hjson
+## 🇪🇸 Español (59% Complete) - es.hjson
 
 ### Invalid Keys
 
@@ -757,6 +765,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `reflective_rounds_desc` is not defined
 - Key `plumpkin_gamble` is not defined
 - Key `plumpkin_gamble_desc` is not defined
+- Key `plumpkin_shuffle` is not defined
+- Key `plumpkin_shuffle_desc` is not defined
 - Key `lycanthropy` is not defined
 - Key `lycanthropy_desc` is not defined
 - Key `bloodthirst` is not defined
@@ -1011,6 +1021,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overclocked_desc` is not defined
 - Key `reflective_rounds` is not defined
 - Key `reflective_rounds_desc` is not defined
+- Key `plumpkin_shuffle` is not defined
+- Key `plumpkin_shuffle_desc` is not defined
 - Key `baby_plumpkin_pie_desc` is not defined
 - Key `priority_target` is not defined
 - Key `priority_target_desc` is not defined
@@ -1068,6 +1080,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overclocked_desc` is not defined
 - Key `reflective_rounds` is not defined
 - Key `reflective_rounds_desc` is not defined
+- Key `plumpkin_shuffle` is not defined
+- Key `plumpkin_shuffle_desc` is not defined
 - Key `priority_target` is not defined
 - Key `priority_target_desc` is not defined
 - Key `butterfingers` is not defined
@@ -1215,6 +1229,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `reflective_rounds_desc` is not defined
 - Key `plumpkin_gamble` is not defined
 - Key `plumpkin_gamble_desc` is not defined
+- Key `plumpkin_shuffle` is not defined
+- Key `plumpkin_shuffle_desc` is not defined
 - Key `lycanthropy` is not defined
 - Key `lycanthropy_desc` is not defined
 - Key `bloodthirst` is not defined
@@ -1322,6 +1338,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overclocked_desc` is not defined
 - Key `reflective_rounds` is not defined
 - Key `reflective_rounds_desc` is not defined
+- Key `plumpkin_shuffle` is not defined
+- Key `plumpkin_shuffle_desc` is not defined
 - Key `baby_plumpkin_pie_desc` is not defined
 - Key `priority_target` is not defined
 - Key `priority_target_desc` is not defined
@@ -1398,6 +1416,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `reflective_rounds_desc` is not defined
 - Key `plumpkin_gamble` is not defined
 - Key `plumpkin_gamble_desc` is not defined
+- Key `plumpkin_shuffle` is not defined
+- Key `plumpkin_shuffle_desc` is not defined
 - Key `lycanthropy` is not defined
 - Key `lycanthropy_desc` is not defined
 - Key `bloodthirst` is not defined
@@ -1596,6 +1616,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `reflective_rounds_desc` is not defined
 - Key `plumpkin_gamble` is not defined
 - Key `plumpkin_gamble_desc` is not defined
+- Key `plumpkin_shuffle` is not defined
+- Key `plumpkin_shuffle_desc` is not defined
 - Key `lycanthropy` is not defined
 - Key `lycanthropy_desc` is not defined
 - Key `bloodthirst` is not defined
@@ -1647,7 +1669,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
 
-## 🇭🇺 Magyar (84% Complete) - hu.hjson
+## 🇭🇺 Magyar (83% Complete) - hu.hjson
 
 ### Invalid Keys
 
@@ -1700,6 +1722,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overclocked_desc` is not defined
 - Key `reflective_rounds` is not defined
 - Key `reflective_rounds_desc` is not defined
+- Key `plumpkin_shuffle` is not defined
+- Key `plumpkin_shuffle_desc` is not defined
 - Key `baby_plumpkin_pie_desc` is not defined
 - Key `priority_target` is not defined
 - Key `priority_target_desc` is not defined
@@ -1724,7 +1748,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
 
-## 🇮🇹 Italiano (54% Complete) - it.hjson
+## 🇮🇹 Italiano (53% Complete) - it.hjson
 
 ### Invalid Keys
 
@@ -1884,6 +1908,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `reflective_rounds_desc` is not defined
 - Key `plumpkin_gamble` is not defined
 - Key `plumpkin_gamble_desc` is not defined
+- Key `plumpkin_shuffle` is not defined
+- Key `plumpkin_shuffle_desc` is not defined
 - Key `lycanthropy` is not defined
 - Key `lycanthropy_desc` is not defined
 - Key `bloodthirst` is not defined
@@ -2171,6 +2197,8 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### Undefined Keys
 
+- Key `plumpkin_shuffle` is not defined
+- Key `plumpkin_shuffle_desc` is not defined
 - Key `enternal_magnetism` is not defined
 - Key `enternal_magnetism_desc` is not defined
 - Key `weak_stomach` is not defined
@@ -2323,6 +2351,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `reflective_rounds_desc` is not defined
 - Key `plumpkin_gamble` is not defined
 - Key `plumpkin_gamble_desc` is not defined
+- Key `plumpkin_shuffle` is not defined
+- Key `plumpkin_shuffle_desc` is not defined
 - Key `lycanthropy` is not defined
 - Key `lycanthropy_desc` is not defined
 - Key `bloodthirst` is not defined
@@ -2517,6 +2547,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `reflective_rounds_desc` is not defined
 - Key `plumpkin_gamble` is not defined
 - Key `plumpkin_gamble_desc` is not defined
+- Key `plumpkin_shuffle` is not defined
+- Key `plumpkin_shuffle_desc` is not defined
 - Key `lycanthropy` is not defined
 - Key `lycanthropy_desc` is not defined
 - Key `bloodthirst` is not defined
@@ -2600,6 +2632,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `region_test` is not defined
 - Key `reflective_rounds` is not defined
 - Key `reflective_rounds_desc` is not defined
+- Key `plumpkin_shuffle` is not defined
+- Key `plumpkin_shuffle_desc` is not defined
 - Key `enternal_magnetism` is not defined
 - Key `enternal_magnetism_desc` is not defined
 - Key `weak_stomach` is not defined
@@ -2741,6 +2775,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `reflective_rounds_desc` is not defined
 - Key `plumpkin_gamble` is not defined
 - Key `plumpkin_gamble_desc` is not defined
+- Key `plumpkin_shuffle` is not defined
+- Key `plumpkin_shuffle_desc` is not defined
 - Key `lycanthropy` is not defined
 - Key `lycanthropy_desc` is not defined
 - Key `bloodthirst` is not defined
@@ -2909,6 +2945,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `reflective_rounds_desc` is not defined
 - Key `plumpkin_gamble` is not defined
 - Key `plumpkin_gamble_desc` is not defined
+- Key `plumpkin_shuffle` is not defined
+- Key `plumpkin_shuffle_desc` is not defined
 - Key `lycanthropy` is not defined
 - Key `lycanthropy_desc` is not defined
 - Key `bloodthirst` is not defined
@@ -2990,6 +3028,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `region_test` is not defined
 - Key `reflective_rounds` is not defined
 - Key `reflective_rounds_desc` is not defined
+- Key `plumpkin_shuffle` is not defined
+- Key `plumpkin_shuffle_desc` is not defined
 - Key `enternal_magnetism` is not defined
 - Key `enternal_magnetism_desc` is not defined
 - Key `weak_stomach` is not defined
@@ -3047,6 +3087,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `loot_baron_desc` is not defined
 - Key `reflective_rounds` is not defined
 - Key `reflective_rounds_desc` is not defined
+- Key `plumpkin_shuffle` is not defined
+- Key `plumpkin_shuffle_desc` is not defined
 - Key `baby_plumpkin_pie_desc` is not defined
 - Key `enternal_magnetism` is not defined
 - Key `enternal_magnetism_desc` is not defined
@@ -3101,6 +3143,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overclocked_desc` is not defined
 - Key `reflective_rounds` is not defined
 - Key `reflective_rounds_desc` is not defined
+- Key `plumpkin_shuffle` is not defined
+- Key `plumpkin_shuffle_desc` is not defined
 - Key `plumpkin_bomb` is not defined
 - Key `plumpkin_bomb_desc` is not defined
 - Key `priority_target` is not defined
@@ -3119,7 +3163,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `plumpkin_blessing_desc` is not defined
 - Key `experimental_forcefield_desc` is not defined
 
-## 🇹🇷 Turkısh (69% Complete) - tr.hjson
+## 🇹🇷 Turkısh (68% Complete) - tr.hjson
 
 ### Invalid Keys
 
@@ -3210,6 +3254,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `reflective_rounds_desc` is not defined
 - Key `plumpkin_gamble` is not defined
 - Key `plumpkin_gamble_desc` is not defined
+- Key `plumpkin_shuffle` is not defined
+- Key `plumpkin_shuffle_desc` is not defined
 - Key `lycanthropy` is not defined
 - Key `lycanthropy_desc` is not defined
 - Key `bloodthirst` is not defined
@@ -3365,6 +3411,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `reflective_rounds_desc` is not defined
 - Key `plumpkin_gamble` is not defined
 - Key `plumpkin_gamble_desc` is not defined
+- Key `plumpkin_shuffle` is not defined
+- Key `plumpkin_shuffle_desc` is not defined
 - Key `lycanthropy` is not defined
 - Key `lycanthropy_desc` is not defined
 - Key `bloodthirst` is not defined
@@ -3467,6 +3515,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overclocked_desc` is not defined
 - Key `reflective_rounds` is not defined
 - Key `reflective_rounds_desc` is not defined
+- Key `plumpkin_shuffle` is not defined
+- Key `plumpkin_shuffle_desc` is not defined
 - Key `baby_plumpkin_pie_desc` is not defined
 - Key `priority_target` is not defined
 - Key `priority_target_desc` is not defined
@@ -3710,6 +3760,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `region_1v1` is not defined
 - Key `region_ea1v1` is not defined
 - Key `region_test` is not defined
+- Key `plumpkin_shuffle` is not defined
+- Key `plumpkin_shuffle_desc` is not defined
 - Key `enternal_magnetism` is not defined
 - Key `enternal_magnetism_desc` is not defined
 - Key `weak_stomach` is not defined

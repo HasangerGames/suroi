@@ -5,6 +5,7 @@ interface BasePerkDefinition extends ItemDefinition {
     readonly defType: DefinitionType.Perk
 
     readonly category: PerkCategories
+    readonly mechanical?: boolean
     readonly updateInterval?: number
     readonly quality?: PerkQualities
     readonly noSwap?: boolean
@@ -69,6 +70,7 @@ export const enum PerkIds {
     // Halloween Perks
     //
     PlumpkinGamble = "plumpkin_gamble",
+    PlumpkinShuffle = "plumpkin_shuffle",
     Lycanthropy = "lycanthropy",
     Bloodthirst = "bloodthirst",
     PlumpkinBomb = "plumpkin_bomb",
@@ -268,6 +270,7 @@ const perks = [
         name: "Plumpkin Gamble",
         defType: DefinitionType.Perk,
         category: PerkCategories.Halloween,
+        mechanical: true,
 
         noDrop: true,
         plumpkinGambleIgnore: true,
@@ -293,6 +296,20 @@ const perks = [
             krr krr krr *buzzer* aw dang it! krr krr krr *buzzer* aw dang it!
             krr krr krr *buzzer* aw dang it! krr krr krr *buzzer* aw dang it!
             krr krr krr *buzzer* aw dang it! krr krr krr *buzzer* aw dang it!
+        */
+    },
+    {
+        idString: PerkIds.PlumpkinShuffle,
+        name: "Plumpkin Shuffle",
+        defType: DefinitionType.Perk,
+        category: PerkCategories.Halloween,
+        noDrop: true,
+        plumpkinGambleIgnore: true,
+        infectedEffectIgnore: true,
+        mechanical: true
+
+        /*
+            genuinely, fuck your inventory
         */
     },
     {

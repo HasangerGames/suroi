@@ -484,6 +484,7 @@ Perk Icons:
   Weak Stomach: Skullboi249
   Plumpkin's Blessing: sniperboi4/TjCj
   Aching Knees: Skullboi249
+  Plumpkin Shuffle: sniperboi4/TjCj
 
 Saw Killfeed - AnnihilatingFox
 

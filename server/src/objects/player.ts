@@ -2073,6 +2073,27 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 this.addPerk(pickRandomInArray(halloweenPerks));
                 break;
             }
+            case PerkIds.PlumpkinShuffle: {
+                this.removePerk(perk);
+
+                const vests = Armors.definitions.filter(armor => armor.armorType === ArmorType.Vest && !armor.noDrop && !armor.perk),
+                      helmets = Armors.definitions.filter(armor => armor.armorType === ArmorType.Helmet && !armor.noDrop && !armor.perk),
+                      backpacks = Backpacks.definitions.filter(backpack => !backpack.perk),
+                      guns = Guns.definitions.filter(gun => !gun.devItem && !gun.noSwap),
+                      melees = Melees.definitions.filter(melee => !melee.noDrop && !melee.devItem);
+
+
+                this.inventory.helmet = pickRandomInArray(helmets);
+                this.inventory.vest = pickRandomInArray(vests);
+                this.inventory.backpack = pickRandomInArray(backpacks);
+                this.inventory.replaceWeapon(0, pickRandomInArray(guns));
+                this.inventory.replaceWeapon(1, pickRandomInArray(guns));
+                this.inventory.replaceWeapon(2, pickRandomInArray(melees));
+                (this.inventory.getWeapon(0) as GunItem).ammo = (this.inventory.getWeapon(0) as GunItem).definition.capacity;
+                (this.inventory.getWeapon(1) as GunItem).ammo = (this.inventory.getWeapon(1) as GunItem).definition.capacity;
+                this.setDirty();
+                break;
+            }
             case PerkIds.Costumed: {
                 const { choices } = PerkData[PerkIds.Costumed];
 

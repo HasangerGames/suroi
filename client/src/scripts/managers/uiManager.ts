@@ -1143,7 +1143,7 @@ class UIManagerClass {
 
         const folder = perkDef.category === PerkCategories.Halloween ? "halloween" : "shared",
             perkSrc = `./img/game/${folder}/perks/${perkDef.idString}.svg`,
-            lootBg = `./img/game/shared/loot/loot_background_${perkDef.idString === PerkIds.PlumpkinGamble ? PerkIds.PlumpkinGamble : "perk"}.svg`,
+            lootBg = `./img/game/shared/loot/loot_background_${perkDef.mechanical ? "mechanical_perk" : "perk"}.svg`,
             perkName = getTranslatedString(perkDef.idString as unknown as TranslationKeys);
 
         const { killMsgModal, inventoryMsg, interactMsg } = this.ui;
