@@ -2137,8 +2137,8 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
         recoilMultiplier: 0.5,
         recoilDuration: 550,
         bulletCount: 7,
-        shotSpread: 10,
-        moveSpread: 12,
+        shotSpread: 7.5,
+        moveSpread: 10.25,
         jitterRadius: 1,
         length: 7.7,
         cycle: {
