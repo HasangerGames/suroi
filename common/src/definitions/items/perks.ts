@@ -427,6 +427,9 @@ const perks = [
             aegis_crate: 0.75,
 
             airdrop_crate: 0.1,
+            loot_tree: 0.1,
+            loot_barrel: 0.1,
+            gold_rock: 0.1,
 
             baby_plumpkin: 0.01,
             plumpkin: 0.01,

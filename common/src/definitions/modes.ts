@@ -102,6 +102,10 @@ export const Modes: Record<ModeName, ModeDefinition> = {
         spriteSheets: ["shared", "fall", "halloween"],
         specialLogo: true,
         forcedGoldAirdropStage: 5,
+        particleEffects: {
+            frames: ["leaf_particle_1", "leaf_particle_2", "leaf_particle_3"],
+            delay: 1000
+        },
         playButtonImage: "./img/game/halloween/obstacles/jack_o_lantern.svg",
         canvasFilters: {
             brightness: 0.65,
