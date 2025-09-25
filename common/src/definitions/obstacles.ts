@@ -2732,6 +2732,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
 
     mansionWall(1, RectangleHitbox.fromRect(2, 12.5)),
     mansionWall(2, RectangleHitbox.fromRect(21.06, 2)),
+    mansionWall(3, RectangleHitbox.fromRect(13.39, 2)),
 
     {
         idString: "fridge",
@@ -4324,6 +4325,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     gunMount("rpk74", "gun"),
     gunMount("rpk16", "gun"),
     gunMount("fn_fal", "gun"),
+    gunMount("vks", "gun"),
     gunMount(
         "maul",
         "melee",
@@ -5375,6 +5377,22 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         frames: {
             particle: "metal_particle"
         },
+        rotationMode: RotationMode.Limited
+    },
+    {
+        idString: "mansion_stair",
+        name: "Mansion Stair",
+        defType: DefinitionType.Obstacle,
+        material: "wood",
+        health: 100,
+        indestructible: true,
+        isStair: true,
+        activeEdges: {
+            high: 2,
+            low: 0
+        },
+        invisible: true,
+        hitbox: RectangleHitbox.fromRect(11.09, 13.49),
         rotationMode: RotationMode.Limited
     },
     {
@@ -7290,6 +7308,73 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         hitbox: RectangleHitbox.fromRect(2.01, 12.03),
         rotationMode: RotationMode.Limited,
         allowFlyover: FlyoverPref.Never
+    },
+    {
+        idString: "mansion_collider_hack",
+        name: "Mansion Collider Hack",
+        defType: DefinitionType.Obstacle,
+        material: "stone",
+        invisible: true,
+        health: 67,
+        indestructible: true,
+        hideOnMap: true,
+        isWall: true,
+        rotationMode: RotationMode.Limited,
+        collideWithLayers: Layers.Equal,
+        frames: {
+            particle: "mansion_wall_particle"
+        },
+        hitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(2.02, 13.9, Vec(-53.07, -4.15)),
+            RectangleHitbox.fromRect(2.02, 13.56, Vec(-66.22, -4.32))
+        )
+    },
+    {
+        idString: "mansion_bottom_floor_colliders",
+        name: "Mansion Bottom Floor Colliders",
+        defType: DefinitionType.Obstacle,
+        material: "stone",
+        invisible: true,
+        health: 67,
+        indestructible: true,
+        hideOnMap: true,
+        isWall: true,
+        rotationMode: RotationMode.Limited,
+        collideWithLayers: Layers.Equal,
+        frames: {
+            particle: "mansion_wall_particle"
+        },
+        hitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(1.95, 14.97, Vec(-53.05, -3.42)),
+            RectangleHitbox.fromRect(13.29, 1.99, Vec(-58.71, 3.42))
+        )
+    },
+    {
+        idString: "mansion_top_floor_colliders",
+        name: "Mansion Top Floor Colliders",
+        defType: DefinitionType.Obstacle,
+        material: "stone",
+        invisible: true,
+        health: 67,
+        indestructible: true,
+        hideOnMap: true,
+        isWall: true,
+        rotationMode: RotationMode.Limited,
+        frames: {
+            particle: "mansion_wall_particle"
+        },
+        hitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(2.02, 31.22, Vec(-12.52, -5.24)),
+            RectangleHitbox.fromRect(2.14, 41.36, Vec(25.46, -0.01)),
+            new CircleHitbox(1.21, Vec(25.46, 17.6)),
+            new CircleHitbox(1.21, Vec(25.46, -18)),
+            new CircleHitbox(1.21, Vec(25.46, -13.07)),
+            new CircleHitbox(1.21, Vec(25.46, -7.43)),
+            new CircleHitbox(1.21, Vec(25.46, -2.48)),
+            new CircleHitbox(1.21, Vec(25.46, 2.65)),
+            new CircleHitbox(1.21, Vec(25.46, 7.58)),
+            new CircleHitbox(1.21, Vec(25.46, 12.69))
+        )
     }
 ] satisfies readonly RawObstacleDefinition[] as readonly RawObstacleDefinition[]).flatMap((def: Mutable<RawObstacleDefinition>) => {
     if (def.variations !== undefined) (def as Mutable<ObstacleDefinition>).variationBits = Math.ceil(Math.log2(def.variations));

@@ -489,6 +489,7 @@ const maps = {
             small_bridge: Infinity,
             breached_dam: 2,
             graveyard_halloween: 1,
+            mansion: 1,
             plumpkin_bunker: 1,
             small_bunker: 1,
             lighthouse: 1,

@@ -107,10 +107,10 @@ export const Modes: Record<ModeName, ModeDefinition> = {
             delay: 1000
         },
         playButtonImage: "./img/game/halloween/obstacles/jack_o_lantern.svg",
-        // canvasFilters: {
-        //     brightness: 0.65,
-        //     saturation: 0.85
-        // }
+        canvasFilters: {
+            brightness: 0.65,
+            saturation: 0.85
+        }
     },
     infection: {
         colors: {

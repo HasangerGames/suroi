@@ -318,7 +318,7 @@
         hitboxes = hitboxes;
         selected = hitboxes[0];
     }
-    const bgImage = loadImage("/img/game/halloween/buildings/mansion_bottom_floor.svg");
+    const bgImage = loadImage("/img/game/halloween/buildings/mansion_top_floor.svg");
 
     function handleKeydown(e: KeyboardEvent) {
         let moved = false;

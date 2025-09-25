@@ -4342,13 +4342,11 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         defType: DefinitionType.Building,
         spawnHitbox: RectangleHitbox.fromRect(180, 400, Vec(-1.5, -1.8)),
         ceilingZIndex: ZIndexes.BuildingsCeiling + 0.5,
-        ceilingImages: [
-            {
-                key: "cargo_ship_top_floor_shadow",
-                position: Vec(0, 0),
-                scale: Vec(24, 24)
-            }
-        ]
+        ceilingImages: [{
+            key: "cargo_ship_top_floor_shadow",
+            position: Vec(0, 0),
+            scale: Vec(24, 24)
+        }]
     },
     {
         // implemented by pap with a lot of love >w<
@@ -16016,6 +16014,18 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 alpha: 0.75
             },
             {
+                key: "mansion_gate",
+                position: Vec(35.5, 57),
+                zIndex: ZIndexes.Decals,
+                rotation: -Math.PI / 1.34,
+                tint: 0x858585
+            },
+            {
+                key: "mansion_gate",
+                position: Vec(-61.5, 37),
+                rotation: Math.PI / 4.1
+            },
+            {
                 key: "mansion_gate_wall_1",
                 position: Vec(-56.65, 5.26)
             },
@@ -16085,17 +16095,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 zIndex: ZIndexes.Decals
             },
             {
-                key: "mansion_gate",
-                position: Vec(35.5, 57),
-                zIndex: ZIndexes.Decals,
-                rotation: -Math.PI / 1.34,
-                tint: 0x4d4d4d
-            },
-            {
-                key: "mansion_gate",
-                position: Vec(-61.5, 37),
-                zIndex: ZIndexes.Decals,
-                rotation: Math.PI / 4.1
+                key: "mansion_gate_residue",
+                position: Vec(66.8, 3.46)
             }
         ],
         floors: [
@@ -16212,12 +16213,15 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         // CONSTRUCTION GUIDE
         // -----------------------
         // "mansion" -> main gate, parent building
-        // "mansion_bottom_floor", "mansion-top_floor" sub buildings
+        // "mansion_bottom_floor", "mansion_top_floor" sub buildings
     },
     {
         idString: "mansion_bottom_floor",
         name: "Mansion (Bottom Floor)",
         defType: DefinitionType.Building,
+        collideWithLayers: Layers.Equal,
+        hasSecondFloor: true,
+        ceilingZIndex: ZIndexes.BuildingsCeiling + 0.6,
         spawnHitbox: new GroupHitbox(
             RectangleHitbox.fromRect(95.34, 106.28, Vec(25.99, -0.77)),
             RectangleHitbox.fromRect(56.03, 55.45, Vec(-42.38, -5.85))
@@ -16291,6 +16295,28 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 position: Vec(55.54, -5.25)
             }
         ],
+        ceilingImages: [
+            {
+                key: "mansion_ceiling_1",
+                position: Vec(-41.44, -6.01),
+                // scale: Vec(2, 2)
+            },
+            {
+                key: "mansion_ceiling_3",
+                position: Vec(55.62, -5.98),
+                scale: Vec(2, 2.05)
+            },
+            {
+                key: "mansion_ceiling_4",
+                position: Vec(14.13, 39.39),
+                scale: Vec(2, 2)
+            },
+            {
+                key: "mansion_ceiling_2",
+                position: Vec(14.07, -6.14),
+                scale: Vec(2, 2)
+            }
+        ],
         groundGraphics: [
             { // stroke
                 color: 0x2d2d2d,
@@ -16310,6 +16336,9 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             }
         ],
         obstacles: IS_CLIENT ? undefined : [
+            { idString: "mansion_bottom_floor_colliders", position: Vec(0, 0), rotation: 0 },
+            { idString: "mansion_collider_hack", position: Vec(0, 0), rotation: 0, layer: Layer.ToUpstairs },
+            { idString: "mansion_stair", position: Vec(-59.76, -4.31), rotation: 0, layer: Layer.ToUpstairs },
             { idString: "cobweb", position: Vec(-9.19, 26.33), rotation: 1 },
             { idString: "cobweb", position: Vec(-60.35, -21.76), rotation: 0 },
             { idString: "bookshelf", position: Vec(6.26, 0.08), rotation: 1 },
@@ -16352,6 +16381,85 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "mansion_column", position: Vec(21.92, 44.28) },
             { idString: "mansion_wall_1", position: Vec(43.16, 0.09), rotation: 0 },
             { idString: "mansion_wall_2", position: Vec(54.64, -5.12), rotation: 0 },
+        ],
+        subBuildings: IS_CLIENT ? undefined : [
+            { idString: "mansion_top_floor_shadow", position: Vec(-39.65, -6.02) },
+            { idString: "mansion_top_floor", position: Vec(-40.5, -6.02), layer: Layer.Upstairs }
+        ]
+    },
+    {
+        idString: "mansion_top_floor_shadow",
+        name: "Mansion (Top Floor) Shadow",
+        defType: DefinitionType.Building,
+        spawnHitbox: RectangleHitbox.fromRect(51.25, 41.27),
+        ceilingZIndex: ZIndexes.BuildingsCeiling + 1,
+        ceilingImages: [{
+            key: "mansion_top_floor_shadow",
+            position: Vec(0, 0),
+            scale: Vec(4, 4)
+        }]
+    },
+    {
+        idString: "mansion_top_floor",
+        name: "Mansion (Top Floor)",
+        defType: DefinitionType.Building,
+        spawnHitbox: RectangleHitbox.fromRect(58.65, 52),
+        ceilingHitbox: RectangleHitbox.fromRect(49.2, 41.38, Vec(-0.13, 0.04)),
+        material: "stone",
+        particle: "mansion_particle",
+        hitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(2.02, 44.43, Vec(-25.67, -0.24)),
+            RectangleHitbox.fromRect(53.22, 2, Vec(-0.06, 21.63)),
+            RectangleHitbox.fromRect(53.22, 2, Vec(-0.06, -21.64))
+        ),
+        floorImages: [{
+            key: "mansion_top_floor",
+            position: Vec(0, 0)
+        }],
+        ceilingImages: [
+            {
+                key: "mansion_ceiling_1",
+                position: Vec(-1, 0),
+                scale: Vec(2, 2)
+            },
+            {
+                key: "mansion_ceiling_2",
+                position: Vec(54.5, 0),
+                scale: Vec(2, 2)
+            }
+        ],
+        floors: [
+            {
+                type: FloorNames.Stone,
+                hitbox: RectangleHitbox.fromRect(16.05, 14.78, Vec(-3.58, -13.26))
+            },
+            {
+                type: FloorNames.Wood,
+                hitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(48.83, 12.24, Vec(-0.01, 14.52)),
+                    RectangleHitbox.fromRect(35.94, 29.19, Vec(6.43, -6.05)),
+                    RectangleHitbox.fromRect(11.09, 13.51, Vec(-19.11, 1.65))
+                )
+            },
+            {
+                type: FloorNames.Wood,
+                hitbox: RectangleHitbox.fromRect(11.09, 13.51, Vec(-19.11, 1.65)),
+                layer: Layer.ToUpstairs
+            }
+        ],
+        obstacles: IS_CLIENT ? undefined : [
+            { idString: "mansion_top_floor_colliders", position: Vec(0, 0), rotation: 0 },
+            { idString: "bed", position: Vec(17.89, 12.02), rotation: 2 },
+            { idString: "gun_case", position: Vec(-5.75, -1.22), rotation: 0 },
+            { idString: "gun_case", position: Vec(20.36, -14.35), rotation: 3 },
+            { idString: { box: 1, grenade_box: 0.35 }, position: Vec(-8.3, 5.15) },
+            { idString: "box", position: Vec(-3.19, 4.2) },
+            { idString: randomToilet, position: Vec(-6.43, -13.28), rotation: 1 },
+            { idString: "trash_can", position: Vec(20.14, -5.69) },
+            { idString: "cobweb", position: Vec(-6.78, -15.8), rotation: 0 },
+            { idString: "mansion_column", position: Vec(3.36, -5.81) },
+            { idString: "mansion_wall_3", position: Vec(-4.84, -5.75), rotation: 0 },
+            { idString: "gun_mount_vks", position: Vec(10.83, -18.86), rotation: 0 }
         ]
     }
 ]);
