@@ -5,7 +5,7 @@ import { Ammos } from "@common/definitions/items/ammos";
 import { ArmorType, Armors } from "@common/definitions/items/armors";
 import { Backpacks } from "@common/definitions/items/backpacks";
 import { Guns, Tier, type GunDefinition } from "@common/definitions/items/guns";
-import { HealingItems } from "@common/definitions/items/healingItems";
+import { HealingItems, HealType } from "@common/definitions/items/healingItems";
 import { Melees, type MeleeDefinition } from "@common/definitions/items/melees";
 import { PerkCategories, PerkData, PerkIds, Perks, type PerkDefinition } from "@common/definitions/items/perks";
 import { DEFAULT_SCOPE, Scopes, type ScopeDefinition } from "@common/definitions/items/scopes";
@@ -31,7 +31,7 @@ import { Angle, Collision, Geometry, Numeric } from "@common/utils/math";
 import { removeFrom, type SDeepMutable, type Timeout } from "@common/utils/misc";
 import { DefinitionType, type EventModifiers, type ExtendedWearerAttributes, type ReferenceTo, type ReifiableDef, type WearerAttributes } from "@common/utils/objectDefinitions";
 import { type FullData } from "@common/utils/objectsSerializations";
-import { pickRandomInArray, randomPointInsideCircle, weightedRandom } from "@common/utils/random";
+import { pickRandomInArray, random, randomPointInsideCircle, weightedRandom } from "@common/utils/random";
 import { SuroiByteStream } from "@common/utils/suroiByteStream";
 import { FloorNames, FloorTypes } from "@common/utils/terrain";
 import { Vec, type Vector } from "@common/utils/vector";
@@ -2074,8 +2074,9 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 this.addPerk(pickRandomInArray(halloweenPerks));
                 break;
             }
-            case PerkIds.PlumpkinShuffle: {
+            case PerkIds.PlumpkinShuffle: { // LMAo rip ur items blud
                 this.removePerk(perk);
+                this.action?.cancel();
 
                 const vests = Armors.definitions.filter(armor => armor.armorType === ArmorType.Vest && !armor.noDrop && !armor.perk),
                       helmets = Armors.definitions.filter(armor => armor.armorType === ArmorType.Helmet && !armor.noDrop && !armor.perk),
@@ -2083,10 +2084,15 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                       guns = Guns.definitions.filter(gun => !gun.devItem && !gun.noSwap),
                       melees = Melees.definitions.filter(melee => !melee.noDrop && !melee.devItem);
 
-
                 this.inventory.helmet = pickRandomInArray(helmets);
                 this.inventory.vest = pickRandomInArray(vests);
                 this.inventory.backpack = pickRandomInArray(backpacks);
+
+                for (const item of [...HealingItems.definitions, ...Ammos.definitions]) {
+                    if ((item.defType === DefinitionType.Ammo && item.ephemeral) || (item.defType === DefinitionType.HealingItem && item.healType === HealType.Special)) continue;
+                    this.inventory.items.setItem(item.idString, random(0, this.inventory.backpack.maxCapacity[item.idString]));
+                }
+
                 this.inventory.replaceWeapon(0, pickRandomInArray(guns));
                 this.inventory.replaceWeapon(1, pickRandomInArray(guns));
                 this.inventory.replaceWeapon(2, pickRandomInArray(melees));

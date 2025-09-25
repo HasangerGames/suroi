@@ -882,7 +882,10 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             loot: [{ table: "fall_perks", weight: 1 }]
         },
         diseased_plumpkin: [
-            [{ item: PerkIds.PlumpkinGamble, weight: 1 }],
+            [
+                { item: PerkIds.PlumpkinGamble, weight: 1.25 },
+                { item: PerkIds.PlumpkinShuffle, weight: 0.5 }
+            ],
             [
                 { item: "diseased", weight: 0.1 },
                 { item: NullString, weight: 0.9 }
@@ -1046,9 +1049,13 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             [{ table: "airdrop_skins", weight: 1 }],
             [
                 { table: "airdrop_melee", weight: 1 },
-                { item: "steelfang", weight: 0.5 }
+                { item: "steelfang", weight: 0.5 },
+                { item: "chainsaw", weight: 0.5 }
             ],
-            [{ item: PerkIds.PlumpkinGamble, weight: 1 }],
+            [
+                { item: PerkIds.PlumpkinGamble, weight: 0.5 },
+                { item: PerkIds.PlumpkinShuffle, weight: 0.5 }
+            ],
             [{ table: "silly_guns", weight: 1 }],
             [
                 { item: "sm56", count: 3, weight: 1 },
@@ -1058,6 +1065,12 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
     },
 
     halloween: {
+        hollow_log: [
+            { table: "healing_items", weight: 1 },
+            { table: "ammo", weight: 1 },
+            { table: "equipment", weight: 1 },
+            { table: "scopes", weight: 0.5 }
+        ],
         pumpkin: [
             { table: "equipment", weight: 1 },
             { table: "healing_items", weight: 1 },

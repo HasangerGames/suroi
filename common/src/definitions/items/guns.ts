@@ -741,7 +741,6 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
         },
         casingParticles: [{
             position: Vec(3.5, 0.3),
-            frame: "casing_545mm",
             on: "reload",
             count: 5,
             velocity: {
