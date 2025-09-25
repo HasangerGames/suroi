@@ -8333,7 +8333,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "metal_column", position: Vec(60.07, 41.38) },
             { idString: "fence", position: Vec(66.12, 41.4), rotation: 0 },
             { idString: "fence", position: Vec(74.84, 41.4), rotation: 0 },
-            { idString: "metal_column", position: Vec(80.84, 41.38), rotation: 0 },
+            { idString: "metal_column", position: Vec(80.84, 41.38) },
             { idString: "pallet", position: Vec(67.03, 47.59), rotation: 0 },
             { idString: "regular_crate", position: Vec(67.03, 47.59) },
             { idString: "ammo_crate", position: Vec(67.03, 57.66) },
@@ -8357,7 +8357,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "metal_column", position: Vec(40.81, 27.01) },
             { idString: "fence", position: Vec(40.81, 21.09), rotation: 1 },
             { idString: "fence", position: Vec(40.81, 12.54), rotation: 1 },
-            { idString: "metal_column", position: Vec(40.81, 6.7), rotation: 0 },
+            { idString: "metal_column", position: Vec(40.81, 6.7) },
             { idString: "regular_crate", position: Vec(34.25, 20.86) },
             { idString: "barrel", position: Vec(25.17, 21.72) },
             { idString: "pallet", position: Vec(34.06, 11.22), rotation: 0 },
@@ -15964,6 +15964,394 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "graveyard_basement_entrance", position: Vec(12.3, -61.4) },
             { idString: "graveyard_basement_entrance_main", position: Vec(-52.78, -5.94) },
             { idString: "graveyard_storage", position: Vec(56.99, 33.4) }
+        ]
+    },
+    {
+        idString: "mansion",
+        name: "Mansion",
+        defType: DefinitionType.Building,
+        spawnHitbox: RectangleHitbox.fromRect(160.02, 145.41, Vec(1.97, -0.56)),
+        particleVariations: 2,
+        material: "stone",
+        particle: "mansion_gate_particle",
+        hitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(1.65, 19.4, Vec(-56.63, 5.25)),
+            RectangleHitbox.fromRect(7.76, 7.76, Vec(68.28, 47.23)),
+            RectangleHitbox.fromRect(7.77, 7.76, Vec(-56.68, 18.78)),
+            RectangleHitbox.fromRect(7.76, 7.76, Vec(-56.68, 47.3)),
+            RectangleHitbox.fromRect(73.06, 1.66, Vec(-16.33, 47.22)),
+            RectangleHitbox.fromRect(1.65, 36.46, Vec(68.3, 25.68)),
+            RectangleHitbox.fromRect(23.34, 1.66, Vec(52.92, 47.28)),
+            new CircleHitbox(1.42, Vec(68.3, 10.65)),
+            new CircleHitbox(1.42, Vec(-56.62, -0.87)),
+            new CircleHitbox(1.42, Vec(-56.62, 4.85)),
+            new CircleHitbox(1.42, Vec(-56.68, 10.57)),
+            new CircleHitbox(1.42, Vec(-48.19, 47.28)),
+            new CircleHitbox(1.42, Vec(-42.48, 47.33)),
+            new CircleHitbox(1.42, Vec(-36.75, 47.33)),
+            new CircleHitbox(1.42, Vec(-30.96, 47.22)),
+            new CircleHitbox(1.42, Vec(-25.25, 47.26)),
+            new CircleHitbox(1.42, Vec(-19.52, 47.26)),
+            new CircleHitbox(1.42, Vec(-13.7, 47.26)),
+            new CircleHitbox(1.42, Vec(-7.99, 47.29)),
+            new CircleHitbox(1.42, Vec(-2.26, 47.3)),
+            new CircleHitbox(1.42, Vec(3.51, 47.19)),
+            new CircleHitbox(1.42, Vec(9.23, 47.22)),
+            new CircleHitbox(1.42, Vec(14.95, 47.21)),
+            new CircleHitbox(1.42, Vec(20.19, 47.21)),
+            new CircleHitbox(1.42, Vec(43.14, 47.18)),
+            new CircleHitbox(1.42, Vec(48.84, 47.18)),
+            new CircleHitbox(1.42, Vec(54.32, 47.21)),
+            new CircleHitbox(1.42, Vec(60.04, 47.22)),
+            new CircleHitbox(1.42, Vec(68.3, 39.21)),
+            new CircleHitbox(1.42, Vec(68.3, 33.5)),
+            new CircleHitbox(1.42, Vec(68.3, 27.95)),
+            new CircleHitbox(1.42, Vec(68.3, 22.22)),
+            new CircleHitbox(1.42, Vec(68.3, 16.38))
+        ),
+        floorImages: [
+            {
+                key: "mansion",
+                position: Vec(0, 0),
+                alpha: 0.75
+            },
+            {
+                key: "mansion_gate_wall_1",
+                position: Vec(-56.65, 5.26)
+            },
+            {
+                key: "mansion_gate_wall_2",
+                position: Vec(68.25, 25.31)
+            },
+            {
+                key: "mansion_gate_wall_3",
+                position: Vec(52.8, 47.26)
+            },
+            {
+                key: "mansion_gate_wall_4",
+                position: Vec(-15.6, 47.27)
+            },
+            {
+                key: "mansion_gate_corner",
+                position: Vec(-56.64, 47.3)
+            },
+            {
+                key: "mansion_gate_corner",
+                position: Vec(-56.64, 18.79)
+            },
+            {
+                key: "mansion_gate_corner",
+                position: Vec(68.31, 47.23)
+            },
+            {
+                key: "blood_decal",
+                position: Vec(-35.66, 22.86),
+                zIndex: ZIndexes.Decals
+            },
+            {
+                key: "blood_decal",
+                position: Vec(-37.5, 17.34),
+                rotation: Math.PI,
+                zIndex: ZIndexes.Decals
+            },
+            {
+                key: "blood_decal",
+                position: Vec(-42.31, 19.92),
+                rotation: Math.PI / 5,
+                zIndex: ZIndexes.Decals
+            },
+            {
+                key: "blood_decal",
+                position: Vec(-45.75, 12.61),
+                rotation: Math.PI / 5,
+                zIndex: ZIndexes.Decals
+            },
+            {
+                key: "blood_decal",
+                position: Vec(-46.98, 6.41),
+                rotation: Math.PI / 2.5,
+                zIndex: ZIndexes.Decals
+            },
+            {
+                key: "blood_decal",
+                position: Vec(-40.06, 11.88),
+                rotation: -Math.PI / 1.5,
+                zIndex: ZIndexes.Decals
+            },
+            {
+                key: "blood_decal",
+                position: Vec(-32.3, 17.51),
+                rotation: Math.PI / 1.1,
+                zIndex: ZIndexes.Decals
+            },
+            {
+                key: "mansion_gate",
+                position: Vec(35.5, 57),
+                zIndex: ZIndexes.Decals,
+                rotation: -Math.PI / 1.34,
+                tint: 0x4d4d4d
+            },
+            {
+                key: "mansion_gate",
+                position: Vec(-61.5, 37),
+                zIndex: ZIndexes.Decals,
+                rotation: Math.PI / 4.1
+            }
+        ],
+        floors: [
+            {
+                type: FloorNames.Sand,
+                hitbox: new GroupHitbox(
+                    new CircleHitbox(2.08, Vec(-13.52, 29.28)),
+                    new CircleHitbox(2.2, Vec(-7.54, 26.56)),
+                    new CircleHitbox(1.55, Vec(25.45, 33.07)),
+                    new CircleHitbox(1.62, Vec(-4.72, 30.75)),
+                    new CircleHitbox(2.07, Vec(-8.62, 32.44)),
+                    new CircleHitbox(2.07, Vec(-7.47, 36.09)),
+                    new CircleHitbox(2.19, Vec(19.5, 31.61)),
+                    new CircleHitbox(1.55, Vec(15.8, 31.17)),
+                    new CircleHitbox(1.55, Vec(20.4, 35.51))
+                )
+            },
+            {
+                type: FloorNames.Sand,
+                hitbox: new PolygonHitbox([
+                    Vec(-18.84, 26.46),
+                    Vec(-13.8, 25.54),
+                    Vec(-10.91, 38.99),
+                    Vec(-18.91, 39.99),
+                    Vec(-27.21, 40.77),
+                    Vec(-33.41, 41.04),
+                    Vec(-57.97, 41.16),
+                    Vec(-58.13, 28.1),
+                    Vec(-41.22, 27.92),
+                    Vec(-32.29, 27.7),
+                    Vec(-24.33, 27.28)
+                ])
+            }
+        ],
+        groundGraphics: [
+            {
+                color: 0x221c0e,
+                hitbox: new CircleHitbox(2.08, Vec(-13.52, 29.28))
+            },
+            {
+                color: 0x221c0e,
+                hitbox: new CircleHitbox(2.2, Vec(-7.54, 26.56)),
+            },
+            {
+                color: 0x221c0e,
+                hitbox: new CircleHitbox(1.55, Vec(25.45, 33.07)),
+            },
+            {
+                color: 0x221c0e,
+                hitbox: new CircleHitbox(1.62, Vec(-4.72, 30.75)),
+            },
+            {
+                color: 0x221c0e,
+                hitbox: new CircleHitbox(2.07, Vec(-8.62, 32.44)),
+            },
+            {
+                color: 0x221c0e,
+                hitbox: new CircleHitbox(2.07, Vec(-7.47, 36.09)),
+            },
+            {
+                color: 0x221c0e,
+                hitbox: new CircleHitbox(2.19, Vec(19.5, 31.61)),
+            },
+            {
+                color: 0x221c0e,
+                hitbox: new CircleHitbox(1.55, Vec(15.8, 31.17)),
+            },
+            {
+                color: 0x221c0e,
+                hitbox: new CircleHitbox(1.55, Vec(20.4, 35.51))
+            },
+            {
+                color: 0x221c0e,
+                hitbox: new PolygonHitbox([
+                    Vec(-18.84, 26.46),
+                    Vec(-13.8, 25.54),
+                    Vec(-10.91, 38.99),
+                    Vec(-18.91, 39.99),
+                    Vec(-27.21, 40.77),
+                    Vec(-33.41, 41.04),
+                    Vec(-57.97, 41.16),
+                    Vec(-58.13, 28.1),
+                    Vec(-41.22, 27.92),
+                    Vec(-32.29, 27.7),
+                    Vec(-24.33, 27.28)
+                ])
+            }
+        ],
+        obstacles: IS_CLIENT ? undefined : [
+            { idString: "regular_crate", position: Vec(-32.34, 2.16), outdoors: true },
+            { idString: "regular_crate", position: Vec(-22.36, 4.95), outdoors: true },
+            { idString: "regular_crate", position: Vec(58.35, 39.42), outdoors: true },
+            { idString: "box", position: Vec(-14.43, -0.55), outdoors: true },
+            { idString: "box", position: Vec(50.41, 42.27), outdoors: true },
+            { idString: "box", position: Vec(48.73, 36.88), outdoors: true },
+            { idString: "smaller_sandbags", position: Vec(-0.33, 40.95), rotation: 1, outdoors: true },
+            { idString: "smaller_sandbags", position: Vec(62.41, 27.91), rotation: 0, outdoors: true },
+            { idString: "small_coffin", position: Vec(-10.73, 40.96), rotation: 0, outdoors: true },
+            { idString: "jack_o_lantern", position: Vec(6.6, 17.78), rotation: 0, outdoors: true },
+            { idString: "jack_o_lantern", position: Vec(35.22, 18.09), rotation: 0, outdoors: true },
+            { idString: "jack_o_lantern", position: Vec(-15.08, -55.77), rotation: 3, outdoors: true },
+            { idString: "pebble", position: Vec(-26.46, 32.68), rotation: 3, variation: 2 },
+            { idString: "pebble", position: Vec(-41.62, 36.47), rotation: 2, variation: 2 },
+            { idString: "pebble", position: Vec(19.25, 31.66), rotation: 2, variation: 2 },
+            { idString: "pebble", position: Vec(-51.49, 32.69), rotation: 0, variation: 1 },
+            { idString: "pebble", position: Vec(-30.69, 37.72), rotation: 1, variation: 1 },
+            { idString: "pebble", position: Vec(-18.58, 29.04), rotation: 3, variation: 1 },
+        ],
+        subBuildings: IS_CLIENT ? undefined : [
+            { idString: "mansion_bottom_floor", position: Vec(6.96, -21.13) }
+        ]
+        
+        // -----------------------
+        // CONSTRUCTION GUIDE
+        // -----------------------
+        // "mansion" -> main gate, parent building
+        // "mansion_bottom_floor", "mansion-top_floor" sub buildings
+    },
+    {
+        idString: "mansion_bottom_floor",
+        name: "Mansion (Bottom Floor)",
+        defType: DefinitionType.Building,
+        spawnHitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(95.34, 106.28, Vec(25.99, -0.77)),
+            RectangleHitbox.fromRect(56.03, 55.45, Vec(-42.38, -5.85))
+        ),
+        ceilingHitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(57.34, 41.38, Vec(-36.68, -5.97)),
+            RectangleHitbox.fromRect(56.15, 74.3, Vec(14.07, -5.87)),
+            RectangleHitbox.fromRect(24.19, 45.93, Vec(53.18, -6.37)),
+            RectangleHitbox.fromRect(18.53, 15.08, Vec(14.05, 37.48))
+        ),
+        material: "stone",
+        particle: "mansion_particle",
+        hitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(2.03, 44.99, Vec(-66.21, -6.02)),
+            RectangleHitbox.fromRect(24.24, 2.01, Vec(-3.11, -44.02)),
+            RectangleHitbox.fromRect(21.92, 2.01, Vec(-56.27, -27.61)),
+            RectangleHitbox.fromRect(2.01, 18.25, Vec(-15.01, -35.9)),
+            RectangleHitbox.fromRect(21.23, 2, Vec(-24.61, -27.59)),
+            RectangleHitbox.fromRect(24.38, 2.01, Vec(31.29, -44.02)),
+            RectangleHitbox.fromRect(2, 16.5, Vec(43.14, -36.78)),
+            RectangleHitbox.fromRect(12.65, 2.01, Vec(60.65, -29.5)),
+            RectangleHitbox.fromRect(2, 48.67, Vec(66.22, -6.17)),
+            RectangleHitbox.fromRect(7.24, 2.01, Vec(63.6, 17.58)),
+            RectangleHitbox.fromRect(7.75, 2, Vec(46.04, 17.55)),
+            RectangleHitbox.fromRect(2.01, 15.25, Vec(43.16, 25.03)),
+            RectangleHitbox.fromRect(25.05, 2.01, Vec(-3.49, 32.14)),
+            RectangleHitbox.fromRect(25.04, 2, Vec(31.64, 32.07)),
+            RectangleHitbox.fromRect(2.01, 16.47, Vec(-15.01, 22.91)),
+            RectangleHitbox.fromRect(33.27, 2.01, Vec(-31.14, 15.66)),
+            RectangleHitbox.fromRect(9.44, 2, Vec(-62.52, 15.66))
+        ),
+        floors: [
+            {
+                type: FloorNames.Stone,
+                hitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(22.75, 26.67, Vec(-25.98, 1.66)),
+                    RectangleHitbox.fromRect(10.37, 4.01, Vec(49.32, -31.95)),
+                    RectangleHitbox.fromRect(10.37, 3.74, Vec(14.08, -46.82))
+                )
+            },
+            {
+                type: FloorNames.Carpet,
+                hitbox: RectangleHitbox.fromRect(16.46, 89.08, Vec(14.1, -0.49))
+            },
+            {
+                type: FloorNames.Wood,
+                hitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(56.28, 74.47, Vec(13.96, -5.85)),
+                    RectangleHitbox.fromRect(25.16, 46.37, Vec(52.74, -6.58)),
+                    RectangleHitbox.fromRect(51.61, 41.7, Vec(-39.52, -5.83)),
+                    RectangleHitbox.fromRect(18.32, 4.67, Vec(14.02, 46.36)),
+                    RectangleHitbox.fromRect(18.58, 11.5, Vec(14.03, 38.27))
+                )
+            }
+        ],
+        floorImages: [
+            {
+                key: "mansion_bottom_floor_4",
+                position: Vec(14.12, 40.11)
+            },
+            {
+                key: "mansion_bottom_floor_1",
+                position: Vec(-40.95, -6.06)
+            },
+            {
+                key: "mansion_bottom_floor_2",
+                position: Vec(14.09, -5.96)
+            },
+            {
+                key: "mansion_bottom_floor_3",
+                position: Vec(55.54, -5.25)
+            }
+        ],
+        groundGraphics: [
+            { // stroke
+                color: 0x2d2d2d,
+                hitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(10.39, 4, Vec(49.32, -31.95)),
+                    RectangleHitbox.fromRect(10.4, 3.72, Vec(14.06, -46.82))
+                )
+            },
+            { // fill
+                color: 0x4e4e4e,
+                hitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(4.65, 3.76, Vec(16.62, -46.53)),
+                    RectangleHitbox.fromRect(4.65, 3.94, Vec(51.87, -31.71)),
+                    RectangleHitbox.fromRect(4.65, 3.76, Vec(11.45, -46.53)),
+                    RectangleHitbox.fromRect(4.65, 3.94, Vec(46.71, -31.71))
+                )
+            }
+        ],
+        obstacles: IS_CLIENT ? undefined : [
+            { idString: "cobweb", position: Vec(-9.19, 26.33), rotation: 1 },
+            { idString: "cobweb", position: Vec(-60.35, -21.76), rotation: 0 },
+            { idString: "bookshelf", position: Vec(6.26, 0.08), rotation: 1 },
+            { idString: "bookshelf", position: Vec(21.78, -9.78), rotation: 3 },
+            { idString: "bookshelf", position: Vec(-48.98, -5.13), rotation: 1 },
+            { idString: "small_drawer", position: Vec(-9.95, 26.79), rotation: 2 },
+            { idString: "small_drawer", position: Vec(38.15, -38.85), rotation: 0 },
+            { idString: "small_drawer", position: Vec(48.26, 0.42), rotation: 0 },
+            { idString: "large_drawer", position: Vec(60.65, -13.47), rotation: 3 }, // diddy drawer
+            { idString: "potted_plant", position: Vec(61.06, -24.56), rotation: 0 },
+            { idString: "potted_plant", position: Vec(26.82, 26.71), rotation: 0 },
+            { idString: "small_bed", position: Vec(60.73, 4.92), rotation: 2 },
+            { idString: "trash_can", position: Vec(31.6, -39.62) },
+            { idString: "trash_can", position: Vec(-19.79, -7.23) },
+            { idString: "trash_can",  position: Vec(-2.68, 27.29) },
+            { idString: {
+                white_small_couch: 1,
+                red_small_couch: 1
+            }, position: Vec(36.3, 26.3), rotation: 2 },
+            { idString: "window", position: Vec(-52.77, 15.66), rotation: 1 },
+            { idString: "window", position: Vec(-40.3, -27.62), rotation: 1 },
+            { idString: "window", position: Vec(54.98, 17.49), rotation: 1 },
+            { idString: "door", position: Vec(14.53, 32.1), rotation: 0 },
+            { idString: "door", position: Vec(13.53, -44.14), rotation: 2 },
+            { idString: "door", position: Vec(49.7, -29.54), rotation: 0 },
+            { idString: "door", position: Vec(43.13, 10.96), rotation: 1 },
+            { idString: "fridge", position: Vec(-21.49, 10.63), rotation: 2 },
+            { idString: randomStove, position: Vec(-31.05, 10.57), rotation: 2 },
+            { idString: "box", position: Vec(-61.74, 11.12) },
+            { idString: "box", position: Vec(-56.27, 7.98) },
+            { idString: "couch", position: Vec(-5.04, -38.04), rotation: 3 },
+            { idString: "round_table", position: Vec(-5.2, -31.62), rotation: 0 },
+            { idString: "mansion_column", position: Vec(-15.02, -10.2) },
+            { idString: "mansion_column", position: Vec(6.36, 8.36) },
+            { idString: "mansion_column", position: Vec(21.79, 8.36) },
+            { idString: "mansion_column", position: Vec(6.36, -17.94) },
+            { idString: "mansion_column", position: Vec(21.79, -17.87) },
+            { idString: "mansion_column", position: Vec(-53.14, -12.27) },
+            { idString: "mansion_column", position: Vec(6.25, 44.28) },
+            { idString: "mansion_column", position: Vec(21.92, 44.28) },
+            { idString: "mansion_wall_1", position: Vec(43.16, 0.09), rotation: 0 },
+            { idString: "mansion_wall_2", position: Vec(54.64, -5.12), rotation: 0 },
         ]
     }
 ]);

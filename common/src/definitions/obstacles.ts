@@ -463,7 +463,11 @@ export const TintedParticles: Record<string, { readonly base: string, readonly t
     medical_camp_particle_1: { base: "stone_particle_1", tint: 0xa0a0a0 },
     medical_camp_particle_2: { base: "stone_particle_2", tint: 0xa0a0a0 },
     medical_camp_passage_particle: { base: "metal_particle_1", tint: 0x22616f },
-    infected_wall_particle: { base: "wood_particle", tint: 0x554255 }
+    infected_wall_particle: { base: "wood_particle", tint: 0x554255 },
+    mansion_gate_particle_1: { base: "stone_particle_1", tint: 0x212121 },
+    mansion_gate_particle_2: { base: "stone_particle_2", tint: 0x212121 },
+    mansion_particle: { base: "wood_particle", tint: 0x553c31 },
+    mansion_wall_particle: { base: "wood_particle", tint: 0x2c2016 }
 };
 
 const houseWall = (
@@ -604,6 +608,30 @@ const warehouseHuntedWall = (
     wall: {
         borderColor: 0x332416,
         color: 0x6e4f32
+    }
+});
+
+const mansionWall = (
+    lengthNumber: number,
+    hitbox: RectangleHitbox
+): RawObstacleDefinition => ({
+    idString: `mansion_wall_${lengthNumber}`,
+    name: `Mansion Wall ${lengthNumber}`,
+    defType: DefinitionType.Obstacle,
+    material: "wood",
+    hideOnMap: true,
+    noResidue: true,
+    health: 200,
+    hitbox,
+    rotationMode: RotationMode.Limited,
+    allowFlyover: FlyoverPref.Never,
+    frames: {
+        particle: "mansion_wall_particle"
+    },
+    isWall: true,
+    wall: {
+        borderColor: 0x1a130d,
+        color: 0x2c2016
     }
 });
 
@@ -940,6 +968,28 @@ const rshCase = (idString: string): RawObstacleDefinition => ({
         particle: "rsh_case_particle",
         residue: "rsh_case_residue"
     }
+});
+
+const column = (name: string, tint: number, particle: string, material: typeof Materials[number] = "stone"): RawObstacleDefinition => ({
+    idString: name.toLowerCase().replace(/'/g, "").replace(/ /g, "_"),
+    name,
+    defType: DefinitionType.Obstacle,
+    material: "stone",
+    indestructible: true,
+    health: 999,
+    hitbox: new GroupHitbox(
+        RectangleHitbox.fromRect(3, 3)
+    ),
+    reflectBullets: material === "metal_light",
+    rotationMode: RotationMode.None,
+    allowFlyover: FlyoverPref.Never,
+    tint,
+    frames: {
+        base: "column",
+        particle
+    },
+    isWall: true,
+    zIndex: ZIndexes.ObstaclesLayer1 + 0.1
 });
 
 const huntingStandWall = (length: number, hitbox: RectangleHitbox): RawObstacleDefinition => ({
@@ -2679,6 +2729,9 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     tavernWall(6, RectangleHitbox.fromRect(2.02, 5.67)),
     tavernWall(7, RectangleHitbox.fromRect(13.3, 2.02)),
     tavernWall(8, RectangleHitbox.fromRect(23.05, 2.02)),
+
+    mansionWall(1, RectangleHitbox.fromRect(2, 12.5)),
+    mansionWall(2, RectangleHitbox.fromRect(21.06, 2)),
 
     {
         idString: "fridge",
@@ -4633,30 +4686,6 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         }
     },
     {
-        idString: "port_main_office_column",
-        name: "Port Main Office Column",
-        defType: DefinitionType.Obstacle,
-        material: "stone",
-        indestructible: true,
-        health: 340,
-        scale: {
-            spawnMin: 1,
-            spawnMax: 1,
-            destroy: 0.95
-        },
-        hitbox: new GroupHitbox(
-            RectangleHitbox.fromRect(3, 3)
-        ),
-        rotationMode: RotationMode.Limited,
-        allowFlyover: FlyoverPref.Never,
-        tint: 0xb98a46,
-        frames: {
-            base: "column",
-            particle: "port_office_wall_particle"
-        },
-        isWall: true
-    },
-    {
         idString: "house_column",
         name: "House Column",
         defType: DefinitionType.Obstacle,
@@ -4675,172 +4704,16 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         },
         isWall: true
     },
-    {
-        idString: "cabin_column",
-        name: "Cabin Column",
-        defType: DefinitionType.Obstacle,
-        material: "stone",
-        indestructible: true,
-        health: 340,
-        scale: {
-            spawnMin: 1,
-            spawnMax: 1,
-            destroy: 0.95
-        },
-        hitbox: new GroupHitbox(
-            RectangleHitbox.fromRect(3, 3)
-        ),
-        rotationMode: RotationMode.None,
-        allowFlyover: FlyoverPref.Never,
-        tint: 0x5d4622,
-        frames: {
-            base: "column",
-            particle: "cabin_wall_particle"
-        },
-        isWall: true
-    },
-    {
-        idString: "metal_column",
-        name: "Metal Column",
-        defType: DefinitionType.Obstacle,
-        material: "metal_light",
-        reflectBullets: true,
-        indestructible: true,
-        health: 340,
-        hitbox: new GroupHitbox(
-            RectangleHitbox.fromRect(3, 3)
-        ),
-        rotationMode: RotationMode.Limited,
-        allowFlyover: FlyoverPref.Never,
-        tint: 0x8f8f8f,
-        zIndex: ZIndexes.ObstaclesLayer1 + 0.1,
-        frames: {
-            base: "column",
-            particle: "metal_column_particle"
-        },
-        isWall: true
-    },
-    {
-        idString: "sawmill_warehouse_column",
-        name: "sawmill Warehouse Column",
-        defType: DefinitionType.Obstacle,
-        material: "stone",
-        indestructible: true,
-        health: 340,
-        hitbox: new GroupHitbox(
-            RectangleHitbox.fromRect(3, 3)
-        ),
-        rotationMode: RotationMode.None,
-        allowFlyover: FlyoverPref.Never,
-        tint: 0x764423,
-        frames: {
-            base: "column",
-            particle: "sawmill_warehouse_wall_particle"
-        },
-        isWall: true
-    },
-    {
-        idString: "sawmill_center_warehouse_column",
-        name: "Sawmill Center Warehouse Column",
-        defType: DefinitionType.Obstacle,
-        material: "stone",
-        indestructible: true,
-        particleVariations: 2,
-        health: 340,
-        hitbox: new GroupHitbox(
-            RectangleHitbox.fromRect(3, 3)
-        ),
-        rotationMode: RotationMode.None,
-        allowFlyover: FlyoverPref.Never,
-        tint: 0x5a1919,
-        frames: {
-            base: "column",
-            particle: "sawmill_warehouse_particle"
-        },
-        isWall: true
-    },
-    {
-        idString: "sawmill_storage_column",
-        name: "sawmill Storage Column",
-        defType: DefinitionType.Obstacle,
-        material: "stone",
-        indestructible: true,
-        particleVariations: 2,
-        health: 340,
-        hitbox: new GroupHitbox(
-            RectangleHitbox.fromRect(3, 3)
-        ),
-        rotationMode: RotationMode.None,
-        allowFlyover: FlyoverPref.Never,
-        tint: 0x5a1919,
-        frames: {
-            base: "column",
-            particle: "hq_stone_wall_particle"
-        },
-        isWall: true
-    },
-    {
-        idString: "warehouse_hunted_column",
-        name: "Abandoned Warehouse Column",
-        defType: DefinitionType.Obstacle,
-        material: "stone",
-        indestructible: true,
-        health: 340,
-        hitbox: new GroupHitbox(
-            RectangleHitbox.fromRect(3, 3)
-        ),
-        rotationMode: RotationMode.None,
-        allowFlyover: FlyoverPref.Never,
-        tint: 0x6e4f32,
-        frames: {
-            base: "column",
-            particle: "warehouse_hunted_particle"
-        },
-        isWall: true
-    },
-    {
-        idString: "hunting_stand_column",
-        name: "Hunting Stand Column",
-        defType: DefinitionType.Obstacle,
-        material: "stone",
-        indestructible: true,
-        health: 340,
-        hitbox: new GroupHitbox(
-            RectangleHitbox.fromRect(3, 3)
-        ),
-        rotationMode: RotationMode.None,
-        allowFlyover: FlyoverPref.Never,
-        tint: 0x764423,
-        frames: {
-            base: "column",
-            particle: "hunting_stand_particle"
-        },
-        isWall: true
-    },
-    {
-        idString: "tavern_column",
-        name: "Tavern Column",
-        defType: DefinitionType.Obstacle,
-        material: "stone",
-        indestructible: true,
-        health: 340,
-        scale: {
-            spawnMin: 1,
-            spawnMax: 1,
-            destroy: 0.95
-        },
-        hitbox: new GroupHitbox(
-            RectangleHitbox.fromRect(3, 3)
-        ),
-        rotationMode: RotationMode.None,
-        allowFlyover: FlyoverPref.Never,
-        tint: 0x5a4320,
-        frames: {
-            base: "column",
-            particle: "cabin_wall_particle"
-        },
-        isWall: true
-    },
+    column("Port Main Office Column", 0xb98a46, "port_office_wall_particle"),
+    column("Cabin Column", 0x5d4622, "cabin_wall_particle"),
+    column("Metal Column", 0x8f8f8f, "metal_column_particle", "metal_light"),
+    column("Sawmill Warehouse Column", 0x764423, "sawmill_warehouse_wall_particle"),
+    column("Sawmill Center Warehouse Column", 0x5a1919, "sawmill_warehouse_particle"),
+    column("Sawmill Storage Column", 0x5a1919, "hq_stone_wall_particle"),
+    column("Warehouse Hunted Column", 0x6e4f32, "warehouse_hunted_particle"),
+    column("Hunting Stand Column", 0x764423, "hunting_stand_particle"),
+    column("Tavern Column", 0x5a4320, "cabin_wall_particle"),
+    column("Mansion Column", 0x3a2d1f, "mansion_wall_particle"),
     {
         idString: "potted_plant",
         name: "Potted Plant",
