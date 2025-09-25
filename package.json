@@ -1,10 +1,10 @@
 {
   "name": "suroi",
-  "version": "0.29.0",
+  "version": "0.29.1",
   "description": "An open-source 2D battle royale game inspired by surviv.io.",
   "scripts": {
     "build:client": "cd client && bun build:client",
-    "start": "cd server && bun start",
+    "start": "cd server && bun .",
     "dev": "bun -F '*' dev",
     "dev:client": "cd client && bun dev",
     "dev:server": "cd server && bun dev",
@@ -28,7 +28,7 @@
   "license": "GPL-3.0",
   "devDependencies": {
     "@biomejs/biome": "2.2.4",
-    "@types/node": "^22.18.3",
+    "@types/node": "^22.18.6",
     "typescript": "^5.9.2"
   },
   "workspaces": ["client", "common", "server", "tests"],

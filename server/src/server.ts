@@ -88,8 +88,6 @@ if (Cluster.isPrimary && require.main === module) {
         ? new RateLimiter(Config.maxCustomTeams)
         : undefined;
 
-    const textDecoder = new TextDecoder();
-
     Bun.serve({
         hostname: Config.hostname,
         port: Config.port,
@@ -184,6 +182,7 @@ if (Cluster.isPrimary && require.main === module) {
             }
         },
         websocket: {
+            idleTimeout: 960,
             open(socket: Bun.ServerWebSocket<CustomTeamPlayerContainer>) {
                 const { player } = socket.data;
                 player.socket = socket;
@@ -193,7 +192,7 @@ if (Cluster.isPrimary && require.main === module) {
             message(socket: Bun.ServerWebSocket<CustomTeamPlayerContainer>, message: Buffer) {
                 try {
                     const { player } = socket.data;
-                    void player.team.onMessage(player, JSON.parse(textDecoder.decode(message)) as CustomTeamMessage);
+                    void player.team.onMessage(player, JSON.parse(String(message)) as CustomTeamMessage);
                 } catch (e) {
                     serverError("Error parsing team socket message. Details:", e);
                 }

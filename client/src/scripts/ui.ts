@@ -3,6 +3,7 @@ import { Badges, type BadgeDefinition } from "@common/definitions/badges";
 import { EmoteCategory, Emotes, getBadgeIdString, isEmoteBadge, type EmoteDefinition } from "@common/definitions/emotes";
 import { Ammos, type AmmoDefinition } from "@common/definitions/items/ammos";
 import { type ArmorDefinition } from "@common/definitions/items/armors";
+import type { BackpackDefinition } from "@common/definitions/items/backpacks";
 import { HealType, HealingItems, type HealingItemDefinition } from "@common/definitions/items/healingItems";
 import { PerkIds, Perks } from "@common/definitions/items/perks";
 import { Scopes, type ScopeDefinition } from "@common/definitions/items/scopes";
@@ -15,9 +16,7 @@ import { DefinitionType, type ReferenceTo, type ReifiableDef } from "@common/uti
 import { pickRandomInArray } from "@common/utils/random";
 import { sound } from "@pixi/sound";
 import $ from "jquery";
-import { Color, isWebGLSupported, isWebGPUSupported } from "pixi.js";
-import { posts } from "virtual:news-posts";
-import type { NewsPost } from "../../vite/plugins/news-posts-plugin";
+import { Color, ColorMatrixFilter, isWebGLSupported, isWebGPUSupported } from "pixi.js";
 import { Config, type Region, type ServerInfo } from "./config";
 import { GameConsole } from "./console/gameConsole";
 import { defaultClientCVars, type CVarTypeMapping } from "./console/variables";
@@ -30,11 +29,11 @@ import { UIManager } from "./managers/uiManager";
 import { body, createDropdown } from "./uiHelpers";
 import { EMOTE_SLOTS, UI_DEBUG_MODE } from "./utils/constants";
 import { Crosshairs, getCrosshair } from "./utils/crosshairs";
-import { html, humanDate, requestFullscreen } from "./utils/misc";
+import { html, requestFullscreen } from "./utils/misc";
 import { spritesheetLoadPromise } from "./utils/pixi";
 import { TRANSLATIONS, getTranslatedString } from "./utils/translations/translations";
 import type { TranslationKeys } from "./utils/translations/typings";
-import type { BackpackDefinition } from "@common/definitions/items/backpacks";
+import { CameraManager } from "./managers/cameraManager";
 
 interface RegionInfo extends Region {
     readonly playerCount?: number
@@ -303,15 +302,15 @@ export async function finalizeUI(): Promise<void> {
         }
     }
 
-    // Darken canvas (halloween mode)
-    // TODO Use pixi for this
+    // Apply filters to canvas
+    let filter: ColorMatrixFilter | undefined;
     if (canvasFilters !== undefined) {
-        $("#game-canvas").css({
-            "filter": `brightness(${canvasFilters.brightness}) saturate(${canvasFilters.saturation})`,
-            "position": "relative",
-            "z-index": "-1"
-        });
+        filter = new ColorMatrixFilter();
+        filter.saturate(-(1 - canvasFilters.saturation));
+        filter.brightness(canvasFilters.brightness, true);
     }
+    CameraManager.container.filters = filter ? [filter] : [];
+    MapManager.container.filters = filter ? [filter] : [];
 }
 
 // biome-ignore lint/suspicious/useAwait: there's a lot going on in this function
@@ -415,16 +414,6 @@ export async function setUpUI(): Promise<void> {
             GameConsole.setBuiltInCVar("cv_language", language);
         })();
     }
-
-    // Load news
-    ui.newsPosts.html((posts as NewsPost[]).slice(0, 5).map(post => `
-        <article class="splash-news-entry">
-            <div class="news-date">${humanDate(post.date)}</div>
-            <div class="news-title">${post.title}</div>
-            ${post.description}
-            <i>- ${post.author}</i>
-        </article>
-    `).join(""));
 
     createDropdown("#language-dropdown");
 
@@ -863,6 +852,10 @@ export async function setUpUI(): Promise<void> {
         {
             name: "dReammakers.",
             link: "https://www.youtube.com/channel/UCLid-yvmRUmpA5NBP34SOug"
+        },
+        {
+            name: "at6030",
+            link: "https://www.youtube.com/@aat6030"
         }
     ];
     const youtuber = pickRandomInArray(youtubers);

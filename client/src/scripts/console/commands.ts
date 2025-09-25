@@ -796,7 +796,7 @@ export function setUpCommands(): void {
             );
 
             const canvas = Game.pixi.renderer.extract.canvas({
-                clearColor: Game.colors.grass,
+                clearColor: Game.colors.background,
                 target: container,
                 frame: rectangle,
                 resolution: container.scale.x,
