@@ -123,7 +123,7 @@ export const Armors = new ObjectDefinitions<ArmorDefinition>([
         name: "Werewolf Fur",
         defType: DefinitionType.Armor,
         armorType: ArmorType.Vest,
-        level: 1,
+        level: 5,
         damageReduction: 0.2,
         color: 0x4d4d4d,
         noDrop: true,

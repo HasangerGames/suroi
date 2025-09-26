@@ -2082,11 +2082,13 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                       helmets = Armors.definitions.filter(armor => armor.armorType === ArmorType.Helmet && !armor.noDrop && !armor.perk),
                       backpacks = Backpacks.definitions.filter(backpack => !backpack.perk),
                       guns = Guns.definitions.filter(gun => !gun.devItem && !gun.noSwap),
-                      melees = Melees.definitions.filter(melee => !melee.noDrop && !melee.devItem);
+                      melees = Melees.definitions.filter(melee => !melee.noDrop && !melee.devItem),
+                      skins = Skins.definitions.filter(skin => !skin.rolesRequired && !skin.noDrop && !skin.grassTint);
 
                 this.inventory.helmet = pickRandomInArray(helmets);
                 this.inventory.vest = pickRandomInArray(vests);
                 this.inventory.backpack = pickRandomInArray(backpacks);
+                this.loadout.skin = pickRandomInArray(skins);
 
                 for (const item of [...HealingItems.definitions, ...Ammos.definitions]) {
                     if ((item.defType === DefinitionType.Ammo && item.ephemeral) || (item.defType === DefinitionType.HealingItem && item.healType === HealType.Special)) continue;
