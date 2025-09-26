@@ -16009,11 +16009,6 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         ),
         floorImages: [
             {
-                key: "mansion",
-                position: Vec(0, 0),
-                alpha: 0.75
-            },
-            {
                 key: "mansion_gate",
                 position: Vec(35.5, 57),
                 zIndex: ZIndexes.Decals,
