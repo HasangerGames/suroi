@@ -2491,7 +2491,15 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             // Bottom left
             { idString: "inner_concrete_wall_3", position: Vec(-32.45, 39), rotation: 0 },
             { idString: "inner_concrete_wall_1", position: Vec(-15, 76.65), rotation: 1 },
-            { idString: "inner_concrete_wall_1", position: Vec(-15, 65.95), rotation: 1 }
+            { idString: "inner_concrete_wall_1", position: Vec(-15, 65.95), rotation: 1 },
+
+            // TEMP: Remove if halloween ends.
+            { idString: "cobweb", position: Vec(-47.26, 77.18), rotation: 1 },
+            { idString: "cobweb", position: Vec(43.93, -12.29), rotation: 2 },
+            { idString: "cobweb", position: Vec(-43.82, 30.13), rotation: 1 },
+            { idString: "cobweb", position: Vec(117.2, -34.21), rotation: 3 },
+            { idString: "small_lamp_thingy", position: Vec(71.97, 44.39) },
+            { idString: "small_lamp_thingy", position: Vec(92.74, -14.86) }
         ] as BuildingObstacle[],
         subBuildings: IS_CLIENT ? undefined : [
             {
