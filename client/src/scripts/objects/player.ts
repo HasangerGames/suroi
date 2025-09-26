@@ -763,6 +763,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 || backpackLevel !== this.backpackLevel
             ) {
                 this.updateEquipment();
+
+                if (!isNew && this.equipment.vest?.emitSound !== undefined) this.playSound(this.equipment.vest.emitSound);
             }
 
             if (itemDirty) {

@@ -8,6 +8,7 @@ export type ArmorDefinition = ItemDefinition & {
     readonly perk?: ReferenceTo<PerkDefinition>
     readonly positionOverride?: number
     readonly positionOverrideDowned?: number
+    readonly emitSound?: string
 } & (
     | {
         readonly armorType: ArmorType.Helmet
@@ -126,6 +127,7 @@ export const Armors = new ObjectDefinitions<ArmorDefinition>([
         damageReduction: 0.2,
         color: 0x4d4d4d,
         noDrop: true,
-        hideInHUD: true
+        hideInHUD: true,
+        emitSound: "werewolf"
     },
 ]);
