@@ -40,6 +40,7 @@ export interface ServerBulletOptions {
     readonly shotFX?: boolean
     readonly lastShot?: boolean
     readonly cycle?: boolean
+    readonly reflective?: boolean
 }
 
 export class Bullet extends BaseBullet {
@@ -85,6 +86,8 @@ export class Bullet extends BaseBullet {
         this.lastShot = options.lastShot ?? false;
 
         this.cycle = options.cycle ?? false;
+
+        this.reflective = options.reflective ?? false;
     }
 
     update(): DamageRecord[] {
@@ -198,7 +201,7 @@ export class Bullet extends BaseBullet {
             if (isObstacle && object.definition.noCollisions) continue;
 
             if (reflected || reflectiveRounds) {
-                this.reflect(rotation ?? 0);
+                this.reflect(rotation ?? 0, reflectiveRounds ?? false);
                 this.reflected = true;
             }
 
@@ -209,7 +212,7 @@ export class Bullet extends BaseBullet {
         return records;
     }
 
-    reflect(direction: number): void {
+    reflect(direction: number, reflective = false): void {
         this.game.addBullet(
             this.sourceGun,
             this.shooter,
@@ -224,7 +227,8 @@ export class Bullet extends BaseBullet {
                 rangeOverride: this.clipDistance,
                 saturate: this.saturate,
                 thin: this.thin,
-                shotFX: false
+                shotFX: false,
+                reflective
             }
         );
     }

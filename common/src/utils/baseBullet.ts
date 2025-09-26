@@ -130,6 +130,7 @@ export interface BulletOptions {
     readonly shotFX?: boolean
     readonly lastShot?: boolean
     readonly cycle?: boolean
+    readonly reflective?: boolean
 }
 
 type GameObject = {
@@ -172,6 +173,8 @@ export class BaseBullet {
     lastShot = false;
 
     cycle = false;
+
+    reflective = false;
 
     readonly sourceID: number;
 
@@ -233,6 +236,8 @@ export class BaseBullet {
         this.lastShot = options.lastShot ?? false;
 
         this.cycle = options.cycle ?? false;
+
+        this.reflective = options.reflective ?? false;
     }
 
     /**
@@ -385,7 +390,8 @@ export class BaseBullet {
             this.split,
             this.shotFX,
             this.lastShot,
-            this.cycle
+            this.cycle,
+            this.reflective
         );
 
         if (hasMods) {
@@ -442,7 +448,8 @@ export class BaseBullet {
             split,
             shotFX,
             lastShot,
-            cycle
+            cycle,
+            reflective
         ] = stream.readBooleanGroup2();
 
         const modifiers = hasMods
@@ -482,7 +489,8 @@ export class BaseBullet {
             split,
             shotFX,
             lastShot,
-            cycle
+            cycle,
+            reflective
         };
     }
 }

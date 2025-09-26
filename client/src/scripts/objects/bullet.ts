@@ -151,7 +151,7 @@ export class Bullet extends BaseBullet {
 
                 const { point, normal } = collision.intersection;
 
-                if (isPlayer && collision.reflected) {
+                if ((isPlayer && collision.reflected) || (!isPlayer && this.reflective)) {
                     SoundManager.play(
                         `bullet_reflection_${random(1, 5)}`,
                         {
