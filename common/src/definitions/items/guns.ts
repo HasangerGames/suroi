@@ -703,8 +703,8 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
         }
     },
     {
-        idString: "ttk_esaul",
-        name: "TTK Esaul",
+        idString: "yesaul",
+        name: "Yesaul",
         defType: DefinitionType.Gun,
         tier: Tier.B,
         ammoType: "545mm",
