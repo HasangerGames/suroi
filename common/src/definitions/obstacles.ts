@@ -1226,6 +1226,29 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         zIndex: ZIndexes.ObstaclesLayer4
     },
     {
+        idString: "dead_pine_tree_halloween",
+        name: "Dead Pine Tree",
+        defType: DefinitionType.Obstacle,
+        material: "tree",
+        health: 120,
+        scale: {
+            spawnMin: 0.9,
+            spawnMax: 1.1,
+            destroy: 0.75
+        },
+        spawnHitbox: new CircleHitbox(8.5),
+        rotationMode: RotationMode.Limited,
+        hitbox: new CircleHitbox(2.5),
+        allowFlyover: FlyoverPref.Never,
+        zIndex: ZIndexes.ObstaclesLayer4,
+        spawnMode: MapObjectSpawnMode.Beach,
+        frames: {
+            base: "dead_pine_tree",
+            particle: "dead_pine_tree_particle",
+            residue: "dead_pine_tree_residue"
+        }
+    },
+    {
         idString: "christmas_tree",
         name: "Christmas Tree",
         defType: DefinitionType.Obstacle,
@@ -1360,6 +1383,30 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         spawnHitbox: new CircleHitbox(0.5),
         rotationMode: RotationMode.Full,
         variations: 2
+    },
+    {
+        idString: "beach_pebble",
+        name: "Pebble",
+        defType: DefinitionType.Obstacle,
+        material: "stone",
+        health: 200,
+        indestructible: true,
+        noCollisions: true,
+        noMeleeCollision: true,
+        noBulletCollision: true,
+        scale: {
+            spawnMin: 0.8,
+            spawnMax: 1.2,
+            destroy: 0
+        },
+        spawnMode: MapObjectSpawnMode.Beach,
+        hitbox: new CircleHitbox(0.5),
+        spawnHitbox: new CircleHitbox(0.5),
+        rotationMode: RotationMode.Limited,
+        variations: 2,
+        frames: {
+            base: "pebble"
+        }
     },
     {
         idString: "pumpkin",

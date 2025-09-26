@@ -547,6 +547,8 @@ const maps = {
             maple_tree: 50,
             pine_tree: 40,
             dead_pine_tree: 50,
+            dead_pine_tree_halloween: 100,
+            beach_pebble: 100,
             dormant_oak_tree: 100,
             stump: 40,
             hay_bale: 50,
