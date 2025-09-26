@@ -1065,6 +1065,13 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
     },
 
     halloween: {
+        melee: [
+            { item: "baseball_bat", weight: 3 },
+            { item: "kbar", weight: 2 },
+            { item: "sickle", weight: 0.5 },
+            { item: "pan", weight: 0.1 },
+            { item: "gas_can", weight: 0 } // somewhat hack in order to make the gas can obtainable through mini plumpkins
+        ],
         hollow_log: [
             { table: "healing_items", weight: 1 },
             { table: "ammo", weight: 1 },

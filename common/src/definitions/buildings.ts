@@ -1508,7 +1508,12 @@ const blueHouse = (idString: string, subBuildings: BuildingDefinition["subBuildi
         { idString: "small_drawer", position: Vec(-14.7, -14.5), rotation: 2 },
         { idString: "small_bed", position: Vec(-29.25, -19.9), rotation: 2 },
         { idString: "bookshelf", position: Vec(-15.25, -6), rotation: 0 },
-        { idString: "potted_plant", position: Vec(-29, -4) }
+        { idString: "potted_plant", position: Vec(-29, -4) },
+
+        // TEMP: Remove if halloween ends.
+        { idString: "cobweb", position: Vec(28.86, -24.21), rotation: 3 },
+        { idString: "jack_o_lantern", position: Vec(11.49, -35.99), rotation: 3 },
+        { idString: "small_lamp_thingy", position: Vec(-1.25, -3.7) }
     ],
     subBuildings: subBuildings.length > 1
         ? [
@@ -2019,7 +2024,13 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         }],
         obstacles: IS_CLIENT ? undefined : [
             { idString: warehouseObstacle, position: Vec(-19.39, -36.48) },
-            { idString: warehouseObstacle, position: Vec(-19.39, 36.48) }
+            { idString: warehouseObstacle, position: Vec(-19.39, 36.48) },
+
+            // TEMP: Remove if halloween ends.
+            { idString: "small_lamp_thingy", position: Vec(0.27, 26.93) },
+            { idString: "small_lamp_thingy", position: Vec(0.27, -25.15) },
+            { idString: "cobweb", position: Vec(-20.19, -37.18), rotation: 0 },
+            { idString: "cobweb", position: Vec(20.14, 37.32), rotation: 2 }
         ],
         subBuildings: IS_CLIENT ? undefined : [{
             idString: {
@@ -2545,9 +2556,10 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             // -----------------------------------------------------------------------
             // TEMP: Remove if halloween ends.
             // -----------------------------------------------------------------------
-            // { idString: "cobweb", position: Vec(25.64, -24.17), rotation: 3 },
-            // { idString: "jack_o_lantern", position: Vec(6.2, -36.5), rotation: 3 },
-            // { idString: "jack_o_lantern", position: Vec(27.2, -36.5), rotation: 3 },
+            { idString: "cobweb", position: Vec(-25.11, 23.03), rotation: 1 },
+            { idString: "jack_o_lantern", position: Vec(6.2, -36.5), rotation: 3 },
+            { idString: "jack_o_lantern", position: Vec(27.2, -36.5), rotation: 3 },
+            { idString: "small_lamp_thingy", position: Vec(3.36, -11.02) },
             // -----------------------------------------------------------------------
 
             { idString: "house_wall_4", position: Vec(8.6, -18), rotation: 1 },
@@ -2738,9 +2750,10 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             // -----------------------------------------------------------------------
             // TEMP: Remove if halloween ends.
             // -----------------------------------------------------------------------
-            // { idString: "cobweb", position: Vec(-26.19, 23.5), rotation: 1 },
-            // { idString: "jack_o_lantern", position: Vec(-3.3, -36.8), rotation: 3 },
-            // { idString: "jack_o_lantern", position: Vec(17.7, -36.8), rotation: 3 },
+            { idString: "cobweb", position: Vec(-25.88, 23.18), rotation: 1 },
+            { idString: "jack_o_lantern", position: Vec(-3.3, -36.8), rotation: 3 },
+            { idString: "jack_o_lantern", position: Vec(17.7, -36.8), rotation: 3 },
+            { idString: "small_lamp_thingy", position: Vec(-15.22, 0.56) },
             // -----------------------------------------------------------------------
 
             { idString: "door", position: Vec(7.6, -29.6), rotation: 0 },
@@ -2855,10 +2868,11 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             // -----------------------------------------------------------------------
             // TEMP: Remove if halloween ends.
             // -----------------------------------------------------------------------
-            // { idString: "cobweb", position: Vec(27.74, -24.95), rotation: 3 },
-            // { idString: "cobweb", position: Vec(-44.48, -25.06), rotation: 0 },
-            // { idString: "jack_o_lantern", position: Vec(-46.48, 35.06), rotation: -0.1 }, // cursed
-            // { idString: "jack_o_lantern", position: Vec(40.24, 24), rotation: -1 },
+            { idString: "cobweb", position: Vec(27.32, -24.59), rotation: 3 },
+            { idString: "cobweb", position: Vec(-44.2, -24.57), rotation: 0 },
+            { idString: "jack_o_lantern", position: Vec(-46.48, 35.06), rotation: -0.1 }, // cursed
+            { idString: "jack_o_lantern", position: Vec(40.24, 24), rotation: -1 },
+            { idString: "small_lamp_thingy", position: Vec(17.45, 18.24) },
             // -----------------------------------------------------------------------
 
             { idString: "window", position: Vec(32.99, -12.81), rotation: 0 },
@@ -3078,7 +3092,12 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 },
                 position: Vec(15.93, -5.14),
                 rotation: 2
-            }
+            },
+
+            // TEMP: Remove if halloween ends.
+            { idString: "small_lamp_thingy", position: Vec(-23.98, 7.26) },
+            { idString: "cobweb", position: Vec(-26.54, 23.26), rotation: 1 },
+            { idString: "cobweb", position: Vec(26.62, -24.48), rotation: 3 }
         ],
         subBuildings: IS_CLIENT ? undefined : [{ idString: "blue_house_basement_ceiling", position: Vec(0, 0) }]
     },
@@ -5378,6 +5397,19 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             ])
         }],
         obstacles: IS_CLIENT ? undefined : [
+            // -----------------------------------------------------
+            // TEMP: Remove if halloween ends.
+            // -----------------------------------------------------
+            { idString: "small_lamp_thingy", position: Vec(-41.19, 33.19) },
+            { idString: "small_lamp_thingy", position: Vec(56.28, 2.85) },
+            { idString: "small_lamp_thingy", position: Vec(-64.12, -59.61) },
+            { idString: "cobweb", position: Vec(65.91, -1.02), rotation: 3 },
+            { idString: "cobweb", position: Vec(-4.87, -47.66), rotation: 2 },
+            { idString: "cobweb", position: Vec(-65.14, -73.48), rotation: 0 },
+            { idString: "cobweb", position: Vec(-60.06, -7.76), rotation: 0 },
+            { idString: "cobweb", position: Vec(-22.66, 39.43), rotation: 2 },
+            // -----------------------------------------------------
+
             { idString: "regular_crate", position: Vec(63.13, -15.17), outdoors: true },
             { idString: "regular_crate", position: Vec(-7.99, 2.28), outdoors: true },
             { idString: "regular_crate", position: Vec(7.06, 30.07), outdoors: true },
@@ -5676,7 +5708,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             }
         ],
         obstacles: IS_CLIENT ? undefined : [
-            { idString: "small_lamp_thingy", position: Vec(-0.12, -22.2), rotation: 0 },
+            { idString: "small_lamp_thingy", position: Vec(-0.12, -22.2) },
             { idString: "window", position: Vec(20.47, 11.8), rotation: 0 },
             { idString: "door", position: Vec(-0.02, 38), rotation: 0 },
             { idString: "small_stove", position: Vec(15.64, 33.27), rotation: 3 },
@@ -6155,6 +6187,22 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             allow: [0]
         }],
         obstacles: IS_CLIENT ? undefined : [
+
+            // ------------------------------------------------------------------
+            // TEMP: Remove if halloween ends.
+            // ------------------------------------------------------------------
+            { idString: "cobweb", position: Vec(-65.03, 30.97), rotation: 1 },
+            { idString: "cobweb", position: Vec(65.08, -100.66), rotation: 3 },
+            { idString: "cobweb", position: Vec(64.95, -30.26), rotation: 2 },
+            { idString: "cobweb", position: Vec(-51.82, -83.99), rotation: 1 },
+            { idString: "jack_o_lantern", position: Vec(7.64, -112.63), rotation: 3 },
+            { idString: "jack_o_lantern", position: Vec(-56.86, 42.99), rotation: 0 },
+            { idString: "jack_o_lantern", position: Vec(-3.42, 42.99), rotation: 0 },
+            { idString: "small_lamp_thingy", position: Vec(-7.16, 4.94) },
+            { idString: "small_lamp_thingy", position: Vec(43.47, -52.67) },
+
+            // ------------------------------------------------------------------
+
             { idString: "headquarters_bottom_entrance", position: Vec(1, 2), rotation: 0 },
             { idString: "headquarters_main_desk", position: Vec(-10.7, -49.5), rotation: 0 },
             { idString: "headquarters_cafeteria_table", position: Vec(45, -82), rotation: 0 },
@@ -6423,6 +6471,16 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 couch_part
                 couch_corner
             */
+
+            // ------------------------------------------------------------------
+            // TEMP: Remove if halloween ends.
+            // ------------------------------------------------------------------
+            { idString: "cobweb", position: Vec(-33.45, -100.2), rotation: 0 },
+            { idString: "cobweb", position: Vec(-33.22, -26.7), rotation: 3 },
+            { idString: "cobweb", position: Vec(-57.56, -71.91), rotation: 0 },
+            { idString: "small_lamp_thingy", position: Vec(30.8, -74.01) },
+            { idString: "small_lamp_thingy", position: Vec(0.16, -41.27) },
+            // ------------------------------------------------------------------
 
             { idString: "fire_exit_railing", position: Vec(73.5, -56), rotation: 0 },
 
@@ -6812,15 +6870,6 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             }
         ],
         obstacles: IS_CLIENT ? undefined : [
-
-            // -----------------------------------------------------------------------
-            // TEMP: Remove if halloween ends.
-            // -----------------------------------------------------------------------
-            // { idString: "cobweb", position: Vec(-49.38, -35.17), rotation: 0 },
-            // { idString: "cobweb", position: Vec(27.33, 11.48), rotation: 2 },
-            // { idString: "cobweb", position: Vec(-49.38, -35.11), rotation: 0, layer: Layer.Upstairs },
-            // -----------------------------------------------------------------------
-
             { idString: "barn_stair_walls", position: Vec(0, 0), rotation: 0 },
             { idString: "barn_stair_walls_2", position: Vec(0, 0), rotation: 0 },
             { idString: "barn_stair_walls_top_floor", position: Vec(0, 0), rotation: 0, layer: Layer.Upstairs },
@@ -7549,6 +7598,16 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             // windows & doors (placed clockwise)
             //
 
+            // ------------------------------------------------------------------
+            // TEMP: Remove if halloween ends.
+            // ------------------------------------------------------------------
+            { idString: "cobweb", position: Vec(-20.59, -54.47), rotation: 0 },
+            { idString: "cobweb", position: Vec(42.33, -30.14), rotation: 3 },
+            { idString: "cobweb", position: Vec(-20.75, 35.29), rotation: 1 },
+            { idString: "jack_o_lantern", position: Vec(-25.48, -66.63), rotation: 3 },
+            { idString: "small_lamp_thingy", position: Vec(-2.41, 18.03) },
+            // ------------------------------------------------------------------
+
             // windows
             { idString: "window", position: Vec(-48.18, 0.04), rotation: 0 },
             { idString: "window", position: Vec(-48.2, -49.57), rotation: 0 },
@@ -7743,6 +7802,15 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "lodge_secret_room", position: Vec(-2.7, -48) }
         ],
         obstacles: IS_CLIENT ? undefined : [
+            // ------------------------------------------------------------------
+            // TEMP: Remove if halloween ends.
+            // ------------------------------------------------------------------
+            { idString: "cobweb", position: Vec(15.32, 35.27), rotation: 2 },
+            { idString: "cobweb", position: Vec(-20.76, -54.56), rotation: 0 },
+            { idString: "cobweb", position: Vec(-42.44, 1.57), rotation: 0 },
+            { idString: "small_lamp_thingy", position: Vec(1.03, -19.13) },
+            // ------------------------------------------------------------------
+
             // near stairs
             { idString: "small_drawer", position: Vec(-43.29, 0.37), rotation: 1 },
             { idString: "door", position: Vec(-26.44, 2.24), rotation: 3 },
@@ -7937,13 +8005,13 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "vibrant_bush", position: Vec(187.25, 173.39) },
             { idString: "vibrant_bush", position: Vec(88.89, 135.27) },
             { idString: "vibrant_bush", position: Vec(156.44, 65.25) },
-            { idString: "vibrant_bush", position: Vec(95.86, -18.52) }
+            { idString: "vibrant_bush", position: Vec(95.86, -18.52) },
 
-            // halloween only
-            // { idString: "jack_o_lantern", position: Vec(24.07, 66.73) },
-            // { idString: "jack_o_lantern", position: Vec(-0.54, 66.73) },
-            // { idString: "jack_o_lantern", position: Vec(43.69, 84.06) },
-            // { idString: "jack_o_lantern", position: Vec(43.69, 106.7) }
+            // TEMP: Remove if halloween ends.
+            { idString: "jack_o_lantern", position: Vec(24.07, 66.73) },
+            { idString: "jack_o_lantern", position: Vec(-0.54, 66.73) },
+            { idString: "jack_o_lantern", position: Vec(43.69, 84.06) },
+            { idString: "jack_o_lantern", position: Vec(43.69, 106.7) }
         ],
         subBuildings: IS_CLIENT ? undefined : [
             { idString: "hay_shed_4", position: Vec(40.03, 146.55), orientation: 1 },
@@ -7970,15 +8038,15 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 key: "plumpkin_bunker_floor",
                 position: Vec(0, 0),
                 scale: Vec(1.506, 1.506)
-            }
+            },
 
-            // halloween only.
-            // {
-            //     key: "windowed_vault_door_residue",
-            //     position: Vec(24.88, -104.54),
-            //     zIndex: ZIndexes.DeadObstacles,
-            //     scale: Vec(0.9, 0.9)
-            // }
+            // TEMP: Remove if halloween ends.
+            {
+                key: "windowed_vault_door_residue",
+                position: Vec(24.88, -104.54),
+                zIndex: ZIndexes.DeadObstacles,
+                scale: Vec(0.9, 0.9)
+            }
         ],
         hitbox: new GroupHitbox(
             RectangleHitbox.fromRect(2.01, 49.16, Vec(-89.3, 1.6)),
@@ -8260,11 +8328,31 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "bulletproof_window", position: Vec(-50.37, -104.85), rotation: 0 },
             { idString: "bulletproof_window", position: Vec(-29.8, -104.85), rotation: 0 },
             { idString: "bulletproof_window", position: Vec(4.32, -104.85), rotation: 0 },
-            { idString: "windowed_vault_door", position: Vec(24.88, -104.54), rotation: 2 }, // disabled for halloween only
+            // { idString: "windowed_vault_door", position: Vec(24.88, -104.54), rotation: 2 }, // disabled for halloween only
 
-            // halloween only.
-            // { idString: "cobweb", position: Vec(-72.69, -99.3), rotation: 0 },
-            // { idString: "cobweb", position: Vec(29.57, -122.53), rotation: 3 },
+            // ------------------------------------------------------------------
+            // TEMP: Remove if halloween ends. (dont forget to re-enable windowed vault door)
+            // ------------------------------------------------------------------
+            { idString: "cobweb", position: Vec(-72.69, -99.3), rotation: 0 },
+            { idString: "cobweb", position: Vec(29.57, -122.53), rotation: 3 },
+            { idString: "cobweb", position: Vec(-45.48, 20.04), rotation: 1 },
+            { idString: "cobweb", position: Vec(2.71, 79.89), rotation: 2 },
+            { idString: "cobweb", position: Vec(-147.43, -40.53), rotation: 0 },
+            { idString: "cobweb", position: Vec(-57.19, -27.53), rotation: 2 },
+            { idString: "cobweb", position: Vec(-54.92, -122.6), rotation: 0 },
+            { idString: "cobweb", position: Vec(134.05, -70.22), rotation: 3 },
+            { idString: "cobweb", position: Vec(93.55, -32.66), rotation: 2 },
+            { idString: "cobweb", position: Vec(41.6, -51.01), rotation: 0 },
+            { idString: "cobweb", position: Vec(87.78, 69.43), rotation: 2 },
+            { idString: "graveyard_light", position: Vec(104.29, -31.55) },
+            { idString: "graveyard_light", position: Vec(41.53, -41.31) },
+            { idString: "graveyard_light", position: Vec(50.93, 52.3) },
+            { idString: "graveyard_light", position: Vec(-86.09, 31.62) },
+            { idString: "graveyard_light", position: Vec(-99.08, -8.79) },
+            { idString: "graveyard_light", position: Vec(-99.08, 10.38) },
+            { idString: "graveyard_light", position: Vec(-3.5, 20.83) },
+            { idString: "small_lamp_thingy", position: Vec(-20.99, 54.89) },
+            // ------------------------------------------------------------------
 
             { idString: "control_panel2", position: Vec(-12.74, -99.53), rotation: 0 },
             { idString: "control_panel_small", position: Vec(-0.04, -81.91), rotation: 3 },
@@ -15113,8 +15201,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "large_coffin", position: Vec(21.61, 20.71), rotation: 2 },
 
             // halloween only
-            // { idString: "cobweb", position: Vec(-15.09, -26.11), rotation: 0 },
-            // { idString: "cobweb", position: Vec(15.48, -26.12), rotation: 3 },
+            { idString: "cobweb", position: Vec(-15.09, -26.11), rotation: 0 },
+            { idString: "cobweb", position: Vec(15.48, -26.12), rotation: 3 },
         ],
         subBuildings: IS_CLIENT ? undefined : [
             { idString: "graveyard_basement", position: Vec(-18, -45.25), layer: Layer.Basement },
@@ -15278,7 +15366,11 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "large_coffin", position: Vec(0.19, -6.18), rotation: 3 },
             { idString: "seedshot_case", position: Vec(15.13, 24.84), rotation: 3 },
             { idString: "graveyard_light", position: Vec(-0.17, 27.03) },
-            { idString: "graveyard_light", position: Vec(0.69, -27.27) }
+            { idString: "graveyard_light", position: Vec(0.69, -27.27) },
+
+            // TEMP: Remove if halloween ends.
+            { idString: "cobweb", position: Vec(-15.02, 25.98), rotation: 1 },
+            { idString: "cobweb", position: Vec(-14.96, -26.18), rotation: 0 }
         ],
         lootSpawners: IS_CLIENT ? undefined : [{
             table: "graveyard_skins",
@@ -16187,6 +16279,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "box", position: Vec(-14.43, -0.55), outdoors: true },
             { idString: "box", position: Vec(50.41, 42.27), outdoors: true },
             { idString: "box", position: Vec(48.73, 36.88), outdoors: true },
+            { idString: { box: 1, grenade_box: 0.38 }, position: Vec(-11.88, 4.74), outdoors: true },
             { idString: "smaller_sandbags", position: Vec(-0.33, 40.95), rotation: 1, outdoors: true },
             { idString: "smaller_sandbags", position: Vec(62.41, 27.91), rotation: 0, outdoors: true },
             { idString: "small_coffin", position: Vec(-10.73, 40.96), rotation: 0, outdoors: true },
@@ -16199,6 +16292,10 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "pebble", position: Vec(-51.49, 32.69), rotation: 0, variation: 1 },
             { idString: "pebble", position: Vec(-30.69, 37.72), rotation: 1, variation: 1 },
             { idString: "pebble", position: Vec(-18.58, 29.04), rotation: 3, variation: 1 },
+            { idString: "graveyard_light", position: Vec(6.18, 41.65) },
+            { idString: "graveyard_light", position: Vec(-48.8, 18.85) },
+            { idString: "graveyard_light", position: Vec(62.47, 21.57) },
+            { idString: "graveyard_light", position: Vec(66.71, -55.61) }
         ],
         subBuildings: IS_CLIENT ? undefined : [
             { idString: "mansion_bottom_floor", position: Vec(6.96, -21.13) }
@@ -16341,6 +16438,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "bookshelf", position: Vec(6.26, 0.08), rotation: 1 },
             { idString: "bookshelf", position: Vec(21.78, -9.78), rotation: 3 },
             { idString: "bookshelf", position: Vec(-48.98, -5.13), rotation: 1 },
+            { idString: "bookshelf", position: Vec(-26.4, -24.23), rotation: 0 },
             { idString: "small_drawer", position: Vec(-9.95, 26.79), rotation: 2 },
             { idString: "small_drawer", position: Vec(38.15, -38.85), rotation: 0 },
             { idString: "small_drawer", position: Vec(48.26, 0.42), rotation: 0 },
@@ -16366,6 +16464,9 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: randomStove, position: Vec(-31.05, 10.57), rotation: 2 },
             { idString: "box", position: Vec(-61.74, 11.12) },
             { idString: "box", position: Vec(-56.27, 7.98) },
+            { idString: "box", position: Vec(-17.36, -24.01) },
+            { idString: { box: 1, grenade_box: 0.35 }, position: Vec(-62.28, -23.63) },
+            { idString: "box", position: Vec(46.41, -8.89) },
             { idString: "couch", position: Vec(-5.04, -38.04), rotation: 3 },
             { idString: "round_table", position: Vec(-5.2, -31.62), rotation: 0 },
             { idString: "mansion_column", position: Vec(-15.02, -10.2) },
@@ -16378,6 +16479,9 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "mansion_column", position: Vec(21.92, 44.28) },
             { idString: "mansion_wall_1", position: Vec(43.16, 0.09), rotation: 0 },
             { idString: "mansion_wall_2", position: Vec(54.64, -5.12), rotation: 0 },
+            { idString: "graveyard_light", position: Vec(-40.25, 11.05) },
+            { idString: "graveyard_light", position: Vec(14.33, -10.84) },
+            { idString: "graveyard_light", position: Vec(14.38, 3.21) }
         ],
         subBuildings: IS_CLIENT ? undefined : [
             { idString: "mansion_top_floor_shadow", position: Vec(-39.65, -6.02) },
@@ -16456,7 +16560,9 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "cobweb", position: Vec(-6.78, -15.8), rotation: 0 },
             { idString: "mansion_column", position: Vec(3.36, -5.81) },
             { idString: "mansion_wall_3", position: Vec(-4.84, -5.75), rotation: 0 },
-            { idString: "gun_mount_vks", position: Vec(10.83, -18.86), rotation: 0 }
+            { idString: "gun_mount_vks", position: Vec(10.83, -18.86), rotation: 0 },
+            { idString: "graveyard_light", position: Vec(7.14, 16.71) },
+            { idString: "graveyard_light", position: Vec(11.2, -11.56) }
         ]
     }
 ]);
