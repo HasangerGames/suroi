@@ -15086,6 +15086,12 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         bunkerSpawnHitbox: RectangleHitbox.fromRect(73.2, 78.77, Vec(-17.78, -45.92)),
         material: "stone",
         particleVariations: 2,
+        sounds: {
+            normal: "graveyard_ambience",
+            position: Vec(0, 0),
+            maxRange: 300,
+            falloff: 0.75
+        },
         allowFlyover: FlyoverPref.Always,
         graphicsZIndex: ZIndexes.BuildingsFloor + 0.25,
         hitbox: new GroupHitbox(
@@ -15357,12 +15363,6 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 layer: Layer.ToBasement
             }
         ],
-        sounds: {
-            normal: "graveyard_ambience",
-            position: Vec(0, 0),
-            maxRange: 300,
-            falloff: 0.75
-        },
         obstacles: IS_CLIENT ? undefined : [
             { idString: "regular_crate", position: Vec(-13.84, 25.56) },
             { idString: "aegis_crate", position: Vec(14.96, -25.39) },
@@ -15932,6 +15932,12 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         defType: DefinitionType.Building,
         spawnHitbox: RectangleHitbox.fromRect(161.81, 158.59, Vec(2.61, -3.32)),
         bunkerSpawnHitbox: RectangleHitbox.fromRect(73.2, 78.77, Vec(-17.78, -45.92)),
+        sounds: {
+            normal: "graveyard_ambience",
+            position: Vec(0, 0),
+            maxRange: 300,
+            falloff: 0.75
+        },
         material: "stone",
         particleVariations: 2,
         particle: "graveyard_particle",
