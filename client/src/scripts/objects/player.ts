@@ -744,7 +744,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
             const { hideEquipment, helmetLevel, vestLevel, backpackLevel } = this;
 
-            this.hideEquipment = skinDef.hideEquipment ?? false;
+            this.hideEquipment = ((activeDisguise !== undefined ? true : undefined) ?? skinDef.hideEquipment) ?? false;
 
             this.helmetLevel = (this.equipment.helmet = helmet)?.level ?? 0;
             this.vestLevel = (this.equipment.vest = vest)?.level ?? 0;

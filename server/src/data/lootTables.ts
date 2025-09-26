@@ -884,7 +884,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
         diseased_plumpkin: [
             [
                 { item: PerkIds.PlumpkinGamble, weight: 1.25 },
-                { item: PerkIds.PlumpkinShuffle, weight: 0.5 }
+                { item: PerkIds.PlumpkinShuffle, weight: 0.25 }
             ],
             [
                 { item: "diseased", weight: 0.1 },
