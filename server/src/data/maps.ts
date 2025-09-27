@@ -459,11 +459,11 @@ const maps = {
         },
         trails: {
             minAmount: 2,
-            maxAmount: 4,
+            maxAmount: 2,
             wideChance: 0.2,
             minWidth: 2,
             maxWidth: 4,
-            minWideWidth: 3,
+            minWideWidth: 4,
             maxWideWidth: 5,
             maxWideAmount: 1,
             obstacles: {
@@ -476,14 +476,33 @@ const maps = {
             maxWidth: 200,
             maxHeight: 200,
             count: 3,
-            allowedObstacles: ["clearing_boulder", "flint_crate", "rock", "plumpkin", "diseased_plumpkin", "vibrant_bush", "river_chest", "lily_pad", "grenade_crate", "oak_leaf_pile", "river_rock", "melee_crate", "flint_lockbox", "dead_pine_tree"],
+            allowedObstacles: [
+                "barrel",
+                "clearing_boulder",
+                "flint_crate",
+                "rock",
+                "plumpkin",
+                "diseased_plumpkin",
+                "vibrant_bush", 
+                "river_chest",
+                "lily_pad",
+                "grenade_crate",
+                "oak_leaf_pile",
+                "river_rock",
+                "melee_crate",
+                "flint_lockbox",
+                "dead_pine_tree",
+                "gravestone",
+                "hay_bale"
+            ],
             obstacles: [
                 { idString: "clearing_boulder", min: 3, max: 6 },
                 { idString: "dead_pine_tree", min: 2, max: 4 },
                 { idString: "flint_crate", min: 0, max: 2 },
                 { idString: "grenade_crate", min: 0, max: 2 },
                 { idString: "melee_crate", min: 0, max: 1 },
-                { idString: "flint_lockbox", min: 0, max: 1 }
+                { idString: "flint_lockbox", min: 0, max: 1 },
+                { idString: "gravestone", min: 1, max: 3 }
             ]
         },
         buildings: {
@@ -574,7 +593,8 @@ const maps = {
             flint_lockbox: 3,
             pumpkin: 300,
             large_pumpkin: 40,
-            plumpkin: 5
+            plumpkin: 5,
+            gravestone: 60
         },
         obstacleClumps: [
             {

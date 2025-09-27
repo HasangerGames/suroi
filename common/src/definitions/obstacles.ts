@@ -7455,7 +7455,25 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
             new CircleHitbox(1.21, Vec(25.46, 7.58)),
             new CircleHitbox(1.21, Vec(25.46, 12.69))
         )
-    }
+    },
+    {
+        idString: "gravestone",
+        name: "Gravestone",
+        defType: DefinitionType.Obstacle,
+        material: "stone",
+        health: 200,
+        indestructible: true,
+        noCollisions: true,
+        noMeleeCollision: true,
+        noBulletCollision: true,
+        scale: {
+            spawnMin: 0.8,
+            spawnMax: 1.2,
+            destroy: 0
+        },
+        hitbox: new CircleHitbox(5),
+        rotationMode: RotationMode.Full
+    },
 ] satisfies readonly RawObstacleDefinition[] as readonly RawObstacleDefinition[]).flatMap((def: Mutable<RawObstacleDefinition>) => {
     if (def.variations !== undefined) (def as Mutable<ObstacleDefinition>).variationBits = Math.ceil(Math.log2(def.variations));
     if (def.allowFlyover === undefined) def.allowFlyover = FlyoverPref.Sometimes;

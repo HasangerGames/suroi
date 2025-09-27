@@ -645,6 +645,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
         casingParticles: [{
             position: Vec(3.5, 0.5)
         }],
+        inventoryScale: 0.95,
         gasParticles: gasParticlePresets.pistol,
         capacity: 8,
         extendedCapacity: 12,

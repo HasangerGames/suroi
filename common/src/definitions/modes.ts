@@ -104,7 +104,12 @@ export const Modes: Record<ModeName, ModeDefinition> = {
         forcedGoldAirdropStage: 5,
         replaceMenuMusic: true,
         particleEffects: {
-            frames: ["leaf_particle_1", "leaf_particle_2", "leaf_particle_3"],
+            frames: [
+                "leaf_particle_1",
+                "leaf_particle_2",
+                "leaf_particle_3",
+                "dead_pine_tree_particle"
+            ],
             delay: 1000
         },
         playButtonImage: "./img/game/halloween/obstacles/jack_o_lantern.svg",
