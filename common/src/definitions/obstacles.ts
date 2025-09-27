@@ -974,7 +974,7 @@ const column = (name: string, tint: number, particle: string, material: typeof M
     idString: name.toLowerCase().replace(/'/g, "").replace(/ /g, "_"),
     name,
     defType: DefinitionType.Obstacle,
-    material: "stone",
+    material,
     indestructible: true,
     health: 999,
     hitbox: new GroupHitbox(
