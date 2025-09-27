@@ -424,20 +424,17 @@ const perks = [
             pine_tree: 1,
             birch_tree: 1,
             stump: 1,
-
             rock: 1,
-
             regular_crate: 1,
-
             barrel: 1,
             super_barrel: 1,
-
             vibrant_bush: 1,
             oak_leaf_pile: 1,
             hay_bale: 1,
             large_pumpkin: 1,
 
             clearing_boulder: 0.95,
+            oil_tank: 0.8,
 
             grenade_crate: 0.75,
             flint_crate: 0.75,

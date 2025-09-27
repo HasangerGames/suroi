@@ -459,12 +459,12 @@ const maps = {
         },
         trails: {
             minAmount: 2,
-            maxAmount: 2,
+            maxAmount: 3,
             wideChance: 0.2,
-            minWidth: 2,
-            maxWidth: 4,
-            minWideWidth: 4,
-            maxWideWidth: 5,
+            minWidth: 5,
+            maxWidth: 10,
+            minWideWidth: 5,
+            maxWideWidth: 10,
             maxWideAmount: 1,
             obstacles: {
                 pebble: 300
@@ -501,8 +501,7 @@ const maps = {
                 { idString: "flint_crate", min: 0, max: 2 },
                 { idString: "grenade_crate", min: 0, max: 2 },
                 { idString: "melee_crate", min: 0, max: 1 },
-                { idString: "flint_lockbox", min: 0, max: 1 },
-                { idString: "gravestone", min: 1, max: 3 }
+                { idString: "flint_lockbox", min: 0, max: 1 }
             ]
         },
         buildings: {
@@ -539,7 +538,8 @@ const maps = {
             buoy: 14,
             hollow_log_1: 5,
             hollow_log_2: 5,
-            hollow_log_3: 5
+            hollow_log_3: 5,
+            memorial: 1
         },
         majorBuildings: ["armory", "lodge", "headquarters", "refinery"],
         quadBuildingLimit: {
@@ -560,6 +560,7 @@ const maps = {
             hollow_log_3: 3
         },
         obstacles: {
+            oil_tank: 12,
             big_oak_tree: 40,
             oak_tree: 100,
             birch_tree: 60,

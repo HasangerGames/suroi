@@ -3132,7 +3132,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         }
 
         // Disguise funnies
-        if (this.activeDisguise !== undefined) {
+        if (this.activeDisguise !== undefined && !this.activeDisguise.indestructible) {
             const disguiseObstacle = this.game.map.generateObstacle(this.activeDisguise?.idString, this.position, { layer: this.layer });
             const disguiseDef = Obstacles.reify(this.activeDisguise);
 

@@ -1394,6 +1394,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         noCollisions: true,
         noMeleeCollision: true,
         noBulletCollision: true,
+        hideOnMap: true,
         scale: {
             spawnMin: 0.8,
             spawnMax: 1.2,
@@ -7466,6 +7467,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         noCollisions: true,
         noMeleeCollision: true,
         noBulletCollision: true,
+        hideOnMap: true,
         scale: {
             spawnMin: 0.8,
             spawnMax: 1.2,

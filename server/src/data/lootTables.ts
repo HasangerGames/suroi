@@ -1065,6 +1065,29 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
     },
 
     halloween: {
+        memorial_crate: [
+            [
+                { item: "pk61", weight: 1 },
+                { item: "ak47", weight: 1 },
+                { item: "mosin_nagant", weight: 0.5 },
+                { item: "vss", weight: 0.2 },
+                { item: "vector", weight: 0.2 },
+                { item: "deagle", weight: 0.2 },
+                { item: "an94", weight: 0.01 },
+                { item: "usas12", weight: 0.01 },
+                { item: "m1_garand", weight: 0.01 },
+                { item: "dual_deagle", weight: 0.01 }
+            ],
+            [
+                { item: "ancestral_garb", weight: 1 },
+                { item: "timeless", weight: 1 }
+            ],
+            [
+                { table: "equipment", weight: 1 },
+                { table: "healing_items", weight: 1 }
+            ],
+            [{ item: "kukri", weight: 1 }]
+        ],
         melee: [
             { item: "baseball_bat", weight: 3 },
             { item: "kbar", weight: 2 },
