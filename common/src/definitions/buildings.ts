@@ -16578,5 +16578,92 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "graveyard_light", position: Vec(7.14, 16.71) },
             { idString: "graveyard_light", position: Vec(11.2, -11.56) }
         ]
+    },
+    {
+        idString: "park",
+        name: "Park",
+        defType: DefinitionType.Building,
+        spawnHitbox: RectangleHitbox.fromRect(90, 90),
+        obstacles: IS_CLIENT ? undefined : [
+            { idString: "cabin_fence", position: Vec(29.63, -41.86), rotation: 0 },
+            { idString: "cabin_fence", position: Vec(-29.63, -41.86), rotation: 0 },
+            { idString: "cabin_fence", position: Vec(29.63, 41.86), rotation: 0 },
+            { idString: "cabin_fence", position: Vec(-29.63, 41.86), rotation: 0 },
+            { idString: "cabin_fence", position: Vec(-42.15, -29.49), rotation: 1 },
+            { idString: "cabin_fence", position: Vec(42.15, 29.49), rotation: 1 },
+            { idString: "cabin_fence", position: Vec(-42.15, 29.49), rotation: 1 },
+            { idString: "cabin_fence", position: Vec(42.15, -29.49), rotation: 1 },
+            { idString: "park_column", position: Vec(42.15, -41.86) },
+            { idString: "park_column", position: Vec(-42.15, -41.86) },
+            { idString: "park_column", position: Vec(-42.15, 41.86) },
+            { idString: "park_column", position: Vec(42.15, 41.86) },
+            { idString: "park_column", position: Vec(42.15, -41.86) },
+            { idString: "park_column", position: Vec(-42.15, -41.86) },
+            { idString: "park_column", position: Vec(42.15, 17.13) },
+            { idString: "park_column", position: Vec(-42.15, 17.13) },
+            { idString: "park_column", position: Vec(-42.15, -17.13) },
+            { idString: "park_column", position: Vec(42.15, -17.13) },
+            { idString: "park_column", position: Vec(-17.2, -41.86) },
+            { idString: "park_column", position: Vec(17.2, -41.86) },
+            { idString: "park_column", position: Vec(-17.2, 41.86) },
+            { idString: "park_column", position: Vec(17.2, 41.86) },
+            { idString: "park_column", position: Vec(10, -10) },
+            { idString: "park_column", position: Vec(-10, -10) },
+            { idString: "park_column", position: Vec(10, 10) },
+            { idString: "park_column", position: Vec(-10, 10) },
+            { idString: "dormant_oak_tree", position: Vec(-27.6, -28.02) },
+            { idString: "regular_crate", position: Vec(-35.59, -35.15), outdoors: true },
+            { idString: "regular_crate", position: Vec(23.98, -35.51), outdoors: true },
+            { idString: {
+                regular_crate: 1,
+                aegis_crate: 0.5,
+                flint_crate: 0.5
+            }, position: Vec(-2.38, 0.49), outdoors: true },
+            { idString: randomBarrel, position: Vec(-35.65, 22.49), outdoors: true },
+            { idString: "barrel", position: Vec(26.58, -23.47), outdoors: true },
+            { idString: "dead_pine_tree", position: Vec(31.57, -27.86) },
+            { idString: {
+                pumpkin: 1,
+                large_pumpkin: 0.25
+            }, position: Vec(15.65, -9.2), outdoors: true },
+            { idString: {
+                dead_pine_tree: 1,
+                dormant_oak_tree: 1
+            }, position: Vec(-29.29, 31.79) },
+            { idString: {
+                pumpkin: 1,
+                box: 0.65
+            }, position: Vec(-32.89, -21.25), outdoors: true },
+            { idString: "box", position: Vec(-27.79, -37.59), outdoors: true },
+            { idString: "box", position: Vec(-37.65, 37.34), outdoors: true },
+            { idString: "pumpkin", position: Vec(32.91, -37.64), outdoors: true },
+            { idString: "pumpkin", position: Vec(37.94, -33.63), outdoors: true },
+            { idString: "large_pumpkin", position: Vec(34.42, 34.94), outdoors: true },
+            { idString: "chair", position: Vec(35.97, -19.67), rotation: 1, outdoors: true },
+            { idString: "chair", position: Vec(-19.34, 35.87), rotation: 0, outdoors: true },
+            { idString: "rock", position: Vec(35.23, 24.66), outdoors: true },
+            { idString: "rock", position: Vec(-24.33, 24.46), outdoors: true },
+            { idString: {
+                grenade_crate: 0.8,
+                campsite_crate: 0.2,
+                melee_crate: 0.1
+            }, position: Vec(24, 36), outdoors: true },
+            { idString: {
+                box: 1,
+                grenade_box: 0.35,
+                campsite_crate: 0.85
+            }, position: Vec(-21.52, -19.78), outdoors: true },
+            { idString: "vibrant_bush", position: Vec(-19.35, -29.88), outdoors: true },
+            { idString: "vibrant_bush", position: Vec(25.76, 19.72), outdoors: true },
+            { idString: randomTree, position: Vec(-3.39, 16.91), outdoors: true },
+            { idString: randomTree, position: Vec(4.9, -15.27), outdoors: true },
+            { idString: randomTree, position: Vec(-26.94, 0.63), outdoors: true },
+            { idString: "hay_bale", position: Vec(9.1, -37.96), rotation: 0, outdoors: true },
+            { idString: "hay_bale", position: Vec(-9.44, 37.98), rotation: 0, outdoors: true },
+        ],
+        lootSpawners: IS_CLIENT ? undefined : [{
+            table: "ground_loot",
+            position: Vec(30.15, 1.31)
+        }]
     }
 ]);

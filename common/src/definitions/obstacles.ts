@@ -975,8 +975,8 @@ const column = (name: string, tint: number, particle: string, material: typeof M
     name,
     defType: DefinitionType.Obstacle,
     material,
-    indestructible: true,
-    health: 999,
+    indestructible: material !== "wood",
+    health: 80,
     hitbox: new GroupHitbox(
         RectangleHitbox.fromRect(3, 3)
     ),
@@ -989,6 +989,7 @@ const column = (name: string, tint: number, particle: string, material: typeof M
         particle
     },
     isWall: true,
+    noResidue: true,
     zIndex: ZIndexes.ObstaclesLayer1 + 0.1
 });
 
@@ -4797,6 +4798,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     column("Hunting Stand Column", 0x764423, "hunting_stand_particle"),
     column("Tavern Column", 0x5a4320, "cabin_wall_particle"),
     column("Mansion Column", 0x3a2d1f, "mansion_wall_particle"),
+    column("Park Column", 0x6b5431, "cabin_wall_particle", "wood"),
     {
         idString: "potted_plant",
         name: "Potted Plant",
