@@ -405,6 +405,9 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
         graveyard_skins: [
             { item: "groundskeeper", weight: 1 }
         ],
+        mansion_skin: [
+            { item: "haunted", weight: 1 }
+        ],
         rsh_case_single: [
             { item: "rsh12", weight: 1 }
         ],

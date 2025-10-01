@@ -16500,7 +16500,11 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         subBuildings: IS_CLIENT ? undefined : [
             { idString: "mansion_top_floor_shadow", position: Vec(-39.65, -6.02) },
             { idString: "mansion_top_floor", position: Vec(-40.5, -6.02), layer: Layer.Upstairs }
-        ]
+        ],
+        lootSpawners: IS_CLIENT ? undefined : [{
+            table: "mansion_skin",
+            position: Vec(14.25, -5)
+        }]
     },
     {
         idString: "mansion_top_floor_shadow",
@@ -16573,6 +16577,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "trash_can", position: Vec(20.14, -5.69) },
             { idString: "cobweb", position: Vec(-6.78, -15.8), rotation: 0 },
             { idString: "mansion_column", position: Vec(3.36, -5.81) },
+            { idString: "mansion_column", position: Vec(-12.59, -6.25) },
             { idString: "mansion_wall_3", position: Vec(-4.84, -5.75), rotation: 0 },
             { idString: "gun_mount_scythe", position: Vec(10.83, -18.86), rotation: 0, lootSpawnOffset: Vec(0, 2.5) },
             { idString: "graveyard_light", position: Vec(7.14, 16.71) },

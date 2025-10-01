@@ -132,7 +132,8 @@ export const Skins = new ObjectDefinitions<SkinDefinition>([
         ["Groundskeeper",         0x0f0e0f,  0x7d7d7d,  0x3b3b3b],
         ["Demon",                 undefined, undefined, 0x0f0032],
         ["Wounded",               undefined, undefined, 0x000000],
-        ["Failed Experiment",     undefined, undefined, 0x121a14]
+        ["Failed Experiment",     undefined, undefined, 0x121a14],
+        ["Haunted",               undefined, undefined, 0x9a9a9a]
     ] satisfies ReadonlyArray<readonly [string, number?, number?, number?]>)
         .map(([name, baseTint, fistsTint, backpackTint]) => ({ ...skin(name, baseTint, fistsTint, backpackTint), hideFromLoadout: true })),
 
