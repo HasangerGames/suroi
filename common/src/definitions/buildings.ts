@@ -16574,7 +16574,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "cobweb", position: Vec(-6.78, -15.8), rotation: 0 },
             { idString: "mansion_column", position: Vec(3.36, -5.81) },
             { idString: "mansion_wall_3", position: Vec(-4.84, -5.75), rotation: 0 },
-            { idString: "gun_mount_vks", position: Vec(10.83, -18.86), rotation: 0 },
+            { idString: "gun_mount_scythe", position: Vec(10.83, -18.86), rotation: 0, lootSpawnOffset: Vec(0, 2.5) },
             { idString: "graveyard_light", position: Vec(7.14, 16.71) },
             { idString: "graveyard_light", position: Vec(11.2, -11.56) }
         ]

@@ -2095,11 +2095,13 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                     this.inventory.items.setItem(item.idString, random(0, this.inventory.backpack.maxCapacity[item.idString]));
                 }
 
-                this.inventory.replaceWeapon(0, pickRandomInArray(guns));
-                this.inventory.replaceWeapon(1, pickRandomInArray(guns));
-                this.inventory.replaceWeapon(2, pickRandomInArray(melees));
-                (this.inventory.getWeapon(0) as GunItem).ammo = (this.inventory.getWeapon(0) as GunItem).definition.capacity;
-                (this.inventory.getWeapon(1) as GunItem).ammo = (this.inventory.getWeapon(1) as GunItem).definition.capacity;
+                for (let i = 0; i <= 2; i++) {
+                    if (this.inventory.getWeapon(i)?.definition.noSwap) continue;
+                    this.inventory.replaceWeapon(i, i === 2 ? pickRandomInArray(melees) : pickRandomInArray(guns));
+
+                    if (i < 2) (this.inventory.getWeapon(i) as GunItem).ammo = (this.inventory.getWeapon(i) as GunItem).definition.capacity;
+                }
+
                 this.setDirty();
                 break;
             }

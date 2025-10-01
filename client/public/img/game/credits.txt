@@ -347,6 +347,7 @@ Melees:
   Maul: Radians
   Pipe Wrench: sovietnuclearfridgebomb
   Hand Saw (Art, Killfeed, Animation): AnnihilatingFox
+  Scythe (Art, Killfeed, Animation): AnnihilatingFox
 
 
 Obstacles:

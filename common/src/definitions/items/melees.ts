@@ -1163,5 +1163,68 @@ export const Melees = new InventoryItemDefinitions<MeleeDefinition>([
                 }
             }
         ]
+    },
+    {
+        idString: "scythe",
+        name: "Scythe",
+        defType: DefinitionType.Melee,
+        tier: Tier.A,
+        damage: 45,
+        noSwap: true,
+        speedMultiplier: 1,
+        iceMultiplier: 2,
+        swingSound: "heavy_swing",
+        obstacleMultiplier: 2.25,
+        piercingMultiplier: 0.8,
+        radius: 3,
+        offset: Vec(6, -0.8),
+        cooldown: 725,
+        hitDelay: 250,
+        hitSound: "scythe_hit",
+        fists: {
+            animationDuration: 150,
+            left: Vec(66, -6),
+            right: Vec(18, 54)
+        },
+       image: {
+            position: Vec(30, 56),
+            angle: 175,
+            lootScale: 0.425
+        },
+        animation: [
+            { // warmup
+                duration: 100,
+                fists: {
+                    left: Vec(67, 21),
+                    right: Vec(2, 61)
+                },
+                image: {
+                    angle: 195,
+                    position: Vec(14, 68)
+                }
+            },
+            {
+                duration: 300,
+                fists: {
+                    left: Vec(10, -60),
+                    right: Vec(70, -12)
+                },
+                image: {
+                    position: Vec(70, -26),
+                    angle: 85
+                }
+            },
+            {
+                duration: 150,
+                fists: {
+                    left: Vec(66, -6),
+                    right: Vec(18, 54)
+                },
+                image: {
+                    position: Vec(30, 56),
+                    angle: 175,
+                }
+            }
+        ]
     }
 ]);
