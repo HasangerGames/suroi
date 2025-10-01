@@ -1024,6 +1024,17 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
                 { item: "carpenter_uniform", weight: 1 }
             ]
         },
+        halloween_skins: {
+            min: 1,
+            max: 1,
+            loot: [
+                { item: "diseased", weight: 1 },
+                { item: "wounded", weight: 1 },
+                { item: "pumpkified", weight: 1 },
+                { item: "demon", weight: 0.95 },
+                { item: "failed_experiment", weight: 0.95 }
+            ]
+        },
         small_logs_pile_hs: [{ item: "hand_saw", weight: 1 }],
         hollow_log: [
             { table: "healing_items", weight: 1 },
@@ -1046,7 +1057,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
         pumpkin_airdrop: [
             [{ table: "airdrop_equipment", weight: 1 }],
             [{ table: "airdrop_healing_items", weight: 1 }],
-            [{ table: "airdrop_skins", weight: 1 }],
+            [{ table: "halloween_skins", weight: 1 }],
             [
                 { table: "airdrop_melee", weight: 1 },
                 { item: "scythe", weight: 0.85 },
@@ -1066,6 +1077,29 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
     },
 
     halloween: {
+        fall_perks: {
+            min: 1,
+            max: 1,
+            noDuplicates: true,
+            loot: [
+                { item: PerkIds.InfiniteAmmo, weight: 1 },
+                { item: PerkIds.ExtendedMags, weight: 1 },
+                { item: PerkIds.Flechettes, weight: 1 },
+                { item: PerkIds.DemoExpert, weight: 1 },
+                { item: PerkIds.SecondWind, weight: 1 },
+                { item: PerkIds.FieldMedic, weight: 1 },
+                { item: PerkIds.SabotRounds, weight: 1 },
+                { item: PerkIds.AdvancedAthletics, weight: 1 },
+                { item: PerkIds.Toploaded, weight: 1 },
+                { item: PerkIds.CloseQuartersCombat, weight: 1 },
+                { item: PerkIds.LowProfile, weight: 1 },
+                { item: PerkIds.Berserker, weight: 1 },
+                { item: PerkIds.CombatExpert, weight: 1 },
+                { item: PerkIds.PrecisionRecycling, weight: 1 },
+                { item: PerkIds.Overclocked, weight: 1 },
+                { item: PerkIds.ReflectiveRounds, weight: 1 }
+            ]
+        },
         memorial_crate: [
             [
                 { item: "pk61", weight: 1 },
@@ -1248,9 +1282,8 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
         ],
         airdrop_skins: [
             { item: NullString, weight: 1 },
-            { item: "diseased", weight: 0.2 },
+            { table: "halloween_skins", weight: 0.7 },
             { item: "sky", weight: 0.7 },
-            { item: "nebula", weight: 0.6 },
             { item: "ghillie_suit", weight: 0.1 },
             { item: "ancestral_garb", weight: 0.001 }
         ],
