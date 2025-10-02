@@ -1243,6 +1243,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
         ],
         airdrop_guns: [
             { item: "mg36", weight: 1 },
+            { item: "rpk74", weight: 1 },
             { item: "sr25", weight: 1 },
             { item: "rgs", weight: 1 },
             { item: "vector", weight: 1 },
@@ -1284,7 +1285,6 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { item: "pan", weight: 0.075 }
         ],
         airdrop_skins: [
-            { item: NullString, weight: 1 },
             { table: "halloween_skins", weight: 0.7 },
             { item: "sky", weight: 0.7 },
             { item: "ghillie_suit", weight: 0.1 },

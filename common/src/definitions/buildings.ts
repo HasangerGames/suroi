@@ -16405,7 +16405,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             {
                 key: "mansion_ceiling_1",
                 position: Vec(-41.44, -6.01),
-                // scale: Vec(2, 2)
+                scale: Vec(2, 2)
             },
             {
                 key: "mansion_ceiling_3",
