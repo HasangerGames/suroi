@@ -234,7 +234,8 @@ export class GunItem extends InventoryItemBase.derive(DefinitionType.Gun) {
                         ].some(
                             obj => obj !== owner
                                 && obj.isPlayer
-                                && (!owner.game.isTeamMode || obj.teamID !== owner.teamID)
+                                && !obj.dead
+                                && !this.owner.isSameTeam(obj)
                                 && Geometry.distanceSquared(ownerPos, obj.position) <= sqCutoff
                         )
                     ) {
