@@ -222,6 +222,7 @@ export const Melees = new InventoryItemDefinitions<MeleeDefinition>([
         piercingMultiplier: 1.5,
         radius: 2,
         swingSound: "heavy_swing",
+        reskins: ["halloween"],
         offset: Vec(5.2, -0.5),
         cooldown: 420,
         hitDelay: 180,
@@ -345,7 +346,7 @@ export const Melees = new InventoryItemDefinitions<MeleeDefinition>([
         radius: 2.58,
         offset: Vec(5.9, 1.7),
         cooldown: 560,
-        reskins: ["winter"],
+        reskins: ["winter", "halloween"],
         fists: {
             animationDuration: 200,
             left: Vec(38, -35),

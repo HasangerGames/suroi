@@ -26,6 +26,7 @@ export interface ModeDefinition {
     readonly colors: Record<ColorKeys, string>
     readonly spriteSheets: readonly SpritesheetNames[]
     readonly ambience?: string
+    readonly ambienceVolume?: number
     readonly replaceMenuMusic?: boolean
     readonly defaultScope?: ReferenceTo<ScopeDefinition>
     readonly obstacleVariants?: boolean
@@ -97,7 +98,7 @@ export const Modes: Record<ModeName, ModeDefinition> = {
             gas: "hsla(17, 100%, 50%, 0.55)",
             void: "hsl(25, 80%, 6%)"
         },
-        ambience: "wind_ambience",
+        ambience: "graveyard_ambience",
         defaultScope: "2x_scope",
         spriteSheets: ["shared", "fall", "halloween"],
         specialLogo: true,
@@ -116,7 +117,8 @@ export const Modes: Record<ModeName, ModeDefinition> = {
         canvasFilters: {
             brightness: 0.5,
             saturation: 0.85
-        }
+        },
+        ambienceVolume: 2
     },
     infection: {
         colors: {

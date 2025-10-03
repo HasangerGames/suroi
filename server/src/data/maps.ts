@@ -574,7 +574,7 @@ const maps = {
             stump: 40,
             hay_bale: 50,
             diseased_plumpkin: 120,
-            hatchet_stump: 3,
+            hatchet_stump: 5,
             regular_crate: 170,
             flint_crate: 6,
             aegis_crate: 6,

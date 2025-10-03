@@ -596,6 +596,9 @@ export const Game = new (class Game {
         const ambience = this.mode.ambience;
         if (ambience) {
             this.ambience = SoundManager.play(ambience, { loop: true, ambient: true });
+            if (this.mode.ambienceVolume !== undefined) {
+                this.ambience.volume = this.mode.ambienceVolume;
+            }
         }
 
         this.riverAmbience = SoundManager.play("river_ambience", { loop: true, ambient: true });

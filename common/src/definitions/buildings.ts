@@ -2921,7 +2921,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 idString: {
                     gun_mount_hp18: 1,
                     gun_mount_model_37: 0.5,
-                    gun_mount_sks: 0.5
+                    gun_mount_sks: 0.5,
+                    gun_mount_hatchet: 1 // halloween only
                     // gun_mount_crowbar_aged: 1
                 },
                 position: Vec(30.33, -2.98),
@@ -15932,12 +15933,12 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         defType: DefinitionType.Building,
         spawnHitbox: RectangleHitbox.fromRect(161.81, 158.59, Vec(2.61, -3.32)),
         bunkerSpawnHitbox: RectangleHitbox.fromRect(73.2, 78.77, Vec(-17.78, -45.92)),
-        sounds: {
-            normal: "graveyard_ambience",
-            position: Vec(0, 0),
-            maxRange: 300,
-            falloff: 0.75
-        },
+        // sounds: {
+        //     normal: "graveyard_ambience",
+        //     position: Vec(0, 0),
+        //     maxRange: 300,
+        //     falloff: 0.75
+        // },
         material: "stone",
         particleVariations: 2,
         particle: "graveyard_particle",
@@ -16061,7 +16062,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "trash_bag", position: Vec(-45.97, 29.43), rotation: 0 },
             { idString: "super_barrel", position: Vec(26.57, 41.73) },
             { idString: "dumpster", position: Vec(-56.86, 30.23), rotation: 3 },
-            { idString: "large_coffin", position: Vec(21.61, 20.71), rotation: 2 }
+            { idString: "large_coffin", position: Vec(21.61, 20.71), rotation: 2 },
+            { idString: "gun_mount_hatchet", position: Vec(-53.94, 21.76), rotation: 2 }
         ],
         subBuildings: IS_CLIENT ? undefined : [
             { idString: "graveyard_basement", position: Vec(-18, -45.25), layer: Layer.Basement },

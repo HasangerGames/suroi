@@ -1127,7 +1127,8 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             [{ item: "kukri", weight: 1 }]
         ],
         melee: [
-            { item: "baseball_bat", weight: 3 },
+            { item: "hatchet", weight: 3 },
+            { item: "baseball_bat", weight: 2 },
             { item: "kbar", weight: 2 },
             { item: "sickle", weight: 0.5 },
             { item: "pan", weight: 0.1 },
