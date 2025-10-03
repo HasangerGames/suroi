@@ -486,6 +486,7 @@ Perk Icons:
   Plumpkin's Blessing: sniperboi4/TjCj
   Aching Knees: Skullboi249
   Plumpkin Shuffle: sniperboi4/TjCj
+  Last Stand: Skullboi249
 
 Saw Killfeed - AnnihilatingFox
 
@@ -493,3 +494,9 @@ S.E.E.D.
   - Loot: Skullboi249
   - Projectile: Skullboi249
   - Pin/Lever: Skullboi249
+
+Throwable Skins (Plumpkin Bomb Perk)
+- Frag Grenade: 1092384
+- Smoke Grenade: 1092384
+- C4: 1092384
+- Flare: Skullboi249

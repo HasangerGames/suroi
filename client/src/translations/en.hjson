@@ -524,6 +524,8 @@
 "overweight_desc": "Increased size."
 "enternal_magnetism": "Enternal Magnetism"
 "enternal_magnetism_desc": "Absorb nearby players' healthpoints.<br>Attract loot near your location."
+"last_stand": "Last Stand"
+"last_stand_desc": "Deal double damage at low health."
 "weak_stomach": "Weak Stomach"
 "weak_stomach_desc": "Leave pools of vomit on the ground every 5 seconds.<br>Your weapon spread will also be increased."
 "aching_knees": "Aching Knees"

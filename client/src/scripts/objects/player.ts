@@ -2034,7 +2034,13 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
                 projImage.visible = true;
                 if (def.animation.pinImage) {
-                    pinImage.setFrame(def.animation.pinImage);
+                    let pinFrame = def.animation.pinImage;
+
+                    if (def.pinSkin && this.halloweenThrowableSkin && !def.noSkin) {
+                        pinFrame += "_halloween";
+                    } 
+
+                    pinImage.setFrame(pinFrame);
                     pinImage.setPos(35, 0);
                     pinImage.setZIndex(ZIndexes.Players + 1);
                 }

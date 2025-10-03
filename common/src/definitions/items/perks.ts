@@ -76,6 +76,7 @@ export const enum PerkIds {
     PlumpkinBomb = "plumpkin_bomb",
     Shrouded = "shrouded",
     EnternalMagnetism = "enternal_magnetism",
+    LastStand = "last_stand",
     PlumpkinBlessing = "plumpkin_blessing",
     ExperimentalTreatment = "experimental_treatment",
     Engorged = "engorged",
@@ -372,6 +373,16 @@ const perks = [
         spriteScale: 1.5,
         minHealth: 5,
         lootPush: 0.0005,
+        noDrop: true
+    },
+    {
+        idString: PerkIds.LastStand,
+        name: "Last Stand",
+        defType: DefinitionType.Perk,
+        category: PerkCategories.Halloween,
+        quality: PerkQualities.Positive,
+        healthReq: 30,
+        damageMod: 2,
         noDrop: true
     },
     {

@@ -188,6 +188,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overweight_desc` is not defined
 - Key `enternal_magnetism` is not defined
 - Key `enternal_magnetism_desc` is not defined
+- Key `last_stand` is not defined
+- Key `last_stand_desc` is not defined
 - Key `weak_stomach` is not defined
 - Key `weak_stomach_desc` is not defined
 - Key `aching_knees` is not defined
@@ -264,6 +266,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `plumpkin_shuffle_desc` is not defined
 - Key `enternal_magnetism` is not defined
 - Key `enternal_magnetism_desc` is not defined
+- Key `last_stand` is not defined
+- Key `last_stand_desc` is not defined
 - Key `weak_stomach` is not defined
 - Key `weak_stomach_desc` is not defined
 - Key `aching_knees` is not defined
@@ -271,7 +275,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `plumpkin_blessing` is not defined
 - Key `plumpkin_blessing_desc` is not defined
 
-## 🇨🇿 Čeština (56% Complete) - cz.hjson
+## 🇨🇿 Čeština (55% Complete) - cz.hjson
 
 ### Invalid Keys
 
@@ -448,6 +452,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overweight_desc` is not defined
 - Key `enternal_magnetism` is not defined
 - Key `enternal_magnetism_desc` is not defined
+- Key `last_stand` is not defined
+- Key `last_stand_desc` is not defined
 - Key `weak_stomach` is not defined
 - Key `weak_stomach_desc` is not defined
 - Key `aching_knees` is not defined
@@ -613,6 +619,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overweight_desc` is not defined
 - Key `enternal_magnetism` is not defined
 - Key `enternal_magnetism_desc` is not defined
+- Key `last_stand` is not defined
+- Key `last_stand_desc` is not defined
 - Key `weak_stomach` is not defined
 - Key `weak_stomach_desc` is not defined
 - Key `aching_knees` is not defined
@@ -799,6 +807,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overweight_desc` is not defined
 - Key `enternal_magnetism` is not defined
 - Key `enternal_magnetism_desc` is not defined
+- Key `last_stand` is not defined
+- Key `last_stand_desc` is not defined
 - Key `weak_stomach` is not defined
 - Key `weak_stomach_desc` is not defined
 - Key `aching_knees` is not defined
@@ -818,7 +828,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
 
-## 🇪🇪 eesti (84% Complete) - et.hjson
+## 🇪🇪 eesti (83% Complete) - et.hjson
 
 ### Invalid Keys
 
@@ -1032,6 +1042,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overweight_desc` is not defined
 - Key `enternal_magnetism` is not defined
 - Key `enternal_magnetism_desc` is not defined
+- Key `last_stand` is not defined
+- Key `last_stand_desc` is not defined
 - Key `weak_stomach` is not defined
 - Key `weak_stomach_desc` is not defined
 - Key `aching_knees` is not defined
@@ -1047,7 +1059,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
 
-## 🇮🇷 فارسی (98% Complete) - fa.hjson
+## 🇮🇷 فارسی (97% Complete) - fa.hjson
 
 ### (No Invalid Keys)
 
@@ -1057,6 +1069,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `plumpkin_shuffle_desc` is not defined
 - Key `enternal_magnetism` is not defined
 - Key `enternal_magnetism_desc` is not defined
+- Key `last_stand` is not defined
+- Key `last_stand_desc` is not defined
 - Key `weak_stomach` is not defined
 - Key `weak_stomach_desc` is not defined
 - Key `aching_knees` is not defined
@@ -1230,6 +1244,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overweight_desc` is not defined
 - Key `enternal_magnetism` is not defined
 - Key `enternal_magnetism_desc` is not defined
+- Key `last_stand` is not defined
+- Key `last_stand_desc` is not defined
 - Key `weak_stomach` is not defined
 - Key `weak_stomach_desc` is not defined
 - Key `aching_knees` is not defined
@@ -1249,7 +1265,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
 
-## 🇫🇷 Français (86% Complete) - fr.hjson
+## 🇫🇷 Français (85% Complete) - fr.hjson
 
 ### Invalid Keys
 
@@ -1316,6 +1332,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overweight_desc` is not defined
 - Key `enternal_magnetism` is not defined
 - Key `enternal_magnetism_desc` is not defined
+- Key `last_stand` is not defined
+- Key `last_stand_desc` is not defined
 - Key `weak_stomach` is not defined
 - Key `weak_stomach_desc` is not defined
 - Key `aching_knees` is not defined
@@ -1323,7 +1341,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `plumpkin_blessing` is not defined
 - Key `plumpkin_blessing_desc` is not defined
 
-## 🇬🇷 Ελληνικά (75% Complete) - gr.hjson
+## 🇬🇷 Ελληνικά (74% Complete) - gr.hjson
 
 ### (No Invalid Keys)
 
@@ -1417,6 +1435,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overweight_desc` is not defined
 - Key `enternal_magnetism` is not defined
 - Key `enternal_magnetism_desc` is not defined
+- Key `last_stand` is not defined
+- Key `last_stand_desc` is not defined
 - Key `weak_stomach` is not defined
 - Key `weak_stomach_desc` is not defined
 - Key `aching_knees` is not defined
@@ -1436,7 +1456,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
 
-## 🇭🇰 🇲🇴 廣東話(香港/澳門) (55% Complete) - hk_mo.hjson
+## 🇭🇰 🇲🇴 廣東話(香港/澳門) (54% Complete) - hk_mo.hjson
 
 ### Invalid Keys
 
@@ -1617,6 +1637,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overweight_desc` is not defined
 - Key `enternal_magnetism` is not defined
 - Key `enternal_magnetism_desc` is not defined
+- Key `last_stand` is not defined
+- Key `last_stand_desc` is not defined
 - Key `weak_stomach` is not defined
 - Key `weak_stomach_desc` is not defined
 - Key `aching_knees` is not defined
@@ -1700,6 +1722,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overweight_desc` is not defined
 - Key `enternal_magnetism` is not defined
 - Key `enternal_magnetism_desc` is not defined
+- Key `last_stand` is not defined
+- Key `last_stand_desc` is not defined
 - Key `weak_stomach` is not defined
 - Key `weak_stomach_desc` is not defined
 - Key `aching_knees` is not defined
@@ -1909,6 +1933,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overweight_desc` is not defined
 - Key `enternal_magnetism` is not defined
 - Key `enternal_magnetism_desc` is not defined
+- Key `last_stand` is not defined
+- Key `last_stand_desc` is not defined
 - Key `weak_stomach` is not defined
 - Key `weak_stomach_desc` is not defined
 - Key `aching_knees` is not defined
@@ -1928,7 +1954,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
 
-## 🇯🇵 日本語 (98% Complete) - jp.hjson
+## 🇯🇵 日本語 (97% Complete) - jp.hjson
 
 ### Invalid Keys
 
@@ -2168,6 +2194,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `plumpkin_shuffle_desc` is not defined
 - Key `enternal_magnetism` is not defined
 - Key `enternal_magnetism_desc` is not defined
+- Key `last_stand` is not defined
+- Key `last_stand_desc` is not defined
 - Key `weak_stomach` is not defined
 - Key `weak_stomach_desc` is not defined
 - Key `aching_knees` is not defined
@@ -2175,7 +2203,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `plumpkin_blessing` is not defined
 - Key `plumpkin_blessing_desc` is not defined
 
-## 🇱🇹 Lietuvių (56% Complete) - lt.hjson
+## 🇱🇹 Lietuvių (55% Complete) - lt.hjson
 
 ### Invalid Keys
 
@@ -2352,6 +2380,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overweight_desc` is not defined
 - Key `enternal_magnetism` is not defined
 - Key `enternal_magnetism_desc` is not defined
+- Key `last_stand` is not defined
+- Key `last_stand_desc` is not defined
 - Key `weak_stomach` is not defined
 - Key `weak_stomach_desc` is not defined
 - Key `aching_knees` is not defined
@@ -2371,7 +2401,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
 
-## 🇱🇻 Latviešu (56% Complete) - lv.hjson
+## 🇱🇻 Latviešu (55% Complete) - lv.hjson
 
 ### Invalid Keys
 
@@ -2548,6 +2578,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overweight_desc` is not defined
 - Key `enternal_magnetism` is not defined
 - Key `enternal_magnetism_desc` is not defined
+- Key `last_stand` is not defined
+- Key `last_stand_desc` is not defined
 - Key `weak_stomach` is not defined
 - Key `weak_stomach_desc` is not defined
 - Key `aching_knees` is not defined
@@ -2567,7 +2599,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
 
-## 🇳🇱 Nederlands (92% Complete) - nl.hjson
+## 🇳🇱 Nederlands (91% Complete) - nl.hjson
 
 ### Invalid Keys
 
@@ -2603,6 +2635,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `plumpkin_shuffle_desc` is not defined
 - Key `enternal_magnetism` is not defined
 - Key `enternal_magnetism_desc` is not defined
+- Key `last_stand` is not defined
+- Key `last_stand_desc` is not defined
 - Key `weak_stomach` is not defined
 - Key `weak_stomach_desc` is not defined
 - Key `aching_knees` is not defined
@@ -2776,6 +2810,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overweight_desc` is not defined
 - Key `enternal_magnetism` is not defined
 - Key `enternal_magnetism_desc` is not defined
+- Key `last_stand` is not defined
+- Key `last_stand_desc` is not defined
 - Key `weak_stomach` is not defined
 - Key `weak_stomach_desc` is not defined
 - Key `aching_knees` is not defined
@@ -2795,7 +2831,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
 
-## 🎀 Cute Engwish (62% Complete) - qen.hjson
+## 🎀 Cute Engwish (61% Complete) - qen.hjson
 
 ### Invalid Keys
 
@@ -2946,6 +2982,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overweight_desc` is not defined
 - Key `enternal_magnetism` is not defined
 - Key `enternal_magnetism_desc` is not defined
+- Key `last_stand` is not defined
+- Key `last_stand_desc` is not defined
 - Key `weak_stomach` is not defined
 - Key `weak_stomach_desc` is not defined
 - Key `aching_knees` is not defined
@@ -2965,7 +3003,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
 
-## 🇷🇴 Română (92% Complete) - ro.hjson
+## 🇷🇴 Română (91% Complete) - ro.hjson
 
 ### (No Invalid Keys)
 
@@ -2999,6 +3037,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `plumpkin_shuffle_desc` is not defined
 - Key `enternal_magnetism` is not defined
 - Key `enternal_magnetism_desc` is not defined
+- Key `last_stand` is not defined
+- Key `last_stand_desc` is not defined
 - Key `weak_stomach` is not defined
 - Key `weak_stomach_desc` is not defined
 - Key `aching_knees` is not defined
@@ -3059,6 +3099,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `baby_plumpkin_pie_desc` is not defined
 - Key `enternal_magnetism` is not defined
 - Key `enternal_magnetism_desc` is not defined
+- Key `last_stand` is not defined
+- Key `last_stand_desc` is not defined
 - Key `weak_stomach` is not defined
 - Key `weak_stomach_desc` is not defined
 - Key `aching_knees` is not defined
@@ -3066,7 +3108,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `plumpkin_blessing` is not defined
 - Key `plumpkin_blessing_desc` is not defined
 
-## 🇮🇳 தமிழ் (88% Complete) - ta.hjson
+## 🇮🇳 தமிழ் (87% Complete) - ta.hjson
 
 ### Invalid Keys
 
@@ -3122,6 +3164,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overweight_desc` is not defined
 - Key `enternal_magnetism` is not defined
 - Key `enternal_magnetism_desc` is not defined
+- Key `last_stand` is not defined
+- Key `last_stand_desc` is not defined
 - Key `weak_stomach` is not defined
 - Key `weak_stomach_desc` is not defined
 - Key `aching_knees` is not defined
@@ -3255,6 +3299,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overweight_desc` is not defined
 - Key `enternal_magnetism` is not defined
 - Key `enternal_magnetism_desc` is not defined
+- Key `last_stand` is not defined
+- Key `last_stand_desc` is not defined
 - Key `weak_stomach` is not defined
 - Key `weak_stomach_desc` is not defined
 - Key `aching_knees` is not defined
@@ -3412,6 +3458,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overweight_desc` is not defined
 - Key `enternal_magnetism` is not defined
 - Key `enternal_magnetism_desc` is not defined
+- Key `last_stand` is not defined
+- Key `last_stand_desc` is not defined
 - Key `weak_stomach` is not defined
 - Key `weak_stomach_desc` is not defined
 - Key `aching_knees` is not defined
@@ -3493,6 +3541,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overweight_desc` is not defined
 - Key `enternal_magnetism` is not defined
 - Key `enternal_magnetism_desc` is not defined
+- Key `last_stand` is not defined
+- Key `last_stand_desc` is not defined
 - Key `weak_stomach` is not defined
 - Key `weak_stomach_desc` is not defined
 - Key `aching_knees` is not defined
@@ -3508,7 +3558,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
 
-## 🇨🇳 中文（简体） (97% Complete) - zh.hjson
+## 🇨🇳 中文（简体） (96% Complete) - zh.hjson
 
 ### Invalid Keys
 
@@ -3731,6 +3781,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `plumpkin_shuffle_desc` is not defined
 - Key `enternal_magnetism` is not defined
 - Key `enternal_magnetism_desc` is not defined
+- Key `last_stand` is not defined
+- Key `last_stand_desc` is not defined
 - Key `weak_stomach` is not defined
 - Key `weak_stomach_desc` is not defined
 - Key `aching_knees` is not defined

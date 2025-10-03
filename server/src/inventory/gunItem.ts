@@ -278,6 +278,14 @@ export class GunItem extends InventoryItemBase.derive(DefinitionType.Gun) {
                     modifiersModified = true;
                     break;
                 }
+                case PerkIds.LastStand: {
+                    if (owner.health < perk.healthReq) {
+                        modifiers.damage *= perk.damageMod;
+                        modifyForDamageMod(perk.damageMod);
+                        modifiersModified = true;
+                    }
+                    break;
+                }
             }
         }
 

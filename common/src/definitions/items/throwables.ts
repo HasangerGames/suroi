@@ -85,6 +85,7 @@ export type ThrowableDefinition = InventoryItemDefinition & {
     readonly c4?: boolean
     readonly summonAirdrop?: boolean
     readonly maxSwapCount?: number
+    readonly pinSkin?: boolean
 
     readonly flicker?: {
         readonly image: string
@@ -340,8 +341,8 @@ export const Throwables = new InventoryItemDefinitions<ThrowableDefinition>([
         defType: DefinitionType.Throwable,
         tier: Tier.S,
         cookable: false,
-        noSkin: true,
         summonAirdrop: true,
+        pinSkin: true,
         maxSwapCount: 2,
         fuseTime: 30000,
         cookTime: 250,
