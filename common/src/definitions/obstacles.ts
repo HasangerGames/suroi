@@ -4439,6 +4439,21 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         }
     ),
     gunMount(
+        "hatchet_bloodstained",
+        "melee",
+        false,
+        new GroupHitbox(
+            RectangleHitbox.fromRect(5.05, 1, Vec(0, -1.3)),
+            RectangleHitbox.fromRect(0.8, 3, Vec(-1.55, 0.35)),
+            RectangleHitbox.fromRect(0.8, 3, Vec(1.55, 0.35))
+        ),
+        {
+            base: "gun_mount_melee",
+            particle: "furniture_particle",
+            residue: "gun_mount_residue"
+        }
+    ),
+    gunMount(
         "scythe",
         "melee",
         false,

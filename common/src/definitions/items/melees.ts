@@ -24,6 +24,10 @@ export interface MeleeDefinition extends InventoryItemDefinition {
     readonly swingSound?: string
     readonly stopSound?: string
     readonly hitSound?: string
+    /**
+     * "_switch" is added by the client.
+     */
+    readonly switchSound?: string
     readonly hitDelay?: number
     readonly radius: number
     readonly offset: Vector
@@ -75,6 +79,126 @@ export interface MeleeDefinition extends InventoryItemDefinition {
         }
     }
 }
+
+const hatchet = (idString: string): MeleeDefinition => {
+    return {
+        idString: idString,
+        name: "Hatchet",
+        defType: DefinitionType.Melee,
+        tier: Tier.B,
+        damage: 38,
+        speedMultiplier: 1,
+        obstacleMultiplier: 2,
+        piercingMultiplier: 1.5,
+        radius: 2,
+        swingSound: "heavy_swing",
+        translationString: "hatchet",
+        switchSound: "hatchet",
+        killfeedFrame: "hatchet",
+        offset: Vec(5.2, -0.5),
+        cooldown: 420,
+        hitDelay: 180,
+        fists: {
+            animationDuration: 150,
+            left: Vec(40, -25),
+            right: Vec(40, 15)
+        },
+        image: {
+            position: Vec(42, 20),
+            angle: 135,
+            lootScale: 0.6
+        },
+        animation: [
+            { // warmup
+                duration: 100,
+                fists: {
+                    left: Vec(40, 25),
+                    right: Vec(0, 50)
+                },
+                image: {
+                    angle: 210,
+                    position: Vec(-10, 45)
+                }
+            },
+            {
+                duration: 150,
+                fists: {
+                    left: Vec(0, -50),
+                    right: Vec(40, -25)
+                },
+                image: {
+                    position: Vec(42, -25),
+                    angle: 65
+                }
+            },
+            {
+                duration: 150,
+                fists: {
+                    left: Vec(40, -25),
+                    right: Vec(40, 15)
+                },
+                image: {
+                    position: Vec(42, 20),
+                    angle: 135
+                }
+            }
+        ]
+    }
+};
+
+const crowbar = (idString: string): MeleeDefinition => {
+    return {
+        idString: idString,
+        name: "Crowbar",
+        defType: DefinitionType.Melee,
+        tier: Tier.A,
+        swingSound: "heavy_swing",
+        switchSound: "crowbar",
+        killfeedFrame: "crowbar",
+        translationString: "crowbar",
+        damage: 40,
+        speedMultiplier: 1,
+        obstacleMultiplier: 2.2,
+        piercingMultiplier: 2,
+        radius: 2.58,
+        offset: Vec(5.9, 1.7),
+        cooldown: 560,
+        fists: {
+            animationDuration: 200,
+            left: Vec(38, -35),
+            right: Vec(38, 35)
+        },
+        image: {
+            position: Vec(31, 41),
+            angle: 190,
+            lootScale: 0.65
+        },
+        animation: [
+            {
+                duration: 200,
+                fists: {
+                    left: Vec(38, -35),
+                    right: Vec(100, 35)
+                },
+                image: {
+                    position: Vec(110, 33),
+                    angle: 40
+                }
+            },
+            {
+                duration: 200,
+                fists: {
+                    left: Vec(38, -35),
+                    right: Vec(38, 35)
+                },
+                image: {
+                    position: Vec(31, 41),
+                    angle: 190
+                }
+            }
+        ]
+    }
+};
 
 export const DEFAULT_HAND_RIGGING = Object.freeze({
     left: Vec(38, -35),
@@ -211,67 +335,8 @@ export const Melees = new InventoryItemDefinitions<MeleeDefinition>([
                 }
             },
     */
-    {
-        idString: "hatchet",
-        name: "Hatchet",
-        defType: DefinitionType.Melee,
-        tier: Tier.B,
-        damage: 38,
-        speedMultiplier: 1,
-        obstacleMultiplier: 2,
-        piercingMultiplier: 1.5,
-        radius: 2,
-        swingSound: "heavy_swing",
-        reskins: ["halloween"],
-        offset: Vec(5.2, -0.5),
-        cooldown: 420,
-        hitDelay: 180,
-        fists: {
-            animationDuration: 150,
-            left: Vec(40, -25),
-            right: Vec(40, 15)
-        },
-        image: {
-            position: Vec(42, 20),
-            angle: 135,
-            lootScale: 0.6
-        },
-        animation: [
-            { // warmup
-                duration: 100,
-                fists: {
-                    left: Vec(40, 25),
-                    right: Vec(0, 50)
-                },
-                image: {
-                    angle: 210,
-                    position: Vec(-10, 45)
-                }
-            },
-            {
-                duration: 150,
-                fists: {
-                    left: Vec(0, -50),
-                    right: Vec(40, -25)
-                },
-                image: {
-                    position: Vec(42, -25),
-                    angle: 65
-                }
-            },
-            {
-                duration: 150,
-                fists: {
-                    left: Vec(40, -25),
-                    right: Vec(40, 15)
-                },
-                image: {
-                    position: Vec(42, 20),
-                    angle: 135
-                }
-            }
-        ]
-    },
+    hatchet("hatchet"),
+    hatchet("hatchet_bloodstained"),
     {
         idString: "fire_hatchet",
         name: "Fire Hatchet",
@@ -333,55 +398,9 @@ export const Melees = new InventoryItemDefinitions<MeleeDefinition>([
             }
         ]
     },
-    {
-        idString: "crowbar",
-        name: "Crowbar",
-        defType: DefinitionType.Melee,
-        tier: Tier.A,
-        swingSound: "heavy_swing",
-        damage: 40,
-        speedMultiplier: 1,
-        obstacleMultiplier: 2.2,
-        piercingMultiplier: 2,
-        radius: 2.58,
-        offset: Vec(5.9, 1.7),
-        cooldown: 560,
-        reskins: ["winter", "halloween"],
-        fists: {
-            animationDuration: 200,
-            left: Vec(38, -35),
-            right: Vec(38, 35)
-        },
-        image: {
-            position: Vec(31, 41),
-            angle: 190,
-            lootScale: 0.65
-        },
-        animation: [
-            {
-                duration: 200,
-                fists: {
-                    left: Vec(38, -35),
-                    right: Vec(100, 35)
-                },
-                image: {
-                    position: Vec(110, 33),
-                    angle: 40
-                }
-            },
-            {
-                duration: 200,
-                fists: {
-                    left: Vec(38, -35),
-                    right: Vec(38, 35)
-                },
-                image: {
-                    position: Vec(31, 41),
-                    angle: 190
-                }
-            }
-        ]
-    },
+    crowbar("crowbar"),
+    crowbar("crowbar_rusted"),
+    crowbar("crowbar_halloween"),
     {
         idString: "kbar",
         name: "K-bar",

@@ -2922,7 +2922,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                     gun_mount_hp18: 1,
                     gun_mount_model_37: 0.5,
                     gun_mount_sks: 0.5,
-                    gun_mount_hatchet: 1 // halloween only
+                    gun_mount_hatchet_bloodstained: 1 // halloween only
                     // gun_mount_crowbar_aged: 1
                 },
                 position: Vec(30.33, -2.98),

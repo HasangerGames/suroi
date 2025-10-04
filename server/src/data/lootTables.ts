@@ -1278,7 +1278,8 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
         ],
         airdrop_melee: [
             { item: NullString, weight: 0.5 },
-            { item: "crowbar", weight: 0.33 },
+            { item: "crowbar_halloween", weight: 0.33 },
+            { item: "crowbar_rusted", weight: 0.33 },
             { item: "hatchet", weight: 0.33 },
             { item: "sickle", weight: 0.33 },
             { item: "pipe_wrench", weight: 0.075 },
@@ -1291,7 +1292,8 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { item: "ghillie_suit", weight: 0.1 },
             { item: "ancestral_garb", weight: 0.001 }
         ],
-        seedshot_case: [{ table: "silly_guns", weight: 1 }]
+        seedshot_case: [{ table: "silly_guns", weight: 1 }],
+        hatchet_stump: [{ item: "hatchet_bloodstained", weight: 1 }],
     },
 
     winter: {

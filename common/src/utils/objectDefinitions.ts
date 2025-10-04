@@ -152,6 +152,7 @@ export interface InventoryItemDefinition extends ItemDefinition {
         readonly right: Vector
     }
     readonly killfeedFrame?: string
+    readonly translationString?: string
     readonly killstreak?: boolean
     readonly speedMultiplier: number
     /**
