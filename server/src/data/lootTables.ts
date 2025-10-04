@@ -1055,7 +1055,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { item: "aged_seedshot", weight: 0.25 },
             { item: "dp12", weight: 0.2 },
             { item: "ulr338", weight: 0.1 },
-            { item: "545mm", weight: 0.005 }
+            { item: "power_cell", weight: 0.005 } // haha FuCk yuo!!1
         ],
         pumpkin_airdrop: [
             [{ table: "airdrop_equipment", weight: 1 }],
@@ -1294,6 +1294,14 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
         ],
         seedshot_case: [{ table: "silly_guns", weight: 1 }],
         hatchet_stump: [{ item: "hatchet_bloodstained", weight: 1 }],
+        loot_tree: [
+            [{ item: "dp12", weight: 1 }],
+            [{ item: "hatchet", weight: 1 }],
+            [{ item: "lumberjack", weight: 1 }],
+            [{ item: "regular_helmet", weight: 1 }],
+            [{ item: "regular_pack", weight: 1 }],
+            [{ item: "12g", count: 15, weight: 1 }]
+        ],
     },
 
     winter: {
