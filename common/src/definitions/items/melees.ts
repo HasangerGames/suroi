@@ -82,7 +82,7 @@ export interface MeleeDefinition extends InventoryItemDefinition {
 
 const hatchet = (idString: string): MeleeDefinition => {
     return {
-        idString: idString,
+        idString,
         name: "Hatchet",
         defType: DefinitionType.Melee,
         tier: Tier.B,
@@ -148,7 +148,7 @@ const hatchet = (idString: string): MeleeDefinition => {
 
 const crowbar = (idString: string): MeleeDefinition => {
     return {
-        idString: idString,
+        idString,
         name: "Crowbar",
         defType: DefinitionType.Melee,
         tier: Tier.A,
@@ -194,6 +194,101 @@ const crowbar = (idString: string): MeleeDefinition => {
                 image: {
                     position: Vec(31, 41),
                     angle: 190
+                }
+            }
+        ]
+    }
+};
+
+const handSaw = (idString: string): MeleeDefinition => {
+    return {
+        idString,
+        name: "Hand Saw",
+        defType: DefinitionType.Melee,
+        tier: Tier.A,
+        damage: 23,
+        speedMultiplier: 1,
+        iceMultiplier: 2,
+        swingSound: "soft_swing",
+        killfeedFrame: "hand_saw",
+        translationString: "hand_saw",
+        switchSound: "hand_saw",
+        obstacleMultiplier: 2,
+        piercingMultiplier: 0.8,
+        radius: 2.9,
+        offset: Vec(6.4, -0.5),
+        cooldown: 725,
+        numberOfHits: 2,
+        hitDelay: 250,
+        delayBetweenHits: 415,
+        hitSound: "hand_saw_hit",
+        fists: {
+            animationDuration: 150,
+            left: Vec(47, -35),
+            right: Vec(28, 54)
+        },
+        image: {
+            position: Vec(88, 36),
+            angle: -145,
+            lootScale: 0.8
+        },
+        animation: [
+            { // warmup
+                duration: 130,
+                fists: {
+                    left: Vec(47, -35),
+                    right: Vec(10, 72)
+                },
+                image: {
+                    angle: -80,
+                    position: Vec(50, 120)
+                }
+            },
+            { // initial cleave
+                duration: 160,
+                fists: {
+                    left: Vec(47, -35),
+                    right: Vec(90, 8)
+                },
+                image: {
+                    angle: -165,
+                    position: Vec(140, -30)
+                }
+            },
+            { // first delay
+                duration: 175,
+                fists: {
+                    left: Vec(47, -35),
+                    right: Vec(90, 8)
+                }
+            },
+            { // pull back
+                duration: 50,
+                fists: {
+                    left: Vec(47, -35),
+                    right: Vec(-16, 70)
+                },
+                image: {
+                    angle: -145,
+                    position: Vec(44, 52)
+                }
+            },
+            { // second delay
+                duration: 125,
+                fists: {
+                    left: Vec(47, -35),
+                    right: Vec(-16, 70)
+                }
+            },
+            { // reset
+                duration: 175,
+                fists: {
+                    left: Vec(47, -35),
+                    right: Vec(28, 54)
+                },
+                image: {
+                    angle: -145,
+                    position: Vec(88, 36)
                 }
             }
         ]
@@ -1095,95 +1190,8 @@ export const Melees = new InventoryItemDefinitions<MeleeDefinition>([
             }
         ]
     },
-    {
-        idString: "hand_saw",
-        name: "Hand Saw",
-        defType: DefinitionType.Melee,
-        tier: Tier.A,
-        damage: 23,
-        speedMultiplier: 1,
-        iceMultiplier: 2,
-        swingSound: "soft_swing",
-        obstacleMultiplier: 2,
-        piercingMultiplier: 0.8,
-        radius: 2.9,
-        offset: Vec(6.4, -0.5),
-        cooldown: 725,
-        numberOfHits: 2,
-        hitDelay: 250,
-        delayBetweenHits: 415,
-        hitSound: "hand_saw_hit",
-        fists: {
-            animationDuration: 150,
-            left: Vec(47, -35),
-            right: Vec(28, 54)
-        },
-        image: {
-            position: Vec(88, 36),
-            angle: -145,
-            lootScale: 0.8
-        },
-        animation: [
-            { // warmup
-                duration: 130,
-                fists: {
-                    left: Vec(47, -35),
-                    right: Vec(10, 72)
-                },
-                image: {
-                    angle: -80,
-                    position: Vec(50, 120)
-                }
-            },
-            { // initial cleave
-                duration: 160,
-                fists: {
-                    left: Vec(47, -35),
-                    right: Vec(90, 8)
-                },
-                image: {
-                    angle: -165,
-                    position: Vec(140, -30)
-                }
-            },
-            { // first delay
-                duration: 175,
-                fists: {
-                    left: Vec(47, -35),
-                    right: Vec(90, 8)
-                }
-            },
-            { // pull back
-                duration: 50,
-                fists: {
-                    left: Vec(47, -35),
-                    right: Vec(-16, 70)
-                },
-                image: {
-                    angle: -145,
-                    position: Vec(44, 52)
-                }
-            },
-            { // second delay
-                duration: 125,
-                fists: {
-                    left: Vec(47, -35),
-                    right: Vec(-16, 70)
-                }
-            },
-            { // reset
-                duration: 175,
-                fists: {
-                    left: Vec(47, -35),
-                    right: Vec(28, 54)
-                },
-                image: {
-                    angle: -145,
-                    position: Vec(88, 36)
-                }
-            }
-        ]
-    },
+    handSaw("hand_saw"),
+    handSaw("tenon_saw"),
     {
         idString: "scythe",
         name: "Scythe",
