@@ -255,7 +255,7 @@ const perks = [
         defType: DefinitionType.Perk,
         category: PerkCategories.Normal,
         fireRateMod: 0.5,
-        spreadMod: 2.5
+        spreadMod: 4
     },
     {
         idString: PerkIds.ReflectiveRounds,
