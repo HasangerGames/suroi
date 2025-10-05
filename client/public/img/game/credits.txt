@@ -344,9 +344,12 @@ Melees:
   Baseball Bat: Radians
   HE-AP Sword: Radians
   K-bar: Radians
+  Hatchet: Nefertari
+  Crowbar: Nefertari
   Maul: Radians
   Pipe Wrench: sovietnuclearfridgebomb
   Hand Saw (Art, Killfeed, Animation): AnnihilatingFox
+    - Tenon Saw: pap, AnnihilatingFox
   Scythe (Art, Killfeed, Animation): AnnihilatingFox
 
 
