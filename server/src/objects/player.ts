@@ -1133,9 +1133,17 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             = this.mapPerkOrDefault(
                 PerkIds.AdvancedAthletics,
                 ({ waterSpeedMod, smokeSpeedMod }) => {
+                    let inSmoke = false;
+                    for (const particle of syncedParticles) {
+                        if (!particle.creatorID) {
+                            inSmoke = true;
+                            break;
+                        }
+                    }
+
                     return (
                         (FloorTypes[this.floor].overlay ? waterSpeedMod : 1) // man do we need a better way of detecting water lol
-                        * (syncedParticles.size !== 0 ? smokeSpeedMod : 1)
+                        * (syncedParticles.size !== 0 && inSmoke ? smokeSpeedMod : 1)
                     );
                 },
                 1
@@ -2791,7 +2799,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                     break;
                 }
                 case PerkIds.Berserker: {
-                    if (this.activeItem.isMelee) {
+                    if (this.activeItem.isMelee && !this.hasPerk(PerkIds.Lycanthropy)) {
                         newModifiers.baseSpeed *= perk.speedMod;
                     }
                     break;

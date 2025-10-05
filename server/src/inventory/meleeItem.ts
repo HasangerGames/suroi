@@ -111,7 +111,7 @@ export class MeleeItem extends InventoryItemBase.derive(DefinitionType.Melee) {
                         const target = targets[i];
                         let multiplier = 1;
 
-                        multiplier *= this.owner.mapPerkOrDefault(PerkIds.Berserker, ({ damageMod }) => damageMod, 1);
+                        if (!this.owner.hasPerk(PerkIds.Lycanthropy)) multiplier *= this.owner.mapPerkOrDefault(PerkIds.Berserker, ({ damageMod }) => damageMod, 1);
                         multiplier *= this.owner.mapPerkOrDefault(PerkIds.Lycanthropy, ({ damageMod }) => damageMod, 1);
 
                         if (target.isObstacle) {
