@@ -1059,7 +1059,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
         seedshot_case: [{ item: "seedshot", weight: 1 }],
         vaccinator_case: [{ item: "vaccinator", weight: 1 }],
         silly_guns: [
-            { item: "revitalizer", weight: 0.25 },
+            // { item: "revitalizer", weight: 0.25 },
             { item: "g17_scoped", weight: 0.25 },
             { item: "firework_launcher", weight: 0.25 },
             { item: "aged_seedshot", weight: 0.25 },
