@@ -470,7 +470,7 @@ const perks = [
         defType: DefinitionType.Perk,
         category: PerkCategories.Halloween,
         quality: PerkQualities.Neutral,
-        qualityValue: 0.1,
+        qualityValue: 0.21,
         damageReceivedMod: 1.5,
         noDrop: true
     },

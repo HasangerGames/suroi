@@ -686,6 +686,16 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { item: "9mm", count: 60, weight: 1 },
             { item: "50cal", count: 20, weight: 0.05 }
         ],
+        pumpkin_obstacl_ammo: [
+            { item: "12g", count: 10, weight: 0.1 },
+            { item: "556mm", count: 60, weight: 0.1 },
+            { item: "762mm", count: 60, weight: 0.1 },
+            { item: "9mm", count: 60, weight: 0.1 },
+            { item: "50cal", count: 20, weight: 0.05 },
+            { item: "545mm", count: 40, weight: 0.05 },
+            { item: "338lap", count: 3, weight: 0.05 },
+            { item: "firework_rocket", weight: 0.0125 }
+        ],
         throwables: [
             { item: "frag_grenade", count: 2, weight: 1 },
             { item: "smoke_grenade", count: 2, weight: 1 },
@@ -1140,10 +1150,21 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { table: "equipment", weight: 1 },
             { table: "scopes", weight: 0.5 }
         ],
+        large_pumpkin: {
+            min: 2,
+            max: 3,
+            loot: [
+                { table: "equipment", weight: 1 },
+                { table: "healing_items", weight: 1 },
+                { table: "pumpkin_obstacl_ammo", weight: 1 },
+                { table: "guns", weight: 0.9 },
+                { table: "scopes", weight: 0.3 }
+            ]
+        },
         pumpkin: [
             { table: "equipment", weight: 1 },
             { table: "healing_items", weight: 1 },
-            { table: "ammo", weight: 1 },
+            { table: "pumpkin_obstacl_ammo", weight: 1 },
             { table: "guns", weight: 0.9 },
        ],
        guns: [
