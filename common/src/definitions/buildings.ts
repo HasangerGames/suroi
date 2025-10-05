@@ -16063,7 +16063,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "super_barrel", position: Vec(26.57, 41.73) },
             { idString: "dumpster", position: Vec(-56.86, 30.23), rotation: 3 },
             { idString: "large_coffin", position: Vec(21.61, 20.71), rotation: 2 },
-            { idString: "gun_mount_hatchet", position: Vec(-53.94, 21.76), rotation: 2 }
+            { idString: "gun_mount_hatchet_bloodstained", position: Vec(-53.94, 21.76), rotation: 2 }
         ],
         subBuildings: IS_CLIENT ? undefined : [
             { idString: "graveyard_basement", position: Vec(-18, -45.25), layer: Layer.Basement },

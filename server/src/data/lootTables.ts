@@ -1283,7 +1283,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { item: "hatchet", weight: 0.33 },
             { item: "sickle", weight: 0.33 },
             { item: "pipe_wrench", weight: 0.075 },
-            { item: "hand_saw", weight: 0.075 },
+            { item: "tenon_saw", weight: 0.075 },
             { item: "pan", weight: 0.075 }
         ],
         airdrop_skins: [

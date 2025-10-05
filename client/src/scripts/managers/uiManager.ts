@@ -1358,7 +1358,7 @@ class UIManagerClass {
             ? getTranslatedString("kf_impact_of")
             : "";
         let weaponName: string | undefined;
-        const weapon = weaponPresent ? `${grenadeImpactKill}${(weaponName = getTranslatedString(("translationString" in weaponUsed ? weaponUsed.translationString : weaponUsed.idString) as TranslationKeys)) === weaponUsed.idString ? weaponUsed.name : weaponName}` : "";
+        const weapon = weaponPresent ? `${grenadeImpactKill}${(weaponName = getTranslatedString(weaponUsed.idString as TranslationKeys)) === weaponUsed.idString ? weaponUsed.name : weaponName}` : "";
 
         let victimText = this._getNameAndBadge(victimId);
         const attackerText = this._getNameAndBadge(attackerId);

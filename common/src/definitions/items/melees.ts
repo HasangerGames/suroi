@@ -80,10 +80,10 @@ export interface MeleeDefinition extends InventoryItemDefinition {
     }
 }
 
-const hatchet = (idString: string): MeleeDefinition => {
+const hatchet = (name: string): MeleeDefinition => {
     return {
-        idString,
-        name: "Hatchet",
+        idString: name.toLowerCase().replace(/'/g, "").replace(/ /g, "_"),
+        name,
         defType: DefinitionType.Melee,
         tier: Tier.B,
         damage: 38,
@@ -146,10 +146,10 @@ const hatchet = (idString: string): MeleeDefinition => {
     }
 };
 
-const crowbar = (idString: string): MeleeDefinition => {
+const crowbar = (name: string): MeleeDefinition => {
     return {
-        idString,
-        name: "Crowbar",
+        idString: name.toLowerCase().replace(/'/g, "").replace(/ /g, "_"),
+        name,
         defType: DefinitionType.Melee,
         tier: Tier.A,
         swingSound: "heavy_swing",
@@ -200,10 +200,10 @@ const crowbar = (idString: string): MeleeDefinition => {
     }
 };
 
-const handSaw = (idString: string): MeleeDefinition => {
+const saw = (name: string): MeleeDefinition => {
     return {
-        idString,
-        name: "Hand Saw",
+        idString: name.toLowerCase().replace(/'/g, "").replace(/ /g, "_"),
+        name,
         defType: DefinitionType.Melee,
         tier: Tier.A,
         damage: 23,
@@ -430,8 +430,8 @@ export const Melees = new InventoryItemDefinitions<MeleeDefinition>([
                 }
             },
     */
-    hatchet("hatchet"),
-    hatchet("hatchet_bloodstained"),
+    hatchet("Hatchet"),
+    hatchet("Hatchet Bloodstained"),
     {
         idString: "fire_hatchet",
         name: "Fire Hatchet",
@@ -493,9 +493,9 @@ export const Melees = new InventoryItemDefinitions<MeleeDefinition>([
             }
         ]
     },
-    crowbar("crowbar"),
-    crowbar("crowbar_rusted"),
-    crowbar("crowbar_halloween"),
+    crowbar("Crowbar"),
+    crowbar("Crowbar Rusted"),
+    crowbar("Crowbar Halloween"),
     {
         idString: "kbar",
         name: "K-bar",
@@ -1190,8 +1190,8 @@ export const Melees = new InventoryItemDefinitions<MeleeDefinition>([
             }
         ]
     },
-    handSaw("hand_saw"),
-    handSaw("tenon_saw"),
+    saw("Hand Saw"),
+    saw("Tenon Saw"),
     {
         idString: "scythe",
         name: "Scythe",
