@@ -1220,7 +1220,7 @@ export const Game = new (class Game {
                                         "dual_template",
                                         { gun: getTranslatedString(definition.singleVariant as TranslationKeys) }
                                     )
-                                    : getTranslatedString(definition.idString as TranslationKeys);
+                                    : getTranslatedString(("translationString" in definition && "lootAndKillfeedTranslationString" in definition ? definition.translationString : definition.idString) as TranslationKeys);
 
                                 text = `${itemName}${object.count > 1 ? ` (${object.count})` : ""}`;
                                 break;

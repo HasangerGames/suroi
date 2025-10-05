@@ -153,6 +153,7 @@ export interface InventoryItemDefinition extends ItemDefinition {
     }
     readonly killfeedFrame?: string
     readonly translationString?: string
+    readonly lootAndKillfeedTranslationString?: boolean
     readonly killstreak?: boolean
     readonly speedMultiplier: number
     /**
