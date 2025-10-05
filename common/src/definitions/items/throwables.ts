@@ -343,6 +343,7 @@ export const Throwables = new InventoryItemDefinitions<ThrowableDefinition>([
         cookable: false,
         summonAirdrop: true,
         pinSkin: true,
+        noSwap: true, // <-- halloween mode only
         maxSwapCount: 2,
         fuseTime: 30000,
         cookTime: 250,
