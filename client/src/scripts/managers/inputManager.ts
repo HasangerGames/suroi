@@ -788,7 +788,13 @@ class InputManagerClass {
     }
 
     private readonly _keybindsContainer = $<HTMLDivElement>("#tab-keybinds-content");
+    private _keybindCleanupFunctions: Array<() => void> = [];
     generateBindsConfigScreen(): void {
+        for (const cleanup of this._keybindCleanupFunctions) {
+            cleanup();
+        }
+        this._keybindCleanupFunctions = [];
+
         this._keybindsContainer.html("").append(html`
             <div class="modal-item" id="keybind-clear-tooltip">
                 ${getTranslatedString("keybind_clear_tooltip")}
@@ -863,6 +869,17 @@ class InputManagerClass {
                     evt.preventDefault();
                     evt.stopPropagation();
                     evt.stopImmediatePropagation();
+                });
+
+                const handleGlobalKeydown = (event: KeyboardEvent): void => {
+                    if (activeButton !== bindButton) return;
+                    if (event.target === bindButton) return;
+                    setKeyBind(event);
+                };
+
+                window.addEventListener("keydown", handleGlobalKeydown);
+                this._keybindCleanupFunctions.push(() => {
+                    window.removeEventListener("keydown", handleGlobalKeydown);
                 });
             });
         }
