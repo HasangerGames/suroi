@@ -462,12 +462,14 @@ const maps = {
             maxAmount: 3,
             wideChance: 0.2,
             minWidth: 5,
-            maxWidth: 10,
+            maxWidth: 20,
             minWideWidth: 5,
-            maxWideWidth: 10,
+            maxWideWidth: 20,
             maxWideAmount: 1,
             obstacles: {
-                pebble: 300
+                pebble: 300,
+                trail_rock: 60,
+                trail_dead_pine_tree: 50
             }
         },
         clearings: {

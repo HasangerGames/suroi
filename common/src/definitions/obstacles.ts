@@ -7523,6 +7523,52 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         hitbox: new CircleHitbox(5),
         rotationMode: RotationMode.Full
     },
+    {
+        idString: "trail_rock",
+        name: "Rock (Trail)",
+        defType: DefinitionType.Obstacle,
+        material: "stone",
+        health: 200,
+        scale: {
+            spawnMin: 0.9,
+            spawnMax: 1.1,
+            destroy: 0.5
+        },
+        spawnMode: MapObjectSpawnMode.Trail,
+        hitbox: new CircleHitbox(4),
+        spawnHitbox: new CircleHitbox(4.5),
+        rotationMode: RotationMode.Full,
+        variations: 7,
+        particleVariations: 2,
+        frames: {
+            particle: "rock_particle",
+            base: "rock",
+            residue: "rock_residue"
+        }
+    },
+    {
+        idString: "trail_dead_pine_tree",
+        name: "Dead Pine Tree (Trail)",
+        defType: DefinitionType.Obstacle,
+        material: "tree",
+        health: 120,
+        scale: {
+            spawnMin: 0.9,
+            spawnMax: 1.1,
+            destroy: 0.75
+        },
+        spawnHitbox: new CircleHitbox(8.5),
+        rotationMode: RotationMode.Limited,
+        hitbox: new CircleHitbox(2.5),
+        allowFlyover: FlyoverPref.Never,
+        zIndex: ZIndexes.ObstaclesLayer4,
+        spawnMode: MapObjectSpawnMode.Trail,
+        frames: {
+            base: "dead_pine_tree",
+            particle: "dead_pine_tree_particle",
+            residue: "dead_pine_tree_residue"
+        }
+    },
 ] satisfies readonly RawObstacleDefinition[] as readonly RawObstacleDefinition[]).flatMap((def: Mutable<RawObstacleDefinition>) => {
     if (def.variations !== undefined) (def as Mutable<ObstacleDefinition>).variationBits = Math.ceil(Math.log2(def.variations));
     if (def.allowFlyover === undefined) def.allowFlyover = FlyoverPref.Sometimes;
