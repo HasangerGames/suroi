@@ -205,7 +205,7 @@ export class GunItem extends InventoryItemBase.derive(DefinitionType.Gun) {
         for (const perk of owner.perks) {
             switch (perk.idString) {
                 case PerkIds.Flechettes: {
-                    if (definition.ballistics.onHitExplosion === undefined && !definition.summonAirdrop && !definition.ballistics.onHitProjectile) {
+                    if (definition.ballistics.onHitExplosion === undefined && !definition.summonAirdrop && !definition.ballistics.onHitProjectile && definition.ammoType !== "bb") {
                         doSplinterGrouping = true;
                         modifiers.damage *= perk.damageMod;
                         modifyForDamageMod(perk.damageMod);

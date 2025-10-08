@@ -444,8 +444,9 @@ const perks = [
             hay_bale: 1,
             large_pumpkin: 1,
 
-            clearing_boulder: 0.95,
+            clearing_boulder: 0.8,
             oil_tank: 0.8,
+            stove: 0.8,
 
             grenade_crate: 0.75,
             flint_crate: 0.75,
@@ -470,9 +471,40 @@ const perks = [
         defType: DefinitionType.Perk,
         category: PerkCategories.Halloween,
         quality: PerkQualities.Neutral,
-        qualityValue: 0.21,
         damageReceivedMod: 1.5,
-        noDrop: true
+        noDrop: true,
+
+        // |||
+        // VVV DANGER: the "heart" of the perk !!!!!! Do NOT touch, for the wikians, this value is used for which "rare" tables will be forced to be selected
+        qualityValue: 0.21
+        /**
+         /EXAMPLE//: normal mode, "equipment" table:
+            equipment: [
+                { item: "basic_helmet", weight: 1 },
+                { item: "regular_helmet", weight: 0.2 },
+                { item: "tactical_helmet", weight: 0.01 },
+
+                { item: "basic_vest", weight: 1 },
+                { item: "regular_vest", weight: 0.2 },
+                { item: "tactical_vest", weight: 0.01 },
+
+                { item: "basic_pack", weight: 1 },
+                { item: "regular_pack", weight: 0.2 },
+                { item: "tactical_pack", weight: 0.01 }
+            ],
+
+        //: Only items with weight value less than the quality value will be selected, therefore, the table will temporarily be converted to:
+             equipment: [
+                { item: "regular_helmet", weight: 0.2 },
+                { item: "tactical_helmet", weight: 0.01 },
+
+                { item: "regular_vest", weight: 0.2 },
+                { item: "tactical_vest", weight: 0.01 },
+
+                { item: "regular_pack", weight: 0.2 },
+                { item: "tactical_pack", weight: 0.01 }
+             ] 
+        */
     },
     {
         idString: PerkIds.TornPockets,

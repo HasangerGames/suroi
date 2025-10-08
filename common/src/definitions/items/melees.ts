@@ -306,7 +306,7 @@ const chainSaw = (idString: string): MeleeDefinition => {
         damage: 8,
         speedMultiplier: 1,
         obstacleMultiplier: 4,
-        piercingMultiplier: 2,
+        piercingMultiplier: 4,
         radius: 2.7,
         switchSound: "chainsaw",
         swingSound: "chainsaw",

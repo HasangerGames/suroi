@@ -1585,7 +1585,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
         airdrop_melee: [
             { item: NullString, weight: 1 },
             { item: "hatchet", weight: 0.2 },
-            { item: "hand_saw", weight: 0.2 },
+            { item: "tenon_saw", weight: 0.2 },
             { item: "maul", weight: 0.1 }
         ],
         gold_airdrop_guns: [
@@ -1868,6 +1868,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { item: "rpk74", weight: 0.074 },
             { item: "m16a2", weight: 0.074 },
             { item: "ak47", weight: 0.074 },
+            // { item: "arx160", weight: 0.074 },
 
             // 15%
             { item: "ots23", weight: 0.075 },
@@ -1907,6 +1908,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { item: "mpx", weight: 0.14 },
             { item: "saf200", weight: 0.14 },
             { item: "ak47", weight: 0.14 },
+            // { item: "arx160", weight: 0.14 },
             { item: "aks74u", weight: 0.14 },
 
             // 16%
@@ -1965,9 +1967,10 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { item: "stoner_63", weight: 0.95 },
             { item: "mcx_spear", weight: 0.95 },
             { item: "dual_ttk_esaul", weight: 0.95 },
-            { item: "mosin_nagant", weight: 0.9 },
-            { item: "tango_51", weight: 0.9 },
-            { item: "model_89", weight: 0.6 },
+            { item: "shak12", weight: 0.8 },
+            { item: "model_89", weight: 0.4 },
+            { item: "mosin_nagant", weight: 0.3 },
+            { item: "tango_51", weight: 0.3 },
             { item: "flare", weight: 0.1 }
         ],
 
@@ -1976,7 +1979,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { item: "rpk16", weight: 1 },
             { item: "mg5", weight: 1 },
             { item: "pk61", weight: 1 },
-            { item: "shak12", weight: 0.9 },
+            { item: "acr", weight: 0.9 },
             { item: "mp153", weight: 0.85 },
             { item: "mk18", weight: 0.85 },
             { item: "an94", weight: 0.8 },
@@ -2020,6 +2023,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
                 { item: "m16a2", weight: 0.1083 },
                 { item: "mcx_spear", weight: 0.1083 },
                 { item: "ak47", weight: 0.1083 },
+                // { item: "arx160", weight: 0.1083 },
                 { item: "dual_m1895", weight: 0.1083 },
                 { item: "dual_mp5k", weight: 0.1083 },
                 { item: "dual_psm", weight: 0.1083 },
