@@ -295,6 +295,65 @@ const saw = (name: string): MeleeDefinition => {
     }
 };
 
+const chainSaw = (idString: string): MeleeDefinition => {
+    return {
+        idString,
+        name: "Chain Saw",
+        defType: DefinitionType.Melee,
+        tier: Tier.S,
+        fireMode: FireMode.Auto,
+        noSwap: true,
+        damage: 8,
+        speedMultiplier: 1,
+        obstacleMultiplier: 4,
+        piercingMultiplier: 2,
+        radius: 2.7,
+        switchSound: "chainsaw",
+        swingSound: "chainsaw",
+        stopSound: "chainsaw_stop",
+        killfeedFrame: "chainsaw",
+        translationString: "chainsaw",
+        hitSound: "scythe_hit",
+        offset: Vec(6.8, 0.5),
+        cooldown: 10,
+        fists: {
+            animationDuration: 0,
+            left: Vec(61, 10),
+            right: Vec(35, 70)
+        },
+        image: {
+            position: Vec(106, 27),
+            angle: 10,
+            lootScale: 0.5,
+            animated: true
+        },
+        animation: [
+            {
+                duration: 10,
+                fists: {
+                    left: Vec(57, 10),
+                    right: Vec(31, 70)
+                },
+                image: {
+                    angle: 10,
+                    position: Vec(103, 27)
+                }
+            },
+            {
+                duration: 10,
+                fists: {
+                    left: Vec(61, 10),
+                    right: Vec(35, 70)
+                },
+                image: {
+                    angle: 10,
+                    position: Vec(106, 27)
+                }
+            }
+        ]
+    }
+};
+
 export const DEFAULT_HAND_RIGGING = Object.freeze({
     left: Vec(38, -35),
     right: Vec(38, 35)
@@ -968,59 +1027,6 @@ export const Melees = new InventoryItemDefinitions<MeleeDefinition>([
         ]
     },
     {
-        idString: "chainsaw",
-        name: "Chain Saw",
-        defType: DefinitionType.Melee,
-        tier: Tier.S,
-        fireMode: FireMode.Auto,
-        devItem: true,
-        noSwap: true,
-        damage: 25,
-        speedMultiplier: 1,
-        obstacleMultiplier: 2,
-        piercingMultiplier: 2,
-        radius: 2.7,
-        swingSound: "chainsaw",
-        stopSound: "chainsaw_stop",
-        offset: Vec(6.8, 0.5),
-        cooldown: 0,
-        fists: {
-            animationDuration: 0,
-            left: Vec(61, 10),
-            right: Vec(35, 70)
-        },
-        image: {
-            position: Vec(106, 27),
-            angle: 10,
-            lootScale: 0.5,
-            animated: true
-        },
-        animation: [
-            {
-                duration: 10,
-                fists: {
-                    left: Vec(57, 10),
-                    right: Vec(31, 70)
-                },
-                image: {
-                    angle: 10,
-                    position: Vec(106, 27)
-                }
-            },
-            {
-                duration: 10,
-                fists: {
-                    left: Vec(61, 10),
-                    right: Vec(35, 70)
-                },
-                image: {
-                    angle: 10,
-                    position: Vec(106, 27)
-                }
-            }
-        ]
-    },
-    {
         idString: "pan",
         name: "Pan",
         defType: DefinitionType.Melee,
@@ -1192,6 +1198,8 @@ export const Melees = new InventoryItemDefinitions<MeleeDefinition>([
     },
     saw("Hand Saw"),
     saw("Tenon Saw"),
+    chainSaw("chainsaw"),
+    chainSaw("chainsaw_leatherfaced"),
     {
         idString: "scythe",
         name: "Scythe",
