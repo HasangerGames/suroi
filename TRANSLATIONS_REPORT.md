@@ -3046,7 +3046,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `plumpkin_blessing` is not defined
 - Key `plumpkin_blessing_desc` is not defined
 
-## 🇷🇺 Русский (88% Complete) - ru.hjson
+## 🇷🇺 Русский (90% Complete) - ru.hjson
 
 ### Invalid Keys
 
@@ -3094,19 +3094,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `loot_baron_desc` is not defined
 - Key `reflective_rounds` is not defined
 - Key `reflective_rounds_desc` is not defined
-- Key `plumpkin_shuffle` is not defined
-- Key `plumpkin_shuffle_desc` is not defined
 - Key `baby_plumpkin_pie_desc` is not defined
-- Key `enternal_magnetism` is not defined
-- Key `enternal_magnetism_desc` is not defined
-- Key `last_stand` is not defined
-- Key `last_stand_desc` is not defined
-- Key `weak_stomach` is not defined
-- Key `weak_stomach_desc` is not defined
-- Key `aching_knees` is not defined
-- Key `aching_knees_desc` is not defined
-- Key `plumpkin_blessing` is not defined
-- Key `plumpkin_blessing_desc` is not defined
 
 ## 🇮🇳 தமிழ் (87% Complete) - ta.hjson
 
