@@ -1139,7 +1139,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { item: "hatchet", weight: 3 },
             { item: "baseball_bat", weight: 2 },
             { item: "kbar", weight: 2 },
-            { item: "sickle", weight: 0.5 },
+            { item: "vaibhav_sickle", weight: 0.5 },
             { item: "pan", weight: 0.1 },
             { item: "gas_can", weight: 0 } // somewhat hack in order to make the gas can obtainable through mini plumpkins
         ],
@@ -1301,7 +1301,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { item: "crowbar_halloween", weight: 0.33 },
             { item: "crowbar_rusted", weight: 0.33 },
             { item: "hatchet", weight: 0.33 },
-            { item: "sickle", weight: 0.33 },
+            { item: "vaibhav_sickle", weight: 0.33 },
             { item: "pipe_wrench", weight: 0.075 },
             { item: "tenon_saw", weight: 0.075 },
             { item: "pan", weight: 0.075 }

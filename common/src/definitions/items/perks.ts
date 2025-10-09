@@ -585,7 +585,7 @@ const perks = [
         category: PerkCategories.Halloween,
         quality: PerkQualities.Negative,
         updateInterval: 5e3, // ms
-        spreadIcrementMod: 1.0585,
+        spreadIcrementMod: 1.085,
         decals: {
             ground: "vomit_pool",
             water: "vomit_pool_wtr"

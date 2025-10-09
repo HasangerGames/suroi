@@ -200,6 +200,61 @@ const crowbar = (name: string): MeleeDefinition => {
     }
 };
 
+const sickle = (name: string): MeleeDefinition => {
+    return     {
+        idString: name.toLowerCase().replace(/'/g, "").replace(/ /g, "_"),
+        name,
+        defType: DefinitionType.Melee,
+        tier: Tier.B,
+        damage: 20,
+        swingSound: "soft_swing",
+        speedMultiplier: 1,
+        obstacleMultiplier: 1.3,
+        radius: 2.7,
+        offset: Vec(4, 0),
+        cooldown: 160,
+        attackCooldown: 140,
+        killfeedFrame: "sickle",
+        translationString: "sickle",
+        hitSound: "scythe_hit",
+        fireMode: FireMode.Auto,
+        fists: {
+            animationDuration: 70,
+            left: Vec(29, -39),
+            right: Vec(44, 35)
+        },
+        image: {
+            position: Vec(42, 66),
+            angle: 135,
+            lootScale: 0.85
+        },
+        animation: [
+            {
+                duration: 65,
+                fists: {
+                    left: Vec(29, -39),
+                    right: Vec(44, -25)
+                },
+                image: {
+                    position: Vec(82, -34),
+                    angle: 30
+                }
+            },
+            {
+                duration: 85,
+                fists: {
+                    left: Vec(29, -39),
+                    right: Vec(44, 35)
+                },
+                image: {
+                    position: Vec(42, 66),
+                    angle: 135
+                }
+            }
+        ]
+    }
+}
+
 const saw = (name: string): MeleeDefinition => {
     return {
         idString: name.toLowerCase().replace(/'/g, "").replace(/ /g, "_"),
@@ -603,56 +658,8 @@ export const Melees = new InventoryItemDefinitions<MeleeDefinition>([
             }
         ]
     },
-    {
-        idString: "sickle",
-        name: "Sickle",
-        defType: DefinitionType.Melee,
-        tier: Tier.B,
-        damage: 20,
-        swingSound: "soft_swing",
-        speedMultiplier: 1,
-        obstacleMultiplier: 1.3,
-        radius: 2.7,
-        offset: Vec(4, 0),
-        cooldown: 160,
-        attackCooldown: 140,
-        reskins: ["winter"],
-        fireMode: FireMode.Auto,
-        fists: {
-            animationDuration: 70,
-            left: Vec(29, -39),
-            right: Vec(44, 35)
-        },
-        image: {
-            position: Vec(42, 66),
-            angle: 135,
-            lootScale: 0.85
-        },
-        animation: [
-            {
-                duration: 65,
-                fists: {
-                    left: Vec(29, -39),
-                    right: Vec(44, -25)
-                },
-                image: {
-                    position: Vec(82, -34),
-                    angle: 30
-                }
-            },
-            {
-                duration: 85,
-                fists: {
-                    left: Vec(29, -39),
-                    right: Vec(44, 35)
-                },
-                image: {
-                    position: Vec(42, 66),
-                    angle: 135
-                }
-            }
-        ]
-    },
+    sickle("Sickle"),
+    sickle("Vaibhav Sickle"),
     {
         idString: "maul",
         name: "Maul",

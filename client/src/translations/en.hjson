@@ -342,10 +342,12 @@
 "kukri": "Kukri"
 "pipe_wrench": "Pipe Wrench"
 "hand_saw": "Hand Saw"
+"scythe": "Scythe"
 "tenon_saw": "Tenon Saw"
 "hatchet_bloodstained": "Bloodstained Hatchet"
 "crowbar_rusted": "Rusted Crowbar"
 "crowbar_halloween": "Spookbar"
+"vaibhav_sickle": "Vaibhav Sickle"
 
 // Ammunition (Optional, won't count towards percentage)
 "12g": "12 Gauge"
