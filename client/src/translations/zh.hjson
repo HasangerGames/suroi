@@ -521,6 +521,12 @@
 "kukri": "库克力弯刀"
 "pipe_wrench": "管钳"
 "hand_saw": "手锯"
+"scythe": "镰刀"
+"tenon_saw": “榫锯"
+"hatchet_bloodstained": "血痕斧头"
+"crowbar_rusted": "生锈撬棍"
+"crowbar_halloween": "可怕的撬棍"
+"vaibhav_sickle": "瓦伊巴夫镰刀"
 
 
 /*
@@ -1000,3 +1006,15 @@
 "overclocked_desc": "提高枪械射速，但代价是增大子弹扩散。"
 "reflective_rounds": "弹力子弹"
 "reflective_rounds_desc": "普通子弹会在任意表面上反弹。"
+"plumpkin_shuffle": "楠瓜洗牌"
+"plumpkin_shuffle_desc": "随机挑选一套装备。"
+"enternal_magnetism": "肠磁" // is enternal meaning in the intestines? idk
+"enternal_magnetism_desc": "吸收附近玩家的生命。吸引附近的战利品。"
+"last_stand": "最后一搏"
+"last_stand_desc": "在低生命值时造成双倍伤害。"
+"weak_stomach": "胃病"
+"weak_stomach_desc": "每五秒把一滩呕吐物放在地上，并且增加武器扩散。"
+"aching_knees": "膝盖疼痛"
+"aching_knees_desc": "你的运动控制会每十秒反转。"
+"plumpkin_blessing": "楠瓜的祝福"
+"plumpkin_blessing_desc": "交换物品和掠夺南瓜材料障碍物将提供高质量的战利品。受到1.5倍的伤害。."

@@ -115,9 +115,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `pumpkin_explosion` is not defined
 - Key `region_ea` is not defined
 - Key `region_oc` is not defined
-- Key `region_1v1` is not defined
-- Key `region_ea1v1` is not defined
-- Key `region_test` is not defined
 - Key `second_wind` is not defined
 - Key `second_wind_desc` is not defined
 - Key `flechettes` is not defined
@@ -259,9 +256,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `pumpkin_explosion` is not defined
 - Key `region_ea` is not defined
 - Key `region_oc` is not defined
-- Key `region_1v1` is not defined
-- Key `region_ea1v1` is not defined
-- Key `region_test` is not defined
 - Key `plumpkin_shuffle` is not defined
 - Key `plumpkin_shuffle_desc` is not defined
 - Key `enternal_magnetism` is not defined
@@ -275,7 +269,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `plumpkin_blessing` is not defined
 - Key `plumpkin_blessing_desc` is not defined
 
-## 🇨🇿 Čeština (55% Complete) - cz.hjson
+## 🇨🇿 Čeština (56% Complete) - cz.hjson
 
 ### Invalid Keys
 
@@ -379,9 +373,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `pumpkin_explosion` is not defined
 - Key `region_ea` is not defined
 - Key `region_oc` is not defined
-- Key `region_1v1` is not defined
-- Key `region_ea1v1` is not defined
-- Key `region_test` is not defined
 - Key `second_wind` is not defined
 - Key `second_wind_desc` is not defined
 - Key `flechettes` is not defined
@@ -546,9 +537,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `pumpkin_explosion` is not defined
 - Key `region_ea` is not defined
 - Key `region_oc` is not defined
-- Key `region_1v1` is not defined
-- Key `region_ea1v1` is not defined
-- Key `region_test` is not defined
 - Key `second_wind` is not defined
 - Key `second_wind_desc` is not defined
 - Key `flechettes` is not defined
@@ -734,9 +722,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `pumpkin_explosion` is not defined
 - Key `region_ea` is not defined
 - Key `region_oc` is not defined
-- Key `region_1v1` is not defined
-- Key `region_ea1v1` is not defined
-- Key `region_test` is not defined
 - Key `second_wind` is not defined
 - Key `second_wind_desc` is not defined
 - Key `flechettes` is not defined
@@ -828,7 +813,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
 
-## 🇪🇪 eesti (83% Complete) - et.hjson
+## 🇪🇪 eesti (84% Complete) - et.hjson
 
 ### Invalid Keys
 
@@ -1022,9 +1007,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `confetti_grenade_explosion` is not defined
 - Key `pumpkin_explosion` is not defined
 - Key `region_ea` is not defined
-- Key `region_1v1` is not defined
-- Key `region_ea1v1` is not defined
-- Key `region_test` is not defined
 - Key `loot_baron` is not defined
 - Key `loot_baron_desc` is not defined
 - Key `overclocked` is not defined
@@ -1171,9 +1153,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `pumpkin_explosion` is not defined
 - Key `region_ea` is not defined
 - Key `region_oc` is not defined
-- Key `region_1v1` is not defined
-- Key `region_ea1v1` is not defined
-- Key `region_test` is not defined
 - Key `second_wind` is not defined
 - Key `second_wind_desc` is not defined
 - Key `flechettes` is not defined
@@ -1265,7 +1244,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
 
-## 🇫🇷 Français (85% Complete) - fr.hjson
+## 🇫🇷 Français (89% Complete) - fr.hjson
 
 ### Invalid Keys
 
@@ -1312,17 +1291,12 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `confetti_grenade_explosion` is not defined
 - Key `pumpkin_explosion` is not defined
 - Key `region_ea` is not defined
-- Key `region_1v1` is not defined
-- Key `region_ea1v1` is not defined
-- Key `region_test` is not defined
 - Key `loot_baron` is not defined
 - Key `loot_baron_desc` is not defined
 - Key `overclocked` is not defined
 - Key `overclocked_desc` is not defined
 - Key `reflective_rounds` is not defined
 - Key `reflective_rounds_desc` is not defined
-- Key `plumpkin_shuffle` is not defined
-- Key `plumpkin_shuffle_desc` is not defined
 - Key `baby_plumpkin_pie_desc` is not defined
 - Key `priority_target` is not defined
 - Key `priority_target_desc` is not defined
@@ -1330,18 +1304,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `butterfingers_desc` is not defined
 - Key `overweight` is not defined
 - Key `overweight_desc` is not defined
-- Key `enternal_magnetism` is not defined
-- Key `enternal_magnetism_desc` is not defined
-- Key `last_stand` is not defined
-- Key `last_stand_desc` is not defined
-- Key `weak_stomach` is not defined
-- Key `weak_stomach_desc` is not defined
-- Key `aching_knees` is not defined
-- Key `aching_knees_desc` is not defined
-- Key `plumpkin_blessing` is not defined
-- Key `plumpkin_blessing_desc` is not defined
 
-## 🇬🇷 Ελληνικά (74% Complete) - gr.hjson
+## 🇬🇷 Ελληνικά (75% Complete) - gr.hjson
 
 ### (No Invalid Keys)
 
@@ -1369,9 +1333,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `frag_grenade_explosion` is not defined
 - Key `confetti_grenade_explosion` is not defined
 - Key `pumpkin_explosion` is not defined
-- Key `region_1v1` is not defined
-- Key `region_ea1v1` is not defined
-- Key `region_test` is not defined
 - Key `second_wind_desc` is not defined
 - Key `flechettes` is not defined
 - Key `flechettes_desc` is not defined
@@ -1456,7 +1417,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
 
-## 🇭🇰 🇲🇴 廣東話(香港/澳門) (54% Complete) - hk_mo.hjson
+## 🇭🇰 🇲🇴 廣東話(香港/澳門) (55% Complete) - hk_mo.hjson
 
 ### Invalid Keys
 
@@ -1564,9 +1525,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `pumpkin_explosion` is not defined
 - Key `region_ea` is not defined
 - Key `region_oc` is not defined
-- Key `region_1v1` is not defined
-- Key `region_ea1v1` is not defined
-- Key `region_test` is not defined
 - Key `second_wind` is not defined
 - Key `second_wind_desc` is not defined
 - Key `flechettes` is not defined
@@ -1702,9 +1660,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `confetti_grenade_explosion` is not defined
 - Key `pumpkin_explosion` is not defined
 - Key `region_ea` is not defined
-- Key `region_1v1` is not defined
-- Key `region_ea1v1` is not defined
-- Key `region_test` is not defined
 - Key `loot_baron` is not defined
 - Key `loot_baron_desc` is not defined
 - Key `overclocked` is not defined
@@ -1860,9 +1815,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `pumpkin_explosion` is not defined
 - Key `region_ea` is not defined
 - Key `region_oc` is not defined
-- Key `region_1v1` is not defined
-- Key `region_ea1v1` is not defined
-- Key `region_test` is not defined
 - Key `second_wind` is not defined
 - Key `second_wind_desc` is not defined
 - Key `flechettes` is not defined
@@ -2203,7 +2155,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `plumpkin_blessing` is not defined
 - Key `plumpkin_blessing_desc` is not defined
 
-## 🇱🇹 Lietuvių (55% Complete) - lt.hjson
+## 🇱🇹 Lietuvių (56% Complete) - lt.hjson
 
 ### Invalid Keys
 
@@ -2307,9 +2259,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `pumpkin_explosion` is not defined
 - Key `region_ea` is not defined
 - Key `region_oc` is not defined
-- Key `region_1v1` is not defined
-- Key `region_ea1v1` is not defined
-- Key `region_test` is not defined
 - Key `second_wind` is not defined
 - Key `second_wind_desc` is not defined
 - Key `flechettes` is not defined
@@ -2401,7 +2350,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
 
-## 🇱🇻 Latviešu (55% Complete) - lv.hjson
+## 🇱🇻 Latviešu (56% Complete) - lv.hjson
 
 ### Invalid Keys
 
@@ -2505,9 +2454,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `pumpkin_explosion` is not defined
 - Key `region_ea` is not defined
 - Key `region_oc` is not defined
-- Key `region_1v1` is not defined
-- Key `region_ea1v1` is not defined
-- Key `region_test` is not defined
 - Key `second_wind` is not defined
 - Key `second_wind_desc` is not defined
 - Key `flechettes` is not defined
@@ -2599,7 +2545,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
 
-## 🇳🇱 Nederlands (91% Complete) - nl.hjson
+## 🇳🇱 Nederlands (92% Complete) - nl.hjson
 
 ### Invalid Keys
 
@@ -2626,9 +2572,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `frag_grenade_explosion` is not defined
 - Key `confetti_grenade_explosion` is not defined
 - Key `pumpkin_explosion` is not defined
-- Key `region_1v1` is not defined
-- Key `region_ea1v1` is not defined
-- Key `region_test` is not defined
 - Key `reflective_rounds` is not defined
 - Key `reflective_rounds_desc` is not defined
 - Key `plumpkin_shuffle` is not defined
@@ -2737,9 +2680,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `pumpkin_explosion` is not defined
 - Key `region_ea` is not defined
 - Key `region_oc` is not defined
-- Key `region_1v1` is not defined
-- Key `region_ea1v1` is not defined
-- Key `region_test` is not defined
 - Key `second_wind` is not defined
 - Key `second_wind_desc` is not defined
 - Key `flechettes` is not defined
@@ -2831,7 +2771,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
 
-## 🎀 Cute Engwish (61% Complete) - qen.hjson
+## 🎀 Cute Engwish (62% Complete) - qen.hjson
 
 ### Invalid Keys
 
@@ -2909,9 +2849,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `pumpkin_explosion` is not defined
 - Key `region_ea` is not defined
 - Key `region_oc` is not defined
-- Key `region_1v1` is not defined
-- Key `region_ea1v1` is not defined
-- Key `region_test` is not defined
 - Key `second_wind` is not defined
 - Key `second_wind_desc` is not defined
 - Key `flechettes` is not defined
@@ -3003,7 +2940,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
 
-## 🇷🇴 Română (91% Complete) - ro.hjson
+## 🇷🇴 Română (92% Complete) - ro.hjson
 
 ### (No Invalid Keys)
 
@@ -3028,9 +2965,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `frag_grenade_explosion` is not defined
 - Key `confetti_grenade_explosion` is not defined
 - Key `pumpkin_explosion` is not defined
-- Key `region_1v1` is not defined
-- Key `region_ea1v1` is not defined
-- Key `region_test` is not defined
 - Key `reflective_rounds` is not defined
 - Key `reflective_rounds_desc` is not defined
 - Key `plumpkin_shuffle` is not defined
@@ -3046,7 +2980,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `plumpkin_blessing` is not defined
 - Key `plumpkin_blessing_desc` is not defined
 
-## 🇷🇺 Русский (90% Complete) - ru.hjson
+## 🇷🇺 Русский (91% Complete) - ru.hjson
 
 ### Invalid Keys
 
@@ -3087,16 +3021,13 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `confetti_grenade_explosion` is not defined
 - Key `pumpkin_explosion` is not defined
 - Key `region_ea` is not defined
-- Key `region_1v1` is not defined
-- Key `region_ea1v1` is not defined
-- Key `region_test` is not defined
 - Key `loot_baron` is not defined
 - Key `loot_baron_desc` is not defined
 - Key `reflective_rounds` is not defined
 - Key `reflective_rounds_desc` is not defined
 - Key `baby_plumpkin_pie_desc` is not defined
 
-## 🇮🇳 தமிழ் (87% Complete) - ta.hjson
+## 🇮🇳 தமிழ் (88% Complete) - ta.hjson
 
 ### Invalid Keys
 
@@ -3131,9 +3062,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `frag_grenade_explosion` is not defined
 - Key `confetti_grenade_explosion` is not defined
 - Key `pumpkin_explosion` is not defined
-- Key `region_1v1` is not defined
-- Key `region_ea1v1` is not defined
-- Key `region_test` is not defined
 - Key `berserker` is not defined
 - Key `berserker_desc` is not defined
 - Key `overclocked` is not defined
@@ -3214,9 +3142,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `confetti_grenade_explosion` is not defined
 - Key `pumpkin_explosion` is not defined
 - Key `region_ea` is not defined
-- Key `region_1v1` is not defined
-- Key `region_ea1v1` is not defined
-- Key `region_test` is not defined
 - Key `second_wind` is not defined
 - Key `second_wind_desc` is not defined
 - Key `flechettes` is not defined
@@ -3373,9 +3298,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `confetti_grenade_explosion` is not defined
 - Key `pumpkin_explosion` is not defined
 - Key `region_ea` is not defined
-- Key `region_1v1` is not defined
-- Key `region_ea1v1` is not defined
-- Key `region_test` is not defined
 - Key `second_wind` is not defined
 - Key `second_wind_desc` is not defined
 - Key `flechettes` is not defined
@@ -3509,9 +3431,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `confetti_grenade_explosion` is not defined
 - Key `pumpkin_explosion` is not defined
 - Key `region_ea` is not defined
-- Key `region_1v1` is not defined
-- Key `region_ea1v1` is not defined
-- Key `region_test` is not defined
 - Key `loot_baron` is not defined
 - Key `loot_baron_desc` is not defined
 - Key `overclocked` is not defined
@@ -3546,7 +3465,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
 
-## 🇨🇳 中文（简体） (96% Complete) - zh.hjson
+## 🇨🇳 中文（简体） (100% Complete) - zh.hjson
 
 ### Invalid Keys
 
@@ -3762,19 +3681,4 @@ This file is a report of all errors and missing keys in the translation files of
 ### Undefined Keys
 
 - Key `coal_explosion` is not defined
-- Key `region_1v1` is not defined
-- Key `region_ea1v1` is not defined
-- Key `region_test` is not defined
-- Key `plumpkin_shuffle` is not defined
-- Key `plumpkin_shuffle_desc` is not defined
-- Key `enternal_magnetism` is not defined
-- Key `enternal_magnetism_desc` is not defined
-- Key `last_stand` is not defined
-- Key `last_stand_desc` is not defined
-- Key `weak_stomach` is not defined
-- Key `weak_stomach_desc` is not defined
-- Key `aching_knees` is not defined
-- Key `aching_knees_desc` is not defined
-- Key `plumpkin_blessing` is not defined
-- Key `plumpkin_blessing_desc` is not defined
 
