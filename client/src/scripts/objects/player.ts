@@ -595,6 +595,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             // Blood particles on death (cooler graphics only)
             if (
                 GameConsole.getBuiltInCVar("cv_cooler_graphics")
+                && GameConsole.getBuiltInCVar("cv_blood_splatter")
                 && !isNew
                 && !this.dead
                 && dead
@@ -1808,7 +1809,11 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     yoyo: true
                 });
 
-                if (weaponDef.gasParticles && GameConsole.getBuiltInCVar("cv_cooler_graphics")) {
+                if (
+                    weaponDef.gasParticles
+                    && GameConsole.getBuiltInCVar("cv_cooler_graphics")
+                    && GameConsole.getBuiltInCVar("cv_cooler_weapon_gas")
+                ) {
                     const offset = weaponDef.isDual
                         ? (isAltFire ? -1 : 1) * weaponDef.leftRightOffset
                         : (weaponDef.bulletOffset ?? 0);
@@ -2209,7 +2214,11 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             speed: Vec.fromPolar(angle, randomFloat(0.5, 1))
         });
 
-        if (GameConsole.getBuiltInCVar("cv_cooler_graphics") && !this.downed) {
+        if (
+            GameConsole.getBuiltInCVar("cv_cooler_graphics")
+            && GameConsole.getBuiltInCVar("cv_blood_splatter")
+            && !this.downed
+        ) {
             const isOnWater = this.floorType === FloorNames.Water;
             this._bloodDecals.add(
                 ParticleManager.spawnParticle({

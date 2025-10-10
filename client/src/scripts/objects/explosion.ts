@@ -82,7 +82,11 @@ export function explosion(definition: ExplosionDefinition, position: Vector, lay
     }
 
     CameraManager.shake(definition.cameraShake.duration, !isOnSameLayer ? (definition.cameraShake.intensity / 2) : definition.cameraShake.intensity);
-    if (GameConsole.getBuiltInCVar("cv_cooler_graphics") && isOnSameLayer) {
+    if (
+        GameConsole.getBuiltInCVar("cv_cooler_graphics")
+        && GameConsole.getBuiltInCVar("cv_explosion_shockwaves")
+        && isOnSameLayer
+    ) {
         CameraManager.shockwave(
             definition.cameraShake.duration * SHOCKWAVE_EXPLOSION_MULTIPLIERS.time,
             pixiPos,

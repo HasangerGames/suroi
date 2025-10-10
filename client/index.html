@@ -763,6 +763,7 @@
           <button class="tab active" id="tab-volume"><i class="fa-solid fa-volume-high"></i><span translation="settings_volume"></span></button>
           <button class="tab" id="tab-keybinds"><i class="fa-solid fa-keyboard"></i><span translation="settings_keybinds"></span></button>
           <button class="tab" id="tab-graphics"><i class="fa-solid fa-display"></i><span translation="settings_graphics"></span></button>
+          <button class="tab" id="tab-cooler-graphics"><i class="fa-solid fa-wand-magic-sparkles"></i><span translation="settings_cooler_graphics"></span></button>
           <button class="tab" id="tab-interface"><i class="fa-solid fa-list"></i><span translation="settings_interface" use-html></span></button>
           <button class="tab" id="tab-import-export"><i class="fa-solid fa-file-export"></i><span translation="settings_save_load"></span></button>
           <button class="tab" id="tab-mobile" style="display: none"><i class="fa-solid fa-mobile"></i><span translation="settings_mobile"></span></button>
@@ -850,12 +851,6 @@
             </div>
             <div class="modal-item checkbox-setting">
               <label>
-                <span class="setting-title" translation="settings_cooler_graphics"></span>
-                <input type="checkbox" id="toggle-cooler-graphics">
-              </label>
-            </div>
-            <div class="modal-item checkbox-setting">
-              <label>
                 <span class="setting-title" translation="settings_ambient_particles"></span>
                 <input type="checkbox" id="toggle-ambient-particles">
               </label>
@@ -896,6 +891,40 @@
               </label>
             </div>
             <p style="color: red"><i translation="settings_require_reload"></i></p>
+          </div>
+
+          <!-- Cooler graphics tab -->
+          <div class="tab-content" id="tab-cooler-graphics-content" style="display: none">
+            <div class="modal-item checkbox-setting">
+              <label>
+                <span class="setting-title" translation="settings_cooler_graphics"></span>
+                <input type="checkbox" id="toggle-cooler-graphics">
+              </label>
+            </div>
+            <div class="modal-item checkbox-setting" style="margin-left: 20px;">
+              <label>
+                <span class="setting-title" translation="settings_explosion_shockwaves"></span>
+                <input type="checkbox" id="toggle-cooler-explosions">
+              </label>
+            </div>
+            <div class="modal-item checkbox-setting" style="margin-left: 20px;">
+              <label>
+                <span class="setting-title" translation="settings_bullet_trail_bloom"></span>
+                <input type="checkbox" id="toggle-cooler-bullet-trails">
+              </label>
+            </div>
+            <div class="modal-item checkbox-setting" style="margin-left: 20px;">
+              <label>
+                <span class="setting-title" translation="settings_blood_splatter"></span>
+                <input type="checkbox" id="toggle-cooler-blood">
+              </label>
+            </div>
+            <div class="modal-item checkbox-setting" style="margin-left: 20px;">
+              <label>
+                <span class="setting-title" translation="settings_cooler_weapon_gas"></span>
+                <input type="checkbox" id="toggle-cooler-weapon-gas">
+              </label>
+            </div>
           </div>
 
           <!-- Interface tab -->

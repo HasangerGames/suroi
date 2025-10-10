@@ -23,6 +23,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `wiki` is not defined
 - Key `bindings_fullscreen` is not defined
 - Key `recording` is not defined
+- Key `settings_explosion_shockwaves` is not defined
+- Key `settings_bullet_trail_bloom` is not defined
+- Key `settings_blood_splatter` is not defined
+- Key `settings_cooler_weapon_gas` is not defined
 - Key `settings_record_res` is not defined
 - Key `settings_alt_texture_loading` is not defined
 - Key `settings_show_inout` is not defined
@@ -197,7 +201,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
 
-## 🇧🇷 Português (Brasil) (89% Complete) - br.hjson
+## 🇧🇷 Português (Brasil) (88% Complete) - br.hjson
 
 ### Invalid Keys
 
@@ -208,6 +212,10 @@ This file is a report of all errors and missing keys in the translation files of
 
 - Key `bindings_fullscreen` is not defined
 - Key `recording` is not defined
+- Key `settings_explosion_shockwaves` is not defined
+- Key `settings_bullet_trail_bloom` is not defined
+- Key `settings_blood_splatter` is not defined
+- Key `settings_cooler_weapon_gas` is not defined
 - Key `settings_record_res` is not defined
 - Key `settings_lock_joysticks` is not defined
 - Key `settings_switch_joysticks` is not defined
@@ -251,7 +259,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `region_ea1v1` is not defined
 - Key `region_test` is not defined
 
-## 🇨🇿 Čeština (57% Complete) - cz.hjson
+## 🇨🇿 Čeština (56% Complete) - cz.hjson
 
 ### Invalid Keys
 
@@ -274,6 +282,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_fullscreen` is not defined
 - Key `recording` is not defined
 - Key `settings_ambience_volume` is not defined
+- Key `settings_explosion_shockwaves` is not defined
+- Key `settings_bullet_trail_bloom` is not defined
+- Key `settings_blood_splatter` is not defined
+- Key `settings_cooler_weapon_gas` is not defined
 - Key `settings_ambient_particles` is not defined
 - Key `settings_record_res` is not defined
 - Key `settings_alt_texture_loading` is not defined
@@ -454,6 +466,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `wiki` is not defined
 - Key `bindings_fullscreen` is not defined
 - Key `recording` is not defined
+- Key `settings_explosion_shockwaves` is not defined
+- Key `settings_bullet_trail_bloom` is not defined
+- Key `settings_blood_splatter` is not defined
+- Key `settings_cooler_weapon_gas` is not defined
 - Key `settings_record_res` is not defined
 - Key `settings_show_inout` is not defined
 - Key `settings_gyro_angle` is not defined
@@ -598,7 +614,7 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### (No Undefined Keys)
 
-## 🇪🇸 Español (61% Complete) - es.hjson
+## 🇪🇸 Español (60% Complete) - es.hjson
 
 ### Invalid Keys
 
@@ -616,6 +632,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `wiki` is not defined
 - Key `bindings_fullscreen` is not defined
 - Key `recording` is not defined
+- Key `settings_explosion_shockwaves` is not defined
+- Key `settings_bullet_trail_bloom` is not defined
+- Key `settings_blood_splatter` is not defined
+- Key `settings_cooler_weapon_gas` is not defined
 - Key `settings_record_res` is not defined
 - Key `settings_alt_texture_loading` is not defined
 - Key `settings_show_inout` is not defined
@@ -768,7 +788,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
 
-## 🇪🇪 eesti (86% Complete) - et.hjson
+## 🇪🇪 eesti (85% Complete) - et.hjson
 
 ### Invalid Keys
 
@@ -929,6 +949,10 @@ This file is a report of all errors and missing keys in the translation files of
 ### Undefined Keys
 
 - Key `contact` is not defined
+- Key `settings_explosion_shockwaves` is not defined
+- Key `settings_bullet_trail_bloom` is not defined
+- Key `settings_blood_splatter` is not defined
+- Key `settings_cooler_weapon_gas` is not defined
 - Key `settings_shake_to_reload` is not defined
 - Key `settings_shake_count` is not defined
 - Key `settings_shake_force` is not defined
@@ -987,13 +1011,18 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
 
-## 🇮🇷 فارسی (100% Complete) - fa.hjson
+## 🇮🇷 فارسی (99% Complete) - fa.hjson
 
 ### (No Invalid Keys)
 
-### (No Undefined Keys)
+### Undefined Keys
 
-## 🇫🇮 suomi (60% Complete) - fi.hjson
+- Key `settings_explosion_shockwaves` is not defined
+- Key `settings_bullet_trail_bloom` is not defined
+- Key `settings_blood_splatter` is not defined
+- Key `settings_cooler_weapon_gas` is not defined
+
+## 🇫🇮 suomi (59% Complete) - fi.hjson
 
 ### Invalid Keys
 
@@ -1012,6 +1041,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `wiki` is not defined
 - Key `bindings_fullscreen` is not defined
 - Key `recording` is not defined
+- Key `settings_explosion_shockwaves` is not defined
+- Key `settings_bullet_trail_bloom` is not defined
+- Key `settings_blood_splatter` is not defined
+- Key `settings_cooler_weapon_gas` is not defined
 - Key `settings_record_res` is not defined
 - Key `settings_alt_texture_loading` is not defined
 - Key `settings_show_inout` is not defined
@@ -1168,7 +1201,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
 
-## 🇫🇷 Français (88% Complete) - fr.hjson
+## 🇫🇷 Français (87% Complete) - fr.hjson
 
 ### Invalid Keys
 
@@ -1182,6 +1215,10 @@ This file is a report of all errors and missing keys in the translation files of
 ### Undefined Keys
 
 - Key `contact` is not defined
+- Key `settings_explosion_shockwaves` is not defined
+- Key `settings_bullet_trail_bloom` is not defined
+- Key `settings_blood_splatter` is not defined
+- Key `settings_cooler_weapon_gas` is not defined
 - Key `settings_shake_to_reload` is not defined
 - Key `settings_shake_count` is not defined
 - Key `settings_shake_force` is not defined
@@ -1232,13 +1269,18 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overweight` is not defined
 - Key `overweight_desc` is not defined
 
-## 🇬🇷 Ελληνικά (100% Complete) - gr.hjson
+## 🇬🇷 Ελληνικά (99% Complete) - gr.hjson
 
 ### (No Invalid Keys)
 
-### (No Undefined Keys)
+### Undefined Keys
 
-## 🇭🇰 🇲🇴 廣東話(香港/澳門) (56% Complete) - hk_mo.hjson
+- Key `settings_explosion_shockwaves` is not defined
+- Key `settings_bullet_trail_bloom` is not defined
+- Key `settings_blood_splatter` is not defined
+- Key `settings_cooler_weapon_gas` is not defined
+
+## 🇭🇰 🇲🇴 廣東話(香港/澳門) (55% Complete) - hk_mo.hjson
 
 ### Invalid Keys
 
@@ -1263,6 +1305,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `recording` is not defined
 - Key `copied` is not defined
 - Key `settings_ambience_volume` is not defined
+- Key `settings_explosion_shockwaves` is not defined
+- Key `settings_bullet_trail_bloom` is not defined
+- Key `settings_blood_splatter` is not defined
+- Key `settings_cooler_weapon_gas` is not defined
 - Key `settings_ambient_particles` is not defined
 - Key `settings_record_res` is not defined
 - Key `settings_alt_texture_loading` is not defined
@@ -1428,7 +1474,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
 
-## 🇭🇺 Magyar (85% Complete) - hu.hjson
+## 🇭🇺 Magyar (84% Complete) - hu.hjson
 
 ### Invalid Keys
 
@@ -1437,6 +1483,10 @@ This file is a report of all errors and missing keys in the translation files of
 ### Undefined Keys
 
 - Key `contact` is not defined
+- Key `settings_explosion_shockwaves` is not defined
+- Key `settings_bullet_trail_bloom` is not defined
+- Key `settings_blood_splatter` is not defined
+- Key `settings_cooler_weapon_gas` is not defined
 - Key `settings_shake_to_reload` is not defined
 - Key `settings_shake_count` is not defined
 - Key `settings_shake_force` is not defined
@@ -1497,7 +1547,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
 
-## 🇮🇹 Italiano (55% Complete) - it.hjson
+## 🇮🇹 Italiano (54% Complete) - it.hjson
 
 ### Invalid Keys
 
@@ -1534,6 +1584,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_fullscreen` is not defined
 - Key `recording` is not defined
 - Key `settings_ambience_volume` is not defined
+- Key `settings_explosion_shockwaves` is not defined
+- Key `settings_bullet_trail_bloom` is not defined
+- Key `settings_blood_splatter` is not defined
+- Key `settings_cooler_weapon_gas` is not defined
 - Key `settings_ambient_particles` is not defined
 - Key `settings_record_res` is not defined
 - Key `settings_alt_texture_loading` is not defined
@@ -1700,7 +1754,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
 
-## 🇯🇵 日本語 (100% Complete) - jp.hjson
+## 🇯🇵 日本語 (99% Complete) - jp.hjson
 
 ### Invalid Keys
 
@@ -1934,9 +1988,14 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `time_minute` is not a valid key
 - Key `time_second` is not a valid key
 
-### (No Undefined Keys)
+### Undefined Keys
 
-## 🇱🇹 Lietuvių (57% Complete) - lt.hjson
+- Key `settings_explosion_shockwaves` is not defined
+- Key `settings_bullet_trail_bloom` is not defined
+- Key `settings_blood_splatter` is not defined
+- Key `settings_cooler_weapon_gas` is not defined
+
+## 🇱🇹 Lietuvių (56% Complete) - lt.hjson
 
 ### Invalid Keys
 
@@ -1959,6 +2018,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_fullscreen` is not defined
 - Key `recording` is not defined
 - Key `settings_ambience_volume` is not defined
+- Key `settings_explosion_shockwaves` is not defined
+- Key `settings_bullet_trail_bloom` is not defined
+- Key `settings_blood_splatter` is not defined
+- Key `settings_cooler_weapon_gas` is not defined
 - Key `settings_ambient_particles` is not defined
 - Key `settings_record_res` is not defined
 - Key `settings_alt_texture_loading` is not defined
@@ -2122,7 +2185,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
 
-## 🇱🇻 Latviešu (57% Complete) - lv.hjson
+## 🇱🇻 Latviešu (56% Complete) - lv.hjson
 
 ### Invalid Keys
 
@@ -2145,6 +2208,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_fullscreen` is not defined
 - Key `recording` is not defined
 - Key `settings_ambience_volume` is not defined
+- Key `settings_explosion_shockwaves` is not defined
+- Key `settings_bullet_trail_bloom` is not defined
+- Key `settings_blood_splatter` is not defined
+- Key `settings_cooler_weapon_gas` is not defined
 - Key `settings_ambient_particles` is not defined
 - Key `settings_record_res` is not defined
 - Key `settings_alt_texture_loading` is not defined
@@ -2308,7 +2375,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
 
-## 🇳🇱 Nederlands (94% Complete) - nl.hjson
+## 🇳🇱 Nederlands (93% Complete) - nl.hjson
 
 ### Invalid Keys
 
@@ -2316,6 +2383,10 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### Undefined Keys
 
+- Key `settings_explosion_shockwaves` is not defined
+- Key `settings_bullet_trail_bloom` is not defined
+- Key `settings_blood_splatter` is not defined
+- Key `settings_cooler_weapon_gas` is not defined
 - Key `bindings_use_consumable vaccine_syringe` is not defined
 - Key `power_vest` is not defined
 - Key `power_helmet` is not defined
@@ -2341,7 +2412,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `reflective_rounds` is not defined
 - Key `reflective_rounds_desc` is not defined
 
-## 🇵🇱 Polski (60% Complete) - pl.hjson
+## 🇵🇱 Polski (59% Complete) - pl.hjson
 
 ### Invalid Keys
 
@@ -2360,6 +2431,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `wiki` is not defined
 - Key `bindings_fullscreen` is not defined
 - Key `recording` is not defined
+- Key `settings_explosion_shockwaves` is not defined
+- Key `settings_bullet_trail_bloom` is not defined
+- Key `settings_blood_splatter` is not defined
+- Key `settings_cooler_weapon_gas` is not defined
 - Key `settings_record_res` is not defined
 - Key `settings_alt_texture_loading` is not defined
 - Key `settings_show_inout` is not defined
@@ -2529,6 +2604,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `contact` is not defined
 - Key `bindings_fullscreen` is not defined
 - Key `recording` is not defined
+- Key `settings_explosion_shockwaves` is not defined
+- Key `settings_bullet_trail_bloom` is not defined
+- Key `settings_blood_splatter` is not defined
+- Key `settings_cooler_weapon_gas` is not defined
 - Key `settings_record_res` is not defined
 - Key `settings_alt_texture_loading` is not defined
 - Key `settings_lock_joysticks` is not defined
@@ -2676,12 +2755,16 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
 
-## 🇷🇴 Română (94% Complete) - ro.hjson
+## 🇷🇴 Română (93% Complete) - ro.hjson
 
 ### (No Invalid Keys)
 
 ### Undefined Keys
 
+- Key `settings_explosion_shockwaves` is not defined
+- Key `settings_bullet_trail_bloom` is not defined
+- Key `settings_blood_splatter` is not defined
+- Key `settings_cooler_weapon_gas` is not defined
 - Key `bindings_use_consumable vaccine_syringe` is not defined
 - Key `power_vest` is not defined
 - Key `power_helmet` is not defined
@@ -2707,7 +2790,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `reflective_rounds` is not defined
 - Key `reflective_rounds_desc` is not defined
 
-## 🇷🇺 Русский (90% Complete) - ru.hjson
+## 🇷🇺 Русский (89% Complete) - ru.hjson
 
 ### Invalid Keys
 
@@ -2717,6 +2800,10 @@ This file is a report of all errors and missing keys in the translation files of
 ### Undefined Keys
 
 - Key `contact` is not defined
+- Key `settings_explosion_shockwaves` is not defined
+- Key `settings_bullet_trail_bloom` is not defined
+- Key `settings_blood_splatter` is not defined
+- Key `settings_cooler_weapon_gas` is not defined
 - Key `settings_show_inout` is not defined
 - Key `settings_shake_to_reload` is not defined
 - Key `settings_shake_count` is not defined
@@ -2757,7 +2844,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `reflective_rounds_desc` is not defined
 - Key `baby_plumpkin_pie_desc` is not defined
 
-## 🇮🇳 தமிழ் (90% Complete) - ta.hjson
+## 🇮🇳 தமிழ் (89% Complete) - ta.hjson
 
 ### Invalid Keys
 
@@ -2769,6 +2856,10 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### Undefined Keys
 
+- Key `settings_explosion_shockwaves` is not defined
+- Key `settings_bullet_trail_bloom` is not defined
+- Key `settings_blood_splatter` is not defined
+- Key `settings_cooler_weapon_gas` is not defined
 - Key `settings_shake_delay` is not defined
 - Key `interact_recorder_interactable` is not defined
 - Key `bindings_use_consumable vaccine_syringe` is not defined
@@ -2811,7 +2902,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overweight_desc` is not defined
 - Key `experimental_forcefield_desc` is not defined
 
-## 🇹🇷 Turkısh (70% Complete) - tr.hjson
+## 🇹🇷 Turkısh (69% Complete) - tr.hjson
 
 ### Invalid Keys
 
@@ -2823,6 +2914,10 @@ This file is a report of all errors and missing keys in the translation files of
 
 - Key `msg_error_kicked_team` is not defined
 - Key `contact` is not defined
+- Key `settings_explosion_shockwaves` is not defined
+- Key `settings_bullet_trail_bloom` is not defined
+- Key `settings_blood_splatter` is not defined
+- Key `settings_cooler_weapon_gas` is not defined
 - Key `settings_shake_to_reload` is not defined
 - Key `settings_shake_count` is not defined
 - Key `settings_shake_force` is not defined
@@ -2956,6 +3051,10 @@ This file is a report of all errors and missing keys in the translation files of
 
 - Key `msg_error_kicked_team` is not defined
 - Key `contact` is not defined
+- Key `settings_explosion_shockwaves` is not defined
+- Key `settings_bullet_trail_bloom` is not defined
+- Key `settings_blood_splatter` is not defined
+- Key `settings_cooler_weapon_gas` is not defined
 - Key `settings_alt_texture_loading` is not defined
 - Key `settings_shake_to_reload` is not defined
 - Key `settings_shake_count` is not defined
@@ -3092,7 +3191,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
 
-## 🇻🇳 Tiếng Việt (86% Complete) - vi.hjson
+## 🇻🇳 Tiếng Việt (85% Complete) - vi.hjson
 
 ### Invalid Keys
 
@@ -3102,6 +3201,10 @@ This file is a report of all errors and missing keys in the translation files of
 ### Undefined Keys
 
 - Key `contact` is not defined
+- Key `settings_explosion_shockwaves` is not defined
+- Key `settings_bullet_trail_bloom` is not defined
+- Key `settings_blood_splatter` is not defined
+- Key `settings_cooler_weapon_gas` is not defined
 - Key `settings_shake_to_reload` is not defined
 - Key `settings_shake_count` is not defined
 - Key `settings_shake_force` is not defined
@@ -3159,7 +3262,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
 
-## 🇨🇳 中文（简体） (99% Complete) - zh.hjson
+## 🇨🇳 中文（简体） (98% Complete) - zh.hjson
 
 ### Invalid Keys
 
@@ -3374,6 +3477,10 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### Undefined Keys
 
+- Key `settings_explosion_shockwaves` is not defined
+- Key `settings_bullet_trail_bloom` is not defined
+- Key `settings_blood_splatter` is not defined
+- Key `settings_cooler_weapon_gas` is not defined
 - Key `coal_explosion` is not defined
 - Key `region_1v1` is not defined
 - Key `region_ea1v1` is not defined

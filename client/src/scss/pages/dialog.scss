@@ -7,7 +7,7 @@
 #report-modal,
 #warning-modal {
     background-color: palette.$bg;
-    max-width: 500px;
+    max-width: 600px;
 }
 
 #partners-modal {
@@ -337,6 +337,13 @@
     #settings-tabs-container,
     #customize-tabs-container {
         display: flex;
+    }
+
+    #settings-tab-bar {
+        min-width: 175px; 
+        .tab {
+            min-width: 175px;
+        }
     }
 
     #skin-name {
