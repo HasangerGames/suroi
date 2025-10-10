@@ -615,7 +615,9 @@
 "region_as": "亚洲"
 "region_ea": "东亚"
 "region_oc": "大洋洲"
-
+"region_1v1": "一对一区域"
+"region_ea1v1": "东亚一对一区域"
+"region_test": "测试区域"
 
 
 /*
