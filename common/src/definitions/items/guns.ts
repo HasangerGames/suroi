@@ -1243,7 +1243,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
         ballistics: {
             damage: 14.5,
             obstacleMultiplier: 1.5,
-            speed: 0.3,
+            speed: 0.28,
             range: 160,
             tracer: {
                 opacity: 0.15
