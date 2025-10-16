@@ -3361,6 +3361,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `lobotomy` is not a valid key
 - Key `veteran` is not a valid key
 - Key `carpenter_uniform` is not a valid key
+- Key `demon` is not a valid key
+- Key `wounded` is not a valid key
+- Key `haunted` is not a valid key
+- Key `failed_experiment` is not a valid key
 - Key `ghillie_suit` is not a valid key
 - Key `werewolf` is not a valid key
 - Key `special_developer_cheats` is not a valid key
