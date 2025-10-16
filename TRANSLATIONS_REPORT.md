@@ -3159,13 +3159,19 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
 
-## 🇨🇳 中文（简体） (99% Complete) - zh.hjson
+## 🇨🇳 中文（简体） (100% Complete) - zh.hjson
 
 ### Invalid Keys
 
 - Key `msg_lost_connection` is not a valid key
 - Key `create_team_waiting` is not a valid key
 - Key `developr_vest` is not a valid key
+- Key `scythe` is not a valid key
+- Key `tenon_saw` is not a valid key
+- Key `hatchet_bloodstained` is not a valid key
+- Key `crowbar_rusted` is not a valid key
+- Key `crowbar_halloween` is not a valid key
+- Key `vaibhav_sickle` is not a valid key
 - Key `destroyer_of_worlds` is not a valid key
 - Key `deathray` is not a valid key
 - Key `C4` is not a valid key
@@ -3371,11 +3377,18 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `ping` is not a valid key
 - Key `time_minute` is not a valid key
 - Key `time_second` is not a valid key
+- Key `plumpkin_shuffle` is not a valid key
+- Key `plumpkin_shuffle_desc` is not a valid key
+- Key `eternal_magnetism` is not a valid key
+- Key `eternal_magnetism_desc` is not a valid key
+- Key `last_stand` is not a valid key
+- Key `last_stand_desc` is not a valid key
+- Key `weak_stomach` is not a valid key
+- Key `weak_stomach_desc` is not a valid key
+- Key `aching_knees` is not a valid key
+- Key `aching_knees_desc` is not a valid key
+- Key `plumpkin_blessing` is not a valid key
+- Key `plumpkin_blessing_desc` is not a valid key
 
-### Undefined Keys
-
-- Key `coal_explosion` is not defined
-- Key `region_1v1` is not defined
-- Key `region_ea1v1` is not defined
-- Key `region_test` is not defined
+### (No Undefined Keys)
 

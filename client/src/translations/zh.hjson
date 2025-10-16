@@ -521,7 +521,12 @@
 "kukri": "库克力弯刀"
 "pipe_wrench": "管钳"
 "hand_saw": "手锯"
-
+"scythe": "长柄镰刀"
+"tenon_saw": "榫锯"
+"hatchet_bloodstained": "血痕斧头"
+"crowbar_rusted": "生锈撬棍"
+"crowbar_halloween": "可怖撬棍"
+"vaibhav_sickle": "瓦伊巴夫镰刀"
 
 /*
     GUNS - 枪械
@@ -564,7 +569,7 @@
 "arx160": "ARX-160"
 "m16a2": "M16A2"
 "mg36": "MG36"
-"mcx_spear": "MCX Spear"
+"mcx_spear": "MCX长矛"
 "vks": "VKS排气者"
 "m590m": "M590M"
 "blr": "BLR 556"
@@ -582,6 +587,7 @@
 "psm": "PSM"
 "rpk16": "RPK-16"
 "rpk74": "RPK-74"
+"yesaul":"耶萨乌尔"
 
 
 
@@ -609,6 +615,9 @@
 "region_as": "亚洲"
 "region_ea": "东亚"
 "region_oc": "大洋洲"
+"region_test": "测试区域"
+"region_1v1": "1v1区域"
+"region_ea1v1":"东亚1v1区域"
 
 
 
@@ -804,8 +813,7 @@
 "stove_explosion": "炉灶"
 "super_barrel_explosion": "超级油桶"
 "proj_seed": "南瓜种子"
-
-
+"coal_explosion": "煤尘"
 
 /*
     SKINS - 服装
@@ -1000,3 +1008,15 @@
 "overclocked_desc": "提高枪械射速，但代价是增大子弹扩散。"
 "reflective_rounds": "弹力子弹"
 "reflective_rounds_desc": "普通子弹会在任意表面上反弹。"
+"plumpkin_shuffle": "楠瓜洗牌"
+"plumpkin_shuffle_desc": "随机分配你的所有武器、装备、弹药、消耗品和服装。"
+"eternal_magnetism": "恒磁性"
+"eternal_magnetism_desc": "吸取附近玩家的生命值。<br>吸引附近的战利品。"
+"last_stand": "谁笑到最后"
+"last_stand_desc": "在低生命值时造成双倍伤害。"
+"weak_stomach": "胃病"
+"weak_stomach_desc": "每五秒在地上留下一滩呕吐物。<br>增大武器扩散。"
+"aching_knees": "膝盖疼"
+"aching_knees_desc": "你的移动控制每十秒反转一次。"
+"plumpkin_blessing": "楠瓜祝福"
+"plumpkin_blessing_desc": "变幻物品与破坏南瓜类障碍物时掉落高品质战利品。受到1.5倍伤害。"
