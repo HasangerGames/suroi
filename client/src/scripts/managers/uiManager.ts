@@ -1165,8 +1165,39 @@ class UIManagerClass {
         }
 
         const container = this._perkSlots[index] ??= $<HTMLDivElement>(`#perk-slot-${index}`);
+
+        let _duration: number;
+        switch (true) {
+            case "duration" in perkDef: {
+                _duration = perkDef.duration;
+                break;
+            }
+            case "shieldRespawnTime" in perkDef: {
+                _duration = perkDef.shieldRespawnTime;
+                break;
+            }
+            case "highlightDuration" in perkDef: {
+                _duration = perkDef.highlightDuration;
+                break;
+            }
+            case "cooldown" in perkDef: {
+                _duration = perkDef.cooldown;
+                break;
+            }
+            default: {
+                _duration = (perkDef.updateInterval ?? 0);
+            }
+        }
+
         container.attr("data-idString", perkDef.idString);
-        container.children(".item-tooltip").html(`<strong>${perkName}</strong><br>${getTranslatedString(`${perkDef.idString}_desc` as TranslationKeys)}`);
+
+        // eww
+        container.children(".item-tooltip").html(
+            `<strong>${perkName}</strong><br>${getTranslatedString(
+                `${perkDef.idString}_desc` as TranslationKeys, {
+                    seconds: `${_duration / 1000}`
+        })}`);
+
         container.children(".item-image").attr("src", perkSrc);
         container.css("visibility", PerkManager.has(perkDef) ? "visible" : "hidden");
         if (container.hasClass("deactivated")) container.toggleClass("deactivated");
