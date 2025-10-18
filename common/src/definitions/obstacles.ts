@@ -1,6 +1,6 @@
 import { FlyoverPref, GameConstants, Layers, MapObjectSpawnMode, RotationMode, ZIndexes } from "../constants";
 import { Orientation, type Variation } from "../typings";
-import { CircleHitbox, GroupHitbox, RectangleHitbox, type Hitbox } from "../utils/hitbox";
+import { CircleHitbox, GroupHitbox, RectangleHitbox, type Hitbox, PolygonHitbox } from "../utils/hitbox";
 import { type Mutable } from "../utils/misc";
 import { DefinitionType, ObjectDefinitions, type ObjectDefinition, type ReferenceOrRandom, type ReferenceTo } from "../utils/objectDefinitions";
 import { Vec, type Vector } from "../utils/vector";
@@ -2243,6 +2243,33 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
             residue: "regular_crate_residue"
         },
         particlesOnDestroy: "tear_gas_particle",
+        additionalDestroySounds: ["smoke_grenade"],
+        winterVariations: 1,
+        waterOverlay: {
+            scaleX: 1,
+            scaleY: 0.65
+        }
+    },
+    {
+        idString: "urn",
+        name: "Urn",
+        defType: DefinitionType.Obstacle,
+        material: "porcelain",
+        health: 100,
+        scale: {
+            spawnMin: 1,
+            spawnMax: 1,
+            destroy: 0.6
+        },
+        spawnMode: MapObjectSpawnMode.GrassAndSand,
+        hitbox: new CircleHitbox(2.45, Vec(-0.15, 0.9)),
+        rotationMode: RotationMode.Full,
+        allowFlyover: FlyoverPref.Always,
+        frames: {
+            particle: "urn_particle",
+            residue: "urn_residue"
+        },
+        particlesOnDestroy: "ash_particle",
         additionalDestroySounds: ["smoke_grenade"],
         winterVariations: 1,
         waterOverlay: {
