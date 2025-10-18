@@ -1086,7 +1086,7 @@ export const Melees = new InventoryItemDefinitions<MeleeDefinition>([
         iceMultiplier: 2,
         swingSound: "soft_swing",
         obstacleMultiplier: 2,
-        piercingMultiplier: 0.8,
+        piercingMultiplier: 1.2,
         radius: 2.9,
         offset: Vec(6.4, -0.5),
         cooldown: 725,
