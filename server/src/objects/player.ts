@@ -2105,7 +2105,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
                 for (let i = 0; i <= 2; i++) {
                     if (this.inventory.getWeapon(i)?.definition.noSwap) continue;
-                    this.inventory.replaceWeapon(i, i === 2 ? pickRandomInArray(melees) : pickRandomInArray(guns));
+                    this.inventory.replaceWeapon(i, i === 2 ? pickRandomInArray(melees) : pickRandomInArray(guns), true);
 
                     if (i < 2) (this.inventory.getWeapon(i) as GunItem).ammo = (this.inventory.getWeapon(i) as GunItem).definition.capacity;
                 }
