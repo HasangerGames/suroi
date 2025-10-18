@@ -1561,6 +1561,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         health: 200,
         impenetrable: true,
         hasLoot: true,
+        reflectBullets: true,
         scale: {
             spawnMin: 1,
             spawnMax: 1,
