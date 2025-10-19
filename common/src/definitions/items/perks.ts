@@ -248,8 +248,8 @@ const perks = [
         name: "Overclocked",
         defType: DefinitionType.Perk,
         category: PerkCategories.Normal,
-        fireRateMod: 0.5,
-        spreadMod: 2.5
+        fireRateMod: 0.65,
+        spreadMod: 2.0
     },
     {
         idString: PerkIds.ReflectiveRounds,
