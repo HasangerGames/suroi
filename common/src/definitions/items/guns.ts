@@ -343,7 +343,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
             leftRightOffset: 1.3,
             fireDelay: 30,
             shotSpread: 8,
-            moveSpread: 14,
+            moveSpread: 16,
             capacity: 32,
             extendedCapacity: 52,
             reloadTime: 3.7
@@ -406,7 +406,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
             leftRightOffset: 1.3,
             fireDelay: 187.5,
             shotSpread: 2,
-            moveSpread: 5,
+            moveSpread: 7,
             capacity: 14,
             reloadTime: 4
         }
@@ -466,7 +466,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
             leftRightOffset: 1.4,
             fireDelay: 115,
             shotSpread: 3,
-            moveSpread: 7,
+            moveSpread: 9,
             capacity: 14,
             extendedCapacity: 18,
             reloadTime: 3.8
@@ -598,7 +598,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
             },
             fireDelay: 60,
             shotSpread: 4,
-            moveSpread: 6.75,
+            moveSpread: 10,
             capacity: 40,
             extendedCapacity: 60,
             reloadTime: 3.2
@@ -647,7 +647,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
             leftRightOffset: 1.3,
             fireDelay: 168,
             shotSpread: 2,
-            moveSpread: 5,
+            moveSpread: 7,
             capacity: 16,
             extendedCapacity: 24,
             reloadTime: 4
@@ -696,7 +696,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
             leftRightOffset: 1.4,
             fireDelay: 75,
             shotSpread: 2,
-            moveSpread: 5,
+            moveSpread: 7,
             capacity: 30,
             extendedCapacity: 40,
             reloadTime: 4
@@ -1243,7 +1243,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
         ballistics: {
             damage: 14.5,
             obstacleMultiplier: 1.5,
-            speed: 0.3,
+            speed: 0.28,
             range: 160,
             tracer: {
                 opacity: 0.15
