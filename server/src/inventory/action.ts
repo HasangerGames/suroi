@@ -1,6 +1,6 @@
 import { AnimationType, GameConstants, PlayerActions } from "@common/constants";
 import { HealType, type HealingItemDefinition } from "@common/definitions/items/healingItems";
-import { PerkIds } from "@common/definitions/items/perks";
+import { PerkData, PerkIds } from "@common/definitions/items/perks";
 import { Loots } from "@common/definitions/loots";
 import { Numeric } from "@common/utils/math";
 import { type Timeout } from "@common/utils/misc";
@@ -74,6 +74,20 @@ export class ReloadAction extends Action {
 
     constructor(player: Player, readonly item: GunItem) {
         const fullReload = item.definition.reloadFullOnEmpty && item.ammo <= 0;
+
+        if (player.hasPerk(PerkIds.CombatExpert)) {
+            const reloadModifier = PerkData[PerkIds.CombatExpert].reloadMod;
+
+            if (item.ammo <= 0 && !player.combatExpertApplied) {
+                player.reloadMod *= reloadModifier;
+                player.combatExpertApplied = true;
+            }
+            else if (player.combatExpertApplied) {
+                player.reloadMod = 1;
+                player.combatExpertApplied = false;
+            }
+        }
+
         super(
             player,
             (fullReload ? item.definition.fullReloadTime : item.definition.reloadTime) / (player.reloadMod === 0 ? 1 : player.reloadMod)

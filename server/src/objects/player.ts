@@ -99,6 +99,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
     isConsumingItem = false;
 
+    combatExpertApplied = false;
+
     // Rate Limiting: Team Pings & Emotes.
     emoteCount = 0;
     lastRateLimitUpdate = 0;
@@ -2062,6 +2064,13 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             this.addPerk(PerkIds.Overdrive);
         }
 
+        // easter egg
+        if (this.hasPerk(PerkIds.CombatExpert) && this.hasPerk(PerkIds.Butterfingers)) {
+            this.removePerk(PerkIds.CombatExpert);
+            this.removePerk(PerkIds.Butterfingers);
+            this.game.addExplosion("corrupted_explosion", this.position, this, this.layer);
+        }
+
         // ! evil starts here
         // some perks need to perform setup when added
         switch (perkDef.idString) {
@@ -2810,8 +2819,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                     }, perk.achieveTime); */
                     break;
                 }
-                case PerkIds.Butterfingers:
-                case PerkIds.CombatExpert: {
+                case PerkIds.Butterfingers: {
                     newModifiers.reload *= perk.reloadMod;
                     break;
                 }

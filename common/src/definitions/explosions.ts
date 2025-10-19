@@ -772,5 +772,34 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>([
         },
         sound: "frag_grenade",
         decal: "frag_explosion_decal"
-    }
+    },
+    {
+        idString: "corrupted_explosion",
+        name: "corruption",
+        defType: DefinitionType.Explosion,
+        damage: 0,
+        obstacleMultiplier: 1,
+        radius: {
+            min: 9,
+            max: 19
+        },
+        cameraShake: {
+            duration: 160,
+            intensity: 10
+        },
+        animation: {
+            duration: 1500,
+            tint: 0xA04412,
+            scale: 2
+        },
+        shrapnelCount: 0,
+        ballistics: {
+            damage: 0,
+            obstacleMultiplier: 1,
+            speed: 0.08,
+            range: 20
+        },
+        sound: "metal_light_destroyed",
+        decal: "explosion_decal"
+    },
 ]);
