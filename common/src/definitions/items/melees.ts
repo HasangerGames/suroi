@@ -990,7 +990,7 @@ export const Melees = new InventoryItemDefinitions<MeleeDefinition>([
         defType: DefinitionType.Melee,
         tier: Tier.B,
         damage: 41,
-        swingSound: "soft_swing",
+        swingSound: "falchion_swing",
         speedMultiplier: 1,
         obstacleMultiplier: 1.1,
         radius: 4.1,
