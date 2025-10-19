@@ -932,42 +932,38 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
     },
     {
         idString: "pp19",
-        name: "PP-19 Vityaz",
+        name: "PP-19 Bizon",
         defType: DefinitionType.Gun,
         tier: Tier.S,
         ammoType: "9mm",
-        ammoSpawnAmount: 90,
-        capacity: 30,
-        extendedCapacity: 45,
-        reloadTime: 2.3,
-        fireDelay: 50,
+        ammoSpawnAmount: 128,
+        capacity: 64,
+        extendedCapacity: 96,
+        reloadTime: 3.5,
+        fireDelay: 82,
         switchDelay: 300,
         speedMultiplier: 1,
-        recoilMultiplier: 0.75,
-        recoilDuration: 150,
+        recoilMultiplier: 0.8,
+        recoilDuration: 135,
         fireMode: FireMode.Auto,
-        shotSpread: 3,
-        moveSpread: 6.75,
+        shotSpread: 2.75,
+        moveSpread: 6.25,
         length: 7.3,
-        noMuzzleFlash: true,
         fists: {
-            left: Vec(88, -5),
+            left: Vec(100, -7),
             right: Vec(40, 0),
             rightZIndex: 4,
             animationDuration: 100
         },
         casingParticles: [{
-            position: Vec(3.5, 0.4)
+            position: Vec(3.8, 0.4)
         }],
         image: { position: Vec(80, 1.3) },
         ballistics: {
-            damage: 10.5,
+            damage: 12.5,
             obstacleMultiplier: 1,
             speed: 0.25,
-            range: 160,
-            tracer: {
-                opacity: 0.15
-            }
+            range: 170
         }
     },
 
