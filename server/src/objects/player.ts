@@ -99,8 +99,6 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
     isConsumingItem = false;
 
-    storedSpreadMod = 1;
-
     // Rate Limiting: Team Pings & Emotes.
     emoteCount = 0;
     lastRateLimitUpdate = 0;
@@ -1508,6 +1506,13 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                             source: DamageSources.BleedOut
                         });
                         this.adrenaline -= this.adrenaline * (perk.adrenLoss / 100);
+                        const decal = this.game.addDecal(
+                            this.floor === FloorNames.Water ? perk.decals.water : perk.decals.ground, // todo: add a `isWater` boolean on decals instead of using a seperate def, I couldn't figure it out without breaking the decals
+                            this.position,
+                            this.rotation,
+                            this.layer
+                        );
+                        this.game.addTimeout(() => this.game.grid.removeObject(decal), perk.decalFadeTime);
                         break;
                     }
                     case PerkIds.Shrouded: {
@@ -1552,18 +1557,6 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
                         if (perkToRemove !== undefined) this.removePerk(perkToRemove);
                         this.addPerk(randomPerk);
-                        break;
-                    }
-                    case PerkIds.WeakStomach: {
-                        this.storedSpreadMod *= perk.spreadIcrementMod;
-                        this.sendEmote(Emotes.fromStringSafe(perk.emote), true);
-                        const decal = this.game.addDecal(
-                            this.floor === FloorNames.Water ? perk.decals.water : perk.decals.ground, // todo: add a `isWater` boolean on decals instead of using a seperate def, I couldn't figure it out without breaking the decals
-                            this.position,
-                            this.rotation,
-                            this.layer
-                        );
-                        this.game.addTimeout(() => this.game.grid.removeObject(decal), perk.decalFadeTime);
                         break;
                     }
                     case PerkIds.AchingKnees: {
@@ -2321,10 +2314,6 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             case PerkIds.EnternalMagnetism: {
                 this.hasMagneticField = false;
                 this.setDirty();
-                break;
-            }
-            case PerkIds.WeakStomach: {
-                this.storedSpreadMod = 1;
                 break;
             }
             case PerkIds.AchingKnees: {

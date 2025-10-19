@@ -89,7 +89,6 @@ export const enum PerkIds {
     PriorityTarget = "priority_target",
     Butterfingers = "butterfingers",
     Overweight = "overweight",
-    WeakStomach = "weak_stomach",
     AchingKnees = "aching_knees",
 
     //
@@ -550,6 +549,11 @@ const perks = [
         emote: "vomiting_face",
         adrenLoss: 5, // percentage
         healthLoss: 5, // absolute
+        decals: {
+            ground: "vomit_pool",
+            water: "vomit_pool_wtr"
+        },
+        decalFadeTime: 30e3,
         noDrop: true
     },
     {
@@ -577,22 +581,6 @@ const perks = [
         category: PerkCategories.Halloween,
         quality: PerkQualities.Negative,
         sizeMod: 1.5,
-        noDrop: true
-    },
-    {
-        idString: PerkIds.WeakStomach,
-        name: "Weak Stomach",
-        defType: DefinitionType.Perk,
-        category: PerkCategories.Halloween,
-        quality: PerkQualities.Negative,
-        updateInterval: 5e3, // ms
-        spreadIcrementMod: 1.085,
-        decals: {
-            ground: "vomit_pool",
-            water: "vomit_pool_wtr"
-        },
-        decalFadeTime: 30e3,
-        emote: "vomiting_face",
         noDrop: true
     },
     {
