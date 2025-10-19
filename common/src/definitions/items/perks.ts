@@ -470,8 +470,8 @@ const perks = [
         name: "Plumpkin's Blessing",
         defType: DefinitionType.Perk,
         category: PerkCategories.Halloween,
-        quality: PerkQualities.Neutral,
-        damageReceivedMod: 1.5,
+        quality: PerkQualities.Positive,
+        // damageReceivedMod: 1.5,
         noDrop: true,
 
         // |||
