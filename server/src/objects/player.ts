@@ -2594,7 +2594,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             // Reductions are merged additively
             amount *= (1 - (
                 (this.inventory.helmet?.damageReduction ?? 0) + (this.inventory.vest?.damageReduction ?? 0)
-            ));
+            )) * this.mapPerkOrDefault(PerkIds.LastStand, ({ damageReceivedMod }) => damageReceivedMod, 1);
 
             amount = this._clampDamageAmount(amount);
         }

@@ -382,7 +382,8 @@ const perks = [
         category: PerkCategories.Halloween,
         quality: PerkQualities.Positive,
         healthReq: 30,
-        damageMod: 2,
+        damageMod: 1.25,
+        damageReceivedMod: 0.85,
         noDrop: true
     },
     {
