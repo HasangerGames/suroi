@@ -1289,7 +1289,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overweight` is not defined
 - Key `overweight_desc` is not defined
 
-## 🇬🇷 Ελληνικά (97% Complete) - gr.hjson
+## 🇬🇷 Ελληνικά (98% Complete) - gr.hjson
 
 ### (No Invalid Keys)
 

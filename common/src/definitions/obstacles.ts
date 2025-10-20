@@ -2262,7 +2262,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
             destroy: 0.6
         },
         spawnMode: MapObjectSpawnMode.GrassAndSand,
-        hitbox: new CircleHitbox(2.45, Vec(-0.15, 0.9)),
+        hitbox: new CircleHitbox(2.45),
         rotationMode: RotationMode.Full,
         allowFlyover: FlyoverPref.Always,
         frames: {

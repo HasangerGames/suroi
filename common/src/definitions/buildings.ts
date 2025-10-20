@@ -15217,7 +15217,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
 
             // halloween only
             { idString: "cobweb", position: Vec(-15.09, -26.11), rotation: 0 },
-            { idString: "cobweb", position: Vec(15.48, -26.12), rotation: 3 },
+            { idString: "cobweb", position: Vec(15.48, -26.12), rotation: 3 }
         ],
         subBuildings: IS_CLIENT ? undefined : [
             { idString: "graveyard_basement", position: Vec(-18, -45.25), layer: Layer.Basement },
@@ -15267,7 +15267,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "door", position: Vec(16.69, 8.45), rotation: 3 },
             { idString: "door", position: Vec(-10.14, -17.97), rotation: 0 },
             { idString: "trash_can", position: Vec(12.67, 26.41) },
-            { idString: "aegis_crate", position: Vec(10.33, -11.59) }
+            { idString: "aegis_crate", position: Vec(10.33, -11.59) },
+            { idString: "urn", position: Vec(12.54, -3.57) }
         ]
     },
     {
@@ -15376,6 +15377,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "seedshot_case", position: Vec(15.13, 24.84), rotation: 3 },
             { idString: "graveyard_light", position: Vec(-0.17, 27.03) },
             { idString: "graveyard_light", position: Vec(0.69, -27.27) },
+            { idString: "urn", position: Vec(16.61, 3.48) },
 
             // TEMP: Remove if halloween ends.
             { idString: "cobweb", position: Vec(-15.02, 25.98), rotation: 1 },
@@ -15425,7 +15427,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "aegis_crate", position: Vec(-8.71, -7.68) },
             { idString: "box", position: Vec(-10.84, -0.44) },
             { idString: "door", position: Vec(-14.77, 6.78), rotation: 1 },
-            { idString: "door", position: Vec(7.81, -13.79), rotation: 2 }
+            { idString: "door", position: Vec(7.81, -13.79), rotation: 2 },
+            { idString: "urn", position: Vec(-0.82, -9.54) }
         ]
     },
     {
