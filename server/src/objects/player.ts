@@ -99,8 +99,6 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
     isConsumingItem = false;
 
-    combatExpertApplied = false;
-
     // Rate Limiting: Team Pings & Emotes.
     emoteCount = 0;
     lastRateLimitUpdate = 0;
@@ -2821,6 +2819,11 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 }
                 case PerkIds.Butterfingers: {
                     newModifiers.reload *= perk.reloadMod;
+                    break;
+                }
+                case PerkIds.CombatExpert: {
+                    const isEmpty = this.activeItem.isGun && this.activeItem.ammo <= 0;
+                    newModifiers.reload *= isEmpty ? perk.reloadMod : 1;
                     break;
                 }
                 case PerkIds.Overclocked: {
