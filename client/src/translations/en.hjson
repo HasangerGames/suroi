@@ -237,6 +237,7 @@
 "kf_saw_kill": "<player> was killed by a saw"
 "kf_saw_down": "<player> was knocked out by a saw"
 "kf_impact_of": "the impact of " // space is a must
+"kf_disconnected": "<player> disconnected"
 "finally": "finally"
 "with": "with"
 "you": "You"

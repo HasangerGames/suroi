@@ -62,6 +62,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `kf_saw_kill` is not defined
 - Key `kf_saw_down` is not defined
 - Key `kf_impact_of` is not defined
+- Key `kf_disconnected` is not defined
 - Key `finally` is not defined
 - Key `with` is not defined
 - Key `you` is not defined
@@ -224,6 +225,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `interact_recorder_interactable` is not defined
 - Key `bindings_screen_record` is not defined
 - Key `kf_were_finally_killed` is not defined
+- Key `kf_disconnected` is not defined
 - Key `tt_desc` is not defined
 - Key `vaccine_syringe_desc` is not defined
 - Key `msg_contact` is not defined
@@ -314,6 +316,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `kf_saw_kill` is not defined
 - Key `kf_saw_down` is not defined
 - Key `kf_impact_of` is not defined
+- Key `kf_disconnected` is not defined
 - Key `km_finally_ended_yourself` is not defined
 - Key `km_finally_killed` is not defined
 - Key `km_gas_kill_you` is not defined
@@ -483,6 +486,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `kf_were_finally_killed` is not defined
 - Key `kf_saw_kill` is not defined
 - Key `kf_saw_down` is not defined
+- Key `kf_disconnected` is not defined
 - Key `km_saw_kill_you` is not defined
 - Key `km_saw_down_you` is not defined
 - Key `tt_desc` is not defined
@@ -646,6 +650,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `kf_saw_kill` is not defined
 - Key `kf_saw_down` is not defined
 - Key `kf_impact_of` is not defined
+- Key `kf_disconnected` is not defined
 - Key `km_finally_ended_yourself` is not defined
 - Key `km_finally_killed` is not defined
 - Key `km_gas_kill_you` is not defined
@@ -940,6 +945,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `kf_were_finally_killed` is not defined
 - Key `kf_saw_kill` is not defined
 - Key `kf_saw_down` is not defined
+- Key `kf_disconnected` is not defined
 - Key `km_saw_kill_you` is not defined
 - Key `km_saw_down_you` is not defined
 - Key `msg_contact` is not defined
@@ -991,9 +997,11 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### (No Invalid Keys)
 
-### (No Undefined Keys)
+### Undefined Keys
 
-## 🇫🇮 suomi (60% Complete) - fi.hjson
+- Key `kf_disconnected` is not defined
+
+## 🇫🇮 suomi (59% Complete) - fi.hjson
 
 ### Invalid Keys
 
@@ -1046,6 +1054,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `kf_saw_kill` is not defined
 - Key `kf_saw_down` is not defined
 - Key `kf_impact_of` is not defined
+- Key `kf_disconnected` is not defined
 - Key `km_finally_ended_yourself` is not defined
 - Key `km_finally_killed` is not defined
 - Key `km_gas_kill_you` is not defined
@@ -1191,6 +1200,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_use_consumable vaccine_syringe` is not defined
 - Key `kf_saw_kill` is not defined
 - Key `kf_saw_down` is not defined
+- Key `kf_disconnected` is not defined
 - Key `km_saw_kill_you` is not defined
 - Key `km_saw_down_you` is not defined
 - Key `tt_desc` is not defined
@@ -1236,7 +1246,9 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### (No Invalid Keys)
 
-### (No Undefined Keys)
+### Undefined Keys
+
+- Key `kf_disconnected` is not defined
 
 ## 🇭🇰 🇲🇴 廣東話(香港/澳門) (56% Complete) - hk_mo.hjson
 
@@ -1305,6 +1317,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `kf_saw_kill` is not defined
 - Key `kf_saw_down` is not defined
 - Key `kf_impact_of` is not defined
+- Key `kf_disconnected` is not defined
 - Key `km_finally_ended_yourself` is not defined
 - Key `km_finally_killed` is not defined
 - Key `km_gas_kill_you` is not defined
@@ -1448,6 +1461,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `kf_were_finally_killed` is not defined
 - Key `kf_saw_kill` is not defined
 - Key `kf_saw_down` is not defined
+- Key `kf_disconnected` is not defined
 - Key `km_saw_kill_you` is not defined
 - Key `km_saw_down_you` is not defined
 - Key `partners` is not defined
@@ -1577,6 +1591,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `kf_saw_kill` is not defined
 - Key `kf_saw_down` is not defined
 - Key `kf_impact_of` is not defined
+- Key `kf_disconnected` is not defined
 - Key `km_finally_ended_yourself` is not defined
 - Key `km_finally_killed` is not defined
 - Key `km_gas_kill_you` is not defined
@@ -1934,7 +1949,9 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `time_minute` is not a valid key
 - Key `time_second` is not a valid key
 
-### (No Undefined Keys)
+### Undefined Keys
+
+- Key `kf_disconnected` is not defined
 
 ## 🇱🇹 Lietuvių (57% Complete) - lt.hjson
 
@@ -1999,6 +2016,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `kf_saw_kill` is not defined
 - Key `kf_saw_down` is not defined
 - Key `kf_impact_of` is not defined
+- Key `kf_disconnected` is not defined
 - Key `km_finally_ended_yourself` is not defined
 - Key `km_finally_killed` is not defined
 - Key `km_gas_kill_you` is not defined
@@ -2185,6 +2203,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `kf_saw_kill` is not defined
 - Key `kf_saw_down` is not defined
 - Key `kf_impact_of` is not defined
+- Key `kf_disconnected` is not defined
 - Key `km_finally_ended_yourself` is not defined
 - Key `km_finally_killed` is not defined
 - Key `km_gas_kill_you` is not defined
@@ -2317,6 +2336,7 @@ This file is a report of all errors and missing keys in the translation files of
 ### Undefined Keys
 
 - Key `bindings_use_consumable vaccine_syringe` is not defined
+- Key `kf_disconnected` is not defined
 - Key `power_vest` is not defined
 - Key `power_helmet` is not defined
 - Key `power_pack` is not defined
@@ -2341,7 +2361,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `reflective_rounds` is not defined
 - Key `reflective_rounds_desc` is not defined
 
-## 🇵🇱 Polski (60% Complete) - pl.hjson
+## 🇵🇱 Polski (59% Complete) - pl.hjson
 
 ### Invalid Keys
 
@@ -2394,6 +2414,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `kf_saw_kill` is not defined
 - Key `kf_saw_down` is not defined
 - Key `kf_impact_of` is not defined
+- Key `kf_disconnected` is not defined
 - Key `km_finally_ended_yourself` is not defined
 - Key `km_finally_killed` is not defined
 - Key `km_gas_kill_you` is not defined
@@ -2554,6 +2575,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `kf_saw_kill` is not defined
 - Key `kf_saw_down` is not defined
 - Key `kf_impact_of` is not defined
+- Key `kf_disconnected` is not defined
 - Key `km_finally_ended_yourself` is not defined
 - Key `km_finally_killed` is not defined
 - Key `km_gas_kill_you` is not defined
@@ -2683,6 +2705,7 @@ This file is a report of all errors and missing keys in the translation files of
 ### Undefined Keys
 
 - Key `bindings_use_consumable vaccine_syringe` is not defined
+- Key `kf_disconnected` is not defined
 - Key `power_vest` is not defined
 - Key `power_helmet` is not defined
 - Key `power_pack` is not defined
@@ -2727,6 +2750,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_use_consumable vaccine_syringe` is not defined
 - Key `kf_saw_kill` is not defined
 - Key `kf_saw_down` is not defined
+- Key `kf_disconnected` is not defined
 - Key `km_saw_kill_you` is not defined
 - Key `km_saw_down_you` is not defined
 - Key `tt_desc` is not defined
@@ -2773,6 +2797,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `interact_recorder_interactable` is not defined
 - Key `bindings_use_consumable vaccine_syringe` is not defined
 - Key `kf_impact_of` is not defined
+- Key `kf_disconnected` is not defined
 - Key `msg_contact` is not defined
 - Key `power_vest` is not defined
 - Key `power_helmet` is not defined
@@ -2835,6 +2860,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `kf_were_finally_killed` is not defined
 - Key `kf_saw_kill` is not defined
 - Key `kf_saw_down` is not defined
+- Key `kf_disconnected` is not defined
 - Key `km_saw_kill_you` is not defined
 - Key `km_saw_down_you` is not defined
 - Key `tt_desc` is not defined
@@ -2971,6 +2997,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `kf_saw_kill` is not defined
 - Key `kf_saw_down` is not defined
 - Key `kf_impact_of` is not defined
+- Key `kf_disconnected` is not defined
 - Key `km_finally_ended_yourself` is not defined
 - Key `km_finally_killed` is not defined
 - Key `km_gas_kill_you` is not defined
@@ -3112,6 +3139,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `kf_were_finally_killed` is not defined
 - Key `kf_saw_kill` is not defined
 - Key `kf_saw_down` is not defined
+- Key `kf_disconnected` is not defined
 - Key `km_saw_kill_you` is not defined
 - Key `km_saw_down_you` is not defined
 - Key `msg_contact` is not defined
@@ -3394,5 +3422,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `plumpkin_blessing` is not a valid key
 - Key `plumpkin_blessing_desc` is not a valid key
 
-### (No Undefined Keys)
+### Undefined Keys
+
+- Key `kf_disconnected` is not defined
 

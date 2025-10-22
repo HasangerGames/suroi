@@ -1393,6 +1393,9 @@ class UIManagerClass {
                         feedMessage = getTranslatedString(event, { player: victimText });
                         break;
                     }
+                    case DamageSources.Disconnect:
+                        feedMessage = getTranslatedString("kf_disconnected", { player: victimText });
+                        break;
                 }
 
                 if (!feedMessage) {
@@ -1411,6 +1414,7 @@ class UIManagerClass {
                 const skullIcon = html`<img class="kill-icon" src="./img/misc/skull_icon.svg" alt="Finished off">`;
                 const bleedOutIcon = html`<img class="kill-icon" src="./img/misc/bleed_out.svg" alt="Bleed out">`;
                 const finallyKilledIcon = html`<img class="kill-icon" src="./img/misc/finally_killed.svg" alt="Finally killed">`;
+                const disconnectIcon = html`<img class="kill-icon" src="./img/misc/disconnect_icon.svg" alt="Disconnected">`;
 
                 const killstreakText = hasKillstreak
                     ? html`
@@ -1466,6 +1470,9 @@ class UIManagerClass {
                                 body = `${attackerText} ${killstreakText} ${finallyKilledIcon} ${victimText}`;
                                 break;
                         }
+                        break;
+                    case DamageSources.Disconnect:
+                        body = `${victimText} ${disconnectIcon}`;
                         break;
                 }
 
@@ -1531,6 +1538,7 @@ class UIManagerClass {
                 case DamageSources.Obstacle:
                 case DamageSources.BleedOut:
                 case DamageSources.FinallyKilled:
+                case DamageSources.Disconnect:
                     messageInner = getTranslatedString("kf_kl_dead");
                     break;
             }

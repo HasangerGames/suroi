@@ -341,6 +341,16 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         readonly item?: InventoryItem
     };
 
+    lastSelfKillTime?: number;
+    lastSelfDownTime?: number;
+
+    lastDamagedBy?: {
+        readonly player: Player
+        readonly weapon?: DamageParams["weaponUsed"]
+        readonly time: number
+    };
+
+
     damageDone = 0;
     damageTaken = 0;
     readonly joinTime: number;
@@ -2476,6 +2486,11 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             if (sourceIsPlayer) {
                 if (source !== this) {
                     source.damageDone += amount;
+                    this.lastDamagedBy = {
+                        player: source,
+                        weapon: weaponUsed,
+                        time: this.game.now
+                    }
                 }
             }
         }
@@ -2492,6 +2507,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 this.game.isTeamMode
                 && this._team?.players.some(p => !p.dead && !p.downed && !p.disconnected && p !== this)
                 && !this.downed
+                && source !== DamageSources.Disconnect
             ) {
                 this.down(source, weaponUsed);
             } else {
@@ -2717,6 +2733,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         this.dead = true;
         const wasDowned = this.downed;
         this.downed = false;
+        this.lastDamagedBy = undefined;
         this.canDespawn = false;
         this._team?.setDirty();
 
@@ -2743,6 +2760,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             || source === DamageSources.Obstacle
             || source === DamageSources.BleedOut
             || source === DamageSources.FinallyKilled
+            || source === DamageSources.Disconnect
         ) {
             packet.damageSource = source;
 
@@ -2851,6 +2869,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             }
 
             source.updateAndApplyModifiers();
+        } else if (source === this) {
+            this.lastSelfKillTime = this.game.now;
         }
 
         this.game.packets.push(packet);
@@ -3023,6 +3043,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
             if (source !== this) {
                 packet.attackerId = source.id;
+            } else {
+                this.lastSelfKillTime = this.game.now;
             }
         } else if (source === DamageSources.Obstacle) {
             packet.weaponUsed = weaponUsed?.definition;
@@ -3048,6 +3070,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         this.beingRevivedBy = undefined;
         this.downedBy = undefined;
         this.health = 30;
+        this.lastSelfDownTime = undefined;
         this.setDirty();
         this._team?.setDirty();
     }
