@@ -48,6 +48,7 @@ export interface ModeDefinition {
     readonly unlockStage?: number // Used for hunted mode bunkers
     readonly forcedGoldAirdropStage?: number
     readonly overrideUpstairsFunctionality?: boolean // hunting stand hunting stand hunting stand hunting stand hunting stand
+    readonly maxEquipmentLevel?: number
 }
 
 export const Modes: Record<ModeName, ModeDefinition> = {
@@ -186,6 +187,7 @@ export const Modes: Record<ModeName, ModeDefinition> = {
         particleEffects: {
             frames: ["bush_particle_1", "bush_particle_2", "dead_pine_tree_particle", "pine_tree_particle"],
             delay: 1000
-        }
+        },
+        maxEquipmentLevel: 4
     }
 };
