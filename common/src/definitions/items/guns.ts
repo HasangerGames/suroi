@@ -343,7 +343,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
             leftRightOffset: 1.3,
             fireDelay: 30,
             shotSpread: 8,
-            moveSpread: 14,
+            moveSpread: 16,
             capacity: 32,
             extendedCapacity: 52,
             reloadTime: 3.7
@@ -406,7 +406,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
             leftRightOffset: 1.3,
             fireDelay: 187.5,
             shotSpread: 2,
-            moveSpread: 5,
+            moveSpread: 7,
             capacity: 14,
             reloadTime: 4
         }
@@ -420,7 +420,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
         ammoSpawnAmount: 42,
         fireDelay: 200,
         switchDelay: 250,
-        speedMultiplier: 1.136,
+        speedMultiplier: 1,
         recoilMultiplier: 0.65,
         recoilDuration: 150,
         fireMode: FireMode.Single,
@@ -466,7 +466,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
             leftRightOffset: 1.4,
             fireDelay: 115,
             shotSpread: 3,
-            moveSpread: 7,
+            moveSpread: 9,
             capacity: 14,
             extendedCapacity: 18,
             reloadTime: 3.8
@@ -479,15 +479,15 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
         tier: Tier.A,
         ammoType: "50cal",
         ammoSpawnAmount: 30,
-        fireDelay: 400,
+        fireDelay: 800,
         switchDelay: 250,
-        speedMultiplier: 1.136,
+        speedMultiplier: 1,
         recoilMultiplier: 0.8,
         recoilDuration: 600,
-        fsaReset: 600,
+        fsaReset: 1000,
         fireMode: FireMode.Single,
-        shotSpread: 4,
-        moveSpread: 8,
+        shotSpread: 7,
+        moveSpread: 9,
         length: 6.6,
         noMuzzleFlash: true,
         fists: {
@@ -533,9 +533,9 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
             tier: Tier.S,
             leftRightOffset: 1.3,
             ammoSpawnAmount: 60,
-            fireDelay: 200,
-            shotSpread: 4,
-            moveSpread: 8,
+            fireDelay: 400,
+            shotSpread: 14,
+            moveSpread: 18,
             capacity: 10,
             reloadTime: 4.2
         }
@@ -598,7 +598,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
             },
             fireDelay: 60,
             shotSpread: 4,
-            moveSpread: 6.75,
+            moveSpread: 10,
             capacity: 40,
             extendedCapacity: 60,
             reloadTime: 3.2
@@ -647,7 +647,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
             leftRightOffset: 1.3,
             fireDelay: 168,
             shotSpread: 2,
-            moveSpread: 5,
+            moveSpread: 7,
             capacity: 16,
             extendedCapacity: 24,
             reloadTime: 4
@@ -660,7 +660,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
         tier: Tier.B,
         ammoType: "545mm",
         ammoSpawnAmount: 45,
-        fireDelay: 133,
+        fireDelay: 100,
         switchDelay: 250,
         speedMultiplier: 1.136,
         recoilMultiplier: 0.75,
@@ -685,7 +685,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
         extendedCapacity: 20,
         reloadTime: 2.1,
         ballistics: {
-            damage: 10,
+            damage: 12.5,
             obstacleMultiplier: 1.5,
             speed: 0.26,
             range: 160
@@ -694,9 +694,9 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
             tier: Tier.A,
             ammoSpawnAmount: 90,
             leftRightOffset: 1.4,
-            fireDelay: 112,
+            fireDelay: 75,
             shotSpread: 2,
-            moveSpread: 5,
+            moveSpread: 7,
             capacity: 30,
             extendedCapacity: 40,
             reloadTime: 4
@@ -711,12 +711,12 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
         ammoSpawnAmount: 30,
         fireDelay: 350,
         switchDelay: 200,
-        speedMultiplier: 1.136,
+        speedMultiplier: 1,
         recoilMultiplier: 0.7,
         recoilDuration: 150,
         fireMode: FireMode.Single,
-        shotSpread: 2,
-        moveSpread: 5,
+        shotSpread: 3,
+        moveSpread: 7,
         length: 6,
         fists: {
             left: Vec(40, 0),
@@ -762,8 +762,8 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
             leftRightOffset: 1.3,
             ammoSpawnAmount: 60,
             fireDelay: 175,
-            shotSpread: 2,
-            moveSpread: 5,
+            shotSpread: 5,
+            moveSpread: 9,
             capacity: 10,
             reloadTime: 4.0
         }
@@ -1243,7 +1243,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
         ballistics: {
             damage: 14.5,
             obstacleMultiplier: 1.5,
-            speed: 0.3,
+            speed: 0.28,
             range: 160,
             tracer: {
                 opacity: 0.15

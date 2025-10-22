@@ -191,6 +191,7 @@ export class GunItem extends InventoryItemBase.derive(DefinitionType.Gun) {
                     break;
                 }
                 case PerkIds.SabotRounds: {
+                    if (definition.ballistics.onHitExplosion === undefined && !definition.summonAirdrop && !definition.ballistics.onHitProjectile) {
                     modifiers.range *= perk.rangeMod;
                     modifiers.speed *= perk.speedMod;
                     modifiers.damage *= perk.damageMod;
@@ -198,6 +199,7 @@ export class GunItem extends InventoryItemBase.derive(DefinitionType.Gun) {
                     modifiers.tracer.length *= perk.tracerLengthMod;
                     spread *= perk.spreadMod;
                     modifiersModified = true;
+                    }
                     break;
                 }
                 case PerkIds.CloseQuartersCombat: {
