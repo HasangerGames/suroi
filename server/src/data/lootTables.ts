@@ -899,8 +899,9 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
                 { item: PerkIds.PlumpkinShuffle, weight: 0.25 }
             ],
             [
-                { item: "diseased", weight: 0.1 },
-                { item: NullString, weight: 0.9 }
+                { item: "diseased", weight: 0.2 },
+                { item: "overgrown", weight: 0.1 },
+                { item: NullString, weight: 0.5 }
             ]
         ],
         fall_perks: {
@@ -1044,7 +1045,8 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
                 { item: "wounded", weight: 1 },
                 { item: "pumpkified", weight: 1 },
                 { item: "demon", weight: 0.95 },
-                { item: "failed_experiment", weight: 0.95 }
+                { item: "failed_experiment", weight: 0.95 },
+                { item: "overgrown", weight: 0.95 }
             ]
         },
         small_logs_pile_hs: [{ item: "hand_saw", weight: 1 }],
@@ -1576,6 +1578,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
         airdrop_skins: [
             { item: NullString, weight: 1 },
             { item: "diseased", weight: 0.2 },
+            { item: "overgrown", weight: 0.2 },
             { item: "sky", weight: 0.7 },
             { item: "nebula", weight: 0.6 },
             { item: "ghillie_suit", weight: 0.1 },
