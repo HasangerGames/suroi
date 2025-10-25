@@ -175,6 +175,10 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         this._normalizedHealth = Numeric.remap(this.health, 0, this.maxHealth, 0, 1);
 
         if (this.hasPerk(PerkIds.SecondWind) && !(this._health / this._maxHealth < 0.5)) this._modifiers.baseSpeed = 1;
+
+        if (this.activeDisguise?.explosion !== undefined) {
+            this.emitLowHealthParticles = this._health / this._maxHealth < 0.3; // 30%
+        }
     }
 
     private _maxAdrenaline = GameConstants.player.maxAdrenaline;
@@ -338,6 +342,14 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     set isCycling(cycling: boolean) {
         if (this._isCycling === cycling) return;
         this._isCycling = cycling;
+        this.setDirty();
+    }
+
+    private _emitLowHealthParticles = false;
+    get emitLowHealthParticles(): boolean { return this._emitLowHealthParticles; }
+    set emitLowHealthParticles(value: boolean) {
+        if (this._emitLowHealthParticles === value) return;
+        this._emitLowHealthParticles = !this.dead && value;
         this.setDirty();
     }
 
@@ -2122,6 +2134,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                         Object.values(choices)
                     )
                 );
+
+                this.emitLowHealthParticles = this.activeDisguise.explosion !== undefined && this._health / this._maxHealth < 0.3; // 30%
                 this.setDirty();
                 break;
             }
@@ -2277,6 +2291,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             }
             case PerkIds.Costumed: {
                 this.activeDisguise = undefined;
+                this.emitLowHealthParticles = false;
                 this.setDirty();
                 break;
             }
@@ -3507,7 +3522,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 hasBubble: this.hasBubble,
                 activeOverdrive: this.activeOverdrive,
                 hasMagneticField: this.hasMagneticField,
-                isCycling: this.isCycling
+                isCycling: this.isCycling,
+                emitLowHealthParticles: this.emitLowHealthParticles
             }
         };
 

@@ -71,6 +71,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
     hasMagneticField = false;
 
+    emitLowHealthParticles = false;
+
     isCycling = false;
 
     activeOverdrive = false;
@@ -152,6 +154,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
     };
 
     healingParticlesEmitter: ParticleEmitter;
+
+    smokeParticlesEmitter?: ParticleEmitter;
 
     readonly anims: {
         emote?: Tween<ObservablePoint>
@@ -571,7 +575,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     hasBubble,
                     activeOverdrive,
                     hasMagneticField,
-                    isCycling
+                    isCycling,
+                    emitLowHealthParticles
                 }
             } = data;
 
@@ -674,6 +679,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 }
 
                 if (this.disguiseContainer) this.disguiseContainer.visible = false;
+                if (this.smokeParticlesEmitter !== undefined) this.smokeParticlesEmitter.active = false;
             }
 
             this._oldItem = this.activeItem;
@@ -812,6 +818,30 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     trunkSprite?.setVisible(def.isTree ?? false);
                 } else if (disguiseContainer) {
                     disguiseContainer.visible = false;
+                }
+            }
+
+            if (!this.dead && emitLowHealthParticles !== this.emitLowHealthParticles) {
+                this.emitLowHealthParticles = emitLowHealthParticles;
+
+                if (this.smokeParticlesEmitter === undefined) {
+                    this.smokeParticlesEmitter = ParticleManager.addEmitter({
+                        delay: 300,
+                        active: !this.dead,
+                        spawnOptions: () => ({
+                            frames: "smoke_particle",
+                            position: this.position,
+                            layer: this.layer,
+                            zIndex: PLAYER_PARTICLE_ZINDEX,
+                            lifetime: 3500,
+                            scale: { start: 0, end: randomFloat(4, 5) },
+                            alpha: { start: 0.9, end: 0 },
+                            speed: Vec.fromPolar(randomFloat(-1.9, -2.1), randomFloat(5, 6))
+                        })
+                    });
+                }
+                else {
+                    this.smokeParticlesEmitter.active = !this.dead && this.emitLowHealthParticles;
                 }
             }
 
@@ -2361,6 +2391,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         images.backMeleeSprite?.destroy();
 
         this.healingParticlesEmitter.destroy();
+        this.smokeParticlesEmitter?.destroy();
         this.actionSound?.stop();
         clearInterval(this.bleedEffectInterval);
         if (this.isActivePlayer) $("#action-container").hide();

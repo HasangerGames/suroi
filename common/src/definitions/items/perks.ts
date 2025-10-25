@@ -459,7 +459,8 @@ const perks = [
 
             baby_plumpkin: 0.01,
             plumpkin: 0.01,
-            diseased_plumpkin: 0.01
+            diseased_plumpkin: 0.01,
+            large_refinery_barrel: 0.01
         },
         noDrop: true,
         alwaysAllowSwap: true,
