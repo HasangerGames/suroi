@@ -480,8 +480,11 @@ const maps = {
             count: 3,
             allowedObstacles: [
                 "barrel",
+                "super_barrel",
+                "regular_crate",
                 "clearing_boulder",
                 "flint_crate",
+                "aegis_crate",
                 "rock",
                 "plumpkin",
                 "diseased_plumpkin",
@@ -495,7 +498,10 @@ const maps = {
                 "flint_lockbox",
                 "dead_pine_tree",
                 "gravestone",
-                "hay_bale"
+                "hay_bale",
+                "golden_pumpkin",
+                "large_pumpkin",
+                "pumpkin"
             ],
             obstacles: [
                 { idString: "clearing_boulder", min: 3, max: 6 },
@@ -576,6 +582,7 @@ const maps = {
             stump: 40,
             hay_bale: 50,
             diseased_plumpkin: 120,
+            golden_pumpkin: 2,
             hatchet_stump: 5,
             regular_crate: 170,
             flint_crate: 6,

@@ -8328,7 +8328,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
 
             // lab
             { idString: "pumpkin", position: Vec(-47.26, -117.89), rotation: 0 },
-            { idString: "pumpkin", position: Vec(-53.98, -114.99), rotation: 0 },
+            // { idString: "pumpkin", position: Vec(-53.98, -114.99), rotation: 0 }, // re-add when halloween ends
             { idString: "baby_plumpkin", position: Vec(-34.18, -111.23), rotation: 0 },
             { idString: "baby_plumpkin", position: Vec(-26.74, -114.57), rotation: 0 },
             { idString: "baby_plumpkin", position: Vec(-31.39, -120.37), rotation: 0 },
@@ -8342,6 +8342,10 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             // ------------------------------------------------------------------
             // TEMP: Remove if halloween ends. (dont forget to re-enable windowed vault door)
             // ------------------------------------------------------------------
+            { idString: {
+                pumpkin: 1,
+                golden_pumpkin: 0.15
+            }, position: Vec(-53.98, -114.99) },
             { idString: "cobweb", position: Vec(-72.69, -99.3), rotation: 0 },
             { idString: "cobweb", position: Vec(29.57, -122.53), rotation: 3 },
             { idString: "cobweb", position: Vec(-45.48, 20.04), rotation: 1 },

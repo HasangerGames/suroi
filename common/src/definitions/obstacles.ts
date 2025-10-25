@@ -228,6 +228,7 @@ type ActivatableMixin = {
     }
     readonly requiredItem?: ReferenceTo<LootDefinition>
     readonly emitParticles?: boolean
+    readonly emitParticle?: string
     readonly replaceWith?: {
         readonly idString: ReferenceOrRandom<ObstacleDefinition>
         readonly delay: number
@@ -374,6 +375,7 @@ export const TintedParticles: Record<string, { readonly base: string, readonly t
     pumpkin_particle: { base: "pumpkin_particle_base", tint: 0xff8c01 },
     plumpkin_particle: { base: "pumpkin_particle_base", tint: 0x8a4c70 },
     diseased_plumpkin_particle: { base: "pumpkin_particle_base", tint: 0x654646 },
+    golden_pumpkin_particle: { base: "pumpkin_particle_base", tint: 0xffd700 },
 
     container_particle_white: { base: "metal_particle_1", tint: ContainerTints.white },
     container_particle_red: { base: "metal_particle_1", tint: ContainerTints.red },
@@ -1585,6 +1587,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
             tint: 0x643554,
             scale: 0.6,
             alpha: 0.8,
+            zIndex: ZIndexes.ObstaclesLayer3 + 0.1,
             scaleAnim: {
                 to: 0.7,
                 duration: 3e3
@@ -1595,6 +1598,25 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         rotationMode: RotationMode.Full,
         allowFlyover: FlyoverPref.Always,
         hasLoot: true
+    },
+    {
+        idString: "golden_pumpkin",
+        name: "Golden Pumpkin",
+        defType: DefinitionType.Obstacle,
+        material: "stone",
+        health: 120,
+        emitParticle: "shiny_particle",
+        scale: {
+            spawnMin: 0.9,
+            spawnMax: 1.1,
+            destroy: 0.5
+        },
+        hitbox: new CircleHitbox(3.5),
+        spawnHitbox: new CircleHitbox(3.65),
+        rotationMode: RotationMode.Full,
+        allowFlyover: FlyoverPref.Always,
+        hasLoot: true,
+        hideOnMap: true
     },
     {
         idString: "birthday_cake",

@@ -24,6 +24,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
 
     readonly image: SuroiSprite;
     smokeEmitter?: ParticleEmitter;
+    particleEmitter?: ParticleEmitter;
     particleFrames!: string[];
 
     definition!: ObstacleDefinition;
@@ -182,6 +183,30 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
                 });
             }
 
+            if (!this.particleEmitter && "emitParticle" in definition) {
+                this.particleEmitter = ParticleManager.addEmitter({
+                    delay: 450,
+                    active: false,
+                    spawnOptions: () => ({
+                        frames: definition.emitParticle ?? `${definition.idString}_particle`,
+                        position: this.hitbox.randomPoint(),
+                        layer: this.layer,
+                        zIndex: Numeric.max((definition.zIndex ?? ZIndexes.ObstaclesLayer1) + 1, ZIndexes.Players),
+                        lifetime: 2000,
+                        rotation: 0,
+                        alpha: {
+                            start: 1,
+                            end: 0
+                        },
+                        scale: {
+                            start: 0.95,
+                            end: 1.2
+                        },
+                        speed: Vec(randomFloat(-1, 1), -5)
+                    })
+                });
+            }
+
             if (
                 definition.sound
                 && !this.destroyed
@@ -275,6 +300,10 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
 
             if ("emitParticles" in definition) this.smokeEmitter.delay = 300;
             else this.smokeEmitter.delay = Numeric.lerp(150, 3000, scaleFactor);
+        }
+
+        if (this.particleEmitter) {
+            this.particleEmitter.active = !this.dead && "emitParticle" in definition;
         }
 
         this.container.scale.set(this.dead ? 1 : this.scale);
@@ -405,6 +434,11 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
                 if (this.smokeEmitter) {
                     this.smokeEmitter.active = false;
                     this.smokeEmitter.destroy();
+                }
+
+                if (this.particleEmitter) {
+                    this.particleEmitter.active = false;
+                    this.particleEmitter.destroy();
                 }
 
                 ParticleManager.spawnParticles(10, () => ({
@@ -810,6 +844,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
         this.waterOverlaySprite?.destroy();
         this.doorMask?.destroy();
         this.smokeEmitter?.destroy();
+        this.particleEmitter?.destroy();
         this._glow?.kill();
         this._glowTween?.kill();
         this._flickerTimeout?.kill();

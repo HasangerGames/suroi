@@ -1088,6 +1088,15 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
                 { item: "confetti_grenade", count: 3, weight: 1 }
             ]
         ],
+        golden_pumpkin: [
+            [{ item: PerkIds.PlumpkinBlessing, weight: 1 }],
+            [{ table: "halloween_skins", weight: 1 }],
+            [
+                { table: "gun_locker", weight: 1 },
+                { table: "airdrop_guns", weight: 0.5 },
+                { table: "silly_guns", weight: 0.1 }
+            ]
+        ]
     },
 
     halloween: {
