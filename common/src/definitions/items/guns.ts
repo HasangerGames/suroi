@@ -3188,7 +3188,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
     },
     {
         idString: "aged_seedshot",
-        name: "Seedshot",
+        name: "booo very scary",
         defType: DefinitionType.Gun,
         tier: Tier.A,
         killfeedFrame: "seedshot",

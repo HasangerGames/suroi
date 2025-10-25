@@ -1870,7 +1870,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { item: "rpk74", weight: 0.074 },
             { item: "m16a2", weight: 0.074 },
             { item: "ak47", weight: 0.074 },
-            // { item: "arx160", weight: 0.074 },
+            { item: "arx160", weight: 0.074 },
 
             // 15%
             { item: "ots23", weight: 0.075 },
@@ -1910,7 +1910,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { item: "mpx", weight: 0.14 },
             { item: "saf200", weight: 0.14 },
             { item: "ak47", weight: 0.14 },
-            // { item: "arx160", weight: 0.14 },
+            { item: "arx160", weight: 0.14 },
             { item: "aks74u", weight: 0.14 },
 
             // 16%
@@ -1949,6 +1949,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { item: "flare", weight: 0.001 },
             { item: "shak12", weight: 0.001 },
             { item: "mp153", weight: 0.001 },
+            { item: "acr", weight: 0.001 },
             { item: "mk18", weight: 0.001 }
         ],
 
@@ -2024,7 +2025,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
                 { item: "m16a2", weight: 0.1083 },
                 { item: "mcx_spear", weight: 0.1083 },
                 { item: "ak47", weight: 0.1083 },
-                // { item: "arx160", weight: 0.1083 },
+                { item: "arx160", weight: 0.1083 },
                 { item: "dual_m1895", weight: 0.1083 },
                 { item: "dual_mp5k", weight: 0.1083 },
                 { item: "dual_psm", weight: 0.1083 },
@@ -2038,6 +2039,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
                 // 10%
                 { item: "rsh12", weight: 0.03 },
                 { item: "yesaul", weight: 0.03 },
+                { item: "shak12", weight: 0.03 },
                 { item: "stoner_63", weight: 0.03 },
                 { item: "mg36", weight: 0.03 },
 
