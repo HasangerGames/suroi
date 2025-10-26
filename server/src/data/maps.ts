@@ -501,7 +501,10 @@ const maps = {
                 "hay_bale",
                 "golden_pumpkin",
                 "large_pumpkin",
-                "pumpkin"
+                "pumpkin",
+                "diseased_mini_plumpkin",
+                "plumpkin",
+                "diseased_plumpkin"
             ],
             obstacles: [
                 { idString: "clearing_boulder", min: 3, max: 6 },
@@ -602,7 +605,8 @@ const maps = {
             loot_tree: 1,
             loot_barrel: 1,
             flint_lockbox: 3,
-            pumpkin: 300,
+            pumpkin: 160,
+            diseased_mini_plumpkin: 140,
             large_pumpkin: 40,
             plumpkin: 5,
             gravestone: 60

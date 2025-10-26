@@ -1505,7 +1505,6 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         frames: {
             particle: "plumpkin_particle"
         },
-        variations: 1,
         weaponSwap: {
             modeRestricted: true
         }
@@ -7616,6 +7615,37 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
             base: "dead_pine_tree",
             particle: "dead_pine_tree_particle",
             residue: "dead_pine_tree_residue"
+        }
+    },
+    {
+        idString: "diseased_mini_plumpkin",
+        name: "Diseased Mini Plumpkin",
+        defType: DefinitionType.Obstacle,
+        material: "pumpkin",
+        health: 100,
+        scale: {
+            spawnMin: 0.9,
+            spawnMax: 1.1,
+            destroy: 0.5
+        },
+        hitbox: new CircleHitbox(2.55),
+        spawnHitbox: new CircleHitbox(3),
+        rotationMode: RotationMode.Full,
+        allowFlyover: FlyoverPref.Always,
+        hasLoot: true,
+        hideOnMap: true,
+        frames: {
+            particle: "diseased_plumpkin_particle"
+        },
+        glow: {
+            tint: 0x643554,
+            scale: 0.3,
+            alpha: 0.8,
+            zIndex: ZIndexes.ObstaclesLayer3 + 0.1,
+            scaleAnim: {
+                to: 0.4,
+                duration: 2e3
+            }
         }
     },
 ] satisfies readonly RawObstacleDefinition[] as readonly RawObstacleDefinition[]).flatMap((def: Mutable<RawObstacleDefinition>) => {

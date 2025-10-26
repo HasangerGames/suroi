@@ -193,6 +193,19 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { table: "guns", weight: 0.9 },
             { table: "scopes", weight: 0.3 }
         ],
+        diseased_mini_plumpkin: [
+            [
+                { table: "equipment", weight: 1 },
+                { table: "healing_items", weight: 1 },
+                { table: "pumpkin_obstacl_ammo", weight: 1 },
+                { table: "guns", weight: 0.9 }
+            ],
+            [
+                { item: "diseased", weight: 0.2 },
+                { item: "overgrown", weight: 0.1 },
+                { item: NullString, weight: 0.65 }
+            ]
+        ],
         large_pumpkin: {
             min: 2,
             max: 3,

@@ -8327,7 +8327,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "pipe", position: Vec(-145.31, -71.6), rotation: 0, variation: 2 },
 
             // lab
-            { idString: "pumpkin", position: Vec(-47.26, -117.89), rotation: 0 },
+            // { idString: "pumpkin", position: Vec(-47.26, -117.89), rotation: 0 },// VVVVVV
             // { idString: "pumpkin", position: Vec(-53.98, -114.99), rotation: 0 }, // re-add when halloween ends
             { idString: "baby_plumpkin", position: Vec(-34.18, -111.23), rotation: 0 },
             { idString: "baby_plumpkin", position: Vec(-26.74, -114.57), rotation: 0 },
@@ -8344,6 +8344,11 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             // ------------------------------------------------------------------
             { idString: {
                 pumpkin: 1,
+                diseased_mini_plumpkin: 0.7
+            }, position: Vec(-47.26, -117.89) },
+            { idString: {
+                pumpkin: 1,
+                diseased_mini_plumpkin: 0.7,
                 golden_pumpkin: 0.15
             }, position: Vec(-53.98, -114.99) },
             { idString: "cobweb", position: Vec(-72.69, -99.3), rotation: 0 },
