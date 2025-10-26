@@ -1586,7 +1586,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
             tint: 0x643554,
             scale: 0.6,
             alpha: 0.8,
-            zIndex: ZIndexes.ObstaclesLayer3 + 0.1,
+            zIndex: ZIndexes.BuildingsFloor + 0.1,
             scaleAnim: {
                 to: 0.7,
                 duration: 3e3
@@ -7642,7 +7642,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
             tint: 0x643554,
             scale: 0.3,
             alpha: 0.8,
-            zIndex: ZIndexes.ObstaclesLayer3 + 0.1,
+            zIndex: ZIndexes.BuildingsFloor + 0.1,
             scaleAnim: {
                 to: 0.4,
                 duration: 2e3
