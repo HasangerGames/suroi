@@ -532,7 +532,7 @@
 "enternal_magnetism": "Enternal Magnetism"
 "enternal_magnetism_desc": "Absorb nearby players' healthpoints.<br>Attract loot near your location."
 "last_stand": "Last Stand"
-"last_stand_desc": "Deal double damage and slight protection at low health."
+"last_stand_desc": "Deal double damage and gain a slight protection at low health."
 "aching_knees": "Aching Knees"
 "aching_knees_desc": "Every <seconds> seconds, your movement controls will be reversed."
 "plumpkin_blessing": "Plumpkin's Blessing"
