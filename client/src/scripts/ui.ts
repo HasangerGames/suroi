@@ -2232,7 +2232,7 @@ export async function setUpUI(): Promise<void> {
             .toggleClass("fa-eye-slash", visible);
     });
 
-    if (isMobile) {
+    if(isMobile.any){
         $("#tab-mobile").show();
         $("#mobile-options").show();
     }
@@ -2244,7 +2244,7 @@ export async function setUpUI(): Promise<void> {
             InputManager.addAction(UIManager.action.active ? InputActions.Cancel : InputActions.Interact);
         });
         ui.interactKey.html('<img src="./img/misc/tap-icon.svg" alt="Tap">');
-
+        
         // Active weapon ammo button reloads
         ui.activeAmmo.on("click", () => GameConsole.handleQuery("reload", "never"));
 
