@@ -692,7 +692,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { item: "762mm", count: 60, weight: 0.1 },
             { item: "9mm", count: 60, weight: 0.1 },
             { item: "50cal", count: 20, weight: 0.05 },
-            { item: "338lap", count: 3, weight: 0.05 },
+            { item: "338lap", weight: 0.025 },
             { item: "firework_rocket", weight: 0.0125 }
         ],
         throwables: [

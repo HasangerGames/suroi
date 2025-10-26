@@ -1345,7 +1345,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             // Regenerate health
             toRegen += adrenRegen * this.mapPerkOrDefault(
                 PerkIds.LacedStimulants,
-                ({ healDmgRate, lowerHpLimit }) => (this.health <= lowerHpLimit ? 1 : -healDmgRate),
+                ({ healDmgRate, lowerHpLimit }) => (this.adrenaline <= 0 ? 0 : this.health <= lowerHpLimit ? 1 : -healDmgRate),
                 this.adrenaline > 0 && !this.downed ? 1 : 0
             );
 
