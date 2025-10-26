@@ -1078,6 +1078,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { item: "firework_launcher", weight: 0.25 },
             { item: "aged_seedshot", weight: 0.25 },
             { item: "dp12", weight: 0.2 },
+            { item: "pp19", weight: 0.2 },
             { item: "ulr338", weight: 0.1 },
             { item: "power_cell", weight: 0.005 } // haha FuCk yuo!!1
         ],
@@ -1972,6 +1973,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { item: "shak12", weight: 0.001 },
             { item: "mp153", weight: 0.001 },
             { item: "acr", weight: 0.001 },
+            { item: "pp19", weight: 0.001 },
             { item: "mk18", weight: 0.001 }
         ],
 
@@ -2004,6 +2006,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { item: "mg5", weight: 1 },
             { item: "pk61", weight: 1 },
             { item: "acr", weight: 0.9 },
+            { item: "pp19", weight: 0.9 },
             { item: "mp153", weight: 0.85 },
             { item: "mk18", weight: 0.85 },
             { item: "an94", weight: 0.8 },
