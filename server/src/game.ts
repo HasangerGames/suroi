@@ -987,7 +987,7 @@ export class Game implements GameData {
         definition = Loots.reify<Def>(definition);
 
         // no ephemeral shit
-        if (definition.defType === DefinitionType.Ammo && definition.ephemeral) return;
+        if (definition.defType === DefinitionType.Ammo && definition.ephemeral && count !== 1) return;
 
         if (
             this.pluginManager.emit(
@@ -1140,7 +1140,7 @@ export class Game implements GameData {
         }
     }
 
-    addDecal(def: ReifiableDef<DecalDefinition>, position: Vector, rotation?: number, layer?: Layer | number): Decal {
+    addDecal(def: ReifiableDef<DecalDefinition>, position: Vector, rotation?: number, layer?: Layer): Decal {
         const decal = new Decal(this, def, position, rotation, layer);
         this.grid.addObject(decal);
         return decal;
@@ -1161,7 +1161,9 @@ export class Game implements GameData {
 
         const paddingFactor = 1.25;
 
-        const crateDef = Obstacles.fromString(`airdrop_crate_locked${forceGold ? "_force" : ""}`);
+        const str = forceGold && this.modeName === "halloween" ? "pumpkin_airdrop_locked" : `airdrop_crate_locked${forceGold ? "_force" : ""}`;
+
+        const crateDef = Obstacles.fromString(str);
         const crateHitbox = (crateDef.spawnHitbox ?? crateDef.hitbox).clone();
         let thisHitbox = crateHitbox.clone();
 

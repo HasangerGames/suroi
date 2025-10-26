@@ -76,6 +76,8 @@ Guns:
       - "Spray" by freesound_community from Pixabay: https://pixabay.com/users/freesound_community-46691455/
       - "Leather Stretching sound effect" by Cookie from Youtube: https://www.youtube.com/@Cookie_No
 
+  DP-12 (Fire, Switch, Reload, Cycle) - https://soundbible.com/1400-Shotgun.html, https://gamebanana.com/sounds/56970
+
   Other gun sound effects - Surviv.io Custom Sounds & Textures Resource Pack: https://github.com/humphreygaming/survivcustomsoundsandtextures
 
 Melees:
@@ -183,6 +185,11 @@ Hand Saw sounds
    - Hit 1: "Axe Hit Flesh 02" by u_xjrmmgxfru from Pixabay: https://pixabay.com/users/u_xjrmmgxfru-47169417/
    - Hit 2: "Hit Flesh 02" by u_xjrmmgxfru from Pixabay: https://pixabay.com/users/u_xjrmmgxfru-47169417/
 
+Scythe Sounds
+   - Switch: "Scythe Sharpen" by freesound_community from Pixabay: https://pixabay.com/users/freesound_community-46691455/
+   - Hit: "Hit Rock 02" by u_xjrmmgxfru from Pixabay: https://pixabay.com/sound-effects/hit-rock-02-266304/
+
 Train horn - "train horn fades" by freesound_community from Pixabay: https://pixabay.com/users/freesound_community-46691455/
 Medical camp alarm - "Alarm No 3" by freesound_community from Pixabay: https://pixabay.com/users/freesound_community-46691455/
 Graveyard ambience - "Haunted Graveyard Ambience Sound for Halloween Loopable" by JoelFazhari from Pixabay: https://pixabay.com/users/joelfazhari-16466931/
+Werewolf - "Howling Wolf" by Alex_Jauk from Pixabay: https://pixabay.com/users/alex_jauk-16800354/

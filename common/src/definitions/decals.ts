@@ -52,10 +52,31 @@ export const Decals = new ObjectDefinitions<DecalDefinition>([
         rotationMode: RotationMode.Full
     },
     {
+        idString: "used_flare_decal_halloween",
+        name: "Used Flare Decal",
+        defType: DefinitionType.Decal,
+        rotationMode: RotationMode.Full
+    },
+    {
         idString: "seed_explosion_decal_infected",
         name: "Infected Seed Explosion Decal",
         defType: DefinitionType.Decal,
         rotationMode: RotationMode.Full
+    },
+    {
+        idString: "vomit_pool",
+        name: "Vomit Pool",
+        defType: DefinitionType.Decal,
+        rotationMode: RotationMode.Full
+    },
+    {
+        idString: "vomit_pool_wtr",
+        name: "Vomit Pool",
+        defType: DefinitionType.Decal,
+        rotationMode: RotationMode.Full,
+        alpha: 0.5,
+        zIndex: ZIndexes.Ground,
+        image: "vomit_pool"
     },
     ...HealingItems.definitions.map(healingItem => {
         return {

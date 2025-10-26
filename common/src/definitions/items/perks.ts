@@ -5,13 +5,13 @@ interface BasePerkDefinition extends ItemDefinition {
     readonly defType: DefinitionType.Perk
 
     readonly category: PerkCategories
+    readonly mechanical?: boolean
     readonly updateInterval?: number
     readonly quality?: PerkQualities
     readonly noSwap?: boolean
     readonly alwaysAllowSwap?: boolean
     readonly plumpkinGambleIgnore?: boolean
     readonly infectedEffectIgnore?: boolean
-    readonly hideInHUD?: boolean
 }
 
 /**
@@ -70,10 +70,14 @@ export const enum PerkIds {
     // Halloween Perks
     //
     PlumpkinGamble = "plumpkin_gamble",
+    PlumpkinShuffle = "plumpkin_shuffle",
     Lycanthropy = "lycanthropy",
     Bloodthirst = "bloodthirst",
     PlumpkinBomb = "plumpkin_bomb",
     Shrouded = "shrouded",
+    EnternalMagnetism = "enternal_magnetism",
+    LastStand = "last_stand",
+    PlumpkinBlessing = "plumpkin_blessing",
     ExperimentalTreatment = "experimental_treatment",
     Engorged = "engorged",
     BabyPlumpkinPie = "baby_plumpkin_pie",
@@ -85,6 +89,7 @@ export const enum PerkIds {
     PriorityTarget = "priority_target",
     Butterfingers = "butterfingers",
     Overweight = "overweight",
+    AchingKnees = "aching_knees",
 
     //
     // Infection
@@ -248,8 +253,8 @@ const perks = [
         name: "Overclocked",
         defType: DefinitionType.Perk,
         category: PerkCategories.Normal,
-        fireRateMod: 0.65,
-        spreadMod: 2.0
+        fireRateMod: 0.5,
+        spreadMod: 4
     },
     {
         idString: PerkIds.ReflectiveRounds,
@@ -265,6 +270,7 @@ const perks = [
         name: "Plumpkin Gamble",
         defType: DefinitionType.Perk,
         category: PerkCategories.Halloween,
+        mechanical: true,
 
         noDrop: true,
         plumpkinGambleIgnore: true,
@@ -293,6 +299,20 @@ const perks = [
         */
     },
     {
+        idString: PerkIds.PlumpkinShuffle,
+        name: "Plumpkin Shuffle",
+        defType: DefinitionType.Perk,
+        category: PerkCategories.Halloween,
+        noDrop: true,
+        plumpkinGambleIgnore: true,
+        infectedEffectIgnore: true,
+        mechanical: true
+
+        /*
+            genuinely, fuck your inventory
+        */
+    },
+    {
         idString: PerkIds.Lycanthropy,
         name: "Lycanthropy",
         defType: DefinitionType.Perk,
@@ -311,7 +331,7 @@ const perks = [
         name: "Bloodthirst",
         defType: DefinitionType.Perk,
         category: PerkCategories.Halloween,
-        quality: PerkQualities.Positive,
+        quality: PerkQualities.Neutral,
 
         updateInterval: 1e3,
         speedMod: 1.5,
@@ -339,6 +359,30 @@ const perks = [
         quality: PerkQualities.Positive,
 
         updateInterval: 100,
+        noDrop: true
+    },
+    {
+        idString: PerkIds.EnternalMagnetism,
+        name: "Enternal Magnetism",
+        defType: DefinitionType.Perk,
+        category: PerkCategories.Halloween,
+        quality: PerkQualities.Positive,
+        radius: 20,
+        depletion: 0.05,
+        spriteScale: 1.5,
+        minHealth: 5,
+        lootPush: 0.0005,
+        noDrop: true
+    },
+    {
+        idString: PerkIds.LastStand,
+        name: "Last Stand",
+        defType: DefinitionType.Perk,
+        category: PerkCategories.Halloween,
+        quality: PerkQualities.Positive,
+        healthReq: 10,
+        damageMod: 1.25,
+        damageReceivedMod: 0.85,
         noDrop: true
     },
     {
@@ -391,25 +435,77 @@ const perks = [
             pine_tree: 1,
             birch_tree: 1,
             stump: 1,
-
             rock: 1,
-
             regular_crate: 1,
-
             barrel: 1,
             super_barrel: 1,
-
             vibrant_bush: 1,
             oak_leaf_pile: 1,
             hay_bale: 1,
+            large_pumpkin: 1,
+
+            clearing_boulder: 0.8,
+            oil_tank: 0.8,
+            stove: 0.8,
+
+            grenade_crate: 0.75,
+            flint_crate: 0.75,
+            aegis_crate: 0.75,
+
+            airdrop_crate: 0.1,
+            loot_tree: 0.1,
+            loot_barrel: 0.1,
+            gold_rock: 0.1,
 
             baby_plumpkin: 0.01,
             plumpkin: 0.01,
-            diseased_plumpkin: 0.01
+            diseased_plumpkin: 0.01,
+            large_refinery_barrel: 0.01
         },
         noDrop: true,
         alwaysAllowSwap: true,
         infectedEffectIgnore: true
+    },
+    {
+        idString: PerkIds.PlumpkinBlessing,
+        name: "Plumpkin's Blessing",
+        defType: DefinitionType.Perk,
+        category: PerkCategories.Halloween,
+        quality: PerkQualities.Positive,
+        // damageReceivedMod: 1.5,
+        noDrop: true,
+
+        // |||
+        // VVV DANGER: the "heart" of the perk !!!!!! Do NOT touch, for the wikians, this value is used for which "rare" tables will be forced to be selected
+        qualityValue: 0.21
+        /**
+         /EXAMPLE//: normal mode, "equipment" table:
+            equipment: [
+                { item: "basic_helmet", weight: 1 },
+                { item: "regular_helmet", weight: 0.2 },
+                { item: "tactical_helmet", weight: 0.01 },
+
+                { item: "basic_vest", weight: 1 },
+                { item: "regular_vest", weight: 0.2 },
+                { item: "tactical_vest", weight: 0.01 },
+
+                { item: "basic_pack", weight: 1 },
+                { item: "regular_pack", weight: 0.2 },
+                { item: "tactical_pack", weight: 0.01 }
+            ],
+
+        //: Only items with weight value less than the quality value will be selected, therefore, the table will temporarily be converted to:
+             equipment: [
+                { item: "regular_helmet", weight: 0.2 },
+                { item: "tactical_helmet", weight: 0.01 },
+
+                { item: "regular_vest", weight: 0.2 },
+                { item: "tactical_vest", weight: 0.01 },
+
+                { item: "regular_pack", weight: 0.2 },
+                { item: "tactical_pack", weight: 0.01 }
+             ]
+        */
     },
     {
         idString: PerkIds.TornPockets,
@@ -454,6 +550,11 @@ const perks = [
         emote: "vomiting_face",
         adrenLoss: 5, // percentage
         healthLoss: 5, // absolute
+        decals: {
+            ground: "vomit_pool",
+            water: "vomit_pool_wtr"
+        },
+        decalFadeTime: 30e3,
         noDrop: true
     },
     {
@@ -481,6 +582,15 @@ const perks = [
         category: PerkCategories.Halloween,
         quality: PerkQualities.Negative,
         sizeMod: 1.3,
+        noDrop: true
+    },
+    {
+        idString: PerkIds.AchingKnees,
+        name: "Aching Knees",
+        defType: DefinitionType.Perk,
+        category: PerkCategories.Halloween,
+        quality: PerkQualities.Negative,
+        updateInterval: 10000,
         noDrop: true
     },
     //

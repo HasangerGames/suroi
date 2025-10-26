@@ -113,14 +113,17 @@ export class Bullet extends BaseBullet {
                 }
             }
 
-            SoundManager.play(
-                `${gunIdString}_fire${this.lastShot ? "_last" : ""}`,
-                {
-                    position: this.position,
-                    layer: this.layer,
-                    speed: soundSpeed
-                }
-            );
+            const options = {
+                position: this.position,
+                layer: this.layer,
+                speed: soundSpeed
+            };
+
+            SoundManager.play(`${gunIdString}_fire${this.lastShot ? "_last" : ""}`, options);
+
+            if (this.cycle) {
+                SoundManager.play(`${gunIdString}_cycle`, options);
+            }
         }
     }
 
@@ -148,7 +151,7 @@ export class Bullet extends BaseBullet {
 
                 const { point, normal } = collision.intersection;
 
-                if (isPlayer && collision.reflected) {
+                if ((isPlayer && collision.reflected) || (!isPlayer && this.reflective)) {
                     SoundManager.play(
                         `bullet_reflection_${random(1, 5)}`,
                         {

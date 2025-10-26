@@ -1308,7 +1308,7 @@
 }
 #inventory-message {
     position: absolute;
-    top: calc(60% + 90px);
+    top: calc(60% + 80px);
     left: 50%;
     transform: translateX(-50%);
     font-size: 30px;
@@ -1744,6 +1744,7 @@
 
             img.lock-icon {
                 display: unset;
+                pointer-events: none;
             }
         }
 
@@ -1959,6 +1960,28 @@
             width: max-content;
         }
 
+        // .item-timer {
+        //     position: absolute;
+        //     width: 100%;
+        //     height: 100%;
+        //     transform: rotate(90deg);
+        //     transition: clip-path ease-in-out 50ms;
+        //     border-radius: 10px;
+        //     z-index: -1;
+        //     inset: 0;
+        //     opacity: 0.5;
+        //     background-image: linear-gradient(to left, #9e9e9e, #9e9e9e);
+        //     background-position: right;
+        //     background-repeat: no-repeat;
+        // }
+
+        // .item-timer-text {
+        //     font-size: 16px;
+        //     position: absolute;
+        //     top: -10px;
+        //     font-weight: bold;
+        // }
+
         @media screen and (max-width: variables.$screen_large) {
             width: 40px;
             height: 41px;
@@ -1967,6 +1990,10 @@
             .item-tooltip {
                 bottom: 60px;
             }
+
+            // .item-timer-text {
+            //     font-size: 15px;
+            // }
         }
 
         @media screen and (max-width: variables.$screen_medium) {

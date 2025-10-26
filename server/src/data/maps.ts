@@ -445,7 +445,7 @@ const maps = {
         beachSize: 32,
         rivers: {
             minAmount: 2,
-            maxAmount: 2,
+            maxAmount: 3,
             wideChance: 0.35,
             minWidth: 12,
             maxWidth: 18,
@@ -458,27 +458,57 @@ const maps = {
             }
         },
         trails: {
-            minAmount: 4,
-            maxAmount: 5,
+            minAmount: 2,
+            maxAmount: 3,
             wideChance: 0.2,
-            minWidth: 2,
-            maxWidth: 4,
-            minWideWidth: 3,
-            maxWideWidth: 5,
+            minWidth: 5,
+            maxWidth: 20,
+            minWideWidth: 5,
+            maxWideWidth: 20,
             maxWideAmount: 1,
             obstacles: {
-                pebble: 300
+                pebble: 300,
+                trail_rock: 60,
+                trail_dead_pine_tree: 50
             }
         },
         clearings: {
-            minWidth: 200,
-            minHeight: 150,
-            maxWidth: 250,
+            minWidth: 120,
+            minHeight: 120,
+            maxWidth: 200,
             maxHeight: 200,
             count: 3,
-            allowedObstacles: ["clearing_boulder", "flint_crate", "rock", "plumpkin", "diseased_plumpkin", "vibrant_bush", "river_chest", "lily_pad", "grenade_crate", "oak_leaf_pile", "river_rock", "melee_crate", "flint_lockbox"],
+            allowedObstacles: [
+                "barrel",
+                "super_barrel",
+                "regular_crate",
+                "clearing_boulder",
+                "flint_crate",
+                "aegis_crate",
+                "rock",
+                "plumpkin",
+                "diseased_plumpkin",
+                "vibrant_bush", 
+                "river_chest",
+                "lily_pad",
+                "grenade_crate",
+                "oak_leaf_pile",
+                "river_rock",
+                "melee_crate",
+                "flint_lockbox",
+                "dead_pine_tree",
+                "gravestone",
+                "hay_bale",
+                "golden_pumpkin",
+                "large_pumpkin",
+                "pumpkin",
+                "diseased_mini_plumpkin",
+                "plumpkin",
+                "diseased_plumpkin"
+            ],
             obstacles: [
                 { idString: "clearing_boulder", min: 3, max: 6 },
+                { idString: "dead_pine_tree", min: 2, max: 4 },
                 { idString: "flint_crate", min: 0, max: 2 },
                 { idString: "grenade_crate", min: 0, max: 2 },
                 { idString: "melee_crate", min: 0, max: 1 },
@@ -487,17 +517,21 @@ const maps = {
         },
         buildings: {
             small_bridge: Infinity,
+            breached_dam: 2,
+            graveyard_halloween: 1,
+            mansion: 1,
+            park: 1,
             plumpkin_bunker: 1,
+            small_bunker: 1,
             lighthouse: 1,
             tugboat_red: 1,
             tugboat_white: 7,
-            lodge: 1,
-            bombed_armory: 1,
-            barn: 2,
             green_house: 4,
-            warehouse: 4,
-            red_house: 2,
-            red_house_v2: 2,
+            warehouse: 5,
+            red_house: 4,
+            red_house_v2: 4,
+            blue_house: 3,
+            blue_house_special: 1,
             tent_big_1: 2,
             tent_big_2: 2,
             tent_big_3: 2,
@@ -510,36 +544,52 @@ const maps = {
             tent_3: 3,
             tent_4: 3,
             tent_5: 1,
-            outhouse: 10
+            outhouse: 5,
+            porta_potty: 5,
+            mobile_home: 6,
+            buoy: 14,
+            hollow_log_1: 5,
+            hollow_log_2: 5,
+            hollow_log_3: 5,
+            memorial: 1
         },
-        majorBuildings: ["bombed_armory", "lodge", "plumpkin_bunker"],
+        majorBuildings: ["armory", "lodge", "headquarters", "refinery"],
         quadBuildingLimit: {
-            barn: 1,
-            outhouse: 3,
-            red_house: 1,
-            red_house_v2: 1,
+            outhouse: 2,
+            porta_potty: 2,
+            red_house: 3,
+            red_house_v2: 3,
             green_house: 2,
-            warehouse: 2,
-            bombed_armory: 1,
-            lodge: 1,
-            tent_1: 1,
-            tent_2: 1,
-            tent_3: 1,
-            tent_4: 1
+            blue_house: 2,
+            warehouse: 3,
+            mobile_home: 3,
+            tent_1: 2,
+            tent_2: 2,
+            tent_3: 2,
+            tent_4: 2,
+            hollow_log_1: 3,
+            hollow_log_2: 3,
+            hollow_log_3: 3
         },
         obstacles: {
+            oil_tank: 12,
             big_oak_tree: 40,
             oak_tree: 100,
             birch_tree: 60,
             maple_tree: 50,
-            pine_tree: 80,
+            pine_tree: 40,
+            dead_pine_tree: 50,
+            dead_pine_tree_halloween: 100,
+            beach_pebble: 100,
             dormant_oak_tree: 100,
             stump: 40,
-            hay_bale: 40,
+            hay_bale: 50,
             diseased_plumpkin: 120,
-            hatchet_stump: 3,
+            golden_pumpkin: 2,
+            hatchet_stump: 5,
             regular_crate: 170,
-            flint_crate: 10,
+            flint_crate: 6,
+            aegis_crate: 6,
             grenade_crate: 50,
             rock: 220,
             clearing_boulder: 15,
@@ -555,9 +605,11 @@ const maps = {
             loot_tree: 1,
             loot_barrel: 1,
             flint_lockbox: 3,
-            pumpkin: 300,
+            pumpkin: 160,
+            diseased_mini_plumpkin: 140,
             large_pumpkin: 40,
-            plumpkin: 5
+            plumpkin: 5,
+            gravestone: 60
         },
         obstacleClumps: [
             {
@@ -586,7 +638,7 @@ const maps = {
                     minAmount: 2,
                     maxAmount: 3,
                     jitter: 5,
-                    obstacles: ["pine_tree"],
+                    obstacles: ["pine_tree", "dead_pine_tree"],
                     radius: 12
                 }
             }
@@ -1091,9 +1143,10 @@ const maps = {
                         ((item.defType === DefinitionType.Melee || item.defType === DefinitionType.Scope) && item.noDrop)
                         || (item.defType === DefinitionType.Ammo && item.ephemeral)
                         || (item.defType === DefinitionType.Backpack && item.level === 0)
-                        || (item.defType === DefinitionType.Perk && (item.hideInHUD || item.category === PerkCategories.Halloween))
+                        || (item.defType === DefinitionType.Perk && item.category === (game.modeName === "halloween" ? PerkCategories.Normal : PerkCategories.Halloween))
                         || item.defType === DefinitionType.Skin
                         || item.devItem
+                        || item.hideInHUD
                         || ((item.defType === DefinitionType.Armor || item.defType === DefinitionType.Backpack) && item.perk)
                     ) continue;
 

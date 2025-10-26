@@ -26,6 +26,7 @@ export interface ModeDefinition {
     readonly colors: Record<ColorKeys, string>
     readonly spriteSheets: readonly SpritesheetNames[]
     readonly ambience?: string
+    readonly ambienceVolume?: number
     readonly replaceMenuMusic?: boolean
     readonly defaultScope?: ReferenceTo<ScopeDefinition>
     readonly obstacleVariants?: boolean
@@ -93,20 +94,32 @@ export const Modes: Record<ModeName, ModeDefinition> = {
             water: "hsl(4, 100%, 14%)",
             border: "hsl(4, 90%, 12%)",
             beach: "hsl(33, 77%, 21%)",
-            riverBank: "hsl(33, 50%, 25%)",
-            trail: "hsl(35, 50%, 20%)",
+            riverBank: "hsl(33, 77%, 21%)",
+            trail: "hsl(42, 42%, 9%)",
             gas: "hsla(17, 100%, 50%, 0.55)",
             void: "hsl(25, 80%, 6%)"
         },
-        ambience: "wind_ambience",
+        ambience: "graveyard_ambience",
         defaultScope: "2x_scope",
         spriteSheets: ["shared", "fall", "halloween"],
         specialLogo: true,
+        forcedGoldAirdropStage: 5,
+        replaceMenuMusic: true,
+        particleEffects: {
+            frames: [
+                "leaf_particle_1",
+                "leaf_particle_2",
+                "leaf_particle_3",
+                "dead_pine_tree_particle"
+            ],
+            delay: 1000
+        },
         playButtonImage: "./img/game/halloween/obstacles/jack_o_lantern.svg",
         canvasFilters: {
-            brightness: 0.65,
+            brightness: 0.5,
             saturation: 0.85
-        }
+        },
+        ambienceVolume: 2
     },
     infection: {
         colors: {

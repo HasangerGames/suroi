@@ -34,6 +34,7 @@ function serializePlayerData(
         items,
         activeC4s,
         perks,
+      //  updatedPerks,
         teamID,
         blockEmoting
     }: PlayerData
@@ -53,6 +54,7 @@ function serializePlayerData(
     const hasItems              = items !== undefined;
     const hasActiveC4s          = activeC4s !== undefined;
     const hasPerks              = perks !== undefined;
+   // const hasUpdatedPerks       = updatedPerks !== undefined;
     const hasTeamID             = teamID !== undefined;
 
     strm.writeBooleanGroup2(
@@ -74,7 +76,7 @@ function serializePlayerData(
         blockEmoting
     );
 
-    strm.writeBooleanGroup(hasInfection);
+    strm.writeBooleanGroup(hasInfection/*, hasUpdatedPerks*/);
 
     strm.writeUint8(pingSeq);
 
@@ -261,6 +263,10 @@ function serializePlayerData(
         strm.writeArray(perks, perk => Perks.writeToStream(strm, perk));
     }
 
+    // if (hasUpdatedPerks) {
+    //     strm.writeArray(updatedPerks, perk => Perks.writeToStream(strm, perk));
+    // }
+
     if (hasTeamID) {
         strm.writeUint8(teamID);
     }
@@ -286,7 +292,7 @@ function deserializePlayerData(strm: SuroiByteStream): PlayerData {
         blockEmoting
     ] = strm.readBooleanGroup2();
 
-    const [hasInfection] = strm.readBooleanGroup();
+    const [hasInfection/*, hasUpdatedPerks*/] = strm.readBooleanGroup();
 
     const data: SDeepMutable<PlayerData> = {
         pingSeq: strm.readUint8(),
@@ -441,6 +447,10 @@ function deserializePlayerData(strm: SuroiByteStream): PlayerData {
         data.perks = strm.readArray(() => Perks.readFromStream(strm));
     }
 
+    // if (hasUpdatedPerks) {
+    //     data.updatedPerks = strm.readArray(() => Perks.readFromStream(strm));
+    // }
+
     if (hasTeamID) {
         data.teamID = strm.readUint8();
     }
@@ -559,6 +569,7 @@ export interface PlayerData {
     }
     activeC4s?: boolean
     perks?: PerkDefinition[]
+  //  updatedPerks?: PerkDefinition[]
     teamID?: number
 }
 

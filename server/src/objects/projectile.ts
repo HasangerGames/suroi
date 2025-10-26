@@ -278,7 +278,7 @@ export class Projectile extends BaseGameObject.derive(ObjectCategory.Projectile)
             this.setPartialDirty();
         } else if (!this.activated && this.definition.summonAirdrop) {
             this.activated = true;
-            this.game.summonAirdrop(this.position);
+            this.game.summonAirdrop(this.position, this.halloweenSkin);
         }
     }
 
@@ -313,7 +313,11 @@ export class Projectile extends BaseGameObject.derive(ObjectCategory.Projectile)
         }
 
         if (decal !== undefined) {
-            game.addDecal(decal, this.position, this.rotation, this.layer);
+            let decal_ = decal;
+
+            if (this.halloweenSkin && this.definition.pinSkin) decal_ += "_halloween"; 
+
+            game.addDecal(decal_, this.position, this.rotation, this.layer);
         }
 
         this.game.removeProjectile(this);

@@ -31,6 +31,8 @@ const translationsCache = new Map<string, string>();
 
 const METADATA_KEYS = ["name", "flag", "mandatory", "no_space", "no_resize", "percentage", "html_lang"];
 
+const regions = ["region_1v1", "region_ea1v1", "region_test"];
+
 const keyFilter = (key: string): boolean => (
     !METADATA_KEYS.includes(key)
     && !Guns.hasString(key)
@@ -38,6 +40,7 @@ const keyFilter = (key: string): boolean => (
     && !Throwables.hasString(key)
     && !Emotes.hasString(key)
     && !Badges.hasString(key)
+    && !regions.includes(key)
 );
 
 function calculateValidRatio(keys: string[], validKeys: readonly string[]): number {
