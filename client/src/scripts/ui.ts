@@ -2232,7 +2232,7 @@ export async function setUpUI(): Promise<void> {
             .toggleClass("fa-eye-slash", visible);
     });
 
-    if(isMobile.any){
+    if (isMobile.any) { // bruh
         $("#tab-mobile").show();
         $("#mobile-options").show();
     }
