@@ -1473,12 +1473,12 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 if (this.game.now - lastUpdated <= (perk.updateInterval ?? 1000)) continue;
 
                 this.perkUpdateMap.set(perk, this.game.now);
-                
+
                 // if (this.updatedPerks.includes(perk)) {
                 //     removeFrom(this.updatedPerks, perk);
                 //     this.dirty.updatedPerks = true;
                 // }
-                
+
                 // ! evil starts here
                 switch (perk.idString) {
                     case PerkIds.Bloodthirst: {
@@ -1588,7 +1588,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 }
                 // ! evil ends here
             }
-            
+
         }
 
         // Update Thermal Goggles & Hollow Points perks
@@ -1657,8 +1657,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             }
         }
 
-        if (this.hasPerk(PerkIds.EnternalMagnetism)) {
-            const perk = PerkData[PerkIds.EnternalMagnetism];
+        if (this.hasPerk(PerkIds.EternalMagnetism)) {
+            const perk = PerkData[PerkIds.EternalMagnetism];
             const detectionHitbox = new CircleHitbox(perk.radius, this.position);
 
             let hasMagneticField = false; // flag
@@ -2051,7 +2051,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     }
 
     /**
-     * @param player 
+     * @param player
      * @returns true if the player is on the same team with the given player.
      */
     isSameTeam(player: Player): boolean {
@@ -2343,7 +2343,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 this.updateMapIndicator();
                 break;
             }
-            case PerkIds.EnternalMagnetism: {
+            case PerkIds.EternalMagnetism: {
                 this.hasMagneticField = false;
                 this.setDirty();
                 break;

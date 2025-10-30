@@ -75,7 +75,7 @@ export const enum PerkIds {
     Bloodthirst = "bloodthirst",
     PlumpkinBomb = "plumpkin_bomb",
     Shrouded = "shrouded",
-    EnternalMagnetism = "enternal_magnetism",
+    EternalMagnetism = "eternal_magnetism",
     LastStand = "last_stand",
     PlumpkinBlessing = "plumpkin_blessing",
     ExperimentalTreatment = "experimental_treatment",
@@ -362,8 +362,8 @@ const perks = [
         noDrop: true
     },
     {
-        idString: PerkIds.EnternalMagnetism,
-        name: "Enternal Magnetism",
+        idString: PerkIds.EternalMagnetism,
+        name: "Eternal Magnetism",
         defType: DefinitionType.Perk,
         category: PerkCategories.Halloween,
         quality: PerkQualities.Positive,

@@ -857,7 +857,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             // Shield
             if (hasBubble !== this.hasBubble) {
                 this.hasBubble = hasBubble;
-                
+
                 let bubbleSprite = this.images.bubbleSprite;
 
                 // Initialize sprite
@@ -868,7 +868,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
                     this.container.addChild(bubbleSprite);
                 }
-                
+
                 bubbleSprite.setVisible(this.hasBubble);
 
                 if (!isNew) {
@@ -923,7 +923,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
                 let magneticFieldSprite = this.images.magneticFieldSprite;
 
-                const spriteScale = PerkData[PerkIds.EnternalMagnetism].spriteScale;
+                const spriteScale = PerkData[PerkIds.EternalMagnetism].spriteScale;
 
                 // Initialize sprite
                 if (magneticFieldSprite === undefined) {
@@ -936,7 +936,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
                     this.container.addChild(magneticFieldSprite);
                 }
-                
+
                 magneticFieldSprite.setVisible(this.hasMagneticField);
 
                 if (!isNew) {
@@ -2070,7 +2070,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
                     if (def.pinSkin && this.halloweenThrowableSkin && !def.noSkin) {
                         pinFrame += "_halloween";
-                    } 
+                    }
 
                     pinImage.setFrame(pinFrame);
                     pinImage.setPos(35, 0);

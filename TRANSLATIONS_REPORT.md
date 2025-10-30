@@ -184,8 +184,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `butterfingers_desc` is not defined
 - Key `overweight` is not defined
 - Key `overweight_desc` is not defined
-- Key `enternal_magnetism` is not defined
-- Key `enternal_magnetism_desc` is not defined
+- Key `eternal_magnetism` is not defined
+- Key `eternal_magnetism_desc` is not defined
 - Key `last_stand` is not defined
 - Key `last_stand_desc` is not defined
 - Key `aching_knees` is not defined
@@ -258,8 +258,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `region_oc` is not defined
 - Key `plumpkin_shuffle` is not defined
 - Key `plumpkin_shuffle_desc` is not defined
-- Key `enternal_magnetism` is not defined
-- Key `enternal_magnetism_desc` is not defined
+- Key `eternal_magnetism` is not defined
+- Key `eternal_magnetism_desc` is not defined
 - Key `last_stand` is not defined
 - Key `last_stand_desc` is not defined
 - Key `aching_knees` is not defined
@@ -440,8 +440,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `butterfingers_desc` is not defined
 - Key `overweight` is not defined
 - Key `overweight_desc` is not defined
-- Key `enternal_magnetism` is not defined
-- Key `enternal_magnetism_desc` is not defined
+- Key `eternal_magnetism` is not defined
+- Key `eternal_magnetism_desc` is not defined
 - Key `last_stand` is not defined
 - Key `last_stand_desc` is not defined
 - Key `aching_knees` is not defined
@@ -603,8 +603,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `butterfingers_desc` is not defined
 - Key `overweight` is not defined
 - Key `overweight_desc` is not defined
-- Key `enternal_magnetism` is not defined
-- Key `enternal_magnetism_desc` is not defined
+- Key `eternal_magnetism` is not defined
+- Key `eternal_magnetism_desc` is not defined
 - Key `last_stand` is not defined
 - Key `last_stand_desc` is not defined
 - Key `aching_knees` is not defined
@@ -787,8 +787,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `butterfingers_desc` is not defined
 - Key `overweight` is not defined
 - Key `overweight_desc` is not defined
-- Key `enternal_magnetism` is not defined
-- Key `enternal_magnetism_desc` is not defined
+- Key `eternal_magnetism` is not defined
+- Key `eternal_magnetism_desc` is not defined
 - Key `last_stand` is not defined
 - Key `last_stand_desc` is not defined
 - Key `aching_knees` is not defined
@@ -1018,8 +1018,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `butterfingers_desc` is not defined
 - Key `overweight` is not defined
 - Key `overweight_desc` is not defined
-- Key `enternal_magnetism` is not defined
-- Key `enternal_magnetism_desc` is not defined
+- Key `eternal_magnetism` is not defined
+- Key `eternal_magnetism_desc` is not defined
 - Key `last_stand` is not defined
 - Key `last_stand_desc` is not defined
 - Key `aching_knees` is not defined
@@ -1044,8 +1044,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `kf_disconnected` is not defined
 - Key `plumpkin_shuffle` is not defined
 - Key `plumpkin_shuffle_desc` is not defined
-- Key `enternal_magnetism` is not defined
-- Key `enternal_magnetism_desc` is not defined
+- Key `eternal_magnetism` is not defined
+- Key `eternal_magnetism_desc` is not defined
 - Key `last_stand` is not defined
 - Key `last_stand_desc` is not defined
 - Key `aching_knees` is not defined
@@ -1215,8 +1215,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `butterfingers_desc` is not defined
 - Key `overweight` is not defined
 - Key `overweight_desc` is not defined
-- Key `enternal_magnetism` is not defined
-- Key `enternal_magnetism_desc` is not defined
+- Key `eternal_magnetism` is not defined
+- Key `eternal_magnetism_desc` is not defined
 - Key `last_stand` is not defined
 - Key `last_stand_desc` is not defined
 - Key `aching_knees` is not defined
@@ -1307,8 +1307,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `kf_disconnected` is not defined
 - Key `plumpkin_shuffle` is not defined
 - Key `plumpkin_shuffle_desc` is not defined
-- Key `enternal_magnetism` is not defined
-- Key `enternal_magnetism_desc` is not defined
+- Key `eternal_magnetism` is not defined
+- Key `eternal_magnetism_desc` is not defined
 - Key `last_stand` is not defined
 - Key `last_stand_desc` is not defined
 - Key `aching_knees` is not defined
@@ -1493,8 +1493,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `butterfingers_desc` is not defined
 - Key `overweight` is not defined
 - Key `overweight_desc` is not defined
-- Key `enternal_magnetism` is not defined
-- Key `enternal_magnetism_desc` is not defined
+- Key `eternal_magnetism` is not defined
+- Key `eternal_magnetism_desc` is not defined
 - Key `last_stand` is not defined
 - Key `last_stand_desc` is not defined
 - Key `aching_knees` is not defined
@@ -1574,8 +1574,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `butterfingers_desc` is not defined
 - Key `overweight` is not defined
 - Key `overweight_desc` is not defined
-- Key `enternal_magnetism` is not defined
-- Key `enternal_magnetism_desc` is not defined
+- Key `eternal_magnetism` is not defined
+- Key `eternal_magnetism_desc` is not defined
 - Key `last_stand` is not defined
 - Key `last_stand_desc` is not defined
 - Key `aching_knees` is not defined
@@ -1781,8 +1781,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `butterfingers_desc` is not defined
 - Key `overweight` is not defined
 - Key `overweight_desc` is not defined
-- Key `enternal_magnetism` is not defined
-- Key `enternal_magnetism_desc` is not defined
+- Key `eternal_magnetism` is not defined
+- Key `eternal_magnetism_desc` is not defined
 - Key `last_stand` is not defined
 - Key `last_stand_desc` is not defined
 - Key `aching_knees` is not defined
@@ -2041,8 +2041,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `kf_disconnected` is not defined
 - Key `plumpkin_shuffle` is not defined
 - Key `plumpkin_shuffle_desc` is not defined
-- Key `enternal_magnetism` is not defined
-- Key `enternal_magnetism_desc` is not defined
+- Key `eternal_magnetism` is not defined
+- Key `eternal_magnetism_desc` is not defined
 - Key `last_stand` is not defined
 - Key `last_stand_desc` is not defined
 - Key `aching_knees` is not defined
@@ -2223,8 +2223,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `butterfingers_desc` is not defined
 - Key `overweight` is not defined
 - Key `overweight_desc` is not defined
-- Key `enternal_magnetism` is not defined
-- Key `enternal_magnetism_desc` is not defined
+- Key `eternal_magnetism` is not defined
+- Key `eternal_magnetism_desc` is not defined
 - Key `last_stand` is not defined
 - Key `last_stand_desc` is not defined
 - Key `aching_knees` is not defined
@@ -2417,8 +2417,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `butterfingers_desc` is not defined
 - Key `overweight` is not defined
 - Key `overweight_desc` is not defined
-- Key `enternal_magnetism` is not defined
-- Key `enternal_magnetism_desc` is not defined
+- Key `eternal_magnetism` is not defined
+- Key `eternal_magnetism_desc` is not defined
 - Key `last_stand` is not defined
 - Key `last_stand_desc` is not defined
 - Key `aching_knees` is not defined
@@ -2470,8 +2470,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `reflective_rounds_desc` is not defined
 - Key `plumpkin_shuffle` is not defined
 - Key `plumpkin_shuffle_desc` is not defined
-- Key `enternal_magnetism` is not defined
-- Key `enternal_magnetism_desc` is not defined
+- Key `eternal_magnetism` is not defined
+- Key `eternal_magnetism_desc` is not defined
 - Key `last_stand` is not defined
 - Key `last_stand_desc` is not defined
 - Key `aching_knees` is not defined
@@ -2641,8 +2641,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `butterfingers_desc` is not defined
 - Key `overweight` is not defined
 - Key `overweight_desc` is not defined
-- Key `enternal_magnetism` is not defined
-- Key `enternal_magnetism_desc` is not defined
+- Key `eternal_magnetism` is not defined
+- Key `eternal_magnetism_desc` is not defined
 - Key `last_stand` is not defined
 - Key `last_stand_desc` is not defined
 - Key `aching_knees` is not defined
@@ -2809,8 +2809,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `butterfingers_desc` is not defined
 - Key `overweight` is not defined
 - Key `overweight_desc` is not defined
-- Key `enternal_magnetism` is not defined
-- Key `enternal_magnetism_desc` is not defined
+- Key `eternal_magnetism` is not defined
+- Key `eternal_magnetism_desc` is not defined
 - Key `last_stand` is not defined
 - Key `last_stand_desc` is not defined
 - Key `aching_knees` is not defined
@@ -2860,8 +2860,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `reflective_rounds_desc` is not defined
 - Key `plumpkin_shuffle` is not defined
 - Key `plumpkin_shuffle_desc` is not defined
-- Key `enternal_magnetism` is not defined
-- Key `enternal_magnetism_desc` is not defined
+- Key `eternal_magnetism` is not defined
+- Key `eternal_magnetism_desc` is not defined
 - Key `last_stand` is not defined
 - Key `last_stand_desc` is not defined
 - Key `aching_knees` is not defined
@@ -2971,8 +2971,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `butterfingers_desc` is not defined
 - Key `overweight` is not defined
 - Key `overweight_desc` is not defined
-- Key `enternal_magnetism` is not defined
-- Key `enternal_magnetism_desc` is not defined
+- Key `eternal_magnetism` is not defined
+- Key `eternal_magnetism_desc` is not defined
 - Key `last_stand` is not defined
 - Key `last_stand_desc` is not defined
 - Key `aching_knees` is not defined
@@ -3102,8 +3102,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `butterfingers_desc` is not defined
 - Key `overweight` is not defined
 - Key `overweight_desc` is not defined
-- Key `enternal_magnetism` is not defined
-- Key `enternal_magnetism_desc` is not defined
+- Key `eternal_magnetism` is not defined
+- Key `eternal_magnetism_desc` is not defined
 - Key `last_stand` is not defined
 - Key `last_stand_desc` is not defined
 - Key `aching_knees` is not defined
@@ -3257,8 +3257,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `butterfingers_desc` is not defined
 - Key `overweight` is not defined
 - Key `overweight_desc` is not defined
-- Key `enternal_magnetism` is not defined
-- Key `enternal_magnetism_desc` is not defined
+- Key `eternal_magnetism` is not defined
+- Key `eternal_magnetism_desc` is not defined
 - Key `last_stand` is not defined
 - Key `last_stand_desc` is not defined
 - Key `aching_knees` is not defined
@@ -3336,8 +3336,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `butterfingers_desc` is not defined
 - Key `overweight` is not defined
 - Key `overweight_desc` is not defined
-- Key `enternal_magnetism` is not defined
-- Key `enternal_magnetism_desc` is not defined
+- Key `eternal_magnetism` is not defined
+- Key `eternal_magnetism_desc` is not defined
 - Key `last_stand` is not defined
 - Key `last_stand_desc` is not defined
 - Key `aching_knees` is not defined
@@ -3353,7 +3353,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
 
-## 🇨🇳 中文（简体） (99% Complete) - zh.hjson
+## 🇨🇳 中文（简体） (100% Complete) - zh.hjson
 
 ### Invalid Keys
 
@@ -3569,12 +3569,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `ping` is not a valid key
 - Key `time_minute` is not a valid key
 - Key `time_second` is not a valid key
-- Key `eternal_magnetism` is not a valid key
-- Key `eternal_magnetism_desc` is not a valid key
+- Key `weak_stomach` is not a valid key
+- Key `weak_stomach_desc` is not a valid key
 
 ### Undefined Keys
 
 - Key `kf_disconnected` is not defined
-- Key `enternal_magnetism` is not defined
-- Key `enternal_magnetism_desc` is not defined
 
