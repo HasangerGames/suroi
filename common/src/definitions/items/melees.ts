@@ -269,7 +269,7 @@ const saw = (name: string): MeleeDefinition => {
         translationString: "hand_saw",
         switchSound: "hand_saw",
         obstacleMultiplier: 2,
-        piercingMultiplier: 0.8,
+        piercingMultiplier: 1.2,
         radius: 2.9,
         offset: Vec(6.4, -0.5),
         cooldown: 725,
