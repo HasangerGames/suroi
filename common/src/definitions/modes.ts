@@ -116,7 +116,7 @@ export const Modes: Record<ModeName, ModeDefinition> = {
         },
         playButtonImage: "./img/game/halloween/obstacles/jack_o_lantern.svg",
         canvasFilters: {
-            brightness: 0.5,
+            brightness: 0.6,
             saturation: 0.85
         },
         ambienceVolume: 2
