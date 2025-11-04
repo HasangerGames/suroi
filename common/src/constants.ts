@@ -7,7 +7,7 @@ const inventorySlotTypings = Object.freeze([DefinitionType.Gun, DefinitionType.G
 export const GameConstants = {
     // !!!!! NOTE: Increase this every time a byte stream change is made between latest release and master
     // or a new item is added to a definition list
-    protocolVersion: 70,
+    protocolVersion: 71,
     tps: 40,
     gridSize: 32,
     maxPosition: 1924,
