@@ -1802,7 +1802,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
 
-## 🇯🇵 日本語 (97% Complete) - jp.hjson
+## 🇯🇵 日本語 (100% Complete) - jp.hjson
 
 ### Invalid Keys
 
@@ -1927,16 +1927,19 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `blue_blood` is not a valid key
 - Key `bubblegum` is not a valid key
 - Key `candy_cane` is not a valid key
+- Key `carpenter_uniform` is not a valid key
 - Key `cargo_wave` is not a valid key
 - Key `celestial` is not a valid key
 - Key `coal` is not a valid key
 - Key `deep_sea` is not a valid key
 - Key `deer_season` is not a valid key
+- Key `demon` is not a valid key
 - Key `desert_camo` is not a valid key
 - Key `designr_swag` is not a valid key
 - Key `developr_swag` is not a valid key
 - Key `diseased` is not a valid key
 - Key `distant_shores` is not a valid key
+- Key `failed_experiment` is not a valid key
 - Key `flamingo` is not a valid key
 - Key `floral` is not a valid key
 - Key `forest_camo` is not a valid key
@@ -1948,6 +1951,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `greenhorn` is not a valid key
 - Key `groundskeeper` is not a valid key
 - Key `gunmetal` is not a valid key
+- Key `haunted` is not a valid key
 - Key `hazel_jumpsuit` is not a valid key
 - Key `henrys_little_helper` is not a valid key
 - Key `holiday_tree` is not a valid key
@@ -1962,6 +1966,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `no_kil_pls` is not a valid key
 - Key `nsd_uniform` is not a valid key
 - Key `one_at_nsd` is not a valid key
+- Key `overgrown` is not a valid key
 - Key `peachy_breeze` is not a valid key
 - Key `peppermint` is not a valid key
 - Key `pot_o_gold` is not a valid key
@@ -1989,9 +1994,11 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `toadstool` is not a valid key
 - Key `twilight_zone` is not a valid key
 - Key `verified` is not a valid key
+- Key `veteran` is not a valid key
 - Key `volcanic` is not a valid key
 - Key `wave_jumpsuit` is not a valid key
 - Key `werewolf` is not a valid key
+- Key `wounded` is not a valid key
 - Key `zebra` is not a valid key
 - Key `banana` is not a valid key
 - Key `takedown` is not a valid key
@@ -2036,19 +2043,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `time_minute` is not a valid key
 - Key `time_second` is not a valid key
 
-### Undefined Keys
-
-- Key `kf_disconnected` is not defined
-- Key `plumpkin_shuffle` is not defined
-- Key `plumpkin_shuffle_desc` is not defined
-- Key `eternal_magnetism` is not defined
-- Key `eternal_magnetism_desc` is not defined
-- Key `last_stand` is not defined
-- Key `last_stand_desc` is not defined
-- Key `aching_knees` is not defined
-- Key `aching_knees_desc` is not defined
-- Key `plumpkin_blessing` is not defined
-- Key `plumpkin_blessing_desc` is not defined
+### (No Undefined Keys)
 
 ## 🇱🇹 Lietuvių (56% Complete) - lt.hjson
 

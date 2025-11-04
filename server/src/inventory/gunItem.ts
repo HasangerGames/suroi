@@ -86,6 +86,14 @@ export class GunItem extends InventoryItemBase.derive(DefinitionType.Gun) {
             || owner.disconnected
             || this !== owner.activeItem
         ) {
+            if (
+                !skipAttackCheck
+                && !owner.attacking
+                && definition.fireMode === FireMode.Burst
+                && this._consecutiveShots > 0
+            ) {
+                this.fireDelay = definition.burstProperties.burstCooldown;
+            }
             this._consecutiveShots = 0;
             return;
         }
@@ -386,6 +394,7 @@ export class GunItem extends InventoryItemBase.derive(DefinitionType.Gun) {
         if (definition.fireMode === FireMode.Burst) {
             if (this._consecutiveShots >= definition.burstProperties.shotsPerBurst) {
                 this._consecutiveShots = 0;
+                this.fireDelay = definition.burstProperties.burstCooldown;
                 this._burstTimeout = setTimeout(
                     this._useItemNoDelayCheck.bind(this, false),
                     definition.burstProperties.burstCooldown
