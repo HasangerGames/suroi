@@ -134,8 +134,6 @@ export class Bullet extends BaseBullet {
                 && (definition.onHitExplosion === undefined || !definition.explodeOnImpact)
             );
 
-            const isBlockedReflectionGun = this.sourceGun.definition.ballistics.onHitExplosion || this.sourceGun.definition.ballistics.onHitProjectile;
-
             let rotation: number | undefined;
             if (reflected || definition.onHitExplosion || definition.onHitProjectile) {
                 /*
