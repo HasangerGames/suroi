@@ -64,7 +64,6 @@ export const enum PerkIds {
     PrecisionRecycling = "precision_recycling",
     LootBaron = "loot_baron",
     Overclocked = "overclocked",
-    ReflectiveRounds = "reflective_rounds",
 
     //
     // Halloween Perks
@@ -255,12 +254,6 @@ const perks = [
         category: PerkCategories.Normal,
         fireRateMod: 0.65,
         spreadMod: 2
-    },
-    {
-        idString: PerkIds.ReflectiveRounds,
-        name: "Reflective Rounds",
-        defType: DefinitionType.Perk,
-        category: PerkCategories.Normal
     },
     //
     // Halloween perks

@@ -148,8 +148,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `loot_baron_desc` is not defined
 - Key `overclocked` is not defined
 - Key `overclocked_desc` is not defined
-- Key `reflective_rounds` is not defined
-- Key `reflective_rounds_desc` is not defined
 - Key `plumpkin_gamble` is not defined
 - Key `plumpkin_gamble_desc` is not defined
 - Key `plumpkin_shuffle` is not defined
@@ -404,8 +402,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `loot_baron_desc` is not defined
 - Key `overclocked` is not defined
 - Key `overclocked_desc` is not defined
-- Key `reflective_rounds` is not defined
-- Key `reflective_rounds_desc` is not defined
 - Key `plumpkin_gamble` is not defined
 - Key `plumpkin_gamble_desc` is not defined
 - Key `plumpkin_shuffle` is not defined
@@ -567,8 +563,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `loot_baron_desc` is not defined
 - Key `overclocked` is not defined
 - Key `overclocked_desc` is not defined
-- Key `reflective_rounds` is not defined
-- Key `reflective_rounds_desc` is not defined
 - Key `plumpkin_gamble` is not defined
 - Key `plumpkin_gamble_desc` is not defined
 - Key `plumpkin_shuffle` is not defined
@@ -751,8 +745,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `loot_baron_desc` is not defined
 - Key `overclocked` is not defined
 - Key `overclocked_desc` is not defined
-- Key `reflective_rounds` is not defined
-- Key `reflective_rounds_desc` is not defined
 - Key `plumpkin_gamble` is not defined
 - Key `plumpkin_gamble_desc` is not defined
 - Key `plumpkin_shuffle` is not defined
@@ -1007,8 +999,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `loot_baron_desc` is not defined
 - Key `overclocked` is not defined
 - Key `overclocked_desc` is not defined
-- Key `reflective_rounds` is not defined
-- Key `reflective_rounds_desc` is not defined
 - Key `plumpkin_shuffle` is not defined
 - Key `plumpkin_shuffle_desc` is not defined
 - Key `baby_plumpkin_pie_desc` is not defined
@@ -1179,8 +1169,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `loot_baron_desc` is not defined
 - Key `overclocked` is not defined
 - Key `overclocked_desc` is not defined
-- Key `reflective_rounds` is not defined
-- Key `reflective_rounds_desc` is not defined
 - Key `plumpkin_gamble` is not defined
 - Key `plumpkin_gamble_desc` is not defined
 - Key `plumpkin_shuffle` is not defined
@@ -1288,8 +1276,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `loot_baron_desc` is not defined
 - Key `overclocked` is not defined
 - Key `overclocked_desc` is not defined
-- Key `reflective_rounds` is not defined
-- Key `reflective_rounds_desc` is not defined
 - Key `baby_plumpkin_pie_desc` is not defined
 - Key `priority_target` is not defined
 - Key `priority_target_desc` is not defined
@@ -1457,8 +1443,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `loot_baron_desc` is not defined
 - Key `overclocked` is not defined
 - Key `overclocked_desc` is not defined
-- Key `reflective_rounds` is not defined
-- Key `reflective_rounds_desc` is not defined
 - Key `plumpkin_gamble` is not defined
 - Key `plumpkin_gamble_desc` is not defined
 - Key `plumpkin_shuffle` is not defined
@@ -1563,8 +1547,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `loot_baron_desc` is not defined
 - Key `overclocked` is not defined
 - Key `overclocked_desc` is not defined
-- Key `reflective_rounds` is not defined
-- Key `reflective_rounds_desc` is not defined
 - Key `plumpkin_shuffle` is not defined
 - Key `plumpkin_shuffle_desc` is not defined
 - Key `baby_plumpkin_pie_desc` is not defined
@@ -1745,8 +1727,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `loot_baron_desc` is not defined
 - Key `overclocked` is not defined
 - Key `overclocked_desc` is not defined
-- Key `reflective_rounds` is not defined
-- Key `reflective_rounds_desc` is not defined
 - Key `plumpkin_gamble` is not defined
 - Key `plumpkin_gamble_desc` is not defined
 - Key `plumpkin_shuffle` is not defined
@@ -2182,8 +2162,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `loot_baron_desc` is not defined
 - Key `overclocked` is not defined
 - Key `overclocked_desc` is not defined
-- Key `reflective_rounds` is not defined
-- Key `reflective_rounds_desc` is not defined
 - Key `plumpkin_gamble` is not defined
 - Key `plumpkin_gamble_desc` is not defined
 - Key `plumpkin_shuffle` is not defined
@@ -2376,8 +2354,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `loot_baron_desc` is not defined
 - Key `overclocked` is not defined
 - Key `overclocked_desc` is not defined
-- Key `reflective_rounds` is not defined
-- Key `reflective_rounds_desc` is not defined
 - Key `plumpkin_gamble` is not defined
 - Key `plumpkin_gamble_desc` is not defined
 - Key `plumpkin_shuffle` is not defined
@@ -2461,8 +2437,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `frag_grenade_explosion` is not defined
 - Key `confetti_grenade_explosion` is not defined
 - Key `pumpkin_explosion` is not defined
-- Key `reflective_rounds` is not defined
-- Key `reflective_rounds_desc` is not defined
 - Key `plumpkin_shuffle` is not defined
 - Key `plumpkin_shuffle_desc` is not defined
 - Key `eternal_magnetism` is not defined
@@ -2600,8 +2574,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `loot_baron_desc` is not defined
 - Key `overclocked` is not defined
 - Key `overclocked_desc` is not defined
-- Key `reflective_rounds` is not defined
-- Key `reflective_rounds_desc` is not defined
 - Key `plumpkin_gamble` is not defined
 - Key `plumpkin_gamble_desc` is not defined
 - Key `plumpkin_shuffle` is not defined
@@ -2768,8 +2740,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `loot_baron_desc` is not defined
 - Key `overclocked` is not defined
 - Key `overclocked_desc` is not defined
-- Key `reflective_rounds` is not defined
-- Key `reflective_rounds_desc` is not defined
 - Key `plumpkin_gamble` is not defined
 - Key `plumpkin_gamble_desc` is not defined
 - Key `plumpkin_shuffle` is not defined
@@ -2851,8 +2821,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `frag_grenade_explosion` is not defined
 - Key `confetti_grenade_explosion` is not defined
 - Key `pumpkin_explosion` is not defined
-- Key `reflective_rounds` is not defined
-- Key `reflective_rounds_desc` is not defined
 - Key `plumpkin_shuffle` is not defined
 - Key `plumpkin_shuffle_desc` is not defined
 - Key `eternal_magnetism` is not defined
@@ -2910,8 +2878,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `region_ea` is not defined
 - Key `loot_baron` is not defined
 - Key `loot_baron_desc` is not defined
-- Key `reflective_rounds` is not defined
-- Key `reflective_rounds_desc` is not defined
 - Key `baby_plumpkin_pie_desc` is not defined
 
 ## 🇮🇳 தமிழ் (88% Complete) - ta.hjson
@@ -2954,8 +2920,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `berserker_desc` is not defined
 - Key `overclocked` is not defined
 - Key `overclocked_desc` is not defined
-- Key `reflective_rounds` is not defined
-- Key `reflective_rounds_desc` is not defined
 - Key `plumpkin_shuffle` is not defined
 - Key `plumpkin_shuffle_desc` is not defined
 - Key `plumpkin_bomb` is not defined
@@ -3061,8 +3025,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `loot_baron_desc` is not defined
 - Key `overclocked` is not defined
 - Key `overclocked_desc` is not defined
-- Key `reflective_rounds` is not defined
-- Key `reflective_rounds_desc` is not defined
 - Key `plumpkin_gamble` is not defined
 - Key `plumpkin_gamble_desc` is not defined
 - Key `plumpkin_shuffle` is not defined
@@ -3216,8 +3178,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `loot_baron_desc` is not defined
 - Key `overclocked` is not defined
 - Key `overclocked_desc` is not defined
-- Key `reflective_rounds` is not defined
-- Key `reflective_rounds_desc` is not defined
 - Key `plumpkin_gamble` is not defined
 - Key `plumpkin_gamble_desc` is not defined
 - Key `plumpkin_shuffle` is not defined
@@ -3320,8 +3280,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `loot_baron_desc` is not defined
 - Key `overclocked` is not defined
 - Key `overclocked_desc` is not defined
-- Key `reflective_rounds` is not defined
-- Key `reflective_rounds_desc` is not defined
 - Key `plumpkin_shuffle` is not defined
 - Key `plumpkin_shuffle_desc` is not defined
 - Key `baby_plumpkin_pie_desc` is not defined

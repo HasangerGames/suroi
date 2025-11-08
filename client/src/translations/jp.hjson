@@ -781,8 +781,6 @@
 "loot_baron_desc": "追加にアイテムがドロップする。"
 "overclocked": "オーバークロック"
 "overclocked_desc": "全ての銃器の発射速度が向上するが、代償として散弾範囲が拡大する。"
-"reflective_rounds": "反射弾"
-"reflective_rounds_desc": "弾丸はどの表面でも跳弾する。<br>投擲武器には適用されない。"
 "plumpkin_gamble": "がぼちゃギャンブル"
 "plumpkin_gamble_desc": "ランダムにハロウィーンパークを選択する。"
 "lycanthropy": "ライカントロピー"
