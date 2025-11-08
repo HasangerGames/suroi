@@ -86,7 +86,7 @@ const hatchet = (name: string): MeleeDefinition => {
         name,
         defType: DefinitionType.Melee,
         tier: Tier.B,
-        damage: 38,
+        damage: 40,
         speedMultiplier: 1,
         obstacleMultiplier: 2,
         piercingMultiplier: 1.5,
