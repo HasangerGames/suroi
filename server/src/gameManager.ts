@@ -2,13 +2,12 @@ import { TeamMode } from "@common/constants";
 import { ModeName } from "@common/definitions/modes";
 import { pickRandomInArray } from "@common/utils/random";
 import Cluster, { type Worker } from "node:cluster";
-import { App, WebSocket } from "uWebSockets.js";
 import { Game } from "./game";
 import { PlayerSocketData } from "./objects/player";
 import { resetTeams } from "./server";
 import { Config } from "./utils/config";
 import { modeFromMap } from "./utils/misc";
-import { forbidden, getIP, getPunishment, parseRole, RateLimiter, serverLog, serverWarn, StaticOrSwitched, Switcher } from "./utils/serverHelpers";
+import { getIP, getPunishment, parseRole, RateLimiter, serverLog, serverWarn, StaticOrSwitched, Switcher } from "./utils/serverHelpers";
 
 export enum WorkerMessages {
     UpdateTeamMode,
@@ -153,6 +152,7 @@ export class GameManager {
         if (this.creating) return this.creating.id;
 
         const eligibleGames = this.games.filter((g?: GameContainer): g is GameContainer =>
+            // biome-ignore lint/complexity/useOptionalChain: can't use an optional chain because the return type must be a boolean
             g !== undefined
             && g.allowJoin
             && g.aliveCount < (Config.maxPlayersPerGame ?? Infinity)
@@ -165,7 +165,7 @@ export class GameManager {
         )?.id;
     }
 
-    async newGame(id: number | undefined): Promise<GameContainer | undefined> {
+    newGame(id: number | undefined): Promise<GameContainer | undefined> {
         return new Promise<GameContainer | undefined>(resolve => {
             if (this.creating) {
                 this.creating.promiseCallbacks.push(resolve);
@@ -239,6 +239,7 @@ if (!Cluster.isPrimary) {
     process.on("uncaughtException", e => {
         game.error("An unhandled error occurred. Details:", e);
         game.kill();
+        // TODO Gracefully shut down the game
     });
 
     process.on("message", (message: WorkerMessage) => {
@@ -278,89 +279,75 @@ if (!Cluster.isPrimary) {
         ? new RateLimiter(maxJoinAttempts.count, maxJoinAttempts.duration)
         : undefined;
 
-    App().ws("/play", {
-        async upgrade(res, req, context) {
-            let aborted = false;
-            res.onAborted(() => aborted = true);
+    Bun.serve({
+        hostname: Config.hostname,
+        port: Config.port + id + 1,
+        routes: {
+            "/play": async(req, res) => {
+                if (!game.allowJoin) {
+                    return new Response("403 Forbidden");
+                }
 
-            if (!game.allowJoin) {
-                forbidden(res);
-                return;
-            }
+                const ip = getIP(req, res);
+                const searchParams = new URLSearchParams(req.url.slice(req.url.indexOf("?")));
 
-            // These lines must be before the await to prevent uWS errors
-            // Accessing req isn't allowed after an await
-            const ip = getIP(res, req);
-            const searchParams = new URLSearchParams(req.getQuery());
-            const webSocketKey = req.getHeader("sec-websocket-key");
-            const webSocketProtocol = req.getHeader("sec-websocket-protocol");
-            const webSocketExtensions = req.getHeader("sec-websocket-extensions");
+                if (simultaneousConnections?.isLimited(ip)) {
+                    game.warn(ip, "exceeded maximum simultaneous connections");
+                    return new Response("403 Forbidden");
+                }
+                if (joinAttempts?.isLimited(ip)) {
+                    game.warn(ip, "exceeded maximum join attempts");
+                    return new Response("403 Forbidden");
+                }
+                joinAttempts?.increment(ip);
 
-            if (simultaneousConnections?.isLimited(ip)) {
-                game.warn(ip, "exceeded maximum simultaneous connections");
-                forbidden(res);
-                return;
-            }
-            if (joinAttempts?.isLimited(ip)) {
-                game.warn(ip, "exceeded maximum join attempts");
-                forbidden(res);
-                return;
-            }
-            joinAttempts?.increment(ip);
+                const punishment = await getPunishment(ip);
+                if (punishment) {
+                    return new Response("403 Forbidden");
+                }
 
-            const punishment = await getPunishment(ip);
-
-            if (aborted) return;
-
-            if (punishment) {
-                forbidden(res);
-                return;
-            }
-
-            const { role, isDev, nameColor } = parseRole(searchParams);
-            res.cork(() => res.upgrade(
-                {
-                    ip,
-                    teamID: searchParams.get("teamID") ?? undefined,
-                    autoFill: Boolean(searchParams.get("autoFill")),
-                    role,
-                    isDev,
-                    nameColor,
-                    lobbyClearing: searchParams.get("lobbyClearing") === "true",
-                    weaponPreset: searchParams.get("weaponPreset") ?? ""
-                } satisfies PlayerSocketData,
-                webSocketKey,
-                webSocketProtocol,
-                webSocketExtensions,
-                context
-            ));
-        },
-
-        open(socket: WebSocket<PlayerSocketData>) {
-            const data = socket.getUserData();
-            data.player = game.addPlayer(socket);
-            if (data.player === undefined) return;
-
-            simultaneousConnections?.increment(data.ip);
-            // data.player.sendGameOverPacket(false); // uncomment to test game over screen
-        },
-
-        message(socket: WebSocket<PlayerSocketData>, message: ArrayBuffer) {
-            try {
-                game.onMessage(socket.getUserData().player, message);
-            } catch (e) {
-                console.warn("Error parsing message:", e);
+                const { role, isDev, nameColor } = parseRole(searchParams);
+                res.upgrade(req, {
+                    data: {
+                        ip,
+                        teamID: searchParams.get("teamID") ?? undefined,
+                        autoFill: Boolean(searchParams.get("autoFill")),
+                        role,
+                        isDev,
+                        nameColor,
+                        lobbyClearing: searchParams.get("lobbyClearing") === "true",
+                        weaponPreset: searchParams.get("weaponPreset") ?? ""
+                    } satisfies PlayerSocketData
+                });
             }
         },
+        websocket: {
+            open(socket: Bun.ServerWebSocket<PlayerSocketData>) {
+                const data = socket.data;
+                data.player = game.addPlayer(socket);
+                if (data.player === undefined) return;
 
-        close(socket: WebSocket<PlayerSocketData>) {
-            const { player, ip } = socket.getUserData();
+                simultaneousConnections?.increment(data.ip);
+                // data.player.sendGameOverPacket(false); // uncomment to test game over screen
+            },
 
-            if (player) game.removePlayer(player);
-            if (ip) simultaneousConnections?.decrement(ip);
+            message(socket: Bun.ServerWebSocket<PlayerSocketData>, message: Buffer) {
+                try {
+                    game.onMessage(socket.data.player, message.buffer as ArrayBuffer);
+                } catch (e) {
+                    console.warn("Error parsing message:", e);
+                }
+            },
+
+            close(socket: Bun.ServerWebSocket<PlayerSocketData>) {
+                const { player, ip } = socket.data;
+
+                if (player) game.removePlayer(player);
+                if (ip) simultaneousConnections?.decrement(ip);
+            }
         }
-    }).listen(Config.hostname, Config.port + id + 1, () => {
-        game.setGameData({ allowJoin: true });
-        game.log(`Listening on ${Config.hostname}:${Config.port + id + 1}`);
     });
+
+    game.setGameData({ allowJoin: true });
+    game.log(`Listening on ${Config.hostname}:${Config.port + id + 1}`);
 }

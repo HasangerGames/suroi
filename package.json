@@ -1,34 +1,25 @@
 {
   "name": "suroi",
-  "version": "0.28.2",
+  "version": "0.30.0",
   "description": "An open-source 2D battle royale game inspired by surviv.io.",
   "scripts": {
-    "build": "pnpm -r build",
-    "build:client": "cd client && pnpm build",
-    "build:server": "cd server && pnpm build",
-    "start": "cd server && pnpm start",
-    "dev": "pnpm -r dev",
-    "dev:client": "cd client && pnpm dev",
-    "dev:server": "cd server && pnpm dev",
-    "dev:test": "cd tests && pnpm stressTest",
-    "watch:server": "cd server && tsc --noEmit --watch",
-    "updateConfigSchema": "cd server && pnpm updateConfigSchema",
-    "typecheck": "tsc -v --noEmit",
-    "lint": "eslint . --fix",
-    "lint:check": "eslint .",
-    "lint:ci": "eslint . --max-warnings 0",
-    "validateDefinitions": "cd tests && pnpm build && pnpm validateDefinitions",
-    "validateSvgs": "cd tests && pnpm validateSvgs",
-    "sanityCheck": "pnpm lint:check && pnpm typecheck && pnpm validateDefinitions",
-    "fullReinstall": "rm -r node_modules pnpm-lock.yaml client/node_modules server/node_modules common/node_modules tests/node_modules && pnpm install",
-    "fullReinstallWin": "del /f /s /q node_modules\\* pnpm-lock.yaml client\\node_modules\\* server\\node_modules\\* common\\node_modules\\* tests\\node_modules\\* & pnpm install"
-  },
-  "engines": {
-    "node": ">=20.0.0",
-    "pnpm": ">=9.5.0"
+    "build:client": "cd client && bun build:client",
+    "start": "cd server && bun .",
+    "dev": "bun -F '*' dev",
+    "dev:client": "cd client && bun dev",
+    "dev:server": "cd server && bun dev",
+    "dev:test": "cd tests && bun stressTest",
+    "watch:server": "cd server && bunx --bun tsc --noEmit --watch",
+    "updateConfigSchema": "cd server && bun updateConfigSchema",
+    "lint": "bunx --bun biome lint --fix",
+    "lint:check": "bunx --bun biome lint",
+    "validateDefinitions": "cd tests && bun validateDefinitions",
+    "validateSvgs": "cd tests && bun validateSvgs",
+    "fullReinstall": "rm -r bun.lock node_modules server/node_modules && bun install",
+    "fullReinstallWin": "del /f /s /q bun.lock node_modules\\* server\\node_modules\\* & bun install"
   },
   "keywords": [
-    "nodejs",
+    "bun",
     "typescript",
     "battle-royale",
     "io-game",
@@ -36,12 +27,16 @@
   ],
   "license": "GPL-3.0",
   "devDependencies": {
-    "@eslint/js": "^9.34.0",
-    "@stylistic/eslint-plugin": "^4.4.1",
-    "@types/node": "^22.18.0",
-    "eslint": "^9.34.0",
-    "typescript": "^5.9.2",
-    "typescript-eslint": "^8.40.0"
+    "@biomejs/biome": "2.2.4",
+    "@types/node": "^22.18.13",
+    "typescript": "^5.9.3"
   },
-  "packageManager": "pnpm@10.11.0+sha512.6540583f41cc5f628eb3d9773ecee802f4f9ef9923cc45b69890fb47991d4b092964694ec3a4f738a420c918a333062c8b925d312f42e4f0c263eb603551f977"
+  "workspaces": ["client", "common", "server", "tests"],
+  "trustedDependencies": [
+    "@parcel/watcher",
+    "@swc/core",
+    "esbuild",
+    "skia-canvas",
+    "unrs-resolver"
+  ]
 }

@@ -143,6 +143,7 @@ export interface ItemDefinition extends ObjectDefinition {
     readonly devItem?: boolean
     readonly reskins?: ModeName[]
     readonly mapIndicator?: string
+    readonly hideInHUD?: boolean
 }
 
 export interface InventoryItemDefinition extends ItemDefinition {
@@ -151,6 +152,8 @@ export interface InventoryItemDefinition extends ItemDefinition {
         readonly right: Vector
     }
     readonly killfeedFrame?: string
+    readonly translationString?: string
+    readonly lootAndKillfeedTranslationString?: boolean
     readonly killstreak?: boolean
     readonly speedMultiplier: number
     /**

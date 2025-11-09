@@ -59,7 +59,7 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
         this.updateFromData(data, true);
     }
 
-    ceilingRaycastLines?: Array<[Vector, Vector]>;
+    ceilingRaycastLines?: [Vector, Vector][];
 
     toggleCeiling(): void {
         if (this.ceilingRaycastLines) this.ceilingRaycastLines.length = 0;
@@ -429,6 +429,7 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
             definition: imageDef,
             isCeiling
         };
+
         this.images.set(imageDef, image);
 
         if (imageDef.beachTinted) {
@@ -445,7 +446,9 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
         const frame = this.dead
             ? imageDef.residue ?? imageDef.damaged ?? imageDef.key
             : imageDef.key;
+
         sprite
+            .setZIndex(imageDef.zIndex ?? ZIndexes.Ground) // broken
             .setFrame(frame)
             .setVPos(toPixiCoords(imageDef.position))
             .setVisible(frame !== undefined && !(this.dead && imageDef.hideOnDead));
@@ -459,8 +462,6 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
         }
 
         if (imageDef.alpha) sprite.setAlpha(imageDef.alpha);
-
-        sprite.setZIndex(imageDef.zIndex ?? 0);
 
         if (imageDef.scale) sprite.scale = (this.definition.resetCeilingResidueScale && this.dead) ? 1 : imageDef.scale;
 

@@ -65,6 +65,9 @@ export class Bullet extends BaseBullet {
         }
 
         this._image.anchor.set(1, 0.5);
+        if (tracerStats?.spinSpeed !== undefined) {
+            this._image.anchor.set(0.5, 0.5);
+        }
 
         const color = new Color(
             tracerStats?.color === -1
@@ -110,14 +113,17 @@ export class Bullet extends BaseBullet {
                 }
             }
 
-            SoundManager.play(
-                `${gunIdString}_fire${this.lastShot ? "_last" : ""}`,
-                {
-                    position: this.position,
-                    layer: this.layer,
-                    speed: soundSpeed
-                }
-            );
+            const options = {
+                position: this.position,
+                layer: this.layer,
+                speed: soundSpeed
+            };
+
+            SoundManager.play(`${gunIdString}_fire${this.lastShot ? "_last" : ""}`, options);
+
+            if (this.cycle) {
+                SoundManager.play(`${gunIdString}_cycle`, options);
+            }
         }
     }
 
@@ -145,7 +151,7 @@ export class Bullet extends BaseBullet {
 
                 const { point, normal } = collision.intersection;
 
-                if (isPlayer && collision.reflected) {
+                if ((isPlayer && collision.reflected) || (!isPlayer && this.reflective)) {
                     SoundManager.play(
                         `bullet_reflection_${random(1, 5)}`,
                         {
@@ -168,6 +174,10 @@ export class Bullet extends BaseBullet {
 
                 this.dead = true;
                 break;
+            }
+
+            if (this.definition.tracer?.spinSpeed !== undefined) {
+                this._image.rotation += this.definition.tracer.spinSpeed;
             }
         }
 
@@ -224,7 +234,7 @@ export class Bullet extends BaseBullet {
 
         if (
             this.definition.trail
-            && GameConsole.getBuiltInCVar("cv_cooler_graphics")
+            && (this.definition.ignoreCoolerGraphics || GameConsole.getBuiltInCVar("cv_cooler_graphics"))
             && Date.now() - this._lastParticleTrail >= this.definition.trail.interval
         ) {
             const trail = this.definition.trail;

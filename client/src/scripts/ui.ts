@@ -3,6 +3,7 @@ import { Badges, type BadgeDefinition } from "@common/definitions/badges";
 import { EmoteCategory, Emotes, getBadgeIdString, isEmoteBadge, type EmoteDefinition } from "@common/definitions/emotes";
 import { Ammos, type AmmoDefinition } from "@common/definitions/items/ammos";
 import { type ArmorDefinition } from "@common/definitions/items/armors";
+import type { BackpackDefinition } from "@common/definitions/items/backpacks";
 import { HealType, HealingItems, type HealingItemDefinition } from "@common/definitions/items/healingItems";
 import { PerkIds, Perks } from "@common/definitions/items/perks";
 import { Scopes, type ScopeDefinition } from "@common/definitions/items/scopes";
@@ -15,9 +16,7 @@ import { DefinitionType, type ReferenceTo, type ReifiableDef } from "@common/uti
 import { pickRandomInArray } from "@common/utils/random";
 import { sound } from "@pixi/sound";
 import $ from "jquery";
-import { Color, isWebGLSupported, isWebGPUSupported } from "pixi.js";
-import { posts } from "virtual:news-posts";
-import type { NewsPost } from "../../vite/plugins/news-posts-plugin";
+import { Color, ColorMatrixFilter, isWebGLSupported, isWebGPUSupported } from "pixi.js";
 import { Config, type Region, type ServerInfo } from "./config";
 import { GameConsole } from "./console/gameConsole";
 import { defaultClientCVars, type CVarTypeMapping } from "./console/variables";
@@ -30,21 +29,12 @@ import { UIManager } from "./managers/uiManager";
 import { body, createDropdown } from "./uiHelpers";
 import { EMOTE_SLOTS, UI_DEBUG_MODE } from "./utils/constants";
 import { Crosshairs, getCrosshair } from "./utils/crosshairs";
-import { html, humanDate, requestFullscreen } from "./utils/misc";
+import { html, requestFullscreen } from "./utils/misc";
 import { spritesheetLoadPromise } from "./utils/pixi";
 import { TRANSLATIONS, getTranslatedString } from "./utils/translations/translations";
 import type { TranslationKeys } from "./utils/translations/typings";
-import type { BackpackDefinition } from "@common/definitions/items/backpacks";
-
-/*
-    eslint-disable
-
-    @stylistic/indent
-*/
-
-/*
-    `@stylistic/indent`: can eslint stop [expletive redacted] at indenting stuff
-*/
+import { CameraManager } from "./managers/cameraManager";
+import { isMobile } from "pixi.js";
 
 interface RegionInfo extends Region {
     readonly playerCount?: number
@@ -118,11 +108,11 @@ export function resetPlayButtons(): void { // TODO Refactor this method to use u
         undefined,
         "url(./img/misc/squads.svg)"
     ];
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    // biome-ignore lint/style/noNonNullAssertion: nextTeamMode - 1 must be 0, 1, 2, or 3
     ui.nextTeamModeIcon.css("background-image", nextTeamMode ? teamModeIcons[nextTeamMode - 1]! : "none");
 
     ui.nextModeMsg.toggle(nextMode !== undefined);
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    // biome-ignore lint/style/noNonNullAssertion: nextMode must be set here
     ui.nextModeIcon.css("background-image", `url(${Modes[nextMode!]?.playButtonImage ?? "./img/game/shared/emotes/suroi_logo.svg"})`);
 }
 
@@ -226,7 +216,7 @@ export async function fetchServerData(): Promise<void> {
         if (!selectedRegion) return;
         const { teamModeSwitchTime, modeSwitchTime, retrievedTime } = selectedRegion;
 
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        // biome-ignore lint/style/noNonNullAssertion: retrievedTime must exist at this point in the code
         const offset = Date.now() - retrievedTime!;
         const timeBeforeTeamModeSwitch = (teamModeSwitchTime ?? Infinity) - offset;
         const timeBeforeModeSwitch = (modeSwitchTime ?? Infinity) - offset;
@@ -265,7 +255,6 @@ export async function fetchServerData(): Promise<void> {
     selectedRegion = regionInfo[GameConsole.getBuiltInCVar("cv_region") ?? Config.defaultRegion];
     updateServerSelectors();
 
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
     serverList.children("li.server-list-item").on("click", function(this: HTMLLIElement) {
         const region = this.getAttribute("data-region");
 
@@ -294,8 +283,9 @@ export async function fetchServerData(): Promise<void> {
 }
 
 // Take the stuff that needs fetchServerData out of setUpUI and put it here
+// biome-ignore lint/suspicious/useAwait: there's a lot going on in this function
 export async function finalizeUI(): Promise<void> {
-    const { mode: { specialLogo, playButtonImage, darkShaders }, modeName } = Game;
+    const { mode: { specialLogo, playButtonImage, canvasFilters }, modeName } = Game;
 
     // Change the menu based on the mode.
     $("#splash-ui").css("background-image", `url(./img/backgrounds/menu/${modeName}.png)`);
@@ -313,17 +303,18 @@ export async function finalizeUI(): Promise<void> {
         }
     }
 
-    // Darken canvas (halloween mode)
-    // TODO Use pixi for this
-    if (darkShaders) {
-        $("#game-canvas").css({
-            "filter": "brightness(0.65) saturate(0.85)",
-            "position": "relative",
-            "z-index": "-1"
-        });
+    // Apply filters to canvas
+    let filter: ColorMatrixFilter | undefined;
+    if (canvasFilters !== undefined) {
+        filter = new ColorMatrixFilter();
+        filter.saturate(-(1 - canvasFilters.saturation));
+        filter.brightness(canvasFilters.brightness, true);
     }
+    CameraManager.container.filters = filter ? [filter] : [];
+    MapManager.container.filters = filter ? [filter] : [];
 }
 
+// biome-ignore lint/suspicious/useAwait: there's a lot going on in this function
 export async function setUpUI(): Promise<void> {
     const ui = UIManager.ui;
 
@@ -361,16 +352,24 @@ export async function setUpUI(): Promise<void> {
 
         ui.ammoCounterContainer.show();
 
+        // Perk message
+        // ui.perkMsg.html(`
+        //     <div id="perk" style="background-image: url(./img/game/shared/loot/loot_background_perk.svg);">
+        //         <img class="perk-img" src="./img/game/shared/perks/loot_baron.svg" draggable="false" width="50" height="50"/>
+        //     </div>
+        //     <strong class="perk-name">Loot Baron</strong>
+        // `);
+
         // Kill feed messages
         const killFeed = ui.killFeed;
         for (let i = 0; i < 5; i++) {
-            const killFeedItem = $<HTMLDivElement>("<div>");
-            killFeedItem.addClass("kill-feed-item");
-            // noinspection HtmlUnknownTarget
-            killFeedItem.html(
-                '<img class="kill-icon" src="./img/misc/skull_icon.svg" alt="Skull"> Player killed Player with Mosin-Nagant'
+            killFeed.prepend(
+                $<HTMLDivElement>("<div>")
+                    .addClass("kill-feed-item")
+                    .html(
+                        '<img class="kill-icon" src="./img/misc/skull_icon.svg" alt="Skull"> Player killed Player with Mosin-Nagant'
+                    )
             );
-            killFeed.prepend(killFeedItem);
         }
     }
 
@@ -416,16 +415,6 @@ export async function setUpUI(): Promise<void> {
             GameConsole.setBuiltInCVar("cv_language", language);
         })();
     }
-
-    // Load news
-    ui.newsPosts.html((posts as NewsPost[]).slice(0, 5).map(post => `
-        <article class="splash-news-entry">
-            <div class="news-date">${humanDate(post.date)}</div>
-            <div class="news-title">${post.title}</div>
-            ${post.description}
-            <i>- ${post.author}</i>
-        </article>
-    `).join(""));
 
     createDropdown("#language-dropdown");
 
@@ -864,6 +853,10 @@ export async function setUpUI(): Promise<void> {
         {
             name: "dReammakers.",
             link: "https://www.youtube.com/channel/UCLid-yvmRUmpA5NBP34SOug"
+        },
+        {
+            name: "at6030",
+            link: "https://www.youtube.com/@aat6030"
         }
     ];
     const youtuber = pickRandomInArray(youtubers);
@@ -959,7 +952,6 @@ export async function setUpUI(): Promise<void> {
         void Game.endGame();
     });
 
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     $("#btn-play-again, #btn-spectate-replay").on("click", async() => {
         await Game.endGame();
         if (teamSocket) teamSocket.send(JSON.stringify({ type: CustomTeamMessages.Start })); // TODO Check if player is team leader
@@ -1114,7 +1106,6 @@ export async function setUpUI(): Promise<void> {
         const { idString, hideFromLoadout, rolesRequired } = skin;
         if (hideFromLoadout || !(rolesRequired ?? [role]).includes(role)) continue;
 
-        // noinspection CssUnknownTarget
         const skinItem = skinUiCache[idString] = $<HTMLDivElement>(
             `<div id="skin-${idString}" class="skins-list-item-container${idString === currentSkin ? " selected" : ""}">
                 ${renderSkin(skin)}
@@ -1289,7 +1280,7 @@ export async function setUpUI(): Promise<void> {
 
     loadCrosshair();
 
-    const crosshairCache: Array<JQuery<HTMLDivElement>> = [];
+    const crosshairCache: JQuery<HTMLDivElement>[] = [];
 
     GameConsole.variables.addChangeListener(
         "cv_loadout_crosshair",
@@ -1390,7 +1381,7 @@ export async function setUpUI(): Promise<void> {
 
         const activeBadge = GameConsole.getBuiltInCVar("cv_loadout_badge");
 
-        const badgeUiCache: Record<ReferenceTo<BadgeDefinition>, JQuery<HTMLDivElement>> = { [""]: noBadgeItem };
+        const badgeUiCache: Record<ReferenceTo<BadgeDefinition>, JQuery<HTMLDivElement>> = { "": noBadgeItem };
 
         function selectBadge(idString: ReferenceTo<BadgeDefinition>): void {
             badgeUiCache[idString].addClass("selected")
@@ -1401,7 +1392,6 @@ export async function setUpUI(): Promise<void> {
         $("#badges-list").append(
             noBadgeItem,
             ...allowedBadges.map(({ idString }) => {
-                // noinspection CssUnknownTarget
                 const badgeItem = badgeUiCache[idString] = $<HTMLDivElement>(
                     `<div id="badge-${idString}" class="badges-list-item-container${idString === activeBadge ? " selected" : ""}">\
                         <div class="badges-list-item">\
@@ -1886,7 +1876,6 @@ export async function setUpUI(): Promise<void> {
             localStorage.setItem("suroi_config", input);
             alert("Settings loaded successfully.");
             window.location.reload();
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (_) {
             error();
         }
@@ -2243,21 +2232,21 @@ export async function setUpUI(): Promise<void> {
             .toggleClass("fa-eye-slash", visible);
     });
 
+    if (isMobile.any) { // bruh
+        $("#tab-mobile").show();
+        $("#mobile-options").show();
+    }
     // Mobile event listeners
     if (InputManager.isMobile) {
-        $("#tab-mobile").show();
 
         // Interact message
         ui.interactMsg.on("click", () => {
             InputManager.addAction(UIManager.action.active ? InputActions.Cancel : InputActions.Interact);
         });
-        // noinspection HtmlUnknownTarget
         ui.interactKey.html('<img src="./img/misc/tap-icon.svg" alt="Tap">');
-
+        
         // Active weapon ammo button reloads
         ui.activeAmmo.on("click", () => GameConsole.handleQuery("reload", "never"));
-
-        $("#mobile-options").show();
 
         ui.menuButton.on("pointerup", () => ui.gameMenu.fadeToggle(250));
 

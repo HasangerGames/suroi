@@ -284,13 +284,13 @@ async function buildSpritesheets(modeName: ModeName): Promise<void> {
                 canvas.toBuffer("png", compilerOpts.renderOptions?.high)
             ]);
 
-            const writeAtlas = async(
+            const writeAtlas = (
                 image: Buffer,
                 json: SpritesheetData,
                 resolution: number,
                 sheetList: SpritesheetData[],
                 filesList: string[]
-            ): Promise<void> => {
+            ): void => {
                 const cacheName = `${modeName}-${shortHash(image)}@${resolution}x`;
                 const filePath = json.meta.image = `img/atlases/${cacheName}.png`;
 
@@ -303,14 +303,14 @@ async function buildSpritesheets(modeName: ModeName): Promise<void> {
                 filesList.push(cacheName);
             };
 
-            void writeAtlas(
+            writeAtlas(
                 lowBuffer,
                 lowJSON,
                 0.5,
                 sheets.low,
                 atlasFiles.low
             );
-            void writeAtlas(
+            writeAtlas(
                 highBuffer,
                 highJSON,
                 1,
@@ -357,7 +357,7 @@ export function imageSpritesheet(): Plugin[] {
         {
             name: `${PLUGIN_NAME}:serve`,
             apply: "serve",
-            async configureServer(server) {
+            configureServer(server) {
                 const onChange = (filename: string): void => {
                     const dir = filename.split(path.sep)[3] as SpritesheetNames;
                     const invalidatedModes = Object.entries(Modes)

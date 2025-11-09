@@ -24,6 +24,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
 
     readonly image: SuroiSprite;
     smokeEmitter?: ParticleEmitter;
+    particleEmitter?: ParticleEmitter;
     particleFrames!: string[];
 
     definition!: ObstacleDefinition;
@@ -182,6 +183,30 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
                 });
             }
 
+            if (!this.particleEmitter && "emitParticle" in definition) {
+                this.particleEmitter = ParticleManager.addEmitter({
+                    delay: 450,
+                    active: false,
+                    spawnOptions: () => ({
+                        frames: definition.emitParticle ?? `${definition.idString}_particle`,
+                        position: this.hitbox.randomPoint(),
+                        layer: this.layer,
+                        zIndex: Numeric.max((definition.zIndex ?? ZIndexes.ObstaclesLayer1) + 1, ZIndexes.Players),
+                        lifetime: 2000,
+                        rotation: 0,
+                        alpha: {
+                            start: 1,
+                            end: 0
+                        },
+                        scale: {
+                            start: 0.95,
+                            end: 1.2
+                        },
+                        speed: Vec(randomFloat(-1, 1), -5)
+                    })
+                });
+            }
+
             if (
                 definition.sound
                 && !this.destroyed
@@ -201,7 +226,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
                         else this.playSound(definition.sound.name, definition.sound);
                     }
 
-                    if (this.definition.airdropUnlock) {
+                    if (this.definition.airdrop !== undefined) {
                         const options = (minSpeed: number, maxSpeed: number): Partial<ParticleOptions> => ({
                             zIndex: Numeric.max((this.definition.zIndex ?? ZIndexes.Players) + 1, 4),
                             lifetime: 1000,
@@ -220,39 +245,41 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
                         });
 
                         ParticleManager.spawnParticle({
-                            frames: "airdrop_particle_1",
+                            frames: `${this.definition.airdrop.particle}_1`,
                             position: this.position,
                             ...options(8, 18),
                             rotation: { start: 0, end: randomFloat(Math.PI / 2, Math.PI * 2) }
                         } as ParticleOptions);
 
-                        texture = "airdrop_crate_unlocking";
+                        texture = this.definition.airdrop.unlockFrame;
 
-                        if (Game.modeName === "winter") {
-                            ParticleManager.spawnParticles(1, () => ({
-                                frames: "airdrop_particle_4",
-                                position: this.hitbox.randomPoint(),
-                                ...options(7, 9)
-                            } as ParticleOptions));
-                            ParticleManager.spawnParticles(2, () => ({
-                                frames: "airdrop_particle_5",
-                                position: this.hitbox.randomPoint(),
-                                ...options(4, 9)
-                            } as ParticleOptions));
+                        if ((this.definition.airdrop.particleVariations ?? 2) > 1) {
+                            if (Game.modeName === "winter") {
+                                ParticleManager.spawnParticles(1, () => ({
+                                    frames: "airdrop_particle_4",
+                                    position: this.hitbox.randomPoint(),
+                                    ...options(7, 9)
+                                } as ParticleOptions));
+                                ParticleManager.spawnParticles(2, () => ({
+                                    frames: "airdrop_particle_5",
+                                    position: this.hitbox.randomPoint(),
+                                    ...options(4, 9)
+                                } as ParticleOptions));
+                            }
+
+                            this.addTimeout(() => {
+                                ParticleManager.spawnParticles(this.definition.airdrop?.particleAmount ?? 2, () => ({
+                                    frames: `${this.definition.airdrop?.particle}_2`,
+                                    position: this.hitbox.randomPoint(),
+                                    ...options(4, 9)
+                                } as ParticleOptions));
+                                ParticleManager.spawnParticles(this.definition.airdrop?.particleAmount ?? 2, () => ({
+                                    frames: `${this.definition.airdrop?.particle}_3`,
+                                    position: this.hitbox.randomPoint(),
+                                    ...options(4, 9)
+                                } as ParticleOptions));
+                            }, 800);
                         }
-
-                        this.addTimeout(() => {
-                            ParticleManager.spawnParticles(2, () => ({
-                                frames: "airdrop_particle_2",
-                                position: this.hitbox.randomPoint(),
-                                ...options(4, 9)
-                            } as ParticleOptions));
-                            ParticleManager.spawnParticles(2, () => ({
-                                frames: "airdrop_particle_3",
-                                position: this.hitbox.randomPoint(),
-                                ...options(4, 9)
-                            } as ParticleOptions));
-                        }, 800);
                     }
                 }
             }
@@ -273,6 +300,10 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
 
             if ("emitParticles" in definition) this.smokeEmitter.delay = 300;
             else this.smokeEmitter.delay = Numeric.lerp(150, 3000, scaleFactor);
+        }
+
+        if (this.particleEmitter) {
+            this.particleEmitter.active = !this.dead && "emitParticle" in definition;
         }
 
         this.container.scale.set(this.dead ? 1 : this.scale);
@@ -405,6 +436,11 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
                     this.smokeEmitter.destroy();
                 }
 
+                if (this.particleEmitter) {
+                    this.particleEmitter.active = false;
+                    this.particleEmitter.destroy();
+                }
+
                 ParticleManager.spawnParticles(10, () => ({
                     frames: this.particleFrames,
                     position: this.hitbox.randomPoint(),
@@ -455,6 +491,8 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
             // TODO opened, powered, and activated states can probably be combined in some way
             if (this.dead) {
                 texture = definition.frames?.residue ?? `${definition.idString}_residue`;
+            } else if (!this.door?.locked && this.powered && definition.frames?.opened && !(definition as { openOnce?: boolean }).openOnce) {
+                texture = definition.frames.opened;
             } else if (!this.door?.locked && !this.powered && this.door?.offset !== 0 && definition.frames?.opened) {
                 texture = definition.frames.opened;
             } else if (!this.door?.locked && !this.powered && definition.requiresPower && definition.frames?.powered) {
@@ -467,7 +505,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
         }
 
         if (this.variation !== undefined && !this.dead && !(definition.isTree && !definition.trunkVariations)) {
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            // biome-ignore lint/style/noNonNullAssertion: idk man I'm tired
             texture += `_${definition.isTree && definition.leavesVariations ? Math.ceil((this.variation + 1) / definition.trunkVariations!) : this.variation + 1}`;
         }
 
@@ -647,8 +685,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
                 break;
             }
             case 3: {
-                // offset 3 means that this is a "swivel" door, meaning that there is an altHitbox
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                // biome-ignore lint/style/noNonNullAssertion: offset 3 means that this is a "swivel" door, meaning that there is an altHitbox
                 backupHitbox = this._door.openAltHitbox!.clone();
                 break;
             }
@@ -747,7 +784,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
     }
 
     canInteract(player: Player): boolean {
-        type DoorDef = { openOnce?: boolean, automatic?: boolean };
+        interface DoorDef { openOnce?: boolean, automatic?: boolean }
         if (this._door !== undefined
             && (this.definition as DoorDef).openOnce
             && !this._door.locked
@@ -807,6 +844,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
         this.waterOverlaySprite?.destroy();
         this.doorMask?.destroy();
         this.smokeEmitter?.destroy();
+        this.particleEmitter?.destroy();
         this._glow?.kill();
         this._glowTween?.kill();
         this._flickerTimeout?.kill();

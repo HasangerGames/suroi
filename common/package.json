@@ -2,12 +2,11 @@
   "name": "@suroi/common",
   "description": "",
   "private": true,
-  "main": "index.js",
   "scripts": {},
   "keywords": [],
   "license": "GPL-3.0",
   "devDependencies": {
-    "@types/node": "^22.18.0",
+    "@types/node": "^22.18.6",
     "typescript": "^5.9.2"
   }
 }

@@ -16,7 +16,6 @@ export type BaseGameObject = InstanceType<ReturnType<typeof makeGameObjectTempla
 // a simpler version of PredicateFor that typescript seems to digest better when used as a class
 type LoosePredicateFor<Cat extends ObjectCategory = ObjectCategory> = { readonly type: Cat } & {
     // if Cat === ObjectCategory, then they should all be boolean | undefined; if not, narrow as appropriate
-    // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
     readonly [K in (keyof typeof ObjectCategory & string) as `is${K}`]: ObjectCategory extends Cat
         ? boolean | undefined
         : (typeof ObjectCategory)[K] extends Cat
@@ -75,8 +74,6 @@ export type CommonObjectMapping = {
  */
 export type CommonGameObject = CommonObjectMapping[ObjectCategory];
 
-// lol you're so funny eslint
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export const makeGameObjectTemplate = () => {
     type RealType<Cat extends ObjectCategory = ObjectCategory> = typeof GameObjectBase<Cat> & AbstractConstructor<LoosePredicateFor<Cat>>;
 

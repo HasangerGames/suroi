@@ -157,8 +157,7 @@ export class Building extends BaseGameObject.derive(ObjectCategory.Building) {
 
         puzzle.inputOrder.push(piece.puzzlePiece as string);
 
-        // we hope that puzzle and puzzle.order are sync'd correctly with the definition
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        // biome-ignore lint/style/noNonNullAssertion: we hope that puzzle and puzzle.order are sync'd correctly with the definition
         const order = this.definition.puzzle!.order!;
 
         // hack to compare two arrays :boffy:
@@ -184,8 +183,7 @@ export class Building extends BaseGameObject.derive(ObjectCategory.Building) {
             return;
         }
 
-        // we hope the `this.puzzle` field is sync'd with the definition
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        // biome-ignore lint/style/noNonNullAssertion: we hope the `this.puzzle` field is sync'd with the definition
         const puzzleDef = this.definition.puzzle!;
 
         runOrWait(

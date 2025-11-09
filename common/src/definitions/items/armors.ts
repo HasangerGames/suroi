@@ -8,6 +8,7 @@ export type ArmorDefinition = ItemDefinition & {
     readonly perk?: ReferenceTo<PerkDefinition>
     readonly positionOverride?: number
     readonly positionOverrideDowned?: number
+    readonly emitSound?: string
 } & (
     | {
         readonly armorType: ArmorType.Helmet
@@ -64,7 +65,6 @@ export const Armors = new ObjectDefinitions<ArmorDefinition>([
         perk: PerkIds.ThermalGoggles,
         mapIndicator: "helmet_indicator"
     },
-
     //
     // Vests
     //
@@ -117,5 +117,17 @@ export const Armors = new ObjectDefinitions<ArmorDefinition>([
         damageReduction: 0.72,
         color: 0x2f0000,
         noDrop: true
-    }
+    },
+    {
+        idString: "werewolf_fur",
+        name: "Werewolf Fur",
+        defType: DefinitionType.Armor,
+        armorType: ArmorType.Vest,
+        level: 5,
+        damageReduction: 0.2,
+        color: 0x4d4d4d,
+        noDrop: true,
+        hideInHUD: true,
+        emitSound: "werewolf"
+    },
 ]);

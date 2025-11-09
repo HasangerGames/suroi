@@ -607,9 +607,8 @@ export function extractCommandsAndArgs(input: string): ParserNode {
                 }
 
                 throwCSE("Unexpected grouping character '('");
+                break; // technically not necessary because the above line throws an exception, but it makes biome shut up
             }
-            // you're stupid
-            // eslint-disable-next-line no-fallthrough
             case ")": {
                 if (commenting) break;
 
@@ -667,15 +666,13 @@ export function extractCommandsAndArgs(input: string): ParserNode {
                     // if there are currently no args, then the new node will automatically be created
                     // on the next call to addCharToLast, so we don't need to do anything
                     if (args.length) {
-                        // the array isn't empty => there is an element at index -1
-                        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                        // biome-ignore lint/style/noNonNullAssertion: the array isn't empty => there is an element at index -1
                         const lastArg = args.at(-1)!.parts;
                         let lastPart: ParsedCommand["args"][number]["parts"][number] | undefined;
                         if ((lastPart = lastArg.at(-1))?.content.length === 0) {
                             // if the current part is empty, reuse it by switching its type
 
-                            // undefined is not equal to 0 => coming here implies lastPart is non-null
-                            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                            // biome-ignore lint/style/noNonNullAssertion: undefined is not equal to 0 => coming here implies lastPart is non-null
                             lastPart!.type = argType;
                         } else {
                             // otherwise create a new one
@@ -697,16 +694,13 @@ export function extractCommandsAndArgs(input: string): ParserNode {
                     let lastArg: ParsedCommand["args"][number]["parts"] | undefined;
                     if (
                         args.length === 0
-                        // above condition checks that args isn't empty
-                        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                        // biome-ignore lint/style/noNonNullAssertion: above condition checks that args isn't empty
                         || (lastArg = args.at(-1)!.parts).at(-1)?.content.length === 0
                     ) {
                         throwCSE("Unexpected empty reference", -1, 2);
                     }
 
-                    // empty args array results in thrown CSE; args is
-                    // therefore not empty by the time we're here
-                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                    // biome-ignore lint/style/noNonNullAssertion: empty args array results in thrown CSE; args is therefore not empty by the time we're here
                     (lastArg ??= args.at(-1)!.parts).push({ type: argType, content: "", startIndex: charIndex });
                 } else if (parserPhase === "args") {
                     addCharToLast(char);
@@ -867,6 +861,7 @@ function makeArgsResolver() {
      * A "constant argument list" is one that references no variables (and thus would
      * always be resolved identically)
      */
+    // biome-ignore lint/complexity/useArrowFunction: not sure why this isn't an arrow function but I'm not touching it
     return function(args: Readonly<ParsedCommand["args"]>): [isConst: boolean, values: string[]] {
         let isConst = true;
         const value = args.map(e => {
@@ -1061,7 +1056,6 @@ export function evalQuery(query: ParserNode): boolean {
 // ! experimental compiler code for future reference !
 // !-------------------------------------------------!
 
-// /* eslint-disable @typescript-eslint/unified-signatures */
 // // split for clarity (different parameter names)
 
 // function makeCompiledAction(cb: () => boolean, original: string): CompiledAction;

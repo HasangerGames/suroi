@@ -430,7 +430,6 @@ export class ByteStream {
      * will always be written as `false` to the stream.
      */
     writeBooleanGroup(
-        // eslint-disable-next-line @stylistic/type-annotation-spacing
         b0 : boolean, b1?: boolean, b2?: boolean, b3?: boolean,
         b4?: boolean, b5?: boolean, b6?: boolean, b7?: boolean
     ): this {
@@ -481,7 +480,6 @@ export class ByteStream {
      * will always be written as `false` to the stream.
      */
     writeBooleanGroup2(
-        // eslint-disable-next-line @stylistic/type-annotation-spacing
         b0 : boolean, b1?: boolean, b2?: boolean, b3?: boolean,
         b4?: boolean, b5?: boolean, b6?: boolean, b7?: boolean,
         b8?: boolean, b9?: boolean, bA?: boolean, bB?: boolean,

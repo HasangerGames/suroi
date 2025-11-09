@@ -1,13 +1,5 @@
 import { DefinitionType, ObjectDefinitions, type ItemDefinition } from "../../utils/objectDefinitions";
 
-/*
-    eslint-disable @stylistic/no-multi-spaces
-*/
-
-/*
-    `@stylistic/no-multi-spaces`: Disabled to allow nicer alignment
-*/
-
 export interface SkinDefinition extends ItemDefinition {
     readonly defType: DefinitionType.Skin
 
@@ -135,13 +127,20 @@ export const Skins = new ObjectDefinitions<SkinDefinition>([
         ["Deer Season",           undefined, 0xf8651e,  0x9a3604],
         ["LOBOTOMY",              undefined, undefined, 0x00ff00],
         ["Veteran",               undefined, 0x636363,  0x2f7942],
-        ["Carpenter Uniform",     0x516951,  0x676e67,  0x273d27]
+        ["Carpenter Uniform",     0x516951,  0x676e67,  0x273d27],
+        ["Medical Suit",          0xc7c7c7,  0x94067f,  0x94067f],
+        ["Groundskeeper",         0x0f0e0f,  0x7d7d7d,  0x3b3b3b],
+        ["Demon",                 undefined, undefined, 0x0f0032],
+        ["Wounded",               undefined, undefined, 0x000000],
+        ["Failed Experiment",     undefined, undefined, 0x121a14],
+        ["Haunted",               undefined, undefined, 0x9a9a9a],
+        ["Overgrown",             undefined, undefined, 0x744475]
     ] satisfies ReadonlyArray<readonly [string, number?, number?, number?]>)
         .map(([name, baseTint, fistsTint, backpackTint]) => ({ ...skin(name, baseTint, fistsTint, backpackTint), hideFromLoadout: true })),
 
     // Special skins
     {
-        ...skin("Werewolf", 0x323232),
+        ...skin("Werewolf", undefined, undefined, 0x323232),
         hideFromLoadout: true,
         noSwap: true,
         noDrop: true

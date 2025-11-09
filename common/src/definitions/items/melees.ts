@@ -24,12 +24,18 @@ export interface MeleeDefinition extends InventoryItemDefinition {
     readonly swingSound?: string
     readonly stopSound?: string
     readonly hitSound?: string
+    /**
+     * "_switch" is added by the client.
+     */
+    readonly switchSound?: string
     readonly hitDelay?: number
     readonly radius: number
     readonly offset: Vector
     readonly cooldown: number
     readonly attackCooldown?: number
     readonly maxTargets?: number
+    readonly numberOfHits?: number
+    readonly delayBetweenHits?: number
 
     readonly fists: InventoryItemDefinition["fists"] & {
         readonly animationDuration: number
@@ -73,6 +79,335 @@ export interface MeleeDefinition extends InventoryItemDefinition {
         }
     }
 }
+
+const hatchet = (name: string): MeleeDefinition => {
+    return {
+        idString: name.toLowerCase().replace(/'/g, "").replace(/ /g, "_"),
+        name,
+        defType: DefinitionType.Melee,
+        tier: Tier.B,
+        damage: 38,
+        speedMultiplier: 1,
+        obstacleMultiplier: 2,
+        piercingMultiplier: 1.5,
+        radius: 2,
+        swingSound: "heavy_swing",
+        translationString: "hatchet",
+        switchSound: "hatchet",
+        killfeedFrame: "hatchet",
+        offset: Vec(5.2, -0.5),
+        cooldown: 420,
+        hitDelay: 180,
+        fists: {
+            animationDuration: 150,
+            left: Vec(40, -25),
+            right: Vec(40, 15)
+        },
+        image: {
+            position: Vec(42, 20),
+            angle: 135,
+            lootScale: 0.6
+        },
+        animation: [
+            { // warmup
+                duration: 100,
+                fists: {
+                    left: Vec(40, 25),
+                    right: Vec(0, 50)
+                },
+                image: {
+                    angle: 210,
+                    position: Vec(-10, 45)
+                }
+            },
+            {
+                duration: 150,
+                fists: {
+                    left: Vec(0, -50),
+                    right: Vec(40, -25)
+                },
+                image: {
+                    position: Vec(42, -25),
+                    angle: 65
+                }
+            },
+            {
+                duration: 150,
+                fists: {
+                    left: Vec(40, -25),
+                    right: Vec(40, 15)
+                },
+                image: {
+                    position: Vec(42, 20),
+                    angle: 135
+                }
+            }
+        ]
+    }
+};
+
+const crowbar = (name: string): MeleeDefinition => {
+    return {
+        idString: name.toLowerCase().replace(/'/g, "").replace(/ /g, "_"),
+        name,
+        defType: DefinitionType.Melee,
+        tier: Tier.A,
+        swingSound: "heavy_swing",
+        switchSound: "crowbar",
+        killfeedFrame: "crowbar",
+        translationString: "crowbar",
+        damage: 40,
+        speedMultiplier: 1,
+        obstacleMultiplier: 2.2,
+        piercingMultiplier: 2,
+        radius: 2.58,
+        offset: Vec(5.9, 1.7),
+        cooldown: 560,
+        fists: {
+            animationDuration: 200,
+            left: Vec(38, -35),
+            right: Vec(38, 35)
+        },
+        image: {
+            position: Vec(31, 41),
+            angle: 190,
+            lootScale: 0.65
+        },
+        animation: [
+            {
+                duration: 200,
+                fists: {
+                    left: Vec(38, -35),
+                    right: Vec(100, 35)
+                },
+                image: {
+                    position: Vec(110, 33),
+                    angle: 40
+                }
+            },
+            {
+                duration: 200,
+                fists: {
+                    left: Vec(38, -35),
+                    right: Vec(38, 35)
+                },
+                image: {
+                    position: Vec(31, 41),
+                    angle: 190
+                }
+            }
+        ]
+    }
+};
+
+const sickle = (name: string): MeleeDefinition => {
+    return     {
+        idString: name.toLowerCase().replace(/'/g, "").replace(/ /g, "_"),
+        name,
+        defType: DefinitionType.Melee,
+        tier: Tier.B,
+        damage: 20,
+        swingSound: "soft_swing",
+        speedMultiplier: 1,
+        obstacleMultiplier: 1.3,
+        radius: 2.7,
+        offset: Vec(4, 0),
+        cooldown: 160,
+        attackCooldown: 140,
+        killfeedFrame: "sickle",
+        translationString: "sickle",
+        hitSound: "scythe_hit",
+        fireMode: FireMode.Auto,
+        fists: {
+            animationDuration: 70,
+            left: Vec(29, -39),
+            right: Vec(44, 35)
+        },
+        image: {
+            position: Vec(42, 66),
+            angle: 135,
+            lootScale: 0.85
+        },
+        animation: [
+            {
+                duration: 65,
+                fists: {
+                    left: Vec(29, -39),
+                    right: Vec(44, -25)
+                },
+                image: {
+                    position: Vec(82, -34),
+                    angle: 30
+                }
+            },
+            {
+                duration: 85,
+                fists: {
+                    left: Vec(29, -39),
+                    right: Vec(44, 35)
+                },
+                image: {
+                    position: Vec(42, 66),
+                    angle: 135
+                }
+            }
+        ]
+    }
+}
+
+const saw = (name: string): MeleeDefinition => {
+    return {
+        idString: name.toLowerCase().replace(/'/g, "").replace(/ /g, "_"),
+        name,
+        defType: DefinitionType.Melee,
+        tier: Tier.A,
+        damage: 23,
+        speedMultiplier: 1,
+        iceMultiplier: 2,
+        swingSound: "soft_swing",
+        killfeedFrame: "hand_saw",
+        translationString: "hand_saw",
+        switchSound: "hand_saw",
+        obstacleMultiplier: 2,
+        piercingMultiplier: 1.2,
+        radius: 2.9,
+        offset: Vec(6.4, -0.5),
+        cooldown: 725,
+        numberOfHits: 2,
+        hitDelay: 250,
+        delayBetweenHits: 415,
+        hitSound: "hand_saw_hit",
+        fists: {
+            animationDuration: 150,
+            left: Vec(47, -35),
+            right: Vec(28, 54)
+        },
+        image: {
+            position: Vec(88, 36),
+            angle: -145,
+            lootScale: 0.8
+        },
+        animation: [
+            { // warmup
+                duration: 130,
+                fists: {
+                    left: Vec(47, -35),
+                    right: Vec(10, 72)
+                },
+                image: {
+                    angle: -80,
+                    position: Vec(50, 120)
+                }
+            },
+            { // initial cleave
+                duration: 160,
+                fists: {
+                    left: Vec(47, -35),
+                    right: Vec(90, 8)
+                },
+                image: {
+                    angle: -165,
+                    position: Vec(140, -30)
+                }
+            },
+            { // first delay
+                duration: 175,
+                fists: {
+                    left: Vec(47, -35),
+                    right: Vec(90, 8)
+                }
+            },
+            { // pull back
+                duration: 50,
+                fists: {
+                    left: Vec(47, -35),
+                    right: Vec(-16, 70)
+                },
+                image: {
+                    angle: -145,
+                    position: Vec(44, 52)
+                }
+            },
+            { // second delay
+                duration: 125,
+                fists: {
+                    left: Vec(47, -35),
+                    right: Vec(-16, 70)
+                }
+            },
+            { // reset
+                duration: 175,
+                fists: {
+                    left: Vec(47, -35),
+                    right: Vec(28, 54)
+                },
+                image: {
+                    angle: -145,
+                    position: Vec(88, 36)
+                }
+            }
+        ]
+    }
+};
+
+const chainSaw = (idString: string): MeleeDefinition => {
+    return {
+        idString,
+        name: "Chain Saw",
+        defType: DefinitionType.Melee,
+        tier: Tier.S,
+        fireMode: FireMode.Auto,
+        noSwap: true,
+        damage: 8,
+        speedMultiplier: 1,
+        obstacleMultiplier: 4,
+        piercingMultiplier: 4,
+        radius: 2.7,
+        switchSound: "chainsaw",
+        swingSound: "chainsaw",
+        stopSound: "chainsaw_stop",
+        killfeedFrame: "chainsaw",
+        translationString: "chainsaw",
+        hitSound: "scythe_hit",
+        offset: Vec(6.8, 0.5),
+        cooldown: 10,
+        fists: {
+            animationDuration: 0,
+            left: Vec(61, 10),
+            right: Vec(35, 70)
+        },
+        image: {
+            position: Vec(106, 27),
+            angle: 10,
+            lootScale: 0.5,
+            animated: true
+        },
+        animation: [
+            {
+                duration: 10,
+                fists: {
+                    left: Vec(57, 10),
+                    right: Vec(31, 70)
+                },
+                image: {
+                    angle: 10,
+                    position: Vec(103, 27)
+                }
+            },
+            {
+                duration: 10,
+                fists: {
+                    left: Vec(61, 10),
+                    right: Vec(35, 70)
+                },
+                image: {
+                    angle: 10,
+                    position: Vec(106, 27)
+                }
+            }
+        ]
+    }
+};
 
 export const DEFAULT_HAND_RIGGING = Object.freeze({
     left: Vec(38, -35),
@@ -209,66 +544,8 @@ export const Melees = new InventoryItemDefinitions<MeleeDefinition>([
                 }
             },
     */
-    {
-        idString: "hatchet",
-        name: "Hatchet",
-        defType: DefinitionType.Melee,
-        tier: Tier.B,
-        damage: 38,
-        speedMultiplier: 1,
-        obstacleMultiplier: 2,
-        piercingMultiplier: 1.5,
-        radius: 2,
-        swingSound: "heavy_swing",
-        offset: Vec(5.2, -0.5),
-        cooldown: 420,
-        hitDelay: 180,
-        fists: {
-            animationDuration: 150,
-            left: Vec(40, -25),
-            right: Vec(40, 15)
-        },
-        image: {
-            position: Vec(42, 20),
-            angle: 135,
-            lootScale: 0.6
-        },
-        animation: [
-            { // warmup
-                duration: 100,
-                fists: {
-                    left: Vec(40, 25),
-                    right: Vec(0, 50)
-                },
-                image: {
-                    angle: 210,
-                    position: Vec(-10, 45)
-                }
-            },
-            {
-                duration: 150,
-                fists: {
-                    left: Vec(0, -50),
-                    right: Vec(40, -25)
-                },
-                image: {
-                    position: Vec(42, -25),
-                    angle: 65
-                }
-            },
-            {
-                duration: 150,
-                fists: {
-                    left: Vec(40, -25),
-                    right: Vec(40, 15)
-                },
-                image: {
-                    position: Vec(42, 20),
-                    angle: 135
-                }
-            }
-        ]
-    },
+    hatchet("Hatchet"),
+    hatchet("Hatchet Bloodstained"),
     {
         idString: "fire_hatchet",
         name: "Fire Hatchet",
@@ -330,55 +607,9 @@ export const Melees = new InventoryItemDefinitions<MeleeDefinition>([
             }
         ]
     },
-    {
-        idString: "crowbar",
-        name: "Crowbar",
-        defType: DefinitionType.Melee,
-        tier: Tier.A,
-        swingSound: "heavy_swing",
-        damage: 40,
-        speedMultiplier: 1,
-        obstacleMultiplier: 2.2,
-        piercingMultiplier: 2,
-        radius: 2.58,
-        offset: Vec(5.9, 1.7),
-        cooldown: 560,
-        reskins: ["winter"],
-        fists: {
-            animationDuration: 200,
-            left: Vec(38, -35),
-            right: Vec(38, 35)
-        },
-        image: {
-            position: Vec(31, 41),
-            angle: 190,
-            lootScale: 0.65
-        },
-        animation: [
-            {
-                duration: 200,
-                fists: {
-                    left: Vec(38, -35),
-                    right: Vec(100, 35)
-                },
-                image: {
-                    position: Vec(110, 33),
-                    angle: 40
-                }
-            },
-            {
-                duration: 200,
-                fists: {
-                    left: Vec(38, -35),
-                    right: Vec(38, 35)
-                },
-                image: {
-                    position: Vec(31, 41),
-                    angle: 190
-                }
-            }
-        ]
-    },
+    crowbar("Crowbar"),
+    crowbar("Crowbar Rusted"),
+    crowbar("Crowbar Halloween"),
     {
         idString: "kbar",
         name: "K-bar",
@@ -427,56 +658,8 @@ export const Melees = new InventoryItemDefinitions<MeleeDefinition>([
             }
         ]
     },
-    {
-        idString: "sickle",
-        name: "Sickle",
-        defType: DefinitionType.Melee,
-        tier: Tier.B,
-        damage: 20,
-        swingSound: "soft_swing",
-        speedMultiplier: 1,
-        obstacleMultiplier: 1.3,
-        radius: 2.7,
-        offset: Vec(4, 0),
-        cooldown: 160,
-        attackCooldown: 140,
-        reskins: ["winter"],
-        fireMode: FireMode.Auto,
-        fists: {
-            animationDuration: 70,
-            left: Vec(29, -39),
-            right: Vec(44, 35)
-        },
-        image: {
-            position: Vec(42, 66),
-            angle: 135,
-            lootScale: 0.85
-        },
-        animation: [
-            {
-                duration: 65,
-                fists: {
-                    left: Vec(29, -39),
-                    right: Vec(44, -25)
-                },
-                image: {
-                    position: Vec(82, -34),
-                    angle: 30
-                }
-            },
-            {
-                duration: 85,
-                fists: {
-                    left: Vec(29, -39),
-                    right: Vec(44, 35)
-                },
-                image: {
-                    position: Vec(42, 66),
-                    angle: 135
-                }
-            }
-        ]
-    },
+    sickle("Sickle"),
+    sickle("Vaibhav Sickle"),
     {
         idString: "maul",
         name: "Maul",
@@ -541,14 +724,13 @@ export const Melees = new InventoryItemDefinitions<MeleeDefinition>([
         ]
     },
     {
-        idString: "steelfang",
+        idString: "steelfang", // Error's favourite
         name: "Steelfang",
         defType: DefinitionType.Melee,
         tier: Tier.S,
         devItem: true,
         noSwap: true,
         damage: 40,
-        noDrop: true,
         stonePiercing: true,
         speedMultiplier: 1,
         obstacleMultiplier: 1,
@@ -808,7 +990,7 @@ export const Melees = new InventoryItemDefinitions<MeleeDefinition>([
         defType: DefinitionType.Melee,
         tier: Tier.B,
         damage: 41,
-        swingSound: "soft_swing",
+        swingSound: "falchion_swing",
         speedMultiplier: 1,
         obstacleMultiplier: 1.1,
         radius: 4.1,
@@ -847,59 +1029,6 @@ export const Melees = new InventoryItemDefinitions<MeleeDefinition>([
                 image: {
                     angle: 170,
                     position: Vec(5, 90)
-                }
-            }
-        ]
-    },
-    {
-        idString: "chainsaw",
-        name: "Chain Saw",
-        defType: DefinitionType.Melee,
-        tier: Tier.S,
-        fireMode: FireMode.Auto,
-        devItem: true,
-        noSwap: true,
-        damage: 25,
-        speedMultiplier: 1,
-        obstacleMultiplier: 2,
-        piercingMultiplier: 2,
-        radius: 2.7,
-        swingSound: "chainsaw",
-        stopSound: "chainsaw_stop",
-        offset: Vec(6.8, 0.5),
-        cooldown: 0,
-        fists: {
-            animationDuration: 0,
-            left: Vec(61, 10),
-            right: Vec(35, 70)
-        },
-        image: {
-            position: Vec(106, 27),
-            angle: 10,
-            lootScale: 0.5,
-            animated: true
-        },
-        animation: [
-            {
-                duration: 10,
-                fists: {
-                    left: Vec(57, 10),
-                    right: Vec(31, 70)
-                },
-                image: {
-                    angle: 10,
-                    position: Vec(106, 27)
-                }
-            },
-            {
-                duration: 10,
-                fists: {
-                    left: Vec(61, 10),
-                    right: Vec(35, 70)
-                },
-                image: {
-                    angle: 10,
-                    position: Vec(106, 27)
                 }
             }
         ]
@@ -1070,6 +1199,73 @@ export const Melees = new InventoryItemDefinitions<MeleeDefinition>([
                 image: {
                     position: Vec(40, -40),
                     angle: -60
+                }
+            }
+        ]
+    },
+    saw("Hand Saw"),
+    saw("Tenon Saw"),
+    chainSaw("chainsaw"),
+    chainSaw("chainsaw_leatherfaced"),
+    {
+        idString: "scythe",
+        name: "Scythe",
+        defType: DefinitionType.Melee,
+        tier: Tier.A,
+        damage: 45,
+        noSwap: true, // halloween only, should be available in infection
+        speedMultiplier: 1,
+        iceMultiplier: 2,
+        swingSound: "heavy_swing",
+        obstacleMultiplier: 2.25,
+        piercingMultiplier: 0.8,
+        radius: 3,
+        offset: Vec(6, -0.8),
+        cooldown: 725,
+        hitDelay: 250,
+        hitSound: "scythe_hit",
+        fists: {
+            animationDuration: 150,
+            left: Vec(66, -6),
+            right: Vec(18, 54)
+        },
+       image: {
+            position: Vec(30, 56),
+            angle: 175,
+            lootScale: 0.425
+        },
+        animation: [
+            { // warmup
+                duration: 100,
+                fists: {
+                    left: Vec(67, 21),
+                    right: Vec(2, 61)
+                },
+                image: {
+                    angle: 195,
+                    position: Vec(14, 68)
+                }
+            },
+            {
+                duration: 300,
+                fists: {
+                    left: Vec(10, -60),
+                    right: Vec(70, -12)
+                },
+                image: {
+                    position: Vec(70, -26),
+                    angle: 85
+                }
+            },
+            {
+                duration: 150,
+                fists: {
+                    left: Vec(66, -6),
+                    right: Vec(18, 54)
+                },
+                image: {
+                    position: Vec(30, 56),
+                    angle: 175,
                 }
             }
         ]

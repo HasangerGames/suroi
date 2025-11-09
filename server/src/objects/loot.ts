@@ -425,8 +425,7 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
 
                     inventory.useItem(idString);
 
-                    // hope that `throwableItemMap` is sync'd
-                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                    // biome-ignore lint/style/noNonNullAssertion: hope that `throwableItemMap` is sync'd
                     inventory.throwableItemMap.get(idString)!.count = inventory.items.getItem(idString);
                 } else {
                     modifyItemCollections();

@@ -85,6 +85,7 @@ export abstract class GameObject<Cat extends ObjectCategory = ObjectCategory> ex
     dead = false;
 
     readonly container = new Container();
+    disguiseContainer?: Container;
 
     readonly timeouts = new Set<Timeout>();
 
@@ -127,7 +128,13 @@ export abstract class GameObject<Cat extends ObjectCategory = ObjectCategory> ex
         this.layerContainer = newContainer;
         this.layerContainerIndex = getLayerContainer(this.layer, Game.layer);
 
-        for (const container of this.containers) {
+        const conts = this.containers;
+        if (this.isPlayer) {
+            if (this.disguiseContainer === undefined) this.disguiseContainer = new Container();
+            conts.push(this.disguiseContainer);
+        }
+
+        for (const container of conts) {
             oldContainer?.removeChild(container);
             newContainer.addChild(container);
         }

@@ -94,7 +94,7 @@
 
 
 
-/* 
+/*
     TEAM MENU - 队伍菜单
 */
 
@@ -207,6 +207,7 @@
 "bindings_use_consumable medikit": "使用医疗包"
 "bindings_use_consumable cola": "使用可乐"
 "bindings_use_consumable tablets": "使用药片"
+"bindings_use_consumable vaccine_syringe": "使用疫苗注射器"
 "bindings_cancel_action": "取消动作"
 "bindings_+view_map": "查看地图"
 "bindings_toggle_map": "开关大地图"
@@ -320,7 +321,7 @@
 
 
 
-/* 
+/*
     IN GAME MESSAGES - 游戏内信息
 */
 
@@ -458,7 +459,7 @@
 "tt_restores": "<item>恢复<amount>点<type>"
 "tt_reduces": "<item>受到的伤害减少<percent>%"
 "tt_desc": "<item> <desc>"
-"vaccine_syringe_desc": "恢复50肾上腺素并且治愈感染"
+"vaccine_syringe_desc": "恢复50点肾上腺素并治愈感染"
 
 
 
@@ -470,8 +471,8 @@
 "regular_vest": "常规护甲"
 "tactical_vest": "战术护甲"
 "power_vest": "ERV-3核心"
-
 "developr_vest": "开发者护甲"
+
 "basic_helmet": "基础头盔"
 "regular_helmet": "常规头盔"
 "tactical_helmet": "战术头盔"
@@ -519,15 +520,20 @@
 "pan": "平底锅"
 "kukri": "库克力弯刀"
 "pipe_wrench": "管钳"
-
-
+"hand_saw": "手锯"
+"scythe": "长柄镰刀"
+"tenon_saw": "榫锯"
+"hatchet_bloodstained": "血痕斧头"
+"crowbar_rusted": "生锈撬棍"
+"crowbar_halloween": "可怖撬棍"
+"vaibhav_sickle": "瓦伊巴夫镰刀"
 
 /*
     GUNS - 枪械
 */
 
 "dual_template": "双持<gun>"
-"mosin_nagant": "莫辛纳甘"
+"mosin_nagant": "莫辛-纳甘"
 "hp18": "HP-18"
 "acr": "ACR"
 "saf200": "SAF-200"
@@ -541,7 +547,7 @@
 "g17_scoped": "格洛克17（倍镜）"
 "vss": "VSS文托雷斯"
 "aug": "AUG"
-"pp19": "PP-19维特亚斯"
+"pp19": "PP-19野牛"
 "vepr12": "维普尔12"
 "cz75a": "CZ-75A"
 "cz600": "CZ-600"
@@ -563,7 +569,7 @@
 "arx160": "ARX-160"
 "m16a2": "M16A2"
 "mg36": "MG36"
-"mcx_spear": "MCX Spear"
+"mcx_spear": "MCX长矛"
 "vks": "VKS排气者"
 "m590m": "M590M"
 "blr": "BLR 556"
@@ -581,6 +587,7 @@
 "psm": "PSM"
 "rpk16": "RPK-16"
 "rpk74": "RPK-74"
+"yesaul":"耶萨乌尔"
 
 
 
@@ -593,6 +600,7 @@
 "confetti_grenade": "彩屑手榴弹"
 "C4": "C4"
 "flare": "信号弹"
+"sm56": "顺序爆炸弹射装置"
 
 
 
@@ -607,6 +615,9 @@
 "region_as": "亚洲"
 "region_ea": "东亚"
 "region_oc": "大洋洲"
+"region_test": "测试区域"
+"region_1v1": "1v1区域"
+"region_ea1v1":"东亚1v1区域"
 
 
 
@@ -802,8 +813,7 @@
 "stove_explosion": "炉灶"
 "super_barrel_explosion": "超级油桶"
 "proj_seed": "南瓜种子"
-
-
+"coal_explosion": "煤尘"
 
 /*
     SKINS - 服装
@@ -889,6 +899,10 @@
 "lobotomy": "火在洞里"
 "veteran": "老将"
 "carpenter_uniform": "木匠制服"
+"demon": "恶魔"
+"wounded": "伤者"
+"haunted": "幽灵"
+"failed_experiment": "实验失败品"
 
 "ghillie_suit": "吉利服"
 "werewolf": "狼人"
@@ -973,18 +987,40 @@
 "laced_stimulants": "过度刺激"
 "laced_stimulants_desc": "肾上腺素会持续伤害而不是缓缓回复血量"
 "rotten_plumpkin": "腐烂南瓜"
-"rotten_plumpkin_desc": "每十秒会呕吐且减少5点血量和肾上腺素"
+"rotten_plumpkin_desc": "每十秒会呕吐并减少五点生命值和肾上腺素"
 "infected": "感染"
-"infected_desc": "提升移速和伤害，但是肾上腺素会快速减少并持续掉血，且感染附近玩家"
+"infected_desc": "每三十秒随机切换技能。<br>每秒失去生命值。<br>感染附近的玩家。"
 "immunity": "免疫"
-"immunity_desc": "15秒内免疫感染"
+"immunity_desc": "免疫感染十五秒"
 "hollow_points": "空尖弹"
 "hollow_points_desc": "枪械增伤10%，不适用于非单弹头霰弹枪。被击中的玩家将在地图上为你高亮显示五秒。"
 "experimental_forcefield": "实验力场"
 "experimental_forcefield_desc": "获得一个能阻挡伤害的护盾。护盾每二十秒重置。"
 "thermal_goggles": "热能护目镜"
 "thermal_goggles_desc": "揭示周围玩家的生命条和在地图上的位置。"
-"overdrive": "超频"
+"overdrive": "过载"
 "overdrive_desc": "击杀玩家后短暂提升速度并恢复生命值和肾上腺素。冷却时间为十二秒。"
 "loot_baron": "战利品领主"
 "loot_baron_desc": "增加战利品掉落。"
+"priority_target": "众矢之的"
+"priority_target_desc": "所有玩家都可在地图上看到你的位置。"
+"butterfingers": "笨手笨脚"
+"butterfingers_desc": "增加装填所需时间。"
+"overweight": "超重"
+"overweight_desc": "增加你的大小。"
+"overclocked": "超频"
+"overclocked_desc": "提高枪械射速，但代价是增大子弹扩散。"
+"reflective_rounds": "弹力子弹"
+"reflective_rounds_desc": "普通子弹会在任意表面上反弹。"
+"plumpkin_shuffle": "楠瓜洗牌"
+"plumpkin_shuffle_desc": "随机分配你的所有武器、装备、弹药、消耗品和服装。"
+"eternal_magnetism": "恒磁性"
+"eternal_magnetism_desc": "吸取附近玩家的生命值。<br>吸引附近的战利品。"
+"last_stand": "谁笑到最后"
+"last_stand_desc": "在低生命值时造成双倍伤害。"
+"aching_knees": "膝盖疼"
+"aching_knees_desc": "你的移动控制每十秒反转一次。"
+"plumpkin_blessing": "楠瓜祝福"
+"plumpkin_blessing_desc": "变幻物品与破坏南瓜类障碍物时掉落高品质战利品。受到1.5倍伤害。"
+"weak_stomach": "胃病"
+"weak_stomach_desc": "每五秒在地上留下一滩呕吐物。<br>增大武器扩散。"

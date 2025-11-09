@@ -30,6 +30,8 @@
       property="og:image"
       content="https://suroi.io/img/backgrounds/embed_background.png"
     />
+    
+    <meta name="apple-itunes-app" content="app-id=6751844616">
 
     <title>Suroi - 2D battle royale game</title>
 
@@ -169,7 +171,7 @@
               <i class="fa-solid fa-arrow-up-right-from-square"></i>
             </a>
           </h2>
-          <div id="news-posts"></div>
+          <div id="news-posts">%NEWS%</div>
         </div>
 
         <!-- Center pane -->
@@ -518,7 +520,7 @@
         <!-- Inventory messages, active weapon ammo counters, health & adrenaline bar, & killstreak display -->
         <div id="center-bottom-container">
           <!-- Inventory messages -->
-          <span id="inventory-message"></span>
+          <span id="inventory-message" style="display: none;"></span>
 
           <!-- Active weapon ammo counters -->
           <div id="weapon-ammo-container" style="display: none">
@@ -543,6 +545,7 @@
           <!-- Health bar -->
           <div id="health-bar-container">
             <div id="shield-bar"></div>
+            <div id="infection-bar"></div>
             <div id="health-bar-animation"></div>
             <div id="health-bar"></div>
             <span id="health-bar-amount"></span>
@@ -628,28 +631,40 @@
             <div class="inventory-slot has-item" id="perk-slot-1">
               <img class="item-image" draggable="false" />
               <div class="item-tooltip"></div>
+              <!-- <div class="item-timer"></div>
+              <div class="item-timer-text"></div> -->
             </div>
             <div class="inventory-slot has-item" id="perk-slot-0">
               <img class="item-image" draggable="false" />
               <div class="item-tooltip"></div>
+              <!-- <div class="item-timer"></div>
+              <div class="item-timer-text"></div> -->
             </div>
             <div class="inventory-slot has-item" id="perk-slot-2">
               <img class="item-image" draggable="false" />
               <div class="item-tooltip"></div>
+              <!-- <div class="item-timer"></div>
+              <div class="item-timer-text"></div> -->
             </div>
           </div>
           <div class="perk-set">
             <div class="inventory-slot has-item" id="perk-slot-4">
               <img class="item-image" draggable="false" />
               <div class="item-tooltip"></div>
+              <!-- <div class="item-timer"></div>
+              <div class="item-timer-text"></div> -->
             </div>
             <div class="inventory-slot has-item" id="perk-slot-3">
               <img class="item-image" draggable="false" />
               <div class="item-tooltip"></div>
+              <!-- <div class="item-timer"></div>
+              <div class="item-timer-text"></div> -->
             </div>
             <div class="inventory-slot has-item" id="perk-slot-5">
               <img class="item-image" draggable="false" />
               <div class="item-tooltip"></div>
+              <!-- <div class="item-timer"></div>
+              <div class="item-timer-text"></div> -->
             </div>
           </div>
         </div>
@@ -1368,6 +1383,7 @@
         <a href="https://iogame.me/en" target="_blank">iogame.me</a>
         <a href="https://iogames.fun" target="_blank">iogames.fun</a>
         <a href="https://iogames.onl" target="_blank">iogames.onl</a>
+        <a href="https://www.jopi.com" target="_blank">Jopi</a>
         <a href="https://www.miniplay.com" target="_blank">Miniplay</a>
         <a href="https://onlinegames.io" target="_blank">OnlineGames.io</a>
         <a href="https://play-games.com" target="_blank">Play-Games.com</a>

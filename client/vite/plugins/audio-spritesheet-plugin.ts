@@ -49,7 +49,7 @@ const load = async(id: string): Promise<string | undefined> => {
     return data;
 };
 
-async function buildSpritesheet(modeName: ModeName): Promise<void> {
+function buildSpritesheet(modeName: ModeName): void {
     const start = performance.now();
 
     const sheet: Record<string, number> = {};
@@ -70,7 +70,7 @@ async function buildSpritesheet(modeName: ModeName): Promise<void> {
     console.log(`Built audio spritesheet "${modeName}" in ${Math.round(performance.now() - start)} ms`);
 }
 
-async function getNoPreloadPaths(): Promise<void> {
+function getNoPreloadPaths(): void {
     const noPreloadSounds: string[] = readDirectory("public/audio/game/no-preload", /\.mp3$/i)
         .map(f => f.slice(f.lastIndexOf(path.sep) + 1, -4)); // remove path and extension
 
@@ -103,7 +103,7 @@ export function audioSpritesheet(): Plugin[] {
         {
             name: `${PLUGIN_NAME}:serve`,
             apply: "serve",
-            async configureServer(server) {
+            configureServer(server) {
                 const onChange = (filename: string): void => {
                     const dir = filename.split(path.sep)[3] as SpritesheetNames | "no-preload";
                     const invalidatedModules = dir === "no-preload"

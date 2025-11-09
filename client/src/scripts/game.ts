@@ -51,17 +51,16 @@ import { Player } from "./objects/player";
 import { Projectile } from "./objects/projectile";
 import { SyncedParticle } from "./objects/syncedParticle";
 import { autoPickup, fetchServerData, finalizeUI, resetPlayButtons, setUpUI, teamSocket, unlockPlayButtons, updateDisconnectTime } from "./ui";
-import { EMOTE_SLOTS, LAYER_TRANSITION_DELAY, PIXI_SCALE, UI_DEBUG_MODE } from "./utils/constants";
+import { EMOTE_SLOTS, LAYER_TRANSITION_DELAY, PERK_MESSAGE_FADE_TIME, PIXI_SCALE, UI_DEBUG_MODE } from "./utils/constants";
 import { DebugRenderer } from "./utils/debugRenderer";
 import { setUpNetGraph } from "./utils/graph/netGraph";
 import { loadSpritesheets, SuroiSprite } from "./utils/pixi";
 import { getTranslatedString, initTranslation } from "./utils/translations/translations";
 import { type TranslationKeys } from "./utils/translations/typings";
 import { Tween, type TweenOptions } from "./utils/tween";
+import { colord } from "colord";
 
-/* eslint-disable @stylistic/indent */
-
-type ObjectClassMapping = {
+interface ObjectClassMapping {
     readonly [ObjectCategory.Player]: typeof Player
     readonly [ObjectCategory.Obstacle]: typeof Obstacle
     readonly [ObjectCategory.DeathMarker]: typeof DeathMarker
@@ -71,7 +70,7 @@ type ObjectClassMapping = {
     readonly [ObjectCategory.Parachute]: typeof Parachute
     readonly [ObjectCategory.Projectile]: typeof Projectile
     readonly [ObjectCategory.SyncedParticle]: typeof SyncedParticle
-};
+}
 
 const ObjectClassMapping: ObjectClassMapping = Object.freeze({
     [ObjectCategory.Player]: Player,
@@ -91,7 +90,7 @@ type ObjectMapping = {
     readonly [Cat in keyof ObjectClassMapping]: InstanceType<ObjectClassMapping[Cat]>
 };
 
-type Colors = Record<ColorKeys | "ghillie", Color>;
+type Colors = Record<ColorKeys | "background" | "ghillie", Color>;
 
 export const Game = new (class Game {
     private _socket?: WebSocket;
@@ -133,13 +132,22 @@ export const Game = new (class Game {
         this._mode = Modes[this.modeName];
 
         // Converts the strings in the mode definition to Color objects
-        this._colors = (Object.entries(this.mode.colors) as Array<[ColorKeys, string]>).reduce(
+        this._colors = (Object.entries(this.mode.colors) as [ColorKeys, string][]).reduce(
             (result, [key, color]) => {
                 result[key] = new Color(color);
                 return result;
             },
             {} as Colors
         );
+
+        // pixi filters don't apply to the background, so we have to apply them here separately
+        const canvasFilters = this.mode.canvasFilters;
+        if (canvasFilters) {
+            const { h, s, l } = colord(this.colors.grass.toRgbaString()).toHsl();
+            this.colors.background = new Color(`hsl(${h}, ${s * canvasFilters.saturation}%, ${l * canvasFilters.brightness}%)`);
+        } else {
+            this.colors.background = this.colors.grass;
+        }
 
         this._colors.ghillie = new Color(this._colors.grass).multiply("hsl(0, 0%, 99%)");
     }
@@ -220,7 +228,7 @@ export const Game = new (class Game {
             const pixi = this.pixi;
             await pixi.init({
                 resizeTo: window,
-                background: this.colors.grass,
+                background: this.colors.background,
                 antialias: InputManager.isMobile
                     ? GameConsole.getBuiltInCVar("mb_antialias")
                     : GameConsole.getBuiltInCVar("cv_antialias"),
@@ -529,8 +537,8 @@ export const Game = new (class Game {
                 const { message, item } = packet;
 
                 if (message !== undefined) {
-                    const inventoryMsg = UIManager.ui.inventoryMsg;
-                    inventoryMsg.text(getTranslatedString(this._inventoryMessageMap[message])).fadeIn(250);
+                    const { inventoryMsg } = UIManager.ui;
+                    inventoryMsg.text(getTranslatedString(this._inventoryMessageMap[message])).fadeOut(0).fadeIn(250);
 
                     clearTimeout(this.inventoryMsgTimeout);
                     this.inventoryMsgTimeout = window.setTimeout(() => inventoryMsg.fadeOut(250), 2500);
@@ -588,6 +596,9 @@ export const Game = new (class Game {
         const ambience = this.mode.ambience;
         if (ambience) {
             this.ambience = SoundManager.play(ambience, { loop: true, ambient: true });
+            if (this.mode.ambienceVolume !== undefined) {
+                this.ambience.volume = this.mode.ambienceVolume;
+            }
         }
 
         this.riverAmbience = SoundManager.play("river_ambience", { loop: true, ambient: true });
@@ -612,6 +623,8 @@ export const Game = new (class Game {
             this.teamID = packet.teamID;
         }
 
+        ui.inventoryMsg.fadeOut(PERK_MESSAGE_FADE_TIME);
+
         ui.canvas.addClass("active");
         ui.splashUi.fadeOut(400, () => resetPlayButtons());
 
@@ -634,7 +647,6 @@ export const Game = new (class Game {
             this.gameOver = true;
             this._socket?.close();
 
-            // eslint-disable-next-line @typescript-eslint/no-misused-promises
             ui.splashUi.fadeIn(400, async() => {
                 this.pixi.stop();
                 void this.music?.play();
@@ -921,7 +933,7 @@ export const Game = new (class Game {
         MapManager.terrainGraphics.visible = !basement;
 
         const currentColor = this.pixi.renderer.background.color;
-        const targetColor = basement ? this.colors.void : this.colors.grass;
+        const targetColor = basement ? this.colors.void : this.colors.background;
 
         if (currentColor.toNumber() !== targetColor.toNumber()) {
             const { red, green, blue } = currentColor;
@@ -1208,7 +1220,7 @@ export const Game = new (class Game {
                                         "dual_template",
                                         { gun: getTranslatedString(definition.singleVariant as TranslationKeys) }
                                     )
-                                    : getTranslatedString(definition.idString as TranslationKeys);
+                                    : getTranslatedString(("translationString" in definition && "lootAndKillfeedTranslationString" in definition ? definition.translationString : definition.idString) as TranslationKeys);
 
                                 text = `${itemName}${object.count > 1 ? ` (${object.count})` : ""}`;
                                 break;

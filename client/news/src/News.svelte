@@ -12,7 +12,7 @@
   let perPage = 5;
   export let pages: number;
 
-  onMount(async() => {
+  onMount(() => {
     posts = newsPosts as NewsPost[];
     pages = Math.ceil(posts.length / perPage);
   });

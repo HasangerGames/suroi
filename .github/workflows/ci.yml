@@ -5,8 +5,8 @@ on:
   pull_request:
 
 jobs:
-  nodejs:
-    name: Node.js
+  bun:
+    name: Bun
     runs-on: ubuntu-latest
     concurrency: ci-nodejs-${{ github.ref }}
 
@@ -14,42 +14,32 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-
-      - name: Install Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: 'pnpm'
-          cache-dependency-path: '**/pnpm-lock.yaml'
+      - name: Install Bun
+        uses: oven-sh/setup-bun@v2
 
       - name: Install Packages
-        run: pnpm install --frozen-lockfile
+        run: bun install --frozen-lockfile
 
-        # Client
       - name: Build Client
         working-directory: ./client
-        run: pnpm build
+        run: bun build:client
 
-        # Server
       - name: Build Server
         working-directory: ./server
-        run: cp config.example.json config.json && pnpm build
+        run: bunx --bun tsc -v --noEmit
 
-        # Tests
       - name: Build Tests
         working-directory: ./tests
-        run: pnpm build
+        run: bunx --bun tsc -v --noEmit
 
       - name: Validate Definitions
         working-directory: ./tests
-        run: pnpm validateDefinitions
+        run: cp ../server/config.example.json ../server/config.json && bun validateDefinitions
 
       - name: Validate SVGs
         working-directory: ./tests
-        run: pnpm validateSvgs
+        run: bun validateSvgs
         if: success() || failure()
 
       - name: Lint
-        run: pnpm lint:ci
+        run: bun lint:check

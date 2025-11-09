@@ -217,7 +217,6 @@ export const Vec = Object.assign(create, {
         let xOffset: number, yOffset: number;
         switch (orientation) {
             case 1:
-                // noinspection JSSuspiciousNameCombination
                 xOffset = position2.y;
                 yOffset = -position2.x;
                 break;
@@ -227,7 +226,6 @@ export const Vec = Object.assign(create, {
                 break;
             case 3:
                 xOffset = -position2.y;
-                // noinspection JSSuspiciousNameCombination
                 yOffset = position2.x;
                 break;
         }

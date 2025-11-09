@@ -10,6 +10,7 @@ import { Obstacles, type ObstacleDefinition } from "@common/definitions/obstacle
 import { SyncedParticles, type SyncedParticleDefinition } from "@common/definitions/syncedParticles";
 import { type JoinData } from "@common/packets/joinPacket";
 import { JoinedPacket } from "@common/packets/joinedPacket";
+import { DamageSources } from "@common/packets/killPacket";
 import { PacketDataIn, PacketType } from "@common/packets/packet";
 import { PacketStream } from "@common/packets/packetStream";
 import { MapIndicatorSerialization, type PingSerialization } from "@common/packets/updatePacket";
@@ -23,7 +24,6 @@ import { SuroiByteStream } from "@common/utils/suroiByteStream";
 import { Vec, type Vector } from "@common/utils/vector";
 
 import { DecalDefinition } from "@common/definitions/decals";
-import type { WebSocket } from "uWebSockets.js";
 import { GAME_SPAWN_WINDOW } from "./data/gasStages";
 import { MapName, Maps } from "./data/maps";
 import { type GameData } from "./gameManager";
@@ -112,7 +112,7 @@ export class Game implements GameData {
             this._valueCache = undefined;
         }
 
-        values(): IterableIterator<T> {
+        values(): SetIterator<T> {
             const iterator = this.values();
             this._valueCache ??= Array.from(iterator);
 
@@ -423,8 +423,11 @@ export class Game implements GameData {
             if (object.isPlayer && source.isPlayer && source.hasPerk(PerkIds.HollowPoints)) {
                 (source.recentlyHitPlayers ??= new Map<Player, number>())
                     .set(object, this.now);
-                (source.highlightedIndicators ??= new Map<Player, MapIndicator>())
-                    .set(object, new MapIndicator(this, "player_indicator", object.position));
+
+                if (source.highlightedIndicators?.get(object) === undefined && source.id !== object.id) {
+                    (source.highlightedIndicators ??= new Map<Player, MapIndicator>())
+                        .set(object, new MapIndicator(this, "player_indicator", object.position));
+                }
             }
         }
 
@@ -598,10 +601,10 @@ export class Game implements GameData {
         this.killLeaderDirty = true;
     }
 
-    addPlayer(socket?: WebSocket<PlayerSocketData>): Player | undefined {
+    addPlayer(socket?: Bun.ServerWebSocket<PlayerSocketData>): Player | undefined {
         const rejectedBy = this.pluginManager.emit("player_will_connect");
         if (rejectedBy) {
-            socket?.end(1000, `Connection rejected by server plugin '${rejectedBy.constructor.name}'`);
+            socket?.close(1000, `Connection rejected by server plugin '${rejectedBy.constructor.name}'`);
             return;
         }
 
@@ -610,7 +613,7 @@ export class Game implements GameData {
 
         let team: Team | undefined;
         if (this.isTeamMode) {
-            const { teamID, autoFill } = socket?.getUserData() ?? {};
+            const { teamID, autoFill } = socket?.data ?? {};
 
             if (teamID) {
                 team = this.customTeams.get(teamID);
@@ -832,6 +835,41 @@ export class Game implements GameData {
             this.findNewKillLeader();
         }
 
+        const combatLogInfo = player.lastDamagedBy;
+        const selfKillWithinThreshold = 
+            player.lastSelfKillTime !== undefined
+            && player.lastSelfKillTime - player.joinTime <= 30000;
+        const selfDownWithinThreshold =
+            player.lastSelfDownTime !== undefined
+            && player.lastSelfDownTime - player.joinTime <= 30000;
+        
+        if (!player.dead) {
+            player.health = 0;
+            if (
+                combatLogInfo
+                && combatLogInfo.player !== player
+                && !combatLogInfo.player.disconnected
+                && this.now - combatLogInfo.time <= GameConstants.player.combatLogTimeoutMs
+            ) {
+                player.die({
+                    source: combatLogInfo.player,
+                    weaponUsed: combatLogInfo.weapon
+                });
+            } else {
+                player.die({ source: DamageSources.Disconnect });
+            }
+        }
+
+        if (this.isTeamMode && combatLogInfo === undefined && (selfKillWithinThreshold || selfDownWithinThreshold)) {
+            const team = player.team;
+            if(team) {
+                team.removePlayer(player);
+                if (!team.players.length) this.teams.delete(team);
+                player.team = undefined;
+                player.teamID = undefined;
+            }
+        }
+
         if (player.canDespawn) {
             this.livingPlayers.delete(player);
             this.removeObject(player);
@@ -871,7 +909,7 @@ export class Game implements GameData {
 
         try {
             if (reason) {
-                player.socket?.end(1000, reason);
+                player.socket?.close(1000, reason);
             } else {
                 player.socket?.close();
             }
@@ -893,6 +931,7 @@ export class Game implements GameData {
     // ! this.addLoot(HealingItems.fromString("cola"), Vec(0, 0), Layer.Ground) does two things:
     // ! a) it does not raise type errors
     // ! b) Def is inferred as HealingItemDefinition
+    // biome-ignore lint/style/useUnifiedTypeSignatures: we're ignoring this for now
     addLoot<Def extends LootDefinition = LootDefinition>(
         definition: Def,
         position: Vector,
@@ -900,7 +939,6 @@ export class Game implements GameData {
         opts?: { readonly count?: number, readonly pushVel?: number, readonly jitterSpawn?: boolean, readonly data?: ItemData<Def> }
     ): Loot<Def> | undefined;
     addLoot<Def extends LootDefinition = LootDefinition>(
-        // eslint-disable-next-line @typescript-eslint/unified-signatures
         definition: ReferenceTo<Def>,
         position: Vector,
         layer: Layer,
@@ -909,7 +947,6 @@ export class Game implements GameData {
     // ! and for any calling code using ReifiableDef, we gotta support that too
     // ! yes, this is a duplicate of the implementation signature
     addLoot<Def extends LootDefinition = LootDefinition>(
-        // eslint-disable-next-line @typescript-eslint/unified-signatures
         definition: ReifiableDef<Def>,
         position: Vector,
         layer: Layer,
@@ -948,6 +985,9 @@ export class Game implements GameData {
         };
 
         definition = Loots.reify<Def>(definition);
+
+        // no ephemeral shit
+        if (definition.defType === DefinitionType.Ammo && definition.ephemeral && count !== 1) return;
 
         if (
             this.pluginManager.emit(
@@ -1100,7 +1140,7 @@ export class Game implements GameData {
         }
     }
 
-    addDecal(def: ReifiableDef<DecalDefinition>, position: Vector, rotation?: number, layer?: Layer | number): Decal {
+    addDecal(def: ReifiableDef<DecalDefinition>, position: Vector, rotation?: number, layer?: Layer): Decal {
         const decal = new Decal(this, def, position, rotation, layer);
         this.grid.addObject(decal);
         return decal;
@@ -1121,7 +1161,9 @@ export class Game implements GameData {
 
         const paddingFactor = 1.25;
 
-        const crateDef = Obstacles.fromString(`airdrop_crate_locked${forceGold ? "_force" : ""}`);
+        const str = forceGold && this.modeName === "halloween" ? "pumpkin_airdrop_locked" : `airdrop_crate_locked${forceGold ? "_force" : ""}`;
+
+        const crateDef = Obstacles.fromString(str);
         const crateHitbox = (crateDef.spawnHitbox ?? crateDef.hitbox).clone();
         let thisHitbox = crateHitbox.clone();
 

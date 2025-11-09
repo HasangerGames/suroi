@@ -5,6 +5,7 @@ import type { Plugin } from "vite";
 import fm from "front-matter";
 import { marked } from "marked";
 import { readDirectory } from "../../../common/src/utils/readDirectory";
+import { humanDate } from "../../src/scripts/utils/misc";
 
 const PLUGIN_NAME = "vite-news-posts-plugin";
 const VIRTUAL_MODULE_ID = "virtual:news-posts";
@@ -98,9 +99,7 @@ export function newsPosts(): Plugin[] {
                     }, 500);
                 };
 
-                watcher = watch("src/newsPosts", {
-                    ignoreInitial: true
-                })
+                watcher = watch("src/newsPosts", { ignoreInitial: true })
                     .on("change", reloadPage)
                     .on("unlink", reloadPage);
 
@@ -111,6 +110,20 @@ export function newsPosts(): Plugin[] {
             },
             resolveId,
             load
+        },
+        {
+            name: `${PLUGIN_NAME}:transform`,
+            transformIndexHtml(html) {
+                const postsHtml = posts.slice(0, 5).map(post => `
+                    <article class="splash-news-entry">
+                        <div class="news-date">${humanDate(post.date)}</div>
+                        <div class="news-title">${post.title}</div>
+                        ${post.description}
+                        <i>- ${post.author}</i>
+                    </article>
+                `).join("");
+                return html.replace("%NEWS%", postsHtml);
+            }
         }
     ];
 }

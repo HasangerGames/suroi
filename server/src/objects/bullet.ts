@@ -39,6 +39,8 @@ export interface ServerBulletOptions {
     readonly modifiers?: BulletOptions["modifiers"]
     readonly shotFX?: boolean
     readonly lastShot?: boolean
+    readonly cycle?: boolean
+    readonly reflective?: boolean
 }
 
 export class Bullet extends BaseBullet {
@@ -82,6 +84,10 @@ export class Bullet extends BaseBullet {
         this.shotFX = options.shotFX ?? false;
 
         this.lastShot = options.lastShot ?? false;
+
+        this.cycle = options.cycle ?? false;
+
+        this.reflective = options.reflective ?? false;
     }
 
     update(): DamageRecord[] {
@@ -128,8 +134,11 @@ export class Bullet extends BaseBullet {
                 && (definition.onHitExplosion === undefined || !definition.explodeOnImpact)
             );
 
+            const isBlockedReflectionGun = this.sourceGun.definition.ballistics.onHitExplosion || this.sourceGun.definition.ballistics.onHitProjectile;
+            const reflectiveRounds = !object.isPlayer && this.shooter.isPlayer && this.shooter.hasPerk(PerkIds.ReflectiveRounds) && !isBlockedReflectionGun;
+
             let rotation: number | undefined;
-            if (reflected || definition.onHitExplosion || definition.onHitProjectile) {
+            if (reflected || definition.onHitExplosion || definition.onHitProjectile || reflectiveRounds) {
                 /*
                     nudge the bullet
 
@@ -165,6 +174,11 @@ export class Bullet extends BaseBullet {
                     position: this.position
                 });
 
+                if (object.isPlayer) {
+                    if (this.shooter.isPlayer && definition.infection !== undefined && object.teamID !== this.shooter.teamID) object.infection += definition.infection; // evil 1
+                    if (definition.teammateHeal !== undefined) object.infection -= definition.teammateHeal * 10; // evil 2
+                }
+
                 if (
                     this.sourceGun.definition.defType === DefinitionType.Gun
                     && this.shooter.isPlayer
@@ -186,8 +200,8 @@ export class Bullet extends BaseBullet {
             // think of it as bullet penetration.
             if (isObstacle && object.definition.noCollisions) continue;
 
-            if (reflected) {
-                this.reflect(rotation ?? 0);
+            if (reflected || reflectiveRounds) {
+                this.reflect(rotation ?? 0, reflectiveRounds ?? false);
                 this.reflected = true;
             }
 
@@ -198,7 +212,7 @@ export class Bullet extends BaseBullet {
         return records;
     }
 
-    reflect(direction: number): void {
+    reflect(direction: number, reflective = false): void {
         this.game.addBullet(
             this.sourceGun,
             this.shooter,
@@ -213,7 +227,8 @@ export class Bullet extends BaseBullet {
                 rangeOverride: this.clipDistance,
                 saturate: this.saturate,
                 thin: this.thin,
-                shotFX: false
+                shotFX: false,
+                reflective
             }
         );
     }

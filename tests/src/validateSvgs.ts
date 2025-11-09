@@ -24,7 +24,7 @@ const MAX_SIZES: Record<string, number> = {
     player: 25_000,
     shared: 10_000, // theres only missing_texture there lol
     casings: 5_000,
-    trails: 5_000
+    trails: 6_000
 };
 
 const MAX_PATH_LENGTH = 100_000;
@@ -118,7 +118,7 @@ function checkNode(path: string, node: svgParser.ElementNode): void {
 for (const path of svgPaths) {
     const stats = fs.statSync(path);
 
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    // biome-ignore lint/style/noNonNullAssertion: yes
     const baseDir = path.split("/").at(-2)!;
 
     let maxSize = MAX_SIZES[baseDir];

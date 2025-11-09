@@ -28,6 +28,100 @@
 <body>
   <pre>
 # Changelog
+v0.30.0 - [10/30/2025]
+- **Halloween mode rework!** The Halloween map and its loot tables have been reworked.
+- **New guns!**
+  - **ULR-338**: A powerful single-shot sniper chambered in .338 Lapua Magnum.
+  - **DP-12**: A double barreled pump-action shotgun.
+  - **Aged Seedshot**: A new variant of the Seedshot.
+- **New buildings!** Added the **Park** and **Mansion**. Halloween exclusive.
+- **New melees!** Added the **Scythe** and **Chainsaw**, both Halloween exclusive. Previously a dev only weapon, the Chainsaw has been rebalanced as a normal weapon.
+- **New perks!** Added Plumpkin Shuffle, Last Stand, Eternal Magnetism, Aching Knees, and Plumpkin's Blessing. All Halloween exclusive.
+- **New skins!** Added Overgrown, Haunted, Failed Experiment, Demon, and Wounded. All Halloween exclusive.
+- Replaced the PP-19 Vityaz with the PP-19 Bizon.
+- Added variations for Sickle (Vaibhav), Hatchet (Bloodstained), Hand Saw (Tenon Saw), Chainsaw (Leatherfaced) and Crowbar (Rusted, Halloween) melees.
+- New obstacles: golden pumpkin, urn, chainsaw mount, scythe mount, vks gun mount, pumpkin airdrop, gravestone.
+- Added new obstacles to possible disguises for the Costumed perk.
+- Added killfeed images for Chainsaw and Steelfang melees.
+- Added a vomit decal for the Rotten Plumpkin perk.
+- Reworked Combat Expert perk. It now gives a faster reload only when the active weapon is empty.
+- Reworked Loot Baron perk image.
+- Fixed Laced Stimulants perk damaging the player without adrenaline.
+- Fixed issues with the Overclocked perk and burst-type weapons.
+- Fixed Close Quarters Combat perk effect applying around dead players.
+- Fixed Advanced Athletics perk providing a permanent speed boost with the Shrouded perk equipped.
+- Berserker perk's multipliers no longer apply with the Lycanthropy perk equipped.
+- Slightly nerfed the Overclocked perk.
+- Added a new summoning sound effect to the Lycanthropy perk.
+- Werewolves can no longer pick up armor, instead they have a level 1 vest equipped by force that cannot be dropped.
+- Disguises now hide equipment.
+- Updated PSM loot image.
+- Improved perk description translations, mostly for perks with durations such as Baby Plumpkin Pie and Experimental Forcefield.
+- Barrel, Super Barrel and Stove disguises now emit smoke particles when the player is at low health.
+
+v0.29.1 - [9/21/2025]
+- **New gun!** Added the **TTK Esaul**, a powerful 5.45mm revolver.
+- Switched to Hunted mode.
+- Switched from Node.js to the Bun runtime, and from nginx to HAProxy, which should improve performance.
+- Reflective Rounds perk no longer makes bullets bounce off players.
+- Fixed player sizes not being visible to other players (e.g. with the Low Profile and Overweight perks).
+- Fixed dead players getting infected.
+- Fixed Dual MP5k not having an extended magazine.
+- Added killfeed images for the S.E.E.D. throwable.
+
+v0.29.0 - [9/12/2025]
+- **Infection mode rework!**
+  - Added an infection bar showing infection percentage. Breaking baby plumpkins fills the bar based on the distance they were broken from. If it reaches 100%, you get the Infected perk.
+  - Vaccinator
+    - Slowdown decreased from 30% to 10%.
+    - Slowdown duration decreased from 2 seconds to 1.25 seconds.
+    - Needles now decrease infection by 20%. If the infection bar reaches 0, the player is cured and receives the Immunity perk.
+  - Infected perk
+    - No longer affects speed, damage, or adrenaline drain.
+    - Sets a random perk every 30 seconds.
+    - No longer relies on RNG to infect nearby players. Nearby players' infection is instead increased by 5% every second.
+  - Added dark shaders to the map.
+- **New buildings!**
+  - Infection mode: Medical Camp, Graveyard, Mini Warehouse
+  - Hunted mode: Decayed Bridge, Train Station
+- **New gun!** Added **M202-F**, an automatic rocket launcher that shoots baby plumpkins. Exclusive to Infection mode.
+- **New perks!** Added Reflective Rounds, Overclocked, Butterfingers, Priority Target, Overweight.
+- **New throwable!** Added **S.E.E.D.** (Sequential Explosive Ejection Device), exclusive to Infection mode.
+- **New melee!** Added **Hand Saw**, found in Hunted & Harvest modes (and Infection thru baby plumpkins).
+- **New skins!** Added Medical Suit and Groundskeeper skins, exclusive to Infection mode.
+- Added keybind for using the Vaccine Syringe (adjustable in settings, defaults to 6).
+- Added pickup message for perks.
+- Added pine tree variant for Infection mode.
+- Added Vaccine Syringe residue.
+- Updated Pixi.js, the game's graphics library, fixing more memory leaks.
+- Increased hunted map ocean size.
+- The AN-94 now drops from the memorial crate.
+- Replaced all locked metal doors with powered metal doors (headquarters, fulcrum bunker, train station).
+- Replaced SVU-A gun mount in Tavern with RPK-16.
+- 5.45mm now spawns from ammo crates in Infection mode.
+- Moved Seedshot to the Graveyard, and the RSh case now spawns normally in the blue house basement.
+- Flares obtained from baby plumpkins are now limited to 2.
+- Guns no longer spawn inside hollow logs.
+- Flechettes no longer applies to Seedshot.
+- New M1895 loot and killfeed images.
+- Decreased throwable drops from grenade crates from 3-4 to 1-3.
+- Fixed Close Quarters Combat perk not making guns reload faster at close range.
+- Fixed grenades flying over barn stair walls and getting stuck at the wrong layer.
+- Fixed wall placements in Headquarters and Plumpkin Bunker bathrooms.
+- Fixed Loot Baron perk duplicating loot drops.
+- Fixed M590M and Maul killfeed images.
+- Fixed the highlight functionality of the Hollow Points perk.
+- Fixed garage door not using its residue.
+- Fixed Seedshot case sprite.
+- Fixed Plumpkin Bomb perk applying Halloween skins to the Flare.
+- Fixed Plumpkin Bomb perk not changing the throwable icon in the HUD.
+- Fixed Precision Recycling perk not working with teammates.
+- Fixed Second Wind perk speed effect working above half health.
+- Fixed skull medal on game over screen not scaling correctly on smaller screens.
+- Fixed hitbox issues with the Hunting Stand stair.
+- Fixed missing killfeed message with Bloodthirst and Rotten Plumpkin perks.
+- Fixed gun world images becoming invisible after reviving.
+- Fixed item dropping sound playing for items that can't be dropped (e.g. fists).
 
 v0.28.2 - [8/25/2025]
 - New MG5 sounds.

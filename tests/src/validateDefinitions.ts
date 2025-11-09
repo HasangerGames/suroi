@@ -2658,8 +2658,8 @@ logger.indent("Validating modes", () => {
 
             tester.assertNoPointlessValue({
                 obj: mode,
-                field: "darkShaders",
-                defaultValue: false,
+                field: "canvasFilters",
+                defaultValue: undefined,
                 baseErrorPath: errorPath
             });
 

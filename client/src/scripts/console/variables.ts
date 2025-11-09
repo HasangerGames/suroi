@@ -47,14 +47,6 @@ export type CVarChangeListener<Value> = (
     cvar: ConVar<Value>
 ) => void;
 
-/*
-    eslint-disable
-    @stylistic/indent-binary-ops
-*/
-
-/*
-    `@stylistic/indent-binary-ops`: ESLint sucks at indenting types correctly
-*/
 export interface JSONCVar<Value extends Stringable> {
     readonly value: Value
     readonly flags: Partial<CVarFlags>
@@ -230,7 +222,7 @@ type SimpleCVarMapping = {
                 readonly value: Val
             } & (
                 {
-                    readonly changeListeners: CVarChangeListener<Val> | Array<CVarChangeListener<Val>>
+                    readonly changeListeners: CVarChangeListener<Val> | CVarChangeListener<Val>[]
                 } |
                 {
                     readonly changeListeners?: never
@@ -389,6 +381,7 @@ export const defaultBinds = Object.freeze({
     "use_consumable medikit": ["8"],
     "use_consumable cola": ["9"],
     "use_consumable tablets": ["0"],
+    "use_consumable vaccine_syringe": ["6"],
     "cancel_action": ["X"],
     "+view_map": [],
     "toggle_map": ["G", "M"],
@@ -491,7 +484,7 @@ export class ConsoleVariables {
             const defaultVar = defaultClientCVars[name];
             const defaultValue = typeof defaultVar === "object" ? defaultVar.value : defaultVar;
             const changeListeners = typeof defaultVar === "object" && defaultVar.changeListeners
-                ? [defaultVar.changeListeners].flat() as unknown as Array<CVarChangeListener<Stringable>>
+                ? [defaultVar.changeListeners].flat() as unknown as CVarChangeListener<Stringable>[]
                 : [];
             const flags = typeof defaultVar === "object" && defaultVar.flags
                 ? defaultVar.flags
@@ -609,7 +602,7 @@ export class ConsoleVariables {
 
     private readonly _changeListeners = new ExtendedMap<
         keyof CVarTypeMapping,
-        Array<CVarChangeListener<Stringable>>
+        CVarChangeListener<Stringable>[]
     >();
 
     addChangeListener<K extends keyof CVarTypeMapping>(

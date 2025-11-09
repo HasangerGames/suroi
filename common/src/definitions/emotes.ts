@@ -44,6 +44,7 @@ export const Emotes = new ObjectDefinitions<EmoteDefinition>([
             "Sad Face",
             "Thumbs Up",
             "Thumbs Down",
+            "Okay",
             "Wave",
             "Disappointed Face",
             "Sobbing Face",

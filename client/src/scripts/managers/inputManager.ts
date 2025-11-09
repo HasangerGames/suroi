@@ -20,6 +20,8 @@ import { type TranslationKeys } from "../utils/translations/typings";
 import { CameraManager } from "./cameraManager";
 import { SoundManager } from "./soundManager";
 import { UIManager } from "./uiManager";
+import { PerkIds } from "@common/definitions/items/perks";
+import { PerkManager } from "./perkManager";
 
 class InputMapper {
     // These two maps must be kept in sync!!
@@ -33,8 +35,7 @@ class InputMapper {
     private static readonly _generateGetAndSetIfAbsent
         = <K, V>(map: Map<K, V>, defaultValue: () => V) =>
             (key: K) =>
-                // trivially safe
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                // biome-ignore lint/style/noNonNullAssertion: trivially safe
                 map.get(key) ?? map.set(key, defaultValue()).get(key)!;
 
     private static readonly _generateAdder
@@ -80,8 +81,7 @@ class InputMapper {
 
         actions.delete(action);
 
-        // safe because the backward map has already been checked
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        // biome-ignore lint/style/noNonNullAssertion: safe because the backward map has already been checked
         this._actionToInput.get(action)!.delete(input);
         return true;
     }
@@ -214,12 +214,19 @@ class InputManagerClass {
         if (action.type === InputActions.DropItem || action.type === InputActions.DropWeapon) {
             const inventory = UIManager.inventory;
 
-            let item!: ItemDefinition;
+            let item!: ItemDefinition | WeaponDefinition;
             if (action.type === InputActions.DropItem) {
                 item = action.item;
-            } else if (action.type === InputActions.DropWeapon) {
-                item = inventory.weapons[action.slot] as unknown as WeaponDefinition;
+            } else if (action.type === InputActions.DropWeapon && inventory.weapons?.[action.slot]) {
+                const weapon = inventory.weapons[action.slot];
+                if (weapon !== undefined) item = weapon.definition;
             }
+
+            if (
+                (item.defType === DefinitionType.Perk && PerkManager.has(PerkIds.Infected)) // locked perks?
+                || item.noDrop
+                || Game.spectating
+            ) return;
 
             // TODO always play sound, detect this elsewhere so the input action is never sent
             let playSound = !item.noDrop;
@@ -781,7 +788,13 @@ class InputManagerClass {
     }
 
     private readonly _keybindsContainer = $<HTMLDivElement>("#tab-keybinds-content");
+    private _keybindCleanupFunctions: Array<() => void> = [];
     generateBindsConfigScreen(): void {
+        for (const cleanup of this._keybindCleanupFunctions) {
+            cleanup();
+        }
+        this._keybindCleanupFunctions = [];
+
         this._keybindsContainer.html("").append(html`
             <div class="modal-item" id="keybind-clear-tooltip">
                 ${getTranslatedString("keybind_clear_tooltip")}
@@ -856,6 +869,17 @@ class InputManagerClass {
                     evt.preventDefault();
                     evt.stopPropagation();
                     evt.stopImmediatePropagation();
+                });
+
+                const handleGlobalKeydown = (event: KeyboardEvent): void => {
+                    if (activeButton !== bindButton) return;
+                    if (event.target === bindButton) return;
+                    setKeyBind(event);
+                };
+
+                window.addEventListener("keydown", handleGlobalKeydown);
+                this._keybindCleanupFunctions.push(() => {
+                    window.removeEventListener("keydown", handleGlobalKeydown);
                 });
             });
         }

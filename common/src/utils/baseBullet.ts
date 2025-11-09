@@ -23,6 +23,8 @@ export type BaseBulletDefinition = {
     readonly lastShotFX?: boolean
     readonly noCollision?: boolean
     readonly noReflect?: boolean
+    readonly ignoreCoolerGraphics?: boolean
+    readonly infection?: number
 
     readonly teammateHeal?: number
     readonly enemySpeedMultiplier?: {
@@ -56,6 +58,11 @@ export type BaseBulletDefinition = {
          */
         readonly color?: number
         readonly saturatedColor?: number
+
+        /**
+         * How fast tracer images spin (useful for projectiles)
+        */
+        readonly spinSpeed?: number
     }
 
     readonly trail?: {
@@ -122,6 +129,8 @@ export interface BulletOptions {
     readonly rangeOverride?: number
     readonly shotFX?: boolean
     readonly lastShot?: boolean
+    readonly cycle?: boolean
+    readonly reflective?: boolean
 }
 
 type GameObject = {
@@ -162,6 +171,10 @@ export class BaseBullet {
     shotFX = false;
 
     lastShot = false;
+
+    cycle = false;
+
+    reflective = false;
 
     readonly sourceID: number;
 
@@ -221,6 +234,10 @@ export class BaseBullet {
         this.shotFX = options.shotFX ?? false;
 
         this.lastShot = options.lastShot ?? false;
+
+        this.cycle = options.cycle ?? false;
+
+        this.reflective = options.reflective ?? false;
     }
 
     /**
@@ -372,7 +389,9 @@ export class BaseBullet {
             this.thin,
             this.split,
             this.shotFX,
-            this.lastShot
+            this.lastShot,
+            this.cycle,
+            this.reflective
         );
 
         if (hasMods) {
@@ -428,7 +447,9 @@ export class BaseBullet {
             thin,
             split,
             shotFX,
-            lastShot
+            lastShot,
+            cycle,
+            reflective
         ] = stream.readBooleanGroup2();
 
         const modifiers = hasMods
@@ -467,7 +488,9 @@ export class BaseBullet {
             thin,
             split,
             shotFX,
-            lastShot
+            lastShot,
+            cycle,
+            reflective
         };
     }
 }
