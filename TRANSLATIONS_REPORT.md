@@ -2,7 +2,7 @@
 
 This file is a report of all errors and missing keys in the translation files of this game.
 
-## 🇦🇱 Shqip (53% Complete) - ab.hjson
+## 🇦🇱 Shqip (54% Complete) - ab.hjson
 
 ### Invalid Keys
 
@@ -203,7 +203,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
 
-## 🇧🇷 Português (Brasil) (88% Complete) - br.hjson
+## 🇧🇷 Português (Brasil) (87% Complete) - br.hjson
 
 ### Invalid Keys
 
@@ -457,7 +457,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
 
-## 🇩🇪 Deutsch (63% Complete) - de.hjson
+## 🇩🇪 Deutsch (64% Complete) - de.hjson
 
 ### Invalid Keys
 
@@ -800,7 +800,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
 
-## 🇪🇪 eesti (84% Complete) - et.hjson
+## 🇪🇪 eesti (85% Complete) - et.hjson
 
 ### Invalid Keys
 
@@ -1043,7 +1043,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `plumpkin_blessing` is not defined
 - Key `plumpkin_blessing_desc` is not defined
 
-## 🇫🇮 suomi (58% Complete) - fi.hjson
+## 🇫🇮 suomi (59% Complete) - fi.hjson
 
 ### Invalid Keys
 
@@ -1224,7 +1224,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
 
-## 🇫🇷 Français (88% Complete) - fr.hjson
+## 🇫🇷 Français (89% Complete) - fr.hjson
 
 ### Invalid Keys
 
@@ -2409,7 +2409,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
 
-## 🇳🇱 Nederlands (92% Complete) - nl.hjson
+## 🇳🇱 Nederlands (93% Complete) - nl.hjson
 
 ### Invalid Keys
 
@@ -2448,7 +2448,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `plumpkin_blessing` is not defined
 - Key `plumpkin_blessing_desc` is not defined
 
-## 🇵🇱 Polski (58% Complete) - pl.hjson
+## 🇵🇱 Polski (59% Complete) - pl.hjson
 
 ### Invalid Keys
 
@@ -2795,7 +2795,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
 
-## 🇷🇴 Română (92% Complete) - ro.hjson
+## 🇷🇴 Română (93% Complete) - ro.hjson
 
 ### (No Invalid Keys)
 
@@ -2880,7 +2880,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `loot_baron_desc` is not defined
 - Key `baby_plumpkin_pie_desc` is not defined
 
-## 🇮🇳 தமிழ் (88% Complete) - ta.hjson
+## 🇮🇳 தமிழ் (89% Complete) - ta.hjson
 
 ### Invalid Keys
 
@@ -3233,7 +3233,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
 
-## 🇻🇳 Tiếng Việt (84% Complete) - vi.hjson
+## 🇻🇳 Tiếng Việt (85% Complete) - vi.hjson
 
 ### Invalid Keys
 
