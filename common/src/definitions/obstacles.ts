@@ -1698,6 +1698,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         spawnMode: MapObjectSpawnMode.GrassAndSand,
         hitbox: RectangleHitbox.fromRect(8.9, 8.9, Vec(0, 0.1)),
         rotationMode: RotationMode.None,
+        lootTable: "flint_lockbox",
         particleVariations: 2,
         winterVariations: 1
     },
@@ -1911,6 +1912,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         rotationMode: RotationMode.Binary,
         hitbox: RectangleHitbox.fromRect(9.2, 9.2),
         hasLoot: true,
+        lootTable: "regular_crate",
         frames: {
             particle: "crate_particle",
             residue: "regular_crate_residue"
@@ -1950,6 +1952,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         hitbox: RectangleHitbox.fromRect(9.2, 9.2),
         hasLoot: true,
         hideOnMap: true,
+        lootTable: "flint_crate",
         winterVariations: 6
     },
     {
@@ -1968,6 +1971,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         hitbox: RectangleHitbox.fromRect(9.2, 9.2),
         hasLoot: true,
         hideOnMap: true,
+        lootTable: "aegis_crate",
         winterVariations: 6
     },
     {
@@ -2003,6 +2007,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         rotationMode: RotationMode.None,
         allowFlyover: FlyoverPref.Always,
         hasLoot: true,
+        lootTable: "grenade_crate",
         winterVariations: 3
     },
     {
@@ -2021,6 +2026,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         rotationMode: RotationMode.None,
         allowFlyover: FlyoverPref.Always,
         hasLoot: true,
+        lootTable: "melee_crate",
         winterVariations: 1
     },
     {
@@ -2074,6 +2080,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         spawnMode: MapObjectSpawnMode.GrassAndSand,
         rotationMode: RotationMode.Binary,
         hitbox: RectangleHitbox.fromRect(9.2, 9.2),
+        lootTable: "frozen_crate",
         frames: {
             residue: "regular_crate_residue",
             particle: "window_particle"
@@ -2097,6 +2104,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         hitbox: RectangleHitbox.fromRect(8.49, 8.36),
         rotationMode: RotationMode.Limited,
         hasLoot: true,
+        lootTable: "ammo_crate",
         frames: {
             particle: "crate_particle"
         },
@@ -2599,6 +2607,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         rotationMode: RotationMode.Limited,
         variations: 3,
         zIndex: ZIndexes.ObstaclesLayer2,
+        lootTable: "box",
         hasLoot: true,
         winterVariations: 3,
         waterOverlay: {
@@ -3188,6 +3197,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         ),
         rotationMode: RotationMode.Limited,
         allowFlyover: FlyoverPref.Always,
+        lootTable: "trash",
         winterVariations: 2
     },
     {
@@ -5024,6 +5034,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         hitbox: RectangleHitbox.fromRect(10.19, 4.76),
         rotationMode: RotationMode.Limited,
         allowFlyover: FlyoverPref.Always,
+        lootTable: "gun_case",
         hasLoot: true,
         winterVariations: 3
     },
@@ -5041,6 +5052,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         hitbox: RectangleHitbox.fromRect(8.3, 4.73),
         rotationMode: RotationMode.Limited,
         allowFlyover: FlyoverPref.Always,
+        lootTable: "cooler",
         hasLoot: true,
         winterVariations: 1
     },
@@ -5117,6 +5129,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         ),
         rotationMode: RotationMode.Limited,
         allowFlyover: FlyoverPref.Never,
+        lootTable: "fire_hatchet_case",
         frames: {
             particle: "super_barrel_particle"
         },
@@ -5369,6 +5382,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         rotationMode: RotationMode.Limited,
         zIndex: ZIndexes.ObstaclesLayer2,
         hasLoot: true,
+        lootTable: "grenade_box",
         frames: {
             particle: "box_particle",
             residue: "box_residue"
