@@ -2038,8 +2038,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         hitbox: RectangleHitbox.fromRect(6.5, 6.3),
         rotationMode: RotationMode.None,
         allowFlyover: FlyoverPref.Always,
-        hasLoot: true,
-        winterVariations: 1
+        hasLoot: true
     },
     {
         idString: "hazel_crate",
@@ -2293,7 +2292,6 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         },
         particlesOnDestroy: "ash_particle",
         additionalDestroySounds: ["smoke_grenade"],
-        winterVariations: 1,
         waterOverlay: {
             scaleX: 1,
             scaleY: 0.65
