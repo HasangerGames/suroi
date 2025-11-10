@@ -21,6 +21,7 @@ import { GamePlugin } from "../pluginManager";
 import { getLootFromTable } from "../utils/lootHelpers";
 import { LootTables } from "./lootTables";
 import { ConfigSchema } from "../utils/config.d";
+import { memoryUsage } from "process";
 
 export interface RiverDefinition {
     readonly minAmount: number
@@ -966,7 +967,9 @@ const maps = {
             container_7: 1,
             container_8: 2,
             container_9: 1,
-            container_10: 3
+            container_10: 3,
+            memorial: 1,
+            buoy: 12
         },
         majorBuildings: ["armory", "refinery", "port", "headquarters", "christmas_camp"],
         quadBuildingLimit: {
