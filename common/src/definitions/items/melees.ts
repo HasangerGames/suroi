@@ -86,7 +86,7 @@ const hatchet = (name: string): MeleeDefinition => {
         name,
         defType: DefinitionType.Melee,
         tier: Tier.B,
-        damage: 38,
+        damage: 40,
         speedMultiplier: 1,
         obstacleMultiplier: 2,
         piercingMultiplier: 1.5,
@@ -1038,14 +1038,14 @@ export const Melees = new InventoryItemDefinitions<MeleeDefinition>([
         name: "Pan",
         defType: DefinitionType.Melee,
         tier: Tier.S,
-        damage: 65,
+        damage: 42,
         swingSound: "heavy_swing",
         hitSound: "pan_hit",
         speedMultiplier: 1,
         obstacleMultiplier: 1.5,
         radius: 2.7,
         offset: Vec(5.5, 2),
-        cooldown: 800,
+        cooldown: 500,
         reflectiveSurface: {
             pointA: Vec(3.55, -2),
             pointB: Vec(2.6, 0.66)
@@ -1072,7 +1072,7 @@ export const Melees = new InventoryItemDefinitions<MeleeDefinition>([
         animation: [
 
             {
-                duration: 200,
+                duration: 175,
                 fists: {
                     left: Vec(38, -35),
                     right: Vec(65, 55)
@@ -1083,7 +1083,7 @@ export const Melees = new InventoryItemDefinitions<MeleeDefinition>([
                 }
             },
             {
-                duration: 200,
+                duration: 175,
                 fists: {
                     left: Vec(38, -35),
                     right: Vec(45, 35)
@@ -1161,8 +1161,8 @@ export const Melees = new InventoryItemDefinitions<MeleeDefinition>([
         name: "Pipe Wrench",
         defType: DefinitionType.Melee,
         tier: Tier.A,
-        damage: 42,
-        obstacleMultiplier: 2.5,
+        damage: 36,
+        obstacleMultiplier: 1.5,
         radius: 2.6,
         offset: Vec(4.25, -0.05),
         cooldown: 450,

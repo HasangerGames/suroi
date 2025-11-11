@@ -134,11 +134,8 @@ export class Bullet extends BaseBullet {
                 && (definition.onHitExplosion === undefined || !definition.explodeOnImpact)
             );
 
-            const isBlockedReflectionGun = this.sourceGun.definition.ballistics.onHitExplosion || this.sourceGun.definition.ballistics.onHitProjectile;
-            const reflectiveRounds = !object.isPlayer && this.shooter.isPlayer && this.shooter.hasPerk(PerkIds.ReflectiveRounds) && !isBlockedReflectionGun;
-
             let rotation: number | undefined;
-            if (reflected || definition.onHitExplosion || definition.onHitProjectile || reflectiveRounds) {
+            if (reflected || definition.onHitExplosion || definition.onHitProjectile) {
                 /*
                     nudge the bullet
 
@@ -200,8 +197,8 @@ export class Bullet extends BaseBullet {
             // think of it as bullet penetration.
             if (isObstacle && object.definition.noCollisions) continue;
 
-            if (reflected || reflectiveRounds) {
-                this.reflect(rotation ?? 0, reflectiveRounds ?? false);
+            if (reflected) {
+                this.reflect(rotation ?? 0);
                 this.reflected = true;
             }
 
