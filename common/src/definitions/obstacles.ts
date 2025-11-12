@@ -4599,6 +4599,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         allowFlyover: FlyoverPref.Never,
         zIndex: ZIndexes.BuildingsFloor - 1,
         variations: 3,
+        winterVariations: 3,
         frames: {
             particle: "metal_particle"
         }
@@ -5332,7 +5333,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         hideOnMap: true,
         hitbox: RectangleHitbox.fromRect(3.2, 8.87, Vec(-0.4, 0)),
         rotationMode: RotationMode.Limited,
-        zIndex: ZIndexes.BuildingsFloor
+        zIndex: ZIndexes.BuildingsFloor,
+        winterVariations: 1
     },
     {
         idString: "grenade_box",
@@ -5480,7 +5482,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
             particle: "metal_particle"
         },
         hideOnMap: false,
-        rotationMode: RotationMode.Limited
+        rotationMode: RotationMode.Limited,
+        winterVariations: 3
     },
     {
         idString: "bunker_entrance",
