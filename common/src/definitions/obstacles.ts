@@ -4603,29 +4603,6 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         }
     },
     {
-        idString: "trailer",
-        name: "Trailer",
-        defType: DefinitionType.Obstacle,
-        material: "metal_heavy",
-        health: 1000,
-        indestructible: true,
-        reflectBullets: true,
-        hitbox: new GroupHitbox(
-            RectangleHitbox.fromRect(14.9, 44.7, Vec(-0.05, 0)), // Body
-            RectangleHitbox.fromRect(15.9, 6.4, Vec(0, -11.2)), // Front-most back wheels
-            RectangleHitbox.fromRect(15.9, 6.4, Vec(0, -18.2)), // Rearmost back wheels
-            RectangleHitbox.fromRect(15.5, 1.5, Vec(0, -22.5)), // Rear bumper
-            RectangleHitbox.fromRect(9.75, 1, Vec(-0.05, 22.75)) // Front part (idk)
-        ),
-        rotationMode: RotationMode.Limited,
-        allowFlyover: FlyoverPref.Never,
-        zIndex: ZIndexes.ObstaclesLayer4,
-        noResidue: true,
-        frames: {
-            particle: "metal_particle"
-        }
-    },
-    {
         idString: "tango_crate",
         name: "Tango Crate",
         defType: DefinitionType.Obstacle,
@@ -4756,18 +4733,6 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         requiredItem: "gas_can",
         hitbox: RectangleHitbox.fromRect(9, 7),
         winterVariations: 1
-    },
-
-    {
-        idString: "ship_oil_tank",
-        name: "Ship Oil Tank",
-        defType: DefinitionType.Obstacle,
-        material: "metal_heavy",
-        health: 200,
-        indestructible: true,
-        rotationMode: RotationMode.Limited,
-        allowFlyover: FlyoverPref.Never,
-        hitbox: RectangleHitbox.fromRect(28, 14)
     },
     {
         idString: "forklift",
