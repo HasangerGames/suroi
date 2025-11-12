@@ -3663,12 +3663,12 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "box", position: Vec(77.83, -139.44), outdoors: true },
             { idString: "box", position: Vec(87.45, -129.9), outdoors: true },
 
-            { idString: "planted_bushes", position: Vec(73.65, -225.45), rotation: 1, outdoors: true },
-            { idString: "planted_bushes", position: Vec(109.69, -225.45), rotation: 1, outdoors: true },
+            { idString: "planted_bushes", position: Vec(73.65, -225.45), rotation: 1},
+            { idString: "planted_bushes", position: Vec(109.69, -225.45), rotation: 1},
 
             { idString: "smaller_sandbags", position: Vec(163.06, -234.3), rotation: 0, outdoors: true },
 
-            { idString: "pallet", position: Vec(65.4, -155.76), rotation: 2, outdoors: true },
+            { idString: "pallet", position: Vec(65.4, -155.76), rotation: 2},
             { idString: "box", position: Vec(67.31, -155.12), outdoors: true },
             // ------------------------------------------------------------------------------------------
 
@@ -3746,14 +3746,14 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "regular_crate", position: Vec(-112.72, -215.26), outdoors: true },
             { idString: "regular_crate", position: Vec(-75.61, -183.93), outdoors: true },
 
-            { idString: "planted_bushes", position: Vec(-91.86, -225.47), rotation: 1, outdoors: true },
-            { idString: "planted_bushes", position: Vec(-73.75, -225.47), rotation: 1, outdoors: true },
+            { idString: "planted_bushes", position: Vec(-91.86, -225.47), rotation: 1},
+            { idString: "planted_bushes", position: Vec(-73.75, -225.47), rotation: 1},
 
             { idString: "sandbags", position: Vec(-113.66, -226.97), rotation: 1, outdoors: true },
             { idString: "sandbags", position: Vec(-77.72, -174.34), rotation: 0, outdoors: true },
             { idString: "smaller_sandbags", position: Vec(-105.2, -222.95), rotation: 0, outdoors: true },
             { idString: "smaller_sandbags", position: Vec(-76.39, -216.45), rotation: 1, outdoors: true },
-            { idString: "barrier", position: Vec(-0.87, -227.85), rotation: 3, outdoors: true },
+            { idString: "barrier", position: Vec(-0.87, -227.85), rotation: 3 },
             // ------------------------------------------------------------------------------------------
 
             // ------------------------------------------------------------------------------------------
@@ -5735,12 +5735,12 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "small_bed", position: Vec(-9.2, -1.96), rotation: 0 },
             { idString: "small_drawer", position: Vec(-17.11, -6.47), rotation: 0 },
             { idString: "lighthouse_crate", position: Vec(0, -37) },
-            { idString: "sandbags", position: Vec(11.66, 43.03), rotation: 0 },
-            { idString: "sandbags", position: Vec(-12.55, 43.03), rotation: 0 },
-            { idString: "sandbags", position: Vec(25.8, 32.27), rotation: 1 },
-            { idString: "sandbags", position: Vec(-27, 32.27), rotation: 1 },
-            { idString: "propane_tank", position: Vec(20.43, 40.97) },
-            { idString: "propane_tank", position: Vec(20.43, 45.02) }
+            { idString: "sandbags", position: Vec(11.66, 43.03), rotation: 0, outdoors: true },
+            { idString: "sandbags", position: Vec(-12.55, 43.03), rotation: 0, outdoors: true },
+            { idString: "sandbags", position: Vec(25.8, 32.27), rotation: 1, outdoors: true },
+            { idString: "sandbags", position: Vec(-27, 32.27), rotation: 1, outdoors: true },
+            { idString: "propane_tank", position: Vec(20.43, 40.97), outdoors: true },
+            { idString: "propane_tank", position: Vec(20.43, 45.02), outdoors: true }
         ],
         subBuildings: IS_CLIENT ? undefined : [
             { idString: "lighthouse_lighting", position: Vec(0, -36.2) }
@@ -5984,15 +5984,15 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "regular_crate", position: Vec(-16.5, 17.85), outdoors: true },
             { idString: "regular_crate", position: Vec(-24.02, -23.2), outdoors: true },
 
-            { idString: "roadblock", position: Vec(-10.07, -29.04), rotation: 1 },
+            { idString: "roadblock", position: Vec(-10.07, -29.04), rotation: 1, outdoors: true },
 
-            { idString: "roadblock", position: Vec(-26, 0), rotation: 0 },
-            { idString: "roadblock", position: Vec(-27, 15), rotation: 0 },
+            { idString: "roadblock", position: Vec(-26, 0), rotation: 0, outdoors: true },
+            { idString: "roadblock", position: Vec(-27, 15), rotation: 0, outdoors: true },
 
-            { idString: "roadblock", position: Vec(-12.5, 27.5), rotation: 1 },
-            { idString: "roadblock", position: Vec(2.5, 27.5), rotation: 1 },
-            { idString: "roadblock", position: Vec(17.5, 27.5), rotation: 1 },
-            { idString: "roadblock", position: Vec(25, 15), rotation: 0 }
+            { idString: "roadblock", position: Vec(-12.5, 27.5), rotation: 1, outdoors: true },
+            { idString: "roadblock", position: Vec(2.5, 27.5), rotation: 1, outdoors: true },
+            { idString: "roadblock", position: Vec(17.5, 27.5), rotation: 1, outdoors: true },
+            { idString: "roadblock", position: Vec(25, 15), rotation: 0, outdoors: true }
         ]
     },
 
