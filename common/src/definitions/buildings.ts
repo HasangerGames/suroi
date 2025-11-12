@@ -1038,7 +1038,7 @@ const truck = (
         defType: DefinitionType.Building,
         spawnHitbox: RectangleHitbox.fromRect(25, 60, Vec(0, 6)),
         obstacles: IS_CLIENT ? undefined : [
-            { idString: "truck_front", position: Vec(0, -11.5), rotation: 0 },
+            { idString: "truck_front", position: Vec(0, -11.5), rotation: 0, outdoors: true },
             { idString: "truck_tire", position: Vec(-7.15, 30.81), rotation: 0 },
             { idString: "truck_tire", position: Vec(7.15, 30.81), rotation: 0 },
             { idString: "truck_tire", position: Vec(7.15, 24.71), rotation: 0 },
@@ -4330,7 +4330,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 position: Vec(-2.01, 34.23),
                 rotation: 0,
                 layer: Layer.Upstairs,
-                puzzlePiece: true
+                puzzlePiece: true,
+                outdoors: true
             },
             {
                 idString: "vault_door_deactivated",
@@ -4921,21 +4922,21 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "cargo_ship_stair_support", position: Vec(-26.09, 100.04), rotation: 2 },
             { idString: "cargo_ship_stair_support", position: Vec(-26.08, 113.1), rotation: 2 },
 
-            { idString: "cargo_ship_stair", position: Vec(63.71, -48.43), rotation: 0, layer: Layer.ToBasement },
-            { idString: "cargo_ship_stair", position: Vec(63.71, 121.45), rotation: 0, layer: Layer.ToBasement },
-            { idString: "cargo_ship_stair", position: Vec(63.71, -119.14), rotation: 0, layer: Layer.ToBasement },
-            { idString: "cargo_ship_stair", position: Vec(-63.71, -119.07), rotation: 2, layer: Layer.ToBasement },
-            { idString: "cargo_ship_stair", position: Vec(-63.71, 21.75), rotation: 2, layer: Layer.ToBasement },
-            { idString: "cargo_ship_stair", position: Vec(-63.71, 121.65), rotation: 2, layer: Layer.ToBasement },
+            { idString: "cargo_ship_stair", position: Vec(63.71, -48.43), rotation: 0, layer: Layer.ToBasement, outdoors: true },
+            { idString: "cargo_ship_stair", position: Vec(63.71, 121.45), rotation: 0, layer: Layer.ToBasement, outdoors: true },
+            { idString: "cargo_ship_stair", position: Vec(63.71, -119.14), rotation: 0, layer: Layer.ToBasement, outdoors: true },
+            { idString: "cargo_ship_stair", position: Vec(-63.71, -119.07), rotation: 2, layer: Layer.ToBasement, outdoors: true },
+            { idString: "cargo_ship_stair", position: Vec(-63.71, 21.75), rotation: 2, layer: Layer.ToBasement, outdoors: true },
+            { idString: "cargo_ship_stair", position: Vec(-63.71, 121.65), rotation: 2, layer: Layer.ToBasement, outdoors: true },
 
             { idString: "cargo_ship_stair_entrance_walls", position: Vec(0.11, -156.81), rotation: 0 },
             { idString: "cargo_ship_stair_entrance_walls", position: Vec(26.3, -34.17), rotation: 3 },
             { idString: "cargo_ship_stair_entrance_walls", position: Vec(-26.12, 106.47), rotation: 3 },
 
-            { idString: "life_preserver", position: Vec(-48.2, 5.29), rotation: 2 },
-            { idString: "life_preserver", position: Vec(-48.27, -4.55), rotation: 2 },
-            { idString: "life_preserver", position: Vec(-48.19, 95.05), rotation: 2 },
-            { idString: "life_preserver", position: Vec(-48.26, 104.75), rotation: 2 },
+            { idString: "life_preserver", position: Vec(-48.2, 5.29), rotation: 2, outdoors: true },
+            { idString: "life_preserver", position: Vec(-48.27, -4.55), rotation: 2, outdoors: true },
+            { idString: "life_preserver", position: Vec(-48.19, 95.05), rotation: 2, outdoors: true },
+            { idString: "life_preserver", position: Vec(-48.26, 104.75), rotation: 2, outdoors: true },
 
             { idString: "box", position: Vec(-22.41, 187.01) },
             { idString: "box", position: Vec(-17.74, 187.37) },
@@ -8955,7 +8956,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         ],
 
         obstacles: IS_CLIENT ? undefined : [
-            { idString: "truck_front", position: Vec(0.1, -25.49), rotation: 0 },
+            { idString: "truck_front", position: Vec(0.1, -25.49), rotation: 0, outdoors: true },
             { idString: "truck_tire", position: Vec(7.26, -15.08), rotation: 0 },
             { idString: "truck_tire", position: Vec(7.26, 4.32), rotation: 0 },
             { idString: "truck_tire", position: Vec(7.26, 13.43), rotation: 0 },
