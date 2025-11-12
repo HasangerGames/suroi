@@ -2364,7 +2364,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         frames: {
             particle: "propane_tank_particle",
             residue: "explosion_decal"
-        }
+        },
+        winterVariations: 2
     },
     {
         idString: "loot_barrel",
@@ -4950,8 +4951,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         rotationMode: RotationMode.Limited,
         frames: {
             particle: "sandbags_particle"
-        }
-        // winterVariations: 1
+        },
+        winterVariations: 1
     },
     {
         idString: "gun_locker",
@@ -4983,7 +4984,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         health: 80,
         indestructible: false,
         hitbox: RectangleHitbox.fromRect(1, 10),
-        rotationMode: RotationMode.Limited
+        rotationMode: RotationMode.Limited,
+        winterVariations: 1
     },
     {
         idString: "gun_case",
@@ -5673,7 +5675,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
             particle: "metal_particle"
         },
         rotationMode: RotationMode.Limited,
-        zIndex: ZIndexes.BuildingsCeiling
+        zIndex: ZIndexes.BuildingsCeiling,
+        winterVariations: 1
     },
     {
         idString: "cargo_ship_stair_support",
@@ -6355,8 +6358,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         frames: {
             particle: "metal_particle",
             residue: "large_refinery_barrel_residue"
-        }
-        // winterVariations: 1
+        },
+        winterVariations: 1
     },
     {
         idString: "buoy",
