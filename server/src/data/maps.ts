@@ -941,6 +941,9 @@ const maps = {
         buildings: {
             large_bridge: 2,
             small_bridge: Infinity,
+            river_hut_1: 2,
+            river_hut_2: 2,
+            river_hut_3: 2,
             port: 1,
             lighthouse: 1,
             tugboat_red: 1,
