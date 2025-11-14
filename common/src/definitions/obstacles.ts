@@ -5391,7 +5391,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         hitbox: RectangleHitbox.fromRect(9.5, 16.5),
         rotationMode: RotationMode.Limited,
         spawnMode: MapObjectSpawnMode.River,
-        noResidue: true
+        noResidue: true,
+        winterVariations: 1
     },
     {
         idString: "viking_chest",
