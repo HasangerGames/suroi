@@ -350,8 +350,9 @@ Melees:
   Pipe Wrench: sovietnuclearfridgebomb
   Hand Saw (Art, Killfeed, Animation): AnnihilatingFox
     - Tenon Saw: pap, AnnihilatingFox
-  Scythe (Art, Killfeed, Animation): AnnihilatingFox
-
+  Scythe
+    Loot Image, Idea: Skullboi249
+    Killfeed, Animation: AnnihilatingFox
 
 Obstacles:
   Barrel: 123OP, Asultra, hasanger
@@ -471,8 +472,8 @@ Perk Icons:
   Rotten Plumpkin: Winter
   Shrouded: Winter
   Torn Pockets: Winter
-  Infected: Skullboi249, AnnihilatingFox
-  Immunity: Skullboi249, AnnihilatingFox
+  Infected: Skullboi249
+  Immunity: Skullboi249
   Combat Expert: Skullboi249
   Experimental Forcefield: Skullboi249
   Hollow Points: Skullboi249
@@ -501,5 +502,5 @@ S.E.E.D.
 Throwable Skins (Plumpkin Bomb Perk)
 - Frag Grenade: 1092384
 - Smoke Grenade: 1092384
-- C4: 1092384
+- C4: 1092384, AnnihilatingFox
 - Flare: Skullboi249
