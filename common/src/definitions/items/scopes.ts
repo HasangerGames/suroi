@@ -14,7 +14,7 @@ export const Scopes = new ObjectDefinitions<ScopeDefinition>(([
     ["8x", 160],
     ["16x", 220]
     // Value 190 reserved for possible 12x scope
-] satisfies ReadonlyArray<[string, number, boolean?]>).map(([magnification, zoomLevel, defaultScope]) => ({
+] satisfies readonly [string, number, boolean?][]).map(([magnification, zoomLevel, defaultScope]) => ({
     idString: `${magnification}_scope`,
     name: `${magnification} Scope`,
     defType: DefinitionType.Scope,

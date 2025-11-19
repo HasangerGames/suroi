@@ -8,6 +8,8 @@ export interface PlayerModifiers {
     maxShield: number
     baseSpeed: number
     size: number
+    reload: number
+    fireRate: number
     adrenDrain: number
 
     // Additive
@@ -28,7 +30,8 @@ export const enum CustomTeamMessages {
     Settings,
     KickPlayer,
     Start,
-    Started
+    Started,
+    KeepAlive
 }
 
 export interface CustomTeamPlayerInfo {
@@ -68,5 +71,5 @@ export type CustomTeamMessage =
         playerId: number
     }
     | {
-        type: CustomTeamMessages.Start | CustomTeamMessages.Started
+        type: CustomTeamMessages.Start | CustomTeamMessages.Started | CustomTeamMessages.KeepAlive
     };

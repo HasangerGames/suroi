@@ -47,14 +47,6 @@ export type CVarChangeListener<Value> = (
     cvar: ConVar<Value>
 ) => void;
 
-/*
-    eslint-disable
-    @stylistic/indent-binary-ops
-*/
-
-/*
-    `@stylistic/indent-binary-ops`: ESLint sucks at indenting types correctly
-*/
 export interface JSONCVar<Value extends Stringable> {
     readonly value: Value
     readonly flags: Partial<CVarFlags>
@@ -203,6 +195,10 @@ export const CVarCasters = Object.freeze({
     mb_joystick_lock: Casters.toBoolean,
     mb_gyro_angle: Casters.toNumber,
     mb_haptics: Casters.toBoolean,
+    mb_shake_to_reload: Casters.toBoolean,
+    mb_shake_count: Casters.toNumber,
+    mb_shake_force: Casters.toNumber,
+    mb_shake_delay: Casters.toNumber,
     mb_high_res_textures: Casters.toBoolean,
     mb_antialias: Casters.toBoolean,
 
@@ -226,7 +222,7 @@ type SimpleCVarMapping = {
                 readonly value: Val
             } & (
                 {
-                    readonly changeListeners: CVarChangeListener<Val> | Array<CVarChangeListener<Val>>
+                    readonly changeListeners: CVarChangeListener<Val> | CVarChangeListener<Val>[]
                 } |
                 {
                     readonly changeListeners?: never
@@ -345,6 +341,10 @@ export const defaultClientCVars: SimpleCVarMapping = Object.freeze({
     mb_joystick_lock: false,
     mb_gyro_angle: 0,
     mb_haptics: true,
+    mb_shake_to_reload: true,
+    mb_shake_count: 3,
+    mb_shake_force: 10,
+    mb_shake_delay: 100,
     mb_high_res_textures: false,
     mb_antialias: false,
 
@@ -381,6 +381,7 @@ export const defaultBinds = Object.freeze({
     "use_consumable medikit": ["8"],
     "use_consumable cola": ["9"],
     "use_consumable tablets": ["0"],
+    "use_consumable vaccine_syringe": ["6"],
     "cancel_action": ["X"],
     "+view_map": [],
     "toggle_map": ["G", "M"],
@@ -483,7 +484,7 @@ export class ConsoleVariables {
             const defaultVar = defaultClientCVars[name];
             const defaultValue = typeof defaultVar === "object" ? defaultVar.value : defaultVar;
             const changeListeners = typeof defaultVar === "object" && defaultVar.changeListeners
-                ? [defaultVar.changeListeners].flat() as unknown as Array<CVarChangeListener<Stringable>>
+                ? [defaultVar.changeListeners].flat() as unknown as CVarChangeListener<Stringable>[]
                 : [];
             const flags = typeof defaultVar === "object" && defaultVar.flags
                 ? defaultVar.flags
@@ -601,7 +602,7 @@ export class ConsoleVariables {
 
     private readonly _changeListeners = new ExtendedMap<
         keyof CVarTypeMapping,
-        Array<CVarChangeListener<Stringable>>
+        CVarChangeListener<Stringable>[]
     >();
 
     addChangeListener<K extends keyof CVarTypeMapping>(

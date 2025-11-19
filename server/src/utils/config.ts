@@ -7,4 +7,4 @@ if (!configExists && existsSync("config.example.json")) {
 }
 
 import type { ConfigSchema } from "./config.d";
-export const Config = (configExists ? JSON.parse(readFileSync("config.json", "utf8")) : {}) as ConfigSchema;
+export const Config = await import("../../config.json") as ConfigSchema;

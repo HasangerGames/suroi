@@ -33,7 +33,6 @@ build/
 
 # try to prevent damienvesper moments from happening
 .cache/
-.pnpm-cache/
 .npm/
 *.log
 

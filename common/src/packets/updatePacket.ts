@@ -23,6 +23,7 @@ function serializePlayerData(
         health,
         adrenaline,
         shield,
+        infection,
         zoom,
         layer,
         id,
@@ -33,15 +34,16 @@ function serializePlayerData(
         items,
         activeC4s,
         perks,
+      //  updatedPerks,
         teamID,
         blockEmoting
     }: PlayerData
 ): void {
-    /* eslint-disable @stylistic/no-multi-spaces */
     const hasMinMax             = minMax !== undefined;
     const hasHealth             = health !== undefined;
     const hasAdrenaline         = adrenaline !== undefined;
     const hasShield             = shield !== undefined;
+    const hasInfection          = infection !== undefined;
     const hasZoom               = zoom !== undefined;
     const hasLayer              = layer !== undefined;
     const hasId                 = id !== undefined;
@@ -52,8 +54,8 @@ function serializePlayerData(
     const hasItems              = items !== undefined;
     const hasActiveC4s          = activeC4s !== undefined;
     const hasPerks              = perks !== undefined;
+   // const hasUpdatedPerks       = updatedPerks !== undefined;
     const hasTeamID             = teamID !== undefined;
-    /* eslint-enable @stylistic/no-multi-spaces */
 
     strm.writeBooleanGroup2(
         hasMinMax,
@@ -74,6 +76,8 @@ function serializePlayerData(
         blockEmoting
     );
 
+    strm.writeBooleanGroup(hasInfection/*, hasUpdatedPerks*/);
+
     strm.writeUint8(pingSeq);
 
     if (hasMinMax) {
@@ -93,6 +97,10 @@ function serializePlayerData(
 
     if (hasShield) {
         strm.writeFloat(shield, 0, 1, 2);
+    }
+
+    if (hasInfection) {
+        strm.writeFloat(infection, 0, 1, 2);
     }
 
     if (hasZoom) {
@@ -255,6 +263,10 @@ function serializePlayerData(
         strm.writeArray(perks, perk => Perks.writeToStream(strm, perk));
     }
 
+    // if (hasUpdatedPerks) {
+    //     strm.writeArray(updatedPerks, perk => Perks.writeToStream(strm, perk));
+    // }
+
     if (hasTeamID) {
         strm.writeUint8(teamID);
     }
@@ -280,6 +292,8 @@ function deserializePlayerData(strm: SuroiByteStream): PlayerData {
         blockEmoting
     ] = strm.readBooleanGroup2();
 
+    const [hasInfection/*, hasUpdatedPerks*/] = strm.readBooleanGroup();
+
     const data: SDeepMutable<PlayerData> = {
         pingSeq: strm.readUint8(),
         blockEmoting
@@ -303,6 +317,10 @@ function deserializePlayerData(strm: SuroiByteStream): PlayerData {
 
     if (hasShield) {
         data.shield = strm.readFloat(0, 1, 2);
+    }
+
+    if (hasInfection) {
+        data.infection = strm.readFloat(0, 1, 2);
     }
 
     if (hasZoom) {
@@ -429,6 +447,10 @@ function deserializePlayerData(strm: SuroiByteStream): PlayerData {
         data.perks = strm.readArray(() => Perks.readFromStream(strm));
     }
 
+    // if (hasUpdatedPerks) {
+    //     data.updatedPerks = strm.readArray(() => Perks.readFromStream(strm));
+    // }
+
     if (hasTeamID) {
         data.teamID = strm.readUint8();
     }
@@ -511,6 +533,7 @@ export interface PlayerData {
     health?: number
     adrenaline?: number
     shield?: number
+    infection?: number
     zoom?: number
     layer?: number
     id?: {
@@ -546,6 +569,7 @@ export interface PlayerData {
     }
     activeC4s?: boolean
     perks?: PerkDefinition[]
+  //  updatedPerks?: PerkDefinition[]
     teamID?: number
 }
 
@@ -801,14 +825,12 @@ export const UpdatePacket = new Packet<UpdateDataIn, UpdateDataOut>(PacketType.U
                 );
 
                 if (positionDirty) {
-                    // can't be undefined on server
-                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                    // biome-ignore lint/style/noNonNullAssertion: can't be undefined on server
                     strm.writePosition(position!);
                 }
 
                 if (definitionDirty) {
-                    // also can't be undefined on server
-                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                    // biome-ignore lint/style/noNonNullAssertion: also can't be undefined on server
                     MapIndicators.writeToStream(strm, definition!);
                 }
             });

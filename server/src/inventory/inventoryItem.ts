@@ -17,7 +17,6 @@ type LoosePredicateFor<Type extends WeaponTypes = WeaponTypes> = {
     readonly definition: LootDefForType<Type>
 } & {
     // if Type === WeaponTypes, then they should all be boolean | undefined; if not, narrow as appropriate
-    // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
     readonly [K in (keyof WeaponItemTypeMap & string) as `is${K}`]: WeaponTypes extends Type
         ? boolean | undefined
         : WeaponItemTypeMap[K] extends Type
@@ -51,7 +50,6 @@ export abstract class InventoryItemBase<Type extends WeaponTypes = WeaponTypes> 
         /**
          * Returns a clone
          */
-        // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
         get modifiers() { return { ...this._modifiers }; }
 
         private _isActive = false;
@@ -97,8 +95,6 @@ export abstract class InventoryItemBase<Type extends WeaponTypes = WeaponTypes> 
         /**
          * Returns referentially equal to internal
          */
-        // shut the up
-        // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
         get stats() { return this._stats; }
 
         lastUse = 0;
@@ -229,6 +225,8 @@ export abstract class InventoryItemBase<Type extends WeaponTypes = WeaponTypes> 
                 maxAdrenaline: this._modifiers.maxAdrenaline !== newModifiers.maxAdrenaline,
                 minAdrenaline: this._modifiers.minAdrenaline !== newModifiers.minAdrenaline,
                 size: this._modifiers.size !== newModifiers.size,
+                reload: this._modifiers.reload !== newModifiers.reload,
+                fireRate: this._modifiers.fireRate !== newModifiers.fireRate,
                 adrenDrain: this._modifiers.adrenDrain !== newModifiers.adrenDrain,
 
                 baseSpeed: this._modifiers.baseSpeed !== newModifiers.baseSpeed,
@@ -244,6 +242,8 @@ export abstract class InventoryItemBase<Type extends WeaponTypes = WeaponTypes> 
                 this._modifiers.maxAdrenaline = newModifiers.maxAdrenaline;
                 this._modifiers.minAdrenaline = newModifiers.minAdrenaline;
                 this._modifiers.size = newModifiers.size;
+                this._modifiers.reload = newModifiers.reload;
+                this._modifiers.fireRate = newModifiers.fireRate;
                 this._modifiers.adrenDrain = newModifiers.adrenDrain;
 
                 this._modifiers.baseSpeed = newModifiers.baseSpeed;

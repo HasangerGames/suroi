@@ -197,7 +197,7 @@ class MapManagerClass {
                 ctx.beginPath();
                 drawGroundGraphics(ground.hitbox.transform(building.position, 1, building.orientation), ctx, scale);
                 ctx.closePath();
-                ctx.fill(ground.color);
+                ctx.fill(ground.waterTint ? Game.mode.colors.water : ground.color);
             }
         }
 
@@ -328,7 +328,7 @@ class MapManagerClass {
                     let texture = definition.frames?.base ?? definition.idString;
 
                     if (variation !== undefined && !(definition.isTree && !definition.trunkVariations)) {
-                        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                        // biome-ignore lint/style/noNonNullAssertion: we should probably find a better way
                         texture += `_${definition.isTree && definition.leavesVariations ? Math.ceil((variation + 1) / definition.trunkVariations!) : variation + 1}`;
                     }
 
@@ -648,7 +648,6 @@ class MapManagerClass {
             const screenHeight = window.innerHeight;
             const smallestDim = Numeric.min(screenHeight, screenWidth);
             this.container.scale.set(smallestDim / this._height);
-            // noinspection JSSuspiciousNameCombination
             this._minimapWidth = this.sprite.width * this.container.scale.x;
             this._minimapHeight = this.sprite.height * this.container.scale.y;
             this.margins = Vec(screenWidth / 2 - (this._minimapWidth / 2), screenHeight / 2 - (this._minimapHeight / 2));

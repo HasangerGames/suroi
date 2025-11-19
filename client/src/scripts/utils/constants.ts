@@ -15,6 +15,8 @@ export const SOUND_FILTER_FOR_LAYERS = true; // TODO: test this, unsure if it gl
 
 export const PLAYER_PARTICLE_ZINDEX = ZIndexes.Players + 0.5;
 
+export const PERK_MESSAGE_FADE_TIME = 250;
+
 export const HITBOX_COLORS = {
     obstacle: new Color("red"),
     obstacleNoCollision: new Color("yellow"),

@@ -3,16 +3,17 @@
   <hr>
 </div>
 
-
 <div align="center">
-  <img src="https://img.shields.io/badge/node.js%20-%23339933.svg?style=for-the-badge&logo=nodedotjs&logoColor=white">
+  <img src="https://img.shields.io/badge/bun-%23f472b6.svg?style=for-the-badge&logo=bun&logoColor=white">
   <img src="https://img.shields.io/badge/typescript-%233178C6?style=for-the-badge&logo=typescript&logoColor=white">
-  <img src="https://img.shields.io/badge/pixijs%20-%23e22162.svg?style=for-the-badge">
-  <img src="https://img.shields.io/badge/uwebsockets.js%20-%23000000.svg?style=for-the-badge">
-  <img src="https://img.shields.io/badge/html-%23E34F26?style=for-the-badge&logo=html5&logoColor=white">
-  <img src="https://img.shields.io/badge/css-%231572B6?style=for-the-badge&logo=css3">
-  <img src="https://img.shields.io/badge/sass-%23CC6699?style=for-the-badge&logo=sass&logoColor=white">
+  <img src="https://img.shields.io/badge/pixijs-%23e22162.svg?style=for-the-badge">
   <img src="https://img.shields.io/badge/vite-%235468FF.svg?style=for-the-badge&logo=vite&logoColor=white">
+  <img src="https://img.shields.io/badge/html-%23E34F26?style=for-the-badge&logo=html5&logoColor=white">
+  <img src="https://img.shields.io/badge/scss-%23CC6699?style=for-the-badge&logo=sass&logoColor=white">
+  <br>
+  <img src="https://img.shields.io/github/stars/HasangerGames/suroi?style=for-the-badge&logo=github">
+  <img src="https://img.shields.io/github/package-json/v/HasangerGames/suroi?style=for-the-badge">
+  <img src="https://img.shields.io/github/actions/workflow/status/HasangerGames/suroi/ci.yml?style=for-the-badge">
 </div>
 
 ## About
@@ -30,51 +31,42 @@ Any amount helps! All donation money goes towards the game directly.
 [discord.suroi.io](https://discord.suroi.io)
 
 ## Installation and setup
-Start by installing [Node.js](https://nodejs.org). If you're running macOS or Linux, [nvm](https://github.com/nvm-sh/nvm) is recommended for ease of installation.
+Start by installing [Git](https://git-scm.com/) and [Bun](https://bun.sh).
 
-Once Node is installed, pnpm can be installed using the following command:
-```sh
-npm i -g pnpm
-```
-Alternatively, pnpm can be installed from [the official website](https://pnpm.io).
-
-
-Next, install [Git](https://git-scm.com/), and use the following command to clone the repo:
+Use the following command to clone the repo:
 ```sh
 git clone https://github.com/HasangerGames/suroi.git
 ```
-You can also [click here to download the repo](https://github.com/HasangerGames/suroi/archive/refs/heads/master.zip) and extract the files.
 
-If you used Git, enter the newly created `suroi` directory with this command:
+Enter the newly created `suroi` directory with this command:
 ```sh
 cd suroi
 ```
 
-Finally, run this command in the project root to install dependencies:
+Finally, run this command in the `suroi` directory to install dependencies:
 ```sh
-pnpm install
+bun install
 ```
 
 ## Development
 To start the game locally, run the following command in the project root:
 
 ```sh
-pnpm dev
+bun dev
 ```
-Or, to see output from the server and client separately, you can use the `pnpm dev:server` and `pnpm dev:client` commands. (Both must be running simultaneously for the game to work.)
+Or, to see output from the server and client separately, you can use the `bun dev:server` and `bun dev:client` commands. (Both must be running simultaneously for the game to work.)
 
 To open the game, go to http://127.0.0.1:3000 in your browser.
 
 ## Production
-To build for production, run this command in the project root:
+To build the client for production, run this command in the project root:
 ```sh
-pnpm build
+bun build:client
 ```
-The server and client can be built separately using the `pnpm build:server` and `pnpm build:client` commands.
 
 To start the game server, run this command:
 ```sh
-pnpm start
+bun start
 ```
 
 Production builds are served using [NGINX](https://nginx.org). Visit [the wiki](https://github.com/HasangerGames/suroi/wiki/Self%E2%80%90hosting) for details on how to self-host.

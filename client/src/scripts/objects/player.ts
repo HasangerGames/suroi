@@ -17,7 +17,7 @@ import { Angle, EaseFunctions, Geometry, Numeric } from "@common/utils/math";
 import { removeFrom, type Timeout } from "@common/utils/misc";
 import { DefinitionType, type ReferenceTo } from "@common/utils/objectDefinitions";
 import { type ObjectsNetData } from "@common/utils/objectsSerializations";
-import { random, randomBoolean, randomFloat, randomPointInsideCircle, randomRotation, randomSign, randomVector } from "@common/utils/random";
+import { pickRandomInArray, random, randomBoolean, randomFloat, randomPointInsideCircle, randomRotation, randomSign, randomVector } from "@common/utils/random";
 import { FloorNames, FloorTypes } from "@common/utils/terrain";
 import { Vec, type Vector } from "@common/utils/vector";
 import $ from "jquery";
@@ -69,6 +69,12 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
     hasBubble = false;
 
+    hasMagneticField = false;
+
+    emitLowHealthParticles = false;
+
+    isCycling = false;
+
     activeOverdrive = false;
     overdriveCooldown?: Timeout;
 
@@ -109,6 +115,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
     private _skin: ReferenceTo<SkinDefinition> = "";
 
+    private _lastParticleTrail = Date.now();
+
     readonly images: {
         aimTrail?: Graphics
         altAimTrail?: Graphics
@@ -126,8 +134,10 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         readonly waterOverlay: SuroiSprite
         readonly blood: Container
         readonly backMeleeSprite: SuroiSprite
-        readonly bubbleSprite: SuroiSprite
+        bubbleSprite?: SuroiSprite
         disguiseSprite?: SuroiSprite
+        disguiseSpriteTrunk?: SuroiSprite
+        magneticFieldSprite?: SuroiSprite
         healthBar?: Graphics
     };
 
@@ -145,6 +155,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
     healingParticlesEmitter: ParticleEmitter;
 
+    smokeParticlesEmitter?: ParticleEmitter;
+
     readonly anims: {
         emote?: Tween<ObservablePoint>
         emoteHide?: Tween<ObservablePoint>
@@ -160,6 +172,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         waterOverlay?: Tween<SuroiSprite>
         sizeMod?: Tween<ObservablePoint>
         shieldScale?: Tween<ObservablePoint>
+        magneticField?: Tween<ObservablePoint>
     } = {};
 
     private _emoteHideTimeout?: Timeout;
@@ -180,6 +193,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
     sizeMod = 1;
 
+    reloadMod = 1;
+
     constructor(id: number, data: ObjectsNetData[ObjectCategory.Player]) {
         super(id);
 
@@ -195,8 +210,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             muzzleFlash: new SuroiSprite("muzzle_flash").setVisible(false).setZIndex(7).setAnchor(Vec(0, 0.5)),
             waterOverlay: new SuroiSprite("water_overlay").setVisible(false).setTint(Game.colors.water),
             blood: new Container(),
-            backMeleeSprite: new SuroiSprite(),
-            bubbleSprite: new SuroiSprite().setFrame("shield").setVisible(false).setZIndex(7)
+            backMeleeSprite: new SuroiSprite()
         };
 
         if (Game.isTeamMode) {
@@ -233,8 +247,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             this.images.muzzleFlash,
             this.images.waterOverlay,
             this.images.blood,
-            this.images.backMeleeSprite,
-            this.images.bubbleSprite
+            this.images.backMeleeSprite
         );
 
         this.container.zIndex = ZIndexes.Players;
@@ -306,6 +319,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         this.emote.container.position.copyFrom(Vec.addComponent(this.container.position, 0, -175));
         this.teammateName?.container.position.copyFrom(Vec.addComponent(this.container.position, 0, 95));
         this.images.healthBar?.position.copyFrom(Vec.addComponent(this.container.position, 0, -90));
+
+        if (this.disguiseContainer) this.disguiseContainer.position.copyFrom(this.container.position);
     }
 
     override update(): void { /* bleh */ }
@@ -317,7 +332,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         }
     }
 
-    spawnCasingParticles(filterBy: "fire" | "reload", altFire = false): void {
+    spawnCasingParticles(filterBy: "fire" | "reload" | "cycle", altFire = false): void {
         const weaponDef = this.activeItem as GunDefinition;
         const reference = this._getItemReference() as SingleGunNarrowing;
         const initialRotation = this.rotation + Math.PI / 2;
@@ -358,7 +373,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
                         return {
                             frames: casingSpec.frame ?? Ammos.fromString(weaponDef.ammoType).defaultCasingFrame ?? "",
-                            zIndex: ZIndexes.Players,
+                            zIndex: ZIndexes.Players - 0.5,
                             position: Vec.add(this.position, Vec.rotate(position, this.rotation)),
                             lifetime: 400,
                             layer: this.layer,
@@ -548,6 +563,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     invulnerable,
                     activeItem,
                     sizeMod,
+                    reloadMod,
                     skin,
                     helmet,
                     vest,
@@ -557,7 +573,10 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     infected,
                     backEquippedMelee,
                     hasBubble,
-                    activeOverdrive
+                    activeOverdrive,
+                    hasMagneticField,
+                    isCycling,
+                    emitLowHealthParticles
                 }
             } = data;
 
@@ -577,12 +596,11 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             this.container.visible = !dead;
 
             const hadSkin = this.halloweenThrowableSkin;
-            if (
-                hadSkin !== (this.halloweenThrowableSkin = halloweenThrowableSkin)
-                && this.activeItem.defType === DefinitionType.Throwable
-                && !this.activeItem.noSkin
-            ) {
-                this.images.weapon.setFrame(`${this.activeItem.idString}${this.halloweenThrowableSkin ? "_halloween" : ""}`);
+            if (hadSkin !== (this.halloweenThrowableSkin = halloweenThrowableSkin)) {
+                if (this.activeItem.defType === DefinitionType.Throwable && !this.activeItem.noSkin) {
+                    this.images.weapon.setFrame(`${this.activeItem.idString}${this.halloweenThrowableSkin ? "_halloween" : ""}`);
+                }
+                UIManager.updateWeaponSlots(true);
             }
 
             // Blood particles on death (cooler graphics only)
@@ -659,6 +677,9 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     this.images.healthBar.destroy();
                     this.images.healthBar = undefined;
                 }
+
+                if (this.disguiseContainer) this.disguiseContainer.visible = false;
+                if (this.smokeParticlesEmitter !== undefined) this.smokeParticlesEmitter.active = false;
             }
 
             this._oldItem = this.activeItem;
@@ -706,7 +727,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 ?.setFrame(fistFrame)
                 .setTint(fistTint);
 
-            if (sizeMod !== undefined && this.sizeMod !== sizeMod) {
+            if (this.sizeMod !== sizeMod) {
                 // reset the size modifier before tweening
                 this.sizeMod = GameConstants.player.defaultModifiers().size;
                 this._hitbox = new CircleHitbox(GameConstants.player.radius * this.sizeMod, this._hitbox.position);
@@ -725,9 +746,11 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 });
             }
 
+            if (reloadMod !== undefined && this.reloadMod !== reloadMod) this.reloadMod = reloadMod;
+
             const { hideEquipment, helmetLevel, vestLevel, backpackLevel } = this;
 
-            this.hideEquipment = skinDef.hideEquipment ?? false;
+            this.hideEquipment = ((activeDisguise !== undefined ? true : undefined) ?? skinDef.hideEquipment) ?? false;
 
             this.helmetLevel = (this.equipment.helmet = helmet)?.level ?? 0;
             this.vestLevel = (this.equipment.vest = vest)?.level ?? 0;
@@ -746,6 +769,12 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 || backpackLevel !== this.backpackLevel
             ) {
                 this.updateEquipment();
+
+                if (
+                    !isNew
+                    && this.equipment.vest?.emitSound !== undefined
+                    && vestLevel !== this.vestLevel
+                ) this.playSound(this.equipment.vest.emitSound);
             }
 
             if (itemDirty) {
@@ -754,25 +783,72 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             }
 
             if (this.activeDisguise !== activeDisguise) {
+                const disguiseContainer = this.disguiseContainer;
+
                 const def = this.activeDisguise = activeDisguise;
-                let disguiseSprite = this.images.disguiseSprite;
-                if (def !== undefined) {
+                let disguiseSprite = this.images.disguiseSprite,
+                    trunkSprite = this.images.disguiseSpriteTrunk;
+
+                if (def !== undefined && disguiseContainer) {
                     if (!disguiseSprite) {
                         disguiseSprite = this.images.disguiseSprite = new SuroiSprite();
                         disguiseSprite.zIndex = 999; // this only applies within the player container, not globally
-                        this.container.addChild(disguiseSprite);
+                        disguiseContainer.zIndex = PLAYER_PARTICLE_ZINDEX;
+                        disguiseContainer.addChild(disguiseSprite);
                     }
-                    disguiseSprite.setFrame(`${def.frames?.base ?? def.idString}${def.variations !== undefined ? `_${random(1, def.variations)}` : ""}`);
-                    disguiseSprite.setVisible(true);
-                } else {
-                    disguiseSprite?.setVisible(false);
+
+                    let frame = `${def.frames?.base ?? def.idString}${def.variations !== undefined ? `_${random(1, def.variations)}` : ""}`;
+
+                    if (def.isTree) {
+                        const trunkFrame = `${def.frames?.base ?? def.idString}${def.trunkVariations !== undefined && def.trunkVariations !== 1 ? `_${random(1, def.trunkVariations)}` : ""}`;
+                        const leavesFrame = `${def.frames?.leaves}${def.leavesVariations !== undefined && def.leavesVariations !== 1 ? `_${random(1, def.leavesVariations)}` : ""}`;
+
+                        if (!trunkSprite) {
+                            trunkSprite = this.images.disguiseSpriteTrunk = new SuroiSprite();
+                            trunkSprite.zIndex = 998; // meow
+                            disguiseContainer.addChild(trunkSprite);
+                        }
+
+                        trunkSprite.setFrame(trunkFrame);
+                        frame = leavesFrame;
+                    }
+
+                    disguiseSprite.setFrame(frame);
+                    if (!this.dead) disguiseContainer.visible = true;
+                    trunkSprite?.setVisible(def.isTree ?? false);
+                } else if (disguiseContainer) {
+                    disguiseContainer.visible = false;
+                }
+            }
+
+            if (!this.dead && emitLowHealthParticles !== this.emitLowHealthParticles) {
+                this.emitLowHealthParticles = emitLowHealthParticles;
+
+                if (this.smokeParticlesEmitter === undefined) {
+                    this.smokeParticlesEmitter = ParticleManager.addEmitter({
+                        delay: 300,
+                        active: !this.dead,
+                        spawnOptions: () => ({
+                            frames: "smoke_particle",
+                            position: this.position,
+                            layer: this.layer,
+                            zIndex: PLAYER_PARTICLE_ZINDEX,
+                            lifetime: 3500,
+                            scale: { start: 0, end: randomFloat(4, 5) },
+                            alpha: { start: 0.9, end: 0 },
+                            speed: Vec.fromPolar(randomFloat(-1.9, -2.1), randomFloat(5, 6))
+                        })
+                    });
+                }
+                else {
+                    this.smokeParticlesEmitter.active = !this.dead && this.emitLowHealthParticles;
                 }
             }
 
             if (infected !== this.infected) {
                 this.infected = infected;
                 this.container.tint = infected ? 0x8a4c70 : 0xffffff;
-                if (!isNew) {
+                if (!isNew && Game.modeName === "infection") {
                     if (infected) this.playSound("infected");
                     else this.playSound("cured");
                 }
@@ -781,8 +857,20 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             // Shield
             if (hasBubble !== this.hasBubble) {
                 this.hasBubble = hasBubble;
-                const bubbleSprite = this.images.bubbleSprite;
+
+                let bubbleSprite = this.images.bubbleSprite;
+
+                // Initialize sprite
+                if (bubbleSprite === undefined) {
+                    bubbleSprite = this.images.bubbleSprite = new SuroiSprite()
+                        .setFrame("shield")
+                        .setZIndex(7);
+
+                    this.container.addChild(bubbleSprite);
+                }
+
                 bubbleSprite.setVisible(this.hasBubble);
+
                 if (!isNew) {
                     if (!hasBubble) {
                         const perkDef = PerkData[PerkIds.ExperimentalForcefield];
@@ -812,14 +900,57 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     } else {
                         this.anims.shieldScale?.kill();
                         this.playSound(PerkData[PerkIds.ExperimentalForcefield].shieldObtainSound);
-                        this.images.bubbleSprite.setScale(0.25);
-                        this.anims.sizeMod = Game.addTween({
-                            target: this.images.bubbleSprite.scale,
-                            to: { x: 1, y: 1 },
-                            duration: 800,
+
+                        if (this.images.bubbleSprite !== undefined) {
+                            this.images.bubbleSprite.setScale(0.25);
+                            this.anims.shieldScale = Game.addTween({
+                                target: this.images.bubbleSprite.scale,
+                                to: { x: 1, y: 1 },
+                                duration: 800,
+                                ease: EaseFunctions.backOut,
+                                onComplete: () => {
+                                    this.anims.shieldScale = undefined;
+                                }
+                            });
+                        }
+                    }
+                }
+            }
+
+            // Magnetic Field
+            if (hasMagneticField !== this.hasMagneticField) {
+                this.hasMagneticField = hasMagneticField;
+
+                let magneticFieldSprite = this.images.magneticFieldSprite;
+
+                const spriteScale = PerkData[PerkIds.EternalMagnetism].spriteScale;
+
+                // Initialize sprite
+                if (magneticFieldSprite === undefined) {
+                    magneticFieldSprite = this.images.magneticFieldSprite = new SuroiSprite()
+                        .setFrame("_glow_")
+                        .setScale(spriteScale)
+                        .setAlpha(0.75)
+                        .setZIndex(-1.2)
+                        .setTint(0xfc0303);
+
+                    this.container.addChild(magneticFieldSprite);
+                }
+
+                magneticFieldSprite.setVisible(this.hasMagneticField);
+
+                if (!isNew) {
+                    if (this.images.magneticFieldSprite !== undefined) {
+                        this.anims.magneticField?.kill();
+                        this.images.magneticFieldSprite.setScale(hasMagneticField ? 0 : spriteScale);
+
+                        this.anims.magneticField = Game.addTween({
+                            target: this.images.magneticFieldSprite.scale,
+                            to: { x: hasMagneticField ? spriteScale : 0, y: hasMagneticField ? spriteScale : 0 },
+                            duration: 1000,
                             ease: EaseFunctions.backOut,
                             onComplete: () => {
-                                this.anims.shieldScale = undefined;
+                                this.anims.magneticField = undefined;
                             }
                         });
                     }
@@ -889,6 +1020,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     }
                 }
             }
+
+            if (isCycling !== this.isCycling) this.isCycling = isCycling;
         }
 
         if (data.action !== undefined) {
@@ -901,11 +1034,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
             switch (action.type) {
                 case PlayerActions.None: {
-                    // Reset fists after reviving
-                    if (this.action.type === PlayerActions.Revive) {
-                        this.updateFistsPosition(true);
-                        this.updateWeapon();
-                    }
+                    this.updateFistsPosition(false);
+                    this.updateWeapon(true);
 
                     if (this.isActivePlayer) {
                         UIManager.cancelAction();
@@ -928,7 +1058,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     if (this.isActivePlayer) {
                         UIManager.animateAction(
                             getTranslatedString("action_reloading"),
-                            (reloadFullClip ? weaponDef.fullReloadTime : weaponDef.reloadTime) / (PerkManager.mapOrDefault(PerkIds.CombatExpert, ({ reloadMod }) => reloadMod, 1))
+                            (reloadFullClip ? weaponDef.fullReloadTime : weaponDef.reloadTime) / (this.reloadMod === 0 ? 1 : this.reloadMod)
                         );
                     }
 
@@ -961,10 +1091,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             }
 
             if (actionSoundName) {
-                let speed = 1;
-                if (PerkManager.has(PerkIds.CombatExpert) && action.type === PlayerActions.Reload) {
-                    speed = PerkData[PerkIds.CombatExpert].reloadMod;
-                } else if (PerkManager.has(PerkIds.FieldMedic) && actionSoundName === action.item?.idString) {
+                let speed = action.type === PlayerActions.Reload ? this.reloadMod : 1;
+                if (PerkManager.has(PerkIds.FieldMedic) && actionSoundName === action.item?.idString) {
                     speed = PerkData[PerkIds.FieldMedic].usageMod;
                 }
                 this.actionSound = this.playSound(
@@ -1315,6 +1443,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     soundID = reference.idString.slice("dual_".length);
                 } else if (SoundManager.has(`${reference.idString}_switch`)) {
                     soundID = reference.idString;
+                } else if (reference.defType === DefinitionType.Melee && reference.switchSound !== undefined) {
+                    soundID = reference.switchSound;
                 } else {
                     soundID = "default";
                 }
@@ -1404,10 +1534,15 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         const container = $(`#${equipmentType}-slot`);
         const def = this.equipment[equipmentType];
 
+        if (def?.hideInHUD) {
+            container.css("visibility", "hidden");
+            return;
+        }
+
         if (def && def.level > 0) {
             container.children(".item-name").text(`Lvl. ${def.level}`);
             container.children(".item-image").attr("src", `./img/game/shared/loot/${def.idString}.svg`);
-            container.children(".item-name").attr("style", `color: ${def.level > 3 ? "#ff9900" : "#ffffff"};`);
+            container.children(".item-name").attr("style", `color: ${def.level >= (Game.mode.maxEquipmentLevel ?? 3) ? "#ff9900" : "#ffffff"};`);
 
             let itemTooltip = getTranslatedString(def.idString as TranslationKeys);
             if (def.defType === DefinitionType.Armor) {
@@ -1418,6 +1553,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             }
 
             container.children(".item-tooltip").html(itemTooltip);
+            container.css("outline", def.noDrop || Game.spectating ? "none" : "");
         }
 
         container.css("visibility", (def?.level ?? 0) > 0 || UI_DEBUG_MODE ? "visible" : "hidden");
@@ -1500,12 +1636,18 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
     playAnimation(anim: AnimationType): void {
         switch (anim) {
+            case AnimationType.None: {
+                this.updateFistsPosition(true);
+                this.updateWeapon();
+                break;
+            }
             case AnimationType.Melee: {
                 if (this.activeItem.defType !== DefinitionType.Melee) {
                     console.warn(`Attempted to play melee animation with non-melee item '${this.activeItem.idString}'`);
                     return;
                 }
                 this.updateFistsPosition(false);
+                this.updateWeapon(true);
                 const weaponDef = this.activeItem;
 
                 let altFist = Math.random() < 0.5;
@@ -1517,7 +1659,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                         const duration = frame.duration;
                         const currentWeapon = this.activeItem;
                         this.addTimeout(() => {
-                            if (this.activeItem === currentWeapon) {
+                            if (this.activeItem.idString === currentWeapon.idString) {
                                 if (!weaponDef.fists.randomFist || !altFist) {
                                     this.anims.leftFist = Game.addTween({
                                         target: this.images.leftFist,
@@ -1596,53 +1738,75 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     this.images.weapon.setFrame(`${weaponDef.idString}${this.meleeAttackCounter <= 0 ? "_used" : ""}`);
                 }
 
+                const hitDelay = weaponDef.hitDelay ?? 50;
                 this.addTimeout(() => {
                     // Play hit effect on closest object
                     // TODO: share this logic with the server
 
-                    type MeleeObject = Player | Obstacle | Building | Projectile;
+                    let hitCount = 0;
+                    for (let i = 0; i < (weaponDef.numberOfHits ?? 1); i++) {
+                        this.addTimeout((): void => {
+                            if (this.activeItem.defType !== DefinitionType.Melee) return;
 
-                    const position = Vec.add(
-                        this.position,
-                        Vec.scale(Vec.rotate(weaponDef.offset, this.rotation), this.sizeMod)
-                    );
-                    const hitbox = new CircleHitbox(weaponDef.radius * this.sizeMod, position);
-                    const targets: MeleeObject[] = [];
+                            if (hitCount > 0) {
+                                this.playSound(
+                                    weaponDef.swingSound ?? "swing",
+                                    {
+                                        falloff: 0.4,
+                                        maxRange: 96
+                                    }
+                                );
+                            }
 
-                    for (const object of Game.objects) {
-                        if (
-                            (object.dead && !(object.isBuilding && object.definition.hasDamagedCeiling))
-                            || object === this
-                            || !(object.isPlayer || object.isObstacle || object.isBuilding || object.isProjectile)
-                            || !object.damageable
-                            || (object.isObstacle && (object.definition.isStair || object.definition.noMeleeCollision))
-                            || !adjacentOrEquivLayer(object, this.layer)
-                            || !object.hitbox?.collidesWith(hitbox)
-                        ) continue;
+                            type MeleeObject = Player | Obstacle | Building | Projectile;
 
-                        targets.push(object);
+                            const position = Vec.add(
+                                this.position,
+                                Vec.scale(Vec.rotate(weaponDef.offset, this.rotation), this.sizeMod)
+                            );
+                            const hitbox = new CircleHitbox(weaponDef.radius * this.sizeMod, position);
+                            const targets: MeleeObject[] = [];
+
+                            hitCount++;
+                            for (const object of Game.objects) {
+                                if (
+                                    (object.dead && !(object.isBuilding && object.definition.hasDamagedCeiling))
+                                    || object === this
+                                    || !(object.isPlayer || object.isObstacle || object.isBuilding || object.isProjectile)
+                                    || !object.damageable
+                                    || (object.isObstacle && (object.definition.isStair || object.definition.noMeleeCollision))
+                                    || !adjacentOrEquivLayer(object, this.layer)
+                                    || !object.hitbox?.collidesWith(hitbox)
+                                ) continue;
+
+                                targets.push(object);
+                            }
+
+                            targets.sort((a, b) => {
+                                if (Game.isTeamMode && a.isPlayer && a.teamID === this.teamID) return Infinity;
+                                if (Game.isTeamMode && b.isPlayer && b.teamID === this.teamID) return -Infinity;
+
+                                return (a.hitbox?.distanceTo(this.hitbox).distance ?? 0) - (b.hitbox?.distanceTo(this.hitbox).distance ?? 0);
+                            });
+
+                            const angleToPos = Angle.betweenPoints(this.position, position);
+                            const numTargets = Numeric.min(targets.length, weaponDef.maxTargets ?? 1);
+                            for (let i = 0; i < numTargets; i++) {
+                                const target = targets[i];
+
+                                if (target.isPlayer) {
+                                    let sound = this.activeItem.hitSound;
+                                    if (sound && weaponDef.numberOfHits !== undefined && weaponDef.numberOfHits > 1) {
+                                        sound += `_${hitCount}`;
+                                    }
+                                    target.hitEffect(position, angleToPos, sound);
+                                } else {
+                                    target.hitEffect(position, angleToPos);
+                                }
+                            }
+                        }, (i === 0 ? 0 : (weaponDef.delayBetweenHits ?? 0)));
                     }
-
-                    targets.sort((a, b) => {
-                        if (Game.isTeamMode && a.isPlayer && a.teamID === this.teamID) return Infinity;
-                        if (Game.isTeamMode && b.isPlayer && b.teamID === this.teamID) return -Infinity;
-
-                        return (a.hitbox?.distanceTo(this.hitbox).distance ?? 0) - (b.hitbox?.distanceTo(this.hitbox).distance ?? 0);
-                    });
-
-                    const angleToPos = Angle.betweenPoints(this.position, position);
-                    const numTargets = Numeric.min(targets.length, weaponDef.maxTargets ?? 1);
-                    for (let i = 0; i < numTargets; i++) {
-                        const target = targets[i];
-
-                        if (target.isPlayer) {
-                            target.hitEffect(position, angleToPos, (this.activeItem as MeleeDefinition).hitSound);
-                        } else {
-                            target.hitEffect(position, angleToPos);
-                        }
-                    }
-                }, weaponDef.hitDelay ?? 50);
-
+                }, hitDelay);
                 break;
             }
             case AnimationType.Downed: {
@@ -1725,6 +1889,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     : undefined;
 
                 this.updateFistsPosition(false);
+                this.updateWeapon(true);
                 const recoilAmount = PIXI_SCALE * (1 - weaponDef.recoilMultiplier);
 
                 this.anims.weapon = Game.addTween({
@@ -1829,7 +1994,52 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     });
                 }
 
+                if (weaponDef.cameraShake !== undefined) {
+                    CameraManager.shake(weaponDef.cameraShake.duration, weaponDef.cameraShake.intensity);
+                }
+
+                if (weaponDef.backblast !== undefined) {
+                    const trail = weaponDef.ballistics.trail,
+                        backblast = weaponDef.backblast;
+
+                    if (trail && Date.now() - this._lastParticleTrail >= trail.interval) {
+                        const offset = weaponDef.isDual
+                            ? (isAltFire ? -1 : 1) * weaponDef.leftRightOffset
+                            : (weaponDef.bulletOffset ?? 0);
+
+                        const position = Vec.add(
+                            this.position,
+                            Vec.scale(Vec.rotate(Vec(-backblast.length, offset), this.rotation), this.sizeMod)
+                        );
+
+                        ParticleManager.spawnParticles(
+                            backblast.particlesAmount,
+                            () => ({
+                                frames: trail.frame,
+                                speed: Vec.fromPolar(
+                                    randomRotation(),
+                                    randomFloat(backblast.min, backblast.max)
+                                ),
+                                position,
+                                lifetime: backblast.duration,
+                                zIndex: ZIndexes.Bullets - 1,
+                                scale: randomFloat(backblast.scale.min, backblast.scale.max),
+                                alpha: {
+                                    start: randomFloat(trail.alpha.min, trail.alpha.max),
+                                    end: 0
+                                },
+                                layer: this.layer,
+                                tint: pickRandomInArray([0x8a8a8a, 0x3d3d3d, 0x858585])
+                            })
+                        );
+
+                        this._lastParticleTrail = Date.now();
+                    }
+                }
+
                 this.spawnCasingParticles("fire", isAltFire);
+
+                if (this.isCycling) this.spawnCasingParticles("cycle", isAltFire);
                 break;
             }
             case AnimationType.GunClick: {
@@ -1856,7 +2066,13 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
                 projImage.visible = true;
                 if (def.animation.pinImage) {
-                    pinImage.setFrame(def.animation.pinImage);
+                    let pinFrame = def.animation.pinImage;
+
+                    if (def.pinSkin && this.halloweenThrowableSkin && !def.noSkin) {
+                        pinFrame += "_halloween";
+                    }
+
+                    pinImage.setFrame(pinFrame);
                     pinImage.setPos(35, 0);
                     pinImage.setZIndex(ZIndexes.Players + 1);
                 }
@@ -2125,7 +2341,6 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
             this.images.blood.addChild(bodyBlood);
 
-            // eslint-disable-next-line @typescript-eslint/no-unused-expressions
             setTimeout(() => { bodyBlood.destroyed || bodyBlood.destroy(); }, 30000);
         }
     }
@@ -2150,7 +2365,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         images.muzzleFlash.destroy();
         images.waterOverlay.destroy();
         images.blood.destroy();
-        images.disguiseSprite?.destroy();
+        this.disguiseContainer?.destroy();
         this.healthBarFadeTimeout?.kill();
         this.healthBarTween?.kill();
         images.healthBar?.destroy();
@@ -2176,6 +2391,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         images.backMeleeSprite?.destroy();
 
         this.healingParticlesEmitter.destroy();
+        this.smokeParticlesEmitter?.destroy();
         this.actionSound?.stop();
         clearInterval(this.bleedEffectInterval);
         if (this.isActivePlayer) $("#action-container").hide();

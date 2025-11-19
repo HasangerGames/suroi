@@ -1,4 +1,11 @@
-// noinspection JSConstantReassignment
+/**
+ * biome-ignore-all lint/complexity/useArrowFunction: ...
+ * Normally, arrow function would be preferred, but since
+ * the callbacks have their `this` value bound, leaving them as
+ * function expressions instead of arrow functions allows us to
+ * quickly switch to using `this` if needed, instead of having to
+ * change back from an arrow function
+ */
 import { GameConstants, InputActions, SpectateActions, TeamMode } from "@common/constants";
 import { HealingItems, type HealingItemDefinition } from "@common/definitions/items/healingItems";
 import { Scopes, type ScopeDefinition } from "@common/definitions/items/scopes";
@@ -24,8 +31,7 @@ import { Casters, ConVar } from "./variables";
 
 export type CommandExecutor<ErrorType> = (
     ...args: Array<string | undefined>
-    // this a return type bruh
-    // eslint-disable-next-line @typescript-eslint/no-invalid-void-type
+    // biome-ignore lint/suspicious/noConfusingVoidType: this a return type bruh
 ) => void | PossibleError<ErrorType>;
 
 interface CommandInfo {
@@ -231,15 +237,6 @@ export function setUpCommands(): void {
     createMovementCommand("down");
     createMovementCommand("right", SpectateActions.SpectateNext);
 
-    // shut
-    /*
-        Normally, arrow function would be preferred, but since
-        the callbacks have their `this` value bound, leaving them as
-        function expressions instead of arrow functions allows us to
-        quickly switch to using `this` if needed, instead of having to
-        change back from an arrow function
-    */
-    /* eslint-disable prefer-arrow-callback */
     Command.createCommand(
         "slot",
         function(slot) {
@@ -799,7 +796,7 @@ export function setUpCommands(): void {
             );
 
             const canvas = Game.pixi.renderer.extract.canvas({
-                clearColor: Game.colors.grass,
+                clearColor: Game.colors.background,
                 target: container,
                 frame: rectangle,
                 resolution: container.scale.x,
@@ -1316,7 +1313,7 @@ export function setUpCommands(): void {
                         [Symbol.for("efgh"), "symbol"],
                         [function sin(x: number): void { /* lol ok */ }, "function"],
                         [{}, "object"]
-                    ] as Array<[unknown, string]>
+                    ] as [unknown, string][]
                 ).map(([val, type]) => `<li><b>${type}</b>: <code class="cvar-value-${type}">${stringify(val)}</code></li>`).join("")}</ul>`,
             signatures: [{ args: [], noexcept: true }]
         }
@@ -1660,7 +1657,7 @@ export function setUpCommands(): void {
                             "A space-separated list of parameters, where each parameter follows the form <em><code>name: type</code></em>,"
                             + " where <code>name</code> is the parameter's name and <code>type</code> is its data type"
                         ]
-                    ] as Array<[string, string]>
+                    ] as [string, string][]
                 ).map(([name, desc]) => `<li><code>${name}</code>: ${desc}</li>`).join("")}</ul>`
                 + "If not given an argument, this command logs a list of all defined commands and aliases. "
                 + "Passing the name of an alias to this command results in an error. "

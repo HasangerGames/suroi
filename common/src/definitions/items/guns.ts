@@ -5,7 +5,6 @@ import { DefinitionType, type InventoryItemDefinition, type ReferenceTo } from "
 import { Vec, type Vector } from "../../utils/vector";
 import { type AmmoDefinition } from "./ammos";
 import { InventoryItemDefinitions } from "./items";
-import { PerkIds } from "./perks";
 import { ScopeDefinition } from "./scopes";
 
 export enum Tier { S, A, B, C, D }
@@ -31,6 +30,7 @@ type BaseGunDefinition = InventoryItemDefinition & {
     readonly shotSpread: number
     readonly moveSpread: number
     readonly bulletOffset?: number
+    readonly bulletOffsets?: number[]
     readonly fsaReset?: number // first-shot-accuracy reset (ms)
     readonly jitterRadius?: number // Jitters the bullet position, mainly for shotguns
     readonly consistentPatterning?: boolean
@@ -72,7 +72,7 @@ type BaseGunDefinition = InventoryItemDefinition & {
             }
         }
 
-        readonly on?: "fire" | "reload"
+        readonly on?: "fire" | "reload" | "cycle"
     }>
 
     readonly gasParticles?: {
@@ -92,6 +92,37 @@ type BaseGunDefinition = InventoryItemDefinition & {
         readonly zIndex?: number
     }
     readonly inventoryScale?: number
+
+    readonly cameraShake?: {
+        readonly duration: number
+        readonly intensity: number
+    }
+
+    readonly backblast?: {
+        readonly length: number
+        readonly particlesAmount: number
+        readonly duration: number
+        readonly min: number
+        readonly max: number
+        readonly scale: {
+            readonly min: number
+            readonly max: number
+        }
+    }
+
+    /**
+     * Only used by DP-12 at the moment.
+     */
+    readonly cycle?: {
+        /**
+         * Will override the gun's fireDelay during the cycle (when the gun reaches the `shotRequired` amount of shots).
+        */
+        readonly delay: number
+        /**
+         * The number of shots that need to be fired in order for the fire delay to be switched in to the cycle delay.
+         */
+        readonly shotsRequired: number
+    }
 
     readonly noMuzzleFlash?: boolean
     readonly ballistics: BaseBulletDefinition
@@ -326,7 +357,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
             leftRightOffset: 1.3,
             fireDelay: 30,
             shotSpread: 8,
-            moveSpread: 14,
+            moveSpread: 16,
             capacity: 32,
             extendedCapacity: 52,
             reloadTime: 3.7
@@ -389,7 +420,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
             leftRightOffset: 1.3,
             fireDelay: 187.5,
             shotSpread: 2,
-            moveSpread: 5,
+            moveSpread: 7,
             capacity: 14,
             reloadTime: 4
         }
@@ -403,7 +434,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
         ammoSpawnAmount: 42,
         fireDelay: 200,
         switchDelay: 250,
-        speedMultiplier: 1.136,
+        speedMultiplier: 1,
         recoilMultiplier: 0.65,
         recoilDuration: 150,
         fireMode: FireMode.Single,
@@ -449,7 +480,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
             leftRightOffset: 1.4,
             fireDelay: 115,
             shotSpread: 3,
-            moveSpread: 7,
+            moveSpread: 9,
             capacity: 14,
             extendedCapacity: 18,
             reloadTime: 3.8
@@ -462,15 +493,15 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
         tier: Tier.A,
         ammoType: "50cal",
         ammoSpawnAmount: 30,
-        fireDelay: 400,
+        fireDelay: 600,
         switchDelay: 250,
-        speedMultiplier: 1.136,
+        speedMultiplier: 1,
         recoilMultiplier: 0.8,
         recoilDuration: 600,
-        fsaReset: 600,
+        fsaReset: 800,
         fireMode: FireMode.Single,
         shotSpread: 4,
-        moveSpread: 8,
+        moveSpread: 6,
         length: 6.6,
         noMuzzleFlash: true,
         fists: {
@@ -516,9 +547,9 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
             tier: Tier.S,
             leftRightOffset: 1.3,
             ammoSpawnAmount: 60,
-            fireDelay: 200,
-            shotSpread: 4,
-            moveSpread: 8,
+            fireDelay: 300,
+            shotSpread: 10,
+            moveSpread: 14,
             capacity: 10,
             reloadTime: 4.2
         }
@@ -534,7 +565,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
         capacity: 20,
         extendedCapacity: 30,
         reloadTime: 1.8,
-        fireDelay: 60,
+        fireDelay: 62,
         burstProperties: {
             shotsPerBurst: 3,
             burstCooldown: 250
@@ -543,8 +574,8 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
         recoilMultiplier: 0.8,
         recoilDuration: 300,
         fireMode: FireMode.Burst,
-        shotSpread: 3,
-        moveSpread: 7.5,
+        shotSpread: 4,
+        moveSpread: 8,
         length: 5.6,
         fists: {
             left: Vec(85, -2),
@@ -559,8 +590,8 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
         }],
         gasParticles: gasParticlePresets.automatic,
         ballistics: {
-            damage: 14,
-            obstacleMultiplier: 1,
+            damage: 12.75,
+            obstacleMultiplier: 1.025,
             speed: 0.25,
             range: 100
         },
@@ -580,9 +611,10 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
                 burstCooldown: 125
             },
             fireDelay: 60,
-            shotSpread: 3,
-            moveSpread: 6,
+            shotSpread: 4,
+            moveSpread: 10,
             capacity: 40,
+            extendedCapacity: 60,
             reloadTime: 3.2
         }
     },
@@ -613,8 +645,10 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
         casingParticles: [{
             position: Vec(3.5, 0.5)
         }],
+        inventoryScale: 0.95,
         gasParticles: gasParticlePresets.pistol,
         capacity: 8,
+        extendedCapacity: 12,
         reloadTime: 2.1,
         ballistics: {
             damage: 17,
@@ -628,8 +662,9 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
             leftRightOffset: 1.3,
             fireDelay: 168,
             shotSpread: 2,
-            moveSpread: 5,
+            moveSpread: 7,
             capacity: 16,
+            extendedCapacity: 24,
             reloadTime: 4
         }
     },
@@ -640,7 +675,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
         tier: Tier.B,
         ammoType: "545mm",
         ammoSpawnAmount: 45,
-        fireDelay: 133,
+        fireDelay: 100,
         switchDelay: 250,
         speedMultiplier: 1.136,
         recoilMultiplier: 0.75,
@@ -662,9 +697,10 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
         }],
         gasParticles: gasParticlePresets.pistol,
         capacity: 15,
+        extendedCapacity: 20,
         reloadTime: 2.1,
         ballistics: {
-            damage: 10,
+            damage: 12.5,
             obstacleMultiplier: 1.5,
             speed: 0.26,
             range: 160
@@ -673,11 +709,77 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
             tier: Tier.A,
             ammoSpawnAmount: 90,
             leftRightOffset: 1.4,
-            fireDelay: 112,
+            fireDelay: 75,
             shotSpread: 2,
-            moveSpread: 5,
+            moveSpread: 7,
             capacity: 30,
+            extendedCapacity: 40,
             reloadTime: 4
+        }
+    },
+    {
+        idString: "yesaul",
+        name: "Yesaul",
+        defType: DefinitionType.Gun,
+        tier: Tier.B,
+        ammoType: "545mm",
+        ammoSpawnAmount: 30,
+        fireDelay: 350,
+        switchDelay: 200,
+        speedMultiplier: 1,
+        recoilMultiplier: 0.7,
+        recoilDuration: 150,
+        fireMode: FireMode.Single,
+        shotSpread: 3,
+        moveSpread: 7,
+        length: 6,
+        fists: {
+            left: Vec(40, 0),
+            right: Vec(40, 0),
+            leftZIndex: 4,
+            rightZIndex: 4,
+            animationDuration: 100
+        },
+        casingParticles: [{
+            position: Vec(3.5, 0.3),
+            on: "reload",
+            count: 5,
+            velocity: {
+                x: {
+                    min: -8,
+                    max: -2
+                },
+                y: {
+                    min: 2,
+                    max: 9,
+                    randomSign: true
+                }
+            }
+        }],
+        image: { position: Vec(77, 0) },
+        inventoryScale: 0.85,
+        gasParticles: gasParticlePresets.pistol,
+        capacity: 5,
+        reloadTime: 2.0,
+        ballistics: {
+            damage: 35,
+            obstacleMultiplier: 1,
+            speed: 0.375,
+            range: 170,
+            tracer: {
+                width: 1.1,
+                length: 1.4
+            }
+        },
+        dual: {
+            tier: Tier.A,
+            leftRightOffset: 1.3,
+            ammoSpawnAmount: 60,
+            fireDelay: 175,
+            shotSpread: 5,
+            moveSpread: 9,
+            capacity: 10,
+            reloadTime: 4.0
         }
     },
     //
@@ -844,42 +946,38 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
     },
     {
         idString: "pp19",
-        name: "PP-19 Vityaz",
+        name: "PP-19 Bizon",
         defType: DefinitionType.Gun,
         tier: Tier.S,
         ammoType: "9mm",
-        ammoSpawnAmount: 90,
-        capacity: 30,
-        extendedCapacity: 45,
-        reloadTime: 2.3,
-        fireDelay: 50,
+        ammoSpawnAmount: 128,
+        capacity: 64,
+        extendedCapacity: 96,
+        reloadTime: 3.5,
+        fireDelay: 82,
         switchDelay: 300,
         speedMultiplier: 1,
-        recoilMultiplier: 0.75,
-        recoilDuration: 150,
+        recoilMultiplier: 0.8,
+        recoilDuration: 135,
         fireMode: FireMode.Auto,
-        shotSpread: 3,
-        moveSpread: 6.75,
+        shotSpread: 2.75,
+        moveSpread: 6.25,
         length: 7.3,
-        noMuzzleFlash: true,
         fists: {
-            left: Vec(88, -5),
+            left: Vec(100, -7),
             right: Vec(40, 0),
             rightZIndex: 4,
             animationDuration: 100
         },
         casingParticles: [{
-            position: Vec(3.5, 0.4)
+            position: Vec(3.8, 0.4)
         }],
         image: { position: Vec(80, 1.3) },
         ballistics: {
-            damage: 10.5,
+            damage: 12.5,
             obstacleMultiplier: 1,
             speed: 0.25,
-            range: 160,
-            tracer: {
-                opacity: 0.15
-            }
+            range: 170
         }
     },
 
@@ -996,7 +1094,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
         }],
         noMuzzleFlash: true,
         ballistics: {
-            damage: 21,
+            damage: 19,
             obstacleMultiplier: 1.5,
             speed: 0.3,
             range: 180,
@@ -1155,7 +1253,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
         ballistics: {
             damage: 14.5,
             obstacleMultiplier: 1.5,
-            speed: 0.3,
+            speed: 0.28,
             range: 160,
             tracer: {
                 opacity: 0.15
@@ -1593,7 +1691,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
         defType: DefinitionType.Gun,
         tier: Tier.C,
         ammoType: "545mm",
-        ammoSpawnAmount: 150,
+        ammoSpawnAmount: 90,
         capacity: 45,
         extendedCapacity: 60,
         reloadTime: 3.8,
@@ -1636,7 +1734,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
         ammoType: "545mm",
         ammoSpawnAmount: 190,
         capacity: 95,
-        extendedCapacity: 180,
+        extendedCapacity: 145,
         reloadTime: 3.8,
         fireDelay: 90,
         switchDelay: 400,
@@ -1659,9 +1757,9 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
         }],
         gasParticles: gasParticlePresets.automatic,
         ballistics: {
-            damage: 11,
+            damage: 13,
             obstacleMultiplier: 2.25,
-            speed: 0.28,
+            speed: 0.35,
             range: 180,
             tracer: {
                 width: 1.1,
@@ -2084,6 +2182,64 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
             }
         }
     },
+    {
+        idString: "dp12",
+        name: "DP-12",
+        defType: DefinitionType.Gun,
+        fireMode: FireMode.Single,
+        tier: Tier.B,
+        ammoType: "12g",
+        ammoSpawnAmount: 14,
+        capacity: 14,
+        reloadTime: 1.2,
+        shotsPerReload: 2,
+        fireDelay: 250,
+        switchDelay: 250,
+        speedMultiplier: 0.8,
+        recoilMultiplier: 0.5,
+        recoilDuration: 550,
+        bulletCount: 7,
+        shotSpread: 7.5,
+        moveSpread: 10.25,
+        jitterRadius: 1,
+        length: 7.7,
+        cycle: {
+            delay: 800,
+            shotsRequired: 2
+        },
+        fists: {
+            left: Vec(110, -10),
+            right: Vec(52, 8),
+            animationDuration: 100,
+            rightZIndex: 4
+        },
+        image: { position: Vec(80, 0) },
+        casingParticles: [
+            {
+                position: Vec(4.25, 0),
+                velocity: {
+                    y: {
+                        min: 6,
+                        max: 9, 
+                        randomSign: true
+                    }
+                },
+                count: 2,
+                ejectionDelay: 400,
+                on: "cycle"
+            },
+        ],
+        gasParticles: gasParticlePresets.shotgun,
+        ballistics: {
+            damage: 10,
+            obstacleMultiplier: 1,
+            speed: 0.165,
+            range: 50,
+            tracer: {
+                length: 0.67
+            }
+        }
+    },
     //
     // Sniper rifles
     //
@@ -2355,7 +2511,54 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
             }
         }
     },
-
+    {
+        idString: "ulr338",
+        name: "ULR-338",
+        defType: DefinitionType.Gun,
+        tier: Tier.S,
+        ammoType: "338lap",
+        ammoSpawnAmount: 5,
+        noSwap: true,
+        spawnScope: "16x_scope",
+        fireDelay: 2000,
+        switchDelay: 900,
+        speedMultiplier: 0.7,
+        cameraShake: {
+            duration: 500,
+            intensity: 20
+        },
+        recoilMultiplier: 0.65,
+        recoilDuration: 3200,
+        fireMode: FireMode.Single,
+        shotSpread: 0.1,
+        moveSpread: 0.7,
+        shootOnRelease: true,
+        length: 11.68,
+        casingParticles: [{
+            position: Vec(5, 0.2),
+            ejectionDelay: 900
+        }],
+        fists: {
+            left: Vec(90, 1),
+            right: Vec(40, 0),
+            rightZIndex: 4,
+            animationDuration: 100
+        },
+        image: { position: Vec(142.5, 0) },
+        gasParticles: gasParticlePresets.rifle,
+        capacity: 1,
+        reloadTime: 4.3,
+        ballistics: {
+            damage: 185,
+            obstacleMultiplier: 1.5,
+            speed: 0.45,
+            tracer: {
+                width: 2.5,
+                length: 4
+            },
+            range: 450
+        }
+    },
     //
     // Designated marksman rifles (DMRs)
     //
@@ -2732,7 +2935,91 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
             range: 250
         }
     },
-
+    //
+    // RPGs (Rocket Launchers)
+    //
+    {
+        idString: "m202",
+        name: "M202-F",
+        defType: DefinitionType.Gun,
+        fireMode: FireMode.Auto,
+        tier: Tier.S,
+        ammoType: "plumpkin_ammo",
+        ammoSpawnAmount: 0,
+        capacity: 4,
+        reloadTime: 6.3,
+        shootOnRelease: true,
+        noSwap: true,
+        fireDelay: 850,
+        switchDelay: 900,
+        noMuzzleFlash: true,
+        speedMultiplier: 0.495,
+        recoilMultiplier: 0.01,
+        recoilDuration: 0,
+        bulletOffset: 3,
+        bulletOffsets: [2.2, 3.95, 2.2, 3.95],
+        shotSpread: 0,
+        moveSpread: 0,
+        length: 7.35,
+        fists: {
+            left: Vec(119, 28),
+            right: Vec(65, 87),
+            animationDuration: 100
+        },
+        image: {
+            position: Vec(29.7, 53.5),
+            zIndex: 4
+        },
+        gasParticles: {
+            spread: 360,
+            amount: 75,
+            minLife: 7500,
+            maxLife: 20000,
+            minSpeed: 3,
+            maxSpeed: 7,
+            minSize: 0.4,
+            maxSize: 0.6
+        },
+        ballistics: {
+            damage: 20,
+            obstacleMultiplier: 1,
+            speed: 0.15,
+            range: 135,
+            onHitExplosion: "m202_explosion",
+            explodeOnImpact: true,
+            tracer: {
+                image: "baby_plumpkin_trail",
+                spinSpeed: 0.075
+            },
+            trail: {
+                frame: "small_gas",
+                interval: 5,
+                amount: 3,
+                tint: 0x707070,
+                alpha: { min: 0.6, max: 0.85 },
+                scale: { min: 0.1, max: 0.2 },
+                spreadSpeed: { min: 1, max: 3 },
+                lifetime: { min: 1500, max: 3000 }
+            },
+            ignoreCoolerGraphics: true, // we want smoke trail when it launches plumpkins
+            infection: 100
+        },
+        cameraShake: {
+            duration: 150,
+            intensity: 12.5
+        },
+        backblast: {
+            length: 7,
+            min: 9,
+            max: 12,
+            particlesAmount: 32,
+            duration: 800,
+            scale: {
+                min: 0.1,
+                max: 0.5
+            }
+        }
+    },
     //
     // Fictional weapons
     //
@@ -2820,10 +3107,9 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
                 length: 1.4
             },
             enemySpeedMultiplier: {
-                duration: 2000,
-                multiplier: 0.7
-            },
-            removePerk: PerkIds.Infected
+                duration: 1250,
+                multiplier: 0.9
+            }
         },
         noSwap: true
     },
@@ -2896,7 +3182,54 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
         },
         noSwap: true
     },
-
+    {
+        idString: "aged_seedshot",
+        name: "booo very scary",
+        defType: DefinitionType.Gun,
+        tier: Tier.A,
+        killfeedFrame: "seedshot",
+        translationString: "seedshot",
+        lootAndKillfeedTranslationString: true,
+        ammoType: "seed",
+        ammoSpawnAmount: 0,
+        capacity: 12,
+        extendedCapacity: 24,
+        reloadTime: 3,
+        fireDelay: 110,
+        switchDelay: 370,
+        speedMultiplier: 1,
+        recoilMultiplier: 0.75,
+        recoilDuration: 205,
+        fireMode: FireMode.Auto,
+        shotSpread: 1.15,
+        moveSpread: 5.58,
+        length: 7.9,
+        fists: {
+            left: Vec(115, -6),
+            right: Vec(40, 0),
+            rightZIndex: 4,
+            animationDuration: 100
+        },
+        cycle: {
+            delay: 120,
+            shotsRequired: 9
+        },
+        image: { position: Vec(90, 1) },
+        gasParticles: gasParticlePresets.automatic,
+        ballistics: {
+            damage: 8,
+            obstacleMultiplier: 1.65,
+            speed: 0.245,
+            range: 180,
+            tracer: {
+                image: "seed_trail",
+                length: 1.4
+            },
+            noReflect: true,
+            onHitProjectile: "proj_seed"
+        },
+        noSwap: true
+    },
     //
     // Dev weapons
     //

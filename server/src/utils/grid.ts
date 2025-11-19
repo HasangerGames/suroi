@@ -15,9 +15,8 @@ export class Grid {
     readonly height: number;
     readonly cellSize = 32;
 
-    //                        X     Y     Object ID
-    //                      __^__ __^__     ___^__
-    private readonly _grid: Array<Array<Map<number, GameObject>>>;
+    // 2D array of Maps representing grid cells
+    private readonly _grid: Map<number, GameObject>[][];
 
     // store the cells each game object is occupying
     // so removing the object from the grid is faster
@@ -66,8 +65,7 @@ export class Grid {
             const rect = (
                 hasSpawnHitbox
                     ? object.spawnHitbox
-                    // can't be undefined cuz then hasSpawnHitbox would be true, meaning we'd pick the ternary's other branch
-                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                    // biome-ignore lint/style/noNonNullAssertion: can't be undefined cuz then hasSpawnHitbox would be true, meaning we'd pick the ternary's other branch
                     : hitbox!
             ).toRectangle();
 

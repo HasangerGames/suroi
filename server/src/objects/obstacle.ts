@@ -1,9 +1,9 @@
-import { FlyoverPref, ObjectCategory, RotationMode } from "@common/constants";
+import { FlyoverPref, GameConstants, ObjectCategory, RotationMode } from "@common/constants";
 import { PerkData, PerkIds } from "@common/definitions/items/perks";
 import { Obstacles, type ObstacleDefinition } from "@common/definitions/obstacles";
 import { type Orientation, type Variation } from "@common/typings";
 import { CircleHitbox, RectangleHitbox, type Hitbox } from "@common/utils/hitbox";
-import { Angle, calculateDoorHitboxes, resolveStairInteraction } from "@common/utils/math";
+import { Angle, calculateDoorHitboxes, Geometry, resolveStairInteraction } from "@common/utils/math";
 import { DefinitionType, NullString, type ReifiableDef } from "@common/utils/objectDefinitions";
 import { type FullData } from "@common/utils/objectsSerializations";
 import { Vec, type Vector } from "@common/utils/vector";
@@ -38,7 +38,7 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
 
     spawnHitbox: Hitbox;
 
-    readonly loot: LootItem[] = [];
+    loot: LootItem[] = [];
     readonly lootSpawnOffset?: Vector;
 
     readonly definition: ObstacleDefinition;
@@ -53,6 +53,7 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
         openAltHitbox?: Hitbox
         offset: number
         powered: boolean
+        openOnce: boolean
     };
 
     activated?: boolean;
@@ -135,7 +136,6 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
             }
         }
 
-        // noinspection JSAssignmentUsedAsCondition
         if (this.isDoor = (definition.isDoor === true)) {
             const hitboxes = calculateDoorHitboxes(definition, this.position, this.rotation as Orientation);
 
@@ -147,7 +147,8 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
                 openHitbox: hitboxes.openHitbox,
                 openAltHitbox: (hitboxes as typeof hitboxes & { readonly openAltHitbox?: RectangleHitbox }).openAltHitbox,
                 offset: 0,
-                powered: false
+                powered: false,
+                openOnce: definition.openOnce ?? false
             };
 
             if (this.game.mode.unlockStage !== undefined && this.definition.unlockableWithStage && this.door.locked) {
@@ -247,17 +248,25 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
                     this.game.addExplosion("pumpkin_explosion", this.position, source, this.layer);
                 }
 
-                // Infected perk
+                // Infection bar logic
                 if (
                     definition.applyPerkOnDestroy
                     && definition.applyPerkOnDestroy.mode === this.game.modeName
-                    && definition.applyPerkOnDestroy.chance > Math.random()
-                    && !(definition.applyPerkOnDestroy.perk === PerkIds.Infected && source.hasPerk(PerkIds.Immunity)) // evil
+                    && !(definition.applyPerkOnDestroy.perk === PerkIds.Infected && source.hasPerk(PerkIds.Immunity))
                 ) {
-                    source.addPerk(definition.applyPerkOnDestroy.perk);
-                    if (definition.applyPerkOnDestroy.perk === PerkIds.Infected) { // evil
-                        source.setDirty();
-                    }
+                    const position = source.position,
+                        distance = Geometry.distance(position, this.position),
+                        deathZone = new CircleHitbox(10, this.position),
+                        minDistance = 30,
+                        maxDistance = 150, // 3 player units -> (2.25 ** 3) -> 6.75 but we go 7 * 10
+                        clampedDistance = Math.min(distance, maxDistance),
+                        scaleFactor = 1 - (clampedDistance - minDistance) / (maxDistance - minDistance);
+
+                    let infectionAmount = Math.round((GameConstants.player.maxInfection / 4) * scaleFactor);
+
+                    if (source.hitbox.collidesWith(deathZone)) infectionAmount = 100; // force
+
+                    source.infection += infectionAmount;
                 }
             }
 
@@ -266,6 +275,11 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
             }
 
             if (this.puzzlePiece) this.parentBuilding?.solvePuzzle();
+
+            if (source instanceof BaseGameObject && source.isPlayer && source.hasPerk(PerkIds.PlumpkinBlessing) && this.definition.material === "pumpkin" && this.definition.hasLoot) {
+                const qualityValue = PerkData[PerkIds.PlumpkinBlessing].qualityValue;
+                this.loot = getLootFromTable(this.game.modeName, this.definition.lootTable ?? this.definition.idString, qualityValue);
+            }
 
             const lootSpawnPosition = position ?? (source as { readonly position?: Vector } | undefined)?.position ?? this.position;
             for (const item of this.loot) {
@@ -286,9 +300,20 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
 
             if (source instanceof BaseGameObject && source.isPlayer && source.hasPerk(PerkIds.LootBaron) && this.definition.hasLoot) {
                 const perkBonus = PerkData[PerkIds.LootBaron].lootBonus;
-                const lootTable = getLootFromTable(this.game.modeName, definition.lootTable ?? definition.idString);
 
                 for (let i = 0; i < perkBonus; i++) {
+                    let lootTable = getLootFromTable(this.game.modeName, definition.lootTable ?? definition.idString),
+                        isDuplicated = JSON.stringify(lootTable) === JSON.stringify(this.loot),
+                        loopCount = 0;
+
+                    while (isDuplicated && loopCount < 100) {
+                        lootTable = getLootFromTable(this.game.modeName, definition.lootTable ?? definition.idString);
+                        isDuplicated = JSON.stringify(lootTable) === JSON.stringify(this.loot);
+                        loopCount++;
+                    }
+
+                    if (isDuplicated) break;
+
                     for (const item of lootTable) {
                         this.game.addLoot(
                             item.idString,
@@ -422,7 +447,7 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
         const definition = this.definition;
 
         if (definition.isDoor) {
-            // optional chaining not required but makes both eslint and tsc happy
+            // optional chaining not required but makes both biome and tsc happy
             if (!(this.door?.isOpen && definition.openOnce)) {
                 this.toggleDoor(player);
             }
@@ -497,14 +522,13 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
                         if (isOnOtherSide) {
                             this.door.offset = 3;
 
-                            // swivel door => alt hitbox
-                            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                            // biome-ignore lint/style/noNonNullAssertion: swivel door => alt hitbox
                             hitbox = this.door.openAltHitbox!.clone();
                         } else {
                             this.door.offset = 1;
-                            if (this.definition.requiresPower && !this.door.locked) {
+                            if (this.definition.requiresPower && !this.door.locked && this.door.openOnce) {
                                 this.door.offset = 3;
-                                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                                // biome-ignore lint/style/noNonNullAssertion: yes
                                 hitbox = this.door.openAltHitbox!.clone();
                             } else hitbox = this.door.openHitbox.clone();
                         }

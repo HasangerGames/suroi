@@ -1,7 +1,5 @@
 import type { ObjectDefinition } from "./objectDefinitions";
 
-/* eslint-disable @stylistic/indent */
-
 declare global {
     // taken from https://github.com/microsoft/TypeScript/issues/45602#issuecomment-934427206
     interface Promise<T = void> {
@@ -23,21 +21,17 @@ export function isObject(item: unknown): item is Record<string, unknown> {
 /**
  * Patched version of `Array.isArray` that correctly narrows types when used on `readonly` arrays
  */
-// again, variance => use any on an array type
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+// biome-ignore lint/suspicious/noExplicitAny: again, variance => use any on an array type
 export const isArray = Array.isArray as (x: any) => x is readonly any[];
 // the default Array.isArray fails to correctly narrow readonly array types
 
-// presumably because of variance, using unknown[] causes issues
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+// biome-ignore lint/suspicious/noExplicitAny: presumably because of variance, using unknown[] causes issues
 export type Fn<Out = unknown> = (...args: any) => Out;
 
-// see above
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+// biome-ignore lint/suspicious/noExplicitAny: see above
 export type Constructor<Out = unknown, Args extends any[] = any[]> = new (...args: Args) => Out;
 
-// see above
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+// biome-ignore lint/suspicious/noExplicitAny: see above
 export type AbstractConstructor<Out = unknown, Args extends any[] = any[]> = abstract new (...args: Args) => Out;
 
 export type DeepPartial<T> = {
@@ -52,7 +46,7 @@ export type SDeepPartial<T> = T extends ObjectDefinition
 
 export type DeepRequired<T> = (T extends Fn ? T : unknown) & (
     T extends Array<infer R>
-        ? Array<DeepRequired<NonNullable<R>>>
+        ? DeepRequired<NonNullable<R>>[]
         : {
             [K in keyof T]-?: DeepRequired<NonNullable<T[K]>>;
         }
@@ -66,7 +60,7 @@ export type Mutable<T> = (T extends ReadonlyArray<infer I> ? I[] : unknown) & (T
     -readonly [K in keyof T]: T[K];
 };
 
-export type DeepMutable<T> = (T extends ReadonlyArray<infer I> ? Array<DeepMutable<I>> : unknown) & (T extends Fn ? T : unknown) & {
+export type DeepMutable<T> = (T extends ReadonlyArray<infer I> ? DeepMutable<I>[] : unknown) & (T extends Fn ? T : unknown) & {
     -readonly [K in keyof T]: DeepMutable<T[K]>;
 };
 
@@ -86,7 +80,7 @@ export type SMutable<T> = T extends ObjectDefinition
  */
 export type SDeepMutable<T> = T extends ObjectDefinition
     ? T
-    : (T extends ReadonlyArray<infer I> ? Array<SDeepMutable<I>> : unknown) & (T extends Fn ? T : unknown) & {
+    : (T extends ReadonlyArray<infer I> ? SDeepMutable<I>[] : unknown) & (T extends Fn ? T : unknown) & {
         -readonly [K in keyof T]: SDeepMutable<T[K]>;
     };
 
@@ -100,12 +94,12 @@ export type ReadonlyRecord<K extends string | number | symbol, T> = Readonly<Rec
  * Represents a successful operation
  * @template Res The type of the successful operation's result
  */
-export type ResultRes<Res> = { res: Res };
+export interface ResultRes<Res> { res: Res }
 /**
  * Represents a failed operation
  * @template Err The type of the failed operation's result
  */
-export type ResultErr<Err> = { err: Err };
+export interface ResultErr<Err> { err: Err }
 /**
  * Represents a result whose state is unknown
  * @template Res The type of the successful operation's result
@@ -121,8 +115,8 @@ export function handleResult<Res>(result: Result<Res, unknown>, fallbackSupplier
 type UnionToIntersection<U> = (U extends unknown ? (x: U) => void : never) extends ((x: infer I) => void) ? I : never;
 
 export function mergeDeep<A extends readonly object[]>(target: Record<PrimitiveKey, never>, ...sources: A): UnionToIntersection<A[number]>;
-export function mergeDeep<T extends object>(target: T, ...sources: ReadonlyArray<DeepPartial<T>>): T;
-export function mergeDeep<T extends object>(target: T, ...sources: ReadonlyArray<DeepPartial<T>>): T {
+export function mergeDeep<T extends object>(target: T, ...sources: readonly DeepPartial<T>[]): T;
+export function mergeDeep<T extends object>(target: T, ...sources: readonly DeepPartial<T>[]): T {
     if (!sources.length) return target;
 
     const [source, ...rest] = sources;
@@ -211,7 +205,6 @@ export function cloneDeep<T>(object: T): T {
             if (typeof clone === "function" && clone.length === 0) {
                 // basically we hope that the caller isn't a dumbass and hasn't
                 // passed in an object with a nonsensical cloning method
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-return
                 return clone.call(target);
             } else {
                 console.warn(`Inappropriate use of ${cloneDeepSymbol.toString()}: it should be a no-arg function`);
@@ -295,13 +288,12 @@ export function freezeDeep<T>(object: T): DeepReadonly<T> {
     return object as DeepReadonly<T>;
 }
 
-// skull
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+// biome-ignore lint/suspicious/noExplicitAny: skull
 export type PrimitiveKey = keyof any;
 
 export function splitArray<In, Narrow extends In>(target: In[], predicate: (ele: In, index: number, array: In[]) => ele is Narrow): {
     true: Narrow[]
-    false: Array<Exclude<In, Narrow>>
+    false: Exclude<In, Narrow>[]
 };
 export function splitArray<In>(target: In[], predicate: (ele: In, index: number, array: In[]) => boolean): {
     true: In[]
@@ -340,9 +332,9 @@ export function groupArray<In, Out>(target: In[], picker: (ele: In, index: numbe
     for (let i = 0; i < length; i++) {
         const ele = target[i];
         const key = picker(ele, i, target);
-        if (map.has(key)) {
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            map.get(key)!.push(ele);
+        const value = map.get(key);
+        if (value !== undefined) {
+            value.push(ele);
             continue;
         }
 
@@ -524,7 +516,6 @@ export class Queue<T> implements DeepCloneable<Queue<T>>, Cloneable<Queue<T>> {
         if (this._head === undefined) throw new Error("Empty queue");
 
         const value = this._head.value;
-        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
         (this._head = this._head.next) ?? delete this._tail;
 
         return value;
@@ -590,8 +581,7 @@ export class Queue<T> implements DeepCloneable<Queue<T>>, Cloneable<Queue<T>> {
 // top 10 naming
 export class ExtendedMap<K, V> extends Map<K, V> {
     private _get(key: K): V {
-        // it's up to callers to verify that the key is valid
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        // biome-ignore lint/style/noNonNullAssertion: it's up to callers to verify that the key is valid
         return super.get(key)!;
     }
 
@@ -604,9 +594,8 @@ export class ExtendedMap<K, V> extends Map<K, V> {
      *          none was present
      */
     getAndSetIfAbsent(key: K, fallback: V): V {
-        // pretty obvious why this is okay
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        if (this.has(key)) return this.get(key)!;
+        const value = this.get(key);
+        if (value !== undefined) return value;
 
         this.set(key, fallback);
         return fallback;
@@ -622,11 +611,10 @@ export class ExtendedMap<K, V> extends Map<K, V> {
      *          or the result of `fallback` if none was present
      */
     getAndGetDefaultIfAbsent(key: K, fallback: () => V): V {
-        // pretty obvious why this is okay
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        if (this.has(key)) return this.get(key)!;
+        let value = this.get(key);
+        if (value !== undefined) return value;
 
-        const value = fallback();
+        value = fallback();
         this.set(key, value);
 
         return value;

@@ -18,6 +18,7 @@ import { InventoryItemBase } from "./inventoryItem";
 import { MeleeItem } from "./meleeItem";
 import { ThrowableItem } from "./throwableItem";
 import { DEFAULT_INVENTORY } from "@common/defaultInventory";
+import { PerkIds } from "@common/definitions/items/perks";
 
 export type ReifiableItem = InventoryItem | ReifiableDef<InventoryItem["definition"]>;
 
@@ -187,8 +188,7 @@ export class Inventory {
             oldItem.stopUse();
         }
 
-        // nna is fine cuz of the hasWeapon call above
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        // biome-ignore lint/style/noNonNullAssertion: nna is fine cuz of the hasWeapon call above
         const item = this.weapons[slot]!;
         const owner = this.owner;
 
@@ -240,8 +240,7 @@ export class Inventory {
      * It will never be undefined since the only place that sets the active weapon has an undefined check
      */
     get activeWeapon(): InventoryItem {
-        // we hope that it's never undefined
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        // biome-ignore lint/style/noNonNullAssertion: we hope that it's never undefined
         return this.weapons[this._activeWeaponIndex]!;
     }
 
@@ -282,7 +281,7 @@ export class Inventory {
      * @returns Whether the number is a valid slot
      */
     static isValidWeaponSlot(slot: number): boolean {
-        return slot % 1 === 0 && 0 <= slot && slot <= GameConstants.player.maxWeapons - 1;
+        return slot % 1 === 0 && slot >= 0 && slot <= GameConstants.player.maxWeapons - 1;
     }
 
     /**
@@ -456,8 +455,7 @@ export class Inventory {
             if (!found) {
                 // welp, time to swap to another slot
 
-                // if we get here, there's hopefully a throwable slot
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                // biome-ignore lint/style/noNonNullAssertion: if we get here, there's hopefully a throwable slot
                 const slot = this.slotsByDefType[DefinitionType.Throwable]![0];
 
                 this.unlock(slot);
@@ -465,8 +463,7 @@ export class Inventory {
                 this.setActiveWeaponIndex(this._findNextPopulatedSlot());
             }
         } else {
-            // only fails if `throwableItemMap` falls out-of-sync… which hopefully shouldn't happen lol
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            // biome-ignore lint/style/noNonNullAssertion: only fails if `throwableItemMap` falls out-of-sync… which hopefully shouldn't happen lol
             this.throwableItemMap.get(definition.idString)!.count -= removalAmount;
         }
     }
@@ -679,7 +676,7 @@ export class Inventory {
             }
 
             case DefinitionType.Perk: {
-                if (!this.owner.hasPerk(definition)) return;
+                if (!this.owner.hasPerk(definition) || this.owner.hasPerk(PerkIds.Infected)) return;
                 this.owner.removePerk(definition);
                 this._dropItem(definition);
                 this.owner.dirty.perks = true;
@@ -887,7 +884,7 @@ export class ItemCollection<ItemDef extends LootDefinition> {
 
     // private readonly _listenerSet = new Set<(key: ReferenceTo<ItemDef>, oldValue: number, newValue: number) => void>();
 
-    constructor(entries?: ReadonlyArray<[ReferenceTo<ItemDef>, number]>) {
+    constructor(entries?: readonly [ReferenceTo<ItemDef>, number][]) {
         this._internal = new Map(entries);
     }
 
@@ -909,8 +906,7 @@ export class ItemCollection<ItemDef extends LootDefinition> {
      * before calling this method
      */
     getItem(key: ReferenceTo<ItemDef>): number {
-        // please be responsible enough to call `hasItem` beforehand…
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        // biome-ignore lint/style/noNonNullAssertion: please be responsible enough to call `hasItem` beforehand…
         return this._internal.get(key)!;
     }
 

@@ -11,6 +11,7 @@ export let spritesheetsLoaded = false;
 
 const spritesheetCallbacks: Array<() => void> = [];
 
+// biome-ignore lint/suspicious/useAwait: we're returning a Promise here
 export async function spritesheetLoadPromise(): Promise<void> {
     if (spritesheetsLoaded) return;
     return new Promise(resolve => spritesheetCallbacks.push(resolve));
@@ -36,8 +37,7 @@ export async function loadSpritesheets(modeName: ModeName, renderer: Renderer, h
     const count = spritesheets.length;
 
     await Promise.all(spritesheets.map(async spritesheet => {
-        // this is defined via vite-spritesheet-plugin, so it is never nullish
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        // biome-ignore lint/style/noNonNullAssertion: this is defined via vite-spritesheet-plugin, so it is never nullish
         const image = spritesheet.meta.image!;
 
         console.log(`Loading spritesheet ${location.origin}/${image}`);

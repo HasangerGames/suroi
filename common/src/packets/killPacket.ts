@@ -14,7 +14,8 @@ export enum DamageSources {
     Gas,
     Obstacle,
     BleedOut,
-    FinallyKilled
+    FinallyKilled,
+    Disconnect
 }
 
 export interface KillData {
@@ -39,25 +40,28 @@ export const KillPacket = new Packet<KillData>(PacketType.Kill, {
         /*
             for this message type, kfData has the following format:
 
-            a v c d k s s s
+            a c c d k s s s s s r r r r r r
 
             a = attackerId present (hasAttackerId)
-            v = victimId === creditedId (victimIsCreditedId)
-            c = creditedId present (hasCreditedId)
+            c = credited state (bits 8-7)
+                00 = no creditedId
+                01 = victimId === creditedId
+                10 = creditedId present (different from victim)
             d = downed
             k = killed
-            s = damageSource
+            s = damageSource (allows up to 32 values)
+            r = reserved
         */
-        let kfData = data.damageSource;
-        if (hasAttackerId) kfData += 128;
+        let kfData = data.damageSource & 0b1_1111;
+        if (data.killed) kfData += 1 << 5;
+        if (data.downed) kfData += 1 << 6;
         if (victimIsCreditedId) {
-            kfData += 64;
+            kfData += 0b01 << 7;
         } else if (hasCreditedId) {
-            kfData += 32;
+            kfData += 0b10 << 7;
         }
-        if (data.downed) kfData += 16;
-        if (data.killed) kfData += 8;
-        stream.writeUint8(kfData);
+        if (hasAttackerId) kfData += 1 << 9;
+        stream.writeUint16(kfData);
 
         stream.writeObjectId(data.victimId);
 
@@ -106,15 +110,16 @@ export const KillPacket = new Packet<KillData>(PacketType.Kill, {
 
         // see the comments in the serialization method to
         // understand the format and what's going on
-        const kfData = stream.readUint8();
+        const kfData = stream.readUint16();
 
-        const hasAttackerId = (kfData & 128) !== 0;
-        const victimIsCreditedId = (kfData & 64) !== 0;
-        const hasCreditedId = (kfData & 32) !== 0;
+        const hasAttackerId = (kfData & (1 << 9)) !== 0;
+        const creditedBits = (kfData >> 7) & 0b11;
+        const victimIsCreditedId = creditedBits === 0b01;
+        const hasCreditedId = creditedBits === 0b10;
 
-        data.damageSource = kfData & 0b111;
-        data.downed = (kfData & 16) !== 0;
-        data.killed = (kfData & 8) !== 0;
+        data.damageSource = kfData & 0b1_1111;
+        data.downed = (kfData & (1 << 6)) !== 0;
+        data.killed = (kfData & (1 << 5)) !== 0;
 
         data.victimId = stream.readObjectId();
 

@@ -646,8 +646,6 @@ type EventData<Key extends EventTypes> = [
         /**
          * Prevents any listener after this one from executing
          */
-        // you're actually so stupid
-        // eslint-disable-next-line @typescript-eslint/no-invalid-void-type
         stopImmediatePropagation(this: void): void
     } & (
         (typeof Events)[Key]["cancellable"] extends true
@@ -657,8 +655,6 @@ type EventData<Key extends EventTypes> = [
                  * this event should not occur. Check each event's documentation for what exactly
                  * cancelling an event entails
                  */
-                // sod off
-                // eslint-disable-next-line @typescript-eslint/no-invalid-void-type
                 cancel(this: void): void
                 /**
                  * Whether this event has been cancelled. This value is accurate as of the start
@@ -673,7 +669,7 @@ type EventData<Key extends EventTypes> = [
 export type EventHandler<Ev extends EventTypes = EventTypes> = (...[data, event]: [...ArgsFor<Ev>, ...EventData<Ev>]) => void;
 
 type EventHandlers = {
-    [K in EventTypes]?: Array<EventHandler<K>>
+    [K in EventTypes]?: EventHandler<K>[]
 };
 
 // basically file-scoped access to an emit method
@@ -791,8 +787,6 @@ export class PluginManager {
         if (!Config.plugins?.length) return;
 
         for (const plugin of Config.plugins) {
-            // stfu
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
             const pluginClass: new (game: Game) => GamePlugin = (await import(`./plugins/${plugin}`)).default;
             this.loadPlugin(pluginClass);
         }

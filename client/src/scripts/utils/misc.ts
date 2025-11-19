@@ -34,7 +34,6 @@ export function humanDate(timestamp: number | string | Date): string {
 }
 
 export function stringify(val: unknown): string {
-    /* eslint-disable */
     switch (typeof val) {
         case "string":
         case "number":
@@ -45,15 +44,12 @@ export function stringify(val: unknown): string {
         case "symbol": return val.toString();
         case "function": return `function ${val.name}(${Array.from({ length: val.length }, (_, i) => `arg${i}`).join(", ")}) -> any`;
     }
-    /* eslint-enable */
 }
 
 export function html(a: TemplateStringsArray, ...b: ReadonlyArray<string | number | bigint | null | undefined>): string {
     let buffer = "";
     const length = a.length;
     for (let i = 0; i < length; i++) {
-        // shut the fuck up
-        // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
         buffer += (a[i] ?? "") + (b[i] ?? "");
     }
     return buffer;

@@ -1,7 +1,6 @@
 import { CustomTeamMessages, CustomTeamPlayerInfo, type CustomTeamMessage } from "@common/typings";
 import { removeFrom } from "@common/utils/misc";
 import { random } from "@common/utils/random";
-import { WebSocket } from "uWebSockets.js";
 import { GameManager } from "./gameManager";
 import { type Player } from "./objects/player";
 
@@ -147,9 +146,15 @@ export class CustomTeam {
 
     gameID?: number;
     resetTimeout?: NodeJS.Timeout;
+    keepAliveInterval?: NodeJS.Timeout;
 
     constructor(readonly gameManager: GameManager) {
         this.id = Array.from({ length: 4 }, () => CustomTeam._idChars.charAt(random(0, CustomTeam._idCharMax))).join("");
+
+        // Send a keep alive message every minute so the WebSocket connection isn't terminated
+        this.keepAliveInterval = setInterval(() => {
+            this._publishMessage({ type: CustomTeamMessages.KeepAlive });
+        }, 60000);
     }
 
     addPlayer(player: CustomTeamPlayer): void {
@@ -170,6 +175,7 @@ export class CustomTeam {
 
         if (!this.players.length) {
             clearTimeout(this.resetTimeout);
+            clearInterval(this.keepAliveInterval);
             return;
         }
 
@@ -205,7 +211,7 @@ export class CustomTeam {
                 const toRemove = this.players[id];
                 if (!toRemove || toRemove.isLeader) break;
 
-                toRemove.socket?.end(1000, "kicked");
+                toRemove.socket?.close(1000, "kicked");
                 this.players.splice(id, 1);
                 this._publishPlayerUpdate();
                 break;
@@ -276,7 +282,7 @@ export class CustomTeam {
 export class CustomTeamPlayer {
     get id(): number { return this.team.players.indexOf(this); }
     get isLeader(): boolean { return this.id === 0; }
-    socket?: WebSocket<CustomTeamPlayerContainer>;
+    socket?: Bun.ServerWebSocket<CustomTeamPlayerContainer>;
     ready = false;
 
     constructor(
