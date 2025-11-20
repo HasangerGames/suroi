@@ -1698,25 +1698,101 @@ export async function setUpUI(): Promise<void> {
     $("#toggle-high-res").parent().parent().toggle(!InputManager.isMobile);
     addCheckboxListener("#toggle-high-res", "cv_high_res_textures");
     addCheckboxListener("#toggle-alt-texture-loading", "cv_alt_texture_loading");
-    addCheckboxListener("#toggle-cooler-graphics", "cv_cooler_graphics");
+    const coolerGraphicsSubToggles = [
+        { selector: "#toggle-cooler-explosions", cvar: "cv_explosion_shockwaves" },
+        { selector: "#toggle-cooler-bullet-trails", cvar: "cv_bullet_trail_bloom" },
+        { selector: "#toggle-cooler-blood", cvar: "cv_blood_splatter" },
+        { selector: "#toggle-cooler-weapon-gas", cvar: "cv_cooler_weapon_gas" }
+    ] as const;
+
+    const coolerGraphicsCache = new Map<(typeof coolerGraphicsSubToggles)[number]["cvar"], boolean>();
+
+    const syncCoolerGraphicsCheckboxes = (): void => {
+        const masterEnabled = GameConsole.getBuiltInCVar("cv_cooler_graphics") as boolean;
+
+        for (const { selector, cvar } of coolerGraphicsSubToggles) {
+            const checkbox = $<HTMLInputElement>(selector)[0];
+            if (!checkbox) continue;
+
+            checkbox.disabled = !masterEnabled;
+            checkbox.closest(".modal-item")?.classList.toggle("disabled", !masterEnabled);
+            checkbox.checked = masterEnabled ? GameConsole.getBuiltInCVar(cvar) as boolean : false;
+        }
+    };
+
+    const cacheCoolerSubSettings = (): void => {
+        coolerGraphicsCache.clear();
+
+        for (const { cvar } of coolerGraphicsSubToggles) {
+            const current = GameConsole.getBuiltInCVar(cvar) as boolean;
+
+            coolerGraphicsCache.set(cvar, current);
+            if (current) {
+                GameConsole.setBuiltInCVar(cvar, false);
+            }
+        }
+    };
+
+    const restoreCoolerSubSettings = (): void => {
+        for (const { cvar } of coolerGraphicsSubToggles) {
+            const cached = coolerGraphicsCache.get(cvar);
+            if (cached !== undefined) {
+                GameConsole.setBuiltInCVar(cvar, cached);
+            }
+        }
+
+        coolerGraphicsCache.clear();
+    };
+
+    const clearBloodEffects = (): void => {
+        for (const player of Game.objects.getCategory(ObjectCategory.Player)) {
+            const { images: { blood: { children } }, bloodDecals } = player;
+
+            for (const child of children) {
+                child.destroy();
+            }
+
+            children.length = 0;
+
+            for (const decal of bloodDecals) {
+                decal.kill();
+            }
+        }
+    };
+
+    addCheckboxListener("#toggle-cooler-graphics", "cv_cooler_graphics", syncCoolerGraphicsCheckboxes);
+
+    for (const toggle of coolerGraphicsSubToggles) {
+        addCheckboxListener(toggle.selector, toggle.cvar, syncCoolerGraphicsCheckboxes);
+    }
+
+    if (!GameConsole.getBuiltInCVar("cv_cooler_graphics")) {
+        cacheCoolerSubSettings();
+    }
+
+    syncCoolerGraphicsCheckboxes();
 
     GameConsole.variables.addChangeListener(
         "cv_cooler_graphics",
         (newVal, oldVal) => {
+            if (newVal === oldVal) return;
+
+            if (!newVal) {
+                cacheCoolerSubSettings();
+                clearBloodEffects();
+            } else {
+                restoreCoolerSubSettings();
+            }
+
+            syncCoolerGraphicsCheckboxes();
+        }
+    );
+
+    GameConsole.variables.addChangeListener(
+        "cv_blood_splatter",
+        (newVal, oldVal) => {
             if (newVal !== oldVal && !newVal) {
-                for (const player of Game.objects.getCategory(ObjectCategory.Player)) {
-                    const { images: { blood: { children } }, bloodDecals } = player;
-
-                    for (const child of children) {
-                        child.destroy();
-                    }
-
-                    children.length = 0;
-
-                    for (const decal of bloodDecals) {
-                        decal.kill();
-                    }
-                }
+                clearBloodEffects();
             }
         }
     );

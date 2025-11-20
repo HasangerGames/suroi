@@ -58,7 +58,10 @@ export class Bullet extends BaseBullet {
         this._image.scale.y = width * widthMod * (this.thin ? 0.5 : 1);
         this._image.alpha = opacity * opacityMod / (this.reflectionCount + 1);
 
-        if (GameConsole.getBuiltInCVar("cv_cooler_graphics")) {
+        const coolerBulletTrailsEnabled = GameConsole.getBuiltInCVar("cv_cooler_graphics")
+            && GameConsole.getBuiltInCVar("cv_bullet_trail_bloom");
+
+        if (coolerBulletTrailsEnabled) {
             this._image.filters = [new BloomFilter({
                 strength: 5
             })];
@@ -232,9 +235,12 @@ export class Bullet extends BaseBullet {
             if (!hasMask) this._image.mask = null;
         }
 
+        const coolerBulletTrailsEnabled = GameConsole.getBuiltInCVar("cv_cooler_graphics")
+            && GameConsole.getBuiltInCVar("cv_bullet_trail_bloom");
+
         if (
             this.definition.trail
-            && (this.definition.ignoreCoolerGraphics || GameConsole.getBuiltInCVar("cv_cooler_graphics"))
+            && (this.definition.ignoreCoolerGraphics || coolerBulletTrailsEnabled)
             && Date.now() - this._lastParticleTrail >= this.definition.trail.interval
         ) {
             const trail = this.definition.trail;

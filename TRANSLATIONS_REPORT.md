@@ -23,6 +23,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `wiki` is not defined
 - Key `bindings_fullscreen` is not defined
 - Key `recording` is not defined
+- Key `settings_explosion_shockwaves` is not defined
+- Key `settings_bullet_trail_bloom` is not defined
+- Key `settings_blood_splatter` is not defined
+- Key `settings_cooler_weapon_gas` is not defined
 - Key `settings_record_res` is not defined
 - Key `settings_alt_texture_loading` is not defined
 - Key `settings_show_inout` is not defined
@@ -214,6 +218,10 @@ This file is a report of all errors and missing keys in the translation files of
 
 - Key `bindings_fullscreen` is not defined
 - Key `recording` is not defined
+- Key `settings_explosion_shockwaves` is not defined
+- Key `settings_bullet_trail_bloom` is not defined
+- Key `settings_blood_splatter` is not defined
+- Key `settings_cooler_weapon_gas` is not defined
 - Key `settings_record_res` is not defined
 - Key `settings_lock_joysticks` is not defined
 - Key `settings_switch_joysticks` is not defined
@@ -288,6 +296,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_fullscreen` is not defined
 - Key `recording` is not defined
 - Key `settings_ambience_volume` is not defined
+- Key `settings_explosion_shockwaves` is not defined
+- Key `settings_bullet_trail_bloom` is not defined
+- Key `settings_blood_splatter` is not defined
+- Key `settings_cooler_weapon_gas` is not defined
 - Key `settings_ambient_particles` is not defined
 - Key `settings_record_res` is not defined
 - Key `settings_alt_texture_loading` is not defined
@@ -474,6 +486,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `wiki` is not defined
 - Key `bindings_fullscreen` is not defined
 - Key `recording` is not defined
+- Key `settings_explosion_shockwaves` is not defined
+- Key `settings_bullet_trail_bloom` is not defined
+- Key `settings_blood_splatter` is not defined
+- Key `settings_cooler_weapon_gas` is not defined
 - Key `settings_record_res` is not defined
 - Key `settings_show_inout` is not defined
 - Key `settings_gyro_angle` is not defined
@@ -642,6 +658,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `wiki` is not defined
 - Key `bindings_fullscreen` is not defined
 - Key `recording` is not defined
+- Key `settings_explosion_shockwaves` is not defined
+- Key `settings_bullet_trail_bloom` is not defined
+- Key `settings_blood_splatter` is not defined
+- Key `settings_cooler_weapon_gas` is not defined
 - Key `settings_record_res` is not defined
 - Key `settings_alt_texture_loading` is not defined
 - Key `settings_show_inout` is not defined
@@ -961,6 +981,10 @@ This file is a report of all errors and missing keys in the translation files of
 ### Undefined Keys
 
 - Key `contact` is not defined
+- Key `settings_explosion_shockwaves` is not defined
+- Key `settings_bullet_trail_bloom` is not defined
+- Key `settings_blood_splatter` is not defined
+- Key `settings_cooler_weapon_gas` is not defined
 - Key `settings_shake_to_reload` is not defined
 - Key `settings_shake_count` is not defined
 - Key `settings_shake_force` is not defined
@@ -1062,6 +1086,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `wiki` is not defined
 - Key `bindings_fullscreen` is not defined
 - Key `recording` is not defined
+- Key `settings_explosion_shockwaves` is not defined
+- Key `settings_bullet_trail_bloom` is not defined
+- Key `settings_blood_splatter` is not defined
+- Key `settings_cooler_weapon_gas` is not defined
 - Key `settings_record_res` is not defined
 - Key `settings_alt_texture_loading` is not defined
 - Key `settings_show_inout` is not defined
@@ -1238,6 +1266,10 @@ This file is a report of all errors and missing keys in the translation files of
 ### Undefined Keys
 
 - Key `contact` is not defined
+- Key `settings_explosion_shockwaves` is not defined
+- Key `settings_bullet_trail_bloom` is not defined
+- Key `settings_blood_splatter` is not defined
+- Key `settings_cooler_weapon_gas` is not defined
 - Key `settings_shake_to_reload` is not defined
 - Key `settings_shake_count` is not defined
 - Key `settings_shake_force` is not defined
@@ -1327,6 +1359,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `recording` is not defined
 - Key `copied` is not defined
 - Key `settings_ambience_volume` is not defined
+- Key `settings_explosion_shockwaves` is not defined
+- Key `settings_bullet_trail_bloom` is not defined
+- Key `settings_blood_splatter` is not defined
+- Key `settings_cooler_weapon_gas` is not defined
 - Key `settings_ambient_particles` is not defined
 - Key `settings_record_res` is not defined
 - Key `settings_alt_texture_loading` is not defined
@@ -1507,6 +1543,10 @@ This file is a report of all errors and missing keys in the translation files of
 ### Undefined Keys
 
 - Key `contact` is not defined
+- Key `settings_explosion_shockwaves` is not defined
+- Key `settings_bullet_trail_bloom` is not defined
+- Key `settings_blood_splatter` is not defined
+- Key `settings_cooler_weapon_gas` is not defined
 - Key `settings_shake_to_reload` is not defined
 - Key `settings_shake_count` is not defined
 - Key `settings_shake_force` is not defined
@@ -1610,6 +1650,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_fullscreen` is not defined
 - Key `recording` is not defined
 - Key `settings_ambience_volume` is not defined
+- Key `settings_explosion_shockwaves` is not defined
+- Key `settings_bullet_trail_bloom` is not defined
+- Key `settings_blood_splatter` is not defined
+- Key `settings_cooler_weapon_gas` is not defined
 - Key `settings_ambient_particles` is not defined
 - Key `settings_record_res` is not defined
 - Key `settings_alt_texture_loading` is not defined
@@ -1782,7 +1826,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
 
-## 🇯🇵 日本語 (100% Complete) - jp.hjson
+## 🇯🇵 日本語 (99% Complete) - jp.hjson
 
 ### Invalid Keys
 
@@ -2023,7 +2067,12 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `time_minute` is not a valid key
 - Key `time_second` is not a valid key
 
-### (No Undefined Keys)
+### Undefined Keys
+
+- Key `settings_explosion_shockwaves` is not defined
+- Key `settings_bullet_trail_bloom` is not defined
+- Key `settings_blood_splatter` is not defined
+- Key `settings_cooler_weapon_gas` is not defined
 
 ## 🇱🇹 Lietuvių (56% Complete) - lt.hjson
 
@@ -2048,6 +2097,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_fullscreen` is not defined
 - Key `recording` is not defined
 - Key `settings_ambience_volume` is not defined
+- Key `settings_explosion_shockwaves` is not defined
+- Key `settings_bullet_trail_bloom` is not defined
+- Key `settings_blood_splatter` is not defined
+- Key `settings_cooler_weapon_gas` is not defined
 - Key `settings_ambient_particles` is not defined
 - Key `settings_record_res` is not defined
 - Key `settings_alt_texture_loading` is not defined
@@ -2240,6 +2293,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_fullscreen` is not defined
 - Key `recording` is not defined
 - Key `settings_ambience_volume` is not defined
+- Key `settings_explosion_shockwaves` is not defined
+- Key `settings_bullet_trail_bloom` is not defined
+- Key `settings_blood_splatter` is not defined
+- Key `settings_cooler_weapon_gas` is not defined
 - Key `settings_ambient_particles` is not defined
 - Key `settings_record_res` is not defined
 - Key `settings_alt_texture_loading` is not defined
@@ -2417,6 +2474,10 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### Undefined Keys
 
+- Key `settings_explosion_shockwaves` is not defined
+- Key `settings_bullet_trail_bloom` is not defined
+- Key `settings_blood_splatter` is not defined
+- Key `settings_cooler_weapon_gas` is not defined
 - Key `bindings_use_consumable vaccine_syringe` is not defined
 - Key `kf_disconnected` is not defined
 - Key `power_vest` is not defined
@@ -2467,6 +2528,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `wiki` is not defined
 - Key `bindings_fullscreen` is not defined
 - Key `recording` is not defined
+- Key `settings_explosion_shockwaves` is not defined
+- Key `settings_bullet_trail_bloom` is not defined
+- Key `settings_blood_splatter` is not defined
+- Key `settings_cooler_weapon_gas` is not defined
 - Key `settings_record_res` is not defined
 - Key `settings_alt_texture_loading` is not defined
 - Key `settings_show_inout` is not defined
@@ -2642,6 +2707,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `contact` is not defined
 - Key `bindings_fullscreen` is not defined
 - Key `recording` is not defined
+- Key `settings_explosion_shockwaves` is not defined
+- Key `settings_bullet_trail_bloom` is not defined
+- Key `settings_blood_splatter` is not defined
+- Key `settings_cooler_weapon_gas` is not defined
 - Key `settings_record_res` is not defined
 - Key `settings_alt_texture_loading` is not defined
 - Key `settings_lock_joysticks` is not defined
@@ -2801,6 +2870,10 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### Undefined Keys
 
+- Key `settings_explosion_shockwaves` is not defined
+- Key `settings_bullet_trail_bloom` is not defined
+- Key `settings_blood_splatter` is not defined
+- Key `settings_cooler_weapon_gas` is not defined
 - Key `bindings_use_consumable vaccine_syringe` is not defined
 - Key `kf_disconnected` is not defined
 - Key `power_vest` is not defined
@@ -2844,6 +2917,10 @@ This file is a report of all errors and missing keys in the translation files of
 ### Undefined Keys
 
 - Key `contact` is not defined
+- Key `settings_explosion_shockwaves` is not defined
+- Key `settings_bullet_trail_bloom` is not defined
+- Key `settings_blood_splatter` is not defined
+- Key `settings_cooler_weapon_gas` is not defined
 - Key `settings_show_inout` is not defined
 - Key `settings_shake_to_reload` is not defined
 - Key `settings_shake_count` is not defined
@@ -2892,6 +2969,10 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### Undefined Keys
 
+- Key `settings_explosion_shockwaves` is not defined
+- Key `settings_bullet_trail_bloom` is not defined
+- Key `settings_blood_splatter` is not defined
+- Key `settings_cooler_weapon_gas` is not defined
 - Key `settings_shake_delay` is not defined
 - Key `interact_recorder_interactable` is not defined
 - Key `bindings_use_consumable vaccine_syringe` is not defined
@@ -2952,6 +3033,10 @@ This file is a report of all errors and missing keys in the translation files of
 
 - Key `msg_error_kicked_team` is not defined
 - Key `contact` is not defined
+- Key `settings_explosion_shockwaves` is not defined
+- Key `settings_bullet_trail_bloom` is not defined
+- Key `settings_blood_splatter` is not defined
+- Key `settings_cooler_weapon_gas` is not defined
 - Key `settings_shake_to_reload` is not defined
 - Key `settings_shake_count` is not defined
 - Key `settings_shake_force` is not defined
@@ -3091,6 +3176,10 @@ This file is a report of all errors and missing keys in the translation files of
 
 - Key `msg_error_kicked_team` is not defined
 - Key `contact` is not defined
+- Key `settings_explosion_shockwaves` is not defined
+- Key `settings_bullet_trail_bloom` is not defined
+- Key `settings_blood_splatter` is not defined
+- Key `settings_cooler_weapon_gas` is not defined
 - Key `settings_alt_texture_loading` is not defined
 - Key `settings_shake_to_reload` is not defined
 - Key `settings_shake_count` is not defined
@@ -3243,6 +3332,10 @@ This file is a report of all errors and missing keys in the translation files of
 ### Undefined Keys
 
 - Key `contact` is not defined
+- Key `settings_explosion_shockwaves` is not defined
+- Key `settings_bullet_trail_bloom` is not defined
+- Key `settings_blood_splatter` is not defined
+- Key `settings_cooler_weapon_gas` is not defined
 - Key `settings_shake_to_reload` is not defined
 - Key `settings_shake_count` is not defined
 - Key `settings_shake_force` is not defined
