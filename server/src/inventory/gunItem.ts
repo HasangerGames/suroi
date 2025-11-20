@@ -29,6 +29,11 @@ export class GunItem extends InventoryItemBase.derive(DefinitionType.Gun) {
 
     private _reloadTimeout?: Timeout;
 
+    private _shotsCounter = 0;
+
+    private _previousFireDelay?: number;
+    fireDelay: number;
+
     // those need to be nodejs timeouts because some guns fire rate are too close to the tick rate
     private _burstTimeout?: NodeJS.Timeout;
     private _autoFireTimeout?: NodeJS.Timeout;
@@ -61,6 +66,8 @@ export class GunItem extends InventoryItemBase.derive(DefinitionType.Gun) {
             this.stats.damage = data.damage;
             this._shots = data.totalShots;
         }
+
+        this.fireDelay = this.definition.fireMode === FireMode.Burst ? this.definition.burstProperties.burstCooldown : this.definition.fireDelay;
     }
 
     /**
@@ -79,6 +86,14 @@ export class GunItem extends InventoryItemBase.derive(DefinitionType.Gun) {
             || owner.disconnected
             || this !== owner.activeItem
         ) {
+            if (
+                !skipAttackCheck
+                && !owner.attacking
+                && definition.fireMode === FireMode.Burst
+                && this._consecutiveShots > 0
+            ) {
+                this.fireDelay = definition.burstProperties.burstCooldown;
+            }
             this._consecutiveShots = 0;
             return;
         }
@@ -109,6 +124,22 @@ export class GunItem extends InventoryItemBase.derive(DefinitionType.Gun) {
 
         this._consecutiveShots++;
         this._shots++;
+
+        if (definition.cycle !== undefined) {
+            this._shotsCounter++;
+
+            if  (this._shotsCounter === definition.cycle.shotsRequired) {
+
+                if (this._previousFireDelay === undefined) {
+                    this._previousFireDelay = this.fireDelay;
+                }
+
+                this.fireDelay = definition.cycle.delay;
+                this._shotsCounter = 0;
+            }
+
+            else if (this._previousFireDelay) this.fireDelay = this._previousFireDelay;
+        }
 
         const { moveSpread, shotSpread, fsaReset } = definition;
 
@@ -182,7 +213,7 @@ export class GunItem extends InventoryItemBase.derive(DefinitionType.Gun) {
         for (const perk of owner.perks) {
             switch (perk.idString) {
                 case PerkIds.Flechettes: {
-                    if (definition.ballistics.onHitExplosion === undefined && !definition.summonAirdrop && !definition.ballistics.onHitProjectile) {
+                    if (definition.ballistics.onHitExplosion === undefined && !definition.summonAirdrop && !definition.ballistics.onHitProjectile && definition.ammoType !== "bb") {
                         doSplinterGrouping = true;
                         modifiers.damage *= perk.damageMod;
                         modifyForDamageMod(perk.damageMod);
@@ -191,6 +222,7 @@ export class GunItem extends InventoryItemBase.derive(DefinitionType.Gun) {
                     break;
                 }
                 case PerkIds.SabotRounds: {
+                    if (definition.ballistics.onHitExplosion === undefined && !definition.summonAirdrop && !definition.ballistics.onHitProjectile) {
                     modifiers.range *= perk.rangeMod;
                     modifiers.speed *= perk.speedMod;
                     modifiers.damage *= perk.damageMod;
@@ -198,6 +230,7 @@ export class GunItem extends InventoryItemBase.derive(DefinitionType.Gun) {
                     modifiers.tracer.length *= perk.tracerLengthMod;
                     spread *= perk.spreadMod;
                     modifiersModified = true;
+                    }
                     break;
                 }
                 case PerkIds.CloseQuartersCombat: {
@@ -211,7 +244,8 @@ export class GunItem extends InventoryItemBase.derive(DefinitionType.Gun) {
                         ].some(
                             obj => obj !== owner
                                 && obj.isPlayer
-                                && (!owner.game.isTeamMode || obj.teamID !== owner.teamID)
+                                && !obj.dead
+                                && !this.owner.isSameTeam(obj)
                                 && Geometry.distanceSquared(ownerPos, obj.position) <= sqCutoff
                         )
                     ) {
@@ -249,8 +283,19 @@ export class GunItem extends InventoryItemBase.derive(DefinitionType.Gun) {
                     modifiersModified = true;
                     break;
                 }
+                case PerkIds.LastStand: {
+                    if (owner.health < perk.healthReq) {
+                        modifiers.damage *= perk.damageMod;
+                        modifyForDamageMod(perk.damageMod);
+                        modifiersModified = true;
+                    }
+                    break;
+                }
             }
         }
+
+        const cycle = this.fireDelay === this.definition.cycle?.delay;
+        this.owner.isCycling = !cycle;
         // ! evil ends here
 
         const activeStair = owner.activeStair;
@@ -278,7 +323,8 @@ export class GunItem extends InventoryItemBase.derive(DefinitionType.Gun) {
                     thin,
                     split,
                     shotFX: shotFX,
-                    lastShot: this.definition.ballistics.lastShotFX && this.ammo === 1
+                    lastShot: this.definition.ballistics.lastShotFX && this.ammo === 1,
+                    cycle
                 }
             );
         };
@@ -340,7 +386,7 @@ export class GunItem extends InventoryItemBase.derive(DefinitionType.Gun) {
             this._consecutiveShots = 0;
             this._reloadTimeout = owner.game.addTimeout(
                 this.reload.bind(this, true),
-                definition.fireDelay * this.owner.fireRateMod
+                this.fireDelay * this.owner.fireRateMod
             );
             return;
         }
@@ -348,6 +394,7 @@ export class GunItem extends InventoryItemBase.derive(DefinitionType.Gun) {
         if (definition.fireMode === FireMode.Burst) {
             if (this._consecutiveShots >= definition.burstProperties.shotsPerBurst) {
                 this._consecutiveShots = 0;
+                this.fireDelay = definition.burstProperties.burstCooldown;
                 this._burstTimeout = setTimeout(
                     this._useItemNoDelayCheck.bind(this, false),
                     definition.burstProperties.burstCooldown
@@ -366,10 +413,16 @@ export class GunItem extends InventoryItemBase.derive(DefinitionType.Gun) {
             (definition.fireMode !== FireMode.Single || owner.isMobile)
             && owner.activeItem === this
         ) {
+
+            // bursts are stupid
+            if (definition.fireMode === FireMode.Burst && this._consecutiveShots < definition.burstProperties.shotsPerBurst) {
+                this.fireDelay = definition.fireDelay;
+            }
+
             clearTimeout(this._autoFireTimeout);
             this._autoFireTimeout = setTimeout(
                 this._useItemNoDelayCheck.bind(this, false),
-                definition.fireDelay * this.owner.fireRateMod
+                this.fireDelay * this.owner.fireRateMod
             );
         }
     }
@@ -383,12 +436,8 @@ export class GunItem extends InventoryItemBase.derive(DefinitionType.Gun) {
     }
 
     override useItem(): void {
-        const def = this.definition;
-
         super._bufferAttack(
-            (def.fireMode === FireMode.Burst
-                ? def.burstProperties.burstCooldown
-                : def.fireDelay) * this.owner.fireRateMod,
+            this.fireDelay * this.owner.fireRateMod,
             this._useItemNoDelayCheck.bind(this, true)
         );
     }
@@ -410,7 +459,7 @@ export class GunItem extends InventoryItemBase.derive(DefinitionType.Gun) {
             || (!owner.inventory.items.hasItem(definition.ammoType) && !this.owner.hasPerk(PerkIds.InfiniteAmmo))
             || owner.action !== undefined
             || owner.activeItem !== this
-            || (!skipFireDelayCheck && owner.game.now - this.lastUse < definition.fireDelay)
+            || (!skipFireDelayCheck && owner.game.now - this.lastUse < this.fireDelay)
             || owner.downed
         ) return;
 

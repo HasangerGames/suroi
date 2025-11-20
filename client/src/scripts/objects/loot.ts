@@ -1,6 +1,6 @@
 import { GameConstants, ObjectCategory, ZIndexes } from "@common/constants";
 import { ArmorType } from "@common/definitions/items/armors";
-import { PerkIds } from "@common/definitions/items/perks";
+import { PerkCategories, PerkIds } from "@common/definitions/items/perks";
 import { type LootDefinition } from "@common/definitions/loots";
 import { CircleHitbox } from "@common/utils/hitbox";
 import { EaseFunctions } from "@common/utils/math";
@@ -169,8 +169,8 @@ export class Loot extends GameObject.derive(ObjectCategory.Loot) {
 
             case DefinitionType.Perk:
                 return {
-                    backgroundTexture: definition.idString === PerkIds.PlumpkinGamble // FIXME bad
-                        ? "loot_background_plumpkin_gamble"
+                    backgroundTexture: definition.mechanical
+                        ? "loot_background_mechanical_perk"
                         : "loot_background_perk"
                 };
 

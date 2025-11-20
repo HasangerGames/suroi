@@ -10,6 +10,7 @@ import { Obstacles, type ObstacleDefinition } from "@common/definitions/obstacle
 import { SyncedParticles, type SyncedParticleDefinition } from "@common/definitions/syncedParticles";
 import { type JoinData } from "@common/packets/joinPacket";
 import { JoinedPacket } from "@common/packets/joinedPacket";
+import { DamageSources } from "@common/packets/killPacket";
 import { PacketDataIn, PacketType } from "@common/packets/packet";
 import { PacketStream } from "@common/packets/packetStream";
 import { MapIndicatorSerialization, type PingSerialization } from "@common/packets/updatePacket";
@@ -834,6 +835,41 @@ export class Game implements GameData {
             this.findNewKillLeader();
         }
 
+        const combatLogInfo = player.lastDamagedBy;
+        const selfKillWithinThreshold = 
+            player.lastSelfKillTime !== undefined
+            && player.lastSelfKillTime - player.joinTime <= 30000;
+        const selfDownWithinThreshold =
+            player.lastSelfDownTime !== undefined
+            && player.lastSelfDownTime - player.joinTime <= 30000;
+        
+        if (!player.dead) {
+            player.health = 0;
+            if (
+                combatLogInfo
+                && combatLogInfo.player !== player
+                && !combatLogInfo.player.disconnected
+                && this.now - combatLogInfo.time <= GameConstants.player.combatLogTimeoutMs
+            ) {
+                player.die({
+                    source: combatLogInfo.player,
+                    weaponUsed: combatLogInfo.weapon
+                });
+            } else {
+                player.die({ source: DamageSources.Disconnect });
+            }
+        }
+
+        if (this.isTeamMode && combatLogInfo === undefined && (selfKillWithinThreshold || selfDownWithinThreshold)) {
+            const team = player.team;
+            if(team) {
+                team.removePlayer(player);
+                if (!team.players.length) this.teams.delete(team);
+                player.team = undefined;
+                player.teamID = undefined;
+            }
+        }
+
         if (player.canDespawn) {
             this.livingPlayers.delete(player);
             this.removeObject(player);
@@ -951,7 +987,7 @@ export class Game implements GameData {
         definition = Loots.reify<Def>(definition);
 
         // no ephemeral shit
-        if (definition.defType === DefinitionType.Ammo && definition.ephemeral) return;
+        if (definition.defType === DefinitionType.Ammo && definition.ephemeral && count !== 1) return;
 
         if (
             this.pluginManager.emit(
@@ -1104,7 +1140,7 @@ export class Game implements GameData {
         }
     }
 
-    addDecal(def: ReifiableDef<DecalDefinition>, position: Vector, rotation?: number, layer?: Layer | number): Decal {
+    addDecal(def: ReifiableDef<DecalDefinition>, position: Vector, rotation?: number, layer?: Layer): Decal {
         const decal = new Decal(this, def, position, rotation, layer);
         this.grid.addObject(decal);
         return decal;
@@ -1125,7 +1161,9 @@ export class Game implements GameData {
 
         const paddingFactor = 1.25;
 
-        const crateDef = Obstacles.fromString(`airdrop_crate_locked${forceGold ? "_force" : ""}`);
+        const str = forceGold && this.modeName === "halloween" ? "pumpkin_airdrop_locked" : `airdrop_crate_locked${forceGold ? "_force" : ""}`;
+
+        const crateDef = Obstacles.fromString(str);
         const crateHitbox = (crateDef.spawnHitbox ?? crateDef.hitbox).clone();
         let thisHitbox = crateHitbox.clone();
 

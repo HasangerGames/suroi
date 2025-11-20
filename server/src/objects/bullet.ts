@@ -39,6 +39,8 @@ export interface ServerBulletOptions {
     readonly modifiers?: BulletOptions["modifiers"]
     readonly shotFX?: boolean
     readonly lastShot?: boolean
+    readonly cycle?: boolean
+    readonly reflective?: boolean
 }
 
 export class Bullet extends BaseBullet {
@@ -82,6 +84,10 @@ export class Bullet extends BaseBullet {
         this.shotFX = options.shotFX ?? false;
 
         this.lastShot = options.lastShot ?? false;
+
+        this.cycle = options.cycle ?? false;
+
+        this.reflective = options.reflective ?? false;
     }
 
     update(): DamageRecord[] {
@@ -128,11 +134,8 @@ export class Bullet extends BaseBullet {
                 && (definition.onHitExplosion === undefined || !definition.explodeOnImpact)
             );
 
-            const isBlockedReflectionGun = this.sourceGun.definition.ballistics.onHitExplosion || this.sourceGun.definition.ballistics.onHitProjectile;
-            const reflectiveRounds = !object.isPlayer && this.shooter.isPlayer && this.shooter.hasPerk(PerkIds.ReflectiveRounds) && !isBlockedReflectionGun;
-
             let rotation: number | undefined;
-            if (reflected || definition.onHitExplosion || definition.onHitProjectile || reflectiveRounds) {
+            if (reflected || definition.onHitExplosion || definition.onHitProjectile) {
                 /*
                     nudge the bullet
 
@@ -194,7 +197,7 @@ export class Bullet extends BaseBullet {
             // think of it as bullet penetration.
             if (isObstacle && object.definition.noCollisions) continue;
 
-            if (reflected || reflectiveRounds) {
+            if (reflected) {
                 this.reflect(rotation ?? 0);
                 this.reflected = true;
             }
@@ -206,7 +209,7 @@ export class Bullet extends BaseBullet {
         return records;
     }
 
-    reflect(direction: number): void {
+    reflect(direction: number, reflective = false): void {
         this.game.addBullet(
             this.sourceGun,
             this.shooter,
@@ -221,7 +224,8 @@ export class Bullet extends BaseBullet {
                 rangeOverride: this.clipDistance,
                 saturate: this.saturate,
                 thin: this.thin,
-                shotFX: false
+                shotFX: false,
+                reflective
             }
         );
     }

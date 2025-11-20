@@ -32,16 +32,9 @@ export const Config = {
         },
         as: {
             name: "Asia",
-            flag: "🇻🇳 ",
+            flag: "🇭🇰 ",
             mainAddress: "https://as.suroi.io",
             gameAddress: "wss://as.suroi.io/game/<gameID>",
-            offset: 1
-        },
-        ea: {
-            name: "East Asia",
-            flag: "🇭🇰 ",
-            mainAddress: "https://ea.suroi.io",
-            gameAddress: "wss://ea.suroi.io/game/<gameID>",
             offset: 1
         },
         oc: {

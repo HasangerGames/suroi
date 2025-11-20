@@ -69,6 +69,12 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
     hasBubble = false;
 
+    hasMagneticField = false;
+
+    emitLowHealthParticles = false;
+
+    isCycling = false;
+
     activeOverdrive = false;
     overdriveCooldown?: Timeout;
 
@@ -131,6 +137,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         bubbleSprite?: SuroiSprite
         disguiseSprite?: SuroiSprite
         disguiseSpriteTrunk?: SuroiSprite
+        magneticFieldSprite?: SuroiSprite
         healthBar?: Graphics
     };
 
@@ -148,6 +155,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
     healingParticlesEmitter: ParticleEmitter;
 
+    smokeParticlesEmitter?: ParticleEmitter;
+
     readonly anims: {
         emote?: Tween<ObservablePoint>
         emoteHide?: Tween<ObservablePoint>
@@ -163,6 +172,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         waterOverlay?: Tween<SuroiSprite>
         sizeMod?: Tween<ObservablePoint>
         shieldScale?: Tween<ObservablePoint>
+        magneticField?: Tween<ObservablePoint>
     } = {};
 
     private _emoteHideTimeout?: Timeout;
@@ -322,7 +332,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         }
     }
 
-    spawnCasingParticles(filterBy: "fire" | "reload", altFire = false): void {
+    spawnCasingParticles(filterBy: "fire" | "reload" | "cycle", altFire = false): void {
         const weaponDef = this.activeItem as GunDefinition;
         const reference = this._getItemReference() as SingleGunNarrowing;
         const initialRotation = this.rotation + Math.PI / 2;
@@ -363,7 +373,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
                         return {
                             frames: casingSpec.frame ?? Ammos.fromString(weaponDef.ammoType).defaultCasingFrame ?? "",
-                            zIndex: ZIndexes.Players,
+                            zIndex: ZIndexes.Players - 0.5,
                             position: Vec.add(this.position, Vec.rotate(position, this.rotation)),
                             lifetime: 400,
                             layer: this.layer,
@@ -563,7 +573,10 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     infected,
                     backEquippedMelee,
                     hasBubble,
-                    activeOverdrive
+                    activeOverdrive,
+                    hasMagneticField,
+                    isCycling,
+                    emitLowHealthParticles
                 }
             } = data;
 
@@ -583,12 +596,10 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             this.container.visible = !dead;
 
             const hadSkin = this.halloweenThrowableSkin;
-            if (
-                hadSkin !== (this.halloweenThrowableSkin = halloweenThrowableSkin)
-                && this.activeItem.defType === DefinitionType.Throwable
-                && !this.activeItem.noSkin
-            ) {
-                this.images.weapon.setFrame(`${this.activeItem.idString}${this.halloweenThrowableSkin ? "_halloween" : ""}`);
+            if (hadSkin !== (this.halloweenThrowableSkin = halloweenThrowableSkin)) {
+                if (this.activeItem.defType === DefinitionType.Throwable && !this.activeItem.noSkin) {
+                    this.images.weapon.setFrame(`${this.activeItem.idString}${this.halloweenThrowableSkin ? "_halloween" : ""}`);
+                }
                 UIManager.updateWeaponSlots(true);
             }
 
@@ -669,6 +680,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 }
 
                 if (this.disguiseContainer) this.disguiseContainer.visible = false;
+                if (this.smokeParticlesEmitter !== undefined) this.smokeParticlesEmitter.active = false;
             }
 
             this._oldItem = this.activeItem;
@@ -739,7 +751,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
             const { hideEquipment, helmetLevel, vestLevel, backpackLevel } = this;
 
-            this.hideEquipment = skinDef.hideEquipment ?? false;
+            this.hideEquipment = ((activeDisguise !== undefined ? true : undefined) ?? skinDef.hideEquipment) ?? false;
 
             this.helmetLevel = (this.equipment.helmet = helmet)?.level ?? 0;
             this.vestLevel = (this.equipment.vest = vest)?.level ?? 0;
@@ -758,6 +770,12 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 || backpackLevel !== this.backpackLevel
             ) {
                 this.updateEquipment();
+
+                if (
+                    !isNew
+                    && this.equipment.vest?.emitSound !== undefined
+                    && vestLevel !== this.vestLevel
+                ) this.playSound(this.equipment.vest.emitSound);
             }
 
             if (itemDirty) {
@@ -804,10 +822,34 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 }
             }
 
+            if (!this.dead && emitLowHealthParticles !== this.emitLowHealthParticles) {
+                this.emitLowHealthParticles = emitLowHealthParticles;
+
+                if (this.smokeParticlesEmitter === undefined) {
+                    this.smokeParticlesEmitter = ParticleManager.addEmitter({
+                        delay: 300,
+                        active: !this.dead,
+                        spawnOptions: () => ({
+                            frames: "smoke_particle",
+                            position: this.position,
+                            layer: this.layer,
+                            zIndex: PLAYER_PARTICLE_ZINDEX,
+                            lifetime: 3500,
+                            scale: { start: 0, end: randomFloat(4, 5) },
+                            alpha: { start: 0.9, end: 0 },
+                            speed: Vec.fromPolar(randomFloat(-1.9, -2.1), randomFloat(5, 6))
+                        })
+                    });
+                }
+                else {
+                    this.smokeParticlesEmitter.active = !this.dead && this.emitLowHealthParticles;
+                }
+            }
+
             if (infected !== this.infected) {
                 this.infected = infected;
                 this.container.tint = infected ? 0x8a4c70 : 0xffffff;
-                if (!isNew) {
+                if (!isNew && Game.modeName === "infection") {
                     if (infected) this.playSound("infected");
                     else this.playSound("cured");
                 }
@@ -816,7 +858,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             // Shield
             if (hasBubble !== this.hasBubble) {
                 this.hasBubble = hasBubble;
-                
+
                 let bubbleSprite = this.images.bubbleSprite;
 
                 // Initialize sprite
@@ -827,7 +869,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
                     this.container.addChild(bubbleSprite);
                 }
-                
+
                 bubbleSprite.setVisible(this.hasBubble);
 
                 if (!isNew) {
@@ -872,6 +914,46 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                                 }
                             });
                         }
+                    }
+                }
+            }
+
+            // Magnetic Field
+            if (hasMagneticField !== this.hasMagneticField) {
+                this.hasMagneticField = hasMagneticField;
+
+                let magneticFieldSprite = this.images.magneticFieldSprite;
+
+                const spriteScale = PerkData[PerkIds.EternalMagnetism].spriteScale;
+
+                // Initialize sprite
+                if (magneticFieldSprite === undefined) {
+                    magneticFieldSprite = this.images.magneticFieldSprite = new SuroiSprite()
+                        .setFrame("_glow_")
+                        .setScale(spriteScale)
+                        .setAlpha(0.75)
+                        .setZIndex(-1.2)
+                        .setTint(0xfc0303);
+
+                    this.container.addChild(magneticFieldSprite);
+                }
+
+                magneticFieldSprite.setVisible(this.hasMagneticField);
+
+                if (!isNew) {
+                    if (this.images.magneticFieldSprite !== undefined) {
+                        this.anims.magneticField?.kill();
+                        this.images.magneticFieldSprite.setScale(hasMagneticField ? 0 : spriteScale);
+
+                        this.anims.magneticField = Game.addTween({
+                            target: this.images.magneticFieldSprite.scale,
+                            to: { x: hasMagneticField ? spriteScale : 0, y: hasMagneticField ? spriteScale : 0 },
+                            duration: 1000,
+                            ease: EaseFunctions.backOut,
+                            onComplete: () => {
+                                this.anims.magneticField = undefined;
+                            }
+                        });
                     }
                 }
             }
@@ -939,6 +1021,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     }
                 }
             }
+
+            if (isCycling !== this.isCycling) this.isCycling = isCycling;
         }
 
         if (data.action !== undefined) {
@@ -1360,6 +1444,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     soundID = reference.idString.slice("dual_".length);
                 } else if (SoundManager.has(`${reference.idString}_switch`)) {
                     soundID = reference.idString;
+                } else if (reference.defType === DefinitionType.Melee && reference.switchSound !== undefined) {
+                    soundID = reference.switchSound;
                 } else {
                     soundID = "default";
                 }
@@ -1449,10 +1535,15 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         const container = $(`#${equipmentType}-slot`);
         const def = this.equipment[equipmentType];
 
+        if (def?.hideInHUD) {
+            container.css("visibility", "hidden");
+            return;
+        }
+
         if (def && def.level > 0) {
             container.children(".item-name").text(`Lvl. ${def.level}`);
             container.children(".item-image").attr("src", `./img/game/shared/loot/${def.idString}.svg`);
-            container.children(".item-name").attr("style", `color: ${def.level > 3 ? "#ff9900" : "#ffffff"};`);
+            container.children(".item-name").attr("style", `color: ${def.level >= (Game.mode.maxEquipmentLevel ?? 3) ? "#ff9900" : "#ffffff"};`);
 
             let itemTooltip = getTranslatedString(def.idString as TranslationKeys);
             if (def.defType === DefinitionType.Armor) {
@@ -1952,6 +2043,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 }
 
                 this.spawnCasingParticles("fire", isAltFire);
+
+                if (this.isCycling) this.spawnCasingParticles("cycle", isAltFire);
                 break;
             }
             case AnimationType.GunClick: {
@@ -1978,7 +2071,13 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
                 projImage.visible = true;
                 if (def.animation.pinImage) {
-                    pinImage.setFrame(def.animation.pinImage);
+                    let pinFrame = def.animation.pinImage;
+
+                    if (def.pinSkin && this.halloweenThrowableSkin && !def.noSkin) {
+                        pinFrame += "_halloween";
+                    }
+
+                    pinImage.setFrame(pinFrame);
                     pinImage.setPos(35, 0);
                     pinImage.setZIndex(ZIndexes.Players + 1);
                 }
@@ -2301,6 +2400,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         images.backMeleeSprite?.destroy();
 
         this.healingParticlesEmitter.destroy();
+        this.smokeParticlesEmitter?.destroy();
         this.actionSound?.stop();
         clearInterval(this.bleedEffectInterval);
         if (this.isActivePlayer) $("#action-container").hide();

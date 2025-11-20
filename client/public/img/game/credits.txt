@@ -1,6 +1,7 @@
 Skins:
   Forest Camo body: Image by flatart on Freepik: https://www.freepik.com/free-vector/army-camouflage-vector-seamless-pattern-texture-military-camouflage-repeats-seamless-army-design-vector-background_34294124.htm
-  Loadout & game skins: Asultra, ScaredPenguinXXL, Pirelli, Slapdap, EndermanKing, Arman, hasanger
+  Loadout & game skins: Asultra, ScaredPenguinXXL, Pirelli, Slapdap, EndermanKing, Arman, hasanger, pap
+  Werewolf: Skullboi249
 Loot:
   Level 1 Vest (Loot Image): Slapdap, modified by Leia, Skullboi249 and hasanger
   Level 2 Vest (Loot Image): Slapdap, modified by Leia, Skullboi249 and hasanger
@@ -129,11 +130,6 @@ Guns:
     World Image: Winter
     Killfeed Image: AnnihilatingFox
 
-  M202-F:
-    Loot Image: Skullboi249
-    World Image: Skullboi249
-    Killfeed: AnnihilatingFox
-
   M3K:
     Loot Image: Wampi
     World Image: Wampi
@@ -259,7 +255,7 @@ Guns:
     World Image: Winter
     Killfeed Image: eiπ
 
-  Seedshot:
+  Seedshot (Aged, Normal):
     Loot Image: Skullboi249
     World Image: Skullboi249
     Killfeed Image: Skullboi249
@@ -329,13 +325,32 @@ Guns:
     World Image: Winter, Skullboi249
     Killfeed Image: Skullboi249
 
+  M202-F:
+    Loot Image: Skullboi249
+    World Image: Skullboi249
+    Killfeed: AnnihilatingFox
+
+  ULR-338
+    Loot Image: Skullboi249
+    World Image: Skullboi249
+    Killfeed: Skullboi249
+
+  DP-12
+    Loot Image: Skullboi249, AnnihilatingFox
+    World Image: Skullboi249
+    Killfeed: AnnihilatingFox
+
 Melees:
   Baseball Bat: Radians
   HE-AP Sword: Radians
   K-bar: Radians
+  Hatchet: Nefertari
+  Crowbar: Nefertari
   Maul: Radians
   Pipe Wrench: sovietnuclearfridgebomb
   Hand Saw (Art, Killfeed, Animation): AnnihilatingFox
+    - Tenon Saw: pap, AnnihilatingFox
+  Scythe (Art, Killfeed, Animation): AnnihilatingFox
 
 
 Obstacles:
@@ -381,6 +396,7 @@ Obstacles:
   Pumpkin: RedCoder09
 
   Powered Metal Door: TjCj/sniperboi4
+  Pumpkin Airdrop: Skullboi249
 
 Buildings:
   Red House: platonthek
@@ -412,6 +428,7 @@ Buildings:
   Train Station (and all train variations): TimoPro
   Graveyard: TimoPro
   Medical Camp: TimoPro
+  Mansion: TimoPro
 
 Emotes:
   Primary Artists: EndermanKing, Slapdap, Tofi38
@@ -428,7 +445,34 @@ Other:
   Tap Icon - "One Finger Tap Gesture Of Outlined Hand Symbol" from OnlineWebFonts: https://www.onlinewebfonts.com/icon/57341
 
 Perk Icons:
-  All harvest (except combat expert), halloween perk icons: Winter
+  Advanced Athletics: Winter
+  Berserker: Winter
+  Close Quarters Combat: Winter
+  Demo Expert: Winter
+  Extended Mags: Winter
+  Field Medic: Winter
+  Fléchettes: Winter
+  Infinite Ammo: Winter
+  Low Profile: Winter
+  Sabot Rounds: Winter
+  Second Wind: Winter
+  Toploaded: Winter
+  Precision Recycling: eiπ, pap
+  Plumpkin Gamble: eiπ, Winter
+  Baby Plumpkin Pie: Winter
+  Bloodthirst: Winter
+  Claustrophobic: Winter
+  Costumed: Winter
+  Engorged: Winter
+  Experimental Treatment: Winter
+  Laced Stimulants: Winter
+  Lycanthropy: Winter
+  Plumpkin Bomb: Winter
+  Rotten Plumpkin: Winter
+  Shrouded: Winter
+  Torn Pockets: Winter
+  Infected: Skullboi249, AnnihilatingFox
+  Immunity: Skullboi249, AnnihilatingFox
   Combat Expert: Skullboi249
   Experimental Forcefield: Skullboi249
   Hollow Points: Skullboi249
@@ -438,8 +482,14 @@ Perk Icons:
   Butterfingers: Skullboi249
   Overclocked: sniperboi4/TjCj, AnnihilatingFox
   Overweight: sniperboi4/TjCj
-  Priority Target: sniperboi4/TjCj
+  Priority Target: Winter, sniperboi4/TjCj
   Reflective Rounds: Skullboi249
+  Eternal Magnetism: sniperboi4/TjCj
+  Weak Stomach: Skullboi249
+  Plumpkin's Blessing: sniperboi4/TjCj
+  Aching Knees: Skullboi249
+  Plumpkin Shuffle: sniperboi4/TjCj
+  Last Stand: Skullboi249
 
 Saw Killfeed - AnnihilatingFox
 
@@ -447,3 +497,9 @@ S.E.E.D.
   - Loot: Skullboi249
   - Projectile: Skullboi249
   - Pin/Lever: Skullboi249
+
+Throwable Skins (Plumpkin Bomb Perk)
+- Frag Grenade: 1092384
+- Smoke Grenade: 1092384
+- C4: 1092384
+- Flare: Skullboi249

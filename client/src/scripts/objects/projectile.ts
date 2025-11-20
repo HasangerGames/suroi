@@ -51,7 +51,13 @@ export class Projectile extends GameObject.derive(ObjectCategory.Projectile) {
         const { flicker, activeSound } = this.definition;
 
         if (flicker) {
-            this.flickerSprite = new SuroiSprite(flicker.image)
+            let flickerFrame = flicker.image;
+
+            if (this.halloweenSkin && !this.definition.noSkin) {
+                flickerFrame += "_halloween";
+            }
+
+            this.flickerSprite = new SuroiSprite(flickerFrame)
                 .setVPos(toPixiCoords(flicker.offset));
             this.container.addChild(this.flickerSprite);
 

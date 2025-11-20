@@ -34,6 +34,7 @@ import { spritesheetLoadPromise } from "./utils/pixi";
 import { TRANSLATIONS, getTranslatedString } from "./utils/translations/translations";
 import type { TranslationKeys } from "./utils/translations/typings";
 import { CameraManager } from "./managers/cameraManager";
+import { isMobile } from "pixi.js";
 
 interface RegionInfo extends Region {
     readonly playerCount?: number
@@ -2307,20 +2308,21 @@ export async function setUpUI(): Promise<void> {
             .toggleClass("fa-eye-slash", visible);
     });
 
+    if (isMobile.any) { // bruh
+        $("#tab-mobile").show();
+        $("#mobile-options").show();
+    }
     // Mobile event listeners
     if (InputManager.isMobile) {
-        $("#tab-mobile").show();
 
         // Interact message
         ui.interactMsg.on("click", () => {
             InputManager.addAction(UIManager.action.active ? InputActions.Cancel : InputActions.Interact);
         });
         ui.interactKey.html('<img src="./img/misc/tap-icon.svg" alt="Tap">');
-
+        
         // Active weapon ammo button reloads
         ui.activeAmmo.on("click", () => GameConsole.handleQuery("reload", "never"));
-
-        $("#mobile-options").show();
 
         ui.menuButton.on("pointerup", () => ui.gameMenu.fadeToggle(250));
 

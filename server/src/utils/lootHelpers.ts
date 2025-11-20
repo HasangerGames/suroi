@@ -50,7 +50,7 @@ export class LootItem {
     ) { }
 }
 
-export function getLootFromTable(modeName: ModeName, tableID: string): LootItem[] {
+export function getLootFromTable(modeName: ModeName, tableID: string, quality?: number): LootItem[] {
     const lootTable = resolveTable(modeName, tableID);
     if (lootTable === undefined) {
         throw new ReferenceError(`Unknown loot table: ${tableID}`);
@@ -70,12 +70,12 @@ export function getLootFromTable(modeName: ModeName, tableID: string): LootItem[
 
     return (
         isSimple && isArray(loot[0])
-            ? (loot as readonly WeightedItem[][]).map(innerTable => getLoot(modeName, innerTable))
+            ? (loot as readonly WeightedItem[][]).map(innerTable => getLoot(modeName, innerTable, noDuplicates ?? false))
             : min === 1 && max === 1
-                ? getLoot(modeName, loot as WeightedItem[], noDuplicates)
+                ? getLoot(modeName, loot as WeightedItem[], noDuplicates ?? false, quality ?? -1)
                 : Array.from(
                     { length: random(min, max) },
-                    () => getLoot(modeName, loot as WeightedItem[], noDuplicates)
+                    () => getLoot(modeName, loot as WeightedItem[], noDuplicates ?? false, quality ?? -1)
                 )
     ).flat();
 }
@@ -84,13 +84,21 @@ export function resolveTable(modeName: ModeName, tableID: string): LootTable {
     return LootTables[modeName]?.[tableID] ?? LootTables.normal[tableID];
 }
 
-function getLoot(modeName: ModeName, items: WeightedItem[], noDuplicates?: boolean): LootItem[] {
-    const selection = items.length === 1
-        ? items[0]
-        : weightedRandom(items, items.map(({ weight }) => weight));
+function getLoot(modeName: ModeName, items: WeightedItem[], noDuplicates: boolean, qualityValue?: number): LootItem[] {
+
+    let _items = items;
+    if (qualityValue && qualityValue !== -1) _items = items.filter(item => {
+        return item.weight < qualityValue
+    });
+
+    if (_items.length === 0) _items = items;
+
+    const selection = _items.length === 1
+        ? _items[0]
+        : weightedRandom(_items, _items.map(({ weight }) => weight));
 
     if ("table" in selection) {
-        return getLootFromTable(modeName, selection.table);
+        return getLootFromTable(modeName, selection.table, qualityValue);
     }
 
     const item = selection.item;
@@ -122,6 +130,7 @@ function getLoot(modeName: ModeName, items: WeightedItem[], noDuplicates?: boole
             loot.push(new LootItem(ammoType, ammoSpawnAmount));
         }
     }
+
     if (definition.defType === DefinitionType.Gun && definition.spawnScope) {
         loot.push(new LootItem(definition.spawnScope, 1));
     }

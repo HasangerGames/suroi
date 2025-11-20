@@ -219,6 +219,25 @@ export const SyncedParticles = new ObjectDefinitions<SyncedParticleDefinition>([
         }
     }),
     smokeLike({
+        idString: "ash_particle",
+        name: "Urn Ash Particle",
+        tint: 0x8a8a75,
+        hitbox: new CircleHitbox(5),
+        snapScopeTo: "1x_scope",
+        velocity: {
+            easing: "expoOut",
+            duration: 4000
+        },
+        spawner: {
+            count: 10,
+            radius: 15,
+            staggering: {
+                delay: 300,
+                initialAmount: 2
+            }
+        }
+    }),
+    smokeLike({
         idString: "airdrop_smoke_particle",
         name: "Airdrop Smoke Particle",
         velocity: {

@@ -1,4 +1,4 @@
-import { ObjectCategory } from "@common/constants";
+import { Layer, ObjectCategory } from "@common/constants";
 import { Decals, type DecalDefinition } from "@common/definitions/decals";
 import { type ReifiableDef } from "@common/utils/objectDefinitions";
 import { type FullData } from "@common/utils/objectsSerializations";
@@ -15,13 +15,13 @@ export class Decal extends BaseGameObject.derive(ObjectCategory.Decal) {
 
     readonly definition: DecalDefinition;
 
-    constructor(game: Game, definition: ReifiableDef<DecalDefinition>, position: Vector, rotation?: number, layer?: number) {
+    constructor(game: Game, definition: ReifiableDef<DecalDefinition>, position: Vector, rotation?: number, layer?: Layer) {
         super(game, position);
 
         this.definition = Decals.reify(definition);
 
         this.rotation = rotation ?? randomRotation();
-        this.layer = layer ?? 0;
+        this.layer = layer ?? Layer.Ground;
     }
 
     override get data(): FullData<ObjectCategory.Decal> {

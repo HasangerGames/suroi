@@ -52,6 +52,12 @@ class UIManagerClass {
     private minAdrenaline = 0;
     private adrenaline = 0;
 
+    // private perkTimers?: Map<PerkDefinition, {
+    //     startTime: number,
+    //     endTime: number,
+    //     ended?: boolean
+    // }>;
+
     readonly inventory: {
         activeWeaponIndex: number
         weapons: (PlayerData["inventory"] & object)["weapons"] & object
@@ -617,6 +623,7 @@ class UIManagerClass {
             items,
             activeC4s,
             perks,
+           // updatedPerks,
             blockEmoting
         } = data;
 
@@ -856,10 +863,46 @@ class UIManagerClass {
                 }
 
                 if (oldPerks[i] !== newPerk) {
+                    // this.perkTimers?.delete(oldPerks[i]);
                     this.updatePerkSlot(newPerk, i);
                 }
             }
         }
+
+        // if (this.perkTimers !== undefined) {
+        //     const currentTime = Date.now();
+
+        //     for (const [perk, timer] of this.perkTimers) {
+        //         const timeLeft = Math.max(timer.endTime - currentTime, 0),
+        //             seconds = Math.ceil(timeLeft / 1000),
+        //             totalSeconds = Math.ceil((timer.endTime - timer.startTime) / 1000);
+
+        //         if (seconds === 0) {
+        //             this.perkTimers.delete(perk);
+        //             continue;
+        //         }
+
+        //         const percentage = (1 - seconds / totalSeconds) * 100;
+        //         const index = PerkManager.perks.indexOf(perk);
+                    
+        //         this._perkSlots[index]?.children('.item-timer-text').text(seconds);
+        //         this._perkSlots[index]?.children('.item-timer').css("background-size", `${percentage}% 100%`);
+        //     }
+        // }
+
+        // if (updatedPerks) {
+        //     for (const perk of updatedPerks) {
+        //         if (perk === undefined) continue;
+        //         const time = perk.updateInterval ?? 1000;
+
+        //         if (this.perkTimers?.get(perk) === undefined) {  
+        //             (this.perkTimers ??= new Map<PerkDefinition, { startTime: number; endTime: number }>()).set(perk, {
+        //                 startTime: Date.now(),
+        //                 endTime: Date.now() + time
+        //             });      
+        //         }
+        //     }
+        // }
 
         this.blockEmoting = blockEmoting;
     }
@@ -925,10 +968,10 @@ class UIManagerClass {
 
         if (activeWeapon?.stats?.kills === undefined) { // killstreaks
             this.ui.killStreakIndicator.hide();
-        } else {
+        } /*else {
             this.ui.killStreakIndicator.show();
             this.ui.killStreakCounter.text(`Streak: ${activeWeapon.stats.kills}`);
-        }
+        }*/
 
         this.updateWeaponSlots();
     }
@@ -1011,7 +1054,7 @@ class UIManagerClass {
                                 "dual_template",
                                 { gun: getTranslatedString(definition.singleVariant as TranslationKeys) }
                             )
-                            : getTranslatedString(definition.idString as TranslationKeys)
+                            : getTranslatedString(("translationString" in definition ? definition.translationString : definition.idString) as TranslationKeys)
                     );
 
                     const isFists = definition.idString === "fists";
@@ -1038,7 +1081,7 @@ class UIManagerClass {
                         weaponImage = `url(./img/game/${definition.reskins?.includes(Game.modeName) ? Game.modeName : "shared"}/weapons/${frame}.svg)`;
                     }
 
-                    this._playSlotAnimation(container);
+                    if (!force) this._playSlotAnimation(container);
                     itemImage
                         .css({
                             "background-image": weaponImage,
@@ -1100,7 +1143,7 @@ class UIManagerClass {
 
         const folder = perkDef.category === PerkCategories.Halloween ? "halloween" : "shared",
             perkSrc = `./img/game/${folder}/perks/${perkDef.idString}.svg`,
-            lootBg = `./img/game/shared/loot/loot_background_${perkDef.idString === PerkIds.PlumpkinGamble ? PerkIds.PlumpkinGamble : "perk"}.svg`,
+            lootBg = `./img/game/shared/loot/loot_background_${perkDef.mechanical ? "mechanical_perk" : "perk"}.svg`,
             perkName = getTranslatedString(perkDef.idString as unknown as TranslationKeys);
 
         const { killMsgModal, inventoryMsg, interactMsg } = this.ui;
@@ -1122,11 +1165,51 @@ class UIManagerClass {
         }
 
         const container = this._perkSlots[index] ??= $<HTMLDivElement>(`#perk-slot-${index}`);
+
+        let _duration: number;
+        switch (true) {
+            case "duration" in perkDef: {
+                _duration = perkDef.duration;
+                break;
+            }
+            case "shieldRespawnTime" in perkDef: {
+                _duration = perkDef.shieldRespawnTime;
+                break;
+            }
+            case "highlightDuration" in perkDef: {
+                _duration = perkDef.highlightDuration;
+                break;
+            }
+            case "cooldown" in perkDef: {
+                _duration = perkDef.cooldown;
+                break;
+            }
+            default: {
+                _duration = (perkDef.updateInterval ?? 0);
+            }
+        }
+
         container.attr("data-idString", perkDef.idString);
-        container.children(".item-tooltip").html(`<strong>${perkName}</strong><br>${getTranslatedString(`${perkDef.idString}_desc` as TranslationKeys)}`);
+
+        // eww
+        container.children(".item-tooltip").html(
+            `<strong>${perkName}</strong><br>${getTranslatedString(
+                `${perkDef.idString}_desc` as TranslationKeys, {
+                    seconds: `${_duration / 1000}`
+        })}`);
+
         container.children(".item-image").attr("src", perkSrc);
         container.css("visibility", PerkManager.has(perkDef) ? "visible" : "hidden");
         if (container.hasClass("deactivated")) container.toggleClass("deactivated");
+
+        // if (perkDef.updateInterval === undefined) {
+        //     this._perkSlots[index]?.children(".item-timer").hide();
+        //     this._perkSlots[index]?.children(".item-timer-text").hide();
+        // }
+        // else {
+        //     this._perkSlots[index]?.children(".item-timer").show();
+        //     this._perkSlots[index]?.children(".item-timer-text").show();
+        // }
 
         container.css("outline", perkDef.noDrop || PerkManager.has(PerkIds.Infected) || Game.spectating ? "none" : "");
 
@@ -1306,7 +1389,7 @@ class UIManagerClass {
             ? getTranslatedString("kf_impact_of")
             : "";
         let weaponName: string | undefined;
-        const weapon = weaponPresent ? `${grenadeImpactKill}${(weaponName = getTranslatedString(weaponUsed.idString as TranslationKeys)) === weaponUsed.idString ? weaponUsed.name : weaponName}` : "";
+        const weapon = weaponPresent ? `${grenadeImpactKill}${(weaponName = getTranslatedString(("translationString" in weaponUsed && "lootAndKillfeedTranslationString" in weaponUsed ? weaponUsed.translationString : weaponUsed.idString) as TranslationKeys)) === weaponUsed.idString ? weaponUsed.name : weaponName}` : "";
 
         let victimText = this._getNameAndBadge(victimId);
         const attackerText = this._getNameAndBadge(attackerId);
@@ -1393,6 +1476,9 @@ class UIManagerClass {
                         feedMessage = getTranslatedString(event, { player: victimText });
                         break;
                     }
+                    case DamageSources.Disconnect:
+                        feedMessage = getTranslatedString("kf_disconnected", { player: victimText });
+                        break;
                 }
 
                 if (!feedMessage) {
@@ -1411,6 +1497,7 @@ class UIManagerClass {
                 const skullIcon = html`<img class="kill-icon" src="./img/misc/skull_icon.svg" alt="Finished off">`;
                 const bleedOutIcon = html`<img class="kill-icon" src="./img/misc/bleed_out.svg" alt="Bleed out">`;
                 const finallyKilledIcon = html`<img class="kill-icon" src="./img/misc/finally_killed.svg" alt="Finally killed">`;
+                const disconnectIcon = html`<img class="kill-icon" src="./img/misc/disconnect_icon.svg" alt="Disconnected">`;
 
                 const killstreakText = hasKillstreak
                     ? html`
@@ -1466,6 +1553,9 @@ class UIManagerClass {
                                 body = `${attackerText} ${killstreakText} ${finallyKilledIcon} ${victimText}`;
                                 break;
                         }
+                        break;
+                    case DamageSources.Disconnect:
+                        body = `${victimText} ${disconnectIcon}`;
                         break;
                 }
 
@@ -1531,6 +1621,7 @@ class UIManagerClass {
                 case DamageSources.Obstacle:
                 case DamageSources.BleedOut:
                 case DamageSources.FinallyKilled:
+                case DamageSources.Disconnect:
                     messageInner = getTranslatedString("kf_kl_dead");
                     break;
             }
