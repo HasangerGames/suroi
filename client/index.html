@@ -513,8 +513,13 @@
 
         <!-- Interact message -->
         <div id="interact-message" style="display: none">
-          <kbd id="interact-key"></kbd>
-          <span id="interact-text"></span>
+          <div id="interact-header">
+            <kbd id="interact-key"></kbd>
+            <span id="interact-text"></span>
+          </div>
+          <div id="weapon-comparison">
+            <div id="weapon-comparison-list"></div>
+          </div>
         </div>
 
         <!-- Inventory messages, active weapon ammo counters, health & adrenaline bar, & killstreak display -->
@@ -1034,6 +1039,18 @@
               <label>
                 <span class="setting-title" translation="settings_colored_weapon_slots">Colored weapon slots</span>
                 <input type="checkbox" id="toggle-colored-slots">
+              </label>
+            </div>
+            <div class="modal-item checkbox-setting">
+              <label>
+                <span class="setting-title" translation="settings_weapon_compare">Pickup weapon comparison</span>
+                <input type="checkbox" id="toggle-weapon-comparison">
+              </label>
+            </div>
+            <div class="modal-item checkbox-setting">
+              <label>
+                <span class="setting-title" translation="settings_weapon_compare_condensed">Condensed pickup stats</span>
+                <input type="checkbox" id="toggle-weapon-comparison-condensed">
               </label>
             </div>
             <div class="modal-item checkbox-setting">

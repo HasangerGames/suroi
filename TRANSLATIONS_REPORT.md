@@ -2,7 +2,7 @@
 
 This file is a report of all errors and missing keys in the translation files of this game.
 
-## 🇦🇱 Shqip (54% Complete) - ab.hjson
+## 🇦🇱 Shqip (53% Complete) - ab.hjson
 
 ### Invalid Keys
 
@@ -30,6 +30,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_record_res` is not defined
 - Key `settings_alt_texture_loading` is not defined
 - Key `settings_show_inout` is not defined
+- Key `settings_weapon_compare` is not defined
+- Key `settings_weapon_compare_condensed` is not defined
 - Key `settings_gyro_angle` is not defined
 - Key `settings_lock_joysticks` is not defined
 - Key `settings_switch_joysticks` is not defined
@@ -207,7 +209,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
 
-## 🇧🇷 Português (Brasil) (87% Complete) - br.hjson
+## 🇧🇷 Português (Brasil) (86% Complete) - br.hjson
 
 ### Invalid Keys
 
@@ -223,6 +225,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_blood_splatter` is not defined
 - Key `settings_cooler_weapon_gas` is not defined
 - Key `settings_record_res` is not defined
+- Key `settings_weapon_compare` is not defined
+- Key `settings_weapon_compare_condensed` is not defined
 - Key `settings_lock_joysticks` is not defined
 - Key `settings_switch_joysticks` is not defined
 - Key `settings_left_joystick_color` is not defined
@@ -273,7 +277,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `plumpkin_blessing` is not defined
 - Key `plumpkin_blessing_desc` is not defined
 
-## 🇨🇿 Čeština (56% Complete) - cz.hjson
+## 🇨🇿 Čeština (55% Complete) - cz.hjson
 
 ### Invalid Keys
 
@@ -304,6 +308,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_record_res` is not defined
 - Key `settings_alt_texture_loading` is not defined
 - Key `settings_show_inout` is not defined
+- Key `settings_weapon_compare` is not defined
+- Key `settings_weapon_compare_condensed` is not defined
 - Key `settings_gyro_angle` is not defined
 - Key `settings_lock_joysticks` is not defined
 - Key `settings_switch_joysticks` is not defined
@@ -469,7 +475,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
 
-## 🇩🇪 Deutsch (64% Complete) - de.hjson
+## 🇩🇪 Deutsch (63% Complete) - de.hjson
 
 ### Invalid Keys
 
@@ -492,6 +498,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_cooler_weapon_gas` is not defined
 - Key `settings_record_res` is not defined
 - Key `settings_show_inout` is not defined
+- Key `settings_weapon_compare` is not defined
+- Key `settings_weapon_compare_condensed` is not defined
 - Key `settings_gyro_angle` is not defined
 - Key `settings_lock_joysticks` is not defined
 - Key `settings_switch_joysticks` is not defined
@@ -640,7 +648,7 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### (No Undefined Keys)
 
-## 🇪🇸 Español (60% Complete) - es.hjson
+## 🇪🇸 Español (59% Complete) - es.hjson
 
 ### Invalid Keys
 
@@ -665,6 +673,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_record_res` is not defined
 - Key `settings_alt_texture_loading` is not defined
 - Key `settings_show_inout` is not defined
+- Key `settings_weapon_compare` is not defined
+- Key `settings_weapon_compare_condensed` is not defined
 - Key `settings_lock_joysticks` is not defined
 - Key `settings_switch_joysticks` is not defined
 - Key `settings_left_joystick_color` is not defined
@@ -820,7 +830,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
 
-## 🇪🇪 eesti (85% Complete) - et.hjson
+## 🇪🇪 eesti (83% Complete) - et.hjson
 
 ### Invalid Keys
 
@@ -985,6 +995,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_bullet_trail_bloom` is not defined
 - Key `settings_blood_splatter` is not defined
 - Key `settings_cooler_weapon_gas` is not defined
+- Key `settings_weapon_compare` is not defined
+- Key `settings_weapon_compare_condensed` is not defined
 - Key `settings_shake_to_reload` is not defined
 - Key `settings_shake_count` is not defined
 - Key `settings_shake_force` is not defined
@@ -1049,12 +1061,18 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
 
-## 🇮🇷 فارسی (97% Complete) - fa.hjson
+## 🇮🇷 فارسی (96% Complete) - fa.hjson
 
 ### (No Invalid Keys)
 
 ### Undefined Keys
 
+- Key `settings_explosion_shockwaves` is not defined
+- Key `settings_bullet_trail_bloom` is not defined
+- Key `settings_blood_splatter` is not defined
+- Key `settings_cooler_weapon_gas` is not defined
+- Key `settings_weapon_compare` is not defined
+- Key `settings_weapon_compare_condensed` is not defined
 - Key `kf_disconnected` is not defined
 - Key `plumpkin_shuffle` is not defined
 - Key `plumpkin_shuffle_desc` is not defined
@@ -1067,7 +1085,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `plumpkin_blessing` is not defined
 - Key `plumpkin_blessing_desc` is not defined
 
-## 🇫🇮 suomi (59% Complete) - fi.hjson
+## 🇫🇮 suomi (58% Complete) - fi.hjson
 
 ### Invalid Keys
 
@@ -1093,6 +1111,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_record_res` is not defined
 - Key `settings_alt_texture_loading` is not defined
 - Key `settings_show_inout` is not defined
+- Key `settings_weapon_compare` is not defined
+- Key `settings_weapon_compare_condensed` is not defined
 - Key `settings_gyro_angle` is not defined
 - Key `settings_lock_joysticks` is not defined
 - Key `settings_switch_joysticks` is not defined
@@ -1252,7 +1272,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
 
-## 🇫🇷 Français (89% Complete) - fr.hjson
+## 🇫🇷 Français (88% Complete) - fr.hjson
 
 ### Invalid Keys
 
@@ -1270,6 +1290,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_bullet_trail_bloom` is not defined
 - Key `settings_blood_splatter` is not defined
 - Key `settings_cooler_weapon_gas` is not defined
+- Key `settings_weapon_compare` is not defined
+- Key `settings_weapon_compare_condensed` is not defined
 - Key `settings_shake_to_reload` is not defined
 - Key `settings_shake_count` is not defined
 - Key `settings_shake_force` is not defined
@@ -1316,12 +1338,18 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overweight` is not defined
 - Key `overweight_desc` is not defined
 
-## 🇬🇷 Ελληνικά (97% Complete) - gr.hjson
+## 🇬🇷 Ελληνικά (96% Complete) - gr.hjson
 
 ### (No Invalid Keys)
 
 ### Undefined Keys
 
+- Key `settings_explosion_shockwaves` is not defined
+- Key `settings_bullet_trail_bloom` is not defined
+- Key `settings_blood_splatter` is not defined
+- Key `settings_cooler_weapon_gas` is not defined
+- Key `settings_weapon_compare` is not defined
+- Key `settings_weapon_compare_condensed` is not defined
 - Key `kf_disconnected` is not defined
 - Key `plumpkin_shuffle` is not defined
 - Key `plumpkin_shuffle_desc` is not defined
@@ -1334,7 +1362,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `plumpkin_blessing` is not defined
 - Key `plumpkin_blessing_desc` is not defined
 
-## 🇭🇰 🇲🇴 廣東話(香港/澳門) (55% Complete) - hk_mo.hjson
+## 🇭🇰 🇲🇴 廣東話(香港/澳門) (54% Complete) - hk_mo.hjson
 
 ### Invalid Keys
 
@@ -1367,6 +1395,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_record_res` is not defined
 - Key `settings_alt_texture_loading` is not defined
 - Key `settings_show_inout` is not defined
+- Key `settings_weapon_compare` is not defined
+- Key `settings_weapon_compare_condensed` is not defined
 - Key `settings_gyro_angle` is not defined
 - Key `settings_lock_joysticks` is not defined
 - Key `settings_switch_joysticks` is not defined
@@ -1534,7 +1564,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
 
-## 🇭🇺 Magyar (84% Complete) - hu.hjson
+## 🇭🇺 Magyar (83% Complete) - hu.hjson
 
 ### Invalid Keys
 
@@ -1547,6 +1577,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_bullet_trail_bloom` is not defined
 - Key `settings_blood_splatter` is not defined
 - Key `settings_cooler_weapon_gas` is not defined
+- Key `settings_weapon_compare` is not defined
+- Key `settings_weapon_compare_condensed` is not defined
 - Key `settings_shake_to_reload` is not defined
 - Key `settings_shake_count` is not defined
 - Key `settings_shake_force` is not defined
@@ -1613,7 +1645,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
 
-## 🇮🇹 Italiano (54% Complete) - it.hjson
+## 🇮🇹 Italiano (53% Complete) - it.hjson
 
 ### Invalid Keys
 
@@ -1658,6 +1690,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_record_res` is not defined
 - Key `settings_alt_texture_loading` is not defined
 - Key `settings_show_inout` is not defined
+- Key `settings_weapon_compare` is not defined
+- Key `settings_weapon_compare_condensed` is not defined
 - Key `settings_gyro_angle` is not defined
 - Key `settings_lock_joysticks` is not defined
 - Key `settings_switch_joysticks` is not defined
@@ -2073,8 +2107,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_bullet_trail_bloom` is not defined
 - Key `settings_blood_splatter` is not defined
 - Key `settings_cooler_weapon_gas` is not defined
+- Key `settings_weapon_compare` is not defined
+- Key `settings_weapon_compare_condensed` is not defined
 
-## 🇱🇹 Lietuvių (56% Complete) - lt.hjson
+## 🇱🇹 Lietuvių (55% Complete) - lt.hjson
 
 ### Invalid Keys
 
@@ -2105,6 +2141,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_record_res` is not defined
 - Key `settings_alt_texture_loading` is not defined
 - Key `settings_show_inout` is not defined
+- Key `settings_weapon_compare` is not defined
+- Key `settings_weapon_compare_condensed` is not defined
 - Key `settings_gyro_angle` is not defined
 - Key `settings_lock_joysticks` is not defined
 - Key `settings_switch_joysticks` is not defined
@@ -2270,7 +2308,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
 
-## 🇱🇻 Latviešu (56% Complete) - lv.hjson
+## 🇱🇻 Latviešu (55% Complete) - lv.hjson
 
 ### Invalid Keys
 
@@ -2301,6 +2339,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_record_res` is not defined
 - Key `settings_alt_texture_loading` is not defined
 - Key `settings_show_inout` is not defined
+- Key `settings_weapon_compare` is not defined
+- Key `settings_weapon_compare_condensed` is not defined
 - Key `settings_gyro_angle` is not defined
 - Key `settings_lock_joysticks` is not defined
 - Key `settings_switch_joysticks` is not defined
@@ -2466,7 +2506,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
 
-## 🇳🇱 Nederlands (93% Complete) - nl.hjson
+## 🇳🇱 Nederlands (91% Complete) - nl.hjson
 
 ### Invalid Keys
 
@@ -2478,6 +2518,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_bullet_trail_bloom` is not defined
 - Key `settings_blood_splatter` is not defined
 - Key `settings_cooler_weapon_gas` is not defined
+- Key `settings_weapon_compare` is not defined
+- Key `settings_weapon_compare_condensed` is not defined
 - Key `bindings_use_consumable vaccine_syringe` is not defined
 - Key `kf_disconnected` is not defined
 - Key `power_vest` is not defined
@@ -2509,7 +2551,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `plumpkin_blessing` is not defined
 - Key `plumpkin_blessing_desc` is not defined
 
-## 🇵🇱 Polski (59% Complete) - pl.hjson
+## 🇵🇱 Polski (58% Complete) - pl.hjson
 
 ### Invalid Keys
 
@@ -2535,6 +2577,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_record_res` is not defined
 - Key `settings_alt_texture_loading` is not defined
 - Key `settings_show_inout` is not defined
+- Key `settings_weapon_compare` is not defined
+- Key `settings_weapon_compare_condensed` is not defined
 - Key `settings_gyro_angle` is not defined
 - Key `settings_lock_joysticks` is not defined
 - Key `settings_switch_joysticks` is not defined
@@ -2864,7 +2908,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
 
-## 🇷🇴 Română (93% Complete) - ro.hjson
+## 🇷🇴 Română (91% Complete) - ro.hjson
 
 ### (No Invalid Keys)
 
@@ -2874,6 +2918,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_bullet_trail_bloom` is not defined
 - Key `settings_blood_splatter` is not defined
 - Key `settings_cooler_weapon_gas` is not defined
+- Key `settings_weapon_compare` is not defined
+- Key `settings_weapon_compare_condensed` is not defined
 - Key `bindings_use_consumable vaccine_syringe` is not defined
 - Key `kf_disconnected` is not defined
 - Key `power_vest` is not defined
@@ -2905,7 +2951,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `plumpkin_blessing` is not defined
 - Key `plumpkin_blessing_desc` is not defined
 
-## 🇷🇺 Русский (91% Complete) - ru.hjson
+## 🇷🇺 Русский (90% Complete) - ru.hjson
 
 ### Invalid Keys
 
@@ -2922,6 +2968,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_blood_splatter` is not defined
 - Key `settings_cooler_weapon_gas` is not defined
 - Key `settings_show_inout` is not defined
+- Key `settings_weapon_compare` is not defined
+- Key `settings_weapon_compare_condensed` is not defined
 - Key `settings_shake_to_reload` is not defined
 - Key `settings_shake_count` is not defined
 - Key `settings_shake_force` is not defined
@@ -2957,7 +3005,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `loot_baron_desc` is not defined
 - Key `baby_plumpkin_pie_desc` is not defined
 
-## 🇮🇳 தமிழ் (89% Complete) - ta.hjson
+## 🇮🇳 தமிழ் (87% Complete) - ta.hjson
 
 ### Invalid Keys
 
@@ -2973,6 +3021,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_bullet_trail_bloom` is not defined
 - Key `settings_blood_splatter` is not defined
 - Key `settings_cooler_weapon_gas` is not defined
+- Key `settings_weapon_compare` is not defined
+- Key `settings_weapon_compare_condensed` is not defined
 - Key `settings_shake_delay` is not defined
 - Key `interact_recorder_interactable` is not defined
 - Key `bindings_use_consumable vaccine_syringe` is not defined
@@ -3021,7 +3071,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `plumpkin_blessing_desc` is not defined
 - Key `experimental_forcefield_desc` is not defined
 
-## 🇹🇷 Turkısh (69% Complete) - tr.hjson
+## 🇹🇷 Turkısh (68% Complete) - tr.hjson
 
 ### Invalid Keys
 
@@ -3037,6 +3087,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_bullet_trail_bloom` is not defined
 - Key `settings_blood_splatter` is not defined
 - Key `settings_cooler_weapon_gas` is not defined
+- Key `settings_weapon_compare` is not defined
+- Key `settings_weapon_compare_condensed` is not defined
 - Key `settings_shake_to_reload` is not defined
 - Key `settings_shake_count` is not defined
 - Key `settings_shake_force` is not defined
@@ -3181,6 +3233,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_blood_splatter` is not defined
 - Key `settings_cooler_weapon_gas` is not defined
 - Key `settings_alt_texture_loading` is not defined
+- Key `settings_weapon_compare` is not defined
+- Key `settings_weapon_compare_condensed` is not defined
 - Key `settings_shake_to_reload` is not defined
 - Key `settings_shake_count` is not defined
 - Key `settings_shake_force` is not defined
@@ -3322,7 +3376,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
 
-## 🇻🇳 Tiếng Việt (85% Complete) - vi.hjson
+## 🇻🇳 Tiếng Việt (84% Complete) - vi.hjson
 
 ### Invalid Keys
 
@@ -3336,6 +3390,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_bullet_trail_bloom` is not defined
 - Key `settings_blood_splatter` is not defined
 - Key `settings_cooler_weapon_gas` is not defined
+- Key `settings_weapon_compare` is not defined
+- Key `settings_weapon_compare_condensed` is not defined
 - Key `settings_shake_to_reload` is not defined
 - Key `settings_shake_count` is not defined
 - Key `settings_shake_force` is not defined
@@ -3399,7 +3455,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
 
-## 🇨🇳 中文（简体） (100% Complete) - zh.hjson
+## 🇨🇳 中文（简体） (98% Complete) - zh.hjson
 
 ### Invalid Keys
 
@@ -3620,5 +3676,11 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### Undefined Keys
 
+- Key `settings_explosion_shockwaves` is not defined
+- Key `settings_bullet_trail_bloom` is not defined
+- Key `settings_blood_splatter` is not defined
+- Key `settings_cooler_weapon_gas` is not defined
+- Key `settings_weapon_compare` is not defined
+- Key `settings_weapon_compare_condensed` is not defined
 - Key `kf_disconnected` is not defined
 

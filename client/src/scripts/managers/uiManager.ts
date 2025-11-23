@@ -193,6 +193,8 @@ class UIManagerClass {
         interactMsg: $<HTMLDivElement>("#interact-message"),
         interactKey: $("#interact-key"),
         interactText: $<HTMLSpanElement>("#interact-text"),
+        weaponComparison: $<HTMLDivElement>("#weapon-comparison"),
+        weaponComparisonList: $<HTMLDivElement>("#weapon-comparison-list"),
 
         teamContainer: $<HTMLDivElement>("#team-container"),
         createTeamMenu: $<HTMLDivElement>("#create-team-menu"),

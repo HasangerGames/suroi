@@ -672,6 +672,22 @@
     }
 }
 
+#interact-message.has-comparison {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+
+    @media screen and (max-height: variables.$screen_small) {
+        gap: 4px;
+    }
+}
+
+#interact-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
 #interact-key {
     display: inline-flex;
     justify-content: center;
@@ -702,6 +718,88 @@
             height: 15px;
         }
     }
+}
+
+#weapon-comparison {
+    display: none;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 12px;
+    color: #f8f9fa;
+    align-self: flex-start;
+
+    @media screen and (max-width: 900px) and (max-height: 500px) {
+        font-size: 10px;
+    }
+}
+
+#interact-message.has-comparison #weapon-comparison {
+    display: flex;
+}
+
+#interact-message.inspect-mode {
+    align-items: flex-start;
+}
+
+.weapon-comparison-line {
+    display: grid;
+    grid-template-columns: minmax(110px, max-content) 1fr;
+    align-items: center;
+    gap: 12px;
+}
+
+.weapon-comparison-line--condensed {
+    grid-template-columns: minmax(110px, max-content) max-content;
+}
+
+.weapon-comparison-label {
+    text-transform: uppercase;
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    white-space: pre-line;
+}
+
+.weapon-comparison-values {
+    display: grid;
+    grid-template-columns: minmax(70px, max-content) auto minmax(70px, max-content);
+    align-items: center;
+    gap: 14px;
+    font-variant-numeric: tabular-nums;
+}
+
+.weapon-comparison-values--inspect {
+    grid-template-columns: minmax(70px, max-content);
+}
+
+.weapon-comparison-values--condensed {
+    grid-template-columns: max-content;
+}
+
+.weapon-comparison-arrow {
+    font-weight: 700;
+    &.weapon-comparison-arrow--better {
+        color: #3bd671;
+    }
+
+    &.weapon-comparison-arrow--worse {
+        color: #ff5b5b;
+    }
+
+    &.weapon-comparison-arrow--neutral {
+        color: #c4c4c4;
+    }
+}
+
+.weapon-comparison-original,
+.weapon-comparison-new {
+    white-space: pre-line;
+}
+
+.weapon-comparison-diff {
+    &.weapon-comparison-diff--better { color: #3bd671; }
+    &.weapon-comparison-diff--worse { color: #ff5b5b; }
+    &.weapon-comparison-diff--neutral { color: #c4c4c4; }
+    &.weapon-comparison-diff--inspect { color: #f8f9fa; }
 }
 
 #interact-text {

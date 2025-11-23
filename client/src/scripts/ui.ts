@@ -1665,6 +1665,15 @@ export async function setUpUI(): Promise<void> {
         element.checked = GameConsole.getBuiltInCVar("cv_weapon_slot_style") === "colored";
     }
 
+    addCheckboxListener(
+        "#toggle-weapon-comparison",
+        "cv_weapon_compare"
+    );
+    addCheckboxListener(
+        "#toggle-weapon-comparison-condensed",
+        "cv_weapon_compare_condensed"
+    );
+
     // Show a warning if hardware acceleration is not available/supported
     if (!isWebGLSupported(true)) {
         $("#splash-hw-acceleration-warning").show();

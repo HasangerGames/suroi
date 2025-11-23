@@ -135,6 +135,8 @@ export const CVarCasters = Object.freeze({
     cv_camera_shake_fx: Casters.toBoolean,
     cv_killfeed_style: Casters.generateUnionCaster(["icon", "text"]),
     cv_weapon_slot_style: Casters.generateUnionCaster(["simple", "colored"]),
+    cv_weapon_compare: Casters.toBoolean,
+    cv_weapon_compare_condensed: Casters.toBoolean,
     cv_movement_smoothing: Casters.toBoolean,
     cv_responsive_rotation: Casters.toBoolean,
 
@@ -270,6 +272,8 @@ export const defaultClientCVars: SimpleCVarMapping = Object.freeze({
     cv_camera_shake_fx: true,
     cv_killfeed_style: "text",
     cv_weapon_slot_style: "colored",
+    cv_weapon_compare: false,
+    cv_weapon_compare_condensed: false,
     cv_movement_smoothing: true,
     cv_responsive_rotation: true,
 

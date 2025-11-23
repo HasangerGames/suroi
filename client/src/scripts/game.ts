@@ -2,8 +2,12 @@ import { InputActions, InventoryMessages, Layer, ObjectCategory, TeamMode, ZInde
 import { Badges, type BadgeDefinition } from "@common/definitions/badges";
 import { Emotes } from "@common/definitions/emotes";
 import { ArmorType } from "@common/definitions/items/armors";
-import { type DualGunNarrowing } from "@common/definitions/items/guns";
+import { Ammos } from "@common/definitions/items/ammos";
+import { Explosions } from "@common/definitions/explosions";
+import { type DualGunNarrowing, type GunDefinition } from "@common/definitions/items/guns";
+import { type MeleeDefinition } from "@common/definitions/items/melees";
 import { Skins } from "@common/definitions/items/skins";
+import { type LootDefinition, type WeaponDefinition } from "@common/definitions/loots";
 import type { ColorKeys, ModeDefinition, ModeName } from "@common/definitions/modes";
 import { Modes } from "@common/definitions/modes";
 import type { JoinedData } from "@common/packets/joinedPacket";
@@ -91,6 +95,458 @@ type ObjectMapping = {
 };
 
 type Colors = Record<ColorKeys | "background" | "ghillie", Color>;
+
+type ComparisonTrend = "better" | "worse" | "neutral";
+
+interface WeaponComparisonLine {
+    readonly label: string;
+    current: string;
+    next: string;
+    trend: ComparisonTrend;
+}
+
+interface CondensedComparisonLine {
+    readonly label: string;
+    readonly value: string;
+    readonly trend: ComparisonTrend;
+}
+
+interface WeaponComparisonPayload {
+    readonly key: string;
+    readonly lines: WeaponComparisonLine[];
+    readonly mode: "compare" | "inspect";
+    readonly condensedLines?: CondensedComparisonLine[];
+}
+
+interface CondensedDiffInput {
+    readonly label: string;
+    readonly current?: number;
+    readonly next?: number;
+    readonly higherIsBetter?: boolean;
+    readonly formatter?: (value: number) => string;
+}
+
+interface WeaponComparisonBuilder<T extends WeaponDefinition> {
+    readonly compare: (current: T, next: T) => WeaponComparisonLine[];
+    readonly condensedCompare: (current: T, next: T) => CondensedComparisonLine[];
+    readonly condensedInspect: (definition: T) => CondensedComparisonLine[];
+}
+
+const COMPARISON_EPSILON = 1e-3;
+
+const fmtNum = (v: number, d = 2) => {
+    const fixed = v.toFixed(d);
+    return fixed.replace(/\.0+$/, "").replace(/(\.\d*?)0+$/, "$1");
+};
+const fmtSec = (s: number) => `${fmtNum(s, 2)}s`;
+const fmtDeg = (v: number) => `${fmtNum(v, 2)}°`;
+const fmtMult = (v: number) => `${fmtNum(v, 2)}x`;
+const fmtRate = (v: number) => `${fmtNum(v, 2)}/s`;
+const fmtOptional = (v: number | undefined, f: (n: number) => string) => (v === undefined ? "—" : f(v));
+
+function determineTrend(current?: number, next?: number, higherIsBetter = true): ComparisonTrend {
+    if (current === undefined || next === undefined) return "neutral";
+    const delta = next - current;
+    if (Math.abs(delta) < COMPARISON_EPSILON) return "neutral";
+    const improved = higherIsBetter ? delta > 0 : delta < 0;
+    return improved ? "better" : "worse";
+}
+
+function createComparisonLine(
+    label: string,
+    current?: number,
+    next?: number,
+    higherIsBetter = true,
+    formatter: (value: number) => string = v => fmtNum(v, 2)
+): WeaponComparisonLine | undefined {
+    if (current === undefined && next === undefined) return undefined;
+    return {
+        label,
+        current: current === undefined ? "—" : formatter(current),
+        next: next === undefined ? "—" : formatter(next),
+        trend: determineTrend(current, next, higherIsBetter)
+    };
+}
+
+function createCondensedDiffLine(
+    label: string,
+    current?: number,
+    next?: number,
+    higherIsBetter = true,
+    formatter: (value: number) => string = v => fmtNum(v, 2)
+): CondensedComparisonLine | undefined {
+    if (current === undefined || next === undefined) return undefined;
+    const trend = determineTrend(current, next, higherIsBetter);
+    const delta = Math.abs(next - current);
+    const magnitude = formatter(trend === "neutral" ? 0 : delta);
+    const sign = trend === "neutral" ? "=" : trend === "better" ? "+" : "-";
+    return { label, value: `${sign}${magnitude}`, trend };
+}
+
+function buildCondensedDiffLines(inputs: CondensedDiffInput[]): CondensedComparisonLine[] {
+    return inputs
+        .map(({ label, current, next, higherIsBetter, formatter }) =>
+            createCondensedDiffLine(label, current, next, higherIsBetter, formatter)
+        )
+        .filter(Boolean) as CondensedComparisonLine[];
+}
+
+const createCondensedValueLine = (label: string, value: string): CondensedComparisonLine => ({
+    label,
+    value,
+    trend: "neutral"
+});
+
+function buildSpecialCondensedLine(
+    label: string,
+    currentTags: string[],
+    nextTags: string[]
+): CondensedComparisonLine | undefined {
+    if (!currentTags.length && !nextTags.length) return undefined;
+
+    const nextExtras = nextTags.filter(tag => !currentTags.includes(tag));
+    const currentExtras = currentTags.filter(tag => !nextTags.includes(tag));
+
+    let trend: ComparisonTrend = "neutral";
+    if (nextExtras.length && !currentExtras.length) trend = "better";
+    else if (!nextExtras.length && currentExtras.length) trend = "worse";
+
+    const displayValue = nextTags.length ? formatTagList(nextTags) : formatTagList(currentTags);
+    return { label, value: displayValue, trend };
+}
+
+function getGunDamage(def: GunDefinition): number {
+    return def.ballistics.damage * (def.bulletCount ?? 1);
+}
+
+function getExplosionDamage(def: GunDefinition): number | undefined {
+    const ref = def.ballistics.onHitExplosion;
+    if (!ref) return undefined;
+    return Explosions.fromStringSafe(ref)?.damage;
+}
+
+function getGunReloadTime(def: GunDefinition): number | undefined {
+    return def.reloadFullOnEmpty ? def.fullReloadTime : def.reloadTime;
+}
+
+function getGunFireRate(def: GunDefinition): number | undefined {
+    if (def.fireDelay <= 0) return undefined;
+    return 1000 / def.fireDelay;
+}
+
+function getGunDPS(def: GunDefinition): number | undefined {
+    const rate = getGunFireRate(def);
+    return rate === undefined ? undefined : getGunDamage(def) * rate;
+}
+
+function getGunTotalDPS(def: GunDefinition): number | undefined {
+    const rate = getGunFireRate(def);
+    if (rate === undefined) return undefined;
+    const explode = getExplosionDamage(def) ?? 0;
+    return (getGunDamage(def) + explode) * rate;
+}
+
+function getGunCondensedLines(current: GunDefinition, next: GunDefinition): CondensedComparisonLine[] {
+    const explosionCurrent = getExplosionDamage(current) ?? 0;
+    const explosionNext = getExplosionDamage(next) ?? 0;
+
+    const lines = buildCondensedDiffLines([
+        { label: "DPS", current: getGunTotalDPS(current), next: getGunTotalDPS(next), formatter: v => fmtNum(v, 1) },
+        { label: "Reload", current: getGunReloadTime(current), next: getGunReloadTime(next), higherIsBetter: false, formatter: fmtSec },
+        { label: "Spread", current: current.shotSpread, next: next.shotSpread, higherIsBetter: false, formatter: fmtDeg }
+    ]);
+
+    if (explosionCurrent || explosionNext) {
+        const dpsLine = lines.find(l => l.label === "DPS");
+        if (dpsLine) dpsLine.trend = "neutral";
+    }
+
+    const specialCondensed = buildSpecialCondensedLine("Special", getGunSpecialTags(current), getGunSpecialTags(next));
+    if (specialCondensed) lines.push(specialCondensed);
+
+    return lines;
+}
+
+function getGunCondensedInspectLines(def: GunDefinition): CondensedComparisonLine[] {
+    const result = [
+        createCondensedValueLine("DPS", fmtOptional(getGunTotalDPS(def), v => fmtNum(v, 1))),
+        createCondensedValueLine("Reload", fmtOptional(getGunReloadTime(def), fmtSec)),
+        createCondensedValueLine("Spread", fmtDeg(def.shotSpread))
+    ];
+    const specialTags = getGunSpecialTags(def);
+    if (specialTags.length) {
+        result.push({ label: "Special", value: formatTagList(specialTags), trend: "neutral" });
+    }
+    return result;
+}
+
+function getMeleeCondensedLines(current: MeleeDefinition, next: MeleeDefinition): CondensedComparisonLine[] {
+    const lines = buildCondensedDiffLines([
+        { label: "Damage", current: current.damage, next: next.damage, formatter: v => fmtNum(v, 0) },
+        {
+            label: "Cooldown",
+            current: current.cooldown,
+            next: next.cooldown,
+            higherIsBetter: false,
+            formatter: v => fmtSec(v / 1000)
+        }
+    ]);
+
+    const specialCondensed = buildSpecialCondensedLine("Special", current.specialTags ?? [], next.specialTags ?? []);
+    if (specialCondensed) lines.push(specialCondensed);
+    return lines;
+}
+
+function getMeleeCondensedInspectLines(def: MeleeDefinition): CondensedComparisonLine[] {
+    const result = [
+        createCondensedValueLine("Damage", fmtNum(def.damage, 0)),
+        createCondensedValueLine("Cooldown", fmtSec(def.cooldown / 1000))
+    ];
+    const tags = def.specialTags ?? [];
+    if (tags.length) result.push(createCondensedValueLine("Special", formatTagList(tags)));
+    return result;
+}
+
+function formatDamageValue(base?: number, explosion?: number): string {
+    if (base === undefined) return "—";
+    const baseText = fmtNum(base, 1);
+    if (!explosion) return baseText;
+    return `${baseText} (+${fmtNum(explosion, 1)})`;
+}
+
+function formatDpsValue(base?: number, total?: number): string {
+    if (base === undefined) return "—";
+    const baseText = fmtNum(base, 1);
+    if (total === undefined || Math.abs(total - base) < COMPARISON_EPSILON) return baseText;
+    return `${baseText} (${fmtNum(total, 1)})`;
+}
+
+function getGunSpecialTags(def: GunDefinition): string[] {
+    const tags = new Set<string>();
+    const { ballistics } = def;
+
+    if (ballistics.onHitExplosion) tags.add("Explosive");
+    if (ballistics.shrapnel) tags.add("Shrapnel");
+    if (ballistics.enemySpeedMultiplier) tags.add("Slow");
+    if (ballistics.teammateHeal) tags.add("Heals");
+    if (ballistics.removePerk) tags.add("Perk Breaker");
+    if (def.summonAirdrop) tags.add("Airdrop");
+    if (def.infiniteAmmo) tags.add("Inf Ammo");
+    if (def.consistentPatterning) tags.add("Consistent Patterning");
+    const ammoDef = Ammos.fromStringSafe(def.ammoType);
+    if (ammoDef?.ephemeral) tags.add("Inf Ammo");
+
+    return [...tags];
+}
+
+function formatTagList(tags: string[], perLine = 2): string {
+    if (!tags.length) return "None";
+    const lines: string[] = [];
+    for (let i = 0; i < tags.length; i += perLine) {
+        lines.push(tags.slice(i, i + perLine).join(", "));
+    }
+    return lines.join("\n");
+}
+
+function createSpecialComparisonLine(label: string, current: string[], next: string[]): WeaponComparisonLine | undefined {
+    if (!current.length && !next.length) return undefined;
+
+    const nextExtras = next.filter(t => !current.includes(t));
+    const currentExtras = current.filter(t => !next.includes(t));
+
+    let trend: ComparisonTrend = "neutral";
+    if (nextExtras.length && !currentExtras.length) trend = "better";
+    else if (!nextExtras.length && currentExtras.length) trend = "worse";
+
+    return {
+        label,
+        current: formatTagList(current),
+        next: formatTagList(next),
+        trend
+    };
+}
+
+function compareGunDefinitions(current: GunDefinition, next: GunDefinition): WeaponComparisonLine[] {
+    const reloadCurrent = getGunReloadTime(current);
+    const reloadNext = getGunReloadTime(next);
+    const currentSpecial = getGunSpecialTags(current);
+    const nextSpecial = getGunSpecialTags(next);
+    const currentExplosionDamage = getExplosionDamage(current);
+    const nextExplosionDamage = getExplosionDamage(next);
+    const currentTotalDps = getGunTotalDPS(current);
+    const nextTotalDps = getGunTotalDPS(next);
+
+    const lines = [
+        createComparisonLine("Damage", getGunDamage(current), getGunDamage(next), true, v => fmtNum(v, 1)),
+        createComparisonLine("DPS", getGunDPS(current), getGunDPS(next), true, v => fmtNum(v, 1)),
+        createComparisonLine("Fire Rate", getGunFireRate(current), getGunFireRate(next), true, fmtRate),
+        createComparisonLine("Reload", reloadCurrent, reloadNext, false, fmtSec),
+        createComparisonLine("Spread", current.shotSpread, next.shotSpread, false, fmtDeg),
+        createComparisonLine("Move Spread", current.moveSpread, next.moveSpread, false, fmtDeg),
+        createComparisonLine("Move Speed", current.speedMultiplier, next.speedMultiplier, true, fmtMult),
+        createComparisonLine("Range", current.ballistics.range, next.ballistics.range, true, v => fmtNum(v, 0)),
+        createComparisonLine("Capacity", current.capacity, next.capacity, true, v => fmtNum(v, 0)),
+        createSpecialComparisonLine("Special", currentSpecial, nextSpecial)
+    ].filter(Boolean) as WeaponComparisonLine[];
+
+    const damageLine = lines.find(l => l.label === "Damage");
+    if (damageLine) {
+        damageLine.current = formatDamageValue(getGunDamage(current), currentExplosionDamage);
+        damageLine.next = formatDamageValue(getGunDamage(next), nextExplosionDamage);
+        if (currentExplosionDamage || nextExplosionDamage) damageLine.trend = "neutral";
+    }
+
+    const dpsLine = lines.find(l => l.label === "DPS");
+    if (dpsLine) {
+        dpsLine.current = formatDpsValue(getGunDPS(current), currentTotalDps);
+        dpsLine.next = formatDpsValue(getGunDPS(next), nextTotalDps);
+        if (currentExplosionDamage || nextExplosionDamage) dpsLine.trend = "neutral";
+    }
+
+    return lines;
+}
+
+function compareMeleeDefinitions(current: MeleeDefinition, next: MeleeDefinition): WeaponComparisonLine[] {
+    return [
+        createComparisonLine("Damage", current.damage, next.damage, true, v => fmtNum(v, 0)),
+        createComparisonLine("Cooldown", current.cooldown, next.cooldown, false, v => fmtSec(v / 1000)),
+        createComparisonLine("Obstacle\nDMG Multi", current.obstacleMultiplier, next.obstacleMultiplier, true, v => fmtNum(v, 2)),
+        createComparisonLine("Reach", current.radius, next.radius, true, v => fmtNum(v, 2)),
+        createComparisonLine("Speed", current.speedMultiplier, next.speedMultiplier, true, v => fmtNum(v, 2))
+    ].filter(Boolean) as WeaponComparisonLine[];
+}
+
+function convertToInspectionLines(lines: WeaponComparisonLine[]): WeaponComparisonLine[] {
+    return lines.map(({ label, next }) => ({
+        label,
+        current: "",
+        next,
+        trend: "neutral"
+    }));
+}
+
+function buildWeaponComparisonPayload<T extends WeaponDefinition>(
+    loot: T,
+    current: T | undefined,
+    condensedEnabled: boolean,
+    builder: WeaponComparisonBuilder<T>
+): WeaponComparisonPayload {
+    const comparing = current !== undefined;
+    const lines = builder.compare(current ?? loot, loot);
+    const mode: "compare" | "inspect" = comparing ? "compare" : "inspect";
+
+    return {
+        key: `${condensedEnabled ? "condensed" : "full"}:${comparing ? `${current.idString}->` : ""}${loot.idString}`,
+        lines: comparing ? lines : convertToInspectionLines(lines),
+        mode,
+        condensedLines: condensedEnabled
+            ? comparing
+                ? builder.condensedCompare(current, loot)
+                : builder.condensedInspect(loot)
+            : undefined
+    };
+}
+
+function getWeaponComparisonPayload(
+    lootDefinition: LootDefinition | undefined,
+    currentWeapon: WeaponDefinition | undefined,
+    enabled: boolean,
+    condensedEnabled: boolean
+): WeaponComparisonPayload | undefined {
+    if (!enabled || !lootDefinition) return undefined;
+    if (lootDefinition.defType !== DefinitionType.Gun && lootDefinition.defType !== DefinitionType.Melee) return undefined;
+
+    const current = currentWeapon?.defType === lootDefinition.defType ? currentWeapon : undefined;
+
+    const payload =
+        lootDefinition.defType === DefinitionType.Gun
+            ? buildWeaponComparisonPayload(
+                  lootDefinition as GunDefinition,
+                  current as GunDefinition | undefined,
+                  condensedEnabled,
+                  {
+                      compare: compareGunDefinitions,
+                      condensedCompare: getGunCondensedLines,
+                      condensedInspect: getGunCondensedInspectLines
+                  }
+              )
+            : buildWeaponComparisonPayload(
+                  lootDefinition as MeleeDefinition,
+                  current as MeleeDefinition | undefined,
+                  condensedEnabled,
+                  {
+                      compare: compareMeleeDefinitions,
+                      condensedCompare: getMeleeCondensedLines,
+                      condensedInspect: getMeleeCondensedInspectLines
+                  }
+              );
+
+    return payload.lines.length ? payload : undefined;
+}
+
+let lastRenderedComparisonKey: string | undefined;
+
+function renderWeaponComparison(payload?: WeaponComparisonPayload): void {
+    const { weaponComparisonList, interactMsg } = UIManager.ui;
+    const payloadKey = payload ? `${payload.mode}:${payload.key}` : undefined;
+
+    if (payloadKey === lastRenderedComparisonKey) return;
+    lastRenderedComparisonKey = payloadKey;
+
+    if (!payload || (!payload.lines.length && !payload.condensedLines?.length)) {
+        interactMsg.removeClass("has-comparison inspect-mode");
+        weaponComparisonList.empty();
+        return;
+    }
+
+    const { lines, mode, condensedLines } = payload;
+
+    interactMsg.addClass("has-comparison");
+    interactMsg.toggleClass("inspect-mode", mode === "inspect");
+    weaponComparisonList.empty();
+
+    if (condensedLines?.length) {
+        for (const line of condensedLines) {
+            const row = $("<div>").addClass("weapon-comparison-line weapon-comparison-line--condensed");
+            $("<span>").addClass("weapon-comparison-label").text(line.label).appendTo(row);
+
+            const values = $("<div>")
+                .addClass("weapon-comparison-values weapon-comparison-values--condensed")
+                .appendTo(row);
+
+            $("<span>")
+                .addClass(
+                    `weapon-comparison-diff weapon-comparison-diff--${
+                        mode === "compare" ? line.trend : "neutral"
+                    }${mode === "inspect" ? " weapon-comparison-diff--inspect" : ""}`
+                )
+                .text(line.value)
+                .appendTo(values);
+
+            weaponComparisonList.append(row);
+        }
+        return;
+    }
+
+    for (const line of lines) {
+        const row = $("<div>").addClass("weapon-comparison-line");
+        $("<span>").addClass("weapon-comparison-label").text(line.label).appendTo(row);
+
+        const values = $("<div>").addClass("weapon-comparison-values").appendTo(row);
+
+        if (mode === "inspect") {
+            values.addClass("weapon-comparison-values--inspect");
+            $("<span>").addClass("weapon-comparison-new").text(line.next ?? "—").appendTo(values);
+        } else {
+            $("<span>").addClass("weapon-comparison-original").text(line.current ?? "—").appendTo(values);
+            $("<span>").addClass(`weapon-comparison-arrow weapon-comparison-arrow--${line.trend}`).text("→").appendTo(values);
+            $("<span>").addClass("weapon-comparison-new").text(line.next ?? "—").appendTo(values);
+        }
+
+        weaponComparisonList.append(row);
+    }
+}
+
 
 export const Game = new (class Game {
     private _socket?: WebSocket;
@@ -974,6 +1430,7 @@ export const Game = new (class Game {
             isAction?: boolean
             bind?: string
             canInteract?: boolean
+            comparisonKey?: string
         } = {};
 
         /**
@@ -1165,13 +1622,23 @@ export const Game = new (class Game {
             const canInteract = interactable.object !== undefined;
 
             const bind: string | undefined = InputManager.binds.getInputsBoundToAction(object === undefined ? "cancel_action" : "interact")[0];
+            const lootDefinition = object?.isLoot ? object.definition : undefined;
+            const activeInventoryWeapon = UIManager.inventory.weapons[UIManager.inventory.activeWeaponIndex]?.definition;
+            const comparisonPayload = getWeaponComparisonPayload(
+                lootDefinition,
+                activeInventoryWeapon,
+                GameConsole.getBuiltInCVar("cv_weapon_compare"),
+                GameConsole.getBuiltInCVar("cv_weapon_compare_condensed")
+            );
+            const comparisonKey = comparisonPayload ? `${comparisonPayload.mode}:${comparisonPayload.key}` : undefined;
 
             const differences = {
                 object: cache.object?.id !== object?.id,
                 offset: cache.offset !== offset,
                 isAction: cache.isAction !== isAction,
                 bind: cache.bind !== bind,
-                canInteract: cache.canInteract !== canInteract
+                canInteract: cache.canInteract !== canInteract,
+                comparison: cache.comparisonKey !== comparisonKey
             };
 
             if (differences.bind) bindChangeAcknowledged = false;
@@ -1182,6 +1649,7 @@ export const Game = new (class Game {
                 || differences.isAction
                 || differences.bind
                 || differences.canInteract
+                || differences.comparison
             ) {
                 // Cache miss, rerender
                 cache.object = object;
@@ -1189,13 +1657,14 @@ export const Game = new (class Game {
                 cache.isAction = isAction;
                 cache.bind = bind;
                 cache.canInteract = canInteract;
+                cache.comparisonKey = comparisonKey;
 
                 const {
                     interactKey,
                     interactMsg,
                     interactText
                 } = UIManager.ui;
-                const type = object?.isLoot ? object.definition.defType : undefined;
+                const type = lootDefinition?.defType;
 
                 // Update interact message
                 if (object !== undefined || (isAction && showCancel)) {
@@ -1271,6 +1740,8 @@ export const Game = new (class Game {
                 } else {
                    if (!UI_DEBUG_MODE) interactMsg.hide();
                 }
+
+                renderWeaponComparison(comparisonPayload);
 
                 // Mobile stuff
                 if (InputManager.isMobile && canInteract) {

@@ -92,6 +92,8 @@
 "settings_hide_emotes": "Hide emotes"
 "settings_text_killfeed": "Text-based killfeed"
 "settings_colored_weapon_slots": "Colored weapon slots"
+"settings_weapon_compare": "Pickup weapon comparison"
+"settings_weapon_compare_condensed": "Condensed pickup stats"
 "settings_scope_looping": "Loop scope selection"
 "settings_draw_hud": "Draw HUD"
 "settings_autopickup": "Enable autopickup"
