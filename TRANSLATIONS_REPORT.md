@@ -3217,164 +3217,237 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
 
-## 🇹🇼 中文（繁體） (65% Complete) - tw.hjson
+## 🇹🇼 中文（繁體） (98% Complete) - tw.hjson
 
 ### Invalid Keys
 
+- Key `msg_lost_connection` is not a valid key
 - Key `create_team_waiting` is not a valid key
-- Key `m16a4` is not a valid key
+- Key `developr_vest` is not a valid key
+- Key `destroyer_of_worlds` is not a valid key
+- Key `deathray` is not a valid key
+- Key `C4` is not a valid key
+- Key `emote_happy_face` is not a valid key
+- Key `emote_sad_face` is not a valid key
+- Key `emote_thumbs_up` is not a valid key
+- Key `emote_thumbs_down` is not a valid key
+- Key `emote_wave` is not a valid key
+- Key `emote_disappointed_face` is not a valid key
+- Key `emote_sobbing_face` is not a valid key
+- Key `emote_angry_face` is not a valid key
+- Key `emote_heart_face` is not a valid key
+- Key `emote_flushed_face` is not a valid key
+- Key `emote_joyful_face` is not a valid key
+- Key `emote_cool_face` is not a valid key
+- Key `emote_upside_down_face` is not a valid key
+- Key `emote_picasso_face` is not a valid key
+- Key `emote_alien` is not a valid key
+- Key `emote_headshot` is not a valid key
+- Key `emote_panned` is not a valid key
+- Key `emote_dab` is not a valid key
+- Key `emote_devil_face` is not a valid key
+- Key `emote_bandaged_face` is not a valid key
+- Key `emote_cold_face` is not a valid key
+- Key `emote_thinking_face` is not a valid key
+- Key `emote_nervous_face` is not a valid key
+- Key `emote_sweating_face` is not a valid key
+- Key `emote_greedy_face` is not a valid key
+- Key `emote_creepy_clown` is not a valid key
+- Key `emote_lying_face` is not a valid key
+- Key `emote_nerd_face` is not a valid key
+- Key `emote_side_eye_face` is not a valid key
+- Key `emote_man_face` is not a valid key
+- Key `emote_satisfied_face` is not a valid key
+- Key `emote_hot_face` is not a valid key
+- Key `emote_blindfolded_face` is not a valid key
+- Key `emote_blindfolded` is not a valid key
+- Key `emote_melting_face` is not a valid key
+- Key `emote_grimacing_face` is not a valid key
+- Key `emote_vomiting_face` is not a valid key
+- Key `emote_screaming_face` is not a valid key
+- Key `emote_pleading_face` is not a valid key
+- Key `emote_sad_smiling_face` is not a valid key
+- Key `emote_triumphant_face` is not a valid key
+- Key `emote_questioning_face` is not a valid key
+- Key `emote_shrugging_face` is not a valid key
+- Key `emote_facepalm` is not a valid key
+- Key `emote_smirking_face` is not a valid key
+- Key `emote_blushing_face` is not a valid key
+- Key `emote_saluting_face` is not a valid key
+- Key `emote_neutral_face` is not a valid key
+- Key `emote_relieved_face` is not a valid key
+- Key `emote_monocle_face` is not a valid key
+- Key `emote_partying_face` is not a valid key
+- Key `emote_shushing_face` is not a valid key
+- Key `emote_sighing_face` is not a valid key
+- Key `emote_yawning_face` is not a valid key
+- Key `emote_frustrated_face` is not a valid key
+- Key `emote_thousand_yard_stare` is not a valid key
+- Key `emote_weary_face` is not a valid key
+- Key `emote_pensive_face` is not a valid key
+- Key `emote_zipper_mouth_face` is not a valid key
+- Key `emote_zombie_face` is not a valid key
+- Key `emote_question_mark` is not a valid key
+- Key `emote_team_=_ban` is not a valid key
+- Key `emote_hack_=_ban` is not a valid key
+- Key `emote_gg` is not a valid key
+- Key `emote_ez` is not a valid key
+- Key `emote_hi5` is not a valid key
+- Key `emote_oof` is not a valid key
+- Key `emote_real` is not a valid key
+- Key `emote_fake` is not a valid key
+- Key `emote_colon_three` is not a valid key
+- Key `emote_lag` is not a valid key
+- Key `emote_troll_face` is not a valid key
+- Key `emote_clueless` is not a valid key
+- Key `emote_pog` is not a valid key
+- Key `emote_froog` is not a valid key
+- Key `emote_bleh` is not a valid key
+- Key `emote_muller` is not a valid key
+- Key `emote_suroi_general_chat` is not a valid key
+- Key `emote_rip` is not a valid key
+- Key `emote_leosmug` is not a valid key
+- Key `emote_socks` is not a valid key
+- Key `emote_archimedes` is not a valid key
+- Key `emote_awhhmahgawd` is not a valid key
+- Key `emote_boykisser` is not a valid key
+- Key `emote_grr` is not a valid key
+- Key `emote_are_you_sure` is not a valid key
+- Key `emote_suroi_logo` is not a valid key
+- Key `emote_aegis_logo` is not a valid key
+- Key `emote_flint_logo` is not a valid key
+- Key `emote_nsd_logo` is not a valid key
+- Key `emote_duel` is not a valid key
+- Key `emote_skull` is not a valid key
+- Key `emote_chicken_dinner` is not a valid key
+- Key `emote_trophy` is not a valid key
+- Key `emote_fire` is not a valid key
+- Key `emote_heart` is not a valid key
+- Key `emote_penguin` is not a valid key
+- Key `emote_squid` is not a valid key
+- Key `emote_eagle` is not a valid key
+- Key `emote_whale` is not a valid key
+- Key `emote_carrot` is not a valid key
+- Key `emote_egg` is not a valid key
+- Key `emote_wilted_rose` is not a valid key
+- Key `emote_plumpkin` is not a valid key
+- Key `emote_leek` is not a valid key
+- Key `emote_tomato` is not a valid key
+- Key `emote_logged` is not a valid key
+- Key `emote_sun_and_moon` is not a valid key
+- Key `developr_swag` is not a valid key
+- Key `designr_swag` is not a valid key
+- Key `sound_designr_swag` is not a valid key
+- Key `hazel_jumpsuit` is not a valid key
+- Key `the_amateur` is not a valid key
+- Key `the_pro` is not a valid key
+- Key `forest_camo` is not a valid key
+- Key `desert_camo` is not a valid key
+- Key `arctic_camo` is not a valid key
+- Key `bloodlust` is not a valid key
+- Key `red_tomato` is not a valid key
+- Key `greenhorn` is not a valid key
+- Key `blue_blood` is not a valid key
+- Key `silver_lining` is not a valid key
+- Key `pot_o_gold` is not a valid key
+- Key `gunmetal` is not a valid key
+- Key `algae` is not a valid key
+- Key `twilight_zone` is not a valid key
+- Key `bubblegum` is not a valid key
+- Key `sunrise` is not a valid key
+- Key `sunset` is not a valid key
+- Key `stratosphere` is not a valid key
+- Key `mango` is not a valid key
+- Key `snow_cone` is not a valid key
+- Key `aquatic` is not a valid key
+- Key `floral` is not a valid key
+- Key `sunny` is not a valid key
+- Key `volcanic` is not a valid key
+- Key `ashfall` is not a valid key
+- Key `solar_flare` is not a valid key
+- Key `beacon` is not a valid key
+- Key `wave_jumpsuit` is not a valid key
+- Key `toadstool` is not a valid key
+- Key `full_moon` is not a valid key
+- Key `swiss_cheese` is not a valid key
+- Key `target_practice` is not a valid key
+- Key `zebra` is not a valid key
+- Key `tiger` is not a valid key
+- Key `bee` is not a valid key
+- Key `armadillo` is not a valid key
+- Key `printer` is not a valid key
+- Key `distant_shores` is not a valid key
+- Key `celestial` is not a valid key
+- Key `lemon` is not a valid key
+- Key `flamingo` is not a valid key
+- Key `peachy_breeze` is not a valid key
+- Key `deep_sea` is not a valid key
+- Key `ancestral_garb` is not a valid key
+- Key `timeless` is not a valid key
+- Key `peppermint` is not a valid key
+- Key `spearmint` is not a valid key
+- Key `coal` is not a valid key
+- Key `henrys_little_helper` is not a valid key
+- Key `candy_cane` is not a valid key
+- Key `holiday_tree` is not a valid key
+- Key `gingerbread` is not a valid key
+- Key `light_choco` is not a valid key
+- Key `frosty` is not a valid key
+- Key `verified` is not a valid key
+- Key `no_kil_pls` is not a valid key
+- Key `stardust` is not a valid key
+- Key `aurora` is not a valid key
+- Key `nebula` is not a valid key
+- Key `1st_birthday` is not a valid key
+- Key `lumberjack` is not a valid key
+- Key `gold_tie_event` is not a valid key
+- Key `ship_carrier` is not a valid key
+- Key `cargo_wave` is not a valid key
+- Key `military_camo` is not a valid key
+- Key `nsd_uniform` is not a valid key
+- Key `pumpkified` is not a valid key
+- Key `one_at_nsd` is not a valid key
+- Key `sky` is not a valid key
+- Key `diseased` is not a valid key
+- Key `deer_season` is not a valid key
+- Key `lobotomy` is not a valid key
+- Key `veteran` is not a valid key
+- Key `carpenter_uniform` is not a valid key
+- Key `demon` is not a valid key
+- Key `wounded` is not a valid key
+- Key `haunted` is not a valid key
+- Key `failed_experiment` is not a valid key
+- Key `ghillie_suit` is not a valid key
+- Key `werewolf` is not a valid key
+- Key `special_developer_cheats` is not a valid key
+- Key `special_login` is not a valid key
+- Key `special_name_color` is not a valid key
+- Key `special_note_1` is not a valid key
+- Key `special_note_2` is not a valid key
+- Key `special_role_name` is not a valid key
+- Key `special_role_password` is not a valid key
+- Key `special_weapon_preset` is not a valid key
+- Key `special_weapon_preset_placeholder` is not a valid key
+- Key `special_weapon_preset_title` is not a valid key
+- Key `fps` is not a valid key
+- Key `ping` is not a valid key
+- Key `time_minute` is not a valid key
+- Key `time_second` is not a valid key
+- Key `reflective_rounds` is not a valid key
+- Key `reflective_rounds_desc` is not a valid key
+- Key `weak_stomach` is not a valid key
+- Key `weak_stomach_desc` is not a valid key
 
 ### Undefined Keys
 
-- Key `msg_error_kicked_team` is not defined
-- Key `contact` is not defined
 - Key `settings_explosion_shockwaves` is not defined
 - Key `settings_bullet_trail_bloom` is not defined
 - Key `settings_blood_splatter` is not defined
 - Key `settings_cooler_weapon_gas` is not defined
-- Key `settings_alt_texture_loading` is not defined
 - Key `settings_weapon_compare` is not defined
 - Key `settings_weapon_compare_condensed` is not defined
-- Key `settings_shake_to_reload` is not defined
-- Key `settings_shake_count` is not defined
-- Key `settings_shake_force` is not defined
-- Key `settings_shake_delay` is not defined
-- Key `msg_cannot_use_flare` is not defined
-- Key `action_vaccine_syringe_use` is not defined
-- Key `interact_server` is not defined
-- Key `interact_recorder_interactable` is not defined
-- Key `bindings_use_consumable vaccine_syringe` is not defined
-- Key `kf_suicide_finished_off` is not defined
-- Key `kf_were_finally_killed` is not defined
-- Key `kf_saw_kill` is not defined
-- Key `kf_saw_down` is not defined
 - Key `kf_impact_of` is not defined
 - Key `kf_disconnected` is not defined
-- Key `km_finally_ended_yourself` is not defined
-- Key `km_finally_killed` is not defined
-- Key `km_gas_kill_you` is not defined
-- Key `km_gas_down_you` is not defined
-- Key `km_airdrop_crate_locked_kill_you` is not defined
-- Key `km_airdrop_crate_locked_down_you` is not defined
-- Key `km_saw_kill_you` is not defined
-- Key `km_saw_down_you` is not defined
-- Key `km_knocked_you` is not defined
-- Key `km_finished_off_you` is not defined
-- Key `km_killed_you` is not defined
-- Key `km_suicide_down` is not defined
-- Key `km_suicide_finished_off` is not defined
-- Key `tt_desc` is not defined
-- Key `vaccine_syringe_desc` is not defined
-- Key `create_team_force_start` is not defined
-- Key `create_team_not_ready` is not defined
-- Key `partners` is not defined
-- Key `username_placeholder` is not defined
-- Key `msg_contact` is not defined
-- Key `power_vest` is not defined
-- Key `power_helmet` is not defined
-- Key `power_pack` is not defined
-- Key `barrel_explosion` is not defined
-- Key `stove_explosion` is not defined
-- Key `fireplace_explosion` is not defined
-- Key `control_panel_explosion` is not defined
-- Key `super_barrel_explosion` is not defined
-- Key `small_refinery_barrel_explosion` is not defined
-- Key `large_refinery_barrel_explosion` is not defined
-- Key `silo_explosion` is not defined
-- Key `propane_tank_explosion` is not defined
-- Key `firework_launcher_explosion` is not defined
-- Key `seed_explosion` is not defined
-- Key `coal_explosion` is not defined
-- Key `frag_grenade_explosion` is not defined
-- Key `confetti_grenade_explosion` is not defined
-- Key `pumpkin_explosion` is not defined
-- Key `region_ea` is not defined
-- Key `second_wind` is not defined
-- Key `second_wind_desc` is not defined
-- Key `flechettes` is not defined
-- Key `flechettes_desc` is not defined
-- Key `sabot_rounds` is not defined
-- Key `sabot_rounds_desc` is not defined
-- Key `extended_mags` is not defined
-- Key `extended_mags_desc` is not defined
-- Key `demo_expert` is not defined
-- Key `demo_expert_desc` is not defined
-- Key `advanced_athletics` is not defined
-- Key `advanced_athletics_desc` is not defined
-- Key `toploaded` is not defined
-- Key `toploaded_desc` is not defined
-- Key `infinite_ammo` is not defined
-- Key `infinite_ammo_desc` is not defined
-- Key `field_medic` is not defined
-- Key `field_medic_desc` is not defined
-- Key `berserker` is not defined
-- Key `berserker_desc` is not defined
-- Key `close_quarters_combat` is not defined
-- Key `close_quarters_combat_desc` is not defined
-- Key `low_profile` is not defined
-- Key `low_profile_desc` is not defined
-- Key `combat_expert` is not defined
-- Key `combat_expert_desc` is not defined
-- Key `precision_recycling` is not defined
-- Key `precision_recycling_desc` is not defined
-- Key `loot_baron` is not defined
-- Key `loot_baron_desc` is not defined
-- Key `overclocked` is not defined
-- Key `overclocked_desc` is not defined
-- Key `plumpkin_gamble` is not defined
-- Key `plumpkin_gamble_desc` is not defined
-- Key `plumpkin_shuffle` is not defined
-- Key `plumpkin_shuffle_desc` is not defined
-- Key `lycanthropy` is not defined
-- Key `lycanthropy_desc` is not defined
-- Key `bloodthirst` is not defined
-- Key `bloodthirst_desc` is not defined
-- Key `plumpkin_bomb` is not defined
-- Key `plumpkin_bomb_desc` is not defined
-- Key `shrouded` is not defined
-- Key `shrouded_desc` is not defined
-- Key `experimental_treatment` is not defined
-- Key `experimental_treatment_desc` is not defined
-- Key `engorged` is not defined
-- Key `engorged_desc` is not defined
-- Key `baby_plumpkin_pie` is not defined
-- Key `baby_plumpkin_pie_desc` is not defined
-- Key `costumed` is not defined
-- Key `costumed_desc` is not defined
-- Key `torn_pockets` is not defined
-- Key `torn_pockets_desc` is not defined
-- Key `claustrophobic` is not defined
-- Key `claustrophobic_desc` is not defined
-- Key `laced_stimulants` is not defined
-- Key `laced_stimulants_desc` is not defined
-- Key `rotten_plumpkin` is not defined
-- Key `rotten_plumpkin_desc` is not defined
-- Key `priority_target` is not defined
-- Key `priority_target_desc` is not defined
-- Key `butterfingers` is not defined
-- Key `butterfingers_desc` is not defined
-- Key `overweight` is not defined
-- Key `overweight_desc` is not defined
-- Key `eternal_magnetism` is not defined
-- Key `eternal_magnetism_desc` is not defined
-- Key `last_stand` is not defined
-- Key `last_stand_desc` is not defined
-- Key `aching_knees` is not defined
-- Key `aching_knees_desc` is not defined
-- Key `plumpkin_blessing` is not defined
-- Key `plumpkin_blessing_desc` is not defined
-- Key `infected` is not defined
-- Key `infected_desc` is not defined
-- Key `immunity` is not defined
-- Key `immunity_desc` is not defined
-- Key `hollow_points` is not defined
-- Key `hollow_points_desc` is not defined
-- Key `experimental_forcefield` is not defined
-- Key `experimental_forcefield_desc` is not defined
-- Key `thermal_goggles` is not defined
-- Key `thermal_goggles_desc` is not defined
-- Key `overdrive` is not defined
-- Key `overdrive_desc` is not defined
 
 ## 🇻🇳 Tiếng Việt (84% Complete) - vi.hjson
 
