@@ -137,7 +137,7 @@ if (Cluster.isPrimary && require.main === module) {
                 if (
                     gameManager.teamMode.current === TeamMode.Solo
                     || teamsCreated?.isLimited(ip)
-                    || (punishmentMessage = (await getPunishment(ip))?.message) !== "noname"
+                    || (punishmentMessage = (await getPunishment(ip))?.message) && punishmentMessage !== "noname"
                 ) {
                     return new Response("403 Forbidden");
                 }
