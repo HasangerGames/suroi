@@ -2435,7 +2435,8 @@ export async function setUpUI(): Promise<void> {
         continueBtn.toggleClass("btn-disabled", !this.checked);
     });
 
-    continueBtn.on("click", () => {
+    continueBtn.on("click", async() => {
+        await fetch(`https://api.suroi.io/acknowledgeWarning`, { method: "DELETE" });
         ui.warningModal.hide();
     });
 

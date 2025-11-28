@@ -74,9 +74,6 @@ export async function getPunishment(ip: string): Promise<PunishmentMessage | und
         ).json() as Punishment[];
         if (Array.isArray(punishments) && punishments.length) {
             const punishment = punishments[0];
-            if (punishment.punishmentType === "warn") {
-                await fetch(`${url}/punishments/${ip}`, { method: "DELETE", ...opts });
-            }
             return {
                 message: punishment.punishmentType,
                 reason: punishment.reason,
