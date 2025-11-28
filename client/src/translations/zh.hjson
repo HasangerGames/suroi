@@ -265,6 +265,8 @@
 "settings_colored_weapon_slots": "武器槽颜色"
 "settings_scope_looping": "循环选择倍镜"
 "settings_draw_hud": "平视显示器"
+"settings_weapon_compare": "拾取武器时对比"
+"settings_weapon_compare_condensed": "精简对比显示"
 
 
 
