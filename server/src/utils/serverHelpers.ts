@@ -59,28 +59,32 @@ export async function getPunishment(ip: string): Promise<PunishmentMessage | und
     const url = Config.apiServer.url;
     const opts: RequestInit = { headers: { "api-key": Config.apiServer.apiKey } };
 
-    // Check for VPN/proxy
-    const ipCheck = await (
-        await fetch(`${url}/ipcheck/${ip}`, opts)
-    ).json() as IPCheckResponse;
-    if (ipCheck.flagged) {
-        return { message: "vpn" };
-    }
-
-    // Check punishments
-    const punishments = await (
-        await fetch(`${url}/punishments/${ip}`, opts)
-    ).json() as Punishment[];
-    if (Array.isArray(punishments) && punishments.length) {
-        const punishment = punishments[0];
-        if (punishment.punishmentType === "warn") {
-            await fetch(`${url}/punishments/${ip}`, { method: "DELETE", ...opts });
+    try {
+        // Check for VPN/proxy
+        const ipCheck = await (
+            await fetch(`${url}/ipcheck/${ip}`, opts)
+        ).json() as IPCheckResponse;
+        if (ipCheck.flagged) {
+            return { message: "vpn" };
         }
-        return {
-            message: punishment.punishmentType,
-            reason: punishment.reason,
-            reportID: punishment.reportId
-        };
+
+        // Check punishments
+        const punishments = await (
+            await fetch(`${url}/punishments/${ip}`, opts)
+        ).json() as Punishment[];
+        if (Array.isArray(punishments) && punishments.length) {
+            const punishment = punishments[0];
+            if (punishment.punishmentType === "warn") {
+                await fetch(`${url}/punishments/${ip}`, { method: "DELETE", ...opts });
+            }
+            return {
+                message: punishment.punishmentType,
+                reason: punishment.reason,
+                reportID: punishment.reportId
+            };
+        }
+    } catch(e) {
+        console.error(e);
     }
 }
 
