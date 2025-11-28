@@ -11,6 +11,7 @@ This file is a report of all errors and missing keys in the translation files of
 ### Undefined Keys
 
 - Key `msg_error_kicked_team` is not defined
+- Key `msg_punishment_noname_reason` is not defined
 - Key `msg_punishment_vpn` is not defined
 - Key `msg_punishment_vpn_reason` is not defined
 - Key `msg_punishment_warn_agreement` is not defined
@@ -218,6 +219,7 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### Undefined Keys
 
+- Key `msg_punishment_noname_reason` is not defined
 - Key `bindings_fullscreen` is not defined
 - Key `recording` is not defined
 - Key `settings_explosion_shockwaves` is not defined
@@ -287,6 +289,7 @@ This file is a report of all errors and missing keys in the translation files of
 ### Undefined Keys
 
 - Key `msg_error_kicked_team` is not defined
+- Key `msg_punishment_noname_reason` is not defined
 - Key `msg_punishment_vpn` is not defined
 - Key `msg_punishment_vpn_reason` is not defined
 - Key `msg_punishment_warn_agreement` is not defined
@@ -475,7 +478,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
 
-## 🇩🇪 Deutsch (63% Complete) - de.hjson
+## 🇩🇪 Deutsch (62% Complete) - de.hjson
 
 ### Invalid Keys
 
@@ -484,6 +487,7 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### Undefined Keys
 
+- Key `msg_punishment_noname_reason` is not defined
 - Key `warning_hw_accel_1` is not defined
 - Key `warning_hw_accel_2` is not defined
 - Key `warning_hw_accel_link` is not defined
@@ -658,6 +662,7 @@ This file is a report of all errors and missing keys in the translation files of
 ### Undefined Keys
 
 - Key `msg_error_kicked_team` is not defined
+- Key `msg_punishment_noname_reason` is not defined
 - Key `warning_hw_accel_1` is not defined
 - Key `warning_hw_accel_2` is not defined
 - Key `warning_hw_accel_link` is not defined
@@ -990,6 +995,7 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### Undefined Keys
 
+- Key `msg_punishment_noname_reason` is not defined
 - Key `contact` is not defined
 - Key `settings_explosion_shockwaves` is not defined
 - Key `settings_bullet_trail_bloom` is not defined
@@ -1067,6 +1073,7 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### Undefined Keys
 
+- Key `msg_punishment_noname_reason` is not defined
 - Key `settings_explosion_shockwaves` is not defined
 - Key `settings_bullet_trail_bloom` is not defined
 - Key `settings_blood_splatter` is not defined
@@ -1095,6 +1102,7 @@ This file is a report of all errors and missing keys in the translation files of
 ### Undefined Keys
 
 - Key `msg_error_kicked_team` is not defined
+- Key `msg_punishment_noname_reason` is not defined
 - Key `msg_punishment_warn_agreement` is not defined
 - Key `warning_hw_accel_1` is not defined
 - Key `warning_hw_accel_2` is not defined
@@ -1272,7 +1280,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
 
-## 🇫🇷 Français (88% Complete) - fr.hjson
+## 🇫🇷 Français (87% Complete) - fr.hjson
 
 ### Invalid Keys
 
@@ -1285,6 +1293,7 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### Undefined Keys
 
+- Key `msg_punishment_noname_reason` is not defined
 - Key `contact` is not defined
 - Key `settings_explosion_shockwaves` is not defined
 - Key `settings_bullet_trail_bloom` is not defined
@@ -1344,6 +1353,7 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### Undefined Keys
 
+- Key `msg_punishment_noname_reason` is not defined
 - Key `settings_explosion_shockwaves` is not defined
 - Key `settings_bullet_trail_bloom` is not defined
 - Key `settings_blood_splatter` is not defined
@@ -1373,6 +1383,7 @@ This file is a report of all errors and missing keys in the translation files of
 
 - Key `msg_error_joining_team` is not defined
 - Key `msg_error_kicked_team` is not defined
+- Key `msg_punishment_noname_reason` is not defined
 - Key `msg_punishment_vpn` is not defined
 - Key `msg_punishment_vpn_reason` is not defined
 - Key `msg_punishment_warn_agreement` is not defined
@@ -1572,6 +1583,7 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### Undefined Keys
 
+- Key `msg_punishment_noname_reason` is not defined
 - Key `contact` is not defined
 - Key `settings_explosion_shockwaves` is not defined
 - Key `settings_bullet_trail_bloom` is not defined
@@ -1669,6 +1681,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_punishment_temp_reason` is not defined
 - Key `msg_punishment_perma` is not defined
 - Key `msg_punishment_perma_reason` is not defined
+- Key `msg_punishment_noname_reason` is not defined
 - Key `msg_punishment_vpn` is not defined
 - Key `msg_punishment_vpn_reason` is not defined
 - Key `msg_punishment_warn_agreement` is not defined
@@ -1860,7 +1873,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
 
-## 🇯🇵 日本語 (99% Complete) - jp.hjson
+## 🇯🇵 日本語 (98% Complete) - jp.hjson
 
 ### Invalid Keys
 
@@ -2103,6 +2116,7 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### Undefined Keys
 
+- Key `msg_punishment_noname_reason` is not defined
 - Key `settings_explosion_shockwaves` is not defined
 - Key `settings_bullet_trail_bloom` is not defined
 - Key `settings_blood_splatter` is not defined
@@ -2120,6 +2134,7 @@ This file is a report of all errors and missing keys in the translation files of
 ### Undefined Keys
 
 - Key `msg_error_kicked_team` is not defined
+- Key `msg_punishment_noname_reason` is not defined
 - Key `msg_punishment_vpn` is not defined
 - Key `msg_punishment_vpn_reason` is not defined
 - Key `msg_punishment_warn_agreement` is not defined
@@ -2318,6 +2333,7 @@ This file is a report of all errors and missing keys in the translation files of
 ### Undefined Keys
 
 - Key `msg_error_kicked_team` is not defined
+- Key `msg_punishment_noname_reason` is not defined
 - Key `msg_punishment_vpn` is not defined
 - Key `msg_punishment_vpn_reason` is not defined
 - Key `msg_punishment_warn_agreement` is not defined
@@ -2514,6 +2530,7 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### Undefined Keys
 
+- Key `msg_punishment_noname_reason` is not defined
 - Key `settings_explosion_shockwaves` is not defined
 - Key `settings_bullet_trail_bloom` is not defined
 - Key `settings_blood_splatter` is not defined
@@ -2561,6 +2578,7 @@ This file is a report of all errors and missing keys in the translation files of
 ### Undefined Keys
 
 - Key `msg_error_kicked_team` is not defined
+- Key `msg_punishment_noname_reason` is not defined
 - Key `msg_punishment_warn_agreement` is not defined
 - Key `warning_hw_accel_1` is not defined
 - Key `warning_hw_accel_2` is not defined
@@ -2748,6 +2766,7 @@ This file is a report of all errors and missing keys in the translation files of
 ### Undefined Keys
 
 - Key `msg_error_kicked_team` is not defined
+- Key `msg_punishment_noname_reason` is not defined
 - Key `contact` is not defined
 - Key `bindings_fullscreen` is not defined
 - Key `recording` is not defined
@@ -2914,6 +2933,7 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### Undefined Keys
 
+- Key `msg_punishment_noname_reason` is not defined
 - Key `settings_explosion_shockwaves` is not defined
 - Key `settings_bullet_trail_bloom` is not defined
 - Key `settings_blood_splatter` is not defined
@@ -2962,6 +2982,7 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### Undefined Keys
 
+- Key `msg_punishment_noname_reason` is not defined
 - Key `contact` is not defined
 - Key `settings_explosion_shockwaves` is not defined
 - Key `settings_bullet_trail_bloom` is not defined
@@ -3017,6 +3038,7 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### Undefined Keys
 
+- Key `msg_punishment_noname_reason` is not defined
 - Key `settings_explosion_shockwaves` is not defined
 - Key `settings_bullet_trail_bloom` is not defined
 - Key `settings_blood_splatter` is not defined
@@ -3082,6 +3104,7 @@ This file is a report of all errors and missing keys in the translation files of
 ### Undefined Keys
 
 - Key `msg_error_kicked_team` is not defined
+- Key `msg_punishment_noname_reason` is not defined
 - Key `contact` is not defined
 - Key `settings_explosion_shockwaves` is not defined
 - Key `settings_bullet_trail_bloom` is not defined
@@ -3440,6 +3463,7 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### Undefined Keys
 
+- Key `msg_punishment_noname_reason` is not defined
 - Key `settings_explosion_shockwaves` is not defined
 - Key `settings_bullet_trail_bloom` is not defined
 - Key `settings_blood_splatter` is not defined
@@ -3449,7 +3473,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `kf_impact_of` is not defined
 - Key `kf_disconnected` is not defined
 
-## 🇻🇳 Tiếng Việt (84% Complete) - vi.hjson
+## 🇻🇳 Tiếng Việt (83% Complete) - vi.hjson
 
 ### Invalid Keys
 
@@ -3458,6 +3482,7 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### Undefined Keys
 
+- Key `msg_punishment_noname_reason` is not defined
 - Key `contact` is not defined
 - Key `settings_explosion_shockwaves` is not defined
 - Key `settings_bullet_trail_bloom` is not defined

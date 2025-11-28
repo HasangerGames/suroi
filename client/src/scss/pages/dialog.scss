@@ -64,6 +64,7 @@
 #report-id {
     font-size: 50px;
     font-family: "JetBrains Mono", monospace;
+    user-select: text;
 }
 
 #customize-menu {
@@ -340,7 +341,7 @@
     }
 
     #settings-tab-bar {
-        min-width: 175px; 
+        min-width: 175px;
         .tab {
             min-width: 175px;
         }

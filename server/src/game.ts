@@ -738,7 +738,9 @@ export class Game implements GameData {
             return;
         }
 
-        player.name = cleanUsername(packet.name);
+        if (!player.noName) {
+            player.name = cleanUsername(packet.name);
+        }
 
         player.isMobile = packet.isMobile;
         const skin = packet.skin;
@@ -836,13 +838,13 @@ export class Game implements GameData {
         }
 
         const combatLogInfo = player.lastDamagedBy;
-        const selfKillWithinThreshold = 
+        const selfKillWithinThreshold =
             player.lastSelfKillTime !== undefined
             && player.lastSelfKillTime - player.joinTime <= 30000;
         const selfDownWithinThreshold =
             player.lastSelfDownTime !== undefined
             && player.lastSelfDownTime - player.joinTime <= 30000;
-        
+
         if (!player.dead) {
             player.health = 0;
             if (

@@ -19,7 +19,7 @@ export interface PlayerModifiers {
 }
 
 export interface PunishmentMessage {
-    readonly message: "warn" | "temp" | "perma" | "vpn"
+    readonly message: "warn" | "temp" | "perma" | "vpn" | "noname"
     readonly reason?: string
     readonly reportID?: string
 }

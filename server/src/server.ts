@@ -131,12 +131,13 @@ if (Cluster.isPrimary && require.main === module) {
             "/team": async(req, res) => {
                 const ip = getIP(req, res);
                 const searchParams = getSearchParams(req);
+                let punishmentMessage: string | undefined;
 
                 // Prevent connection if it's solos + check rate limits & punishments
                 if (
                     gameManager.teamMode.current === TeamMode.Solo
                     || teamsCreated?.isLimited(ip)
-                    || await getPunishment(ip)
+                    || (punishmentMessage = (await getPunishment(ip))?.message) !== "noname"
                 ) {
                     return new Response("403 Forbidden");
                 }
@@ -148,7 +149,6 @@ if (Cluster.isPrimary && require.main === module) {
                     const givenTeam = customTeams?.get(teamID);
                     if (!givenTeam || givenTeam.locked || givenTeam.players.length >= (gameManager.teamMode.current as number)) {
                         return new Response("403 Forbidden"); // TODO "Team is locked" and "Team is full" messages
-                        return;
                     }
                     team = givenTeam;
                 } else {
@@ -157,7 +157,7 @@ if (Cluster.isPrimary && require.main === module) {
                 }
 
                 // Get name, skin, badge, & role
-                const name = cleanUsername(searchParams.get("name"));
+                const name = punishmentMessage === "noname" ? GameConstants.player.defaultName : cleanUsername(searchParams.get("name"));
                 let skin = searchParams.get("skin") ?? GameConstants.player.defaultSkin;
                 let badge = searchParams.get("badge") ?? undefined;
                 const { role = "", nameColor } = parseRole(searchParams);

@@ -18,6 +18,7 @@
 "msg_punishment_temp_reason": "You have been banned for reason: <reason>"
 "msg_punishment_perma": "You have been permanently banned!"
 "msg_punishment_perma_reason": "You have been banned for reason: <reason>"
+"msg_punishment_noname_reason": "Name disabled · Case ID: <reportID>"
 "msg_punishment_vpn": "VPN/proxy detected!"
 "msg_punishment_vpn_reason": "To make ban evasion more difficult, VPNs and proxies are not allowed. Please disable your VPN/proxy to play the game. If you believe this message is in error or would like to request an exemption, please contact an admin on the Discord server (https://discord.suroi.io), or email support@suroi.io."
 "msg_no_reason": "No reason provided."

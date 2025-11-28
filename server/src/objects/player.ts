@@ -61,6 +61,7 @@ export interface PlayerSocketData {
     readonly ip?: string
     readonly teamID?: string
     readonly autoFill: boolean
+    readonly noName?: boolean
     readonly role?: string
     readonly isDev: boolean
     readonly nameColor?: number
@@ -79,6 +80,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     override get hitbox(): CircleHitbox { return this._hitbox; }
 
     name: string;
+    readonly noName: boolean;
     readonly ip?: string;
 
     halloweenThrowableSkin = false;
@@ -663,6 +665,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         this.socket = socket;
         const data = socket?.data ?? {} as Partial<PlayerSocketData>;
         this.name = GameConstants.player.defaultName;
+        this.noName = data.noName ?? false;
         this.ip = data.ip;
         this.role = data.role;
         this.isDev = data.isDev ?? false;

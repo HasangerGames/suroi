@@ -178,14 +178,19 @@ export async function fetchServerData(): Promise<void> {
         if (info.punishment) {
             const punishment = info.punishment;
             const reportID = punishment.reportID ?? "No report ID provided.";
-            const message = getTranslatedString(`msg_punishment_${punishment.message}_reason`, { reason: punishment.reason ?? getTranslatedString("msg_no_reason") });
 
-            ui.warningTitle.text(getTranslatedString(`msg_punishment_${punishment.message}`));
-            ui.warningText.html(`${punishment.message !== "vpn" ? `<span class="case-id">Case ID: ${reportID}</span><br><br><br>` : ""}${message}`);
-            ui.warningAgreeOpts.toggle(punishment.message === "warn");
-            ui.warningAgreeCheckbox.prop("checked", false);
-            ui.warningModal.show();
-            ui.splashOptions.addClass("loading");
+            if (punishment.message === "noname") {
+                ui.usernameInput.prop("disabled", true);
+                ui.usernameInput.attr("placeholder", getTranslatedString("msg_punishment_noname_reason", { reportID }));
+            } else {
+                const message = getTranslatedString(`msg_punishment_${punishment.message}_reason`, { reason: punishment.reason ?? getTranslatedString("msg_no_reason") });
+                ui.warningTitle.text(getTranslatedString(`msg_punishment_${punishment.message}`));
+                ui.warningText.html(`${punishment.message !== "vpn" ? `<span class="case-id">Case ID: ${reportID}</span><br><br><br>` : ""}${message}`);
+                ui.warningAgreeOpts.toggle(punishment.message === "warn");
+                ui.warningAgreeCheckbox.prop("checked", false);
+                ui.warningModal.show();
+                ui.splashOptions.addClass("loading");
+            }
         }
 
         const now = Date.now();
@@ -2329,7 +2334,7 @@ export async function setUpUI(): Promise<void> {
             InputManager.addAction(UIManager.action.active ? InputActions.Cancel : InputActions.Interact);
         });
         ui.interactKey.html('<img src="./img/misc/tap-icon.svg" alt="Tap">');
-        
+
         // Active weapon ammo button reloads
         ui.activeAmmo.on("click", () => GameConsole.handleQuery("reload", "never"));
 

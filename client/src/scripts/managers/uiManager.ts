@@ -160,6 +160,8 @@ class UIManagerClass {
 
         serverList: $<HTMLUListElement>("#server-list"),
 
+        usernameInput: $<HTMLInputElement>("#username-input"),
+
         ammoCounterContainer: $<HTMLDivElement>("#weapon-ammo-container"),
         activeAmmo: $<HTMLSpanElement>("#weapon-clip-ammo"),
         activeAmmoCount: $<HTMLSpanElement>("#weapon-clip-ammo-count"),
@@ -886,7 +888,7 @@ class UIManagerClass {
 
         //         const percentage = (1 - seconds / totalSeconds) * 100;
         //         const index = PerkManager.perks.indexOf(perk);
-                    
+
         //         this._perkSlots[index]?.children('.item-timer-text').text(seconds);
         //         this._perkSlots[index]?.children('.item-timer').css("background-size", `${percentage}% 100%`);
         //     }
@@ -897,11 +899,11 @@ class UIManagerClass {
         //         if (perk === undefined) continue;
         //         const time = perk.updateInterval ?? 1000;
 
-        //         if (this.perkTimers?.get(perk) === undefined) {  
+        //         if (this.perkTimers?.get(perk) === undefined) {
         //             (this.perkTimers ??= new Map<PerkDefinition, { startTime: number; endTime: number }>()).set(perk, {
         //                 startTime: Date.now(),
         //                 endTime: Date.now() + time
-        //             });      
+        //             });
         //         }
         //     }
         // }

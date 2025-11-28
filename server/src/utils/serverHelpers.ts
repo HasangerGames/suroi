@@ -50,7 +50,7 @@ interface Punishment {
     readonly reason: string
     readonly reporter: string
     readonly expires?: number
-    readonly punishmentType: "warn" | "temp" | "perma"
+    readonly punishmentType: "warn" | "temp" | "perma" | "noname"
 }
 
 export async function getPunishment(ip: string): Promise<PunishmentMessage | undefined> {

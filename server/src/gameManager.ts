@@ -302,7 +302,7 @@ if (!Cluster.isPrimary) {
                 joinAttempts?.increment(ip);
 
                 const punishment = await getPunishment(ip);
-                if (punishment) {
+                if (punishment && punishment.message !== "noname") {
                     return new Response("403 Forbidden");
                 }
 
@@ -312,6 +312,7 @@ if (!Cluster.isPrimary) {
                         ip,
                         teamID: searchParams.get("teamID") ?? undefined,
                         autoFill: Boolean(searchParams.get("autoFill")),
+                        noName: punishment?.message === "noname",
                         role,
                         isDev,
                         nameColor,
