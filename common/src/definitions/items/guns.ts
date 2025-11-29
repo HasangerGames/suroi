@@ -88,6 +88,7 @@ type BaseGunDefinition = InventoryItemDefinition & {
 
     readonly image: {
         readonly angle?: number
+        readonly unloadedWorldImage?: boolean
         // no relation to the ZIndexes enum
         readonly zIndex?: number
     }
@@ -3229,6 +3230,47 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
             onHitProjectile: "proj_seed"
         },
         noSwap: true
+    },
+    {
+        idString: "icicle_bow",
+        name: "Icicle Bow",
+        defType: DefinitionType.Gun,
+        tier: Tier.S,
+        ammoType: "icicle",
+        ammoSpawnAmount: 0,
+        fireDelay: 150,
+        switchDelay: 420,
+        speedMultiplier: 0.9,
+        recoilMultiplier: 0.95,
+        recoilDuration: 170,
+        fireMode: FireMode.Single,
+        shotSpread: 0.3,
+        moveSpread: 1,
+        noMuzzleFlash: true,
+        length: 7,
+        fists: {
+            left: Vec(100, 3),
+            right: Vec(40, 0),
+            rightZIndex: 4,
+            animationDuration: 100
+        },
+        image: { 
+            position: Vec(80, 0),
+            unloadedWorldImage: true
+        },
+        capacity: 1,
+        reloadTime: 3.2,
+        ballistics: {
+            damage: 75,
+            obstacleMultiplier: 0.5,
+            speed: 0.4,
+            range: 275,
+            tracer: {
+                image: "icicle_trail",
+                length: 1.4
+            },
+            noReflect: true
+        }
     },
     //
     // Dev weapons

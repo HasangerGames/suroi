@@ -1396,10 +1396,26 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         const imagePresent = image !== undefined;
         const isDualGun = imagePresent && weaponDef.defType === DefinitionType.Gun && weaponDef.isDual;
         if (imagePresent) {
-            let frame = `${reference.idString}${weaponDef.defType === DefinitionType.Gun || (image as NonNullable<MeleeDefinition["image"]>).separateWorldImage
-                ? "_world"
-                : ""
-            }`;
+            const usesWorldFrame = weaponDef.defType === DefinitionType.Gun
+                || (image as NonNullable<MeleeDefinition["image"]>).separateWorldImage;
+
+            let frame = reference.idString;
+
+            if (usesWorldFrame && weaponDef.defType === DefinitionType.Gun) {
+                const gunReference = reference as SingleGunNarrowing;
+                const activeWeapon = this.isActivePlayer
+                    ? UIManager.inventory.weapons[UIManager.inventory.activeWeaponIndex]
+                    : undefined;
+
+                const useUnloadedFrame = gunReference.image.unloadedWorldImage
+                    && activeWeapon?.definition.idString === weaponDef.idString
+                    && activeWeapon.count !== undefined
+                    && activeWeapon.count <= 0;
+
+                frame += useUnloadedFrame ? "_empty_world" : "_world";
+            } else if (usesWorldFrame) {
+                frame += "_world";
+            }
 
             if (weaponDef.defType === DefinitionType.Throwable && this.halloweenThrowableSkin && !weaponDef.noSkin) {
                 frame += "_halloween";
