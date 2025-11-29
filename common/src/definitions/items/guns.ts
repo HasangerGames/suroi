@@ -3242,7 +3242,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
         switchDelay: 420,
         speedMultiplier: 0.9,
         recoilMultiplier: 0.95,
-        recoilDuration: 170,
+        recoilDuration: 150,
         fireMode: FireMode.Single,
         shotSpread: 0.3,
         moveSpread: 1,
@@ -3263,11 +3263,15 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
         ballistics: {
             damage: 75,
             obstacleMultiplier: 0.5,
-            speed: 0.4,
+            speed: 0.39,
             range: 275,
             tracer: {
                 image: "icicle_trail",
                 length: 1.4
+            },
+            enemySpeedMultiplier: {
+                duration: 500,
+                multiplier: 0.2
             },
             noReflect: true
         }
