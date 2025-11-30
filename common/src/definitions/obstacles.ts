@@ -1045,6 +1045,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         variations: 4,
         trunkVariations: 2,
         leavesVariations: 2,
+        winterVariations: 2,
         frames: {
             base: "oak_tree_trunk",
             leaves: "oak_tree_leaves"
@@ -1068,6 +1069,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         spawnHitbox: new CircleHitbox(8.5),
         rotationMode: RotationMode.Full,
         variations: 2,
+        winterVariations: 2,
         leavesVariations: 2,
         frames: {
             base: "birch_tree_trunk",
@@ -1155,6 +1157,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         },
         variations: 6,
         trunkVariations: 6,
+        winterVariations: 6,
         zIndex: ZIndexes.ObstaclesLayer5,
         allowFlyover: FlyoverPref.Never,
         frames: {
@@ -7625,8 +7628,11 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     if (def.variations !== undefined) (def as Mutable<ObstacleDefinition>).variationBits = Math.ceil(Math.log2(def.variations));
     if (def.allowFlyover === undefined) def.allowFlyover = FlyoverPref.Sometimes;
     if (def.visibleFromLayers === undefined) def.visibleFromLayers = Layers.Adjacent;
-    const winterVariations = def.winterVariations;
-    const idString = def.idString;
+
+    const winterVariations = def.winterVariations,
+            idString = def.idString,
+            isTree = def.isTree;
+
     return winterVariations
         ? [
             def,
@@ -7635,9 +7641,19 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
                 idString: `${idString}_winter`,
                 variations: winterVariations === 1 ? undefined : winterVariations,
                 winterVariations: undefined,
+                ...(isTree ? { 
+                    leavesVariations: undefined,
+                    trunkVariations: winterVariations
+                } : {}),
                 frames: {
                     particle: def.frames?.particle ?? `${idString}_particle`,
-                    ...(!def.noResidue ? { residue: def.frames?.residue ?? `${idString}_residue` } : {})
+                    ...(!def.noResidue ? { residue: def.frames?.residue ?? `${idString}_residue` } : {}),
+
+                    // SCREW TREES (seriously why.)
+                    ...(isTree && def.frames?.leaves ? {
+                        base: idString,
+                        leaves: undefined
+                    } : {}) // dont know what to do atp
                 },
                 ...(def.hasLoot ? { lootTable: def.lootTable ?? idString } : {})
             }

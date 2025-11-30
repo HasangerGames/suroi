@@ -938,30 +938,31 @@ const maps = {
                 river_rock: 16
             }
         },
+        majorBuildings: [
+            "port",
+            "headquarters",
+            "armory",
+            "refinery"
+        ],
         buildings: {
             large_bridge: 2,
             small_bridge: Infinity,
             river_hut_1: 2,
             river_hut_2: 2,
             river_hut_3: 2,
-            port: 1,
             lighthouse: 1,
             tugboat_red: 1,
             tugboat_white: 5,
-            armory: 1,
-            headquarters: 1,
             fulcrum_bunker: 1,
             small_bunker: 1,
-            refinery: 1,
-            warehouse: 4,
-            christmas_camp: 1,
+            warehouse: 5,
             green_house: 3,
             blue_house: 2,
             blue_house_special: 1,
             red_house: 3,
             red_house_v2: 3,
             construction_site: 1,
-            mobile_home: 8,
+            mobile_home: 10,
             porta_potty: 12,
             container_3: 2,
             container_4: 2,
@@ -970,12 +971,16 @@ const maps = {
             container_7: 1,
             container_8: 2,
             container_9: 1,
-            container_10: 3,
+            container_10: 2,
             memorial: 1,
-            buoy: 12
+            buoy: 16,
+            christmas_camp: 1
         },
-        majorBuildings: ["armory", "refinery", "port", "headquarters", "christmas_camp"],
         quadBuildingLimit: {
+            port: 1,
+            river_hut_1: 1,
+            river_hut_2: 1,
+            river_hut_3: 1,
             red_house: 1,
             red_house_v2: 1,
             warehouse: 2,
@@ -988,8 +993,8 @@ const maps = {
         },
         obstacles: {
             oil_tank_winter: 12,
-            oak_tree: 40,
-            birch_tree: 20,
+            big_oak_tree_winter: 40,
+            birch_tree_winter: 20,
             pine_tree: 90,
             loot_tree: 1,
             regular_crate_winter: 140,
@@ -1012,12 +1017,12 @@ const maps = {
         },
         obstacleClumps: [
             {
-                clumpAmount: 20,
+                clumpAmount: 10,
                 clump: {
                     minAmount: 2,
                     maxAmount: 3,
                     jitter: 5,
-                    obstacles: ["oak_tree"],
+                    obstacles: ["big_oak_tree_winter"],
                     radius: 12
                 }
             },
@@ -1027,7 +1032,7 @@ const maps = {
                     minAmount: 2,
                     maxAmount: 3,
                     jitter: 5,
-                    obstacles: ["birch_tree"],
+                    obstacles: ["birch_tree_winter"],
                     radius: 12
                 }
             },
