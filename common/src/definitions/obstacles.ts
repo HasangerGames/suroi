@@ -266,7 +266,8 @@ export const MaterialSounds: Record<string, { hit?: string, destroyed?: string }
 };
 
 // TODO Detect mode somehow
-const aidrTint = 0x4059bf; // GameConstants.modeName as string === "winter" ? 0xb94646 : 0x4059bf;
+// temp, for winter mode only: tint must be 0xb94646
+const aidrTint = 0xb94646;//0x4059bf; // GameConstants.modeName as string === "winter" ? 0xb94646 : 0x4059bf;
 
 export const TintedParticles: Record<string, { readonly base: string, readonly tint: number, readonly variants?: number }> = {
     _glow_: { base: "_glow_", tint: 0xffffff },

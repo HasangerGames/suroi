@@ -1266,7 +1266,9 @@ const container = (
                     }
                 ]
                 : []),
-            ..._snowDecalDefinitions[variant]
+                // Also, we need to figure out how to make the containers inside the hyperion non-snow variations. Probably gonna need to use
+                // a similar way to obstacle [outdoors] method with the _winter part.
+            ..._snowDecalDefinitions[variant] // TEMP. Remove when winter ends.
             // TODO Detect mode somehow
             // ...(GameConstants.modeName === "winter" ? snowDecalDefinitions[open] : [])
         ],
@@ -1327,7 +1329,7 @@ const container = (
                 ]
             }
             : {})
-    } as const;
+    } as const; // <-- ??
 };
 const hollowLog = (
     id: number,

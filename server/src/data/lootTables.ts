@@ -67,6 +67,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             [
                 { table: "airdrop_guns", weight: 0.5 },
                 { item: "firework_launcher", weight: 0.25 },
+                { item: "icicle_bow", weight: 0.125 },
                 { table: "river_chest_guns", weight: 1 }
             ],
             [
@@ -1348,6 +1349,30 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
     },
 
     winter: {
+        loot_barrel: [
+            [{ item: "crowbar_rusted", weight: 1 }],
+            [{ item: "sr25", weight: 1 }],
+            [{ item: "c4", weight: 1, count: 3 }],
+            [
+                { table: "equipment", weight: 1 },
+                { table: "scopes", weight: 1 },
+                { table: "healing_items", weight: 1 }
+            ]
+        ],
+        melee: [
+            { item: "baseball_bat", weight: 3 },
+            { item: "kbar", weight: 2 },
+            { item: "vaibhav_sickle", weight: 0.5 },
+            { item: "pan", weight: 0.1 }
+        ],
+        airdrop_melee: [
+            { item: NullString, weight: 1 },
+            { item: "crowbar_rusted", weight: 0.1 },
+            { item: "hatchet", weight: 0.1 },
+            { item: "vaibhav_sickle", weight: 0.1 },
+            { item: "kbar", weight: 0.1 },
+            { item: "pan", weight: 0.075 }
+        ],
         ammo_crate: [
             [{ table: "ammo", weight: 1 }],
             [{ table: "ammo", weight: 1 }],
@@ -1361,7 +1386,6 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
 
         airdrop_skins: [
             { item: NullString, weight: 1 },
-            { item: "sky", weight: 0.5 },
             { item: "light_choco", weight: 0.7 },
             { item: "coal", weight: 1 },
             { item: "henrys_little_helper", weight: 1 },
