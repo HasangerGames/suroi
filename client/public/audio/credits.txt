@@ -78,6 +78,8 @@ Guns:
 
   DP-12 (Fire, Switch, Reload, Cycle) - https://soundbible.com/1400-Shotgun.html, https://gamebanana.com/sounds/56970
 
+  Icicle Bow (Fire, Switch, Reload) - https://pixabay.com/sound-effects/mini-crossbow-foley-102860/
+
   Other gun sound effects - Surviv.io Custom Sounds & Textures Resource Pack: https://github.com/humphreygaming/survivcustomsoundsandtextures
 
 Melees:

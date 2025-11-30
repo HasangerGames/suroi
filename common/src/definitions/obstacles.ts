@@ -1017,7 +1017,7 @@ const huntingStandWall = (length: number, hitbox: RectangleHitbox): RawObstacleD
     }
 });
 
-type RawObstacleDefinition = CommonObstacleDefinition & {
+export type RawObstacleDefinition = CommonObstacleDefinition & {
     readonly variations?: Exclude<Variation, 0>
     readonly variationBits?: never
     readonly winterVariations?: Exclude<Variation, 0>
@@ -2080,7 +2080,6 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         spawnMode: MapObjectSpawnMode.GrassAndSand,
         rotationMode: RotationMode.Binary,
         hitbox: RectangleHitbox.fromRect(9.2, 9.2),
-        lootTable: "frozen_crate",
         frames: {
             residue: "regular_crate_residue",
             particle: "window_particle"
