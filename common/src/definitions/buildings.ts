@@ -464,10 +464,11 @@ const huntingStandLayout = (id: number, obstacles: readonly BuildingObstacle[], 
     lootSpawners: lootSpawners_ ?? undefined
 });
 
+type ContainerVariation = "open2" | "open1" | "closed" | "closed_damaged" | "damaged" | "damaged_reversed" | "gas_can";
 const container = (
     id: number,
     color: keyof typeof ContainerTints,
-    variant: "open2" | "open1" | "closed" | "closed_damaged" | "damaged" | "damaged_reversed" | "gas_can",
+    variant: ContainerVariation,
     damaged?: boolean
 ): BuildingDefinition => {
     const tint = ContainerTints[color];
@@ -520,6 +521,81 @@ const container = (
                 {
                     key: "container_snow_cover_patch",
                     position: Vec(-6.7, -7),
+                    tint: tint,
+                    rotation: Math.PI / 2,
+                    scale: Vec(1.5, 1)
+                },
+                {
+                    key: "container_snow_cover_patch",
+                    position: Vec(-1.9, -13.525),
+                    tint: tint,
+                    rotation: Math.PI,
+                    scale: Vec(1.1, 1)
+                },
+                {
+                    key: "snow_decal_container_open1_2",
+                    position: Vec(1.8, 10),
+                    rotation: Math.PI / 2
+                },
+                {
+                    key: "container_snow_cover_patch",
+                    position: Vec(6.6, 7),
+                    tint: tint,
+                    rotation: Math.PI / 2,
+                    scale: Vec(1.5, 1)
+                },
+                {
+                    key: "container_snow_cover_patch",
+                    position: Vec(1.8, 13.525),
+                    tint: tint,
+                    rotation: Math.PI,
+                    scale: Vec(1.1, 1)
+                }
+            ]
+        ]),
+        closed_damaged: pickRandomInArray([
+            [
+                {
+                    key: "snow_decal_container_closed_1",
+                    position: Vec(2.5, 9.08),
+                    scale: Vec(-1, -1)
+                },
+                {
+                    key: "snow_decal_container_closed_2",
+                    position: Vec(4.4, -6.5)
+                },
+                {
+                    key: "container_snow_cover_patch",
+                    position: Vec(6.7, 7),
+                    tint: tint,
+                    rotation: Math.PI / 2,
+                    scale: Vec(1.5, 1)
+                },
+                {
+                    key: "container_snow_cover_patch",
+                    position: Vec(1.9, 13.525),
+                    tint: tint,
+                    rotation: Math.PI,
+                    scale: Vec(1.1, 1)
+                },
+                {
+                    key: "container_snow_cover_patch",
+                    position: Vec(6.65, -7),
+                    tint: tint,
+                    rotation: Math.PI / 2,
+                    scale: Vec(1.5, 1)
+                }
+            ],
+            [
+                {
+                    key: "snow_decal_container_closed_2",
+                    position: Vec(4.4, -6.5),
+                    rotation: Math.PI,
+                    scale: Vec(-1, 1)
+                },
+                {
+                    key: "container_snow_cover_patch",
+                    position: Vec(6.7, -7),
                     tint: tint,
                     rotation: Math.PI / 2,
                     scale: Vec(1.5, 1)
@@ -685,7 +761,337 @@ const container = (
                 rotation: Math.PI / 2,
                 scale: Vec(1.5, 1)
             }
-        ]
+        ],
+        damaged_reversed: pickRandomInArray([
+            [ // S2 <//>
+                {
+                    key: "snow_decal_container_open1_1",
+                    position: Vec(3.5, 8.5),
+                    rotation: Math.PI
+                },
+                {
+                    key: "snow_decal_container_open1_2",
+                    position: Vec(3.25, -8.5)
+                },
+                {
+                    key: "container_snow_cover_patch",
+                    position: Vec(6.7, -8),
+                    tint: tint,
+                    rotation: Math.PI / 2,
+                    scale: Vec(1.25, 1.25)
+                },
+                {
+                    key: "container_snow_cover_patch",
+                    position: Vec(1, -13.6),
+                    tint: tint,
+                    rotation: Math.PI,
+                    scale: Vec(1.25, 1.25)
+                },
+                {
+                    key: "container_snow_cover_patch",
+                    position: Vec(6.7, 8),
+                    tint: tint,
+                    rotation: Math.PI / 2,
+                    scale: Vec(1.25, 1.25)
+                },
+                {
+                    key: "container_snow_cover_patch",
+                    position: Vec(5.9, 13.65),
+                    tint: tint,
+                    rotation: Math.PI,
+                    scale: Vec(0.25, 1.4)
+                },
+                {
+                    key: "container_snow_cover_patch",
+                    position: Vec(4.5, 13),
+                    tint: tint,
+                    rotation: 45,
+                    scale: Vec(0.2125, 1.1)
+                },
+                {
+                    key: "container_snow_cover_patch",
+                    position: Vec(0, 12.4),
+                    tint: tint,
+                    rotation: Math.PI,
+                    scale: Vec(0.95, 1.4)
+                }
+            ],
+            [ // S2-A <//>
+                {
+                    key: "snow_decal_container_open1_1",
+                    position: Vec(3.7, 8.5),
+                    rotation: Math.PI
+                },
+                {
+                    key: "snow_decal_container_open1_2",
+                    position: Vec(-2, -10),
+                    rotation: -Math.PI / 2
+                },
+                {
+                    key: "container_snow_cover_patch",
+                    position: Vec(-6.7, -9.9),
+                    tint: tint,
+                    rotation: Math.PI / 2,
+                    scale: Vec(0.8, 1.25)
+                },
+                {
+                    key: "container_snow_cover_patch",
+                    position: Vec(-1, -13.6),
+                    tint: tint,
+                    rotation: Math.PI,
+                    scale: Vec(1.25, 1.25)
+                },
+                {
+                    key: "container_snow_cover_patch",
+                    position: Vec(6.7, 8),
+                    tint: tint,
+                    rotation: Math.PI / 2,
+                    scale: Vec(1.25, 1.25)
+                },
+                {
+                    key: "container_snow_cover_patch",
+                    position: Vec(5.9, 13.65),
+                    tint: tint,
+                    rotation: Math.PI,
+                    scale: Vec(0.25, 1.4)
+                },
+                {
+                    key: "container_snow_cover_patch",
+                    position: Vec(4.5, 13),
+                    tint: tint,
+                    rotation: 45,
+                    scale: Vec(0.2125, 1.1)
+                },
+                {
+                    key: "container_snow_cover_patch",
+                    position: Vec(0, 12.4),
+                    tint: tint,
+                    rotation: Math.PI,
+                    scale: Vec(0.95, 1.4)
+                }
+            ]
+        ]),
+        damaged: pickRandomInArray([
+            [ // S1 <//>
+                {
+                    key: "snow_decal_container_open1_1",
+                    position: Vec(-3.5, 8.5),
+                    rotation: -Math.PI,
+                    scale: Vec(-1, 1)
+                },
+                {
+                    key: "snow_decal_container_open1_2",
+                    position: Vec(-3.25, -8.5),
+                    scale: Vec(-1, 1)
+                },
+                {
+                    key: "container_snow_cover_patch",
+                    position: Vec(-6.7, -8),
+                    tint: tint,
+                    rotation: Math.PI / 2,
+                    scale: Vec(1.25, 1.25)
+                },
+                {
+                    key: "container_snow_cover_patch",
+                    position: Vec(-1, -13.6),
+                    tint: tint,
+                    rotation: Math.PI,
+                    scale: Vec(1.25, 1.25)
+                },
+                {
+                    key: "container_snow_cover_patch",
+                    position: Vec(-6.7, 8),
+                    tint: tint,
+                    rotation: Math.PI / 2,
+                    scale: Vec(1.25, 1.25)
+                },
+                {
+                    key: "container_snow_cover_patch",
+                    position: Vec(-5.9, 13.65),
+                    tint: tint,
+                    rotation: Math.PI,
+                    scale: Vec(0.25, 1.4)
+                },
+                {
+                    key: "container_snow_cover_patch",
+                    position: Vec(-4.5, 13),
+                    tint: tint,
+                    rotation: -45,
+                    scale: Vec(0.2127, 1.11)
+                },
+                {
+                    key: "container_snow_cover_patch",
+                    position: Vec(0, 12.4),
+                    tint: tint,
+                    rotation: Math.PI,
+                    scale: Vec(0.95, 1.4)
+                }
+            ],
+          /*  [ // S1-CB <//>
+                {
+                    key: "snow_decal_container_open1_1",
+                    position: Vec(-3.7, 8.5),
+                    rotation: -Math.PI,
+                    scale: Vec(-1, 1)
+                },
+                {
+                    key: "snow_decal_container_open1_2",
+                    position: Vec(-2, -10),
+                    rotation: -Math.PI / 2
+                },
+                {
+                    key: "container_snow_cover_patch",
+                    position: Vec(-6.7, -9.9),
+                    tint: tint,
+                    rotation: Math.PI / 2,
+                    scale: Vec(0.8, 1.25)
+                },
+                {
+                    key: "container_snow_cover_patch",
+                    position: Vec(-1, -13.6),
+                    tint: tint,
+                    rotation: Math.PI,
+                    scale: Vec(1.25, 1.25)
+                },
+                {
+                    key: "container_snow_cover_patch",
+                    position: Vec(-6.7, 8),
+                    tint: tint,
+                    rotation: Math.PI / 2,
+                    scale: Vec(1.25, 1.25)
+                },
+                {
+                    key: "container_snow_cover_patch",
+                    position: Vec(-5.9, 13.65),
+                    tint: tint,
+                    rotation: Math.PI,
+                    scale: Vec(0.25, 1.4)
+                },
+                {
+                    key: "container_snow_cover_patch",
+                    position: Vec(4.5, 13),
+                    tint: tint,
+                    rotation: 45,
+                    scale: Vec(0.2125, 1.1)
+                },
+                {
+                    key: "container_snow_cover_patch",
+                    position: Vec(0, 12.4),
+                    tint: tint,
+                    rotation: Math.PI,
+                    scale: Vec(0.95, 1.4)
+                }
+            ]*/
+        ]),
+        gas_can: pickRandomInArray([
+            [
+                {
+                    key: "snow_decal_container_open1_1",
+                    position: Vec(3.5, 8.5),
+                    rotation: Math.PI
+                },
+                {
+                    key: "snow_decal_container_open1_2",
+                    position: Vec(3.25, -8.5)
+                },
+                {
+                    key: "container_snow_cover_patch",
+                    position: Vec(6.7, -8),
+                    tint: tint,
+                    rotation: Math.PI / 2,
+                    scale: Vec(1.25, 1.25)
+                },
+                {
+                    key: "container_snow_cover_patch",
+                    position: Vec(1, -13.6),
+                    tint: tint,
+                    rotation: Math.PI,
+                    scale: Vec(1.25, 1.25)
+                },
+                {
+                    key: "container_snow_cover_patch",
+                    position: Vec(6.7, 8),
+                    tint: tint,
+                    rotation: Math.PI / 2,
+                    scale: Vec(1.25, 1.25)
+                },
+                {
+                    key: "container_snow_cover_patch",
+                    position: Vec(5.9, 13.65),
+                    tint: tint,
+                    rotation: Math.PI,
+                    scale: Vec(0.25, 1.4)
+                },
+                {
+                    key: "container_snow_cover_patch",
+                    position: Vec(4.5, 13),
+                    tint: tint,
+                    rotation: 45,
+                    scale: Vec(0.2125, 1.1)
+                },
+                {
+                    key: "container_snow_cover_patch",
+                    position: Vec(0, 12.4),
+                    tint: tint,
+                    rotation: Math.PI,
+                    scale: Vec(0.95, 1.4)
+                }
+            ],
+            [
+                {
+                    key: "snow_decal_container_open1_1",
+                    position: Vec(3.5, 8.5),
+                    rotation: Math.PI
+                },
+                {
+                    key: "snow_decal_container_open1_2",
+                    position: Vec(-2, -10),
+                    rotation: -Math.PI / 2
+                },
+                {
+                    key: "container_snow_cover_patch",
+                    position: Vec(-6.7, -8),
+                    tint: tint,
+                    rotation: Math.PI / 2,
+                    scale: Vec(1.25, 1.25)
+                },
+                {
+                    key: "container_snow_cover_patch",
+                    position: Vec(-1, -13.6),
+                    tint: tint,
+                    rotation: Math.PI,
+                    scale: Vec(1.25, 1.25)
+                },
+                {
+                    key: "container_snow_cover_patch",
+                    position: Vec(6.7, 8),
+                    tint: tint,
+                    rotation: Math.PI / 2,
+                    scale: Vec(1.25, 1.25)
+                },
+                {
+                    key: "container_snow_cover_patch",
+                    position: Vec(5.9, 13.65),
+                    tint: tint,
+                    rotation: Math.PI,
+                    scale: Vec(0.25, 1.4)
+                },
+                {
+                    key: "container_snow_cover_patch",
+                    position: Vec(4.5, 13),
+                    tint: tint,
+                    rotation: 45,
+                    scale: Vec(0.2125, 1.1)
+                },
+                {
+                    key: "container_snow_cover_patch",
+                    position: Vec(0, 12.4),
+                    tint: tint,
+                    rotation: Math.PI,
+                    scale: Vec(0.95, 1.4)
+                }
+            ]
+        ]),
     };
 
     switch (variant) {
@@ -859,7 +1265,8 @@ const container = (
                         tint: 0xff9500
                     }
                 ]
-                : [])
+                : []),
+            ..._snowDecalDefinitions[variant]
             // TODO Detect mode somehow
             // ...(GameConstants.modeName === "winter" ? snowDecalDefinitions[open] : [])
         ],
