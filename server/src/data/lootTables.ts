@@ -567,7 +567,11 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
         ],
         ice_pick_case: [
             [{ item: "ice_pick", weight: 1 }],
-            [{ item: "frosty", weight: 1 }]
+            [{ item: "frosty", weight: 1 }],
+            [
+                { item: NullString, weight: 0.9 },
+                { item: "icicle_bow", weight: 0.1 } // :3
+            ]
         ],
         campsite_case: [
             { item: "flare", weight: 1 },

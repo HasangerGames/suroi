@@ -1012,7 +1012,7 @@ const maps = {
         },
         obstacleClumps: [
             {
-                clumpAmount: 25,
+                clumpAmount: 20,
                 clump: {
                     minAmount: 2,
                     maxAmount: 3,
@@ -1022,7 +1022,7 @@ const maps = {
                 }
             },
             {
-                clumpAmount: 25,
+                clumpAmount: 20,
                 clump: {
                     minAmount: 2,
                     maxAmount: 3,
@@ -1032,7 +1032,7 @@ const maps = {
                 }
             },
             {
-                clumpAmount: 65,
+                clumpAmount: 50,
                 clump: {
                     minAmount: 2,
                     maxAmount: 3,

@@ -1975,7 +1975,53 @@ const shed = (num: number, ceilingTint: number): BuildingDefinition => ({
             key: "shed_ceiling",
             position: Vec(-0.8, -1.6),
             tint: ceilingTint
-        }
+        },
+        // WINTER MODE ONLY: snow decals for the ceiling, since it's tinted, similar to containers but less of a mess
+        ...pickRandomInArray([
+            [
+                {
+                    key: "shed_ceiling_snow_decal_1",
+                    position: Vec(5, 0)
+                },
+                {
+                    key: "shed_ceiling_snow_decal_2",
+                    position: Vec(-8.65, -9.4)
+                },
+                {
+                    key: "shed_ceiling_snow_decal_3",
+                    position: Vec(6.25, -14.3)
+                },
+                {
+                    key: "shed_ceiling_snow_decal_4",
+                    position: Vec(-5.05, 8.65)
+                }
+            ],
+            [
+                {
+                    key: "shed_ceiling_snow_decal_1",
+                    position: Vec(-5.6, 8),
+                    rotation: -Math.PI / 2.5,
+                    scale: Vec(-0.67, 0.67) // SIX SEVEV
+                },
+                {
+                    key: "shed_ceiling_snow_decal_4",
+                    position: Vec(-5.05, -11.9),
+                    scale: Vec(-1, 1),
+                    rotation: Math.PI
+                },
+                  {
+                    key: "shed_ceiling_snow_decal_3",
+                    position: Vec(7.7, 6.6),
+                    rotation: Math.PI / 2,
+                    scale: Vec(1.45, 1.45)
+                },
+                {
+                    key: "shed_ceiling_snow_decal_5",
+                    position: Vec(8.6, -13.75),
+                    scale: Vec(1, -1)
+                },
+           ]
+        ])
     ],
     floors: [
         {
@@ -3534,6 +3580,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
 
     shed(1, 0x257636),
     shed(2, 0xb96114),
+    shed(3, 0x39626b),
 
     container(1, "white", "closed"),
     container(2, "red", "closed"),
@@ -9020,7 +9067,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             ])
         ],
         subBuildings: IS_CLIENT ? undefined : [
-            { idString: "shed_1", position: Vec(22, -55), orientation: 3 },
+            { idString: "shed_3", position: Vec(22, -55), orientation: 3 },
             {
                 idString: {
                     container_3: 1,
