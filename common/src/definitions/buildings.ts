@@ -1400,6 +1400,74 @@ const truckContainer = (
             RectangleHitbox.fromRect(12.93, 1.6, Vec(0.07, -19.01))
         );
 
+    const snowDecalDefinitions = {
+        one_sided: pickRandomInArray([
+            [
+                {
+                    key: "shed_ceiling_snow_decal_2",
+                    position: Vec(3.47, -12.8),
+                    rotation: Math.PI,
+                    scale: Vec(1, -1)
+                },
+                {
+                    key: "snow_decal_1",
+                    position: Vec(0, 7),
+                    rotation: Math.PI
+                },
+            ],
+            [
+                {
+                    key: "shed_ceiling_snow_decal_4",
+                    position: Vec(2.95, -12.48),
+                    rotation: Math.PI / 2,
+                    scale: Vec(1, -1)
+                },
+                {
+                    key: "snow_decal_1",
+                    position: Vec(0, 6),
+                    rotation: Math.PI / 1.05
+                }
+            ]
+        ]),
+        two_sided: pickRandomInArray([
+            [
+                {
+                    key: "snow_decal_3",
+                    position: Vec(0, -10),
+                    rotation: Math.PI
+                },
+                {
+                    key: "snow_decal_1",
+                    position: Vec(0, 6)
+                }
+            ],
+            [
+                {
+                    key: "snow_decal_1",
+                    position: Vec(0, -3),
+                    rotation: Math.PI
+                },
+                {
+                    key: "snow_decal_1",
+                    position: Vec(0.15, 11),
+                    rotation: Math.PI / 2.7,
+                    scale: Vec(0.55, 0.55)
+                },
+                {
+                    key: "shed_ceiling_snow_decal_5",
+                    position: Vec(-5.1, -17.2),
+                    rotation: Math.PI
+                },
+                {
+                    key: "shed_ceiling_snow_decal_3",
+                    position: Vec(5.15, -15.3),
+                    rotation: -Math.PI / 2,
+                    scale: Vec(1, -1)
+                }
+            ]
+        ])
+    };
+
     return {
         idString: `truck_container_${id}`,
         name: `Truck Container ${id}`,
@@ -1410,19 +1478,24 @@ const truckContainer = (
         hitbox,
         spawnHitbox: RectangleHitbox.fromRect(18, 42),
         obstacles,
-        ...(subBuildings === undefined ? {} : { subBuildings: subBuildings }),
+        ...(subBuildings === undefined ? {} : { subBuildings }),
         floorImages: [{
             key: `truck_container_floor_${model}`,
             position: Vec(0, 0),
             scale: Vec(2, 2),
             tint
         }],
-        ceilingImages: [{
-            key: `truck_container_ceiling_${model}`,
-            position: Vec(0, 0),
-            scale: Vec(2, 2),
-            tint
-        }],
+        ceilingImages: [
+            {
+                key: `truck_container_ceiling_${model}`,
+                position: Vec(0, 0),
+                scale: Vec(2, 2),
+                tint
+            },
+            // winter mode: snow decals because tinted ceiling
+            ...snowDecalDefinitions[model]
+
+        ],
         ceilingHitbox: new GroupHitbox(
             RectangleHitbox.fromRect(12, 38.3, Vec(0.07, 0.67)),
             RectangleHitbox.fromRect(14.77, 9.54, Vec(0, 0))
