@@ -19,7 +19,7 @@ import { Skins } from "../../common/src/definitions/items/skins";
 import { Throwables } from "../../common/src/definitions/items/throwables";
 import { Loots } from "../../common/src/definitions/loots";
 import { MapPings } from "../../common/src/definitions/mapPings";
-import { Obstacles, RawObstacleDefinition } from "../../common/src/definitions/obstacles";
+import { Obstacles } from "../../common/src/definitions/obstacles";
 import { SyncedParticles } from "../../common/src/definitions/syncedParticles";
 import { ColorStyles, FontStyles, styleText } from "../../common/src/utils/logging";
 import { NullString, type ItemDefinition } from "../../common/src/utils/objectDefinitions";
@@ -2792,7 +2792,7 @@ logger.indent("Validating obstacles", () => {
             tester.assertValidOrNPV({
                 obj: obstacle,
                 field: "lootTable",
-                defaultValue: `${obstacle.idString}${(obstacle as RawObstacleDefinition).winterVariations === undefined ? "" : "_winter"}`,
+                defaultValue: obstacle.idString,
                 validatorIfPresent: (lootTable, errorPath) => {
                     if (obstacle.hasLoot || obstacle.spawnWithLoot) {
                         tester.assertReferenceExistsObject({
