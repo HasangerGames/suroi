@@ -121,7 +121,7 @@ Guns:
     Killfeed Image: eiπ
 
   M16A2:
-    Loot Image: eiπ, artuhr
+    Loot Image: eiπ, artuhr, Wampi
     World Image: Winter
     Killfeed Image: eiπ
 
@@ -271,7 +271,7 @@ Guns:
     Killfeed Image: eiπ
 
   SVU-A:
-    Loot Image: Skullboi249, Sam
+    Loot Image: Skullboi249, Wampi
     World Image: Skullboi249
     Killfeed Image: Skullboi249
 
@@ -306,7 +306,7 @@ Guns:
     Killfeed Image: Winter
 
   VSS Vintorez:
-    Loot Image: Emeraldneo, artuhr
+    Loot Image: Wampi
     World Image: Winter
     Killfeed Image: eiπ
 
