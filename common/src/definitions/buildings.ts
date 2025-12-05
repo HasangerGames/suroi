@@ -554,7 +554,7 @@ const container = (
             ]
         ]),
         closed_damaged: pickRandomInArray([
-            [
+                       [
                 {
                     key: "snow_decal_container_closed_1",
                     position: Vec(2.5, 9.08),
@@ -565,22 +565,22 @@ const container = (
                     position: Vec(4.4, -6.5)
                 },
                 {
-                    key: "container_snow_cover_patch",
+                    key: "container_snow_cover_patch_tinted_d",
                     position: Vec(6.7, 7),
                     tint: tint,
                     rotation: Math.PI / 2,
                     scale: Vec(1.5, 1)
                 },
                 {
-                    key: "container_snow_cover_patch",
+                    key: "container_snow_cover_patch_tinted_d",
                     position: Vec(1.9, 13.525),
                     tint: tint,
                     rotation: Math.PI,
                     scale: Vec(1.1, 1)
                 },
                 {
-                    key: "container_snow_cover_patch",
-                    position: Vec(6.65, -7),
+                    key: "container_snow_cover_patch_tinted_d",
+                    position: Vec(6.6, -7),
                     tint: tint,
                     rotation: Math.PI / 2,
                     scale: Vec(1.5, 1)
@@ -589,23 +589,16 @@ const container = (
             [
                 {
                     key: "snow_decal_container_closed_2",
-                    position: Vec(4.4, -6.5),
+                    position: Vec(4.35, -6.5),
                     rotation: Math.PI,
                     scale: Vec(-1, 1)
                 },
                 {
-                    key: "container_snow_cover_patch",
-                    position: Vec(6.7, -7),
+                    key: "container_snow_cover_patch_tinted_d",
+                    position: Vec(6.65, -7),
                     tint: tint,
                     rotation: Math.PI / 2,
                     scale: Vec(1.5, 1)
-                },
-                {
-                    key: "container_snow_cover_patch",
-                    position: Vec(-1.9, -13.525),
-                    tint: tint,
-                    rotation: Math.PI,
-                    scale: Vec(1.1, 1)
                 },
                 {
                     key: "snow_decal_container_open1_2",
@@ -613,14 +606,14 @@ const container = (
                     rotation: Math.PI / 2
                 },
                 {
-                    key: "container_snow_cover_patch",
+                    key: "container_snow_cover_patch_tinted_d",
                     position: Vec(6.6, 7),
                     tint: tint,
                     rotation: Math.PI / 2,
                     scale: Vec(1.5, 1)
                 },
                 {
-                    key: "container_snow_cover_patch",
+                    key: "container_snow_cover_patch_tinted_d", // d stands for darker
                     position: Vec(1.8, 13.525),
                     tint: tint,
                     rotation: Math.PI,
@@ -927,7 +920,7 @@ const container = (
                     scale: Vec(0.95, 1.4)
                 }
             ],
-          /*  [ // S1-CB <//>
+            [ // S1-CB <//>
                 {
                     key: "snow_decal_container_open1_1",
                     position: Vec(-3.7, 8.5),
@@ -981,117 +974,8 @@ const container = (
                     rotation: Math.PI,
                     scale: Vec(0.95, 1.4)
                 }
-            ]*/
-        ]),
-        gas_can: pickRandomInArray([
-            [
-                {
-                    key: "snow_decal_container_open1_1",
-                    position: Vec(3.5, 8.5),
-                    rotation: Math.PI
-                },
-                {
-                    key: "snow_decal_container_open1_2",
-                    position: Vec(3.25, -8.5)
-                },
-                {
-                    key: "container_snow_cover_patch",
-                    position: Vec(6.7, -8),
-                    tint: tint,
-                    rotation: Math.PI / 2,
-                    scale: Vec(1.25, 1.25)
-                },
-                {
-                    key: "container_snow_cover_patch",
-                    position: Vec(1, -13.6),
-                    tint: tint,
-                    rotation: Math.PI,
-                    scale: Vec(1.25, 1.25)
-                },
-                {
-                    key: "container_snow_cover_patch",
-                    position: Vec(6.7, 8),
-                    tint: tint,
-                    rotation: Math.PI / 2,
-                    scale: Vec(1.25, 1.25)
-                },
-                {
-                    key: "container_snow_cover_patch",
-                    position: Vec(5.9, 13.65),
-                    tint: tint,
-                    rotation: Math.PI,
-                    scale: Vec(0.25, 1.4)
-                },
-                {
-                    key: "container_snow_cover_patch",
-                    position: Vec(4.5, 13),
-                    tint: tint,
-                    rotation: 45,
-                    scale: Vec(0.2125, 1.1)
-                },
-                {
-                    key: "container_snow_cover_patch",
-                    position: Vec(0, 12.4),
-                    tint: tint,
-                    rotation: Math.PI,
-                    scale: Vec(0.95, 1.4)
-                }
-            ],
-            [
-                {
-                    key: "snow_decal_container_open1_1",
-                    position: Vec(3.5, 8.5),
-                    rotation: Math.PI
-                },
-                {
-                    key: "snow_decal_container_open1_2",
-                    position: Vec(-2, -10),
-                    rotation: -Math.PI / 2
-                },
-                {
-                    key: "container_snow_cover_patch",
-                    position: Vec(-6.7, -8),
-                    tint: tint,
-                    rotation: Math.PI / 2,
-                    scale: Vec(1.25, 1.25)
-                },
-                {
-                    key: "container_snow_cover_patch",
-                    position: Vec(-1, -13.6),
-                    tint: tint,
-                    rotation: Math.PI,
-                    scale: Vec(1.25, 1.25)
-                },
-                {
-                    key: "container_snow_cover_patch",
-                    position: Vec(6.7, 8),
-                    tint: tint,
-                    rotation: Math.PI / 2,
-                    scale: Vec(1.25, 1.25)
-                },
-                {
-                    key: "container_snow_cover_patch",
-                    position: Vec(5.9, 13.65),
-                    tint: tint,
-                    rotation: Math.PI,
-                    scale: Vec(0.25, 1.4)
-                },
-                {
-                    key: "container_snow_cover_patch",
-                    position: Vec(4.5, 13),
-                    tint: tint,
-                    rotation: 45,
-                    scale: Vec(0.2125, 1.1)
-                },
-                {
-                    key: "container_snow_cover_patch",
-                    position: Vec(0, 12.4),
-                    tint: tint,
-                    rotation: Math.PI,
-                    scale: Vec(0.95, 1.4)
-                }
             ]
-        ]),
+        ])
     };
 
     switch (variant) {
@@ -1268,7 +1152,8 @@ const container = (
                 : []),
                 // Also, we need to figure out how to make the containers inside the hyperion non-snow variations. Probably gonna need to use
                 // a similar way to obstacle [outdoors] method with the _winter part.
-            ..._snowDecalDefinitions[variant] // TEMP. Remove when winter ends.
+                // gas can container has the same snow decals as the closed damaged variant
+            ..._snowDecalDefinitions[variant === "gas_can" ? "closed_damaged" : variant] // TEMP. Remove when winter ends. FIX ME IM A MESS
             // TODO Detect mode somehow
             // ...(GameConstants.modeName === "winter" ? snowDecalDefinitions[open] : [])
         ],

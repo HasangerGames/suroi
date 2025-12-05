@@ -843,7 +843,7 @@ export class Game implements GameData {
             player.lastSelfDownTime !== undefined
             && player.lastSelfDownTime - player.joinTime <= 30000;
         
-        if (!player.dead) {
+        if (!player.dead && player.game.map.mapDef.spawn === undefined) {
             player.health = 0;
             if (
                 combatLogInfo
