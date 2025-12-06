@@ -1928,7 +1928,7 @@ const blueHouse = (idString: string, subBuildings: BuildingDefinition["subBuildi
     ceilingImages: [{
         key: "blue_house_ceiling",
         position: Vec(0, 1.5),
-        scale: Vec(2.3, 2.3)
+        scale: Vec(2.1, 2.1)
     }],
     floors: [
         {
@@ -6087,7 +6087,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             key: "mobile_home_ceiling",
             position: Vec(0, -1),
             residue: "mobile_home_residue",
-            scale: Vec(1.07, 1.07)
+            scale: Vec(1.01, 1.01)
         }],
         floors: [
             {

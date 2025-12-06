@@ -1158,7 +1158,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         },
         variations: 6,
         trunkVariations: 6,
-        winterVariations: 6,
+        winterVariations: 5,
         zIndex: ZIndexes.ObstaclesLayer5,
         allowFlyover: FlyoverPref.Never,
         frames: {

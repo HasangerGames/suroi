@@ -1053,11 +1053,11 @@ const maps = {
             ground_loot: 60
         },
         places: [
-            { name: "Banana", position: Vec(0.23, 0.2) },
-            { name: "Takedown", position: Vec(0.23, 0.8) },
+            { name: "Cherry", position: Vec(0.23, 0.2) },
+            { name: "Zone 42", position: Vec(0.23, 0.8) },
             { name: "Lavlandet", position: Vec(0.75, 0.2) },
-            { name: "Noskin Narrows", position: Vec(0.72, 0.8) },
-            { name: "Mt. Sanger", position: Vec(0.5, 0.35) },
+            { name: "Snowy Lands", position: Vec(0.72, 0.8) },
+            { name: "St. Sanger", position: Vec(0.5, 0.35) },
             { name: "Deepwood", position: Vec(0.5, 0.65) }
         ]
     },
