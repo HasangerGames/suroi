@@ -974,7 +974,8 @@ const maps = {
             container_10: 2,
             memorial: 1,
             buoy: 16,
-            christmas_camp: 1
+            christmas_camp: 1,
+            igloo: 6
         },
         quadBuildingLimit: {
             port: 1,
@@ -989,7 +990,8 @@ const maps = {
             mobile_home: 3,
             porta_potty: 3,
             construction_site: 1,
-            blue_house_special: 1
+            blue_house_special: 1,
+            igloo: 2
         },
         obstacles: {
             oil_tank_winter: 12,

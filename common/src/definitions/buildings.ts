@@ -238,6 +238,13 @@ const randomGift = {
     purple_gift: 0.1
 };
 
+const randomIglooLayout ={
+    igloo_layout_1: 0.3,
+    igloo_layout_2: 1,
+    igloo_layout_3: 1,
+    igloo_layout_4: 0.95
+};
+
 const randomPallet = {
     pallet_1: 1,
     pallet_2: 1,
@@ -330,6 +337,15 @@ const randomPortDamagedContainerReversed = {
 
 const warehouseObstacle = {
     regular_crate: 2,
+    flint_crate: 1
+};
+
+const iglooOuterObstacle = {
+    big_oak_tree: 3,
+    birch_tree: 3,
+    regular_crate: 2,
+    barrel: 2,
+    super_barrel: 1,
     flint_crate: 1
 };
 
@@ -462,6 +478,14 @@ const huntingStandLayout = (id: number, obstacles: readonly BuildingObstacle[], 
     spawnHitbox: RectangleHitbox.fromRect(24.22, 30.14),
     obstacles,
     lootSpawners: lootSpawners_ ?? undefined
+});
+
+const iglooLayout = (id: number, obstacles: readonly BuildingObstacle[]): BuildingDefinition => ({
+    idString: `igloo_layout_${id}`,
+    name: "Igloo Layout",
+    defType: DefinitionType.Building,
+    spawnHitbox: new CircleHitbox(21.61, Vec(24.98, -3.64)),
+    obstacles
 });
 
 type ContainerVariation = "open2" | "open1" | "closed" | "closed_damaged" | "damaged" | "damaged_reversed" | "gas_can";
@@ -6135,7 +6159,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "small_lamp_thingy", position: Vec(-0.12, -22.2) },
             { idString: "window", position: Vec(20.47, 11.8), rotation: 0 },
             { idString: "door", position: Vec(-0.02, 38), rotation: 0 },
-            { idString: "small_stove", position: Vec(15.64, 33.27), rotation: 3 },
+            { idString: randomSmallStove, position: Vec(15.64, 33.27), rotation: 3 },
             { idString: "sink", position: Vec(15.44, 24.82), rotation: 3 },
             { idString: "small_table", position: Vec(14.99, 11.88), rotation: 0 },
             { idString: "chair", position: Vec(10.61, 12.15), rotation: 3 },
@@ -10995,7 +11019,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     },
     {
         idString: "fox_bunker",
-        name: "Panther Bunker",
+        name: "Fox Bunker",
         defType: DefinitionType.Building,
         spawnMode: MapObjectSpawnMode.Ring,
         spawnRadius: 300,
@@ -11030,7 +11054,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     },
     {
         idString: "fox_bunker_main",
-        name: "Panther Bunker",
+        name: "Fox Bunker",
         defType: DefinitionType.Building,
         spawnHitbox: RectangleHitbox.fromRect(80, 80),
         ceilingHitbox: new GroupHitbox(
@@ -11126,7 +11150,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     },
     {
         idString: "fox_bunker_vault",
-        name: "Panther Bunker Vault",
+        name: "Fox Bunker Vault",
         defType: DefinitionType.Building,
         spawnHitbox: RectangleHitbox.fromRect(34.05, 28),
         ceilingHitbox: RectangleHitbox.fromRect(34.05, 28),
@@ -11321,7 +11345,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     },
     {
         idString: "bear_bunker_main",
-        name: "Lion Bunker",
+        name: "Bear Bunker",
         defType: DefinitionType.Building,
         spawnHitbox: RectangleHitbox.fromRect(130, 80),
         ceilingHitbox: RectangleHitbox.fromRect(120, 71),
@@ -11399,7 +11423,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "kitchen_unit_1", position: Vec(49.21, 30.96), rotation: 2 },
             { idString: "kitchen_unit_2", position: Vec(55.67, 31.35), rotation: 2 },
             { idString: "kitchen_unit_3", position: Vec(55.19, 23.67), rotation: 3 },
-            { idString: "small_stove", position: Vec(42.1, 30.8), rotation: 2 },
+            { idString: randomSmallStove, position: Vec(42.1, 30.8), rotation: 2 },
             { idString: "fridge", position: Vec(33.71, 30.86), rotation: 2 },
             { idString: "nsd_crate", position: Vec(23.46, 5.43) },
             { idString: "couch", position: Vec(49.98, 4.67), rotation: 3 },
@@ -11423,7 +11447,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     },
     {
         idString: "bear_bunker_vault",
-        name: "Lion Bunker Vault",
+        name: "Bear Bunker Vault",
         defType: DefinitionType.Building,
         spawnHitbox: RectangleHitbox.fromRect(25, 25),
         ceilingHitbox: RectangleHitbox.fromRect(22, 22),
@@ -17102,5 +17126,113 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             table: "ground_loot",
             position: Vec(30.15, 1.31)
         }]
-    }
+    },
+    { // TODO: Collapse ceiling, make custom logic for arc-circle special walls, currently missing walls and ceiling collapse mechanic
+        //        Checklist
+        // ceiling (+ optimize) - DONE
+        // floor images/hitboxes - DONE
+        // ceiling hitbox/scope hitbox - DONE
+        // obstacle layouts - DONE
+        // HITBOXES - NOT DONE, NEED ARC HITBOX TYPE (Zereshk branch)
+        // SVG Optimizing - DONE
+
+        idString: "igloo",
+        name: "Igloo",
+        defType: DefinitionType.Building,
+        spawnHitbox: RectangleHitbox.fromRect(103.23, 58.99, Vec(-0.47, -0.32)),
+        ceilingHitbox: new GroupHitbox(
+            new CircleHitbox(21.61, Vec(24.98, -3.64)),
+            RectangleHitbox.fromRect(12.16, 9.05, Vec(-0.29, -3.61))
+        ),
+        floors: [{
+            type: FloorNames.Sand,
+            hitbox: RectangleHitbox.fromRect(103.23, 58.99, Vec(-0.47, -0.32))
+        }],
+        floorImages: [
+            {
+                key: "igloo_snow_decal_1",
+                position: Vec(-27.26, -18.85)
+            },
+            {
+                key: "igloo_snow_decal_2",
+                position: Vec(-37.43, 16.07)
+            },
+            {
+                key: "igloo_hallway",
+                position: Vec(-7.38, -3.46)
+            },
+            {
+                key: "igloo_floor",
+                position: Vec(21.08, -3.53)
+            }
+        ],
+        ceilingImages: [
+            {
+                key: "igloo_ceiling_2",
+                position: Vec(24.98, -3.6),
+                scale: Vec(2, 2)
+            },
+            {
+                key: "igloo_ceiling_1",
+                position: Vec(2.25, -3.6),
+                scale: Vec(2, 2)
+            }
+        ],
+        obstacles: IS_CLIENT ? undefined : [{
+            idString: "fire_pit",
+            position: Vec(24.91, -3.66)
+        }],
+        subBuildings: IS_CLIENT ? undefined : [{
+            idString: randomIglooLayout,
+            position: Vec(0 ,0)
+        }]
+    },
+
+    // randomIglooLayout
+    iglooLayout(1, [
+        { idString: "ice_pick_case", position: Vec(24.65, -20.03), rotation: 0 },
+        { idString: "grenade_crate", position: Vec(41.7, -4.58) },
+        { idString: randomGift, position: Vec(40.43, -11.23) },
+        { idString: randomGift, position: Vec(40.56, 2.04) },
+        { idString: randomGift, position: Vec(25.31, 13.91) },
+        { idString: iglooOuterObstacle, position: Vec(-5.8, -21.5), outdoors: true },
+        { idString: iglooOuterObstacle, position: Vec(-15.7, 16.73), outdoors: true }
+    ]),
+    iglooLayout(2, [
+        { idString: "gun_case", position: Vec(41.51, -4.34), rotation: 3 },
+        { idString: {
+            box: 1,
+            grenade_box: 0.35
+        }, position: Vec(25.31, -21.66) },
+        { idString: "box", position: Vec(20.06, -18.75) },
+        { idString: randomGift, position: Vec(38.84, 4.95) },
+        { idString: "melee_crate", position: Vec(25.07, 12.31) },
+        { idString: "office_chair", position: Vec(36.99, -13.71), rotation: 3 }
+    ]),
+    iglooLayout(3, [
+        { idString: {
+            regular_crate: 0.81,
+            frozen_crate: 0.2
+        }, position: Vec(39.5, -4.52) },
+        { idString: "office_chair", position: Vec(20.16, -19.11), rotation: 0 },
+        { idString: randomGift, position: Vec(27.09, -20.65) },
+        { idString: "box", position: Vec(30.93, 11.73) },
+        { idString: {
+            box: 1,
+            grenade_box: 0.35
+        }, position: Vec(23.52, 13.34) },
+        { idString: "trash_bag", position: Vec(10.59, 5.46) }
+    ]),
+    iglooLayout(4, [
+        { idString: "propane_tank", position: Vec(22.29, 14.36) },
+        { idString: "propane_tank", position: Vec(29.52, 11.52) },
+        { idString: "propane_tank", position: Vec(39.89, -9.48) },
+        { idString: randomGift, position: Vec(38.42, 5.17) },
+        { idString: randomGift, position: Vec(25.6, -20.59) },
+        { idString: randomBarrel, position: Vec(33.74, -15.81) },
+        { idString: randomGift, position: Vec(40.18, -0.22) }, 
+        { idString: "box", position: Vec(18.89, -18.46) },
+        { idString: "trash_bag", position: Vec(-12.68, 9.61), outdoors: true },
+        { idString: "box", position: Vec(-2.26, -15.21), outdoors: true }
+    ])
 ]);
