@@ -278,9 +278,14 @@ const randomTree = {
     birch_tree: 1
 };
 
+const randomTreeWinter = {
+    big_oak_tree_winter: 1,
+    birch_tree_winter: 1
+};
+
 const randomCelebrationWinterTree = {
-    oak_tree: 1,
-    birch_tree: 1,
+    big_oak_tree_winter: 1,
+    birch_tree_winter: 1,
     pine_tree: 0.9
 };
 
@@ -1785,6 +1790,95 @@ const tugboat = (color: string, mainLoot: string): BuildingDefinition => ({
             : {}
     )
 } as const);
+
+const smallBunker = (idString: string): BuildingDefinition => ({
+    idString,
+    name: "Small Bunker",
+    defType: DefinitionType.Building,
+    material: "metal_heavy",
+    particle: "metal_particle",
+    reflectBullets: true,
+    ceilingZIndex: ZIndexes.ObstaclesLayer3,
+    visibleFromLayers: Layers.All,
+    hitbox: RectangleHitbox.fromRect(12, 1, Vec(0, 12.3)),
+    floorImages: [{
+        key: "small_bunker_entrance_floor",
+        position: Vec(-0.05, 20),
+        scale: Vec(2.2, 2.2)
+    }],
+    ceilingImages: [{
+        key: "small_bunker_entrance_ceiling",
+        position: Vec(0, 18),
+        scale: Vec(2.35, 2.1)
+    }],
+    spawnHitbox: RectangleHitbox.fromRect(53, 53, Vec(0, 20)),
+    bunkerSpawnHitbox: RectangleHitbox.fromRect(55, 55),
+    ceilingHitbox: RectangleHitbox.fromRect(10, 15, Vec(0, 20)),
+    obstacles: IS_CLIENT ? undefined : [
+        { idString: idString.includes("_winter") ? randomTreeWinter : randomTree, position: Vec(7.5, 9.8) },
+        { idString: idString.includes("_winter") ? randomTreeWinter : randomTree, position: Vec(10, 23) },
+        { idString: idString.includes("_winter") ? randomTreeWinter : randomTree, position: Vec(-10, 16) },
+        { idString: idString.includes("_winter") ? randomTreeWinter : randomTree, position: Vec(-5, 37) }
+    ],
+    bulletMask: RectangleHitbox.fromRect(11, 30, Vec(0, 30)),
+    subBuildings: IS_CLIENT ? undefined : [
+        { idString: "small_bunker_main", position: Vec(0, -5), layer: Layer.Basement },
+        { idString: "small_bunker_entrance", position: Vec(0, 20), layer: Layer.ToBasement }
+    ]
+});
+
+const fulcrumBunker = (idString: string): BuildingDefinition => ({
+    idString,
+    name: "Fulcrum Bunker",
+    defType: DefinitionType.Building,
+    spawnHitbox: new GroupHitbox(
+        RectangleHitbox.fromRect(14, 20.5, Vec(-9.81, 47.65)),
+        RectangleHitbox.fromRect(14, 20.5, Vec(-30.2, -40.75)),
+        RectangleHitbox.fromRect(27, 37, Vec(-0.8, 0))
+    ),
+    bunkerSpawnHitbox: RectangleHitbox.fromRect(150, 110),
+    hitbox: new GroupHitbox(
+        RectangleHitbox.fromRect(2.01, 12.65, Vec(-34.94, -38)),
+        RectangleHitbox.fromRect(2.01, 12.65, Vec(-25.46, -38)),
+        RectangleHitbox.fromRect(2.01, 12.65, Vec(-5.07, 44.9)),
+        RectangleHitbox.fromRect(2.01, 12.65, Vec(-14.55, 44.9))
+    ),
+    material: "metal_heavy",
+    particle: "bunker_particle",
+    reflectBullets: true,
+    collideWithLayers: Layers.Adjacent,
+    floorImages: [
+        { key: "fulcrum_bunker_entrance", position: Vec(-30.2, -38), rotation: Math.PI },
+        { key: "fulcrum_bunker_entrance", position: Vec(-9.81, 44.9) }
+    ],
+    obstacles: IS_CLIENT ? undefined : [
+        { idString: "fulcrum_bunker_collider_hack", position: Vec(0, 0), rotation: 0 },
+
+        // Upper entrance
+        { idString: idString.includes("_winter") ? randomTreeWinter : randomTree, position: Vec(-18.85, -38.2) },
+        { idString: idString.includes("_winter") ? randomTreeWinter : randomTree, position: Vec(-41.97, -39.29) },
+        { idString: idString.includes("_winter") ? randomTreeWinter : randomTree, position: Vec(-29.92, -27.26) },
+        { idString: "bush", position: Vec(-35.88, -48.65), rotation: 0 },
+        { idString: "bush", position: Vec(-27.44, -47.82), rotation: 0 },
+        { idString: "bush", position: Vec(-8.38, -28.77), rotation: 0 },
+        { idString: "bush", position: Vec(-55.92, -38.54), rotation: 0 },
+        { idString: "fulcrum_bunker_stair", position: Vec(-30.2, -39.26), rotation: 0, layer: Layer.ToBasement },
+
+            // Lower entrance
+        { idString: idString.includes("_winter") ? randomTreeWinter : randomTree, position: Vec(-9.82, 32.88) },
+        { idString: idString.includes("_winter") ? randomTreeWinter : randomTree, position: Vec(3.62, 43.58) },
+        { idString: idString.includes("_winter") ? randomTreeWinter : randomTree, position: Vec(-20.92, 47.64) },
+        { idString: "bush", position: Vec(-13.13, 55.88) },
+        { idString: "bush", position: Vec(16.63, 37.75) },
+        { idString: "bush", position: Vec(-27.11, 35.18) },
+        { idString: "bush", position: Vec(-5.24, 55.57) },
+        { idString: "fulcrum_bunker_stair", position: Vec(-9.81, 45.95), rotation: 2, layer: Layer.ToBasement }
+    ],
+    subBuildings: IS_CLIENT ? undefined : [
+        { idString: "shed_2", position: Vec(0, 0) },
+        { idString: "fulcrum_bunker_main", position: Vec(0, 0), layer: Layer.Basement }
+    ]
+});
 
 const blueHouse = (idString: string, subBuildings: BuildingDefinition["subBuildings"] = []): BuildingDefinition => ({
     idString,
@@ -7103,41 +7197,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { table: "ground_loot", position: Vec(0, -0.5) }
         ]
     },
-    {
-        idString: "small_bunker",
-        name: "Small Bunker",
-        defType: DefinitionType.Building,
-        material: "metal_heavy",
-        particle: "metal_particle",
-        reflectBullets: true,
-        ceilingZIndex: ZIndexes.ObstaclesLayer3,
-        visibleFromLayers: Layers.All,
-        hitbox: RectangleHitbox.fromRect(12, 1, Vec(0, 12.3)),
-        floorImages: [{
-            key: "small_bunker_entrance_floor",
-            position: Vec(-0.05, 20),
-            scale: Vec(2.2, 2.2)
-        }],
-        ceilingImages: [{
-            key: "small_bunker_entrance_ceiling",
-            position: Vec(0, 18),
-            scale: Vec(2.35, 2.1)
-        }],
-        spawnHitbox: RectangleHitbox.fromRect(53, 53, Vec(0, 20)),
-        bunkerSpawnHitbox: RectangleHitbox.fromRect(55, 55),
-        ceilingHitbox: RectangleHitbox.fromRect(10, 15, Vec(0, 20)),
-        obstacles: IS_CLIENT ? undefined : [
-            { idString: randomTree, position: Vec(7.5, 9.8) },
-            { idString: randomTree, position: Vec(10, 23) },
-            { idString: randomTree, position: Vec(-10, 16) },
-            { idString: randomTree, position: Vec(-5, 37) }
-        ],
-        bulletMask: RectangleHitbox.fromRect(11, 30, Vec(0, 30)),
-        subBuildings: IS_CLIENT ? undefined : [
-            { idString: "small_bunker_main", position: Vec(0, -5), layer: Layer.Basement },
-            { idString: "small_bunker_entrance", position: Vec(0, 20), layer: Layer.ToBasement }
-        ]
-    },
+    smallBunker("small_bunker"),
+    smallBunker("small_bunker_winter"),
     {
         idString: "barn_top_floor_shadow",
         name: "Barn Shadow",
@@ -10781,58 +10842,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: randomHayShed, position: Vec(9.77, 87) }
         ]
     },
-    {
-        idString: "fulcrum_bunker",
-        name: "Fulcrum Bunker",
-        defType: DefinitionType.Building,
-        spawnHitbox: new GroupHitbox(
-            RectangleHitbox.fromRect(14, 20.5, Vec(-9.81, 47.65)),
-            RectangleHitbox.fromRect(14, 20.5, Vec(-30.2, -40.75)),
-            RectangleHitbox.fromRect(27, 37, Vec(-0.8, 0))
-        ),
-        bunkerSpawnHitbox: RectangleHitbox.fromRect(150, 110),
-        hitbox: new GroupHitbox(
-            RectangleHitbox.fromRect(2.01, 12.65, Vec(-34.94, -38)),
-            RectangleHitbox.fromRect(2.01, 12.65, Vec(-25.46, -38)),
-            RectangleHitbox.fromRect(2.01, 12.65, Vec(-5.07, 44.9)),
-            RectangleHitbox.fromRect(2.01, 12.65, Vec(-14.55, 44.9))
-        ),
-        material: "metal_heavy",
-        particle: "bunker_particle",
-        reflectBullets: true,
-        collideWithLayers: Layers.Adjacent,
-        floorImages: [
-            { key: "fulcrum_bunker_entrance", position: Vec(-30.2, -38), rotation: Math.PI },
-            { key: "fulcrum_bunker_entrance", position: Vec(-9.81, 44.9) }
-        ],
-        obstacles: IS_CLIENT ? undefined : [
-            { idString: "fulcrum_bunker_collider_hack", position: Vec(0, 0), rotation: 0 },
-
-            // Upper entrance
-            { idString: randomTree, position: Vec(-18.85, -38.2) },
-            { idString: randomTree, position: Vec(-41.97, -39.29) },
-            { idString: randomTree, position: Vec(-29.92, -27.26) },
-            { idString: "bush", position: Vec(-35.88, -48.65), rotation: 0 },
-            { idString: "bush", position: Vec(-27.44, -47.82), rotation: 0 },
-            { idString: "bush", position: Vec(-8.38, -28.77), rotation: 0 },
-            { idString: "bush", position: Vec(-55.92, -38.54), rotation: 0 },
-            { idString: "fulcrum_bunker_stair", position: Vec(-30.2, -39.26), rotation: 0, layer: Layer.ToBasement },
-
-            // Lower entrance
-            { idString: randomTree, position: Vec(-9.82, 32.88) },
-            { idString: randomTree, position: Vec(3.62, 43.58) },
-            { idString: randomTree, position: Vec(-20.92, 47.64) },
-            { idString: "bush", position: Vec(-13.13, 55.88) },
-            { idString: "bush", position: Vec(16.63, 37.75) },
-            { idString: "bush", position: Vec(-27.11, 35.18) },
-            { idString: "bush", position: Vec(-5.24, 55.57) },
-            { idString: "fulcrum_bunker_stair", position: Vec(-9.81, 45.95), rotation: 2, layer: Layer.ToBasement }
-        ],
-        subBuildings: IS_CLIENT ? undefined : [
-            { idString: "shed_2", position: Vec(0, 0) },
-            { idString: "fulcrum_bunker_main", position: Vec(0, 0), layer: Layer.Basement }
-        ]
-    },
+    fulcrumBunker("fulcrum_bunker"),
+    fulcrumBunker("fulcrum_bunker_winter"),
     {
         idString: "fulcrum_bunker_main",
         name: "Fulcrum Bunker",
