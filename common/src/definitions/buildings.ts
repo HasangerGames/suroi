@@ -3682,6 +3682,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     container(18, "yellow", "damaged_reversed"),
     container(19, "green", "damaged_reversed"),
     container(20, "red", "closed_damaged"),
+    container(26, "white", "closed_damaged"),
 
     // special containers
     container(21, "gas_can", "gas_can"),
@@ -9120,7 +9121,9 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                     container_3: 1,
                     container_4: 1,
                     container_5: 1,
-                    container_6: 1
+                    container_6: 1,
+                    container_26: 1,
+                    container_20: 1
                 }, position: Vec(30, -58), orientation: 1
             }
         ]
