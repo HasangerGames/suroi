@@ -57,6 +57,7 @@ export interface BuildingImageDefinition {
     readonly damaged?: string
     readonly alpha?: number
     readonly hideOnDead?: boolean
+    readonly hideOnAlive?: boolean
 }
 
 interface BuildingGraphicsDefinition {
@@ -350,8 +351,11 @@ const iglooOuterObstacle = {
     birch_tree: 3,
     regular_crate: 2,
     barrel: 2,
+    trash_bag: 1,
     super_barrel: 1,
-    flint_crate: 1
+    grenade_crate: 0.8,
+    melee_crate: 0.75,
+    flint_crate: 0.75
 };
 
 const fireworkWarehouseObstacle = {
@@ -17144,7 +17148,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         // floor images/hitboxes - DONE
         // ceiling hitbox/scope hitbox - DONE
         // obstacle layouts - DONE
-        // HITBOXES - NOT DONE, NEED ARC HITBOX TYPE (Zereshk branch)
+        // HITBOXES - DONE WITH AWFUL WAY, PLEASE LOOK INTO ARC HITBOX TYPE (Zereshk branch)
         // SVG Optimizing - DONE
 
         idString: "igloo",
@@ -17169,30 +17173,53 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 position: Vec(-37.43, 16.07)
             },
             {
+                key: "igloo_floor",
+                position: Vec(21.08, -3.53)
+            },
+            {
                 key: "igloo_hallway",
                 position: Vec(-7.38, -3.46)
             },
             {
-                key: "igloo_floor",
-                position: Vec(21.08, -3.53)
+                key: "igloo_garbage_wall",
+                position: Vec(21.1, -3.6),
+                hideOnDead: true
             }
         ],
+        wallsToDestroy: 1,
+        ceilingCollapseParticle: "igloo_wall_particle",
+        ceilingCollapseSound: "tent_collapse",
         ceilingImages: [
+            {
+                key: "igloo_ceiling_1",
+                position: Vec(21.08, -3.53),
+                residue: "igloo_residue",
+                hideOnAlive: true
+            },
             {
                 key: "igloo_ceiling_2",
                 position: Vec(24.98, -3.6),
-                scale: Vec(2, 2)
+                scale: Vec(2, 2),
+                hideOnDead: true
             },
             {
                 key: "igloo_ceiling_1",
                 position: Vec(2.25, -3.6),
-                scale: Vec(2, 2)
+                scale: Vec(2, 2),
+                hideOnDead: true
             }
         ],
-        obstacles: IS_CLIENT ? undefined : [{
-            idString: "fire_pit",
-            position: Vec(24.91, -3.66)
-        }],
+        obstacles: IS_CLIENT ? undefined : [
+            {
+                idString: "fire_pit",
+                position: Vec(24.91, -3.66)
+            },
+            {
+                idString: "igloo_wall",
+                position: Vec(0, 0),
+                rotation: 0
+            }
+        ],
         subBuildings: IS_CLIENT ? undefined : [{
             idString: randomIglooLayout,
             position: Vec(0 ,0)
@@ -17207,7 +17234,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         { idString: randomGift, position: Vec(40.56, 2.04) },
         { idString: randomGift, position: Vec(25.31, 13.91) },
         { idString: iglooOuterObstacle, position: Vec(-5.8, -21.5), outdoors: true },
-        { idString: iglooOuterObstacle, position: Vec(-15.7, 16.73), outdoors: true }
+        { idString: iglooOuterObstacle, position: Vec(-15.7, 16.73), outdoors: true },
+        { idString: iglooOuterObstacle, position: Vec(-40.69, -13.09), outdoors: true }
     ]),
     iglooLayout(2, [
         { idString: "gun_case", position: Vec(41.51, -4.34), rotation: 3 },
@@ -17218,7 +17246,12 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         { idString: "box", position: Vec(20.06, -18.75) },
         { idString: randomGift, position: Vec(38.84, 4.95) },
         { idString: "melee_crate", position: Vec(25.07, 12.31) },
-        { idString: "office_chair", position: Vec(36.99, -13.71), rotation: 3 }
+        { idString: "office_chair", position: Vec(36.99, -13.71), rotation: 3 },
+        { idString: iglooOuterObstacle, position: Vec(-3.34, 9.7), outdoors: true },
+        { idString: iglooOuterObstacle, position: Vec(43.94, 22.69), outdoors: true },
+        { idString: iglooOuterObstacle, position: Vec(-43.07, -20.62), outdoors: true },
+        { idString: iglooOuterObstacle, position: Vec(-33.01, 13.24), outdoors: true },
+        { idString: iglooOuterObstacle, position: Vec(-3.48, -16.68), outdoors: true } 
     ]),
     iglooLayout(3, [
         { idString: {
@@ -17232,7 +17265,11 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             box: 1,
             grenade_box: 0.35
         }, position: Vec(23.52, 13.34) },
-        { idString: "trash_bag", position: Vec(10.59, 5.46) }
+        { idString: "trash_bag", position: Vec(10.59, 5.46) },
+        { idString: { grenade_box: 1, box: 0.25 }, position: Vec(45.22, -24.77), outdoors: true },
+        { idString: iglooOuterObstacle, position: Vec(-11.18, 16.86), outdoors: true },
+        { idString: iglooOuterObstacle, position: Vec(-34.56, -19.26), outdoors: true },
+        { idString: iglooOuterObstacle, position: Vec(-38.92, 16.52), outdoors: true }
     ]),
     iglooLayout(4, [
         { idString: "propane_tank", position: Vec(22.29, 14.36) },
@@ -17243,7 +17280,11 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         { idString: randomBarrel, position: Vec(33.74, -15.81) },
         { idString: randomGift, position: Vec(40.18, -0.22) }, 
         { idString: "box", position: Vec(18.89, -18.46) },
+        { idString: "grenade_box", position: Vec(24.13, 8.89) },
         { idString: "trash_bag", position: Vec(-12.68, 9.61), outdoors: true },
-        { idString: "box", position: Vec(-2.26, -15.21), outdoors: true }
+        { idString: "box", position: Vec(-2.26, -15.21), outdoors: true },
+        { idString: { grenade_box: 1, box: 0.25 }, position: Vec(41.32, 21.72), outdoors: true },
+        { idString: iglooOuterObstacle, position: Vec(-34.44, -15.76), outdoors: true },
+        { idString: iglooOuterObstacle, position: Vec(-35.05, 14.72), outdoors: true }
     ])
 ]);
