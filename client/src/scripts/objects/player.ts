@@ -687,16 +687,20 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             this.activeItem = activeItem;
 
             const skinID = skin.idString;
+            const skinDef = Loots.fromString<SkinDefinition>(skinID);
+
             if (this.isActivePlayer) {
                 const oldSkinID = UIManager.skinID;
                 UIManager.skinID = skinID;
+
                 if (oldSkinID !== undefined && oldSkinID !== skinID) {
                     UIManager.weaponCache[2] = undefined; // invalidate melee cache so fists in inventory update
                     UIManager.updateWeapons();
+
+                    if (skinDef.sound) SoundManager.play(skinDef.idString);
                 }
             }
             this._skin = skinID;
-            const skinDef = Loots.fromString<SkinDefinition>(skinID);
 
             let baseTint: ColorSource;
             let fistTint: ColorSource;

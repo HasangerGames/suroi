@@ -567,7 +567,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
         ],
         ice_pick_case: [
             [{ item: "ice_pick", weight: 1 }],
-            [{ item: "frosty", weight: 1 }],
+            [{ item: "henrys_little_helper", weight: 1 }],
             [
                 { item: NullString, weight: 0.9 },
                 { item: "icicle_bow", weight: 0.1 } // :3
@@ -2102,6 +2102,97 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
                 { item: "model_89", weight: 0.01 }
             ]
         }
+    },
+    nye: {
+        ammo: [
+            { item: "12g", count: 10, weight: 0.75 },
+            { item: "firework_rocket", weight: 0.75 },
+            { item: "556mm", count: 60, weight: 1 },
+            { item: "762mm", count: 60, weight: 1 },
+            { item: "9mm", count: 60, weight: 1 },
+            { item: "50cal", count: 20, weight: 0.05 }
+        ],
+        ground_loot: [
+            { item: "henrys_little_helper", weight: 1 },
+            { table: "equipment", weight: 1 },
+            { table: "healing_items", weight: 1 },
+            { table: "ammo", weight: 1 },
+            { table: "guns", weight: 0.9 },
+            { table: "scopes", weight: 0.3 }
+        ],
+        throwables: [{ item: "confetti_grenade", count: 3, weight: 1 }],
+        equipment: [
+            { item: "basic_helmet", weight: 1 },
+            { item: "regular_helmet", weight: 0.35 },
+            { item: "tactical_helmet", weight: 0.085 },
+
+            { item: "basic_vest", weight: 1 },
+            { item: "regular_vest", weight: 0.35 },
+            { item: "tactical_vest", weight: 0.085 },
+
+            { item: "basic_pack", weight: 1 },
+            { item: "regular_pack", weight: 0.35 },
+            { item: "tactical_pack", weight: 0.085 }
+        ],
+        airdrop_guns: [{
+            item: "firework_launcher",
+            weight: 1
+        }],
+        gold_airdrop_guns: [
+            {
+                item: "firework_launcher",
+                weight: 1
+            },
+            {
+                item: "icicle_bow",
+                weight: 1.1
+            }
+        ],
+        gold_airdrop_crate: [
+            [{ table: "airdrop_equipment", weight: 1 }],
+            [{ table: "airdrop_scopes", weight: 1 }],
+            [{ table: "airdrop_healing_items", weight: 1 }],
+            [{ table: "airdrop_skins", weight: 1 }],
+            [{ table: "airdrop_melee", weight: 1 }],
+            [{ table: "ammo", weight: 1 }],
+            [{ table: "gold_airdrop_guns", weight: 1 }],
+            [{ item: "frag_grenade", count: 3, weight: 1 }]
+        ],
+        airdrop_crate: [
+            [{ table: "airdrop_healing_items", weight: 1 }],
+            [{ table: "airdrop_skins", weight: 1 }],
+            [{ table: "airdrop_melee", weight: 1 }],
+            [{ table: "ammo", weight: 1 }],
+            [{ table: "airdrop_guns", weight: 1 }],
+            [
+                { item: "confetti_grenade", count: 3, weight: 2 },
+                { item: NullString, weight: 1 }
+            ]
+        ],
+        loot_barrel: [
+            [{ item: "crowbar_rusted", weight: 1 }],
+            [{ item: "sr25", weight: 1 }],
+            [{ item: "c4", weight: 1, count: 3 }],
+            [
+                { table: "equipment", weight: 1 },
+                { table: "scopes", weight: 1 },
+                { table: "healing_items", weight: 1 }
+            ]
+        ],
+        melee: [
+            { item: "baseball_bat", weight: 3 },
+            { item: "kbar", weight: 2 },
+            { item: "vaibhav_sickle", weight: 0.5 },
+            { item: "pan", weight: 0.1 }
+        ],
+        airdrop_melee: [
+            { item: NullString, weight: 1 },
+            { item: "crowbar_rusted", weight: 0.1 },
+            { item: "hatchet", weight: 0.1 },
+            { item: "vaibhav_sickle", weight: 0.1 },
+            { item: "kbar", weight: 0.1 },
+            { item: "pan", weight: 0.075 }
+        ],
     },
     birthday: {}
 };

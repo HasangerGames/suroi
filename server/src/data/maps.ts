@@ -1061,6 +1061,182 @@ const maps = {
             { name: "Deepwood", position: Vec(0.5, 0.65) }
         ]
     },
+    nye: {
+        width: 1452,
+        height: 1452,
+        beachSize: 32,
+        oceanSize: 64,
+        spawn: {
+            mode: "random"
+        },
+        onGenerate(map) {
+            const targetBuildingIdString = "christmas_camp";
+            map.generateBuilding(targetBuildingIdString, Vec(this.width / 2, this.height / 2), 0);
+
+            const buildings = {
+                // seriously stfu
+
+                red_house: 3,
+                blue_house: 3,
+                blue_house_special: 1,
+                green_house: 4,
+                red_house_v2: 3,
+                mobile_home: (Math.random() * 5) + 3,
+                porta_potty: (Math.random() * 5) + 3,
+                river_hut_1: 1,
+                river_hut_2: 1,
+                river_hut_3: 1,
+                lighthouse: 1,
+                igloo: 4,
+
+                warehouse: 4,
+                container_3: 2,
+                container_4: 2,
+                container_5: 2,
+                container_6: 2,
+                container_7: 2,
+                container_8: 2,
+                container_9: 2,
+                container_10: 2,
+                container_20: 2,
+                container_26: 2,
+                small_bunker_winter: 1,
+                fulcrum_bunker_winter: 1,
+                memorial: 1,
+                buoy: 12
+            };
+
+            const obstacles = {
+                oil_tank_winter: 5,
+                big_oak_tree_winter: 85,
+                birch_tree_winter: 85,
+                pine_tree: 60,
+                box_winter: 50,
+                regular_crate_winter: 75,
+                flint_crate_winter: 12,
+                aegis_crate_winter: 12,
+                grenade_crate_winter: 30,
+                rock: 70,
+                bush: 25,
+                blueberry_bush: 40,
+                barrel_winter: 45,
+                gun_case_winter: 15,
+                super_barrel_winter: 20,
+                melee_crate_winter: 4,
+                gold_rock: 1,
+                loot_tree: 1,
+                loot_barrel: 1,
+                small_lamp_thingy: 50,
+                red_gift: 3,
+                blue_gift: 3,
+                green_gift: 3,
+                black_gift: Math.random() > 0.76 ? 2 : 0,
+                purple_gift: Math.random() > 0.9 ? 1 : 0,
+
+                viking_chest: Math.random() > 0.9 ? 1 : 0,
+                tango_crate: Math.random() > 0.8 ? 1 : 0,
+                lux_crate: Math.random() > 0.8 ? 1 : 0
+            };
+
+            const loots = {
+                ground_loot: 40,
+                regular_crate: 40
+            };
+
+            Object.entries(buildings).forEach(([building, count]) => {
+                const definition = Buildings.reify(building);
+
+                const { rotationMode } = definition;
+                let attempts = 0;
+
+                for (let i = 0; i < count; i++) {
+                    let validPositionFound = false;
+
+                    while (!validPositionFound && attempts < 100) {
+                        let orientation = GameMap.getRandomBuildingOrientation(rotationMode);
+
+                        const position = map.getRandomPosition(definition.spawnHitbox, {
+                            orientation,
+                            spawnMode: definition.spawnMode ?? MapObjectSpawnMode.Grass,
+                            orientationConsumer: (newOrientation: Orientation) => {
+                                orientation = newOrientation;
+                            },
+                            maxAttempts: 400
+                        });
+
+                        if (!position) {
+                            attempts++;
+                            continue;
+                        }
+
+                        map.generateBuilding(definition, position, orientation);
+                        validPositionFound = true;
+                    }
+
+                    attempts = 0; // Reset attempts counter for the next building
+                }
+            });
+
+            Object.entries(obstacles).forEach(([obstacle, count]) => {
+                const def = Obstacles.reify(obstacle);
+
+                const { scale = { spawnMin: 1, spawnMax: 1 }, variations, rotationMode } = def;
+                const { spawnMin, spawnMax } = scale;
+                const effSpawnHitbox = def.spawnHitbox ?? def.hitbox;
+
+                for (let i = 0; i < count; i++) {
+                    const scale = randomFloat(spawnMin ?? 1, spawnMax ?? 1);
+                    const variation = (variations !== undefined ? random(0, variations - 1) : 0) as Variation;
+                    const rotation = GameMap.getRandomRotation(rotationMode);
+
+                    let orientation: Orientation = 0;
+
+                    if (rotationMode === RotationMode.Limited) {
+                        orientation = rotation as Orientation;
+                    }
+
+                    const position = map.getRandomPosition(effSpawnHitbox, {
+                        scale,
+                        orientation,
+                        spawnMode: def.spawnMode
+                    });
+
+                    if (!position) {
+                        continue;
+                    }
+
+                    map.generateObstacle(def, position, { layer: Layer.Ground, scale, variation });
+                }
+            });
+
+            Object.entries(loots ?? {}).forEach(([lootTable, count]) => {
+                for (let i = 0; i < count; i++) {
+                    const loot = getLootFromTable("normal", lootTable);
+
+                    const position = map.getRandomPosition(
+                        new CircleHitbox(5),
+                        { spawnMode: MapObjectSpawnMode.GrassAndSand }
+                    );
+
+                    if (!position) {
+                        continue;
+                    }
+
+                    for (const item of loot) {
+                        map.game.addLoot(
+                            item.idString,
+                            position,
+                            Layer.Ground,
+                            { count: item.count, jitterSpawn: false }
+                        );
+                    }
+                }
+            });
+        },
+        places: [
+            { name: "Celebration Area", position: Vec(0.5, 0.5) }
+        ]
+    },
     debug: {
         width: 1620,
         height: 1620,

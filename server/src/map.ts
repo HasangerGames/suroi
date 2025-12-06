@@ -18,6 +18,7 @@ import { Building } from "./objects/building";
 import { Obstacle } from "./objects/obstacle";
 import { getLootFromTable } from "./utils/lootHelpers";
 import { CARDINAL_DIRECTIONS, getRandomIDString } from "./utils/misc";
+import { Modes } from "@common/definitions/modes";
 
 export interface MapOptions {
     scale?: number
@@ -684,7 +685,8 @@ export class GameMap {
             let idString = getRandomIDString<ObstacleDefinition>(obstacleData.idString);
             if (idString === NullString) continue;
             if (obstacleData.outdoors && this.game.mode.obstacleVariants) {
-                idString = `${idString}_${this.game.modeName}`;
+                const _modeName = Modes[this.game.modeName].similarTo ?? this.game.modeName;
+                idString = `${idString}_${_modeName}`;
             }
 
             // ------------------------------------------------------------------------------------------------

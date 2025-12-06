@@ -308,7 +308,8 @@ export const Game = new (class Game {
         if (GameConsole.getBuiltInCVar("cv_use_old_menu_music")) {
             menuMusicSuffix = "_old";
         } else if (this.mode.replaceMenuMusic) {
-            menuMusicSuffix = `_${this.modeName}`;
+            const modeName_ = Modes[this.modeName].similarTo ?? this.modeName;
+            menuMusicSuffix = `_${modeName_}`;
         } else {
             menuMusicSuffix = "";
         }

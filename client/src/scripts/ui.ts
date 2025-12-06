@@ -287,18 +287,20 @@ export async function fetchServerData(): Promise<void> {
 export async function finalizeUI(): Promise<void> {
     const { mode: { specialLogo, playButtonImage, canvasFilters }, modeName } = Game;
 
+    const _modeName = Modes[modeName].similarTo ?? modeName;
+
     // Change the menu based on the mode.
-    $("#splash-ui").css("background-image", `url(./img/backgrounds/menu/${modeName}.png)`);
+    $("#splash-ui").css("background-image", `url(./img/backgrounds/menu/${_modeName}.png)`);
 
     if (specialLogo) {
-        $("#splash-logo").children("img").attr("src", `./img/logos/suroi_beta_${modeName}.svg`);
+        $("#splash-logo").children("img").attr("src", `./img/logos/suroi_beta_${_modeName}.svg`);
     }
 
     if (playButtonImage) {
         const playButtons = [$("#btn-play-solo"), $("#btn-play-duo"), $("#btn-play-squad")];
         for (let buttonIndex = 0, len = playButtons.length; buttonIndex < len; buttonIndex++) {
             playButtons[buttonIndex]
-                .addClass(`event-${modeName}`)
+                .addClass(`event-${_modeName}`)
                 .html(`<img class="btn-icon" src=${playButtonImage}><span>${getTranslatedString(`play_${["solo", "duo", "squad"][buttonIndex]}` as TranslationKeys)}</span>`);
         }
     }

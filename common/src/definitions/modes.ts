@@ -8,7 +8,8 @@ export type ModeName =
     | "infection"
     | "hunted"
     | "birthday"
-    | "winter";
+    | "winter"
+    | "nye";
 
 export type SpritesheetNames = ModeName | "shared";
 
@@ -23,6 +24,7 @@ export type ColorKeys =
     | "void";
 
 export interface ModeDefinition {
+    readonly similarTo?: ModeName
     readonly colors: Record<ColorKeys, string>
     readonly spriteSheets: readonly SpritesheetNames[]
     readonly ambience?: string
@@ -50,6 +52,8 @@ export interface ModeDefinition {
     readonly forcedGoldAirdropStage?: number
     readonly overrideUpstairsFunctionality?: boolean // hunting stand hunting stand hunting stand hunting stand hunting stand
     readonly maxEquipmentLevel?: number
+    readonly bulletFilters?: boolean
+    readonly summonAirdropsInterval?: number
 }
 
 export const Modes: Record<ModeName, ModeDefinition> = {
@@ -202,5 +206,36 @@ export const Modes: Record<ModeName, ModeDefinition> = {
             delay: 1000
         },
         maxEquipmentLevel: 4
-    }
+    },
+    nye: {
+        colors: {
+            grass: "hsl(210, 18%, 82%)",
+            water: "hsl(211, 40%, 64%)",
+            border: "hsl(208, 40%, 48%)",
+            beach: "hsl(210, 18%, 75%)",
+            riverBank: "hsl(210, 18%, 70%)",
+            trail: "hsl(35, 50%, 40%)",
+            gas: "hsla(17, 100%, 50%, 0.55)",
+            void: "hsl(25, 80%, 6%)"
+        },
+        spriteSheets: ["shared", "normal", "winter"],
+        ambience: "snowstorm_ambience",
+        replaceMenuMusic: true,
+        bulletTrailAdjust: "hsl(0, 50%, 80%)",
+        particleEffects: {
+            frames: "snow_particle",
+            delay: 800,
+            gravity: true
+        },
+        similarTo: "winter",
+        obstacleVariants: true,
+        specialLogo: true,
+        bulletFilters: true,
+        playButtonImage: "./img/game/winter/obstacles/christmas_tree.svg",
+        canvasFilters: {
+            brightness: 0.6,
+            saturation: 0.85
+        },
+        summonAirdropsInterval: 30e3
+    },
 };
