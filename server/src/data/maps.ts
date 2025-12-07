@@ -1066,9 +1066,6 @@ const maps = {
         height: 1452,
         beachSize: 32,
         oceanSize: 64,
-        spawn: {
-            mode: "random"
-        },
         onGenerate(map) {
             const targetBuildingIdString = "christmas_camp";
             map.generateBuilding(targetBuildingIdString, Vec(this.width / 2, this.height / 2), 0);
@@ -1082,14 +1079,14 @@ const maps = {
                 green_house: 4,
                 red_house_v2: 3,
                 mobile_home: (Math.random() * 5) + 3,
-                porta_potty: (Math.random() * 5) + 3,
-                river_hut_1: 1,
-                river_hut_2: 1,
-                river_hut_3: 1,
+                porta_potty: 6,
+                river_hut_1: 2,
+                river_hut_2: 2,
+                river_hut_3: 2,
                 lighthouse: 1,
-                igloo: 4,
+                igloo: 5,
 
-                warehouse: 4,
+                warehouse: 5,
                 container_3: 2,
                 container_4: 2,
                 container_5: 2,
@@ -1098,10 +1095,11 @@ const maps = {
                 container_8: 2,
                 container_9: 2,
                 container_10: 2,
-                container_20: 2,
-                container_26: 2,
+                container_20: 3,
+                container_26: 3,
                 small_bunker_winter: 1,
                 fulcrum_bunker_winter: 1,
+                construction_site: 1,
                 memorial: 1,
                 buoy: 12
             };
@@ -1112,7 +1110,7 @@ const maps = {
                 birch_tree_winter: 85,
                 pine_tree: 60,
                 box_winter: 50,
-                regular_crate_winter: 75,
+                regular_crate_winter: 80,
                 flint_crate_winter: 12,
                 aegis_crate_winter: 12,
                 grenade_crate_winter: 30,
@@ -1127,11 +1125,11 @@ const maps = {
                 loot_tree: 1,
                 loot_barrel: 1,
                 small_lamp_thingy: 50,
-                red_gift: 3,
-                blue_gift: 3,
-                green_gift: 3,
-                black_gift: Math.random() > 0.76 ? 2 : 0,
-                purple_gift: Math.random() > 0.9 ? 1 : 0,
+                red_gift: 6,
+                blue_gift: 6,
+                green_gift: 6,
+                black_gift: 2,
+                purple_gift: Math.random() > 0.9 ? 2 : 0,
 
                 viking_chest: Math.random() > 0.9 ? 1 : 0,
                 tango_crate: Math.random() > 0.8 ? 1 : 0,
@@ -1211,7 +1209,7 @@ const maps = {
 
             Object.entries(loots ?? {}).forEach(([lootTable, count]) => {
                 for (let i = 0; i < count; i++) {
-                    const loot = getLootFromTable("normal", lootTable);
+                    const loot = getLootFromTable("winter", lootTable);
 
                     const position = map.getRandomPosition(
                         new CircleHitbox(5),
