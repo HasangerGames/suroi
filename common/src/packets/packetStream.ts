@@ -1,4 +1,5 @@
 import { SuroiByteStream } from "../utils/suroiByteStream";
+import { DebugPacket } from "./debugPacket";
 import { GameOverPacket } from "./gameOverPacket";
 import { InputPacket } from "./inputPacket";
 import { JoinPacket } from "./joinPacket";
@@ -21,7 +22,8 @@ export const Packets = [
     PickupPacket,
     ReportPacket,
     SpectatePacket,
-    UpdatePacket
+    UpdatePacket,
+    DebugPacket
 ] as const;
 
 export class PacketStream {

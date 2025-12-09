@@ -3,6 +3,7 @@ import { stringify } from "../utils/misc";
 import { GameConsole, type GameSettings, type PossibleError, type Stringable } from "./gameConsole";
 import { GameConstants } from "@common/constants";
 import { isMobile } from "pixi.js";
+import { DEFAULT_SCOPE } from "@common/definitions/items/scopes";
 
 // TODO figure out what flags we're gonna actually use and how we're gonna use them kekw
 //       expect breaking changes to this api (again)
@@ -171,6 +172,12 @@ export const CVarCasters = Object.freeze({
     cv_console_top: Casters.toNumber,
     cv_console_open: Casters.toBoolean,
 
+    cv_debug_menu_width: Casters.toNumber,
+    cv_debug_menu_height: Casters.toNumber,
+    cv_debug_menu_left: Casters.toNumber,
+    cv_debug_menu_top: Casters.toNumber,
+    cv_debug_menu_open: Casters.toBoolean,
+
     cv_crosshair_color: Casters.toString,
     cv_crosshair_size: Casters.toNumber,
     cv_crosshair_stroke_color: Casters.toString,
@@ -191,6 +198,20 @@ export const CVarCasters = Object.freeze({
     // 1: label only
     // 2: graph & label
     db_show_hitboxes: Casters.toBoolean,
+    db_show_hitboxes_players: Casters.toBoolean,
+    db_show_hitboxes_obstacles: Casters.toBoolean,
+    db_show_hitboxes_stairs: Casters.toBoolean,
+    db_show_hitboxes_loot: Casters.toBoolean,
+    db_show_hitboxes_buildings: Casters.toBoolean,
+    db_show_hitboxes_buildings_ceilings: Casters.toBoolean,
+    db_show_hitboxes_synced_particles: Casters.toBoolean,
+    db_show_hitboxes_terrain: Casters.toBoolean,
+
+    db_speed_override: Casters.toNumber,
+    db_override_zoom: Casters.toBoolean,
+    db_zoom_override: Casters.toNumber,
+    db_no_clip: Casters.toBoolean,
+    db_invulnerable: Casters.toBoolean,
 
     mb_controls_enabled: Casters.toBoolean,
     mb_joystick_size: Casters.toNumber,
@@ -244,6 +265,18 @@ type SimpleCVarMapping = {
         )
         : never
 };
+
+export type NumberCVars = {
+    [K in keyof CVarTypeMapping]: ConVar<number> extends CVarTypeMapping[K]
+        ? K
+        : never;
+}[keyof CVarTypeMapping];
+
+export type BooleanCVars = {
+    [K in keyof CVarTypeMapping]: ConVar<boolean> extends CVarTypeMapping[K]
+        ? K
+        : never;
+}[keyof CVarTypeMapping];
 
 export const defaultClientCVars: SimpleCVarMapping = Object.freeze({
     cv_player_name: "",
@@ -313,15 +346,21 @@ export const defaultClientCVars: SimpleCVarMapping = Object.freeze({
     cv_map_transparency: 0.9,
 
     cv_console_width: window.innerWidth / 2,
-    cv_console_height: window.innerWidth / 2,
+    cv_console_height: window.innerHeight / 2,
     cv_console_left: window.innerWidth / 4,
-    cv_console_top: window.innerWidth / 4,
+    cv_console_top: window.innerHeight / 4,
     cv_console_open: {
         value: false,
         flags: {
             archive: false
         }
     },
+
+    cv_debug_menu_width: window.innerWidth / 2,
+    cv_debug_menu_height: window.innerHeight / 2,
+    cv_debug_menu_left: window.innerWidth / 4,
+    cv_debug_menu_top: window.innerHeight / 4,
+    cv_debug_menu_open: false,
 
     cv_crosshair_color: "#000000",
     cv_crosshair_size: 1.5,
@@ -343,6 +382,20 @@ export const defaultClientCVars: SimpleCVarMapping = Object.freeze({
     pf_net_graph: 1,
 
     db_show_hitboxes: false,
+    db_show_hitboxes_players: false,
+    db_show_hitboxes_obstacles: false,
+    db_show_hitboxes_stairs: false,
+    db_show_hitboxes_loot: false,
+    db_show_hitboxes_buildings: false,
+    db_show_hitboxes_buildings_ceilings: false,
+    db_show_hitboxes_synced_particles: false,
+    db_show_hitboxes_terrain: false,
+
+    db_speed_override: GameConstants.player.baseSpeed,
+    db_override_zoom: false,
+    db_zoom_override: DEFAULT_SCOPE.zoomLevel,
+    db_no_clip: false,
+    db_invulnerable: false,
 
     mb_switch_joysticks: false,
     mb_controls_enabled: true,

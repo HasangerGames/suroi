@@ -9,6 +9,7 @@ import { type ObjectsNetData } from "@common/utils/objectsSerializations";
 import { random, randomBoolean, randomFloat, randomRotation } from "@common/utils/random";
 import { Vec, type Vector } from "@common/utils/vector";
 import { Graphics } from "pixi.js";
+import { GameConsole } from "../console/gameConsole";
 import { Game } from "../game";
 import { ParticleManager, type Particle, type ParticleEmitter, type ParticleOptions } from "../managers/particleManager";
 import { SoundManager, type GameSound } from "../managers/soundManager";
@@ -528,7 +529,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
         const definition = this.definition;
         const alpha = Game.activePlayer !== undefined && equivLayer(this, Game.activePlayer) ? 1 : DIFF_LAYER_HITBOX_OPACITY;
 
-        if (definition.isStair) {
+        if (definition.isStair && GameConsole.getBuiltInCVar("db_show_hitboxes_stairs")) {
             const hitbox = this.hitbox as RectangleHitbox;
 
             const min = hitbox.min;
@@ -630,7 +631,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
                     0x00ff00
                 );
             }
-        } else {
+        } else if (GameConsole.getBuiltInCVar("db_show_hitboxes_obstacles")) {
             DebugRenderer.addHitbox(this.hitbox,
                 definition.noCollisions || this.dead
                     ? HITBOX_COLORS.obstacleNoCollision
@@ -638,6 +639,8 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
                 alpha
             );
         }
+
+        if (!GameConsole.getBuiltInCVar("db_show_hitboxes_obstacles")) return;
 
         if (definition.isDoor && definition.operationStyle !== "slide") {
             DebugRenderer.addCircle(

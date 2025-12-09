@@ -1,0 +1,72 @@
+.floating-window {
+    position: relative;
+    z-index: 1000;
+
+    &:not(.floating-window-focused) {
+        filter: brightness(85%);
+    }
+
+    .floating-window-container {
+        position: absolute;
+
+        resize: both;
+        overflow: hidden;
+
+        min-height: 200px;
+        min-width: fit-content;
+
+        color: white;
+        border: 3px solid #888;
+        border-radius: 7px;
+        box-shadow: 5px 5px 5px 0px #0008;
+
+        .floating-window-header {
+            color: #BBB;
+            background-color: #606060;
+            position: sticky;
+            left: 0;
+            top: 0;
+            font-size: 1.2em;
+            height: 28px;
+            box-sizing: border-box;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            user-select: none;
+            z-index: 1;
+            border-color: #888;
+            border-style: none none solid none;
+            border-width: 2px;
+
+            span {
+                margin: auto;
+            }
+
+            .floating-window-close {
+                color: #BBB;
+                background-color: #555;
+                border-color: #888;
+                border-style: none none solid none;
+                border-width: 1px;
+                cursor: pointer;
+                transition-duration: 200ms;
+                height: 28px;
+                width: 28px;
+                border-radius: 0;
+
+                &:hover {
+                    background-color: #d55;
+                    color: #ddd;
+                }
+            }
+
+            &:hover {
+                cursor: grab;
+            }
+
+            &:active {
+                cursor: grabbing;
+            }
+        }
+    }
+}

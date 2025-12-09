@@ -14,7 +14,8 @@ export enum PacketType {
     Pickup,
     Report,
     Spectate,
-    Update
+    Update,
+    Debug
 }
 
 export const enum DataSplitTypes {

@@ -182,6 +182,7 @@ export class Loot extends GameObject.derive(ObjectCategory.Loot) {
 
     override updateDebugGraphics(): void {
         if (!DEBUG_CLIENT) return;
+        if (!GameConsole.getBuiltInCVar("db_show_hitboxes_loot")) return;
 
         DebugRenderer.addHitbox(
             this.hitbox,

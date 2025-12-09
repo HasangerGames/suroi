@@ -55,6 +55,7 @@ import { MapIndicator } from "./mapIndicator";
 import { Obstacle } from "./obstacle";
 import { Projectile } from "./projectile";
 import { type SyncedParticle } from "./syncedParticle";
+import type { DebugPacket } from "@common/packets/debugPacket";
 
 export interface PlayerSocketData {
     player?: Player
@@ -522,6 +523,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         this._scope = scope;
         this.dirty.zoom = true;
     }
+    private _zoomOverride = 0;
+    private _noClip = false;
 
     readonly socket: Bun.ServerWebSocket<PlayerSocketData> | undefined;
 
@@ -569,6 +572,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
      * Used to make players invulnerable for 5 seconds after spawning or until they move
      */
     invulnerable = true;
+    // for debug menu
+    forceInvulnerable = false;
 
     /**
      * Determines if the player can despawn
@@ -1286,7 +1291,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                         potential.handleStairInteraction(this);
                         if (this.layer !== oldLayer) this.setDirty();
                         this.activeStair = potential;
-                    } else {
+                    } else if (!this._noClip) {
                         collided = true;
                         this._hitbox.resolveCollision(potential.hitbox);
 
@@ -1787,7 +1792,9 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             this.ticksSinceLastUpdate = 0;
             this.updateObjects = false;
 
-            const dim = player.effectiveScope.zoomLevel * 2 + 8;
+            const zoom = this._zoomOverride !== 0 ? this._zoomOverride : player.effectiveScope.zoomLevel;
+
+            const dim = zoom * 2 + 8;
             this.screenHitbox = RectangleHitbox.fromRect(dim, dim, player.position);
 
             const newVisibleObjects = game.grid.intersectsHitbox(this.screenHitbox);
@@ -1859,7 +1866,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         }
 
         if (player.dirty.zoom || forceInclude) {
-            playerData.zoom = player._scope.zoomLevel;
+            playerData.zoom = player._zoomOverride || player._scope.zoomLevel;
         }
 
         if (player.dirty.id || forceInclude) {
@@ -2555,6 +2562,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     }
 
     disableInvulnerability(): void {
+        if (this.forceInvulnerable) return;
         if (this.invulnerable) {
             this.invulnerable = false;
             this.setDirty();
@@ -3516,6 +3524,92 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             player: this,
             packet
         });
+    }
+
+    processDebugPacket(data: DebugPacket): void {
+        this.baseSpeed = data.speed;
+
+        const oldZoomOverride = this._zoomOverride;
+        this._zoomOverride = data.zoom;
+        if (this._zoomOverride !== oldZoomOverride) {
+            this.dirty.zoom = true;
+            this.updateObjects = true;
+        }
+
+        const oldInvul = this.invulnerable;
+        this.invulnerable = data.invulnerable;
+        this.forceInvulnerable = data.invulnerable;
+        if (this.invulnerable !== oldInvul) {
+            this.setDirty();
+        }
+
+        const oldLayer = this.layer;
+        this.layer = Numeric.clamp(this.layer + data.layerOffset, -2, 2);
+        if (this.layer !== oldLayer) {
+            this.setDirty();
+            this.dirty.layer = true;
+        }
+
+        this._noClip = data.noClip;
+
+        if (data.spawnLootType) {
+            const def = data.spawnLootType;
+            let count = 1;
+            switch (def.defType) {
+                case DefinitionType.HealingItem:
+                case DefinitionType.Ammo:
+                case DefinitionType.Throwable:
+                    count = this.inventory.backpack.maxCapacity[def.idString] ?? 1;
+                    break;
+                case DefinitionType.Gun: {
+                    const { ammoType, ammoSpawnAmount } = def;
+
+                    if (ammoSpawnAmount > 1) {
+                        const halfAmount = ammoSpawnAmount / 2;
+
+                        this.game.addLoot(ammoType, this.position, this.layer, {
+                            count: Math.floor(halfAmount)
+                        });
+                        this.game.addLoot(ammoType, this.position, this.layer, {
+                            count: Math.ceil(halfAmount)
+                        });
+                    } else {
+                        this.game.addLoot(ammoType, this.position, this.layer, {
+                            count: 1
+                        });
+                    }
+                    break;
+                }
+            }
+
+            this.game.addLoot(def, this.position, this.layer, {
+                count
+            });
+        }
+
+        if (data.spawnDummy) {
+            const game = this.game;
+            const dummy = new Player(game, undefined, Vec.clone(this.position), this.layer);
+            game.newPlayers.push(dummy);
+            game.grid.addObject(dummy);
+            dummy.setDirty();
+            game.updateObjects = true;
+            dummy.canDespawn = false;
+            dummy.joined = true;
+            dummy.disableInvulnerability();
+
+            dummy.inventory.vest = data.dummyVest;
+            dummy.inventory.helmet = data.dummyHelmet;
+
+            // dont do this for the dummys so the game doesn't start when they spawn
+            // or ends when you kill them
+            // if for some reason you still want that to happen just uncomment this
+            // game.aliveCountDirty = true;
+            // game.livingPlayers.add(player);
+            // game.spectatablePlayers.push(player);
+            // game.connectedPlayers.add(player);
+            // game.updateGameData({ aliveCount: game.aliveCount });
+        }
     }
 
     executeAction(action: Action): void {

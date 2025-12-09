@@ -17,6 +17,7 @@ import { DebugRenderer } from "../utils/debugRenderer";
 import { drawGroundGraphics, SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { type Tween } from "../utils/tween";
 import { GameObject } from "./gameObject";
+import { GameConsole } from "../console/gameConsole";
 
 export class Building extends GameObject.derive(ObjectCategory.Building) {
     definition!: BuildingDefinition;
@@ -338,6 +339,27 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
         const definition = this.definition;
         const alpha = this.layer === Game.layer ? 1 : DIFF_LAYER_HITBOX_OPACITY;
 
+        if (GameConsole.getBuiltInCVar("db_show_hitboxes_buildings_ceilings")) {
+            for (const [start, end] of this.ceilingRaycastLines ?? []) {
+                DebugRenderer.addLine(
+                    start,
+                    end,
+                    HITBOX_COLORS.buildingCeilingRaycast,
+                    alpha
+                );
+            }
+
+            if (definition.ceilingHitbox) {
+                DebugRenderer.addHitbox(
+                    definition.ceilingHitbox.transform(this.position, 1, this.orientation),
+                    definition.noCeilingScopeEffect ? HITBOX_COLORS.buildingScopeCeiling : HITBOX_COLORS.buildingZoomCeiling,
+                    alpha
+                );
+            }
+        }
+
+        if (!GameConsole.getBuiltInCVar("db_show_hitboxes_buildings")) return;
+
         if (this.hitbox) {
             DebugRenderer.addHitbox(
                 this.hitbox,
@@ -351,14 +373,6 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
             HITBOX_COLORS.spawnHitbox,
             alpha
         );
-
-        if (definition.ceilingHitbox) {
-            DebugRenderer.addHitbox(
-                definition.ceilingHitbox.transform(this.position, 1, this.orientation),
-                definition.noCeilingScopeEffect ? HITBOX_COLORS.buildingScopeCeiling : HITBOX_COLORS.buildingZoomCeiling,
-                alpha
-            );
-        }
 
         if (definition.bulletMask) {
             DebugRenderer.addHitbox(
@@ -389,15 +403,6 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
                 collider.transform(this.position, 1, this.orientation),
                 HITBOX_COLORS.buildingVisOverride,
                 layer === Game.layer ? 1 : DIFF_LAYER_HITBOX_OPACITY
-            );
-        }
-
-        for (const [start, end] of this.ceilingRaycastLines ?? []) {
-            DebugRenderer.addLine(
-                start,
-                end,
-                HITBOX_COLORS.buildingCeilingRaycast,
-                alpha
             );
         }
     }

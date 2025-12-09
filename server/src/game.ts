@@ -296,6 +296,11 @@ export class Game implements GameData {
                 case PacketType.Spectate:
                     player.spectate(packet);
                     break;
+                case PacketType.Debug:
+                    if (process.env.NODE_ENV === "development") {
+                        player.processDebugPacket(packet);
+                    }
+                    break;
             }
         }
     }

@@ -130,16 +130,27 @@
     <div id="initial-loader" class="loader"></div>
 
     <!-- Console -->
-    <div id="console" style="display: none">
-      <div id="console-container">
-        <div id="console-header">
+    <div id="console" class="floating-window" style="display: none">
+      <div id="console-container" class="floating-window-container">
+        <div id="console-header" class="floating-window-header">
           <span>Console</span>
-          <button id="console-close"><i class="fa-solid fa-xmark"></i></button>
+          <button id="console-close" class="floating-window-close"><i class="fa-solid fa-xmark"></i></button>
         </div>
         <div id="console-out"></div>
         <textarea id="console-in" autocapitalize="off" autocomplete="off" ></textarea>
       </div>
       <div id="console-autocmp" style="display: none"></div>
+    </div>
+
+    <!-- Debug Menu --->
+    <div id="debug-menu" class="floating-window" style="display: none;">
+      <div id="debug-menu-container" class="floating-window-container">
+        <div id="debug-menu-header" class="floating-window-header">
+          <span>Debug Menu</span>
+          <button id="debug-menu-close" class="floating-window-close"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div id="debug-menu-content"></div>
+      </div>
     </div>
 
     <!-- Main UI -->
