@@ -10,7 +10,7 @@ import { Angle, Collision, Geometry, Numeric, τ } from "@common/utils/math";
 import { removeFrom, SDeepMutable } from "@common/utils/misc";
 import { NullString, type ReferenceTo, type ReifiableDef } from "@common/utils/objectDefinitions";
 import { SeededRandom, pickRandomInArray, random, randomBoolean, randomFloat, randomPointInsideCircle, randomRotation, randomVector } from "@common/utils/random";
-import { River, Terrain } from "@common/utils/terrain";
+import { FloorNames, River, Terrain } from "@common/utils/terrain";
 import { Vec, type Vector } from "@common/utils/vector";
 import { MapDefinition, MapName, Maps, ObstacleClump, RiverDefinition } from "./data/maps";
 import { type Game } from "./game";
@@ -168,13 +168,17 @@ export class GameMap {
 
         packet.rivers = rivers;
 
+        const baseMode = Modes[this.game.modeName].similarTo ?? this.game.modeName;
+        const waterType = baseMode === "winter" ? FloorNames.Ice : FloorNames.Water;
+
         this.terrain = new Terrain(
             this.width,
             this.height,
             mapDef.oceanSize,
             mapDef.beachSize,
             this.seed,
-            rivers
+            rivers,
+            waterType
         );
 
         const majorBuildings = Array.from(mapDef.majorBuildings ?? []);

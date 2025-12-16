@@ -490,8 +490,9 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             }
 
             if (this.distSinceLastFootstep > 10) {
+                const footstepFloor = FloorTypes[this.floorType].slippery ? FloorNames.Sand : this.floorType;
                 this.footstepSound = this.playSound(
-                    `${this.floorType}_step_${random(1, 2)}`,
+                    `${footstepFloor}_step_${random(1, 2)}`,
                     {
                         falloff: 0.6,
                         maxRange: 48
@@ -2329,7 +2330,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         });
 
         if (GameConsole.getBuiltInCVar("cv_cooler_graphics") && !this.downed) {
-            const isOnWater = this.floorType === FloorNames.Water;
+            const isOnWater = this.floorType === FloorNames.Water || this.floorType === FloorNames.Ice;
             this._bloodDecals.add(
                 ParticleManager.spawnParticle({
                     frames: "blood_particle",

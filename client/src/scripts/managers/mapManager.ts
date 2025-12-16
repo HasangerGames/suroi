@@ -4,7 +4,7 @@ import { type MapData } from "@common/packets/mapPacket";
 import { type MapIndicatorSerialization, type PingSerialization, type PlayerPingSerialization } from "@common/packets/updatePacket";
 import { RectangleHitbox } from "@common/utils/hitbox";
 import { Collision, Numeric } from "@common/utils/math";
-import { FloorTypes, River, Terrain } from "@common/utils/terrain";
+import { FloorNames, FloorTypes, River, Terrain } from "@common/utils/terrain";
 import { Vec, type Vector } from "@common/utils/vector";
 import $ from "jquery";
 import { Container, Graphics, RenderTexture, Sprite, Text, isMobile, type ColorSource, type Texture } from "pixi.js";
@@ -485,7 +485,7 @@ class MapManagerClass {
         for (const river of this._terrain.rivers) {
             const points = river.points.map(point => Vec.scale(point, PIXI_SCALE));
 
-            if (river.waterHitbox) drawHitbox(river.waterHitbox, FloorTypes.water.debugColor, debugGraphics);
+            if (river.waterHitbox) drawHitbox(river.waterHitbox, FloorTypes[this._terrain.waterType].debugColor, debugGraphics);
             drawHitbox(river.bankHitbox, FloorTypes.sand.debugColor, debugGraphics);
 
             debugGraphics.setStrokeStyle({
@@ -528,13 +528,17 @@ class MapManagerClass {
         const rivers: River[] = [];
         rivers.push(...mapPacket.rivers.map(({ width, points, isTrail }) => new River(width, points as Vector[], rivers, mapBounds, isTrail)));
 
+        const baseMode = Game.mode.similarTo ?? Game.modeName;
+        const waterType = baseMode === "winter" ? FloorNames.Ice : FloorNames.Water;
+
         this._terrain = new Terrain(
             width,
             height,
             mapPacket.oceanSize,
             mapPacket.beachSize,
             mapPacket.seed,
-            rivers
+            rivers,
+            waterType
         );
 
         for (const object of this._objects) {
