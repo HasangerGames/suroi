@@ -490,7 +490,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             }
 
             if (this.distSinceLastFootstep > 10) {
-                const footstepFloor = FloorTypes[this.floorType].slippery ? FloorNames.Sand : this.floorType;
+                const footstepFloor = FloorTypes[this.floorType].slippery ? FloorNames.Ice : this.floorType;
                 this.footstepSound = this.playSound(
                     `${footstepFloor}_step_${random(1, 2)}`,
                     {

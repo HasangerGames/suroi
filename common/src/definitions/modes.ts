@@ -30,6 +30,7 @@ export interface ModeDefinition {
     readonly spriteSheets: readonly SpritesheetNames[]
     readonly ambience?: string
     readonly ambienceVolume?: number
+    readonly noRiverAmbience?: boolean
     readonly replaceMenuMusic?: boolean
     readonly defaultScope?: ReferenceTo<ScopeDefinition>
     readonly obstacleVariants?: boolean
@@ -174,6 +175,7 @@ export const Modes: Record<ModeName, ModeDefinition> = {
         },
         spriteSheets: ["shared", "normal", "winter"],
         ambience: "snowstorm_ambience",
+        noRiverAmbience: true,
         replaceMenuMusic: true,
         bulletTrailAdjust: "hsl(0, 50%, 80%)",
         particleEffects: {
@@ -223,6 +225,7 @@ export const Modes: Record<ModeName, ModeDefinition> = {
         },
         spriteSheets: ["shared", "normal", "winter"],
         ambience: "snowstorm_ambience",
+        noRiverAmbience: true,
         replaceMenuMusic: true,
         bulletTrailAdjust: "hsl(0, 50%, 80%)",
         particleEffects: {

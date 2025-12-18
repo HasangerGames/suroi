@@ -1005,7 +1005,7 @@ const maps = {
             aegis_crate_winter: 5,
             grenade_crate_winter: 35,
             rock: 150,
-            river_chest: 1,
+            river_chest_winter: 1,
             bush: 110,
             // birthday_cake: 100, // birthday mode
             blueberry_bush: 30,
