@@ -66,6 +66,8 @@ export class Game implements GameData {
     readonly partialDirtyObjects = new Set<BaseGameObject>();
     readonly fullDirtyObjects = new Set<BaseGameObject>();
 
+    lastAirdropTime = 0;
+
     updateObjects = false;
 
     readonly livingPlayers = new Set<Player>();
@@ -321,6 +323,20 @@ export class Game implements GameData {
                 timeout.callback();
                 this._timeouts.delete(timeout);
             }
+        }
+
+        if (this.mode.summonAirdropsInterval !== undefined && (this.now - this.lastAirdropTime) >= this.mode.summonAirdropsInterval) {
+            this.summonAirdrop(
+                this.map.getRandomPosition(
+                    new CircleHitbox(15),
+                    {
+                        maxAttempts: 500,
+                        spawnMode: MapObjectSpawnMode.GrassAndSand,
+                        collides: position => Geometry.distanceSquared(position, this.gas.currentPosition) >= this.gas.newRadius ** 2
+                    }
+                ) ?? this.gas.newPosition
+            );
+            this.lastAirdropTime = this.now;
         }
 
         for (const loot of this.grid.pool.getCategory(ObjectCategory.Loot)) {
@@ -850,7 +866,7 @@ export class Game implements GameData {
             player.lastSelfDownTime !== undefined
             && player.lastSelfDownTime - player.joinTime <= 30000;
 
-        if (!player.dead) {
+        if (!player.dead && player.game.map.mapDef.spawn === undefined) {
             player.health = 0;
             if (
                 combatLogInfo

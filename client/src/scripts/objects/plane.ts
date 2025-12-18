@@ -6,6 +6,7 @@ import { CameraManager } from "../managers/cameraManager";
 import { SoundManager, type GameSound } from "../managers/soundManager";
 import { PIXI_SCALE } from "../utils/constants";
 import { SuroiSprite } from "../utils/pixi";
+import { BlurFilter } from "pixi.js";
 
 export class Plane {
     readonly startPosition: Vector;
@@ -29,6 +30,12 @@ export class Plane {
             .setZIndex(Number.MAX_SAFE_INTEGER - 2) // todo: better logic for this lol
             .setRotation(direction)
             .setScale(4);
+
+        // awful temporary fix to blur airdrop plane in winter mode
+        // (blurring the image breaks it)
+        if (Game.modeName === "winter") {
+            this.image.filters = [new BlurFilter({ strength: 12 })];
+        }
 
         this.sound = SoundManager.play(
             "airdrop_plane",

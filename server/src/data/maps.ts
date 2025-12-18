@@ -21,6 +21,7 @@ import { GamePlugin } from "../pluginManager";
 import { getLootFromTable } from "../utils/lootHelpers";
 import { LootTables } from "./lootTables";
 import { ConfigSchema } from "../utils/config.d";
+import { memoryUsage } from "process";
 
 export interface RiverDefinition {
     readonly minAmount: number
@@ -937,27 +938,31 @@ const maps = {
                 river_rock: 16
             }
         },
+        majorBuildings: [
+            "port",
+            "headquarters",
+            "armory",
+            "refinery"
+        ],
         buildings: {
             large_bridge: 2,
             small_bridge: Infinity,
-            port: 1,
+            river_hut_1: 2,
+            river_hut_2: 2,
+            river_hut_3: 2,
             lighthouse: 1,
             tugboat_red: 1,
             tugboat_white: 5,
-            armory: 1,
-            headquarters: 1,
-            fulcrum_bunker: 1,
-            small_bunker: 1,
-            refinery: 1,
-            warehouse: 4,
-            christmas_camp: 1,
+            fulcrum_bunker_winter: 1,
+            small_bunker_winter: 1,
+            warehouse: 5,
             green_house: 3,
             blue_house: 2,
             blue_house_special: 1,
             red_house: 3,
             red_house_v2: 3,
             construction_site: 1,
-            mobile_home: 8,
+            mobile_home: 10,
             porta_potty: 12,
             container_3: 2,
             container_4: 2,
@@ -966,10 +971,17 @@ const maps = {
             container_7: 1,
             container_8: 2,
             container_9: 1,
-            container_10: 3
+            container_10: 2,
+            memorial: 1,
+            buoy: 16,
+            christmas_camp: 1,
+            igloo: 6
         },
-        majorBuildings: ["armory", "refinery", "port", "headquarters", "christmas_camp"],
         quadBuildingLimit: {
+            port: 1,
+            river_hut_1: 1,
+            river_hut_2: 1,
+            river_hut_3: 1,
             red_house: 1,
             red_house_v2: 1,
             warehouse: 2,
@@ -978,12 +990,13 @@ const maps = {
             mobile_home: 3,
             porta_potty: 3,
             construction_site: 1,
-            blue_house_special: 1
+            blue_house_special: 1,
+            igloo: 2
         },
         obstacles: {
             oil_tank_winter: 12,
-            oak_tree: 40,
-            birch_tree: 20,
+            big_oak_tree_winter: 40,
+            birch_tree_winter: 20,
             pine_tree: 90,
             loot_tree: 1,
             regular_crate_winter: 140,
@@ -992,7 +1005,7 @@ const maps = {
             aegis_crate_winter: 5,
             grenade_crate_winter: 35,
             rock: 150,
-            river_chest: 1,
+            river_chest_winter: 1,
             bush: 110,
             // birthday_cake: 100, // birthday mode
             blueberry_bush: 30,
@@ -1006,27 +1019,27 @@ const maps = {
         },
         obstacleClumps: [
             {
-                clumpAmount: 25,
+                clumpAmount: 10,
                 clump: {
                     minAmount: 2,
                     maxAmount: 3,
                     jitter: 5,
-                    obstacles: ["oak_tree"],
+                    obstacles: ["big_oak_tree_winter"],
                     radius: 12
                 }
             },
             {
-                clumpAmount: 25,
+                clumpAmount: 20,
                 clump: {
                     minAmount: 2,
                     maxAmount: 3,
                     jitter: 5,
-                    obstacles: ["birch_tree"],
+                    obstacles: ["birch_tree_winter"],
                     radius: 12
                 }
             },
             {
-                clumpAmount: 65,
+                clumpAmount: 50,
                 clump: {
                     minAmount: 2,
                     maxAmount: 3,
@@ -1040,12 +1053,186 @@ const maps = {
             ground_loot: 60
         },
         places: [
-            { name: "Banana", position: Vec(0.23, 0.2) },
-            { name: "Takedown", position: Vec(0.23, 0.8) },
+            { name: "Cherry", position: Vec(0.23, 0.2) },
+            { name: "Zone 42", position: Vec(0.23, 0.8) },
             { name: "Lavlandet", position: Vec(0.75, 0.2) },
-            { name: "Noskin Narrows", position: Vec(0.72, 0.8) },
-            { name: "Mt. Sanger", position: Vec(0.5, 0.35) },
+            { name: "Snowy Lands", position: Vec(0.72, 0.8) },
+            { name: "St. Sanger", position: Vec(0.5, 0.35) },
             { name: "Deepwood", position: Vec(0.5, 0.65) }
+        ]
+    },
+    nye: {
+        width: 1452,
+        height: 1452,
+        beachSize: 32,
+        oceanSize: 64,
+        onGenerate(map) {
+            const targetBuildingIdString = "christmas_camp";
+            map.generateBuilding(targetBuildingIdString, Vec(this.width / 2, this.height / 2), 0);
+
+            const buildings = {
+                // seriously stfu
+
+                red_house: 3,
+                blue_house: 3,
+                blue_house_special: 1,
+                green_house: 4,
+                red_house_v2: 3,
+                mobile_home: (Math.random() * 5) + 3,
+                porta_potty: 6,
+                river_hut_1: 2,
+                river_hut_2: 2,
+                river_hut_3: 2,
+                lighthouse: 1,
+                igloo: 5,
+
+                warehouse: 5,
+                container_3: 2,
+                container_4: 2,
+                container_5: 2,
+                container_6: 2,
+                container_7: 2,
+                container_8: 2,
+                container_9: 2,
+                container_10: 2,
+                container_20: 3,
+                container_26: 3,
+                small_bunker_winter: 1,
+                fulcrum_bunker_winter: 1,
+                construction_site: 1,
+                memorial: 1,
+                buoy: 12
+            };
+
+            const obstacles = {
+                oil_tank_winter: 5,
+                big_oak_tree_winter: 85,
+                birch_tree_winter: 85,
+                pine_tree: 60,
+                box_winter: 50,
+                regular_crate_winter: 80,
+                flint_crate_winter: 12,
+                aegis_crate_winter: 12,
+                grenade_crate_winter: 30,
+                rock: 70,
+                bush: 25,
+                blueberry_bush: 40,
+                barrel_winter: 45,
+                gun_case_winter: 15,
+                super_barrel_winter: 20,
+                melee_crate_winter: 4,
+                gold_rock: 1,
+                loot_tree: 1,
+                loot_barrel: 1,
+                small_lamp_thingy: 50,
+                red_gift: 6,
+                blue_gift: 6,
+                green_gift: 6,
+                black_gift: 2,
+                purple_gift: Math.random() > 0.9 ? 2 : 0,
+
+                viking_chest: Math.random() > 0.9 ? 1 : 0,
+                tango_crate: Math.random() > 0.8 ? 1 : 0,
+                lux_crate: Math.random() > 0.8 ? 1 : 0
+            };
+
+            const loots = {
+                ground_loot: 40,
+                regular_crate: 40
+            };
+
+            Object.entries(buildings).forEach(([building, count]) => {
+                const definition = Buildings.reify(building);
+
+                const { rotationMode } = definition;
+                let attempts = 0;
+
+                for (let i = 0; i < count; i++) {
+                    let validPositionFound = false;
+
+                    while (!validPositionFound && attempts < 100) {
+                        let orientation = GameMap.getRandomBuildingOrientation(rotationMode);
+
+                        const position = map.getRandomPosition(definition.spawnHitbox, {
+                            orientation,
+                            spawnMode: definition.spawnMode ?? MapObjectSpawnMode.Grass,
+                            orientationConsumer: (newOrientation: Orientation) => {
+                                orientation = newOrientation;
+                            },
+                            maxAttempts: 400
+                        });
+
+                        if (!position) {
+                            attempts++;
+                            continue;
+                        }
+
+                        map.generateBuilding(definition, position, orientation);
+                        validPositionFound = true;
+                    }
+
+                    attempts = 0; // Reset attempts counter for the next building
+                }
+            });
+
+            Object.entries(obstacles).forEach(([obstacle, count]) => {
+                const def = Obstacles.reify(obstacle);
+
+                const { scale = { spawnMin: 1, spawnMax: 1 }, variations, rotationMode } = def;
+                const { spawnMin, spawnMax } = scale;
+                const effSpawnHitbox = def.spawnHitbox ?? def.hitbox;
+
+                for (let i = 0; i < count; i++) {
+                    const scale = randomFloat(spawnMin ?? 1, spawnMax ?? 1);
+                    const variation = (variations !== undefined ? random(0, variations - 1) : 0) as Variation;
+                    const rotation = GameMap.getRandomRotation(rotationMode);
+
+                    let orientation: Orientation = 0;
+
+                    if (rotationMode === RotationMode.Limited) {
+                        orientation = rotation as Orientation;
+                    }
+
+                    const position = map.getRandomPosition(effSpawnHitbox, {
+                        scale,
+                        orientation,
+                        spawnMode: def.spawnMode
+                    });
+
+                    if (!position) {
+                        continue;
+                    }
+
+                    map.generateObstacle(def, position, { layer: Layer.Ground, scale, variation });
+                }
+            });
+
+            Object.entries(loots ?? {}).forEach(([lootTable, count]) => {
+                for (let i = 0; i < count; i++) {
+                    const loot = getLootFromTable("winter", lootTable);
+
+                    const position = map.getRandomPosition(
+                        new CircleHitbox(5),
+                        { spawnMode: MapObjectSpawnMode.GrassAndSand }
+                    );
+
+                    if (!position) {
+                        continue;
+                    }
+
+                    for (const item of loot) {
+                        map.game.addLoot(
+                            item.idString,
+                            position,
+                            Layer.Ground,
+                            { count: item.count, jitterSpawn: false }
+                        );
+                    }
+                }
+            });
+        },
+        places: [
+            { name: "Celebration Area", position: Vec(0.5, 0.5) }
         ]
     },
     debug: {

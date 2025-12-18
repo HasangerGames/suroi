@@ -8,6 +8,7 @@ import * as PixiSound from "@pixi/sound";
 import type { AudioSpritesheetImporter } from "../../../vite/plugins/audio-spritesheet-plugin";
 import { GameConsole } from "../console/gameConsole";
 import type { Tween } from "../utils/tween";
+import { Modes } from "@common/definitions/modes";
 
 export interface SoundOptions {
     position?: Vector
@@ -177,7 +178,8 @@ class SoundManagerClass {
         this.ambienceVolume = GameConsole.getBuiltInCVar("cv_ambience_volume");
 
         const { importSpritesheet } = await import("virtual:audio-spritesheet-importer") as AudioSpritesheetImporter;
-        const { filename, spritesheet } = await importSpritesheet(Game.modeName);
+        const _modeName = Modes[Game.modeName].similarTo ?? Game.modeName;
+        const { filename, spritesheet } = await importSpritesheet(_modeName);
         const audio = await (await fetch(filename)).arrayBuffer();
         let offset = 0;
         for (const [id, length] of Object.entries(spritesheet)) {

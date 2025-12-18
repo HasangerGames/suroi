@@ -5,7 +5,7 @@ import { randomPointInsideCircle } from "@common/utils/random";
 import { Vec, type Vector } from "@common/utils/vector";
 import { Config } from "./utils/config";
 import { GasStage, GasStages } from "./data/gasStages";
-import { type Game } from "./game";
+import { Game } from "./game";
 import { MapPing, MapPings } from "@common/definitions/mapPings";
 import { runOrWait } from "./utils/misc";
 
@@ -158,7 +158,7 @@ export class Gas {
         this.dirty = true;
         this.completionRatioDirty = true;
 
-        if (currentStage.summonAirdrop) {
+        if (currentStage.summonAirdrop && this.game.mode.summonAirdropsInterval === undefined) {
             this.game.summonAirdrop(
                 this.game.map.getRandomPosition(
                     new CircleHitbox(15),

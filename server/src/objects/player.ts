@@ -1252,8 +1252,26 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         }
 
         // Update position
+        const dtSeconds = dt / 1000;
         const oldPosition = Vec.clone(this.position);
-        this._movementVector = Vec.scale(movement, speed);
+        const desiredVelocity = Vec.scale(movement, speed);
+        const onIce = FloorTypes[this.floor].slippery ?? false;
+        const hasMovementInput = movement.x !== 0 || movement.y !== 0;
+
+        if (onIce) {
+            const accelFactor = Numeric.clamp(GameConstants.player.ice.acceleration * dtSeconds, 0, 1);
+            if (hasMovementInput) {
+                this._movementVector = Vec.add(
+                    this._movementVector,
+                    Vec.scale(Vec.sub(desiredVelocity, this._movementVector), accelFactor)
+                );
+            }
+
+            const friction = hasMovementInput ? GameConstants.player.ice.movingFriction : GameConstants.player.ice.friction;
+            this._movementVector = Vec.scale(this._movementVector, 1 / (1 + dtSeconds * friction));
+        } else {
+            this._movementVector = desiredVelocity;
+        }
 
         this.position = Vec.add(
             this.position,
@@ -1537,7 +1555,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                         });
                         this.adrenaline -= this.adrenaline * (perk.adrenLoss / 100);
                         const decal = this.game.addDecal(
-                            this.floor === FloorNames.Water ? perk.decals.water : perk.decals.ground, // todo: add a `isWater` boolean on decals instead of using a seperate def, I couldn't figure it out without breaking the decals
+                            (this.floor === FloorNames.Water || this.floor === FloorNames.Ice) ? perk.decals.water : perk.decals.ground, // todo: add a `isWater` boolean on decals instead of using a seperate def, I couldn't figure it out without breaking the decals
                             this.position,
                             this.rotation,
                             this.layer

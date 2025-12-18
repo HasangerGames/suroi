@@ -9,7 +9,7 @@ import { Collision, Geometry, Numeric } from "@common/utils/math";
 import { DefinitionType, type ReifiableDef } from "@common/utils/objectDefinitions";
 import { type FullData } from "@common/utils/objectsSerializations";
 import { randomRotation } from "@common/utils/random";
-import { FloorNames } from "@common/utils/terrain";
+import { FloorNames, FloorTypes } from "@common/utils/terrain";
 import { Vec, type Vector } from "@common/utils/vector";
 import { type Game } from "../game";
 import { GunItem } from "../inventory/gunItem";
@@ -102,9 +102,10 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
         this._oldPosition = Vec.clone(this.position);
 
         const { terrain } = this.game.map;
+        const floorType = terrain.getFloor(this.position, this.layer);
         if (
             this.layer === Layer.Ground
-            && terrain.getFloor(this.position, this.layer) === FloorNames.Water
+            && floorType === FloorNames.Water
             && terrain.groundRect.isPointInside(this.position)
         ) {
             for (const river of terrain.getRiversInPosition(this.position)) {
@@ -129,7 +130,8 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
         };
 
         this.position = Vec.add(this.position, calculateSafeDisplacement());
-        this.velocity = Vec.scale(this.velocity, 1 / (1 + dt * 0.003));
+        const drag = FloorTypes[floorType].slippery ? GameConstants.loot.iceDrag : GameConstants.loot.drag;
+        this.velocity = Vec.scale(this.velocity, 1 / (1 + dt * drag));
 
         this.position = Vec.add(this.position, calculateSafeDisplacement());
         this.position.x = Numeric.clamp(this.position.x, this.hitbox.radius, this.game.map.width - this.hitbox.radius);

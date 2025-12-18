@@ -4,6 +4,7 @@ import { type BadgeDefinition } from "@common/definitions/badges";
 import { getBadgeIdString, isEmoteBadge, type EmoteDefinition } from "@common/definitions/emotes";
 import { Ammos } from "@common/definitions/items/ammos";
 import { HealingItems } from "@common/definitions/items/healingItems";
+import { type GunDefinition } from "@common/definitions/items/guns";
 import { PerkCategories, PerkIds, type PerkDefinition } from "@common/definitions/items/perks";
 import { DEFAULT_SCOPE, type ScopeDefinition } from "@common/definitions/items/scopes";
 import { Skins } from "@common/definitions/items/skins";
@@ -1106,7 +1107,8 @@ class UIManagerClass {
             }
 
             const ammo = weapon?.count;
-            if (ammo !== cache.ammo || isNew) {
+            const ammoChanged = ammo !== cache.ammo || isNew;
+            if (ammoChanged) {
                 cache.ammo = ammo;
                 ammoCounter.text(ammo ?? "");
             }
@@ -1115,6 +1117,15 @@ class UIManagerClass {
             if (hasAmmo !== cache.hasAmmo || isNew) {
                 cache.hasAmmo = hasAmmo;
                 ammoCounter.css("color", hasAmmo ? "unset" : "red");
+            }
+
+            if (
+                ammoChanged
+                && isActive
+                && definition?.defType === DefinitionType.Gun
+                && (definition as GunDefinition).image?.unloadedWorldImage
+            ) {
+                Game.activePlayer?.updateWeapon(true);
             }
         }
     }

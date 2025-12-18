@@ -44,6 +44,7 @@ export type ThrowableDefinition = InventoryItemDefinition & {
             readonly air: number
             readonly ground: number
             readonly water: number
+            readonly ice?: number
         }
     }
 

@@ -10,7 +10,7 @@ import { Angle, Collision, Geometry, Numeric, τ } from "@common/utils/math";
 import { removeFrom, SDeepMutable } from "@common/utils/misc";
 import { NullString, type ReferenceTo, type ReifiableDef } from "@common/utils/objectDefinitions";
 import { SeededRandom, pickRandomInArray, random, randomBoolean, randomFloat, randomPointInsideCircle, randomRotation, randomVector } from "@common/utils/random";
-import { River, Terrain } from "@common/utils/terrain";
+import { FloorNames, River, Terrain } from "@common/utils/terrain";
 import { Vec, type Vector } from "@common/utils/vector";
 import { MapDefinition, MapName, Maps, ObstacleClump, RiverDefinition } from "./data/maps";
 import { type Game } from "./game";
@@ -18,6 +18,7 @@ import { Building } from "./objects/building";
 import { Obstacle } from "./objects/obstacle";
 import { getLootFromTable } from "./utils/lootHelpers";
 import { CARDINAL_DIRECTIONS, getRandomIDString } from "./utils/misc";
+import { Modes } from "@common/definitions/modes";
 
 export interface MapOptions {
     scale?: number
@@ -167,13 +168,17 @@ export class GameMap {
 
         packet.rivers = rivers;
 
+        const baseMode = Modes[this.game.mode.similarTo ?? this.game.modeName];
+        const waterType = baseMode.replaceWaterBy ?? FloorNames.Water;
+
         this.terrain = new Terrain(
             this.width,
             this.height,
             mapDef.oceanSize,
             mapDef.beachSize,
             this.seed,
-            rivers
+            rivers,
+            waterType
         );
 
         const majorBuildings = Array.from(mapDef.majorBuildings ?? []);
@@ -684,7 +689,8 @@ export class GameMap {
             let idString = getRandomIDString<ObstacleDefinition>(obstacleData.idString);
             if (idString === NullString) continue;
             if (obstacleData.outdoors && this.game.mode.obstacleVariants) {
-                idString = `${idString}_${this.game.modeName}`;
+                const _modeName = Modes[this.game.modeName].similarTo ?? this.game.modeName;
+                idString = `${idString}_${_modeName}`;
             }
 
             // ------------------------------------------------------------------------------------------------
@@ -783,7 +789,11 @@ export class GameMap {
         }
 
         for (const floor of definition.floors ?? []) {
-            this.terrain.addFloor(floor.type, floor.hitbox.transform(position, 1, orientation), floor.layer ?? layer);
+            let floorType = floor.type;
+            if (floorType === FloorNames.Water) {
+                floorType = this.terrain.waterType;
+            }
+            this.terrain.addFloor(floorType, floor.hitbox.transform(position, 1, orientation), floor.layer ?? layer);
         }
 
         if (!definition.hideOnMap) this._packet.objects.push(building);

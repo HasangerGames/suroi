@@ -198,5 +198,18 @@ export const Ammos = new ObjectDefinitions<AmmoDefinition>([
             lightness: 75
         },
         ephemeral: true
-    }
+    },
+    {
+        idString: "icicle",
+        name: "Icicle",
+        defType: DefinitionType.Ammo,
+        maxStackSize: 0,
+        minDropAmount: 0,
+        characteristicColor: {
+            hue: 200,
+            saturation: 50,
+            lightness: 65
+        },
+        ephemeral: true
+    },
 ]);

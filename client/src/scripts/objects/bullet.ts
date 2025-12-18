@@ -6,7 +6,7 @@ import { Geometry, Numeric, resolveStairInteraction } from "@common/utils/math";
 import { random, randomFloat, randomRotation } from "@common/utils/random";
 import { Vec } from "@common/utils/vector";
 import { colord } from "colord";
-import { BloomFilter } from "pixi-filters";
+import { BloomFilter, GlowFilter, MultiColorReplaceFilter } from "pixi-filters";
 import { Color, Container } from "pixi.js";
 import { GameConsole } from "../console/gameConsole";
 import { Game } from "../game";
@@ -62,9 +62,27 @@ export class Bullet extends BaseBullet {
             && GameConsole.getBuiltInCVar("cv_bullet_trail_bloom");
 
         if (coolerBulletTrailsEnabled) {
-            this._image.filters = [new BloomFilter({
-                strength: 5
-            })];
+            this._image.filters = [
+                new BloomFilter({
+                    strength: 5
+                })
+            ];
+        }
+
+        if (Game.mode.bulletFilters) {
+            this._image.filters = [
+                new GlowFilter({
+                    distance: 15,
+                    outerStrength: 2
+                }),
+                new MultiColorReplaceFilter({
+                    replacements: [
+                    [ [1,0,0], [0,0,1] ],
+                    [ [0,1,0], [1,1,1] ]
+                    ],
+                    tolerance: 0.001
+                })
+            ];
         }
 
         this._image.anchor.set(1, 0.5);

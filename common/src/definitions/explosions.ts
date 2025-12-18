@@ -573,7 +573,6 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>([
                 color: 0x000000
             }
         },
-        killfeedFrame: "explosion",
         sound: "firework_rocket_explode",
         decal: "explosion_decal"
     },

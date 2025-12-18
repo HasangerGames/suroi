@@ -456,7 +456,7 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
             .setZIndex(imageDef.zIndex ?? ZIndexes.Ground) // broken
             .setFrame(frame)
             .setVPos(toPixiCoords(imageDef.position))
-            .setVisible(frame !== undefined && !(this.dead && imageDef.hideOnDead));
+            .setVisible(frame !== undefined && !(this.dead && imageDef.hideOnDead) && !(!this.dead && imageDef.hideOnAlive));
 
         if (imageDef.spinSpeed !== undefined ? isNewSprite : true) {
             sprite.setRotation(imageDef.rotation ?? 0);

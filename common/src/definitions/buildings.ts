@@ -57,6 +57,7 @@ export interface BuildingImageDefinition {
     readonly damaged?: string
     readonly alpha?: number
     readonly hideOnDead?: boolean
+    readonly hideOnAlive?: boolean
 }
 
 interface BuildingGraphicsDefinition {
@@ -238,6 +239,13 @@ const randomGift = {
     purple_gift: 0.1
 };
 
+const randomIglooLayout ={
+    igloo_layout_1: 0.3,
+    igloo_layout_2: 1,
+    igloo_layout_3: 1,
+    igloo_layout_4: 0.95
+};
+
 const randomPallet = {
     pallet_1: 1,
     pallet_2: 1,
@@ -271,9 +279,14 @@ const randomTree = {
     birch_tree: 1
 };
 
+const randomTreeWinter = {
+    big_oak_tree_winter: 1,
+    birch_tree_winter: 1
+};
+
 const randomCelebrationWinterTree = {
-    oak_tree: 1,
-    birch_tree: 1,
+    big_oak_tree_winter: 1,
+    birch_tree_winter: 1,
     pine_tree: 0.9
 };
 
@@ -331,6 +344,18 @@ const randomPortDamagedContainerReversed = {
 const warehouseObstacle = {
     regular_crate: 2,
     flint_crate: 1
+};
+
+const iglooOuterObstacle = {
+    big_oak_tree: 3,
+    birch_tree: 3,
+    regular_crate: 2,
+    barrel: 2,
+    trash_bag: 1,
+    super_barrel: 1,
+    grenade_crate: 0.8,
+    melee_crate: 0.75,
+    flint_crate: 0.75
 };
 
 const fireworkWarehouseObstacle = {
@@ -464,10 +489,19 @@ const huntingStandLayout = (id: number, obstacles: readonly BuildingObstacle[], 
     lootSpawners: lootSpawners_ ?? undefined
 });
 
+const iglooLayout = (id: number, obstacles: readonly BuildingObstacle[]): BuildingDefinition => ({
+    idString: `igloo_layout_${id}`,
+    name: "Igloo Layout",
+    defType: DefinitionType.Building,
+    spawnHitbox: new CircleHitbox(21.61, Vec(24.98, -3.64)),
+    obstacles
+});
+
+type ContainerVariation = "open2" | "open1" | "closed" | "closed_damaged" | "damaged" | "damaged_reversed" | "gas_can";
 const container = (
     id: number,
     color: keyof typeof ContainerTints,
-    variant: "open2" | "open1" | "closed" | "closed_damaged" | "damaged" | "damaged_reversed" | "gas_can",
+    variant: ContainerVariation,
     damaged?: boolean
 ): BuildingDefinition => {
     const tint = ContainerTints[color];
@@ -545,6 +579,74 @@ const container = (
                 },
                 {
                     key: "container_snow_cover_patch",
+                    position: Vec(1.8, 13.525),
+                    tint: tint,
+                    rotation: Math.PI,
+                    scale: Vec(1.1, 1)
+                }
+            ]
+        ]),
+        closed_damaged: pickRandomInArray([
+                       [
+                {
+                    key: "snow_decal_container_closed_1",
+                    position: Vec(2.5, 9.08),
+                    scale: Vec(-1, -1)
+                },
+                {
+                    key: "snow_decal_container_closed_2",
+                    position: Vec(4.4, -6.5)
+                },
+                {
+                    key: "container_snow_cover_patch_tinted_d",
+                    position: Vec(6.7, 7),
+                    tint: tint,
+                    rotation: Math.PI / 2,
+                    scale: Vec(1.5, 1)
+                },
+                {
+                    key: "container_snow_cover_patch_tinted_d",
+                    position: Vec(1.9, 13.525),
+                    tint: tint,
+                    rotation: Math.PI,
+                    scale: Vec(1.1, 1)
+                },
+                {
+                    key: "container_snow_cover_patch_tinted_d",
+                    position: Vec(6.6, -7),
+                    tint: tint,
+                    rotation: Math.PI / 2,
+                    scale: Vec(1.5, 1)
+                }
+            ],
+            [
+                {
+                    key: "snow_decal_container_closed_2",
+                    position: Vec(4.35, -6.5),
+                    rotation: Math.PI,
+                    scale: Vec(-1, 1)
+                },
+                {
+                    key: "container_snow_cover_patch_tinted_d",
+                    position: Vec(6.65, -7),
+                    tint: tint,
+                    rotation: Math.PI / 2,
+                    scale: Vec(1.5, 1)
+                },
+                {
+                    key: "snow_decal_container_open1_2",
+                    position: Vec(1.8, 10),
+                    rotation: Math.PI / 2
+                },
+                {
+                    key: "container_snow_cover_patch_tinted_d",
+                    position: Vec(6.6, 7),
+                    tint: tint,
+                    rotation: Math.PI / 2,
+                    scale: Vec(1.5, 1)
+                },
+                {
+                    key: "container_snow_cover_patch_tinted_d", // d stands for darker
                     position: Vec(1.8, 13.525),
                     tint: tint,
                     rotation: Math.PI,
@@ -685,7 +787,228 @@ const container = (
                 rotation: Math.PI / 2,
                 scale: Vec(1.5, 1)
             }
-        ]
+        ],
+        damaged_reversed: pickRandomInArray([
+            [ // S2 <//>
+                {
+                    key: "snow_decal_container_open1_1",
+                    position: Vec(3.5, 8.5),
+                    rotation: Math.PI
+                },
+                {
+                    key: "snow_decal_container_open1_2",
+                    position: Vec(3.25, -8.5)
+                },
+                {
+                    key: "container_snow_cover_patch",
+                    position: Vec(6.7, -8),
+                    tint: tint,
+                    rotation: Math.PI / 2,
+                    scale: Vec(1.25, 1.25)
+                },
+                {
+                    key: "container_snow_cover_patch",
+                    position: Vec(1, -13.6),
+                    tint: tint,
+                    rotation: Math.PI,
+                    scale: Vec(1.25, 1.25)
+                },
+                {
+                    key: "container_snow_cover_patch",
+                    position: Vec(6.7, 8),
+                    tint: tint,
+                    rotation: Math.PI / 2,
+                    scale: Vec(1.25, 1.25)
+                },
+                {
+                    key: "container_snow_cover_patch",
+                    position: Vec(5.9, 13.65),
+                    tint: tint,
+                    rotation: Math.PI,
+                    scale: Vec(0.25, 1.4)
+                },
+                {
+                    key: "container_snow_cover_patch",
+                    position: Vec(4.5, 13),
+                    tint: tint,
+                    rotation: 45,
+                    scale: Vec(0.2125, 1.1)
+                },
+                {
+                    key: "container_snow_cover_patch",
+                    position: Vec(0, 12.4),
+                    tint: tint,
+                    rotation: Math.PI,
+                    scale: Vec(0.95, 1.4)
+                }
+            ],
+            [ // S2-A <//>
+                {
+                    key: "snow_decal_container_open1_1",
+                    position: Vec(3.7, 8.5),
+                    rotation: Math.PI
+                },
+                {
+                    key: "snow_decal_container_open1_2",
+                    position: Vec(-2, -10),
+                    rotation: -Math.PI / 2
+                },
+                {
+                    key: "container_snow_cover_patch",
+                    position: Vec(-6.7, -9.9),
+                    tint: tint,
+                    rotation: Math.PI / 2,
+                    scale: Vec(0.8, 1.25)
+                },
+                {
+                    key: "container_snow_cover_patch",
+                    position: Vec(-1, -13.6),
+                    tint: tint,
+                    rotation: Math.PI,
+                    scale: Vec(1.25, 1.25)
+                },
+                {
+                    key: "container_snow_cover_patch",
+                    position: Vec(6.7, 8),
+                    tint: tint,
+                    rotation: Math.PI / 2,
+                    scale: Vec(1.25, 1.25)
+                },
+                {
+                    key: "container_snow_cover_patch",
+                    position: Vec(5.9, 13.65),
+                    tint: tint,
+                    rotation: Math.PI,
+                    scale: Vec(0.25, 1.4)
+                },
+                {
+                    key: "container_snow_cover_patch",
+                    position: Vec(4.5, 13),
+                    tint: tint,
+                    rotation: 45,
+                    scale: Vec(0.2125, 1.1)
+                },
+                {
+                    key: "container_snow_cover_patch",
+                    position: Vec(0, 12.4),
+                    tint: tint,
+                    rotation: Math.PI,
+                    scale: Vec(0.95, 1.4)
+                }
+            ]
+        ]),
+        damaged: pickRandomInArray([
+            [ // S1 <//>
+                {
+                    key: "snow_decal_container_open1_1",
+                    position: Vec(-3.5, 8.5),
+                    rotation: -Math.PI,
+                    scale: Vec(-1, 1)
+                },
+                {
+                    key: "snow_decal_container_open1_2",
+                    position: Vec(-3.25, -8.5),
+                    scale: Vec(-1, 1)
+                },
+                {
+                    key: "container_snow_cover_patch",
+                    position: Vec(-6.7, -8),
+                    tint: tint,
+                    rotation: Math.PI / 2,
+                    scale: Vec(1.25, 1.25)
+                },
+                {
+                    key: "container_snow_cover_patch",
+                    position: Vec(-1, -13.6),
+                    tint: tint,
+                    rotation: Math.PI,
+                    scale: Vec(1.25, 1.25)
+                },
+                {
+                    key: "container_snow_cover_patch",
+                    position: Vec(-6.7, 8),
+                    tint: tint,
+                    rotation: Math.PI / 2,
+                    scale: Vec(1.25, 1.25)
+                },
+                {
+                    key: "container_snow_cover_patch",
+                    position: Vec(-5.9, 13.65),
+                    tint: tint,
+                    rotation: Math.PI,
+                    scale: Vec(0.25, 1.4)
+                },
+                {
+                    key: "container_snow_cover_patch",
+                    position: Vec(-4.5, 13),
+                    tint: tint,
+                    rotation: -45,
+                    scale: Vec(0.2127, 1.11)
+                },
+                {
+                    key: "container_snow_cover_patch",
+                    position: Vec(0, 12.4),
+                    tint: tint,
+                    rotation: Math.PI,
+                    scale: Vec(0.95, 1.4)
+                }
+            ],
+            [ // S1-CB <//>
+                {
+                    key: "snow_decal_container_open1_1",
+                    position: Vec(-3.7, 8.5),
+                    rotation: -Math.PI,
+                    scale: Vec(-1, 1)
+                },
+                {
+                    key: "snow_decal_container_open1_2",
+                    position: Vec(-2, -10),
+                    rotation: -Math.PI / 2
+                },
+                {
+                    key: "container_snow_cover_patch",
+                    position: Vec(-6.7, -9.9),
+                    tint: tint,
+                    rotation: Math.PI / 2,
+                    scale: Vec(0.8, 1.25)
+                },
+                {
+                    key: "container_snow_cover_patch",
+                    position: Vec(-1, -13.6),
+                    tint: tint,
+                    rotation: Math.PI,
+                    scale: Vec(1.25, 1.25)
+                },
+                {
+                    key: "container_snow_cover_patch",
+                    position: Vec(-6.7, 8),
+                    tint: tint,
+                    rotation: Math.PI / 2,
+                    scale: Vec(1.25, 1.25)
+                },
+                {
+                    key: "container_snow_cover_patch",
+                    position: Vec(-5.9, 13.65),
+                    tint: tint,
+                    rotation: Math.PI,
+                    scale: Vec(0.25, 1.4)
+                },
+                {
+                    key: "container_snow_cover_patch",
+                    position: Vec(4.5, 13),
+                    tint: tint,
+                    rotation: 45,
+                    scale: Vec(0.2125, 1.1)
+                },
+                {
+                    key: "container_snow_cover_patch",
+                    position: Vec(0, 12.4),
+                    tint: tint,
+                    rotation: Math.PI,
+                    scale: Vec(0.95, 1.4)
+                }
+            ]
+        ])
     };
 
     switch (variant) {
@@ -859,7 +1182,11 @@ const container = (
                         tint: 0xff9500
                     }
                 ]
-                : [])
+                : []),
+                // Also, we need to figure out how to make the containers inside the hyperion non-snow variations. Probably gonna need to use
+                // a similar way to obstacle [outdoors] method with the _winter part.
+                // gas can container has the same snow decals as the closed damaged variant
+            ..._snowDecalDefinitions[variant === "gas_can" ? "closed_damaged" : variant] // TEMP. Remove when winter ends. FIX ME IM A MESS
             // TODO Detect mode somehow
             // ...(GameConstants.modeName === "winter" ? snowDecalDefinitions[open] : [])
         ],
@@ -920,7 +1247,7 @@ const container = (
                 ]
             }
             : {})
-    } as const;
+    } as const; // <-- ??
 };
 const hollowLog = (
     id: number,
@@ -991,6 +1318,74 @@ const truckContainer = (
             RectangleHitbox.fromRect(12.93, 1.6, Vec(0.07, -19.01))
         );
 
+    const snowDecalDefinitions = {
+        one_sided: pickRandomInArray([
+            [
+                {
+                    key: "shed_ceiling_snow_decal_2",
+                    position: Vec(3.47, -12.8),
+                    rotation: Math.PI,
+                    scale: Vec(1, -1)
+                },
+                {
+                    key: "snow_decal_1",
+                    position: Vec(0, 7),
+                    rotation: Math.PI
+                },
+            ],
+            [
+                {
+                    key: "shed_ceiling_snow_decal_4",
+                    position: Vec(2.95, -12.48),
+                    rotation: Math.PI / 2,
+                    scale: Vec(1, -1)
+                },
+                {
+                    key: "snow_decal_1",
+                    position: Vec(0, 6),
+                    rotation: Math.PI / 1.05
+                }
+            ]
+        ]),
+        two_sided: pickRandomInArray([
+            [
+                {
+                    key: "snow_decal_3",
+                    position: Vec(0, -10),
+                    rotation: Math.PI
+                },
+                {
+                    key: "snow_decal_1",
+                    position: Vec(0, 6)
+                }
+            ],
+            [
+                {
+                    key: "snow_decal_1",
+                    position: Vec(0, -3),
+                    rotation: Math.PI
+                },
+                {
+                    key: "snow_decal_1",
+                    position: Vec(0.15, 11),
+                    rotation: Math.PI / 2.7,
+                    scale: Vec(0.55, 0.55)
+                },
+                {
+                    key: "shed_ceiling_snow_decal_5",
+                    position: Vec(-5.1, -17.2),
+                    rotation: Math.PI
+                },
+                {
+                    key: "shed_ceiling_snow_decal_3",
+                    position: Vec(5.15, -15.3),
+                    rotation: -Math.PI / 2,
+                    scale: Vec(1, -1)
+                }
+            ]
+        ])
+    };
+
     return {
         idString: `truck_container_${id}`,
         name: `Truck Container ${id}`,
@@ -1001,19 +1396,24 @@ const truckContainer = (
         hitbox,
         spawnHitbox: RectangleHitbox.fromRect(18, 42),
         obstacles,
-        ...(subBuildings === undefined ? {} : { subBuildings: subBuildings }),
+        ...(subBuildings === undefined ? {} : { subBuildings }),
         floorImages: [{
             key: `truck_container_floor_${model}`,
             position: Vec(0, 0),
             scale: Vec(2, 2),
             tint
         }],
-        ceilingImages: [{
-            key: `truck_container_ceiling_${model}`,
-            position: Vec(0, 0),
-            scale: Vec(2, 2),
-            tint
-        }],
+        ceilingImages: [
+            {
+                key: `truck_container_ceiling_${model}`,
+                position: Vec(0, 0),
+                scale: Vec(2, 2),
+                tint
+            },
+            // winter mode: snow decals because tinted ceiling
+            ...snowDecalDefinitions[model]
+
+        ],
         ceilingHitbox: new GroupHitbox(
             RectangleHitbox.fromRect(12, 38.3, Vec(0.07, 0.67)),
             RectangleHitbox.fromRect(14.77, 9.54, Vec(0, 0))
@@ -1038,7 +1438,7 @@ const truck = (
         defType: DefinitionType.Building,
         spawnHitbox: RectangleHitbox.fromRect(25, 60, Vec(0, 6)),
         obstacles: IS_CLIENT ? undefined : [
-            { idString: "truck_front", position: Vec(0, -11.5), rotation: 0 },
+            { idString: "truck_front", position: Vec(0, -11.5), rotation: 0, outdoors: true },
             { idString: "truck_tire", position: Vec(-7.15, 30.81), rotation: 0 },
             { idString: "truck_tire", position: Vec(7.15, 30.81), rotation: 0 },
             { idString: "truck_tire", position: Vec(7.15, 24.71), rotation: 0 },
@@ -1395,6 +1795,95 @@ const tugboat = (color: string, mainLoot: string): BuildingDefinition => ({
     )
 } as const);
 
+const smallBunker = (idString: string): BuildingDefinition => ({
+    idString,
+    name: "Small Bunker",
+    defType: DefinitionType.Building,
+    material: "metal_heavy",
+    particle: "metal_particle",
+    reflectBullets: true,
+    ceilingZIndex: ZIndexes.ObstaclesLayer3,
+    visibleFromLayers: Layers.All,
+    hitbox: RectangleHitbox.fromRect(12, 1, Vec(0, 12.3)),
+    floorImages: [{
+        key: "small_bunker_entrance_floor",
+        position: Vec(-0.05, 20),
+        scale: Vec(2.2, 2.2)
+    }],
+    ceilingImages: [{
+        key: "small_bunker_entrance_ceiling",
+        position: Vec(0, 18),
+        scale: Vec(2.35, 2.1)
+    }],
+    spawnHitbox: RectangleHitbox.fromRect(53, 53, Vec(0, 20)),
+    bunkerSpawnHitbox: RectangleHitbox.fromRect(55, 55),
+    ceilingHitbox: RectangleHitbox.fromRect(10, 15, Vec(0, 20)),
+    obstacles: IS_CLIENT ? undefined : [
+        { idString: idString.includes("_winter") ? randomTreeWinter : randomTree, position: Vec(7.5, 9.8) },
+        { idString: idString.includes("_winter") ? randomTreeWinter : randomTree, position: Vec(10, 23) },
+        { idString: idString.includes("_winter") ? randomTreeWinter : randomTree, position: Vec(-10, 16) },
+        { idString: idString.includes("_winter") ? randomTreeWinter : randomTree, position: Vec(-5, 37) }
+    ],
+    bulletMask: RectangleHitbox.fromRect(11, 30, Vec(0, 30)),
+    subBuildings: IS_CLIENT ? undefined : [
+        { idString: "small_bunker_main", position: Vec(0, -5), layer: Layer.Basement },
+        { idString: "small_bunker_entrance", position: Vec(0, 20), layer: Layer.ToBasement }
+    ]
+});
+
+const fulcrumBunker = (idString: string): BuildingDefinition => ({
+    idString,
+    name: "Fulcrum Bunker",
+    defType: DefinitionType.Building,
+    spawnHitbox: new GroupHitbox(
+        RectangleHitbox.fromRect(14, 20.5, Vec(-9.81, 47.65)),
+        RectangleHitbox.fromRect(14, 20.5, Vec(-30.2, -40.75)),
+        RectangleHitbox.fromRect(27, 37, Vec(-0.8, 0))
+    ),
+    bunkerSpawnHitbox: RectangleHitbox.fromRect(150, 110),
+    hitbox: new GroupHitbox(
+        RectangleHitbox.fromRect(2.01, 12.65, Vec(-34.94, -38)),
+        RectangleHitbox.fromRect(2.01, 12.65, Vec(-25.46, -38)),
+        RectangleHitbox.fromRect(2.01, 12.65, Vec(-5.07, 44.9)),
+        RectangleHitbox.fromRect(2.01, 12.65, Vec(-14.55, 44.9))
+    ),
+    material: "metal_heavy",
+    particle: "bunker_particle",
+    reflectBullets: true,
+    collideWithLayers: Layers.Adjacent,
+    floorImages: [
+        { key: "fulcrum_bunker_entrance", position: Vec(-30.2, -38), rotation: Math.PI },
+        { key: "fulcrum_bunker_entrance", position: Vec(-9.81, 44.9) }
+    ],
+    obstacles: IS_CLIENT ? undefined : [
+        { idString: "fulcrum_bunker_collider_hack", position: Vec(0, 0), rotation: 0 },
+
+        // Upper entrance
+        { idString: idString.includes("_winter") ? randomTreeWinter : randomTree, position: Vec(-18.85, -38.2) },
+        { idString: idString.includes("_winter") ? randomTreeWinter : randomTree, position: Vec(-41.97, -39.29) },
+        { idString: idString.includes("_winter") ? randomTreeWinter : randomTree, position: Vec(-29.92, -27.26) },
+        { idString: "bush", position: Vec(-35.88, -48.65), rotation: 0 },
+        { idString: "bush", position: Vec(-27.44, -47.82), rotation: 0 },
+        { idString: "bush", position: Vec(-8.38, -28.77), rotation: 0 },
+        { idString: "bush", position: Vec(-55.92, -38.54), rotation: 0 },
+        { idString: "fulcrum_bunker_stair", position: Vec(-30.2, -39.26), rotation: 0, layer: Layer.ToBasement },
+
+            // Lower entrance
+        { idString: idString.includes("_winter") ? randomTreeWinter : randomTree, position: Vec(-9.82, 32.88) },
+        { idString: idString.includes("_winter") ? randomTreeWinter : randomTree, position: Vec(3.62, 43.58) },
+        { idString: idString.includes("_winter") ? randomTreeWinter : randomTree, position: Vec(-20.92, 47.64) },
+        { idString: "bush", position: Vec(-13.13, 55.88) },
+        { idString: "bush", position: Vec(16.63, 37.75) },
+        { idString: "bush", position: Vec(-27.11, 35.18) },
+        { idString: "bush", position: Vec(-5.24, 55.57) },
+        { idString: "fulcrum_bunker_stair", position: Vec(-9.81, 45.95), rotation: 2, layer: Layer.ToBasement }
+    ],
+    subBuildings: IS_CLIENT ? undefined : [
+        { idString: "shed_2", position: Vec(0, 0) },
+        { idString: "fulcrum_bunker_main", position: Vec(0, 0), layer: Layer.Basement }
+    ]
+});
+
 const blueHouse = (idString: string, subBuildings: BuildingDefinition["subBuildings"] = []): BuildingDefinition => ({
     idString,
     name: "Blue House",
@@ -1439,7 +1928,7 @@ const blueHouse = (idString: string, subBuildings: BuildingDefinition["subBuildi
     ceilingImages: [{
         key: "blue_house_ceiling",
         position: Vec(0, 1.5),
-        scale: Vec(2.3, 2.3)
+        scale: Vec(2.1, 2.1)
     }],
     floors: [
         {
@@ -1566,7 +2055,53 @@ const shed = (num: number, ceilingTint: number): BuildingDefinition => ({
             key: "shed_ceiling",
             position: Vec(-0.8, -1.6),
             tint: ceilingTint
-        }
+        },
+        // WINTER MODE ONLY: snow decals for the ceiling, since it's tinted, similar to containers but less of a mess
+        ...pickRandomInArray([
+            [
+                {
+                    key: "shed_ceiling_snow_decal_1",
+                    position: Vec(5, 0)
+                },
+                {
+                    key: "shed_ceiling_snow_decal_2",
+                    position: Vec(-8.65, -9.4)
+                },
+                {
+                    key: "shed_ceiling_snow_decal_3",
+                    position: Vec(6.25, -14.3)
+                },
+                {
+                    key: "shed_ceiling_snow_decal_4",
+                    position: Vec(-5.05, 8.65)
+                }
+            ],
+            [
+                {
+                    key: "shed_ceiling_snow_decal_1",
+                    position: Vec(-5.6, 8),
+                    rotation: -Math.PI / 2.5,
+                    scale: Vec(-0.67, 0.67) // SIX SEVEV
+                },
+                {
+                    key: "shed_ceiling_snow_decal_4",
+                    position: Vec(-5.05, -11.9),
+                    scale: Vec(-1, 1),
+                    rotation: Math.PI
+                },
+                  {
+                    key: "shed_ceiling_snow_decal_3",
+                    position: Vec(7.7, 6.6),
+                    rotation: Math.PI / 2,
+                    scale: Vec(1.45, 1.45)
+                },
+                {
+                    key: "shed_ceiling_snow_decal_5",
+                    position: Vec(8.6, -13.75),
+                    scale: Vec(1, -1)
+                },
+           ]
+        ])
     ],
     floors: [
         {
@@ -3125,6 +3660,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
 
     shed(1, 0x257636),
     shed(2, 0xb96114),
+    shed(3, 0x39626b),
 
     container(1, "white", "closed"),
     container(2, "red", "closed"),
@@ -3146,6 +3682,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     container(18, "yellow", "damaged_reversed"),
     container(19, "green", "damaged_reversed"),
     container(20, "red", "closed_damaged"),
+    container(26, "white", "closed_damaged"),
 
     // special containers
     container(21, "gas_can", "gas_can"),
@@ -3654,8 +4191,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "regular_crate", position: Vec(85.12, -141.67), outdoors: true },
             { idString: "regular_crate", position: Vec(80.03, -131.98), outdoors: true },
 
-            { idString: "box", position: Vec(30.27, -230.74), outdoors: true },
-            { idString: "box", position: Vec(30.27, -235.7), outdoors: true },
+            { idString: "box", position: Vec(30.27, -230.74)},
+            { idString: "box", position: Vec(30.27, -235.7)},
             { idString: "box", position: Vec(70.36, -217.63), outdoors: true },
             { idString: "box", position: Vec(75.46, -217.56), outdoors: true },
             { idString: "box", position: Vec(156.55, -233.86), outdoors: true },
@@ -3663,12 +4200,12 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "box", position: Vec(77.83, -139.44), outdoors: true },
             { idString: "box", position: Vec(87.45, -129.9), outdoors: true },
 
-            { idString: "planted_bushes", position: Vec(73.65, -225.45), rotation: 1, outdoors: true },
-            { idString: "planted_bushes", position: Vec(109.69, -225.45), rotation: 1, outdoors: true },
+            { idString: "planted_bushes", position: Vec(73.65, -225.45), rotation: 1, outdoors:true },
+            { idString: "planted_bushes", position: Vec(109.69, -225.45), rotation: 1, outdoors:true },
 
             { idString: "smaller_sandbags", position: Vec(163.06, -234.3), rotation: 0, outdoors: true },
 
-            { idString: "pallet", position: Vec(65.4, -155.76), rotation: 2, outdoors: true },
+            { idString: "pallet", position: Vec(65.4, -155.76), rotation: 2},
             { idString: "box", position: Vec(67.31, -155.12), outdoors: true },
             // ------------------------------------------------------------------------------------------
 
@@ -3746,14 +4283,14 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "regular_crate", position: Vec(-112.72, -215.26), outdoors: true },
             { idString: "regular_crate", position: Vec(-75.61, -183.93), outdoors: true },
 
-            { idString: "planted_bushes", position: Vec(-91.86, -225.47), rotation: 1, outdoors: true },
-            { idString: "planted_bushes", position: Vec(-73.75, -225.47), rotation: 1, outdoors: true },
+            { idString: "planted_bushes", position: Vec(-91.86, -225.47), rotation: 1, outdoors:true },
+            { idString: "planted_bushes", position: Vec(-73.75, -225.47), rotation: 1, outdoors:true },
 
             { idString: "sandbags", position: Vec(-113.66, -226.97), rotation: 1, outdoors: true },
             { idString: "sandbags", position: Vec(-77.72, -174.34), rotation: 0, outdoors: true },
             { idString: "smaller_sandbags", position: Vec(-105.2, -222.95), rotation: 0, outdoors: true },
             { idString: "smaller_sandbags", position: Vec(-76.39, -216.45), rotation: 1, outdoors: true },
-            { idString: "barrier", position: Vec(-0.87, -227.85), rotation: 3, outdoors: true },
+            { idString: "barrier", position: Vec(-0.87, -227.85), rotation: 3 },
             // ------------------------------------------------------------------------------------------
 
             // ------------------------------------------------------------------------------------------
@@ -4330,7 +4867,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 position: Vec(-2.01, 34.23),
                 rotation: 0,
                 layer: Layer.Upstairs,
-                puzzlePiece: true
+                puzzlePiece: true,
+                outdoors: true
             },
             {
                 idString: "vault_door_deactivated",
@@ -4594,7 +5132,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
 
             { idString: "ship_thing_v2", position: Vec(-2.07, 175.32), rotation: 0 },
 
-            { idString: "box", position: Vec(-66, 134.5), waterOverlay: true },
+            { idString: "box", position: Vec(-66, 134.5), waterOverlay: true, outdoors: true },
             { idString: "box", position: Vec(-14.88, 178.02), waterOverlay: true },
             { idString: "barrel", position: Vec(-24.67, 180.93), waterOverlay: true },
 
@@ -4921,60 +5459,60 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "cargo_ship_stair_support", position: Vec(-26.09, 100.04), rotation: 2 },
             { idString: "cargo_ship_stair_support", position: Vec(-26.08, 113.1), rotation: 2 },
 
-            { idString: "cargo_ship_stair", position: Vec(63.71, -48.43), rotation: 0, layer: Layer.ToBasement },
-            { idString: "cargo_ship_stair", position: Vec(63.71, 121.45), rotation: 0, layer: Layer.ToBasement },
-            { idString: "cargo_ship_stair", position: Vec(63.71, -119.14), rotation: 0, layer: Layer.ToBasement },
-            { idString: "cargo_ship_stair", position: Vec(-63.71, -119.07), rotation: 2, layer: Layer.ToBasement },
-            { idString: "cargo_ship_stair", position: Vec(-63.71, 21.75), rotation: 2, layer: Layer.ToBasement },
-            { idString: "cargo_ship_stair", position: Vec(-63.71, 121.65), rotation: 2, layer: Layer.ToBasement },
+            { idString: "cargo_ship_stair", position: Vec(63.71, -48.43), rotation: 0, layer: Layer.ToBasement, outdoors: true },
+            { idString: "cargo_ship_stair", position: Vec(63.71, 121.45), rotation: 0, layer: Layer.ToBasement, outdoors: true },
+            { idString: "cargo_ship_stair", position: Vec(63.71, -119.14), rotation: 0, layer: Layer.ToBasement, outdoors: true },
+            { idString: "cargo_ship_stair", position: Vec(-63.71, -119.07), rotation: 2, layer: Layer.ToBasement, outdoors: true },
+            { idString: "cargo_ship_stair", position: Vec(-63.71, 21.75), rotation: 2, layer: Layer.ToBasement, outdoors: true },
+            { idString: "cargo_ship_stair", position: Vec(-63.71, 121.65), rotation: 2, layer: Layer.ToBasement, outdoors: true },
 
             { idString: "cargo_ship_stair_entrance_walls", position: Vec(0.11, -156.81), rotation: 0 },
             { idString: "cargo_ship_stair_entrance_walls", position: Vec(26.3, -34.17), rotation: 3 },
             { idString: "cargo_ship_stair_entrance_walls", position: Vec(-26.12, 106.47), rotation: 3 },
 
-            { idString: "life_preserver", position: Vec(-48.2, 5.29), rotation: 2 },
-            { idString: "life_preserver", position: Vec(-48.27, -4.55), rotation: 2 },
-            { idString: "life_preserver", position: Vec(-48.19, 95.05), rotation: 2 },
-            { idString: "life_preserver", position: Vec(-48.26, 104.75), rotation: 2 },
+            { idString: "life_preserver", position: Vec(-48.2, 5.29), rotation: 2, outdoors: true },
+            { idString: "life_preserver", position: Vec(-48.27, -4.55), rotation: 2, outdoors: true },
+            { idString: "life_preserver", position: Vec(-48.19, 95.05), rotation: 2, outdoors: true },
+            { idString: "life_preserver", position: Vec(-48.26, 104.75), rotation: 2, outdoors: true },
 
             { idString: "box", position: Vec(-22.41, 187.01) },
             { idString: "box", position: Vec(-17.74, 187.37) },
             { idString: "box", position: Vec(-19.93, 182.27) },
-            { idString: { box: 1, grenade_box: 0.5 }, position: Vec(-46.89, 136.68) },
+            { idString: { box: 1, grenade_box: 0.5 }, position: Vec(-46.89, 136.68), outdoors: true },
 
-            { idString: "sandbags", position: Vec(-0.01, 32), rotation: 0 },
-            { idString: "sandbags", position: Vec(-12.23, 80.89), rotation: 0 },
-            { idString: "sandbags", position: Vec(-5.56, 123.33), rotation: 0 },
-            { idString: "sandbags", position: Vec(41.92, -30.07), rotation: 0 },
-            { idString: "sandbags", position: Vec(0.52, -56.33), rotation: 1 },
-            { idString: "sandbags", position: Vec(-4.43, -118.85), rotation: 1 },
-            { idString: "sandbags", position: Vec(1.12, -129.68), rotation: 2 },
+            { idString: "sandbags", position: Vec(-0.01, 32), rotation: 0, outdoors: true },
+            { idString: "sandbags", position: Vec(-12.23, 80.89), rotation: 0, outdoors: true },
+            { idString: "sandbags", position: Vec(-5.56, 123.33), rotation: 0, outdoors: true },
+            { idString: "sandbags", position: Vec(41.92, -30.07), rotation: 0, outdoors: true },
+            { idString: "sandbags", position: Vec(0.52, -56.33), rotation: 1, outdoors: true },
+            { idString: "sandbags", position: Vec(-4.43, -118.85), rotation: 1, outdoors: true },
+            { idString: "sandbags", position: Vec(1.12, -129.68), rotation: 2, outdoors: true },
 
-            { idString: "ammo_crate", position: Vec(-0.43, 85.3) },
+            { idString: "ammo_crate", position: Vec(-0.43, 85.3), outdoors: true },
             { idString: "ammo_crate", position: Vec(-30.36, 161.85) },
             { idString: "ammo_crate", position: Vec(0.74, 163.46) },
-            { idString: "ammo_crate", position: Vec(-13.62, 39.75) },
-            { idString: "ammo_crate", position: Vec(0.51, -44.45) },
+            { idString: "ammo_crate", position: Vec(-13.62, 39.75), outdoors: true },
+            { idString: "ammo_crate", position: Vec(0.51, -44.45), outdoors: true },
 
-            { idString: "flint_crate", position: Vec(25.16, 10.5) },
+            { idString: "flint_crate", position: Vec(25.16, 10.5), outdoors: true },
             { idString: "flint_crate", position: Vec(-44.69, 185.13) },
-            { idString: "flint_crate", position: Vec(-18.23, -150.04) },
+            { idString: "flint_crate", position: Vec(-18.23, -150.04), outdoors: true },
 
-            { idString: "grenade_crate", position: Vec(-11.24, 31.1) },
+            { idString: "grenade_crate", position: Vec(-11.24, 31.1), outdoors: true },
             { idString: "grenade_crate", position: Vec(0.73, 173) },
 
-            { idString: "regular_crate", position: Vec(28.58, 0.43) },
-            { idString: "regular_crate", position: Vec(-0.28, 75.5) },
-            { idString: "regular_crate", position: Vec(44.18, 134.72) },
+            { idString: "regular_crate", position: Vec(28.58, 0.43), outdoors: true },
+            { idString: "regular_crate", position: Vec(-0.28, 75.5), outdoors: true },
+            { idString: "regular_crate", position: Vec(44.18, 134.72), outdoors: true },
             { idString: "regular_crate", position: Vec(-44.62, 146.85) },
-            { idString: "regular_crate", position: Vec(-41.59, 103.48) },
-            { idString: "regular_crate", position: Vec(-0.23, -67.92) },
-            { idString: "regular_crate", position: Vec(-8.67, -54.5) },
+            { idString: "regular_crate", position: Vec(-41.59, 103.48), outdoors: true },
+            { idString: "regular_crate", position: Vec(-0.23, -67.92), outdoors: true },
+            { idString: "regular_crate", position: Vec(-8.67, -54.5), outdoors: true },
 
-            { idString: "barrel", position: Vec(3.63, -121.38) },
-            { idString: "barrel", position: Vec(38.97, -37.99) },
+            { idString: "barrel", position: Vec(3.63, -121.38), outdoors: true },
+            { idString: "barrel", position: Vec(38.97, -37.99), outdoors: true },
             { idString: "barrel", position: Vec(-45.69, 176.14) },
-            { idString: "barrel", position: Vec(-18.35, -140.62) },
+            { idString: "barrel", position: Vec(-18.35, -140.62), outdoors: true },
 
             { idString: "pallet", position: Vec(44.18, 134.72), rotation: 0 },
             { idString: "pallet", position: Vec(-18.23, -150.04), rotation: 0 },
@@ -4992,8 +5530,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "grey_office_chair", position: Vec(11.71, 143.32), rotation: 2 },
             { idString: "grey_office_chair", position: Vec(-10.02, 143.53), rotation: 2 },
 
-            { idString: "propane_tank", position: Vec(-42.07, 137.08) },
-            { idString: "propane_tank", position: Vec(-46.52, 132.05) },
+            { idString: "propane_tank", position: Vec(-42.07, 137.08), outdoors: true },
+            { idString: "propane_tank", position: Vec(-46.52, 132.05), outdoors: true },
 
             { idString: "metal_door", position: Vec(-30.73, 140.77), rotation: 2 },
             { idString: "metal_door", position: Vec(31.41, 140.77), rotation: 0 },
@@ -5002,7 +5540,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "metal_door", position: Vec(6.68, 184.65), rotation: 1 },
 
             // random lonely obstacles
-            { idString: "super_barrel", position: Vec(30, -8.63) },
+            { idString: "super_barrel", position: Vec(30, -8.63), outdoors: true },
             { idString: randomToilet, position: Vec(-8.26, 184.78), rotation: 1 },
             { idString: "bunk_bed", position: Vec(17.13, 172.71), rotation: 1 },
             { idString: "tv", position: Vec(41.25, 189.44), rotation: 3 },
@@ -5549,7 +6087,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             key: "mobile_home_ceiling",
             position: Vec(0, -1),
             residue: "mobile_home_residue",
-            scale: Vec(1.07, 1.07)
+            scale: Vec(1.01, 1.01)
         }],
         floors: [
             {
@@ -5720,7 +6258,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "small_lamp_thingy", position: Vec(-0.12, -22.2) },
             { idString: "window", position: Vec(20.47, 11.8), rotation: 0 },
             { idString: "door", position: Vec(-0.02, 38), rotation: 0 },
-            { idString: "small_stove", position: Vec(15.64, 33.27), rotation: 3 },
+            { idString: randomSmallStove, position: Vec(15.64, 33.27), rotation: 3 },
             { idString: "sink", position: Vec(15.44, 24.82), rotation: 3 },
             { idString: "small_table", position: Vec(14.99, 11.88), rotation: 0 },
             { idString: "chair", position: Vec(10.61, 12.15), rotation: 3 },
@@ -5735,12 +6273,12 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "small_bed", position: Vec(-9.2, -1.96), rotation: 0 },
             { idString: "small_drawer", position: Vec(-17.11, -6.47), rotation: 0 },
             { idString: "lighthouse_crate", position: Vec(0, -37) },
-            { idString: "sandbags", position: Vec(11.66, 43.03), rotation: 0 },
-            { idString: "sandbags", position: Vec(-12.55, 43.03), rotation: 0 },
-            { idString: "sandbags", position: Vec(25.8, 32.27), rotation: 1 },
-            { idString: "sandbags", position: Vec(-27, 32.27), rotation: 1 },
-            { idString: "propane_tank", position: Vec(20.43, 40.97) },
-            { idString: "propane_tank", position: Vec(20.43, 45.02) }
+            { idString: "sandbags", position: Vec(11.66, 43.03), rotation: 0, outdoors: true },
+            { idString: "sandbags", position: Vec(-12.55, 43.03), rotation: 0, outdoors: true },
+            { idString: "sandbags", position: Vec(25.8, 32.27), rotation: 1, outdoors: true },
+            { idString: "sandbags", position: Vec(-27, 32.27), rotation: 1, outdoors: true },
+            { idString: "propane_tank", position: Vec(20.43, 40.97), outdoors: true },
+            { idString: "propane_tank", position: Vec(20.43, 45.02), outdoors: true }
         ],
         subBuildings: IS_CLIENT ? undefined : [
             { idString: "lighthouse_lighting", position: Vec(0, -36.2) }
@@ -5984,15 +6522,15 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "regular_crate", position: Vec(-16.5, 17.85), outdoors: true },
             { idString: "regular_crate", position: Vec(-24.02, -23.2), outdoors: true },
 
-            { idString: "roadblock", position: Vec(-10.07, -29.04), rotation: 1 },
+            { idString: "roadblock", position: Vec(-10.07, -29.04), rotation: 1, outdoors: true },
 
-            { idString: "roadblock", position: Vec(-26, 0), rotation: 0 },
-            { idString: "roadblock", position: Vec(-27, 15), rotation: 0 },
+            { idString: "roadblock", position: Vec(-26, 0), rotation: 0, outdoors: true },
+            { idString: "roadblock", position: Vec(-27, 15), rotation: 0, outdoors: true },
 
-            { idString: "roadblock", position: Vec(-12.5, 27.5), rotation: 1 },
-            { idString: "roadblock", position: Vec(2.5, 27.5), rotation: 1 },
-            { idString: "roadblock", position: Vec(17.5, 27.5), rotation: 1 },
-            { idString: "roadblock", position: Vec(25, 15), rotation: 0 }
+            { idString: "roadblock", position: Vec(-12.5, 27.5), rotation: 1, outdoors: true },
+            { idString: "roadblock", position: Vec(2.5, 27.5), rotation: 1, outdoors: true },
+            { idString: "roadblock", position: Vec(17.5, 27.5), rotation: 1, outdoors: true },
+            { idString: "roadblock", position: Vec(25, 15), rotation: 0, outdoors: true }
         ]
     },
 
@@ -6664,41 +7202,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { table: "ground_loot", position: Vec(0, -0.5) }
         ]
     },
-    {
-        idString: "small_bunker",
-        name: "Small Bunker",
-        defType: DefinitionType.Building,
-        material: "metal_heavy",
-        particle: "metal_particle",
-        reflectBullets: true,
-        ceilingZIndex: ZIndexes.ObstaclesLayer3,
-        visibleFromLayers: Layers.All,
-        hitbox: RectangleHitbox.fromRect(12, 1, Vec(0, 12.3)),
-        floorImages: [{
-            key: "small_bunker_entrance_floor",
-            position: Vec(-0.05, 20),
-            scale: Vec(2.2, 2.2)
-        }],
-        ceilingImages: [{
-            key: "small_bunker_entrance_ceiling",
-            position: Vec(0, 18),
-            scale: Vec(2.35, 2.1)
-        }],
-        spawnHitbox: RectangleHitbox.fromRect(53, 53, Vec(0, 20)),
-        bunkerSpawnHitbox: RectangleHitbox.fromRect(55, 55),
-        ceilingHitbox: RectangleHitbox.fromRect(10, 15, Vec(0, 20)),
-        obstacles: IS_CLIENT ? undefined : [
-            { idString: randomTree, position: Vec(7.5, 9.8) },
-            { idString: randomTree, position: Vec(10, 23) },
-            { idString: randomTree, position: Vec(-10, 16) },
-            { idString: randomTree, position: Vec(-5, 37) }
-        ],
-        bulletMask: RectangleHitbox.fromRect(11, 30, Vec(0, 30)),
-        subBuildings: IS_CLIENT ? undefined : [
-            { idString: "small_bunker_main", position: Vec(0, -5), layer: Layer.Basement },
-            { idString: "small_bunker_entrance", position: Vec(0, 20), layer: Layer.ToBasement }
-        ]
-    },
+    smallBunker("small_bunker"),
+    smallBunker("small_bunker_winter"),
     {
         idString: "barn_top_floor_shadow",
         name: "Barn Shadow",
@@ -8610,13 +9115,15 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             ])
         ],
         subBuildings: IS_CLIENT ? undefined : [
-            { idString: "shed_1", position: Vec(22, -55), orientation: 3 },
+            { idString: "shed_3", position: Vec(22, -55), orientation: 3 },
             {
                 idString: {
                     container_3: 1,
                     container_4: 1,
                     container_5: 1,
-                    container_6: 1
+                    container_6: 1,
+                    container_26: 1,
+                    container_20: 1
                 }, position: Vec(30, -58), orientation: 1
             }
         ]
@@ -8955,7 +9462,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         ],
 
         obstacles: IS_CLIENT ? undefined : [
-            { idString: "truck_front", position: Vec(0.1, -25.49), rotation: 0 },
+            { idString: "truck_front", position: Vec(0.1, -25.49), rotation: 0, outdoors: true },
             { idString: "truck_tire", position: Vec(7.26, -15.08), rotation: 0 },
             { idString: "truck_tire", position: Vec(7.26, 4.32), rotation: 0 },
             { idString: "truck_tire", position: Vec(7.26, 13.43), rotation: 0 },
@@ -10342,58 +10849,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: randomHayShed, position: Vec(9.77, 87) }
         ]
     },
-    {
-        idString: "fulcrum_bunker",
-        name: "Fulcrum Bunker",
-        defType: DefinitionType.Building,
-        spawnHitbox: new GroupHitbox(
-            RectangleHitbox.fromRect(14, 20.5, Vec(-9.81, 47.65)),
-            RectangleHitbox.fromRect(14, 20.5, Vec(-30.2, -40.75)),
-            RectangleHitbox.fromRect(27, 37, Vec(-0.8, 0))
-        ),
-        bunkerSpawnHitbox: RectangleHitbox.fromRect(150, 110),
-        hitbox: new GroupHitbox(
-            RectangleHitbox.fromRect(2.01, 12.65, Vec(-34.94, -38)),
-            RectangleHitbox.fromRect(2.01, 12.65, Vec(-25.46, -38)),
-            RectangleHitbox.fromRect(2.01, 12.65, Vec(-5.07, 44.9)),
-            RectangleHitbox.fromRect(2.01, 12.65, Vec(-14.55, 44.9))
-        ),
-        material: "metal_heavy",
-        particle: "bunker_particle",
-        reflectBullets: true,
-        collideWithLayers: Layers.Adjacent,
-        floorImages: [
-            { key: "fulcrum_bunker_entrance", position: Vec(-30.2, -38), rotation: Math.PI },
-            { key: "fulcrum_bunker_entrance", position: Vec(-9.81, 44.9) }
-        ],
-        obstacles: IS_CLIENT ? undefined : [
-            { idString: "fulcrum_bunker_collider_hack", position: Vec(0, 0), rotation: 0 },
-
-            // Upper entrance
-            { idString: randomTree, position: Vec(-18.85, -38.2) },
-            { idString: randomTree, position: Vec(-41.97, -39.29) },
-            { idString: randomTree, position: Vec(-29.92, -27.26) },
-            { idString: "bush", position: Vec(-35.88, -48.65), rotation: 0 },
-            { idString: "bush", position: Vec(-27.44, -47.82), rotation: 0 },
-            { idString: "bush", position: Vec(-8.38, -28.77), rotation: 0 },
-            { idString: "bush", position: Vec(-55.92, -38.54), rotation: 0 },
-            { idString: "fulcrum_bunker_stair", position: Vec(-30.2, -39.26), rotation: 0, layer: Layer.ToBasement },
-
-            // Lower entrance
-            { idString: randomTree, position: Vec(-9.82, 32.88) },
-            { idString: randomTree, position: Vec(3.62, 43.58) },
-            { idString: randomTree, position: Vec(-20.92, 47.64) },
-            { idString: "bush", position: Vec(-13.13, 55.88) },
-            { idString: "bush", position: Vec(16.63, 37.75) },
-            { idString: "bush", position: Vec(-27.11, 35.18) },
-            { idString: "bush", position: Vec(-5.24, 55.57) },
-            { idString: "fulcrum_bunker_stair", position: Vec(-9.81, 45.95), rotation: 2, layer: Layer.ToBasement }
-        ],
-        subBuildings: IS_CLIENT ? undefined : [
-            { idString: "shed_2", position: Vec(0, 0) },
-            { idString: "fulcrum_bunker_main", position: Vec(0, 0), layer: Layer.Basement }
-        ]
-    },
+    fulcrumBunker("fulcrum_bunker"),
+    fulcrumBunker("fulcrum_bunker_winter"),
     {
         idString: "fulcrum_bunker_main",
         name: "Fulcrum Bunker",
@@ -10580,7 +11037,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     },
     {
         idString: "fox_bunker",
-        name: "Panther Bunker",
+        name: "Fox Bunker",
         defType: DefinitionType.Building,
         spawnMode: MapObjectSpawnMode.Ring,
         spawnRadius: 300,
@@ -10615,7 +11072,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     },
     {
         idString: "fox_bunker_main",
-        name: "Panther Bunker",
+        name: "Fox Bunker",
         defType: DefinitionType.Building,
         spawnHitbox: RectangleHitbox.fromRect(80, 80),
         ceilingHitbox: new GroupHitbox(
@@ -10711,7 +11168,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     },
     {
         idString: "fox_bunker_vault",
-        name: "Panther Bunker Vault",
+        name: "Fox Bunker Vault",
         defType: DefinitionType.Building,
         spawnHitbox: RectangleHitbox.fromRect(34.05, 28),
         ceilingHitbox: RectangleHitbox.fromRect(34.05, 28),
@@ -10906,7 +11363,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     },
     {
         idString: "bear_bunker_main",
-        name: "Lion Bunker",
+        name: "Bear Bunker",
         defType: DefinitionType.Building,
         spawnHitbox: RectangleHitbox.fromRect(130, 80),
         ceilingHitbox: RectangleHitbox.fromRect(120, 71),
@@ -10984,7 +11441,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "kitchen_unit_1", position: Vec(49.21, 30.96), rotation: 2 },
             { idString: "kitchen_unit_2", position: Vec(55.67, 31.35), rotation: 2 },
             { idString: "kitchen_unit_3", position: Vec(55.19, 23.67), rotation: 3 },
-            { idString: "small_stove", position: Vec(42.1, 30.8), rotation: 2 },
+            { idString: randomSmallStove, position: Vec(42.1, 30.8), rotation: 2 },
             { idString: "fridge", position: Vec(33.71, 30.86), rotation: 2 },
             { idString: "nsd_crate", position: Vec(23.46, 5.43) },
             { idString: "couch", position: Vec(49.98, 4.67), rotation: 3 },
@@ -11008,7 +11465,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     },
     {
         idString: "bear_bunker_vault",
-        name: "Lion Bunker Vault",
+        name: "Bear Bunker Vault",
         defType: DefinitionType.Building,
         spawnHitbox: RectangleHitbox.fromRect(25, 25),
         ceilingHitbox: RectangleHitbox.fromRect(22, 22),
@@ -16687,5 +17144,150 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             table: "ground_loot",
             position: Vec(30.15, 1.31)
         }]
-    }
+    },
+    { // TODO: Collapse ceiling, make custom logic for arc-circle special walls, currently missing walls and ceiling collapse mechanic
+        //        Checklist
+        // ceiling (+ optimize) - DONE
+        // floor images/hitboxes - DONE
+        // ceiling hitbox/scope hitbox - DONE
+        // obstacle layouts - DONE
+        // HITBOXES - DONE WITH AWFUL WAY, PLEASE LOOK INTO ARC HITBOX TYPE (Zereshk branch)
+        // SVG Optimizing - DONE
+
+        idString: "igloo",
+        name: "Igloo",
+        defType: DefinitionType.Building,
+        spawnHitbox: RectangleHitbox.fromRect(103.23, 58.99, Vec(-0.47, -0.32)),
+        ceilingHitbox: new GroupHitbox(
+            new CircleHitbox(21.61, Vec(24.98, -3.64)),
+            RectangleHitbox.fromRect(12.16, 9.05, Vec(-0.29, -3.61))
+        ),
+        floors: [{
+            type: FloorNames.Sand,
+            hitbox: RectangleHitbox.fromRect(103.23, 58.99, Vec(-0.47, -0.32))
+        }],
+        floorImages: [
+            {
+                key: "igloo_snow_decal_1",
+                position: Vec(-27.26, -18.85)
+            },
+            {
+                key: "igloo_snow_decal_2",
+                position: Vec(-37.43, 16.07)
+            },
+            {
+                key: "igloo_floor",
+                position: Vec(21.08, -3.53)
+            },
+            {
+                key: "igloo_hallway",
+                position: Vec(-7.38, -3.46)
+            },
+            {
+                key: "igloo_garbage_wall",
+                position: Vec(21.1, -3.6),
+                hideOnDead: true
+            }
+        ],
+        wallsToDestroy: 1,
+        ceilingCollapseParticle: "igloo_wall_particle",
+        ceilingCollapseSound: "tent_collapse",
+        ceilingImages: [
+            {
+                key: "igloo_ceiling_1",
+                position: Vec(21.08, -3.53),
+                residue: "igloo_residue",
+                hideOnAlive: true
+            },
+            {
+                key: "igloo_ceiling_2",
+                position: Vec(24.98, -3.6),
+                scale: Vec(2, 2),
+                hideOnDead: true
+            },
+            {
+                key: "igloo_ceiling_1",
+                position: Vec(2.25, -3.6),
+                scale: Vec(2, 2),
+                hideOnDead: true
+            }
+        ],
+        obstacles: IS_CLIENT ? undefined : [
+            {
+                idString: "fire_pit",
+                position: Vec(24.91, -3.66)
+            },
+            {
+                idString: "igloo_wall",
+                position: Vec(0, 0),
+                rotation: 0
+            }
+        ],
+        subBuildings: IS_CLIENT ? undefined : [{
+            idString: randomIglooLayout,
+            position: Vec(0 ,0)
+        }]
+    },
+
+    // randomIglooLayout
+    iglooLayout(1, [
+        { idString: "ice_pick_case", position: Vec(24.65, -20.03), rotation: 0 },
+        { idString: "grenade_crate", position: Vec(41.7, -4.58) },
+        { idString: randomGift, position: Vec(40.43, -11.23) },
+        { idString: randomGift, position: Vec(40.56, 2.04) },
+        { idString: randomGift, position: Vec(25.31, 13.91) },
+        { idString: iglooOuterObstacle, position: Vec(-5.8, -21.5), outdoors: true },
+        { idString: iglooOuterObstacle, position: Vec(-15.7, 16.73), outdoors: true },
+        { idString: iglooOuterObstacle, position: Vec(-40.69, -13.09), outdoors: true }
+    ]),
+    iglooLayout(2, [
+        { idString: "gun_case", position: Vec(41.51, -4.34), rotation: 3 },
+        { idString: {
+            box: 1,
+            grenade_box: 0.35
+        }, position: Vec(25.31, -21.66) },
+        { idString: "box", position: Vec(20.06, -18.75) },
+        { idString: randomGift, position: Vec(38.84, 4.95) },
+        { idString: "melee_crate", position: Vec(25.07, 12.31) },
+        { idString: "office_chair", position: Vec(36.99, -13.71), rotation: 3 },
+        { idString: iglooOuterObstacle, position: Vec(-3.34, 9.7), outdoors: true },
+        { idString: iglooOuterObstacle, position: Vec(43.94, 22.69), outdoors: true },
+        { idString: iglooOuterObstacle, position: Vec(-43.07, -20.62), outdoors: true },
+        { idString: iglooOuterObstacle, position: Vec(-33.01, 13.24), outdoors: true },
+        { idString: iglooOuterObstacle, position: Vec(-3.48, -16.68), outdoors: true }
+    ]),
+    iglooLayout(3, [
+        { idString: {
+            regular_crate: 0.81,
+            frozen_crate: 0.2
+        }, position: Vec(39.5, -4.52) },
+        { idString: "office_chair", position: Vec(20.16, -19.11), rotation: 0 },
+        { idString: randomGift, position: Vec(27.09, -20.65) },
+        { idString: "box", position: Vec(30.93, 11.73) },
+        { idString: {
+            box: 1,
+            grenade_box: 0.35
+        }, position: Vec(23.52, 13.34) },
+        { idString: "trash_bag", position: Vec(10.59, 5.46) },
+        { idString: { grenade_box: 1, box: 0.25 }, position: Vec(45.22, -24.77), outdoors: true },
+        { idString: iglooOuterObstacle, position: Vec(-11.18, 16.86), outdoors: true },
+        { idString: iglooOuterObstacle, position: Vec(-34.56, -19.26), outdoors: true },
+        { idString: iglooOuterObstacle, position: Vec(-38.92, 16.52), outdoors: true }
+    ]),
+    iglooLayout(4, [
+        { idString: "propane_tank", position: Vec(22.29, 14.36) },
+        { idString: "propane_tank", position: Vec(29.52, 11.52) },
+        { idString: "propane_tank", position: Vec(39.89, -9.48) },
+        { idString: randomGift, position: Vec(38.42, 5.17) },
+        { idString: randomGift, position: Vec(25.6, -20.59) },
+        { idString: randomBarrel, position: Vec(33.74, -15.81) },
+        { idString: randomGift, position: Vec(40.18, -0.22) },
+        { idString: "box", position: Vec(18.89, -18.46) },
+        { idString: "grenade_box", position: Vec(24.13, 8.89) },
+        { idString: "trash_bag", position: Vec(-12.68, 9.61), outdoors: true },
+        { idString: "box", position: Vec(-2.26, -15.21), outdoors: true },
+        { idString: { grenade_box: 1, box: 0.25 }, position: Vec(41.32, 21.72), outdoors: true },
+        { idString: iglooOuterObstacle, position: Vec(-34.44, -15.76), outdoors: true },
+        { idString: iglooOuterObstacle, position: Vec(-35.05, 14.72), outdoors: true }
+    ])
 ]);

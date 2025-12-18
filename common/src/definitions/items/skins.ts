@@ -14,6 +14,7 @@ export interface SkinDefinition extends ItemDefinition {
     readonly rolesRequired?: string[]
     readonly hideBlood?: boolean
     readonly noSwap?: boolean
+    readonly sound?: boolean
 }
 
 const skin = (
@@ -102,7 +103,6 @@ export const Skins = new ObjectDefinitions<SkinDefinition>([
         ["Peppermint",            undefined, undefined, 0xb40030],
         ["Spearmint",             undefined, undefined, 0x115724],
         ["Coal",                  undefined, 0x363636,  0x424242],
-        ["Henry's Little Helper", 0xc30000,  0x059100,  0x059100],
         ["Candy Cane",            undefined, undefined, 0xf4f4f4],
         ["Holiday Tree",          undefined, 0xedc32c,  0x23883f],
         ["Gingerbread",           undefined, 0xab5912,  0xb55c12],
@@ -151,5 +151,10 @@ export const Skins = new ObjectDefinitions<SkinDefinition>([
         grassTint: true,
         hideEquipment: true,
         hideBlood: true
+    },
+    {
+        ...skin("Henry's Little Helper", 0xc30000,  0x059100,  0x059100),
+        hideFromLoadout: true,
+        sound: true
     }
 ]);

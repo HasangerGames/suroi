@@ -13,7 +13,7 @@ export const GameConstants = {
     maxPosition: 1924,
     objectMinScale: 0.15,
     objectMaxScale: 3,
-    defaultMode: "normal" satisfies ModeName as ModeName,
+    defaultMode: "winter" satisfies ModeName as ModeName,
     player: {
         radius: 2.25,
         baseSpeed: 0.03,
@@ -44,20 +44,29 @@ export const GameConstants = {
             maxShield: 1,
             baseSpeed: 1,
             size: 1,
-            reload: 1,
-            fireRate: 1,
-            adrenDrain: 1,
+        reload: 1,
+        fireRate: 1,
+        adrenDrain: 1,
 
-            minAdrenaline: 0,
-            hpRegen: 0,
-            shieldRegen: 0
-        })
+        minAdrenaline: 0,
+        hpRegen: 0,
+        shieldRegen: 0
+        }),
+        ice: {
+            acceleration: 2.5,
+            friction: 0.2,
+            movingFriction: 0.45
+        }
     },
     gas: {
         damageScaleFactor: 0.005, // Extra damage, linear per distance unit into the gas
         unscaledDamageDist: 12 // Don't scale damage for a certain distance into the gas
     },
     lootSpawnMaxJitter: 0.7,
+    loot: {
+        drag: 0.003,
+        iceDrag: 0.0008
+    },
     lootRadius: {
         [DefinitionType.Gun]: 3.4,
         [DefinitionType.Ammo]: 2,
@@ -87,6 +96,7 @@ export const GameConstants = {
         drag: {
             air: 0.7,
             ground: 3,
+            ice: 1,
             water: 5
         }
     },

@@ -9,6 +9,7 @@ export interface FloorDefinition {
     readonly speedMultiplier?: number
     readonly overlay?: boolean
     readonly particles?: boolean
+    readonly slippery?: boolean
 }
 
 export const enum FloorNames {
@@ -20,6 +21,7 @@ export const enum FloorNames {
     Metal = "metal",
     Carpet = "carpet",
     Water = "water",
+    Ice = "ice",
     Void = "void"
 }
 
@@ -50,6 +52,11 @@ export const FloorTypes: Record<FloorNames, FloorDefinition> = {
         speedMultiplier: 0.72,
         overlay: true,
         particles: true
+    },
+    ice: {
+        debugColor: 0xa1d8ff,
+        speedMultiplier: 1,
+        slippery: true
     },
     void: {
         debugColor: 0x77390d
@@ -104,6 +111,7 @@ export class Terrain {
     readonly floors = new Map<Hitbox, { readonly floorType: FloorNames, readonly layer: Layer | number }>();
 
     readonly rivers: readonly River[];
+    readonly waterType: FloorNames;
 
     readonly beachHitbox: PolygonHitbox;
     readonly grassHitbox: PolygonHitbox;
@@ -123,10 +131,12 @@ export class Terrain {
         oceanSize: number,
         beachSize: number,
         seed: number,
-        rivers: readonly River[]
+        rivers: readonly River[],
+        waterType: FloorNames = FloorNames.Water
     ) {
         this.width = Math.floor(width / this.cellSize);
         this.height = Math.floor(height / this.cellSize);
+        this.waterType = waterType;
 
         for (let x = 0; x <= this.width; x++) {
             this._grid[x] = [];
@@ -210,7 +220,7 @@ export class Terrain {
 
     getFloor(position: Vector, layer: number): FloorNames {
         const pos = this._roundToCells(position);
-        let floor: FloorNames = FloorNames.Water;
+        let floor: FloorNames = this.waterType;
 
         const isInsideMap = this.beachHitbox.isPointInside(position);
         if (isInsideMap) {
@@ -222,8 +232,8 @@ export class Terrain {
                 floor = FloorNames.Void;
             } else {
                 if (this.grassHitbox.isPointInside(position)) {
-                    // TODO Detect mode somehow
-                    floor = FloorNames.Grass; // this.game.modeName === "winter" ? FloorNames.Sand : FloorNames.Grass;
+                    // TODO Detect mode somehow (UNTIL WINTER IS OVER, FLOOR MUST BE SAND, DONT FORGET TO UNDO)
+                    floor = FloorNames.Sand;//FloorNames.Grass; // this.game.modeName === "winter" ? FloorNames.Sand : FloorNames.Grass;
                 } else {
                     floor = FloorNames.Sand;
                 }
@@ -240,7 +250,7 @@ export class Terrain {
                 }
 
                 if (river.waterHitbox?.isPointInside(position)) {
-                    floor = FloorNames.Water;
+                    floor = this.waterType;
                     break;
                 }
             }

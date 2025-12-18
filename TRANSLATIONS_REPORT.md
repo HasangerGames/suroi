@@ -3553,7 +3553,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
 
-## 🇨🇳 中文（简体） (98% Complete) - zh.hjson
+## 🇨🇳 中文（简体） (99% Complete) - zh.hjson
 
 ### Invalid Keys
 
@@ -3561,7 +3561,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `create_team_waiting` is not a valid key
 - Key `developr_vest` is not a valid key
 - Key `destroyer_of_worlds` is not a valid key
-- Key `deathray` is not a valid key
 - Key `C4` is not a valid key
 - Key `emote_happy_face` is not a valid key
 - Key `emote_sad_face` is not a valid key
@@ -3778,7 +3777,5 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_bullet_trail_bloom` is not defined
 - Key `settings_blood_splatter` is not defined
 - Key `settings_cooler_weapon_gas` is not defined
-- Key `settings_weapon_compare` is not defined
-- Key `settings_weapon_compare_condensed` is not defined
 - Key `kf_disconnected` is not defined
 

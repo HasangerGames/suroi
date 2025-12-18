@@ -490,8 +490,9 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             }
 
             if (this.distSinceLastFootstep > 10) {
+                const footstepFloor = FloorTypes[this.floorType].slippery ? FloorNames.Ice : this.floorType;
                 this.footstepSound = this.playSound(
-                    `${this.floorType}_step_${random(1, 2)}`,
+                    `${footstepFloor}_step_${random(1, 2)}`,
                     {
                         falloff: 0.6,
                         maxRange: 48
@@ -688,16 +689,20 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             this.activeItem = activeItem;
 
             const skinID = skin.idString;
+            const skinDef = Loots.fromString<SkinDefinition>(skinID);
+
             if (this.isActivePlayer) {
                 const oldSkinID = UIManager.skinID;
                 UIManager.skinID = skinID;
+
                 if (oldSkinID !== undefined && oldSkinID !== skinID) {
                     UIManager.weaponCache[2] = undefined; // invalidate melee cache so fists in inventory update
                     UIManager.updateWeapons();
+
+                    if (skinDef.sound) SoundManager.play(skinDef.idString);
                 }
             }
             this._skin = skinID;
-            const skinDef = Loots.fromString<SkinDefinition>(skinID);
 
             let baseTint: ColorSource;
             let fistTint: ColorSource;
@@ -1398,10 +1403,26 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         const imagePresent = image !== undefined;
         const isDualGun = imagePresent && weaponDef.defType === DefinitionType.Gun && weaponDef.isDual;
         if (imagePresent) {
-            let frame = `${reference.idString}${weaponDef.defType === DefinitionType.Gun || (image as NonNullable<MeleeDefinition["image"]>).separateWorldImage
-                ? "_world"
-                : ""
-            }`;
+            const usesWorldFrame = weaponDef.defType === DefinitionType.Gun
+                || (image as NonNullable<MeleeDefinition["image"]>).separateWorldImage;
+
+            let frame = reference.idString;
+
+            if (usesWorldFrame && weaponDef.defType === DefinitionType.Gun) {
+                const gunReference = reference as SingleGunNarrowing;
+                const activeWeapon = this.isActivePlayer
+                    ? UIManager.inventory.weapons[UIManager.inventory.activeWeaponIndex]
+                    : undefined;
+
+                const useUnloadedFrame = gunReference.image.unloadedWorldImage
+                    && activeWeapon?.definition.idString === weaponDef.idString
+                    && activeWeapon.count !== undefined
+                    && activeWeapon.count <= 0;
+
+                frame += useUnloadedFrame ? "_empty_world" : "_world";
+            } else if (usesWorldFrame) {
+                frame += "_world";
+            }
 
             if (weaponDef.defType === DefinitionType.Throwable && this.halloweenThrowableSkin && !weaponDef.noSkin) {
                 frame += "_halloween";
@@ -2319,7 +2340,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             && GameConsole.getBuiltInCVar("cv_blood_splatter")
             && !this.downed
         ) {
-            const isOnWater = this.floorType === FloorNames.Water;
+            const isOnWater = this.floorType === FloorNames.Water || this.floorType === FloorNames.Ice;
             this._bloodDecals.add(
                 ParticleManager.spawnParticle({
                     frames: "blood_particle",

@@ -266,7 +266,8 @@ export const MaterialSounds: Record<string, { hit?: string, destroyed?: string }
 };
 
 // TODO Detect mode somehow
-const aidrTint = 0x4059bf; // GameConstants.modeName as string === "winter" ? 0xb94646 : 0x4059bf;
+// temp, for winter mode only: tint must be 0xb94646
+const aidrTint = 0xb94646;//0x4059bf; // GameConstants.modeName as string === "winter" ? 0xb94646 : 0x4059bf;
 
 export const TintedParticles: Record<string, { readonly base: string, readonly tint: number, readonly variants?: number }> = {
     _glow_: { base: "_glow_", tint: 0xffffff },
@@ -327,6 +328,7 @@ export const TintedParticles: Record<string, { readonly base: string, readonly t
     clearing_boulder_particle_1: { base: "stone_particle_1", tint: 0x5a5a5a },
     clearing_boulder_particle_2: { base: "stone_particle_2", tint: 0x5a5a5a },
     sandbags_particle: { base: "stone_particle_2", tint: 0xd59d4e },
+    igloo_wall_particle: { base: "stone_particle_2", tint: 0xe5e5e5 },
     fire_pit_particle_1: { base: "stone_particle_1", tint: 0x5b4f3e },
     fire_pit_particle_2: { base: "stone_particle_2", tint: 0x5b4f3e },
     door2_particle: { base: "plastic_particle", tint: 0xf5f9fd },
@@ -1044,6 +1046,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         variations: 4,
         trunkVariations: 2,
         leavesVariations: 2,
+        winterVariations: 2,
         frames: {
             base: "oak_tree_trunk",
             leaves: "oak_tree_leaves"
@@ -1067,6 +1070,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         spawnHitbox: new CircleHitbox(8.5),
         rotationMode: RotationMode.Full,
         variations: 2,
+        winterVariations: 2,
         leavesVariations: 2,
         frames: {
             base: "birch_tree_trunk",
@@ -1154,6 +1158,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         },
         variations: 6,
         trunkVariations: 6,
+        winterVariations: 5,
         zIndex: ZIndexes.ObstaclesLayer5,
         allowFlyover: FlyoverPref.Never,
         frames: {
@@ -2038,8 +2043,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         hitbox: RectangleHitbox.fromRect(6.5, 6.3),
         rotationMode: RotationMode.None,
         allowFlyover: FlyoverPref.Always,
-        hasLoot: true,
-        winterVariations: 1
+        hasLoot: true
     },
     {
         idString: "hazel_crate",
@@ -2293,7 +2297,6 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         },
         particlesOnDestroy: "ash_particle",
         additionalDestroySounds: ["smoke_grenade"],
-        winterVariations: 1,
         waterOverlay: {
             scaleX: 1,
             scaleY: 0.65
@@ -2358,7 +2361,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         frames: {
             particle: "propane_tank_particle",
             residue: "explosion_decal"
-        }
+        },
+        winterVariations: 2
     },
     {
         idString: "loot_barrel",
@@ -3190,6 +3194,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         ),
         rotationMode: RotationMode.Limited,
         allowFlyover: FlyoverPref.Always,
+        lootTable: "trash",
         winterVariations: 2
     },
     {
@@ -4590,29 +4595,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         allowFlyover: FlyoverPref.Never,
         zIndex: ZIndexes.BuildingsFloor - 1,
         variations: 3,
-        frames: {
-            particle: "metal_particle"
-        }
-    },
-    {
-        idString: "trailer",
-        name: "Trailer",
-        defType: DefinitionType.Obstacle,
-        material: "metal_heavy",
-        health: 1000,
-        indestructible: true,
-        reflectBullets: true,
-        hitbox: new GroupHitbox(
-            RectangleHitbox.fromRect(14.9, 44.7, Vec(-0.05, 0)), // Body
-            RectangleHitbox.fromRect(15.9, 6.4, Vec(0, -11.2)), // Front-most back wheels
-            RectangleHitbox.fromRect(15.9, 6.4, Vec(0, -18.2)), // Rearmost back wheels
-            RectangleHitbox.fromRect(15.5, 1.5, Vec(0, -22.5)), // Rear bumper
-            RectangleHitbox.fromRect(9.75, 1, Vec(-0.05, 22.75)) // Front part (idk)
-        ),
-        rotationMode: RotationMode.Limited,
-        allowFlyover: FlyoverPref.Never,
-        zIndex: ZIndexes.ObstaclesLayer4,
-        noResidue: true,
+        winterVariations: 3,
         frames: {
             particle: "metal_particle"
         }
@@ -4748,18 +4731,6 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         requiredItem: "gas_can",
         hitbox: RectangleHitbox.fromRect(9, 7),
         winterVariations: 1
-    },
-
-    {
-        idString: "ship_oil_tank",
-        name: "Ship Oil Tank",
-        defType: DefinitionType.Obstacle,
-        material: "metal_heavy",
-        health: 200,
-        indestructible: true,
-        rotationMode: RotationMode.Limited,
-        allowFlyover: FlyoverPref.Never,
-        hitbox: RectangleHitbox.fromRect(28, 14)
     },
     {
         idString: "forklift",
@@ -4977,8 +4948,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         rotationMode: RotationMode.Limited,
         frames: {
             particle: "sandbags_particle"
-        }
-        // winterVariations: 1
+        },
+        winterVariations: 1
     },
     {
         idString: "gun_locker",
@@ -5010,7 +4981,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         health: 80,
         indestructible: false,
         hitbox: RectangleHitbox.fromRect(1, 10),
-        rotationMode: RotationMode.Limited
+        rotationMode: RotationMode.Limited,
+        winterVariations: 1
     },
     {
         idString: "gun_case",
@@ -5354,7 +5326,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         hideOnMap: true,
         hitbox: RectangleHitbox.fromRect(3.2, 8.87, Vec(-0.4, 0)),
         rotationMode: RotationMode.Limited,
-        zIndex: ZIndexes.BuildingsFloor
+        zIndex: ZIndexes.BuildingsFloor,
+        winterVariations: 1
     },
     {
         idString: "grenade_box",
@@ -5410,7 +5383,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         hitbox: RectangleHitbox.fromRect(9.5, 16.5),
         rotationMode: RotationMode.Limited,
         spawnMode: MapObjectSpawnMode.River,
-        noResidue: true
+        noResidue: true,
+        winterVariations: 1
     },
     {
         idString: "viking_chest",
@@ -5501,7 +5475,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
             particle: "metal_particle"
         },
         hideOnMap: false,
-        rotationMode: RotationMode.Limited
+        rotationMode: RotationMode.Limited,
+        winterVariations: 3
     },
     {
         idString: "bunker_entrance",
@@ -5696,7 +5671,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
             particle: "metal_particle"
         },
         rotationMode: RotationMode.Limited,
-        zIndex: ZIndexes.BuildingsCeiling
+        zIndex: ZIndexes.BuildingsCeiling,
+        winterVariations: 1
     },
     {
         idString: "cargo_ship_stair_support",
@@ -6378,8 +6354,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         frames: {
             particle: "metal_particle",
             residue: "large_refinery_barrel_residue"
-        }
-        // winterVariations: 1
+        },
+        winterVariations: 1
     },
     {
         idString: "buoy",
@@ -7649,19 +7625,194 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
             }
         }
     },
+    { // ive given up
+        idString: "igloo_wall",
+        name: "Igloo Wall",
+        defType: DefinitionType.Obstacle,
+        material: "sand",
+        health: 481,
+        isWall: true,
+        invisible: true,
+        hideOnMap: true,
+        noResidue: true,
+        allowFlyover: FlyoverPref.Never,
+        rotationMode: RotationMode.Limited,
+        hitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(10.52, 2.56, Vec(-1.38, -9.39)),
+            RectangleHitbox.fromRect(10.52, 2.56, Vec(-1.38, 2.2)),
+
+            // FUCk tjis sh!t
+            new CircleHitbox(1.29, Vec(3.2, -10.62)),
+            new CircleHitbox(1.29, Vec(3.48, -11.37)),
+            new CircleHitbox(1.29, Vec(3.89, -12.45)),
+            new CircleHitbox(1.29, Vec(4.43, -13.62)),
+            new CircleHitbox(1.29, Vec(4.84, -14.43)),
+            new CircleHitbox(1.29, Vec(5.45, -15.48)),
+            new CircleHitbox(1.29, Vec(6.19, -16.62)),
+            new CircleHitbox(1.29, Vec(7.1, -17.83)),
+            new CircleHitbox(1.29, Vec(7.88, -18.76)),
+            new CircleHitbox(1.29, Vec(8.81, -19.72)),
+            new CircleHitbox(1.29, Vec(9.77, -20.64)),
+            new CircleHitbox(1.29, Vec(10.74, -21.44)),
+            new CircleHitbox(1.29, Vec(11.63, -22.1)),
+            new CircleHitbox(1.29, Vec(12.71, -22.84)),
+            new CircleHitbox(1.29, Vec(13.74, -23.44)),
+            new CircleHitbox(1.29, Vec(14.83, -24.02)),
+            new CircleHitbox(1.29, Vec(15.92, -24.51)),
+            new CircleHitbox(1.29, Vec(17.2, -25.01)),
+            new CircleHitbox(1.29, Vec(18.24, -25.36)),
+            new CircleHitbox(1.29, Vec(19.5, -25.71)),
+            new CircleHitbox(1.29, Vec(20.7, -25.96)),
+            new CircleHitbox(1.29, Vec(21.94, -26.16)),
+            new CircleHitbox(1.29, Vec(23.33, -26.28)),
+            new CircleHitbox(1.29, Vec(24.56, -26.34)),
+            new CircleHitbox(1.29, Vec(25.99, -26.31)),
+            new CircleHitbox(1.29, Vec(27.39, -26.2)),
+            new CircleHitbox(1.29, Vec(28.73, -26.01)),
+            new CircleHitbox(1.29, Vec(30.19, -25.71)),
+            new CircleHitbox(1.29, Vec(31.69, -25.29)),
+            new CircleHitbox(1.29, Vec(33.15, -24.77)),
+            new CircleHitbox(1.29, Vec(34.33, -24.27)),
+            new CircleHitbox(1.29, Vec(35.59, -23.65)),
+            new CircleHitbox(1.29, Vec(36.95, -22.86)),
+            new CircleHitbox(1.29, Vec(38.3, -21.94)),
+            new CircleHitbox(1.29, Vec(39.32, -21.14)),
+            new CircleHitbox(1.29, Vec(40.33, -20.26)),
+            new CircleHitbox(1.29, Vec(41.15, -19.45)),
+            new CircleHitbox(1.29, Vec(42.12, -18.4)),
+            new CircleHitbox(1.29, Vec(42.83, -17.54)),
+            new CircleHitbox(1.29, Vec(43.51, -16.6)),
+            new CircleHitbox(1.29, Vec(44.29, -15.42)),
+            new CircleHitbox(1.29, Vec(44.89, -14.37)),
+            new CircleHitbox(1.29, Vec(45.49, -13.19)),
+            new CircleHitbox(1.29, Vec(45.95, -12.11)),
+            new CircleHitbox(1.29, Vec(46.33, -11.16)),
+            new CircleHitbox(1.29, Vec(46.63, -10.19)),
+            new CircleHitbox(1.29, Vec(46.97, -8.88)),
+            new CircleHitbox(1.29, Vec(47.23, -7.69)),
+            new CircleHitbox(1.29, Vec(47.43, -6.39)),
+            new CircleHitbox(1.29, Vec(47.52, -5.44)),
+            new CircleHitbox(1.29, Vec(47.59, -4.07)),
+            new CircleHitbox(1.29, Vec(47.58, -2.78)),
+            new CircleHitbox(1.29, Vec(47.49, -1.34)),
+            new CircleHitbox(1.29, Vec(47.32, -0.01)),
+            new CircleHitbox(1.29, Vec(47.12, 1.11)),
+            new CircleHitbox(1.29, Vec(46.86, 2.21)),
+            new CircleHitbox(1.29, Vec(46.5, 3.4)),
+            new CircleHitbox(1.29, Vec(46.08, 4.61)),
+            new CircleHitbox(1.29, Vec(45.6, 5.75)),
+            new CircleHitbox(1.29, Vec(45.09, 6.81)),
+            new CircleHitbox(1.29, Vec(44.52, 7.85)),
+            new CircleHitbox(1.29, Vec(43.94, 8.79)),
+            new CircleHitbox(1.29, Vec(43.4, 9.6)),
+            new CircleHitbox(1.29, Vec(42.82, 10.37)),
+            new CircleHitbox(1.29, Vec(41.9, 11.47)),
+            new CircleHitbox(1.29, Vec(40.99, 12.45)),
+            new CircleHitbox(1.29, Vec(40.03, 13.35)),
+            new CircleHitbox(1.29, Vec(38.97, 14.25)),
+            new CircleHitbox(1.29, Vec(37.94, 15.02)),
+            new CircleHitbox(1.29, Vec(36.9, 15.71)),
+            new CircleHitbox(1.29, Vec(35.86, 16.33)),
+            new CircleHitbox(1.29, Vec(34.68, 16.93)),
+            new CircleHitbox(1.29, Vec(33.29, 17.54)),
+            new CircleHitbox(1.29, Vec(31.69, 18.11)),
+            new CircleHitbox(1.29, Vec(30.26, 18.51)),
+            new CircleHitbox(1.29, Vec(28.9, 18.8)),
+            new CircleHitbox(1.29, Vec(27.37, 19.02)),
+            new CircleHitbox(1.29, Vec(25.69, 19.15)),
+            new CircleHitbox(1.29, Vec(24.04, 19.15)),
+            new CircleHitbox(1.29, Vec(22.29, 19.02)),
+            new CircleHitbox(1.29, Vec(20.68, 18.78)),
+            new CircleHitbox(1.29, Vec(19.1, 18.42)),
+            new CircleHitbox(1.29, Vec(17.71, 18.02)),
+            new CircleHitbox(1.29, Vec(16.35, 17.52)),
+            new CircleHitbox(1.29, Vec(15.07, 16.96)),
+            new CircleHitbox(1.29, Vec(13.62, 16.2)),
+            new CircleHitbox(1.29, Vec(12.44, 15.47)),
+            new CircleHitbox(1.29, Vec(11.24, 14.64)),
+            new CircleHitbox(1.29, Vec(10.01, 13.66)),
+            new CircleHitbox(1.29, Vec(8.94, 12.67)),
+            new CircleHitbox(1.29, Vec(7.94, 11.62)),
+            new CircleHitbox(1.29, Vec(6.99, 10.5)),
+            new CircleHitbox(1.29, Vec(2.41, 3.02)),
+            new CircleHitbox(1.29, Vec(6.33, 9.63)),
+            new CircleHitbox(1.29, Vec(5.62, 8.58)),
+            new CircleHitbox(1.29, Vec(5.01, 7.55)),
+            new CircleHitbox(1.29, Vec(4.45, 6.49)),
+            new CircleHitbox(1.29, Vec(3.92, 5.33)),
+            new CircleHitbox(1.29, Vec(3.65, 4.69)),
+            new CircleHitbox(1.29, Vec(3.41, 4.02))
+        )
+    },
+    {
+        idString: "river_chest_winter",
+        name: "River Chest",
+        defType: DefinitionType.Obstacle,
+        material: "ice",
+        health: 1000,
+        scale: {
+            spawnMin: 1,
+            spawnMax: 1,
+            destroy: 0.7
+        },
+        hitbox: RectangleHitbox.fromRect(12, 7),
+        spawnHitbox: RectangleHitbox.fromRect(14, 9),
+        rotationMode: RotationMode.None,
+        zIndex: ZIndexes.DownedPlayers - 1,
+        hasLoot: true,
+        hideOnMap: true,
+        frames: {
+            particle: "window_particle",
+            base: "river_chest",
+            residue: "river_chest_residue"
+        },
+        spawnMode: MapObjectSpawnMode.River,
+        allowFlyover: FlyoverPref.Always,
+        lootTable: "river_chest"
+    }
 ] satisfies readonly RawObstacleDefinition[] as readonly RawObstacleDefinition[]).flatMap((def: Mutable<RawObstacleDefinition>) => {
     if (def.variations !== undefined) (def as Mutable<ObstacleDefinition>).variationBits = Math.ceil(Math.log2(def.variations));
     if (def.allowFlyover === undefined) def.allowFlyover = FlyoverPref.Sometimes;
     if (def.visibleFromLayers === undefined) def.visibleFromLayers = Layers.Adjacent;
-    const winterVariations = def.winterVariations;
+
+    const winterVariations = def.winterVariations,
+            idString = def.idString,
+            isActivatable = def.isActivatable,
+            isTree = def.isTree;
+
+    const numWinterVariations = winterVariations === 1 ? undefined : winterVariations;
+    let winterVariationBits: number | undefined;
+    if (numWinterVariations !== undefined) {
+        winterVariationBits = Math.ceil(Math.log2(numWinterVariations));
+    }
+
     return winterVariations
         ? [
             def,
             {
                 ...def,
-                idString: `${def.idString}_winter`,
-                variations: winterVariations === 1 ? undefined : winterVariations,
-                winterVariations: undefined
+                idString: `${idString}_winter`,
+                variations: numWinterVariations,
+                variationBits: winterVariationBits,
+                winterVariations: undefined,
+                ...(isActivatable ? {
+                    interactObstacleIdString: idString
+                } : {}),
+                ...(isTree ? {
+                    leavesVariations: undefined,
+                    trunkVariations: winterVariations
+                } : {}),
+                frames: {
+                    particle: def.frames?.particle ?? `${idString}_particle`,
+                    ...(!def.noResidue ? { residue: def.frames?.residue ?? `${idString}_residue` } : {}),
+
+                    // SCREW TREES (seriously why.)
+                    ...(isTree && def.frames?.leaves ? {
+                        base: idString,
+                        leaves: undefined
+                    } : {}) // dont know what to do atp
+                },
+                ...(def.hasLoot ? { lootTable: def.lootTable ?? idString } : {})
             }
         ]
         : def;

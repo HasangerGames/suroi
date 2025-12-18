@@ -1,4 +1,5 @@
 import { type ReferenceTo } from "../utils/objectDefinitions";
+import { FloorNames } from "../utils/terrain";
 import { type ScopeDefinition } from "./items/scopes";
 
 export type ModeName =
@@ -8,7 +9,8 @@ export type ModeName =
     | "infection"
     | "hunted"
     | "birthday"
-    | "winter";
+    | "winter"
+    | "nye";
 
 export type SpritesheetNames = ModeName | "shared";
 
@@ -23,10 +25,12 @@ export type ColorKeys =
     | "void";
 
 export interface ModeDefinition {
+    readonly similarTo?: ModeName
     readonly colors: Record<ColorKeys, string>
     readonly spriteSheets: readonly SpritesheetNames[]
     readonly ambience?: string
     readonly ambienceVolume?: number
+    readonly noRiverAmbience?: boolean
     readonly replaceMenuMusic?: boolean
     readonly defaultScope?: ReferenceTo<ScopeDefinition>
     readonly obstacleVariants?: boolean
@@ -49,7 +53,10 @@ export interface ModeDefinition {
     readonly unlockStage?: number // Used for hunted mode bunkers
     readonly forcedGoldAirdropStage?: number
     readonly overrideUpstairsFunctionality?: boolean // hunting stand hunting stand hunting stand hunting stand hunting stand
+    readonly replaceWaterBy?: FloorNames
     readonly maxEquipmentLevel?: number
+    readonly bulletFilters?: boolean
+    readonly summonAirdropsInterval?: number
 }
 
 export const Modes: Record<ModeName, ModeDefinition> = {
@@ -158,8 +165,8 @@ export const Modes: Record<ModeName, ModeDefinition> = {
     winter: {
         colors: {
             grass: "hsl(210, 18%, 82%)",
-            water: "hsl(211, 63%, 42%)",
-            border: "hsl(208, 94%, 45%)",
+            water: "hsl(211, 40%, 64%)",
+            border: "hsl(208, 40%, 48%)",
             beach: "hsl(210, 18%, 75%)",
             riverBank: "hsl(210, 18%, 70%)",
             trail: "hsl(35, 50%, 40%)",
@@ -168,6 +175,7 @@ export const Modes: Record<ModeName, ModeDefinition> = {
         },
         spriteSheets: ["shared", "normal", "winter"],
         ambience: "snowstorm_ambience",
+        noRiverAmbience: true,
         replaceMenuMusic: true,
         bulletTrailAdjust: "hsl(0, 50%, 80%)",
         particleEffects: {
@@ -177,7 +185,8 @@ export const Modes: Record<ModeName, ModeDefinition> = {
         },
         obstacleVariants: true,
         specialLogo: true,
-        playButtonImage: "./img/game/winter/obstacles/red_gift.svg"
+        playButtonImage: "./img/game/winter/obstacles/red_gift.svg",
+        replaceWaterBy: FloorNames.Ice
     },
     hunted: {
         colors: {
@@ -202,5 +211,37 @@ export const Modes: Record<ModeName, ModeDefinition> = {
             delay: 1000
         },
         maxEquipmentLevel: 4
-    }
+    },
+    nye: {
+        colors: {
+            grass: "hsl(210, 18%, 82%)",
+            water: "hsl(211, 40%, 64%)",
+            border: "hsl(208, 40%, 48%)",
+            beach: "hsl(210, 18%, 75%)",
+            riverBank: "hsl(210, 18%, 70%)",
+            trail: "hsl(35, 50%, 40%)",
+            gas: "hsla(17, 100%, 50%, 0.55)",
+            void: "hsl(25, 80%, 6%)"
+        },
+        spriteSheets: ["shared", "normal", "winter"],
+        ambience: "snowstorm_ambience",
+        noRiverAmbience: true,
+        replaceMenuMusic: true,
+        bulletTrailAdjust: "hsl(0, 50%, 80%)",
+        particleEffects: {
+            frames: "snow_particle",
+            delay: 800,
+            gravity: true
+        },
+        similarTo: "winter",
+        obstacleVariants: true,
+        specialLogo: true,
+        bulletFilters: true,
+        playButtonImage: "./img/game/winter/obstacles/christmas_tree.svg",
+        canvasFilters: {
+            brightness: 0.6,
+            saturation: 0.85
+        },
+        summonAirdropsInterval: 30e3
+    },
 };

@@ -67,6 +67,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             [
                 { table: "airdrop_guns", weight: 0.5 },
                 { item: "firework_launcher", weight: 0.25 },
+                { item: "icicle_bow", weight: 0.125 },
                 { table: "river_chest_guns", weight: 1 }
             ],
             [
@@ -566,7 +567,11 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
         ],
         ice_pick_case: [
             [{ item: "ice_pick", weight: 1 }],
-            [{ item: "frosty", weight: 1 }]
+            [{ item: "henrys_little_helper", weight: 1 }],
+            [
+                { item: NullString, weight: 0.9 },
+                { item: "icicle_bow", weight: 0.1 } // :3
+            ]
         ],
         campsite_case: [
             { item: "flare", weight: 1 },
@@ -985,9 +990,12 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
         purple_gift: [
             [
                 { item: "model_89", weight: 0.5 },
+                { item: "shak12", weight: 0.3 },
+                { item: "vector", weight: 0.3 },
                 { item: "tango_51", weight: 0.2 },
                 { item: "pp19", weight: 0.2 },
-                { item: "mg5", weight: 0.1 }
+                { item: "mg5", weight: 0.1 },
+                { item: "dp12", weight: 0.1 }
             ],
             [
                 { table: "special_winter_skins", weight: 0.25 },
@@ -999,7 +1007,8 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             [
                 { item: NullString, weight: 0.25 },
                 { item: "deagle", weight: 0.5 },
-                { item: "vks", weight: 0.25 }
+                { item: "vks", weight: 0.125 },
+                { item: "shak12", weight: 0.125 }
             ],
             [
                 { item: "coal", weight: 1 },
@@ -1348,6 +1357,30 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
     },
 
     winter: {
+        loot_barrel: [
+            [{ item: "crowbar_rusted", weight: 1 }],
+            [{ item: "sr25", weight: 1 }],
+            [{ item: "c4", weight: 1, count: 3 }],
+            [
+                { table: "equipment", weight: 1 },
+                { table: "scopes", weight: 1 },
+                { table: "healing_items", weight: 1 }
+            ]
+        ],
+        melee: [
+            { item: "baseball_bat", weight: 3 },
+            { item: "kbar", weight: 2 },
+            { item: "vaibhav_sickle", weight: 0.5 },
+            { item: "pan", weight: 0.1 }
+        ],
+        airdrop_melee: [
+            { item: NullString, weight: 1 },
+            { item: "crowbar_rusted", weight: 0.1 },
+            { item: "hatchet", weight: 0.1 },
+            { item: "vaibhav_sickle", weight: 0.1 },
+            { item: "kbar", weight: 0.1 },
+            { item: "pan", weight: 0.075 }
+        ],
         ammo_crate: [
             [{ table: "ammo", weight: 1 }],
             [{ table: "ammo", weight: 1 }],
@@ -1361,7 +1394,6 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
 
         airdrop_skins: [
             { item: NullString, weight: 1 },
-            { item: "sky", weight: 0.5 },
             { item: "light_choco", weight: 0.7 },
             { item: "coal", weight: 1 },
             { item: "henrys_little_helper", weight: 1 },
@@ -2074,6 +2106,188 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
                 { item: "model_89", weight: 0.01 }
             ]
         }
+    },
+    nye: {
+        ammo: [
+            { item: "12g", count: 10, weight: 0.75 },
+            { item: "firework_rocket", weight: 0.75 },
+            { item: "556mm", count: 60, weight: 1 },
+            { item: "762mm", count: 60, weight: 1 },
+            { item: "9mm", count: 60, weight: 1 },
+            { item: "50cal", count: 20, weight: 0.05 }
+        ],
+        ground_loot: [
+            { item: "henrys_little_helper", weight: 1 },
+            { table: "equipment", weight: 1 },
+            { table: "healing_items", weight: 1 },
+            { table: "ammo", weight: 1 },
+            { table: "guns", weight: 0.9 },
+            { table: "scopes", weight: 0.3 }
+        ],
+        throwables: [{ item: "confetti_grenade", count: 3, weight: 1 }],
+        equipment: [
+            { item: "basic_helmet", weight: 1 },
+            { item: "regular_helmet", weight: 0.35 },
+            { item: "tactical_helmet", weight: 0.085 },
+
+            { item: "basic_vest", weight: 1 },
+            { item: "regular_vest", weight: 0.35 },
+            { item: "tactical_vest", weight: 0.085 },
+
+            { item: "basic_pack", weight: 1 },
+            { item: "regular_pack", weight: 0.35 },
+            { item: "tactical_pack", weight: 0.085 }
+        ],
+        airdrop_guns: [{
+            item: "firework_launcher",
+            weight: 1
+        }],
+        gold_airdrop_guns: [
+            {
+                item: "firework_launcher",
+                weight: 1
+            },
+            {
+                item: "icicle_bow",
+                weight: 1.1
+            }
+        ],
+        gold_airdrop_crate: [
+            [{ table: "airdrop_equipment", weight: 1 }],
+            [{ table: "airdrop_scopes", weight: 1 }],
+            [{ table: "airdrop_healing_items", weight: 1 }],
+            [{ table: "airdrop_skins", weight: 1 }],
+            [{ table: "airdrop_melee", weight: 1 }],
+            [{ table: "ammo", weight: 1 }],
+            [{ table: "gold_airdrop_guns", weight: 1 }],
+            [{ item: "frag_grenade", count: 3, weight: 1 }]
+        ],
+        airdrop_crate: [
+            [{ table: "airdrop_healing_items", weight: 1 }],
+            [{ table: "airdrop_skins", weight: 1 }],
+            [{ table: "airdrop_melee", weight: 1 }],
+            [{ table: "ammo", weight: 1 }],
+            [{ table: "airdrop_guns", weight: 1 }],
+            [
+                { item: "confetti_grenade", count: 3, weight: 2 },
+                { item: NullString, weight: 1 }
+            ]
+        ],
+        loot_barrel: [
+            [{ item: "crowbar_rusted", weight: 1 }],
+            [{ item: "sr25", weight: 1 }],
+            [{ item: "c4", weight: 1, count: 3 }],
+            [
+                { table: "equipment", weight: 1 },
+                { table: "scopes", weight: 1 },
+                { table: "healing_items", weight: 1 }
+            ]
+        ],
+        melee: [
+            { item: "baseball_bat", weight: 3 },
+            { item: "kbar", weight: 2 },
+            { item: "vaibhav_sickle", weight: 0.5 },
+            { item: "pan", weight: 0.1 }
+        ],
+        airdrop_melee: [
+            { item: NullString, weight: 1 },
+            { item: "crowbar_rusted", weight: 0.1 },
+            { item: "hatchet", weight: 0.1 },
+            { item: "vaibhav_sickle", weight: 0.1 },
+            { item: "kbar", weight: 0.1 },
+            { item: "pan", weight: 0.075 }
+        ],
+        red_gift: [
+            [
+                { item: "hp18", weight: 0.5 },
+                { item: "model_37", weight: 0.4 },
+                { item: "stevens_555", weight: 0.4 },
+                { item: "m3k", weight: 0.3 },
+                { item: "badlander", weight: 0.25 },
+                { item: "vepr12", weight: 0.05 },
+                { item: "dp12", weight: 0.0275 },
+                { item: "m590m", weight: 0.0275 },
+                { item: "usas12", weight: 0.01 },
+                { item: "mp153", weight: 0.01 }
+            ],
+            [
+                { table: "special_winter_skins", weight: 0.25 },
+                { table: "winter_skins", weight: 0.25 },
+                { item: NullString, weight: 1 }
+            ]
+        ],
+        blue_gift: [
+            [
+                { item: "ak47", weight: 0.5 },
+                { item: "sks", weight: 0.5 },
+                { item: "arx160", weight: 0.5 },
+                { item: "fn_fal", weight: 0.4 },
+                { item: "mcx_spear", weight: 0.075 },
+                { item: "mosin_nagant", weight: 0.05 },
+                { item: "sr25", weight: 0.04 },
+                { item: "tango_51", weight: 0.025 },
+                { item: "m1_garand", weight: 0.01 },
+                { item: "mg5", weight: 0.01 },
+                { item: "pk61", weight: 0.01 },
+                { item: "svu", weight: 0.01 }
+            ],
+            [
+                { table: "special_winter_skins", weight: 0.25 },
+                { table: "winter_skins", weight: 0.25 },
+                { item: NullString, weight: 1 }
+            ]
+        ],
+        green_gift: [
+            [
+                { item: "aug", weight: 0.5 },
+                { item: "blr", weight: 0.5 },
+                { item: "m16a2", weight: 0.5 },
+                { item: "cz600", weight: 0.35 },
+                { item: "mg36", weight: 0.1 },
+                { item: "mini14", weight: 0.04 },
+                { item: "rgs", weight: 0.0395 },
+                { item: "stoner_63", weight: 0.025 },
+                { item: "negev", weight: 0.01 },
+                { item: "acr", weight: 0.0075 }
+            ],
+            [
+                { table: "special_winter_skins", weight: 0.25 },
+                { table: "winter_skins", weight: 0.25 },
+                { item: NullString, weight: 1 }
+            ]
+        ],
+        purple_gift: [
+            [
+                { item: "model_89", weight: 0.5 },
+                { item: "shak12", weight: 0.3 },
+                { item: "vector", weight: 0.3 },
+                { item: "tango_51", weight: 0.2 },
+                { item: "vks", weight: 0.2 },
+                { item: "rgs", weight: 0.2 },
+                { item: "pp19", weight: 0.2 },
+                { item: "mg5", weight: 0.1 },
+                { item: "dp12", weight: 0.1 },
+                { item: "acr", weight: 0.1 },
+                { item: "svu", weight: 0.1 }
+            ],
+            [
+                { table: "special_winter_skins", weight: 0.25 },
+                { table: "winter_skins", weight: 0.25 },
+                { item: NullString, weight: 1 }
+            ]
+        ],
+        black_gift: [
+            [
+                { item: NullString, weight: 0.25 },
+                { item: "deagle", weight: 0.5 },
+                { item: "vks", weight: 0.125 },
+                { item: "shak12", weight: 0.125 }
+            ],
+            [
+                { item: "coal", weight: 1 },
+                { item: NullString, weight: 1 }
+            ]
+        ],
     },
     birthday: {}
 };
