@@ -3314,7 +3314,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `create_team_waiting` is not a valid key
 - Key `developr_vest` is not a valid key
 - Key `destroyer_of_worlds` is not a valid key
-- Key `deathray` is not a valid key
 - Key `C4` is not a valid key
 - Key `emote_happy_face` is not a valid key
 - Key `emote_sad_face` is not a valid key
