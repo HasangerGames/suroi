@@ -17254,7 +17254,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         { idString: iglooOuterObstacle, position: Vec(43.94, 22.69), outdoors: true },
         { idString: iglooOuterObstacle, position: Vec(-43.07, -20.62), outdoors: true },
         { idString: iglooOuterObstacle, position: Vec(-33.01, 13.24), outdoors: true },
-        { idString: iglooOuterObstacle, position: Vec(-3.48, -16.68), outdoors: true } 
+        { idString: iglooOuterObstacle, position: Vec(-3.48, -16.68), outdoors: true }
     ]),
     iglooLayout(3, [
         { idString: {
@@ -17281,7 +17281,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         { idString: randomGift, position: Vec(38.42, 5.17) },
         { idString: randomGift, position: Vec(25.6, -20.59) },
         { idString: randomBarrel, position: Vec(33.74, -15.81) },
-        { idString: randomGift, position: Vec(40.18, -0.22) }, 
+        { idString: randomGift, position: Vec(40.18, -0.22) },
         { idString: "box", position: Vec(18.89, -18.46) },
         { idString: "grenade_box", position: Vec(24.13, 8.89) },
         { idString: "trash_bag", position: Vec(-12.68, 9.61), outdoors: true },

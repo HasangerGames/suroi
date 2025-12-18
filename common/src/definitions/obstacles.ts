@@ -7754,18 +7754,25 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
             isActivatable = def.isActivatable,
             isTree = def.isTree;
 
+    const numWinterVariations = winterVariations === 1 ? undefined : winterVariations;
+    let winterVariationBits: number | undefined;
+    if (numWinterVariations !== undefined) {
+        winterVariationBits = Math.ceil(Math.log2(numWinterVariations));
+    }
+
     return winterVariations
         ? [
             def,
             {
                 ...def,
                 idString: `${idString}_winter`,
-                variations: winterVariations === 1 ? undefined : winterVariations,
+                variations: numWinterVariations,
+                variationBits: winterVariationBits,
                 winterVariations: undefined,
                 ...(isActivatable ? {
                     interactObstacleIdString: idString
                 } : {}),
-                ...(isTree ? { 
+                ...(isTree ? {
                     leavesVariations: undefined,
                     trunkVariations: winterVariations
                 } : {}),
