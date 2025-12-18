@@ -1,4 +1,5 @@
 import { type ReferenceTo } from "../utils/objectDefinitions";
+import { FloorNames } from "../utils/terrain";
 import { type ScopeDefinition } from "./items/scopes";
 
 export type ModeName =
@@ -51,6 +52,7 @@ export interface ModeDefinition {
     readonly unlockStage?: number // Used for hunted mode bunkers
     readonly forcedGoldAirdropStage?: number
     readonly overrideUpstairsFunctionality?: boolean // hunting stand hunting stand hunting stand hunting stand hunting stand
+    readonly replaceWaterBy?: FloorNames
     readonly maxEquipmentLevel?: number
     readonly bulletFilters?: boolean
     readonly summonAirdropsInterval?: number
@@ -181,7 +183,8 @@ export const Modes: Record<ModeName, ModeDefinition> = {
         },
         obstacleVariants: true,
         specialLogo: true,
-        playButtonImage: "./img/game/winter/obstacles/red_gift.svg"
+        playButtonImage: "./img/game/winter/obstacles/red_gift.svg",
+        replaceWaterBy: FloorNames.Ice
     },
     hunted: {
         colors: {

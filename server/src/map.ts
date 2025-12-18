@@ -168,8 +168,8 @@ export class GameMap {
 
         packet.rivers = rivers;
 
-        const baseMode = Modes[this.game.modeName].similarTo ?? this.game.modeName;
-        const waterType = baseMode === "winter" ? FloorNames.Ice : FloorNames.Water;
+        const baseMode = Modes[this.game.mode.similarTo ?? this.game.modeName];
+        const waterType = baseMode.replaceWaterBy ?? FloorNames.Water;
 
         this.terrain = new Terrain(
             this.width,
@@ -789,7 +789,11 @@ export class GameMap {
         }
 
         for (const floor of definition.floors ?? []) {
-            this.terrain.addFloor(floor.type, floor.hitbox.transform(position, 1, orientation), floor.layer ?? layer);
+            let floorType = floor.type;
+            if (floorType === FloorNames.Water) {
+                floorType = this.terrain.waterType;
+            }
+            this.terrain.addFloor(floorType, floor.hitbox.transform(position, 1, orientation), floor.layer ?? layer);
         }
 
         if (!definition.hideOnMap) this._packet.objects.push(building);

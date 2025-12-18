@@ -19,6 +19,7 @@ import { InputManager } from "./inputManager";
 import { SoundManager } from "./soundManager";
 import { UIManager } from "./uiManager";
 import type { Tween } from "../utils/tween";
+import { Modes } from "@common/definitions/modes";
 
 class MapManagerClass {
     private _expanded = false;
@@ -528,8 +529,8 @@ class MapManagerClass {
         const rivers: River[] = [];
         rivers.push(...mapPacket.rivers.map(({ width, points, isTrail }) => new River(width, points as Vector[], rivers, mapBounds, isTrail)));
 
-        const baseMode = Game.mode.similarTo ?? Game.modeName;
-        const waterType = baseMode === "winter" ? FloorNames.Ice : FloorNames.Water;
+        const baseMode = Modes[Game.mode.similarTo ?? Game.modeName];
+        const waterType = baseMode.replaceWaterBy ?? FloorNames.Water;
 
         this._terrain = new Terrain(
             width,
@@ -544,8 +545,12 @@ class MapManagerClass {
         for (const object of this._objects) {
             if (object.isBuilding) {
                 for (const floor of object.definition.floors ?? []) {
+                    let floorType = floor.type;
+                    if (floorType === FloorNames.Water) {
+                        floorType = waterType;
+                    }
                     const hitbox = floor.hitbox.transform(object.position, 1, object.orientation);
-                    this._terrain.addFloor(floor.type, hitbox, floor.layer ?? object.layer ?? 0);
+                    this._terrain.addFloor(floorType, hitbox, floor.layer ?? object.layer ?? 0);
                 }
             }
         }
