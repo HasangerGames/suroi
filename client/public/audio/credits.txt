@@ -162,6 +162,7 @@ Footsteps:
   Sand - "foley_footsteps_desert_boots_sand" from Pixabay: https://pixabay.com/sound-effects/foley-footsteps-desert-boots-sand-6900/
   Water - "Footsteps in Water - Nature Sounds" from Pixabay: https://pixabay.com/sound-effects/footsteps-in-water-nature-sounds-8185/
   Log (Wood) - "Walking on wood" by freesounds123 from Pixabay: https://pixabay.com/users/freesounds123-49985424/
+  Ice - "Ice / Winter / Snow - Walking on ice - V" by GregorQuendel_SoundDesign from Pixabay: https://pixabay.com/users/gregorquendel_sounddesign-33044339/
 
 Memorial open:
   "Tomb_door" from Pixabay: https://pixabay.com/sound-effects/tomb-door-95246/

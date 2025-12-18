@@ -7743,6 +7743,32 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
             new CircleHitbox(1.29, Vec(3.65, 4.69)),
             new CircleHitbox(1.29, Vec(3.41, 4.02))
         )
+    },
+    {
+        idString: "river_chest_winter",
+        name: "River Chest",
+        defType: DefinitionType.Obstacle,
+        material: "ice",
+        health: 1000,
+        scale: {
+            spawnMin: 1,
+            spawnMax: 1,
+            destroy: 0.7
+        },
+        hitbox: RectangleHitbox.fromRect(12, 7),
+        spawnHitbox: RectangleHitbox.fromRect(14, 9),
+        rotationMode: RotationMode.None,
+        zIndex: ZIndexes.DownedPlayers - 1,
+        hasLoot: true,
+        hideOnMap: true,
+        frames: {
+            particle: "window_particle",
+            base: "river_chest",
+            residue: "river_chest_residue"
+        },
+        spawnMode: MapObjectSpawnMode.River,
+        allowFlyover: FlyoverPref.Always,
+        lootTable: "river_chest"
     }
 ] satisfies readonly RawObstacleDefinition[] as readonly RawObstacleDefinition[]).flatMap((def: Mutable<RawObstacleDefinition>) => {
     if (def.variations !== undefined) (def as Mutable<ObstacleDefinition>).variationBits = Math.ceil(Math.log2(def.variations));

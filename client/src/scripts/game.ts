@@ -338,7 +338,7 @@ export const Game = new (class Game {
     }
 
     updateAmbience(): void {
-        if (!this.activePlayer) return;
+        if (!this.activePlayer || this.mode.noRiverAmbience) return;
 
         const position = this.activePlayer.position;
 
@@ -602,11 +602,13 @@ export const Game = new (class Game {
             }
         }
 
-        this.riverAmbience = SoundManager.play("river_ambience", { loop: true, ambient: true });
-        this.riverAmbience.volume = 0;
+        if (!this.mode.noRiverAmbience) {
+            this.riverAmbience = SoundManager.play("river_ambience", { loop: true, ambient: true });
+            this.riverAmbience.volume = 0;
 
-        this.oceanAmbience = SoundManager.play("ocean_ambience", { loop: true, ambient: true });
-        this.oceanAmbience.volume = 0;
+            this.oceanAmbience = SoundManager.play("ocean_ambience", { loop: true, ambient: true });
+            this.oceanAmbience.volume = 0;
+        }
 
         const emotes = EmoteWheelManager.emotes = packet.emotes
             .slice(0, 6)
