@@ -790,10 +790,11 @@ export class GameMap {
 
         for (const floor of definition.floors ?? []) {
             let floorType = floor.type;
-            if (floorType === FloorNames.Water) {
+            const floorLayer = floor.layer ?? layer;
+            if (floorType === FloorNames.Water && floorLayer === Layer.Ground) {
                 floorType = this.terrain.waterType;
             }
-            this.terrain.addFloor(floorType, floor.hitbox.transform(position, 1, orientation), floor.layer ?? layer);
+            this.terrain.addFloor(floorType, floor.hitbox.transform(position, 1, orientation), floorLayer);
         }
 
         if (!definition.hideOnMap) this._packet.objects.push(building);

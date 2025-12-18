@@ -555,11 +555,12 @@ class MapManagerClass {
             if (object.isBuilding) {
                 for (const floor of object.definition.floors ?? []) {
                     let floorType = floor.type;
-                    if (floorType === FloorNames.Water) {
+                    const floorLayer = floor.layer ?? object.layer ?? 0;
+                    if (floorType === FloorNames.Water && floorLayer === Layer.Ground) {
                         floorType = waterType;
                     }
                     const hitbox = floor.hitbox.transform(object.position, 1, object.orientation);
-                    this._terrain.addFloor(floorType, hitbox, floor.layer ?? object.layer ?? 0);
+                    this._terrain.addFloor(floorType, hitbox, floorLayer);
                 }
             }
         }
