@@ -699,7 +699,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     UIManager.weaponCache[2] = undefined; // invalidate melee cache so fists in inventory update
                     UIManager.updateWeapons();
 
-                    if (skinDef.sound) SoundManager.play(skinDef.idString);
+                    // The spectating check is to ensure that the sound is not played during spectating, specifically during player switching.
+                    if (skinDef.sound && !Game.spectating) SoundManager.play(skinDef.idString);
                 }
             }
             this._skin = skinID;

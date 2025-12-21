@@ -255,7 +255,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
                         texture = this.definition.airdrop.unlockFrame;
 
                         if ((this.definition.airdrop.particleVariations ?? 2) > 1) {
-                            if (Game.modeName === "winter") {
+                            if (Game.mode.enhancedAirdropParticles) {
                                 ParticleManager.spawnParticles(1, () => ({
                                     frames: "airdrop_particle_4",
                                     position: this.hitbox.randomPoint(),

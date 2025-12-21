@@ -265,10 +265,6 @@ export const MaterialSounds: Record<string, { hit?: string, destroyed?: string }
     trash_bag: { hit: "sand" }
 };
 
-// TODO Detect mode somehow
-// temp, for winter mode only: tint must be 0xb94646
-const aidrTint = 0xb94646;//0x4059bf; // GameConstants.modeName as string === "winter" ? 0xb94646 : 0x4059bf;
-
 export const TintedParticles: Record<string, { readonly base: string, readonly tint: number, readonly variants?: number }> = {
     _glow_: { base: "_glow_", tint: 0xffffff },
 
@@ -297,7 +293,6 @@ export const TintedParticles: Record<string, { readonly base: string, readonly t
     briefcase_particle: { base: "metal_particle_2", tint: 0xcfcfcf },
     aegis_crate_particle: { base: "wood_particle", tint: 0x2687d9 },
     log_particle: { base: "stone_particle_1", tint: 0x5b3e24 },
-    airdrop_crate_particle: { base: "wood_particle", tint: aidrTint },
     pumpkin_airdrop_particle: { base: "pumpkin_particle_base", tint: 0xb84b14 },
     chest_particle: { base: "wood_particle", tint: 0xa87e5a },
     cooler_particle: { base: "wood_particle", tint: 0x357d99 },

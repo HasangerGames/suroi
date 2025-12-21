@@ -25,38 +25,59 @@ export type ColorKeys =
     | "void";
 
 export interface ModeDefinition {
+    /** Used for mode inheritance. */
     readonly similarTo?: ModeName
+    /** Terrain colors. Color values must be in `HSL` or `HSLA` format. */
     readonly colors: Record<ColorKeys, string>
+    /** The spritesheets that will be used for the mode. They are loaded from first to last (in the array). The last spritesheet/mode name in the array will be the one that will replace the others in some cases. */
     readonly spriteSheets: readonly SpritesheetNames[]
     readonly ambience?: string
     readonly ambienceVolume?: number
+    /** Disables river and ocean ambiences for the mode. Currently only used for winter mode. */
     readonly noRiverAmbience?: boolean
+    /** Replaces the menu's music by searching for a file with name `menu_music_[MODENAME].mp3` in the `/public/audio/music/` directory. */
     readonly replaceMenuMusic?: boolean
+    /** The default player spawning scope of the mode. */
     readonly defaultScope?: ReferenceTo<ScopeDefinition>
+    /** Enables obstacle variants. Basically adds the mode name to any set obstacles' idString (for example, `barrel_winter`). Currently only used in winter mode. */
     readonly obstacleVariants?: boolean
+    /** Currently used only for `infection` & `halloween` modes. Adjusts the brightness and the saturation of the game's canvas. */
     readonly canvasFilters?: {
         readonly brightness: number
         readonly saturation: number
     }
     /** will be multiplied by the bullet trail color */
     readonly bulletTrailAdjust?: string
+    /** The mode's particle effects, like falling leaves, snowflakes etc. */
     readonly particleEffects?: {
         readonly frames: string | readonly string[]
         readonly delay: number
         readonly tint?: number
+        /** If set to true, it forces particles to only move in a single downwards direction. */
         readonly gravity?: boolean
     }
     readonly specialLogo?: boolean
+    /** The image that will be used for the play button. */
     readonly playButtonImage?: string
+    /** Enables weapon swap. If left unset/undefined, weapon swap will be disabled. */
     readonly weaponSwap?: boolean
-    readonly plumpkinGrenades?: boolean
-    readonly unlockStage?: number // Used for hunted mode bunkers
+    /** Used for H.U.N.T.E.D. mode bunkers. */
+    readonly unlockStage?: number
+    /** Drops a golden/special airdrop at a specific stage, works the same as `unlockStage`. */
     readonly forcedGoldAirdropStage?: number
     readonly overrideUpstairsFunctionality?: boolean // hunting stand hunting stand hunting stand hunting stand hunting stand
+    /** Replaces all water floors of the terrain with the set floor name. */
     readonly replaceWaterBy?: FloorNames
+    /** The default floor type for the ground. Default is `FloorNames.Grass`. */
+    readonly defaultGroundFloor?: FloorNames // todo: figure out a logic to share this with `getFloor` in terrain.ts
+    /** The max equipment level for the mode. Default is level 3. Max equipment level will be displayed with yellow-ish color in the HUD. */
     readonly maxEquipmentLevel?: number
+    /** Enables extra glowing bullet filters. */
     readonly bulletFilters?: boolean
+    /** How often an airdrop should be summoned, regardless of the gas stages. (ms) */
     readonly summonAirdropsInterval?: number
+    /** Currently only used for winter-type modes, because the airdrop is a themed 'gift', needing extra particles. */
+    readonly enhancedAirdropParticles?: boolean
 }
 
 export const Modes: Record<ModeName, ModeDefinition> = {
@@ -186,7 +207,8 @@ export const Modes: Record<ModeName, ModeDefinition> = {
         obstacleVariants: true,
         specialLogo: true,
         playButtonImage: "./img/game/winter/obstacles/red_gift.svg",
-        replaceWaterBy: FloorNames.Ice
+        replaceWaterBy: FloorNames.Ice,
+        enhancedAirdropParticles: true
     },
     hunted: {
         colors: {
@@ -242,6 +264,9 @@ export const Modes: Record<ModeName, ModeDefinition> = {
             brightness: 0.6,
             saturation: 0.85
         },
-        summonAirdropsInterval: 30e3
+        summonAirdropsInterval: 30e3,
+        replaceWaterBy: FloorNames.Ice,
+        defaultGroundFloor: FloorNames.Sand,
+        enhancedAirdropParticles: true
     },
 };
