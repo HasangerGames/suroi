@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="apple-itunes-app" content="app-id=4N5YQ8X3F5, app-argument=https://suroi.io" />
+
+  <title>Suroi - 2D battle royale game</title>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <style>
+    /* page basics */
+    body {
+      box-sizing: border-box;
+      padding: 0;
+      font-family: "Inter", sans-serif;
+      margin: 0 auto;
+      background-image: url("/img/logos/embed_background.png");
+      background-size: cover;
+      background-repeat: no-repeat;
+      width: 100%;
+    }
+
+    .fixed-header {
+      position: fixed;
+      width: 100%;
+      top: 0;
+      left: 0;
+      background: #343a40;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+      z-index: 1000;
+    }
+
+    .leaderboard-btn {
+      color: white;
+      text-decoration: none;
+      font-size: 15px;
+      padding: 10px;
+      border-radius: 4px;
+      transition: 0.2s ease;
+      display: inline-block;
+    }
+
+    .suroi-btn {
+      border: 1px solid rgb(1, 100, 1);
+      color: white;
+      text-decoration: none;
+      font-size: 15px;
+      padding: 10px;
+      border-radius: 4px;
+      transition: 0.2s ease;
+      display: inline-block;
+    }
+
+    .suroi-btn:hover {
+      background: rgb(5, 206, 5);
+    }
+
+    main {
+      margin: 0 auto;
+      max-width: 90%;
+      margin-top: 80px;
+    }
+
+   
+
+    #all-stats-container {
+      display: flex;
+      gap: 10px;
+      width: 90%;
+      place-items: center;
+      margin: 0 auto;
+    }
+
+    @media (max-width: 900px) {
+      #all-stats-container {
+        flex-direction: column;
+      }
+    }
+
+   
+    .mode-card {
+      background-color: #343a40;
+      width: 100%;
+      min-width: 0;
+      margin: 0px auto;
+      margin-top: 10px;
+      border-radius: 4px;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    .mode-card .header {
+      background-color: #80af49;
+      padding: 6px;
+      border-top-right-radius: 4px;
+      border-top-left-radius: 4px;
+    }
+
+    .mode-card .header h2 {
+      color: #fff;
+      margin: 0;
+      font-size: 20px;
+    }
+
+    .mode-card .stats {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding: 10px;
+      justify-content: center;
+    }
+
+    .mode-card .row {
+      padding: 10px;
+      display: flex;
+      gap: 10px;
+      justify-content: space-between;
+      align-items: center;
+      border-radius: 4px;
+      color: #fff;
+      background: transparent;
+    }
+
+  
+ 
+
+  
+    .Solo-games-label, 
+    .Solo-games-value, 
+    .Solo-wins-label, 
+    .Solo-wins-value, 
+    .Solo-kill-label, 
+    .Solo-kill-value, 
+    .Solo-kd-label, 
+    .Solo-kd-value { color: #fff; }
+
+    
+  
+    .Duo-games-label,
+    .Duo-games-value ,
+    .Duo-wins-label 
+    .Duo-wins-value ,
+    .Duo-kill-label, 
+    .Duo-kill-value,
+    .Duo-kd-label, 
+    .Duo-kd-value { color: #fff; }
+
+   
+  
+    .Squad-games-label,
+    .Squad-games-value,
+    .Squad-wins-label, 
+    .Squad-wins-value, 
+    .Squad-kill-label, 
+    .Squad-kill-value, 
+    .Squad-kd-label,
+    .Squad-kd-value { color: #fff; }
+
+    
+    footer {
+      margin: 0 auto;
+      width: 90%;
+      margin-top: 50px;
+      margin-bottom: 50px;
+      color: #fff;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    footer .discord-btn {
+      background-color: #7289da;
+      border: none;
+      padding: 10px;
+      font-size: 24px;
+      border-radius: 12px;
+      color: #fff;
+      width: 90px;
+      cursor: pointer;
+    }
+     .history {
+      padding: 10px;
+      display: flex;
+      gap: 10px;
+      justify-content: space-between;
+      background-color: #80af49;
+      color: #fff;
+       font-weight: bold;
+       font-style: italic;
+    }
+   
+
+  </style>
+</head>
+
+<body>
+
+  <header class="fixed-header">
+    <div style="padding: 10px; margin: 0 auto; display: flex; align-items:center; max-width:90%;">
+      <a href="/stats" class="suroi-btn"><img src="/img/logos/suroi.svg" width="60px" alt="suroi"><span
+          style="display: block; text-align: center;"></span></a>
+      <a href="/leaderboard" class="leaderboard-btn">Leaderboard</a>
+    </div>
+  </header>
+
+  <main>
+    <div style="background-color: #343a40; width: 90%; min-width: 0; gap: 10px; margin: 0 auto; padding: 10px; display: flex; border-radius: 6px;">
+      <div id="profile-pic" style="width: 80px; padding: 10px; background-color: #80af49;border-radius: 4px;"><img
+          src="/img/logos/suroi_favicon_512x512.png" width="100%" alt="avatar"> </div>
+      <div style="place-content: center;">
+        <span style="color: #fff; font-size: 24px; font-weight: bold;">suroi007</span>
+      </div>
+    </div>
+
+    <div id="all-stats-container">
+      <!-- SOLO card -->
+      <div class="mode-card">
+        <div id="solo" class="Solo">
+          <div class="header">
+            <h2>Solo</h2>
+          </div>
+
+          <div class="stats">
+            <div class="row Solo-games">
+              <span class="Solo-games-label">Games</span>
+              <span class="Solo-games-value">100</span>
+            </div>
+            <div class="row Solo-wins">
+              <span class="Solo-wins-label">Wins</span>
+              <span class="Solo-wins-value">100</span>
+            </div>
+            <div class="row Solo-kill">
+              <span class="Solo-kill-label">Kill</span>
+              <span class="Solo-kill-value">100</span>
+            </div>
+            <div class="row Solo-kd">
+              <span class="Solo-kd-label">K/D</span>
+              <span class="Solo-kd-value">100</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DUO card -->
+      <div class="mode-card">
+        <div id="duo" class="Duo">
+          <div class="header">
+            <h2>Duo</h2>
+          </div>
+
+          <div class="stats">
+            <div class="row Duo-games">
+              <span class="Duo-games-label">Games</span>
+              <span class="Duo-games-value">100</span>
+            </div>
+            <div class="row Duo-wins">
+              <span class="Duo-wins-label">Wins</span>
+              <span class="Duo-wins-value">100</span>
+            </div>
+            <div class="row Duo-kill">
+              <span class="Duo-kill-label">Kill</span>
+              <span class="Duo-kill-value">100</span>
+            </div>
+            <div class="row Duo-kd">
+              <span class="Duo-kd-label">K/D</span>
+              <span class="Duo-kd-value">100</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SQUAD card -->
+      <div class="mode-card">
+        <div id="squad" class="Squad">
+          <div class="header">
+            <h2>Squad</h2>
+          </div>
+
+          <div class="stats">
+            <div class="row Squad-games">
+              <span class="Squad-games-label">Games</span>
+              <span class="Squad-games-value">100</span>
+            </div>
+            <div class="row Squad-wins">
+              <span class="Squad-wins-label">Wins</span>
+              <span class="Squad-wins-value">100</span>
+            </div>
+            <div class="row Squad-kill">
+              <span class="Squad-kill-label">Kill</span>
+              <span class="Squad-kill-value">100</span>
+            </div>
+            <div class="row Squad-kd">
+              <span class="Squad-kd-label">K/D</span>
+              <span class="Squad-kd-value">100</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="history-container" style="margin: 0 auto; width:90%; margin-top: 10px;">
+      <div style="padding: 10px; background-color: #343a40;"><i class="fa-solid fa-clock-rotate-left"
+          style="color: #fff;"></i> <span style="color: #fff;">Match History</span></div>
+      <div class="history">
+        <span  class="game-mode">Solo 25/12/2025 </span>
+        <span  class="kill-value"> Kills: 100 </span>
+        <span  class="rank">Rank: #1</span>
+      </div>
+    </div>
+
+    <footer>
+      <span>© 2025 suroi.io.</span>
+      <span><button class="discord-btn"><i class="fa-brands fa-discord"></i></button></span>
+    </footer>
+  </main>
+
+</body>
+
+</html>

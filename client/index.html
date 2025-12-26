@@ -113,6 +113,171 @@
       #privacy-policy-link {
         color: white;
       }
+    
+      .modal3,
+      .modal2{
+        
+        opacity: 0;
+          pointer-events: none;
+          transition: opacity 0.25s ease;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        max-width: 350px;
+        width: 100%;
+        border-radius: 20px;
+        padding: 1rem;
+        display: flex;
+        flex-direction: column;
+      }
+
+  .dialog3,
+   .dialog2{
+     background: rgba(53, 53, 53, 0.8);
+          backdrop-filter: blur(15px);
+          user-select: none;
+    box-shadow: 0 0 10px #000000c8;
+    padding: 0 !important;
+    border-radius: 10px !important;
+    overflow: hidden;
+    z-index: 101;
+       }
+  .modal3.active,
+  .modal2.active{
+        opacity: 1;
+        pointer-events: auto;
+      }
+
+      #account-panel-close:hover{
+        color: #f02828;
+      }
+
+
+
+
+      #signup-menu,
+      #login-menu{
+
+      
+
+      
+        transition: opacity 0.25s ease;
+        position: relative;
+       /* border: 1px solid #333; */
+        padding: 10px;
+        
+          
+      }
+      .signup-header,
+      .login-header{
+        text-align: center;
+
+
+      }
+
+      #signup-form
+      #login-form{
+        padding: 15px;
+      }
+
+      #signup-form form,
+      #login-form form {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      #signup-form form input,
+      #login-form form input{
+        padding: 10px;
+        border-radius: 8px;
+        outline: none;
+        border: none;
+        color: #121212;
+      }
+
+
+      .custom-hover:hover {
+  background-color: #198754;
+  color: #fff;
+        }
+
+
+
+
+
+      .close{
+        cursor: pointer;
+        position: absolute;
+        display: flex;
+        /* background-color: #f74343; */
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        place-content: center;
+        place-items: center;
+        top: 0%;
+        right: 0%;
+        
+        transition: all 0.4s ease;
+      }
+      .close:hover{
+        color: #f02828;
+        /* background-color: #cd4949; */
+      }
+
+      #account-btn{
+        border: none;
+        background-color: #ff7500;
+        transition: all 0.3s ease;
+      }
+      #account-btn:hover{
+        background-color: #c1633d;
+      }
+
+
+      .chk {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  user-select: none;
+}
+
+
+.chk input {
+  position: absolute;
+  opacity: 0;
+}
+
+
+.chk .box {
+  width: 16px;
+  height: 16px;
+  border: 2px solid #fff;
+  border-radius: 3px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: 0.2s;
+}
+
+
+.chk .box::after {
+  content: "";
+  width: 8px;
+  height: 8px;
+  background: #fff;
+  opacity: 0;
+  transition: 0.2s;
+}
+
+
+.chk input:checked + .box::after {
+  opacity: 1;
+}
+
 
       @keyframes rotate {
         from {
@@ -321,6 +486,13 @@
 
         <!-- Settings & skin options (right pane) -->
         <div id="splash-customize">
+
+            <div id="account-btn-container" style="width: 100%; display: flex; justify-content: end; position: absolute; top: 10px; right: 10px;">
+              <div id="acoount-icon" style="  width:35px; height: 35px; border-radius: 50%; cursor: pointer; display: flex; place-content: center; place-items: center;"><button id="account-btn" style=" height: 100%; width: 100%; border-radius:  50%; display: flex; place-content: center; place-items: center;  cursor: pointer;"><i class="fa fa-user" style="font-size: 20px;"></i></button></i> </div>
+              
+            </div>
+
+
           <!-- Skin preview -->
           <div id="skin-container">
             <div id="skin-base"></div>
@@ -329,6 +501,15 @@
           </div>
 
           <!-- Loadout & settings buttons -->
+
+           <div style="display: flex; flex-direction: row; gap: 15px">
+            <!-- login button -->
+             <button class="btn btn-lg btn-darken btn-primary" id="btn-login">
+              <i class="fa-solid fa-right-to-bracket "></i>
+              <span translation="Login"></span>
+            </button>
+           </div>
+            
           <div style="display: flex; flex-direction: row; gap: 15px">
             <button class="btn btn-lg btn-darken btn-primary" id="btn-customize">
               <i class="fa-solid fa-shirt"></i>
@@ -339,6 +520,7 @@
               <i class="fa-solid fa-gear"></i>
               <span translation="settings"></span>
             </button>
+
           </div>
         </div>
 
@@ -777,6 +959,109 @@
         </div>
       </div>
     </div>
+
+
+
+<!--user  account page -->
+    <div class="modal3 dialog3 " id="account-container" class="persistent-scrollbar" style="background-color: #333;">
+      <!-- <h3 style="text-align: center;">My account</h3> -->
+       <div id="account-panel-close" style="position: absolute;right: 2%; top:2%; cursor: pointer;"><i class="fa-solid fa-xmark"></i></div>
+      <div id="account-div" style="padding: 10px; display: flex; background: #83af50;"> 
+        <div id="profile-icon" style="max-width:60px ;"> <img src="/img/logos/suroi_favicon_512x512.png" width="100%"></div>
+        <div id=" player-name-container" style="max-width: 80%; overflow-wrap: anywhere; padding: 10px;  ">
+          <span class="player-name" style="display:block; overflow-wrap: anywhere;  font-weight: bold; font-size: 24px;">
+            <input id="playername" type="text" value="suroi007" disabled style="font-weight: bold; border: none; background: transparent;  text-shadow: 2px 2px 4px black; font-size: 24px;">
+            <button id="edit" style="border: none; background-color: #009aff; border-radius: 8px; padding: 5px; cursor: pointer;"><i class="fa-solid fa-pen" ></i></button>
+          </span>
+
+        </div> 
+       
+      
+      </div>
+       <div id="player-details" style="padding: 10px; display: flex; flex-direction: column; gap: 10px;">
+         <button class="btn btn-lg btn-darken btn-primary " type="button" translation="My stats" id="my-stats"></button>
+         <button class="btn btn-lg btn-darken btn-primary " type="button" translation="Reset stats"></button>
+         <button class="btn btn-lg  btn-darken btn-danger " type="button" translation="Delete account"></button>
+         <button class="btn btn-lg btn-secondary btn-darken  " type="button" translation="Logout"></button>
+        </div>
+
+    </div>
+
+
+
+
+    <!-- Login menu -->
+<div class=" modal2 dialog2 " id="login-container">
+  <!-- login -->
+
+  <div id="login-menu" class="form-panel active">
+    <div class="close"><i class="fa-solid fa-xmark"></i></div>
+
+    <div class="login-header">
+      <div class="brand-logo" style="max-width: 60%; margin: 0 auto;">
+        <img src="./img/logos/suroi.svg" width="100%">
+      </div>
+      <h3>Login to Suroi</h3>
+    </div>
+    <div id="login-form">
+      <form>
+        <input type="text" placeholder="Enter username" class="user-name" id="sign-in-username">
+        <input type="password" placeholder="Enter password" class="pass-word" id="sign-in-password">
+        <div><label class="chk">
+            <input type="checkbox" class="regular-checkbox toggle-password" />
+            <span class="box"></span>
+            <span class="visible-text" translation="show password"></span>
+          </label></div>
+
+
+        <button class="btn btn-lg btn-darken btn-primary " type="button" translation="Login"></button>
+      </form>
+    </div>
+    <span style="display: block; text-align: center; margin: 10px;" translation="or"></span>
+    <div style="margin: 0 auto;"><button class="btn btn-lg btn-primary btn-darken " style="margin: 0 auto;"
+        id="sign-toggle" type="button" translation="Go to signup"></button></div>
+  </div>
+  <!-- signup -->
+  <div id="signup-menu" class="form-panel" style="display: none;">
+    <div class="close"><i class="fa-solid fa-xmark"></i></div>
+    <div class="brand-logo" style="max-width: 60%; margin: 0 auto;">
+      <img src="./img/logos/suroi.svg" width="100%">
+    </div>
+    <div class="signup-header">
+      <h3>Sign up to Suroi</h3>
+    </div>
+    <div id="signup-form">
+      <form>
+        <input type="text" placeholder="Enter username" class="user-name" id="sign-up-username">
+        <input type="password" placeholder="Enter password" class="pass-word" id="sign-up-password">
+        <input type="password" placeholder="Confirm password" id="confirm-pass">
+        <div><label class="chk">
+            <input type="checkbox" class="regular-checkbox toggle-password" />
+            <span class="box"></span>
+            <span class="visible-text">show password</span>
+          </label></div>
+
+
+        <button class="btn btn-lg btn-darken btn-primary" type="button" translation="Signup"></button>
+      </form>
+    </div>
+    <span style="display: block; text-align: center; margin: 10px;">or</span>
+    <div style="margin: 0 auto;"><button class="btn btn-lg btn-darken btn-primary " style="margin: 0 auto;"
+        id="login-toggle" type="button" translation="Back to login"></button></div>
+  </div>
+
+  <!-- this contains google login and discord login buttons -->
+  <div style="display: flex; flex-direction: column; gap: 10px; padding: 10px;">
+    <button class="btn btn-lg btn-darken btn-danger" type="button"> <i class="fa-brands fa-google"></i> <span
+        translation="Google"></span></button>
+    <button class="btn btn-lg btn-darken btn-secondary" type="button" style="background-color: #7289da;"> <i
+        class="fa-brands fa-discord"></i> <span translation="Discord"></span></button>
+  </div>
+</div>
+
+
+    
+
 
     <!-- Settings menu -->
     <div class="modal dialog" id="settings-menu" style="display: none">
@@ -1228,6 +1513,12 @@
       </div>
     </div>
 
+    
+
+
+
+
+
     <!-- Loadout menu -->
     <div class="modal dialog persistent-scrollbar" id="customize-menu" style="display: none">
       <!-- Header -->
@@ -1457,5 +1748,8 @@
 
     <!-- JS -->
     <script src="./src/index.ts" type="module"></script>
+    <script src="./src/loginBtn.ts" type="module"></script>
+    <script src="./src/accountVisibility.ts" type="module"></script>
+    <script src="./src/myStats.ts" type="module"></script>
   </body>
 </html>

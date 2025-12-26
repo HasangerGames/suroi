@@ -5,3 +5,17 @@ import { Game } from "./scripts/game";
 import "./scss/pages/client.scss";
 
 void Game.init();
+
+import { initAuthFormSimpleToggle } from "./formToggle";
+
+document.addEventListener("DOMContentLoaded", () => {
+  initAuthFormSimpleToggle();
+});
+
+
+import { initPasswordVisibility } from "./toggleVisibility";
+
+document.addEventListener("DOMContentLoaded", () => {
+  initPasswordVisibility();
+});
+
