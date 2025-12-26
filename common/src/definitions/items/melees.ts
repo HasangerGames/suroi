@@ -463,6 +463,7 @@ export const Melees = new InventoryItemDefinitions<MeleeDefinition>([
         radius: 4,
         offset: Vec(3.8, 2.2),
         cooldown: 450,
+        maxTargets: Infinity,
         fists: {
             animationDuration: 150,
             left: Vec(55, -15),
@@ -949,6 +950,7 @@ export const Melees = new InventoryItemDefinitions<MeleeDefinition>([
         radius: 2.7,
         offset: Vec(5.4, -0.5),
         cooldown: 410,
+        maxTargets: Infinity,
         fists: {
             animationDuration: 150,
             left: Vec(38, -35),
@@ -994,7 +996,7 @@ export const Melees = new InventoryItemDefinitions<MeleeDefinition>([
         speedMultiplier: 1,
         obstacleMultiplier: 1.1,
         radius: 4.1,
-        // maxTargets: Infinity, - TODO: It must hit multiple targets at once, however enabling this causes melee through wall bug to appear
+        maxTargets: Infinity,
         offset: Vec(7.2, 0.5),
         piercingMultiplier: 0.95,
         cooldown: 450,
@@ -1109,6 +1111,7 @@ export const Melees = new InventoryItemDefinitions<MeleeDefinition>([
         iceMultiplier: 0.1,
         offset: Vec(4.25, -0.8),
         cooldown: 350,
+        maxTargets: Infinity,
         fists: {
             animationDuration: 150,
             left: Vec(38, -35),
