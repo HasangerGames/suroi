@@ -191,7 +191,25 @@ export abstract class BaseHitbox<T extends HitboxType = HitboxType> implements D
      * @param that The other {@link Hitbox}
      * @return An array of intersection responses, only has more than 1 item for {@link GroupHitbox}
      */
-    abstract getIntersection(hitbox: Hitbox): CollisionResponse;
+    getIntersection(that: Hitbox): CollisionResponse {
+        if (that.type === HitboxType.Group) {
+            let intersection: CollisionResponse = null;
+            for (const hitbox of that.hitboxes) {
+                const hit = getIntersection(this as unknown as ShapeHitbox, hitbox);
+                if (!intersection) {
+                    intersection = hit;
+                } else if (hit && intersection.pen < hit.pen) {
+                    intersection = hit;
+                }
+            }
+            return intersection;
+        } else if (that.type !== HitboxType.Polygon) {
+            return getIntersection(this as unknown as ShapeHitbox, that);
+        } else {
+            this.throwUnknownSubclassError(that);
+        }
+
+    };
 
     /**
      * Check if a line intersects with this {@link Hitbox}.
@@ -313,10 +331,6 @@ export class CircleHitbox extends BaseHitbox<HitboxType.Circle> {
 
     override scale(scale: number): void {
         this.radius *= scale;
-    }
-
-    override getIntersection(hitbox: ShapeHitbox): CollisionResponse {
-        return getIntersection(this, hitbox);
     }
 
     override intersectsLine(a: Vector, b: Vector): IntersectionResponse {
@@ -467,10 +481,6 @@ export class RectangleHitbox extends BaseHitbox<HitboxType.Rect> {
         this.max = Vec((this.max.x - centerX) * scale + centerX, (this.max.y - centerY) * scale + centerY);
     }
 
-    override getIntersection(hitbox: ShapeHitbox): CollisionResponse {
-        return getIntersection(this, hitbox);
-    }
-
     override intersectsLine(a: Vector, b: Vector): IntersectionResponse {
         return Collision.lineIntersectsRect(a, b, this.min, this.max);
     }
@@ -615,10 +625,6 @@ export class GroupHitbox<GroupType extends ShapeHitbox[] = ShapeHitbox[]> extend
         for (const hitbox of this.hitboxes) hitbox.scale(scale);
     }
 
-    override getIntersection(_hitbox: ShapeHitbox): CollisionResponse {
-        throw new Error("Get intersection only supports base shapes");
-    }
-
     override intersectsLine(a: Vector, b: Vector): IntersectionResponse {
         const intersections: Array<{ readonly point: Vector, readonly normal: Vector }> = [];
 
@@ -739,10 +745,6 @@ export class PolygonHitbox extends BaseHitbox<HitboxType.Polygon> {
         for (let i = 0, length = this.points.length; i < length; i++) {
             this.points[i] = Vec.scale(this.points[i], scale);
         }
-    }
-
-    override getIntersection(hitbox: Hitbox): CollisionResponse {
-        this.throwUnknownSubclassError(hitbox);
     }
 
     override intersectsLine(_a: Vector, _b: Vector): IntersectionResponse {

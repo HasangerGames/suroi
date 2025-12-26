@@ -1,17 +1,14 @@
 import { AnimationType, FireMode } from "@common/constants";
 import { type MeleeDefinition } from "@common/definitions/items/melees";
 import { PerkIds } from "@common/definitions/items/perks";
-import { CircleHitbox } from "@common/utils/hitbox";
-import { adjacentOrEquivLayer } from "@common/utils/layer";
-import { Numeric } from "@common/utils/math";
 import { DefinitionType, type ReifiableDef } from "@common/utils/objectDefinitions";
-import { Vec } from "@common/utils/vector";
 import { Building } from "../objects/building";
 import { type ItemData } from "../objects/loot";
 import { Obstacle } from "../objects/obstacle";
 import { type Player } from "../objects/player";
 import { Projectile } from "../objects/projectile";
 import { InventoryItemBase } from "./inventoryItem";
+import { getMeleeHitbox, getMeleeTargets } from "@common/utils/gameHelpers";
 
 /**
  * A class representing a melee weapon
@@ -78,37 +75,14 @@ export class MeleeItem extends InventoryItemBase.derive(DefinitionType.Melee) {
 
                     type MeleeObject = Player | Obstacle | Building | Projectile;
 
-                    const position = Vec.add(
-                        owner.position,
-                        Vec.scale(Vec.rotate(definition.offset, owner.rotation), owner.sizeMod)
-                    );
-                    const hitbox = new CircleHitbox(definition.radius * owner.sizeMod, position);
-                    const targets: MeleeObject[] = [];
+                    const hitbox = getMeleeHitbox(this.owner, this.definition);
 
-                    for (const object of owner.game.grid.intersectsHitbox(hitbox)) {
-                        if (
-                            (object.dead && !(object.isBuilding && object.definition.hasDamagedCeiling))
-                            || object === owner
-                            || !(object.isPlayer || object.isObstacle || object.isBuilding || object.isProjectile)
-                            || !object.damageable
-                            || (object.isObstacle && (object.definition.isStair || object.definition.noMeleeCollision))
-                            || !adjacentOrEquivLayer(object, owner.layer)
-                            || !object.hitbox?.collidesWith(hitbox)
-                        ) continue;
+                    const objects = owner.game.grid.intersectsHitbox(hitbox);
 
-                        targets.push(object);
-                    }
+                    const hits = getMeleeTargets<MeleeObject>(hitbox, this.definition, this.owner, this.owner.game.isTeamMode, objects);
 
-                    targets.sort((a, b) => {
-                        if (owner.game.isTeamMode && a.isPlayer && a.teamID === owner.teamID) return Infinity;
-                        if (owner.game.isTeamMode && b.isPlayer && b.teamID === owner.teamID) return -Infinity;
-
-                        return (a.hitbox?.distanceTo(owner.hitbox).distance ?? 0) - (b.hitbox?.distanceTo(owner.hitbox).distance ?? 0);
-                    });
-
-                    const numTargets = Numeric.min(targets.length, definition.maxTargets ?? 1);
-                    for (let i = 0; i < numTargets; i++) {
-                        const target = targets[i];
+                    for (const hit of hits) {
+                        const target = hit.object;
                         let multiplier = 1;
 
                         if (!this.owner.hasPerk(PerkIds.Lycanthropy)) multiplier *= this.owner.mapPerkOrDefault(PerkIds.Berserker, ({ damageMod }) => damageMod, 1);
@@ -144,7 +118,7 @@ export class MeleeItem extends InventoryItemBase.derive(DefinitionType.Melee) {
                         this._autoUseTimeoutID = setTimeout(
                             () => this._useItemNoDelayCheck(false),
                             (
-                                targets.length && definition.attackCooldown
+                                hits.length && definition.attackCooldown
                                     ? definition.attackCooldown
                                     : definition.cooldown
                             ) - hitDelay

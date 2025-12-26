@@ -42,6 +42,7 @@ import { GameObject } from "./gameObject";
 import { Loot } from "./loot";
 import { Obstacle } from "./obstacle";
 import type { Projectile } from "./projectile";
+import { getMeleeHitbox, getMeleeTargets } from "@common/utils/gameHelpers";
 
 export class Player extends GameObject.derive(ObjectCategory.Player) {
     teamID!: number;
@@ -1162,15 +1163,9 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 break;
             }
             case DefinitionType.Melee: {
-                DebugRenderer.addCircle(
-                    this.activeItem.radius * this.sizeMod,
-                    Vec.add(
-                        this.position,
-                        Vec.scale(
-                            Vec.rotate(this.activeItem.offset, this.rotation),
-                            this.sizeMod
-                        )
-                    ),
+                const hitbox = getMeleeHitbox(this, this.activeItem);
+                DebugRenderer.addHitbox(
+                    hitbox,
                     HITBOX_COLORS.playerWeapon,
                     alpha
                 );
@@ -1191,6 +1186,11 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                         HITBOX_COLORS.pivot,
                         alpha
                     );
+                }
+
+                // render raycasting debug for active player
+                if (this.isActivePlayer) {
+                    getMeleeTargets(hitbox, this.activeItem, this, Game.isTeamMode, Game.objects, DebugRenderer);
                 }
                 break;
             }
@@ -1764,8 +1764,6 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
                 const hitDelay = weaponDef.hitDelay ?? 50;
                 this.addTimeout(() => {
-                    // Play hit effect on closest object
-                    // TODO: share this logic with the server
 
                     let hitCount = 0;
                     for (let i = 0; i < (weaponDef.numberOfHits ?? 1); i++) {
@@ -1782,50 +1780,24 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                                 );
                             }
 
-                            type MeleeObject = Player | Obstacle | Building | Projectile;
-
-                            const position = Vec.add(
-                                this.position,
-                                Vec.scale(Vec.rotate(weaponDef.offset, this.rotation), this.sizeMod)
-                            );
-                            const hitbox = new CircleHitbox(weaponDef.radius * this.sizeMod, position);
-                            const targets: MeleeObject[] = [];
-
                             hitCount++;
-                            for (const object of Game.objects) {
-                                if (
-                                    (object.dead && !(object.isBuilding && object.definition.hasDamagedCeiling))
-                                    || object === this
-                                    || !(object.isPlayer || object.isObstacle || object.isBuilding || object.isProjectile)
-                                    || !object.damageable
-                                    || (object.isObstacle && (object.definition.isStair || object.definition.noMeleeCollision))
-                                    || !adjacentOrEquivLayer(object, this.layer)
-                                    || !object.hitbox?.collidesWith(hitbox)
-                                ) continue;
 
-                                targets.push(object);
-                            }
+                            const hitbox = getMeleeHitbox(this, this.activeItem);
+                            const hits = getMeleeTargets<Player | Obstacle | Projectile | Building>(hitbox, this.activeItem, this, Game.isTeamMode, Game.objects);
 
-                            targets.sort((a, b) => {
-                                if (Game.isTeamMode && a.isPlayer && a.teamID === this.teamID) return Infinity;
-                                if (Game.isTeamMode && b.isPlayer && b.teamID === this.teamID) return -Infinity;
+                            for (const hit of hits) {
+                                const target = hit.object;
 
-                                return (a.hitbox?.distanceTo(this.hitbox).distance ?? 0) - (b.hitbox?.distanceTo(this.hitbox).distance ?? 0);
-                            });
-
-                            const angleToPos = Angle.betweenPoints(this.position, position);
-                            const numTargets = Numeric.min(targets.length, weaponDef.maxTargets ?? 1);
-                            for (let i = 0; i < numTargets; i++) {
-                                const target = targets[i];
+                                const angle = Math.atan2(hit.direction.y, hit.direction.x);
 
                                 if (target.isPlayer) {
                                     let sound = this.activeItem.hitSound;
                                     if (sound && weaponDef.numberOfHits !== undefined && weaponDef.numberOfHits > 1) {
                                         sound += `_${hitCount}`;
                                     }
-                                    target.hitEffect(position, angleToPos, sound);
+                                    target.hitEffect(hit.position, angle, sound);
                                 } else {
-                                    target.hitEffect(position, angleToPos);
+                                    target.hitEffect(hit.position, angle);
                                 }
                             }
                         }, (i === 0 ? 0 : (weaponDef.delayBetweenHits ?? 0)));
