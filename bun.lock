@@ -49,8 +49,8 @@
     "common": {
       "name": "@suroi/common",
       "devDependencies": {
-        "@types/node": "^22.18.6",
-        "typescript": "^5.9.2",
+        "@types/node": "^22.19.3",
+        "typescript": "^5.9.3",
       },
     },
     "server": {
