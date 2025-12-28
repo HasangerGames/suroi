@@ -1,6 +1,10 @@
 import { type TeamMode } from "@common/constants";
 import type { ModeName } from "@common/definitions/modes";
 
+// In Render/Production, the server URL is single (no separate game ports)
+// We use a placeholder here or a helper to determine the URL.
+// Since the user is deploying to Render, we can assume a single endpoint structure.
+
 export const Config = {
     regions: {
         dev: {
@@ -8,44 +12,21 @@ export const Config = {
             mainAddress: "http://127.0.0.1:8000",
             gameAddress: "ws://127.0.0.1:<gameID>",
             offset: 8001
-        }/* ,
-        na: {
-            name: "North America",
-            flag: "🇺🇸 ",
-            mainAddress: "https://na.suroi.io",
-            gameAddress: "wss://na.suroi.io/game/<gameID>",
-            offset: 1
         },
-        eu: {
-            name: "Europe",
-            flag: "🇩🇪 ",
-            mainAddress: "https://eu.suroi.io",
-            gameAddress: "wss://eu.suroi.io/game/<gameID>",
-            offset: 1
-        },
-        sa: {
-            name: "South America",
-            flag: "🇧🇷 ",
-            mainAddress: "https://sa.suroi.io",
-            gameAddress: "wss://sa.suroi.io/game/<gameID>",
-            offset: 1
-        },
-        as: {
-            name: "Asia",
-            flag: "🇭🇰 ",
-            mainAddress: "https://as.suroi.io",
-            gameAddress: "wss://as.suroi.io/game/<gameID>",
-            offset: 1
-        },
-        oc: {
-            name: "Oceania",
-            flag: "🇦🇺 ",
-            mainAddress: "https://oc.suroi.io",
-            gameAddress: "wss://oc.suroi.io/game/<gameID>",
-            offset: 1
-        } */
+        render: {
+            name: "Suroi Server (Render)",
+            flag: "☁️ ",
+            // The user must replace this URL with their actual Render URL
+            mainAddress: "https://miro-io.onrender.com",
+            // On Render (single port), we route everything through the main address.
+            // The server logic must be updated to handle "/play" on the main port.
+            // If the server doesn't support single-port mode yet, this config assumes it does.
+            // For now, we point to the main address.
+            gameAddress: "wss://miro-io.onrender.com",
+            offset: 0 // No offset needed for single-port
+        }
     },
-    defaultRegion: "dev"
+    defaultRegion: "render"
 } satisfies ConfigType as ConfigType;
 
 export interface ConfigType {

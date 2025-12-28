@@ -222,55 +222,7 @@ export class GameManager {
     }
 }
 
-if (!Cluster.isPrimary) {
-    const data = process.env as {
-        readonly id: string
-        readonly teamMode: string
-        readonly map: string
-        readonly mapScaleRange: string
-    };
-    const id = parseInt(data.id);
-    let teamMode = parseInt(data.teamMode);
-    let map = data.map;
-    let mapOptions = data.mapScaleRange ? Config.mapScaleRanges?.[parseInt(data.mapScaleRange)] : undefined;
-
-    let game = new Game(id, teamMode, map, mapOptions);
-
-    process.on("uncaughtException", e => {
-        game.error("An unhandled error occurred. Details:", e);
-        game.kill();
-        // TODO Gracefully shut down the game
-    });
-
-    process.on("message", (message: WorkerMessage) => {
-        switch (message.type) {
-            case WorkerMessages.UpdateTeamMode: {
-                teamMode = message.teamMode;
-                break;
-            }
-            case WorkerMessages.UpdateMap: {
-                map = message.map;
-                game.kill();
-                break;
-            }
-            case WorkerMessages.UpdateMapOptions: {
-                mapOptions = Config.mapScaleRanges?.[message.mapScaleRange];
-                break;
-            }
-            case WorkerMessages.NewGame: {
-                game.kill();
-                game = new Game(id, teamMode, map, mapOptions);
-                game.setGameData({ allowJoin: true });
-                break;
-            }
-        }
-    });
-
-    setInterval(() => {
-        const memoryUsage = process.memoryUsage().rss;
-        game.log(`RAM usage: ${Math.round(memoryUsage / 1024 / 1024 * 100) / 100} MB`);
-    }, 60000);
-
+export function createGameHandlers(game: Game) {
     const { maxSimultaneousConnections, maxJoinAttempts } = Config;
     const simultaneousConnections = maxSimultaneousConnections
         ? new RateLimiter(maxSimultaneousConnections)
@@ -279,11 +231,9 @@ if (!Cluster.isPrimary) {
         ? new RateLimiter(maxJoinAttempts.count, maxJoinAttempts.duration)
         : undefined;
 
-    Bun.serve({
-        hostname: Config.hostname,
-        port: Config.port + id + 1,
+    return {
         routes: {
-            "/play": async(req, res) => {
+            "/play": async (req: any, res: any) => {
                 if (!game.allowJoin) {
                     return new Response("403 Forbidden");
                 }
@@ -347,6 +297,65 @@ if (!Cluster.isPrimary) {
                 if (ip) simultaneousConnections?.decrement(ip);
             }
         }
+    };
+}
+
+if (!Cluster.isPrimary) {
+    const data = process.env as {
+        readonly id: string
+        readonly teamMode: string
+        readonly map: string
+        readonly mapScaleRange: string
+    };
+    const id = parseInt(data.id);
+    let teamMode = parseInt(data.teamMode);
+    let map = data.map;
+    let mapOptions = data.mapScaleRange ? Config.mapScaleRanges?.[parseInt(data.mapScaleRange)] : undefined;
+
+    let game = new Game(id, teamMode, map, mapOptions);
+
+    process.on("uncaughtException", e => {
+        game.error("An unhandled error occurred. Details:", e);
+        game.kill();
+        // TODO Gracefully shut down the game
+    });
+
+    process.on("message", (message: WorkerMessage) => {
+        switch (message.type) {
+            case WorkerMessages.UpdateTeamMode: {
+                teamMode = message.teamMode;
+                break;
+            }
+            case WorkerMessages.UpdateMap: {
+                map = message.map;
+                game.kill();
+                break;
+            }
+            case WorkerMessages.UpdateMapOptions: {
+                mapOptions = Config.mapScaleRanges?.[message.mapScaleRange];
+                break;
+            }
+            case WorkerMessages.NewGame: {
+                game.kill();
+                game = new Game(id, teamMode, map, mapOptions);
+                game.setGameData({ allowJoin: true });
+                break;
+            }
+        }
+    });
+
+    setInterval(() => {
+        const memoryUsage = process.memoryUsage().rss;
+        game.log(`RAM usage: ${Math.round(memoryUsage / 1024 / 1024 * 100) / 100} MB`);
+    }, 60000);
+
+    const handlers = createGameHandlers(game);
+
+    Bun.serve({
+        hostname: Config.hostname,
+        port: Config.port + id + 1,
+        routes: handlers.routes,
+        websocket: handlers.websocket
     });
 
     game.setGameData({ allowJoin: true });
