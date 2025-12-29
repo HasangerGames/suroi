@@ -1,38 +1,49 @@
-document.addEventListener("DOMContentLoaded", () => {
-  const acoountBtn = document.getElementById("account-btn-container") as HTMLButtonElement | null;
-  const acoountPanel = document.querySelector(".modal3") as HTMLDivElement | null;
+
+export function AccountVisibility():void{
 
 
-  if (!acoountBtn || !acoountPanel ) return;
 
 
-  acoountBtn.addEventListener("click", () => {
-    acoountPanel.classList.add("active");
+
+  const acountBtn = document.querySelector<HTMLButtonElement>("#account-btn-container") ;
+  const acountPanel = document.querySelector<HTMLDivElement>(".modal3");
+
+
+  if (!acountBtn || !acountPanel ) return;
+
+
+  acountBtn.addEventListener("click", () => {
+    acountPanel.classList.add("active");
    
 
   });
 
 
-  const closeBtn = document.querySelector("#account-panel-close");
+  const closeBtn = document.querySelector<HTMLButtonElement>("#account-panel-close");
 
   if(!closeBtn) return;
 
 
   
 closeBtn.addEventListener("click",()=>{
-     acoountPanel.classList.remove("active");
+     acountPanel.classList.remove("active");
   })
 
   document.addEventListener("click", (e: MouseEvent) => {
-    if (
-      !acoountPanel.contains(e.target as Node) &&
-      !acoountBtn.contains(e.target as Node)
-    ) {
-      acoountPanel.classList.remove("active");
-      
+
+    const target = e.target;
+
+    if(target instanceof Node){
+      if (
+        !acountPanel.contains(target) &&
+        !acountBtn.contains(target)
+      ) {
+        acountPanel.classList.remove("active");
+
+      }
     }
+
   });
-  })
+
   
-
-
+}

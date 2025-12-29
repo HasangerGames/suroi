@@ -1,6 +1,9 @@
-document.addEventListener("DOMContentLoaded", () => {
-  const loginBtn = document.getElementById("btn-login") as HTMLButtonElement | null;
-  const loginPanel = document.querySelector(".modal2") as HTMLDivElement | null;
+
+
+export function LoginBtn():void{
+
+  const loginBtn = document.querySelector<HTMLButtonElement>("#btn-login");
+  const loginPanel = document.querySelector<HTMLDivElement>(".modal2") ;
 
 
   if (!loginBtn || !loginPanel ) return;
@@ -15,24 +18,35 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const closeBtn = document.querySelectorAll<HTMLElement>(".close");
 
-  if(!closeBtn) return;
+  if(closeBtn.length ===0) return;
 
 
   closeBtn.forEach(btn=>{
-btn.addEventListener("click",()=>{
+     btn.addEventListener("click",()=>{
      loginPanel.classList.remove("active");
-  })
+  });
+});
 
   document.addEventListener("click", (e: MouseEvent) => {
-    if (
-      !loginPanel.contains(e.target as Node) &&
-      !loginBtn.contains(e.target as Node)
-    ) {
-      loginPanel.classList.remove("active");
-      
+
+    const target = e.target;
+
+
+    if(target instanceof Node){
+        
+          if (
+                !loginPanel.contains(target) &&
+                !loginBtn.contains(target)
+              ) {
+                loginPanel.classList.remove("active");
+                
+              }
     }
+    
   });
-  })
+ 
   
-});
+
+}
+
 

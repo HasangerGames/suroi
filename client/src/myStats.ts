@@ -1,11 +1,6 @@
   
-const openPage = (url: string): void => {
-  window.open(url, "_blank");
-}
-
+export function ToMyStats():void{
 document.getElementById("my-stats")?.addEventListener("click", () => {
-  openPage("/stats/");
+  window.open("/stats/", "_blank");
 });
-
-  
-  
+}
