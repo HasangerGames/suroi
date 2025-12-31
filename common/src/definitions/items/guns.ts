@@ -2221,7 +2221,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
                 velocity: {
                     y: {
                         min: 6,
-                        max: 9, 
+                        max: 9,
                         randomSign: true
                     }
                 },
@@ -3241,8 +3241,8 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
         fireDelay: 150,
         switchDelay: 420,
         speedMultiplier: 0.9,
-        recoilMultiplier: 0.95,
-        recoilDuration: 150,
+        recoilMultiplier: 0.9,
+        recoilDuration: 200,
         fireMode: FireMode.Single,
         shotSpread: 0.3,
         moveSpread: 1,
@@ -3254,12 +3254,12 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
             rightZIndex: 4,
             animationDuration: 100
         },
-        image: { 
+        image: {
             position: Vec(80, 0),
             unloadedWorldImage: true
         },
         capacity: 1,
-        reloadTime: 3.2,
+        reloadTime: 1.6,
         ballistics: {
             damage: 75,
             obstacleMultiplier: 0.5,
@@ -3268,10 +3268,6 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
             tracer: {
                 image: "icicle_trail",
                 length: 1.4
-            },
-            enemySpeedMultiplier: {
-                duration: 500,
-                multiplier: 0.2
             },
             noReflect: true
         }
