@@ -295,7 +295,7 @@ export async function finalizeUI(): Promise<void> {
     const _modeName = Modes[modeName].similarTo ?? modeName;
 
     // Change the menu based on the mode.
-    $("#splash-ui").css("background-image", `url(./img/backgrounds/menu/${_modeName}.png)`);
+    $("#splash-ui").css("background-image", `url(./img/backgrounds/menu/${modeName}.png)`);
 
     if (specialLogo) {
         $("#splash-logo").children("img").attr("src", `./img/logos/suroi_beta_${_modeName}.svg`);
