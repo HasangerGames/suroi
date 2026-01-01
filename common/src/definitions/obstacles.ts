@@ -5603,12 +5603,14 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         material: "metal_heavy",
         health: 1000,
         indestructible: true,
+        reflectBullets: true,
         invisible: true,
         hitbox: RectangleHitbox.fromRect(13, 4),
         frames: {
             particle: "metal_particle"
         },
-        rotationMode: RotationMode.Limited
+        rotationMode: RotationMode.Limited,
+        allowFlyover: FlyoverPref.Never
     },
     {
         idString: "blue_house_stair",
