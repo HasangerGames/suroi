@@ -1,52 +1,39 @@
 
-
 export function LoginBtn():void{
 
   const loginBtn = document.querySelector<HTMLButtonElement>("#btn-login");
   const loginPanel = document.querySelector<HTMLDivElement>(".modal2") ;
 
 
-  if (!loginBtn || !loginPanel ) return;
 
 
-  loginBtn.addEventListener("click", () => {
-    loginPanel.classList.add("active");
+
+  loginBtn?.addEventListener("click", () => {
+    loginPanel?.classList.add("active");
    
 
   });
 
 
-  const closeBtn = document.querySelectorAll<HTMLElement>(".close");
+  const closeBtn = document.querySelector<HTMLElement>(".close");
 
-  if(closeBtn.length ===0) return;
-
-
-  closeBtn.forEach(btn=>{
-     btn.addEventListener("click",()=>{
-     loginPanel.classList.remove("active");
+  closeBtn?.addEventListener("click",()=>{
+     loginPanel?.classList.remove("active");
   });
-});
+
 
   document.addEventListener("click", (e: MouseEvent) => {
 
-    const target = e.target;
-
-
-    if(target instanceof Node){
+  
+    if(e.target instanceof Node){
         
           if (
-                !loginPanel.contains(target) &&
-                !loginBtn.contains(target)
+                !loginPanel?.contains(e.target) &&
+                !loginBtn?.contains(e.target)
               ) {
-                loginPanel.classList.remove("active");
+                loginPanel?.classList.remove("active");
                 
               }
     }
-    
   });
- 
-  
-
 }
-
-

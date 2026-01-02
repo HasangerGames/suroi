@@ -1,19 +1,11 @@
 
 export function AccountVisibility():void{
 
+  const accountBtn = document.querySelector<HTMLButtonElement>("#account-btn-container") ;
+  const accountPanel = document.querySelector<HTMLDivElement>(".modal3");
 
-
-
-
-  const acountBtn = document.querySelector<HTMLButtonElement>("#account-btn-container") ;
-  const acountPanel = document.querySelector<HTMLDivElement>(".modal3");
-
-
-  if (!acountBtn || !acountPanel ) return;
-
-
-  acountBtn.addEventListener("click", () => {
-    acountPanel.classList.add("active");
+  accountBtn?.addEventListener("click", () => {
+    accountPanel?.classList.add("active");
    
 
   });
@@ -21,29 +13,23 @@ export function AccountVisibility():void{
 
   const closeBtn = document.querySelector<HTMLButtonElement>("#account-panel-close");
 
-  if(!closeBtn) return;
 
-
-  
-closeBtn.addEventListener("click",()=>{
-     acountPanel.classList.remove("active");
+closeBtn?.addEventListener("click",()=>{
+     accountPanel?.classList.remove("active");
   })
 
   document.addEventListener("click", (e: MouseEvent) => {
 
-    const target = e.target;
+ 
 
-    if(target instanceof Node){
+    if(e.target instanceof Node){
       if (
-        !acountPanel.contains(target) &&
-        !acountBtn.contains(target)
+        !accountPanel?.contains(e.target) &&
+        !accountBtn?.contains(e.target)
       ) {
-        acountPanel.classList.remove("active");
+        accountPanel?.classList.remove("active");
 
       }
     }
-
   });
-
-  
 }

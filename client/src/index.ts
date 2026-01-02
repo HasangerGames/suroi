@@ -6,15 +6,12 @@ import "./scss/pages/client.scss";
 import { AccountVisibility } from "./accountVisibility";
 import { LoginBtn } from "./loginBtn";
 import { ToMyStats } from "./myStats";
+
+
 void Game.init();
-
-
 
 document.addEventListener("DOMContentLoaded",()=>{
 LoginBtn();
 AccountVisibility();
 ToMyStats();
 })
-
-
-
