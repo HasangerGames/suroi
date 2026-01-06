@@ -1186,7 +1186,7 @@ const container = (
                 // Also, we need to figure out how to make the containers inside the hyperion non-snow variations. Probably gonna need to use
                 // a similar way to obstacle [outdoors] method with the _winter part.
                 // gas can container has the same snow decals as the closed damaged variant
-            ..._snowDecalDefinitions[variant === "gas_can" ? "closed_damaged" : variant] // TEMP. Remove when winter ends. FIX ME IM A MESS
+            // ..._snowDecalDefinitions[variant === "gas_can" ? "closed_damaged" : variant] // TEMP. Remove when winter ends. FIX ME IM A MESS
             // TODO Detect mode somehow
             // ...(GameConstants.modeName === "winter" ? snowDecalDefinitions[open] : [])
         ],
@@ -1411,7 +1411,7 @@ const truckContainer = (
                 tint
             },
             // winter mode: snow decals because tinted ceiling
-            ...snowDecalDefinitions[model]
+            // ...snowDecalDefinitions[model]
 
         ],
         ceilingHitbox: new GroupHitbox(
@@ -2057,51 +2057,51 @@ const shed = (num: number, ceilingTint: number): BuildingDefinition => ({
             tint: ceilingTint
         },
         // WINTER MODE ONLY: snow decals for the ceiling, since it's tinted, similar to containers but less of a mess
-        ...pickRandomInArray([
-            [
-                {
-                    key: "shed_ceiling_snow_decal_1",
-                    position: Vec(5, 0)
-                },
-                {
-                    key: "shed_ceiling_snow_decal_2",
-                    position: Vec(-8.65, -9.4)
-                },
-                {
-                    key: "shed_ceiling_snow_decal_3",
-                    position: Vec(6.25, -14.3)
-                },
-                {
-                    key: "shed_ceiling_snow_decal_4",
-                    position: Vec(-5.05, 8.65)
-                }
-            ],
-            [
-                {
-                    key: "shed_ceiling_snow_decal_1",
-                    position: Vec(-5.6, 8),
-                    rotation: -Math.PI / 2.5,
-                    scale: Vec(-0.67, 0.67) // SIX SEVEV
-                },
-                {
-                    key: "shed_ceiling_snow_decal_4",
-                    position: Vec(-5.05, -11.9),
-                    scale: Vec(-1, 1),
-                    rotation: Math.PI
-                },
-                  {
-                    key: "shed_ceiling_snow_decal_3",
-                    position: Vec(7.7, 6.6),
-                    rotation: Math.PI / 2,
-                    scale: Vec(1.45, 1.45)
-                },
-                {
-                    key: "shed_ceiling_snow_decal_5",
-                    position: Vec(8.6, -13.75),
-                    scale: Vec(1, -1)
-                },
-           ]
-        ])
+        // ...pickRandomInArray([
+        //     [
+        //         {
+        //             key: "shed_ceiling_snow_decal_1",
+        //             position: Vec(5, 0)
+        //         },
+        //         {
+        //             key: "shed_ceiling_snow_decal_2",
+        //             position: Vec(-8.65, -9.4)
+        //         },
+        //         {
+        //             key: "shed_ceiling_snow_decal_3",
+        //             position: Vec(6.25, -14.3)
+        //         },
+        //         {
+        //             key: "shed_ceiling_snow_decal_4",
+        //             position: Vec(-5.05, 8.65)
+        //         }
+        //     ],
+        //     [
+        //         {
+        //             key: "shed_ceiling_snow_decal_1",
+        //             position: Vec(-5.6, 8),
+        //             rotation: -Math.PI / 2.5,
+        //             scale: Vec(-0.67, 0.67) // SIX SEVEV
+        //         },
+        //         {
+        //             key: "shed_ceiling_snow_decal_4",
+        //             position: Vec(-5.05, -11.9),
+        //             scale: Vec(-1, 1),
+        //             rotation: Math.PI
+        //         },
+        //           {
+        //             key: "shed_ceiling_snow_decal_3",
+        //             position: Vec(7.7, 6.6),
+        //             rotation: Math.PI / 2,
+        //             scale: Vec(1.45, 1.45)
+        //         },
+        //         {
+        //             key: "shed_ceiling_snow_decal_5",
+        //             position: Vec(8.6, -13.75),
+        //             scale: Vec(1, -1)
+        //         },
+        //    ]
+        // ])
     ],
     floors: [
         {
