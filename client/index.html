@@ -113,6 +113,205 @@
       #privacy-policy-link {
         color: white;
       }
+    
+      .modal2,
+      .modal3{
+        
+        opacity: 0;
+          pointer-events: none;
+          transition: opacity 0.25s ease;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        max-width: 350px;
+        width: 100%;
+        border-radius: 20px;
+        padding: 1rem;
+        display: flex;
+        flex-direction: column;
+      }
+
+  .dialog2,
+   .dialog3{
+     background: rgba(53, 53, 53, 0.8);
+          backdrop-filter: blur(15px);
+          user-select: none;
+    box-shadow: 0 0 10px #000000c8;
+    padding: 0 !important;
+    border-radius: 10px !important;
+    overflow: hidden;
+    z-index: 101;
+       }
+  .modal2.active,
+  .modal3.active{
+        opacity: 1;
+        pointer-events: auto;
+      }
+
+      #account-panel-close:hover{
+        color: #f02828;
+      }
+
+
+
+
+      #signup-menu,
+      #login-menu{
+
+      
+
+      
+        transition: opacity 0.25s ease;
+        position: relative;
+       /* border: 1px solid #333; */
+        padding: 10px;
+        
+          
+      }
+      .signup-header,
+      .login-header{
+        text-align: center;
+
+
+      }
+
+      #signup-form
+      #login-form{
+        padding: 15px;
+      }
+
+      #signup-form form,
+      #login-form form {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      #signup-form form input,
+      #login-form form input{
+        padding: 10px;
+        border-radius: 8px;
+        outline: none;
+        border: none;
+        color: #121212;
+      }
+
+
+      .custom-hover:hover {
+  background-color: #198754;
+  color: #fff;
+        }
+
+
+
+
+
+      .close{
+        cursor: pointer;
+        position: absolute;
+        display: flex;
+        /* background-color: #f74343; */
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        place-content: center;
+        place-items: center;
+        top: 0%;
+        right: 0%;
+        
+        transition: all 0.4s ease;
+      }
+      .close:hover{
+        color: #f02828;
+        /* background-color: #cd4949; */
+      }
+
+     #splash-customize #account-btn-container{
+        width: 100%;
+         display: flex;
+          justify-content: end;
+          position: absolute;
+          top: 10px;
+          right: 10px;
+         
+      }
+    #splash-customize #account-btn-container #account-icon{
+         width:35px;
+          height: 35px;
+           border-radius: 
+           50%; cursor: pointer;
+            display: flex;
+             place-content: center; 
+             place-items: center;
+      }
+      #account-btn{
+        border: none;
+        background-color: #ff7500;
+        transition: all 0.3s ease;
+         height: 100%; width: 100%; border-radius:  50%; display: flex; place-content: center; place-items: center;  cursor: pointer;
+      }
+      #account-btn:hover{
+        background-color: #c1633d;
+      }
+
+
+#account-panel-close{
+position: absolute;
+right: 2%; 
+top:2%; cursor:
+ pointer;
+}
+#account-div{
+padding: 10px; display: flex; background: #83af50;
+}
+
+
+#player-name-container{
+max-width: 80%;
+ overflow-wrap: anywhere; 
+ padding: 10px;
+}
+
+.player-name{
+display:block;
+ overflow-wrap: anywhere; 
+  font-weight: bold; 
+  font-size: 24px;
+}
+#playername{
+font-weight: bold; border: none; background: transparent;  text-shadow: 2px 2px 4px black; font-size: 24px;
+}
+#edit-btn{
+border: none;
+ background-color: #009aff; 
+ border-radius: 8px;
+  padding: 5px;
+ cursor: pointer;
+}
+
+#profile-icon{
+max-width:60px ;
+img{
+  width: 100%;
+}
+}
+
+
+
+#login-option-container{
+display: flex;
+ flex-direction: 
+ column; gap: 10px;
+  padding: 10px;
+}
+
+#player-details{
+padding: 10px;
+ display: flex;
+ flex-direction: column; 
+gap: 10px;
+}
+
 
       @keyframes rotate {
         from {
@@ -321,6 +520,13 @@
 
         <!-- Settings & skin options (right pane) -->
         <div id="splash-customize">
+
+            <div id="account-btn-container">
+              <div id="account-icon" ><button id="account-btn" ><i class="fa fa-user" style="font-size: 20px;"></i></button> </div>
+              
+            </div>
+
+
           <!-- Skin preview -->
           <div id="skin-container">
             <div id="skin-base"></div>
@@ -329,6 +535,15 @@
           </div>
 
           <!-- Loadout & settings buttons -->
+
+           <div style="display: flex; flex-direction: row; gap: 15px">
+            <!-- login button -->
+             <button class="btn btn-lg btn-darken btn-primary" id="btn-login">
+              <i class="fa-solid fa-right-to-bracket "></i>
+              <span translation="Login"></span>
+            </button>
+           </div>
+            
           <div style="display: flex; flex-direction: row; gap: 15px">
             <button class="btn btn-lg btn-darken btn-primary" id="btn-customize">
               <i class="fa-solid fa-shirt"></i>
@@ -339,6 +554,7 @@
               <i class="fa-solid fa-gear"></i>
               <span translation="settings"></span>
             </button>
+
           </div>
         </div>
 
@@ -777,6 +993,63 @@
         </div>
       </div>
     </div>
+
+
+
+<!--user  account page -->
+    <div class="modal3 dialog3 " id="account-container" class="persistent-scrollbar" style="background-color: #333;">
+      <!-- <h3 style="text-align: center;">My account</h3> -->
+       <div id="account-panel-close" ><i class="fa-solid fa-xmark"></i></div>
+      <div id="account-div" > 
+        <div id="profile-icon" > <img src="/img/logos/suroi_favicon_512x512.png"></div>
+        <div id="player-name-container" >
+          <span class="player-name" >
+            <input id="playername" type="text" value="suroi007" disabled >
+            <button id="edit-btn" ><i class="fa-solid fa-pen" ></i></button>
+          </span>
+
+        </div> 
+       
+      
+      </div>
+       <div id="player-details" >
+         <button class="btn btn-lg btn-darken btn-primary " type="button" translation="My stats" id="my-stats"></button>
+         <button class="btn btn-lg btn-darken btn-primary " type="button" translation="Reset stats"></button>
+         <button class="btn btn-lg  btn-darken btn-danger " type="button" translation="Delete account"></button>
+         <button class="btn btn-lg btn-secondary btn-darken  " type="button" translation="Logout"></button>
+        </div>
+
+    </div>
+
+
+
+
+    <!-- Login menu -->
+<div class=" modal2 dialog2 " id="login-container">
+  <!-- login -->
+
+  <div id="login-menu" class="form-panel active">
+    <div class="close"><i class="fa-solid fa-xmark"></i></div>
+
+    <div class="login-header">
+      <div class="brand-logo" style="max-width: 60%; margin: 0 auto;">
+        <img src="./img/logos/suroi.svg" width="100%">
+      </div>
+      <h3>Login to Suroi</h3>
+    </div>
+  
+
+
+
+  <!-- this contains google login and discord login buttons -->
+  <div id="login-option-container" >
+    <button class="btn btn-lg btn-darken btn-danger" type="button"> <i class="fa-brands fa-google"></i> <span
+        translation="Google"></span></button>
+    <button class="btn btn-lg btn-darken btn-secondary" type="button" style="background-color: #7289da;"> <i
+        class="fa-brands fa-discord"></i> <span translation="Discord"></span></button>
+  </div>
+</div>
+
 
     <!-- Settings menu -->
     <div class="modal dialog" id="settings-menu" style="display: none">
