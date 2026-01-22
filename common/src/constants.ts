@@ -261,6 +261,7 @@ export const enum FireMode {
 export const enum InputActions {
     EquipItem,
     EquipLastItem,
+    EquipOtherWeapon,
     DropWeapon,
     DropItem,
     SwapGunSlots,

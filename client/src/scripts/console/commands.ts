@@ -286,20 +286,8 @@ export function setUpCommands(): void {
     Command.createCommand(
         "other_weapon",
         function() {
-            const { weapons, activeWeaponIndex } = UIManager.inventory;
-            let index
-                = activeWeaponIndex === 0 || (
-                    weapons[0] === undefined
-                    && activeWeaponIndex !== 1
-                )
-                    ? 1
-                    : 0;
-
-            // fallback to melee if there's no weapon on the slot
-            if (weapons[index] === undefined) { index = 2; }
             InputManager.addAction({
-                type: InputActions.EquipItem,
-                slot: index
+                type: InputActions.EquipOtherWeapon,
             });
         },
         {
