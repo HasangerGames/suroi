@@ -432,7 +432,8 @@ class MapManagerClass {
         this._texture = RenderTexture.create({
             width: this._width,
             height: this._height,
-            resolution: isMobile.any ? 1 : 2
+            resolution: isMobile.any ? 1 : 2,
+            antialias: GameConsole.getBuiltInCVar("cv_antialias")
         });
 
         Game.pixi.renderer.render({ container: mapRender, target: this._texture, clearColor: colors.grass });
