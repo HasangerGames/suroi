@@ -1873,7 +1873,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
 
-## 🇯🇵 日本語 (98% Complete) - jp.hjson
+## 🇯🇵 日本語 (100% Complete) - jp.hjson
 
 ### Invalid Keys
 
@@ -1881,6 +1881,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `emote_sad_face` is not a valid key
 - Key `emote_thumbs_up` is not a valid key
 - Key `emote_thumbs_down` is not a valid key
+- Key `emote_okay` is not a valid key
 - Key `emote_wave` is not a valid key
 - Key `emote_disappointed_face` is not a valid key
 - Key `emote_sobbing_face` is not a valid key
@@ -2114,15 +2115,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `time_minute` is not a valid key
 - Key `time_second` is not a valid key
 
-### Undefined Keys
-
-- Key `msg_punishment_noname_reason` is not defined
-- Key `settings_explosion_shockwaves` is not defined
-- Key `settings_bullet_trail_bloom` is not defined
-- Key `settings_blood_splatter` is not defined
-- Key `settings_cooler_weapon_gas` is not defined
-- Key `settings_weapon_compare` is not defined
-- Key `settings_weapon_compare_condensed` is not defined
+### (No Undefined Keys)
 
 ## 🇱🇹 Lietuvių (55% Complete) - lt.hjson
 
