@@ -6968,7 +6968,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             },
             {
                 key: "headquarters_second_floor_bottom",
-                position: Vec(-5.6, 16)
+                position: Vec(-5.6, 16.3)
             }
         ],
         floors: [

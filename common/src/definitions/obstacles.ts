@@ -514,7 +514,7 @@ const hqWall = (lengthNumber: number, hitbox: RectangleHitbox, customHealth = fa
     hitbox,
     isWall: true,
     wall: {
-        borderColor: customHealth ? 0x23282a : 0x4a4134,
+        borderColor: customHealth ? 0x23282a : 0x2e2921,
         color: customHealth ? 0x74858b : 0xafa08c,
         ...(customHealth ? {} : { rounded: !customHealth })
     }
@@ -700,7 +700,7 @@ const innerConcreteWall = (id: number, hitbox: Hitbox): RawObstacleDefinition =>
     isWall: true,
     wall: {
         color: 0x808080,
-        borderColor: 0x484848
+        borderColor: 0x2a2a2a
     }
 });
 
@@ -720,7 +720,7 @@ const mobileHomeWall = (lengthNumber: string, hitbox: RectangleHitbox): RawObsta
     },
     isWall: true,
     wall: {
-        borderColor: 0x666666,
+        borderColor: 0x2f2f2f,
         color: 0xbfbfbf
     }
 });
@@ -775,7 +775,7 @@ const portaPottyWall = (
     isWall: true,
     wall: outhouse
         ? { color: 0x6e4d2f, borderColor: 0x261b14 }
-        : { color: 0x1c71d8, borderColor: 0x0d3565 },
+        : { color: 0x1c71d8, borderColor: 0x092444 },
     frames: {
         particle: outhouse
             ? "outhouse_wall_particle"
@@ -4870,7 +4870,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
             spawnMax: 1,
             destroy: 0.95
         },
-        hitbox: new CircleHitbox(2.45, Vec(-0.15, 0.9)),
+        hitbox: new CircleHitbox(2.45),
         rotationMode: RotationMode.Full,
         allowFlyover: FlyoverPref.Always,
         hasLoot: true
