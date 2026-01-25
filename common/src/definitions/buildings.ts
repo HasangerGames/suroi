@@ -290,56 +290,42 @@ const randomCelebrationWinterTree = {
     pine_tree: 0.9
 };
 
-const randomPortOpenContainerOneSide = {
-    container_3: 1,
-    container_4: 1,
-    container_5: 1,
-    container_6: 1,
-    container_9: 1,
+const randomContainerOpen1 = {
+    container_green_open1: 1,
+    container_green_open1_damaged: 1,
+    container_blue_open1: 1,
+    container_blue_open1_damaged: 1,
+    container_yellow_open1: 1,
 
-    // Military
-    container_22: 0.05,
-    container_23: 0.05,
-    container_24: 0.05,
-    container_25: 0.05
+    container_nsd: 0.05
 };
 
-const randomPortOpenContainerTwoSide = {
-    container_1: 0.25,
-    container_2: 0.25,
-    container_7: 2,
-    container_8: 2,
-    container_16: 2
+const randomContainerOpen2 = {
+    container_white_closed: 0.25,
+    container_red_closed: 0.25,
+    container_blue_open2: 2,
+    container_blue_open2_damaged: 2,
+    container_yellow_open2_damaged: 2
 };
 
-const randomPortDamagedContainer = {
-    container_13: 1,
-    container_14: 1,
-    container_15: 1
+const randomContainerDamaged1 = {
+    container_red_damaged1: 1,
+    container_yellow_damaged1: 1,
+    container_green_damaged1: 1,
+    container_blue_damaged1: 1
 };
 
-const randomPortDamagedContainerReversed = {
-    container_17: 1,
-    container_18: 1,
-    container_19: 1
+const randomContainerDamaged2 = {
+    container_yellow_damaged2: 1,
+    container_green_damaged2: 1,
+    container_blue_damaged2: 1
 };
 
-/* const randomContainer1 = {
-    container_1: 1,
-    container_2: 2,
-    container_3: 3,
-    container_4: 4,
-    container_5: 3,
-    container_6: 4,
-    container_7: 3,
-    container_8: 4,
-    container_10: 3
-}; */
-
-/* const randomContainer2 = {
-    ...randomContainer1,
-    [NullString]: 7
-}; */
+const randomContainerDamaged2Reversed = {
+    container_blue_damaged2_reversed: 1,
+    container_yellow_damaged2_reversed: 1,
+    container_green_damaged2_reversed: 1
+};
 
 const warehouseObstacle = {
     regular_crate: 2,
@@ -413,36 +399,7 @@ export const ContainerTints = {
     blue: 0x2e6e9e,
     yellow: 0xc1b215,
     gas_can: 0xd64533,
-    military_green: 0x243315,
-    military_orange: 0x918556,
-    military_marine: 0x273b3b,
-    military_lime: 0x727825
-};
-
-const ContainerWallOutlineTints = {
-    white: 0x797979,
-    red: 0x661900,
-    green: 0x006608,
-    blue: 0x003b66,
-    yellow: 0x808000,
-    gas_can: 0x571b14,
-    military_green: 0x161f0d,
-    military_orange: 0x574f33,
-    military_marine: 0x172424,
-    military_lime: 0x3f4214
-};
-
-const ContainerWallTints = {
-    white: 0xa8a8a8,
-    red: 0x8f2400,
-    green: 0x008f0c,
-    blue: 0x00538f,
-    yellow: 0xb3b300,
-    gas_can: 0xd64533,
-    military_green: 0x31451c,
-    military_orange: 0xab9d65,
-    military_marine: 0x3e5e5e,
-    military_lime: 0x838a2b
+    nsd: 0x2a2d24
 };
 
 export const TentTints = {
@@ -497,20 +454,14 @@ const iglooLayout = (id: number, obstacles: readonly BuildingObstacle[]): Buildi
     obstacles
 });
 
-type ContainerVariation = "open2" | "open1" | "closed" | "closed_damaged" | "damaged" | "damaged_reversed" | "gas_can";
+type ContainerVariation = "closed" | "open1" | "open2" | "damaged1" | "damaged2" | "gas_can" | "nsd";
 const container = (
-    id: number,
     color: keyof typeof ContainerTints,
     variant: ContainerVariation,
-    damaged?: boolean
+    damaged?: boolean,
+    reversed?: boolean
 ): BuildingDefinition => {
     const tint = ContainerTints[color];
-
-    let hitbox: Hitbox;
-    let wallHitbox: Hitbox | undefined;
-    let spawnHitbox: Hitbox;
-    let upperCeilingImage;
-    let lowerCeilingImage;
 
     const _snowDecalDefinitions = {
         closed: pickRandomInArray([
@@ -1011,178 +962,116 @@ const container = (
         ])
     };
 
-    switch (variant) {
-        case "damaged_reversed": // thanks designers
-            upperCeilingImage = "container_ceiling_6";
-            lowerCeilingImage = "container_ceiling_7";
-            hitbox = new GroupHitbox(
-                RectangleHitbox.fromRect(1.85, 8, Vec(-6.1, 10)),
-                RectangleHitbox.fromRect(1.85, 8, Vec(-6.1, -10)),
-                RectangleHitbox.fromRect(1.85, 28, Vec(6.1, 0)),
-                RectangleHitbox.fromRect(14, 1.85, Vec(0, -13.07))
-            );
-            wallHitbox = new GroupHitbox(
-                RectangleHitbox.fromRect(0.91, 7.05, Vec(-6.1, 10)),
-                RectangleHitbox.fromRect(0.91, 7.05, Vec(-6.1, -10)),
-                RectangleHitbox.fromRect(0.91, 27.05, Vec(6.1, 0)),
-                RectangleHitbox.fromRect(13.05, 0.91, Vec(0, -13.07))
-            );
-            spawnHitbox = RectangleHitbox.fromRect(16, 34.9, Vec(0, 2));
-            break;
-        case "damaged":
-            upperCeilingImage = "container_ceiling_6";
-            lowerCeilingImage = "container_ceiling_7";
-            hitbox = new GroupHitbox(
-                RectangleHitbox.fromRect(1.85, 8, Vec(6.1, 10)),
-                RectangleHitbox.fromRect(1.85, 8, Vec(6.1, -10)),
-                RectangleHitbox.fromRect(1.85, 28, Vec(-6.1, 0)),
-                RectangleHitbox.fromRect(14, 1.85, Vec(0, -13.07))
-            );
-            wallHitbox = new GroupHitbox(
-                RectangleHitbox.fromRect(0.91, 7.05, Vec(6.1, 10)),
-                RectangleHitbox.fromRect(0.91, 7.05, Vec(6.1, -10)),
-                RectangleHitbox.fromRect(0.91, 27.05, Vec(-6.1, 0)),
-                RectangleHitbox.fromRect(13.05, 0.91, Vec(0, -13.07))
-            );
-            spawnHitbox = RectangleHitbox.fromRect(16, 34.9, Vec(0, 2));
-            break;
-        case "open2":
-            hitbox = new GroupHitbox(
-                RectangleHitbox.fromRect(1.85, 28, Vec(6.1, 0)),
-                RectangleHitbox.fromRect(1.85, 28, Vec(-6.1, 0))
-            );
-            wallHitbox = new GroupHitbox(
-                RectangleHitbox.fromRect(0.91, 27.05, Vec(-6.11, 0)),
-                RectangleHitbox.fromRect(0.91, 27.05, Vec(6.11, 0))
-            );
-            spawnHitbox = RectangleHitbox.fromRect(16, 39.9);
-            upperCeilingImage = damaged ? "container_ceiling_3" : "container_ceiling_2";
-            lowerCeilingImage = "container_ceiling_2";
-            break;
-        case "open1":
-            hitbox = new GroupHitbox(
-                RectangleHitbox.fromRect(1.85, 28, Vec(6.1, 0)),
-                RectangleHitbox.fromRect(1.85, 28, Vec(-6.1, 0)),
-                RectangleHitbox.fromRect(14, 1.85, Vec(0, -13.07))
-            );
-            wallHitbox = new GroupHitbox(
-                RectangleHitbox.fromRect(0.91, 27.05, Vec(-6.11, 0)),
-                RectangleHitbox.fromRect(0.91, 27.05, Vec(6.11, 0)),
-                RectangleHitbox.fromRect(13.13, 0.92, Vec(0, -13.07))
-            );
-            spawnHitbox = RectangleHitbox.fromRect(16, 34.9, Vec(0, 2));
-            upperCeilingImage = damaged ? "container_ceiling_4" : "container_ceiling_1";
-            lowerCeilingImage = damaged ? "container_ceiling_5" : "container_ceiling_2";
-            break;
-        case "closed_damaged":
-        case "gas_can":
-            upperCeilingImage = "container_ceiling_8";
-            lowerCeilingImage = "container_ceiling_9";
-            hitbox = new GroupHitbox(
-                RectangleHitbox.fromRect(1.85, 8, Vec(-6.1, 10)),
-                RectangleHitbox.fromRect(1.85, 8, Vec(-6.1, -10)),
-                RectangleHitbox.fromRect(1.85, 28, Vec(6.1, 0)),
-                RectangleHitbox.fromRect(14, 1.85, Vec(0, -13.07)),
-                RectangleHitbox.fromRect(14, 1.85, Vec(0, 13.07))
-            );
-            wallHitbox = new GroupHitbox(
-                RectangleHitbox.fromRect(0.91, 7.05, Vec(-6.1, 10)),
-                RectangleHitbox.fromRect(0.91, 7.05, Vec(-6.1, -10)),
-                RectangleHitbox.fromRect(0.91, 27.05, Vec(6.1, 0)),
-                RectangleHitbox.fromRect(13.05, 0.91, Vec(0, -13.07)),
-                RectangleHitbox.fromRect(13.05, 0.91, Vec(0, 13.07))
-            );
-            spawnHitbox = RectangleHitbox.fromRect(16, 34.9, Vec(0, 2));
-            break;
-        case "closed":
-        default:
-            hitbox = RectangleHitbox.fromRect(14, 28);
-            spawnHitbox = RectangleHitbox.fromRect(16, 30);
-            upperCeilingImage = lowerCeilingImage = "container_ceiling_1";
-            break;
+    const hitboxes: Record<ContainerVariation, Hitbox> = {
+        closed: RectangleHitbox.fromRect(14, 28),
+        open1: new GroupHitbox(
+            RectangleHitbox.fromRect(1.5, 28, Vec(6.25, 0)),
+            RectangleHitbox.fromRect(1.5, 28, Vec(-6.25, 0)),
+            RectangleHitbox.fromRect(14, 1.5, Vec(0, -13.2))
+        ),
+        open2: new GroupHitbox(
+            RectangleHitbox.fromRect(1.5, 28, Vec(6.25, 0)),
+            RectangleHitbox.fromRect(1.5, 28, Vec(-6.25, 0)),
+        ),
+        damaged1: new GroupHitbox(
+            RectangleHitbox.fromRect(1.5, 8, Vec(-6.25, 10)),
+            RectangleHitbox.fromRect(1.5, 8, Vec(-6.25, -10)),
+            RectangleHitbox.fromRect(1.5, 28, Vec(6.25, 0)),
+            RectangleHitbox.fromRect(14, 1.5, Vec(0, -13.2)),
+            RectangleHitbox.fromRect(14, 1.5, Vec(0, 13.2))
+        ),
+        damaged2: new GroupHitbox(
+            RectangleHitbox.fromRect(1.5, 8, Vec(reversed ? -6.25 : 6.25, 10)),
+            RectangleHitbox.fromRect(1.5, 8, Vec(reversed ? -6.25 : 6.25, -10)),
+            RectangleHitbox.fromRect(1.5, 28, Vec(reversed ? 6.25 : -6.25, 0)),
+            RectangleHitbox.fromRect(14, 1.5, Vec(0, -13.2))
+        ),
+        gas_can: new GroupHitbox(
+            RectangleHitbox.fromRect(1.5, 8, Vec(-6.25, 10)),
+            RectangleHitbox.fromRect(1.5, 8, Vec(-6.25, -10)),
+            RectangleHitbox.fromRect(1.5, 28, Vec(6.25, 0)),
+            RectangleHitbox.fromRect(14, 1.5, Vec(0, -13.2)),
+            RectangleHitbox.fromRect(14, 1.5, Vec(0, 13.2))
+        ),
+        nsd: new GroupHitbox(
+            RectangleHitbox.fromRect(1.5, 28, Vec(6.25, 0)),
+            RectangleHitbox.fromRect(1.5, 28, Vec(-6.25, 0)),
+            RectangleHitbox.fromRect(14, 1.5, Vec(0, -13.2))
+        )
+    };
+
+    let floorImage: string;
+    if (variant === "gas_can") {
+        floorImage = "damaged1";
+    } else if (variant === "nsd") {
+        floorImage = "open1";
+    } else {
+        floorImage = variant;
     }
 
-    const closed = variant === "closed";
+    let lootSpawners: LootSpawner[] | undefined;
+    if (!IS_CLIENT) {
+        if (variant === "gas_can") {
+            lootSpawners = [
+                {
+                    position: Vec(0, -8.5),
+                    table: "gas_can"
+                }
+            ];
+        } else if (variant === "nsd") {
+            lootSpawners = [
+                {
+                    position: Vec(0, 0),
+                    table: "airdrop_guns"
+                },
+                {
+                    position: Vec(0, 0),
+                    table: "military_container_skins"
+                }
+            ];
+        } else if (variant !== "closed") {
+            lootSpawners = [
+                {
+                    position: Vec(0, 0),
+                    table: "ground_loot"
+                }
+            ];
+        }
+    }
 
     return {
-        idString: `container_${id}`,
-        name: `Container ${id}`,
+        idString: `container_${color}${variant === color ? "" : `_${variant}`}${damaged ? "_damaged" : ""}${reversed ? "_reversed" : ""}`,
+        name: "Container",
         defType: DefinitionType.Building,
-        hitbox,
+        hitbox: hitboxes[variant],
         reflectBullets: true,
         material: "metal_heavy",
         particle: `container_particle_${color}`,
-        spawnHitbox,
+        spawnHitbox: RectangleHitbox.fromRect(16, 39.9),
         ceilingHitbox: RectangleHitbox.fromRect(12, 27),
         ceilingZIndex: ZIndexes.BuildingsCeiling - 0.5,
-        // TODO this is a bit of a mess, refactor
-        graphics: closed
-            ? []
-            : wallHitbox
-                ? [
-                    { color: tint, hitbox: RectangleHitbox.fromRect(14, 28) },
-                    { color: ContainerWallOutlineTints[color], hitbox },
-                    { color: ContainerWallTints[color], hitbox: wallHitbox }
-                ]
-                : [
-                    { color: tint, hitbox: RectangleHitbox.fromRect(14, 28) },
-                    { color: ContainerWallOutlineTints[color], hitbox }
-                ],
-        graphicsZIndex: ZIndexes.BuildingsFloor + 1,
         ceilingImages: [
             {
-                key: upperCeilingImage,
-                position: Vec(0, -6.97),
-                ...(variant === "damaged_reversed" ? { scale: Vec(-1, 1) } : {}),
-                tint
+                key: `container_ceiling_${variant === "gas_can" ? "damaged1" : variant}${damaged ? "_damaged" : ""}`,
+                position: Vec(0, 0),
+                scale: Vec(reversed ? -1 : 1, 1),
+                tint: variant === "nsd" ? 0xffffff : tint
             },
-            {
-                key: lowerCeilingImage,
-                position: Vec(-0.04, 6.97),
-                ...(variant === "damaged_reversed" ? { scale: Vec(-1, 1) } : {}),
-                rotation: Math.PI,
-                tint
-            },
-            ...(variant === "gas_can"
-                ? [
-                    {
-                        key: "fire_danger_symbol",
-                        position: Vec(0, 0),
-                        rotation: -Math.PI / 4
-                    },
-                    {
-                        key: "danger_tape",
-                        position: Vec(0, -10.1)
-                    },
-                    {
-                        key: "danger_tape",
-                        position: Vec(0, 10.1)
-                    }
-                ]
-                : []),
-            ...(color.includes("military")
-                ? [
-                    {
-                        key: "nsd_logo_cont",
-                        position: Vec(0, 0),
-                        scale: Vec(2, 2),
-                        tint
-                    },
-                    {
-                        key: "danger_tape",
-                        position: Vec(0, -10.1),
-                        scale: Vec(-1, 1),
-                        alpha: 0.5,
-                        tint: 0xff9500
-                    },
-                    {
-                        key: "danger_tape",
-                        position: Vec(0, 10.1),
-                        alpha: 0.5,
-                        tint: 0xff9500
-                    }
-                ]
-                : []),
+            ...(variant === "gas_can" ? [
+                {
+                    key: "fire_danger_symbol",
+                    position: Vec(0, 0),
+                    rotation: -Math.PI / 4
+                },
+                {
+                    key: "danger_tape",
+                    position: Vec(0, -10.1)
+                },
+                {
+                    key: "danger_tape",
+                    position: Vec(0, 10.1)
+                }
+            ] : []),
                 // Also, we need to figure out how to make the containers inside the hyperion non-snow variations. Probably gonna need to use
                 // a similar way to obstacle [outdoors] method with the _winter part.
                 // gas can container has the same snow decals as the closed damaged variant
@@ -1190,65 +1079,33 @@ const container = (
             // TODO Detect mode somehow
             // ...(GameConstants.modeName === "winter" ? snowDecalDefinitions[open] : [])
         ],
+        floorImages: [
+            ...(variant.includes("closed") ? [] : [{
+                key: `container_floor_${floorImage}`,
+                position: Vec(0, 0),
+                scale: Vec(reversed ? -1 : 1, 1),
+                tint
+            }]),
+            ...(variant === "gas_can" ? [{
+                key: "large_refinery_barrel_residue",
+                position: Vec(-4, 0),
+                scale: Vec(0.5, 0.5),
+                alpha: 0.8
+            }] : [])
+        ],
         floors: [{
             type: FloorNames.Metal,
             hitbox: RectangleHitbox.fromRect(14, 28)
         }],
         floorZIndex: ZIndexes.BuildingsFloor + 1.1,
-        ...(variant === "gas_can"
-            ? {
-                floorImages: [{
-                    key: "large_refinery_barrel_residue",
-                    position: Vec(-4, 0),
-                    scale: Vec(0.5, 0.5),
-                    alpha: 0.8
-                }]
-            }
-            : {}),
-        ...(
-            closed
-                ? {}
-                : variant === "gas_can"
-                    ? {
-                        lootSpawners: IS_CLIENT ? undefined : [
-                            {
-                                position: Vec(0, -8.5),
-                                table: "gas_can"
-                            }
-                        ]
-                    }
-                    : color.includes("military")
-                        ? {
-                            lootSpawners: IS_CLIENT ? undefined : [
-                                {
-                                    position: Vec(0, 0),
-                                    table: "airdrop_guns"
-                                },
-                                {
-                                    position: Vec(0, 0),
-                                    table: "military_container_skins"
-                                }
-                            ]
-                        }
-                        : {
-                            lootSpawners: IS_CLIENT ? undefined : [
-                                {
-                                    position: Vec(0, 0),
-                                    table: "ground_loot"
-                                }
-                            ]
-                        }
-        ),
-        ...(variant === "gas_can"
-            ? {
-                obstacles: IS_CLIENT ? undefined : [
-                    { idString: "propane_tank", position: Vec(3, 10) },
-                    { idString: "propane_tank", position: Vec(-3, 10) }
-                ]
-            }
-            : {})
+        lootSpawners,
+        obstacles: variant !== "gas_can" || IS_CLIENT ? undefined : [
+            { idString: "propane_tank", position: Vec(3, 10) },
+            { idString: "propane_tank", position: Vec(-3, 10) }
+        ]
     } as const; // <-- ??
 };
+
 const hollowLog = (
     id: number,
     variant: "damaged" | "moldy" | "extended"
@@ -1300,8 +1157,9 @@ const truckContainer = (
     obstacles: readonly BuildingObstacle[],
     subBuildings?: readonly SubBuilding[]
 ): BuildingDefinition => {
-    const chosen = pickRandomInArray(Object.keys(TruckContainerTints));
-    const tint = TruckContainerTints[chosen as "teal" | "orange" | "purple" | "green" | "red"];
+    const colors = ["white", "red", "green", "blue", "yellow"] as const;
+    const color = pickRandomInArray(colors);
+    const tint = ContainerTints[color];
 
     const hitbox = model === "one_sided"
         ? new GroupHitbox(
@@ -1318,7 +1176,7 @@ const truckContainer = (
             RectangleHitbox.fromRect(12.93, 1.6, Vec(0.07, -19.01))
         );
 
-    const snowDecalDefinitions = {
+    const _snowDecalDefinitions = {
         one_sided: pickRandomInArray([
             [
                 {
@@ -1392,7 +1250,7 @@ const truckContainer = (
         defType: DefinitionType.Building,
         reflectBullets: true,
         material: "metal_heavy",
-        particle: `truck_container_particle_${chosen}`,
+        particle: `truck_container_particle_${color}`,
         hitbox,
         spawnHitbox: RectangleHitbox.fromRect(18, 42),
         obstacles,
@@ -3662,34 +3520,38 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     shed(2, 0xb96114),
     shed(3, 0x39626b),
 
-    container(1, "white", "closed"),
-    container(2, "red", "closed"),
-    container(3, "green", "open1"),
-    container(4, "green", "open1", true),
-    container(5, "blue", "open1"),
-    container(6, "blue", "open1", true),
-    container(7, "blue", "open2"),
-    container(8, "blue", "open2", true),
-    container(9, "yellow", "open1"),
-    container(10, "yellow", "open2"),
-    container(11, "green", "closed"),
-    container(12, "yellow", "closed"),
-    container(13, "yellow", "damaged"),
-    container(14, "green", "damaged"),
-    container(15, "blue", "damaged"),
-    container(16, "yellow", "open2", true),
-    container(17, "blue", "damaged_reversed"),
-    container(18, "yellow", "damaged_reversed"),
-    container(19, "green", "damaged_reversed"),
-    container(20, "red", "closed_damaged"),
-    container(26, "white", "closed_damaged"),
+    container("red", "closed"),
+    container("yellow", "closed"),
+    container("green", "closed"),
+    container("white", "closed"),
 
-    // special containers
-    container(21, "gas_can", "gas_can"),
-    container(22, "military_green", "open1"),
-    container(23, "military_orange", "open1"),
-    container(24, "military_marine", "open1"),
-    container(25, "military_lime", "open1"),
+    container("yellow", "open1"),
+    container("green", "open1"),
+    container("green", "open1", true),
+    container("blue", "open1"),
+    container("blue", "open1", true),
+
+    container("yellow", "open2"),
+    container("yellow", "open2", true),
+    container("blue", "open2"),
+    container("blue", "open2", true),
+
+    container("yellow", "damaged2"),
+    container("green", "damaged2"),
+    container("blue", "damaged2"),
+
+    container("yellow", "damaged2", false, true),
+    container("green", "damaged2", false, true),
+    container("blue", "damaged2", false, true),
+
+    container("red", "damaged1"),
+    container("yellow", "damaged1"),
+    container("green", "damaged1"),
+    container("blue", "damaged1"),
+    container("white", "damaged1"),
+
+    container("gas_can", "gas_can"),
+    container("nsd", "nsd"),
 
     bigTent(1, "red"),
     bigTent(2, "green"),
@@ -4446,7 +4308,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             // Left Side: Bottom Left
             { idString: "port_hay_shed", position: Vec(-73.7, -135), orientation: 1 },
             { idString: "porta_potty", position: Vec(130, -165.4), orientation: 2 },
-            { idString: randomPortOpenContainerOneSide, position: Vec(-168.2, -188.5), orientation: 1 }, // y, x
+            { idString: randomContainerOpen1, position: Vec(-168.2, -188.5), orientation: 1 }, // y, x
             { idString: randomPallet, position: Vec(-153.61, -104.34), orientation: 1 },
             { idString: randomPallet, position: Vec(-143.74, 170.4) },
             { idString: randomPallet, position: Vec(-121.96, -111.74), orientation: 1 },
@@ -4461,7 +4323,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
 
             // Large Warehouse
             { idString: "large_warehouse", position: Vec(-158.8, -76) },
-            { idString: randomPortDamagedContainer, position: Vec(194.2, 85.5), orientation: 2 },
+            { idString: randomContainerDamaged2, position: Vec(194.2, 85.5), orientation: 2 },
             { idString: randomPallet, position: Vec(-156.48, -14.52) },
             { idString: randomPallet, position: Vec(-136.78, -14.37) },
             { idString: randomPallet, position: Vec(-156.25, -142.2) },
@@ -4492,12 +4354,12 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "porta_potty", position: Vec(-50.4, -190.07), orientation: 3 }, // fucking porta potty in the middle of the road
             { idString: "large_truck", position: Vec(122.9, 159.1), orientation: 1 }, // y x
 
-            { idString: randomPortOpenContainerTwoSide, position: Vec(169.65, -15.05) },
-            { idString: randomPortOpenContainerOneSide, position: Vec(183.95, -15.05) },
-            { idString: randomPortOpenContainerOneSide, position: Vec(-155.35, 15.05), orientation: 2 },
+            { idString: randomContainerOpen2, position: Vec(169.65, -15.05) },
+            { idString: randomContainerOpen1, position: Vec(183.95, -15.05) },
+            { idString: randomContainerOpen1, position: Vec(-155.35, 15.05), orientation: 2 },
 
-            { idString: randomPortOpenContainerOneSide, position: Vec(155.35, 13.25) },
-            { idString: randomPortOpenContainerOneSide, position: Vec(141.05, 13.25) },
+            { idString: randomContainerOpen1, position: Vec(155.35, 13.25) },
+            { idString: randomContainerOpen1, position: Vec(141.05, 13.25) },
 
             // Right Side: Bottom Right
 
@@ -4508,20 +4370,20 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: randomPallet, position: Vec(182.22, 64.55) },
             { idString: "truck_1", position: Vec(100.1, 129.8) },
 
-            { idString: randomPortOpenContainerOneSide, position: Vec(-169.65, -55.05), orientation: 2 },
-            { idString: randomPortOpenContainerTwoSide, position: Vec(-155.35, -55.05), orientation: 2 },
-            { idString: randomPortOpenContainerOneSide, position: Vec(-141.05, -55.05), orientation: 2 },
+            { idString: randomContainerOpen1, position: Vec(-169.65, -55.05), orientation: 2 },
+            { idString: randomContainerOpen2, position: Vec(-155.35, -55.05), orientation: 2 },
+            { idString: randomContainerOpen1, position: Vec(-141.05, -55.05), orientation: 2 },
 
-            { idString: randomPortOpenContainerOneSide, position: Vec(169.65, 83.5) },
-            { idString: randomPortDamagedContainer, position: Vec(-155.35, -83.5), orientation: 2 },
-            { idString: randomPortOpenContainerOneSide, position: Vec(183.95, 83.5) },
+            { idString: randomContainerOpen1, position: Vec(169.65, 83.5) },
+            { idString: randomContainerDamaged2, position: Vec(-155.35, -83.5), orientation: 2 },
+            { idString: randomContainerOpen1, position: Vec(183.95, 83.5) },
 
             // y = 125
-            { idString: randomPortOpenContainerOneSide, position: Vec(-183.95, -125), orientation: 2 },
-            { idString: randomPortDamagedContainerReversed, position: Vec(169.65, 125) },
-            { idString: randomPortDamagedContainerReversed, position: Vec(-169.65, -153.5), orientation: 2 },
-            { idString: randomPortOpenContainerOneSide, position: Vec(141.05, 153.5) },
-            { idString: randomPortOpenContainerOneSide, position: Vec(155.35, 153.5) }
+            { idString: randomContainerOpen1, position: Vec(-183.95, -125), orientation: 2 },
+            { idString: randomContainerDamaged2Reversed, position: Vec(169.65, 125) },
+            { idString: randomContainerDamaged2Reversed, position: Vec(-169.65, -153.5), orientation: 2 },
+            { idString: randomContainerOpen1, position: Vec(141.05, 153.5) },
+            { idString: randomContainerOpen1, position: Vec(155.35, 153.5) }
         ],
         floors: [ // Follows ground graphics for most part
             {
@@ -4890,16 +4752,16 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "cargo_ship_bottom_floor", position: Vec(1.8, 0) },
 
             // Top
-            { idString: "container_20", position: Vec(27.75, 75.2), orientation: 2, replaceableBy: "container_21", layer: Layer.Upstairs },
-            { idString: "container_20", position: Vec(26.65, -103.75), replaceableBy: "container_21", layer: Layer.Upstairs },
-            { idString: "container_20", position: Vec(-27.55, -5), replaceableBy: "container_21", layer: Layer.Upstairs },
-            { idString: "container_20", position: Vec(12.32, 65.8), replaceableBy: "container_21", layer: Layer.Upstairs },
+            { idString: randomContainerDamaged1, position: Vec(27.75, 75.2), orientation: 2, replaceableBy: "container_gas_can", layer: Layer.Upstairs },
+            { idString: randomContainerDamaged1, position: Vec(26.65, -103.75), replaceableBy: "container_gas_can", layer: Layer.Upstairs },
+            { idString: randomContainerDamaged1, position: Vec(-27.55, -5), replaceableBy: "container_gas_can", layer: Layer.Upstairs },
+            { idString: randomContainerDamaged1, position: Vec(12.32, 65.8), replaceableBy: "container_gas_can", layer: Layer.Upstairs },
 
             // Bottom
-            { idString: "container_20", position: Vec(12.45, 65.25), replaceableBy: "container_21" },
-            { idString: "container_20", position: Vec(12.55, -104.15), replaceableBy: "container_21" },
-            { idString: "container_20", position: Vec(-13.09, -5.3), replaceableBy: "container_21" },
-            { idString: "container_20", position: Vec(135.95, -35.3), orientation: 3, replaceableBy: "container_21" }
+            { idString: randomContainerDamaged1, position: Vec(12.45, 65.25), replaceableBy: "container_gas_can" },
+            { idString: randomContainerDamaged1, position: Vec(12.55, -104.15), replaceableBy: "container_gas_can" },
+            { idString: randomContainerDamaged1, position: Vec(-13.09, -5.3), replaceableBy: "container_gas_can" },
+            { idString: randomContainerDamaged1, position: Vec(135.95, -35.3), orientation: 3, replaceableBy: "container_gas_can" }
         ]
     },
     {
@@ -5226,7 +5088,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         ],
         subBuildings: IS_CLIENT ? undefined : [
             { idString: "mutated_forklift", position: Vec(-0.47, -76.52), orientation: 3 },
-            { idString: randomPortDamagedContainerReversed, position: Vec(-101.24, 0.44), orientation: 2 },
+            { idString: randomContainerDamaged2Reversed, position: Vec(-101.24, 0.44), orientation: 2 },
 
             {
                 /* idString: {
@@ -5243,17 +5105,17 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             // container distance X = 14.3
             // container distance Y = 28.55
             // ----------------------------------
-            { idString: randomPortOpenContainerOneSide, position: Vec(10.75, -75.60) },
-            { idString: randomPortOpenContainerTwoSide, position: Vec(-43.49, -5.3) },
-            { idString: randomPortDamagedContainerReversed, position: Vec(29.19, 5.3), orientation: 2 },
+            { idString: randomContainerOpen1, position: Vec(10.75, -75.60) },
+            { idString: randomContainerOpen2, position: Vec(-43.49, -5.3) },
+            { idString: randomContainerDamaged2Reversed, position: Vec(29.19, 5.3), orientation: 2 },
 
-            { idString: randomPortOpenContainerOneSide, position: Vec(43.49, -36.25), orientation: 2 },
-            { idString: randomPortOpenContainerOneSide, position: Vec(29.19, -36.25), orientation: 2 },
-            { idString: randomPortDamagedContainer, position: Vec(-29.19, 64.8) },
-            { idString: randomPortOpenContainerOneSide, position: Vec(-43.49, 64.8) },
+            { idString: randomContainerOpen1, position: Vec(43.49, -36.25), orientation: 2 },
+            { idString: randomContainerOpen1, position: Vec(29.19, -36.25), orientation: 2 },
+            { idString: randomContainerDamaged2, position: Vec(-29.19, 64.8) },
+            { idString: randomContainerOpen1, position: Vec(-43.49, 64.8) },
 
-            { idString: randomPortOpenContainerOneSide, position: Vec(39.25, 65.25) },
-            { idString: randomPortOpenContainerOneSide, position: Vec(-24.95, -65.25), orientation: 2 }
+            { idString: randomContainerOpen1, position: Vec(39.25, 65.25) },
+            { idString: randomContainerOpen1, position: Vec(-24.95, -65.25), orientation: 2 }
         ]
     },
     {
@@ -5566,37 +5428,37 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             // container distance Y = 28.55
             // ----------------------------------
 
-            { idString: randomPortOpenContainerOneSide, position: Vec(-30.75, -140.5) },
-            { idString: randomPortOpenContainerOneSide, position: Vec(30.75, -140.5) },
-            { idString: randomPortDamagedContainerReversed, position: Vec(16.3, -140.5) },
+            { idString: randomContainerOpen1, position: Vec(-30.75, -140.5) },
+            { idString: randomContainerOpen1, position: Vec(30.75, -140.5) },
+            { idString: randomContainerDamaged2Reversed, position: Vec(16.3, -140.5) },
 
-            { idString: randomPortOpenContainerOneSide, position: Vec(41.5, 97.75), orientation: 2 },
-            { idString: randomPortOpenContainerOneSide, position: Vec(27.2, 97.75), orientation: 2 },
-            { idString: randomPortOpenContainerOneSide, position: Vec(-41.5, -69.2) },
+            { idString: randomContainerOpen1, position: Vec(41.5, 97.75), orientation: 2 },
+            { idString: randomContainerOpen1, position: Vec(27.2, 97.75), orientation: 2 },
+            { idString: randomContainerOpen1, position: Vec(-41.5, -69.2) },
 
-            { idString: randomPortOpenContainerOneSide, position: Vec(-41.5, 97.75), orientation: 2 },
-            { idString: randomPortOpenContainerOneSide, position: Vec(41.5, -69.2) },
-            { idString: randomPortDamagedContainerReversed, position: Vec(27.2, -69.2) },
-            { idString: randomPortDamagedContainerReversed, position: Vec(-12.9, 69.2), orientation: 2 },
+            { idString: randomContainerOpen1, position: Vec(-41.5, 97.75), orientation: 2 },
+            { idString: randomContainerOpen1, position: Vec(41.5, -69.2) },
+            { idString: randomContainerDamaged2Reversed, position: Vec(27.2, -69.2) },
+            { idString: randomContainerDamaged2Reversed, position: Vec(-12.9, 69.2), orientation: 2 },
 
-            { idString: randomPortOpenContainerOneSide, position: Vec(-12.7, 1) },
-            { idString: randomPortOpenContainerOneSide, position: Vec(12.7, 27.55), orientation: 2 },
-            { idString: randomPortOpenContainerOneSide, position: Vec(27, 27.55), orientation: 2 },
-            { idString: randomPortOpenContainerTwoSide, position: Vec(-41.3, -27.55) },
+            { idString: randomContainerOpen1, position: Vec(-12.7, 1) },
+            { idString: randomContainerOpen1, position: Vec(12.7, 27.55), orientation: 2 },
+            { idString: randomContainerOpen1, position: Vec(27, 27.55), orientation: 2 },
+            { idString: randomContainerOpen2, position: Vec(-41.3, -27.55) },
 
-            { idString: randomPortOpenContainerOneSide, position: Vec(-41.37, -1.5), orientation: 2 },
-            { idString: randomPortOpenContainerOneSide, position: Vec(41.37, 30.05) },
-            { idString: randomPortOpenContainerOneSide, position: Vec(27.07, 30.05) },
+            { idString: randomContainerOpen1, position: Vec(-41.37, -1.5), orientation: 2 },
+            { idString: randomContainerOpen1, position: Vec(41.37, 30.05) },
+            { idString: randomContainerOpen1, position: Vec(27.07, 30.05) },
 
-            { idString: randomPortOpenContainerOneSide, position: Vec(27.07, -42.5), orientation: 2 },
-            { idString: randomPortOpenContainerOneSide, position: Vec(41.37, -42.5), orientation: 2 },
-            { idString: randomPortOpenContainerOneSide, position: Vec(-41.37, 71.05) },
-            { idString: randomPortDamagedContainer, position: Vec(-27.07, 71.05) },
+            { idString: randomContainerOpen1, position: Vec(27.07, -42.5), orientation: 2 },
+            { idString: randomContainerOpen1, position: Vec(41.37, -42.5), orientation: 2 },
+            { idString: randomContainerOpen1, position: Vec(-41.37, 71.05) },
+            { idString: randomContainerDamaged2, position: Vec(-27.07, 71.05) },
 
-            { idString: randomPortOpenContainerTwoSide, position: Vec(27.17, 71.8) },
-            { idString: randomPortOpenContainerOneSide, position: Vec(-41.47, -71.8), orientation: 2 },
-            { idString: randomPortDamagedContainer, position: Vec(-27.17, -100.35), orientation: 2 },
-            { idString: randomPortOpenContainerOneSide, position: Vec(41.47, 100.35) }
+            { idString: randomContainerOpen2, position: Vec(27.17, 71.8) },
+            { idString: randomContainerOpen1, position: Vec(-41.47, -71.8), orientation: 2 },
+            { idString: randomContainerDamaged2, position: Vec(-27.17, -100.35), orientation: 2 },
+            { idString: randomContainerOpen1, position: Vec(41.47, 100.35) }
         ],
         lootSpawners: IS_CLIENT ? undefined : [{
             table: "ship_skins",
@@ -9118,12 +8980,12 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "shed_3", position: Vec(22, -55), orientation: 3 },
             {
                 idString: {
-                    container_3: 1,
-                    container_4: 1,
-                    container_5: 1,
-                    container_6: 1,
-                    container_26: 1,
-                    container_20: 1
+                    container_green_open1: 1,
+                    container_green_open1_damaged: 1,
+                    container_blue_open1: 1,
+                    container_blue_open1_damaged: 1,
+                    container_white_damaged1: 1,
+                    container_green_damaged1: 1
                 }, position: Vec(30, -58), orientation: 1
             }
         ]
@@ -9475,8 +9337,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
 
         subBuildings: IS_CLIENT ? undefined : [
             { idString: "blue_stair", position: Vec(23.33, 12.89), orientation: 3 },
-            { idString: randomPortDamagedContainer, position: Vec(0, -22.7), orientation: 2 },
-            { idString: randomPortDamagedContainer, position: Vec(0, -5.1) }
+            { idString: randomContainerDamaged2, position: Vec(0, -22.7), orientation: 2 },
+            { idString: randomContainerDamaged2, position: Vec(0, -5.1) }
         ]
     },
 

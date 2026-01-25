@@ -1,6 +1,6 @@
 import { FlyoverPref, GameConstants, Layers, MapObjectSpawnMode, RotationMode, ZIndexes } from "../constants";
 import { Orientation, type Variation } from "../typings";
-import { CircleHitbox, GroupHitbox, RectangleHitbox, type Hitbox, PolygonHitbox } from "../utils/hitbox";
+import { CircleHitbox, GroupHitbox, RectangleHitbox, type Hitbox } from "../utils/hitbox";
 import { type Mutable } from "../utils/misc";
 import { DefinitionType, ObjectDefinitions, type ObjectDefinition, type ReferenceOrRandom, type ReferenceTo } from "../utils/objectDefinitions";
 import { Vec, type Vector } from "../utils/vector";
@@ -380,11 +380,7 @@ export const TintedParticles: Record<string, { readonly base: string, readonly t
     container_particle_blue: { base: "metal_particle_1", tint: ContainerTints.blue },
     container_particle_yellow: { base: "metal_particle_1", tint: ContainerTints.yellow },
     container_particle_gas_can: { base: "metal_particle_1", tint: ContainerTints.gas_can },
-
-    container_particle_military_green: { base: "metal_particle_1", tint: ContainerTints.military_green },
-    container_particle_military_orange: { base: "metal_particle_1", tint: ContainerTints.military_orange },
-    container_particle_military_marine: { base: "metal_particle_1", tint: ContainerTints.military_marine },
-    container_particle_military_lime: { base: "metal_particle_1", tint: ContainerTints.military_lime },
+    container_particle_nsd: { base: "metal_particle_1", tint: ContainerTints.nsd },
 
     tent_particle_1: { base: "ceiling_particle", tint: TentTints.red },
     tent_particle_2: { base: "ceiling_particle", tint: TentTints.green },
