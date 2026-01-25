@@ -1318,7 +1318,7 @@ const truckContainer = (
             RectangleHitbox.fromRect(12.93, 1.6, Vec(0.07, -19.01))
         );
 
-    const snowDecalDefinitions = {
+    const _snowDecalDefinitions = {
         one_sided: pickRandomInArray([
             [
                 {
