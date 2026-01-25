@@ -3,7 +3,7 @@ import { BuildingObstacle, Buildings, SubBuilding, type BuildingDefinition } fro
 import { Obstacles, type ObstacleDefinition } from "@common/definitions/obstacles";
 import { MapPacket, type MapData } from "@common/packets/mapPacket";
 import { PacketStream } from "@common/packets/packetStream";
-import { type Orientation, type Variation } from "@common/typings";
+import { type Orientation } from "@common/typings";
 import { CircleHitbox, GroupHitbox, HitboxType, RectangleHitbox, type Hitbox } from "@common/utils/hitbox";
 import { equalLayer } from "@common/utils/layer";
 import { Angle, Collision, Geometry, Numeric, τ } from "@common/utils/math";
@@ -723,7 +723,6 @@ export class GameMap {
                     rotation: obstacleRotation,
                     layer: layer + (obstacleData.layer ?? 0),
                     scale: obstacleData.scale ?? 1,
-                    variation: obstacleData.variation,
                     lootSpawnOffset,
                     parentBuilding: building,
                     puzzlePiece: isChosenObstacle ? isChosenObstacle : obstacleData.puzzlePiece,
@@ -808,7 +807,7 @@ export class GameMap {
         // i don't know why "definition = Obstacles.reify(definition)" doesn't work anymore, but it doesn't
         const def = Obstacles.reify(definition);
 
-        const { scale = { spawnMin: 1, spawnMax: 1 }, variations, rotationMode } = def;
+        const { scale = { spawnMin: 1, spawnMax: 1 }, rotationMode } = def;
         const { spawnMin, spawnMax } = scale;
         const effSpawnHitbox = def.spawnHitbox ?? def.hitbox;
 
@@ -816,7 +815,6 @@ export class GameMap {
 
         for (let i = 0; i < count; i++) {
             const scale = randomFloat(spawnMin, spawnMax);
-            const variation = (variations !== undefined ? random(0, variations - 1) : 0) as Variation;
             const rotation = GameMap.getRandomRotation(rotationMode);
 
             let orientation: Orientation = 0;
@@ -838,7 +836,7 @@ export class GameMap {
                 continue;
             }
 
-            this.generateObstacle(def, position, { layer: Layer.Ground, scale, variation });
+            this.generateObstacle(def, position, { layer: Layer.Ground, scale });
         }
     }
 
@@ -849,7 +847,6 @@ export class GameMap {
             rotation,
             layer,
             scale,
-            variation,
             lootSpawnOffset,
             parentBuilding,
             puzzlePiece,
@@ -860,7 +857,6 @@ export class GameMap {
             rotation?: number
             layer?: number
             scale?: number
-            variation?: Variation
             lootSpawnOffset?: Vector
             parentBuilding?: Building
             puzzlePiece?: string | boolean
@@ -874,10 +870,6 @@ export class GameMap {
         layer ??= 0;
 
         scale ??= randomFloat(def.scale?.spawnMin ?? 1, def.scale?.spawnMax ?? 1);
-        if (variation === undefined && def.variations !== undefined) {
-            variation = random(0, def.variations - 1) as Variation;
-        }
-
         rotation ??= GameMap.getRandomRotation(def.rotationMode);
 
         if (
@@ -889,7 +881,6 @@ export class GameMap {
                     rotation,
                     layer,
                     scale,
-                    variation,
                     lootSpawnOffset,
                     parentBuilding,
                     puzzlePiece,
@@ -907,7 +898,6 @@ export class GameMap {
             rotation,
             layer,
             scale,
-            variation,
             lootSpawnOffset,
             parentBuilding,
             puzzlePiece,

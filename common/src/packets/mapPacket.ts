@@ -1,15 +1,15 @@
 import { ObjectCategory, RotationMode } from "../constants";
 import { Buildings } from "../definitions/buildings";
 import { Obstacles } from "../definitions/obstacles";
-import { type Orientation, type Variation } from "../typings";
+import { type Orientation } from "../typings";
 import type { CommonGameObject } from "../utils/gameObject";
 import { Angle, halfπ } from "../utils/math";
 import { type Vector } from "../utils/vector";
 import { DataSplitTypes, Packet, PacketType } from "./packet";
 
 export type MapObject = {
+    readonly id: number
     readonly scale?: number
-    readonly variation?: Variation
 } & CommonGameObject;
 
 export interface MapData {
@@ -43,21 +43,14 @@ export const MapPacket = new Packet<MapData>(PacketType.Map, {
             })
             .writeArray(data.objects, object => {
                 strm.writeObjectType(object.type)
+                    .writeObjectId(object.id)
                     .writePosition(object.position);
 
                 switch (object.type) {
                     case ObjectCategory.Obstacle: {
                         Obstacles.writeToStream(strm, object.definition);
-                        // once again, we hit a deadspace optimization issue, but thankfully, it's easier this time
-                        // once again, variation takes up to 3 bits, meaning that using an 8-bit integer leaves
-                        // space for the limited and binary rotation modes, which take 2 and 1 bit respectively.
-                        // for a rotation mode of full, well we just write that as-is and write the variation as-is too
-
-                        let obstacleData = 0;
-                        if (object.definition.variations !== undefined && object.variation !== undefined) {
-                            // again, we'll make variation take up the MSB
-                            obstacleData = object.variation << (8 - object.definition.variationBits);
-                        }
+                        // Rotation data fits in the low bits; we still write a byte for parity with deserialization.
+                        const obstacleData = 0;
 
                         switch (object.definition.rotationMode) {
                             case RotationMode.Full: {
@@ -74,7 +67,7 @@ export const MapPacket = new Packet<MapData>(PacketType.Map, {
                                 break;
                             }
                             case RotationMode.None: {
-                                // write the variation data (and even without it, deser expects a uint8 here)
+                                // even without rotation data, deser expects a uint8 here
                                 strm.writeUint8(obstacleData);
                                 break;
                             }
@@ -110,6 +103,7 @@ export const MapPacket = new Packet<MapData>(PacketType.Map, {
 
         data.objects = stream.readArray(() => {
             const type = stream.readObjectType() as ObjectCategory.Obstacle | ObjectCategory.Building;
+            const id = stream.readObjectId();
             const position = stream.readPosition();
 
             switch (type) {
@@ -121,13 +115,6 @@ export const MapPacket = new Packet<MapData>(PacketType.Map, {
                     // understand what's going on
 
                     const obstacleData = stream.readUint8();
-
-                    let variation: Variation | undefined;
-                    if (definition.variations !== undefined) {
-                        const bits = 8 - definition.variationBits;
-                        variation = ((obstacleData & (0xFF - (2 ** bits - 1)))) >> bits as Variation;
-                        //                           ^^^^^^^^^^^^^^^^^^^^^^^^ mask the most significant bits
-                    }
 
                     let rotation = 0;
 
@@ -152,12 +139,12 @@ export const MapPacket = new Packet<MapData>(PacketType.Map, {
 
                     return {
                         position,
+                        id,
                         type,
                         dead: false,
                         definition,
                         scale,
                         rotation,
-                        variation,
                         isObstacle: true
                     };
                 }
@@ -168,6 +155,7 @@ export const MapPacket = new Packet<MapData>(PacketType.Map, {
 
                     return {
                         position,
+                        id,
                         type,
                         dead: false,
                         definition,

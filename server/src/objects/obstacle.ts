@@ -1,7 +1,7 @@
 import { FlyoverPref, GameConstants, ObjectCategory, RotationMode } from "@common/constants";
 import { PerkData, PerkIds } from "@common/definitions/items/perks";
 import { Obstacles, type ObstacleDefinition } from "@common/definitions/obstacles";
-import { type Orientation, type Variation } from "@common/typings";
+import { type Orientation } from "@common/typings";
 import { CircleHitbox, RectangleHitbox, type Hitbox } from "@common/utils/hitbox";
 import { Angle, calculateDoorHitboxes, Geometry, resolveStairInteraction } from "@common/utils/math";
 import { DefinitionType, NullString, type ReifiableDef } from "@common/utils/objectDefinitions";
@@ -33,8 +33,6 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
     waterOverlay = false;
 
     powered = false;
-
-    readonly variation: Variation;
 
     spawnHitbox: Hitbox;
 
@@ -86,7 +84,6 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
         rotation = 0,
         layer = 0,
         scale = 1,
-        variation: Variation = 0,
         lootSpawnOffset?: Vector,
         parentBuilding?: Building,
         puzzlePiece?: string | boolean,
@@ -98,8 +95,6 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
 
         this.rotation = rotation;
         this.scale = this.maxScale = scale;
-        this.variation = variation;
-
         this.layer = layer;
 
         this.lootSpawnOffset = lootSpawnOffset;
@@ -588,7 +583,6 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
                 door: this.door,
                 position: this.position,
                 layer: this.layer,
-                variation: this.variation,
                 rotation: {
                     rotation: this.rotation,
                     orientation: this.rotation as Orientation

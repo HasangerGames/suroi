@@ -2,6 +2,7 @@ import { GameConstants, GasState, Layer, ObjectCategory, ZIndexes, Z_INDEX_COUNT
 import { type MapPingDefinition } from "@common/definitions/mapPings";
 import { type MapData } from "@common/packets/mapPacket";
 import { type MapIndicatorSerialization, type PingSerialization, type PlayerPingSerialization } from "@common/packets/updatePacket";
+import { type Variation } from "@common/typings";
 import { RectangleHitbox } from "@common/utils/hitbox";
 import { Collision, Numeric } from "@common/utils/math";
 import { FloorNames, FloorTypes, River, Terrain } from "@common/utils/terrain";
@@ -328,9 +329,12 @@ class MapManagerClass {
                         definition,
                         position,
                         rotation,
-                        variation,
                         scale: initialScale
                     } = mapObject;
+
+                    const variation = definition.variations !== undefined
+                        ? (mapObject.id % definition.variations) as Variation
+                        : undefined;
 
                     const scale = (initialScale ?? 1) / PIXI_SCALE;
                     const zIndex = (definition.zIndex ?? ZIndexes.ObstaclesLayer1) + zIndexOffset;
