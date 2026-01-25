@@ -489,7 +489,7 @@ const maps = {
                 "rock",
                 "plumpkin",
                 "diseased_plumpkin",
-                "vibrant_bush", 
+                "vibrant_bush",
                 "river_chest",
                 "lily_pad",
                 "grenade_crate",
@@ -1421,9 +1421,12 @@ const maps = {
         oceanSize: 64,
         onGenerate(map, [building]) {
             // map.game.grid.addObject(new Decal(map.game, "lodge_decal", Vec(this.width / 2, this.height / 2), 0));
-            /* for (let i = 0; i < 10; i++) {
-                map.generateBuilding(`container_${i + 1}`, Vec((this.width / 2) + 15 * i, this.height / 2 - 15), 0);
-            } */
+            // let i = 0;
+            // for (const def of Buildings.definitions) {
+            //     if (!def.idString.startsWith("container_") || def.graphics) continue;
+            //     map.generateBuilding(def.idString, Vec((this.width / 2) + 15 * i, this.height / 2 - 15), 0);
+            //     i++;
+            // }
             map.generateBuilding(building, Vec(this.width / 2, this.height / 2), 0);
         }
     },
