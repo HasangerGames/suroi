@@ -3409,6 +3409,26 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                     inventory.setActiveWeaponIndex(target);
                     break;
                 }
+                case InputActions.EquipOtherWeapon: {
+                    const { weapons, activeWeaponIndex } = this.inventory;
+                    let index
+                        = activeWeaponIndex === 0 || (
+                            weapons[0] === undefined
+                            && activeWeaponIndex !== 1
+                        )
+                            ? 1
+                            : 0;
+
+                    // fallback to melee if there's no weapon on the slot
+                    if (weapons[index] === undefined) { index = 2; }
+
+                    // Same thing as EquipItem above, wont copy paste the same comment
+                    if (this.action?.type !== PlayerActions.Reload || (index !== this.activeItemIndex && inventory.hasWeapon(index))) {
+                        this.action?.cancel();
+                    }
+                    inventory.setActiveWeaponIndex(index);
+                    break;
+                }
                 case InputActions.DropWeapon: {
                     this.action?.cancel();
                     inventory.dropWeapon(action.slot)?.destroy();
