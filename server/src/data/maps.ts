@@ -1413,6 +1413,60 @@ const maps = {
             { name: "stark is pro", position: Vec(0.5, 0.5) }
         ]
     },
+    layoutFixes: { // temporary map, delete later ass code
+        width: 576,
+        height: 576,
+        spawn: { mode: "fixed" },
+        beachSize: 32,
+        oceanSize: 64,
+        onGenerate(map) {
+            // pallets
+            let palletVariantCount = 6;
+            for (let i = 0; i < palletVariantCount; i++) {
+                map.generateBuilding(`pallet_${i + 1}`, Vec(120 + (i * 15), 256));
+            }
+
+            // containers
+            let containersList = [
+                "container_red_closed",
+                "container_yellow_closed",
+                "container_green_closed",
+                "container_white_closed",
+                "container_yellow_open1",
+                "container_green_open1",
+                "container_green_open1_damaged",
+                "container_blue_open1",
+                "container_blue_open1_damaged",
+                "container_yellow_open2",
+                "container_yellow_open2_damaged",
+                "container_blue_open2",
+                "container_blue_open2_damaged",
+                "container_yellow_damaged2",
+                "container_green_damaged2",
+                "container_blue_damaged2",
+                "container_yellow_damaged2_reversed",
+                "container_green_damaged2_reversed",
+                "container_blue_damaged2_reversed",
+                "container_red_damaged1",
+                "container_yellow_damaged1",
+                "container_green_damaged1",
+                "container_blue_damaged1",
+                "container_white_damaged1",
+                "container_gas_can",
+                "container_nsd"
+            ];
+            for (let i = 0; i < containersList.length; i++) {
+                map.generateBuilding(containersList[i], Vec(120 + ((i % 8) * 20), 120 + (34 * Math.floor(i / 8))), 0);
+            }
+
+            // truck containers
+            // note that the tints are randomized; don't worry about them
+            let truckContainerCount = 12;
+            for (let i = 0; i < truckContainerCount; i++) {
+                map.generateBuilding(`truck_container_${i + 1}`, Vec(120 + ((i % 8) * 20), 310 + (50 * Math.floor(i / 8))), 0);
+            }
+        }
+    },
     singleBuilding: {
         width: 1024,
         height: 1024,
