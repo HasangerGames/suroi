@@ -1155,7 +1155,8 @@ const truckContainer = (
     id: number,
     model: "two_sided" | "one_sided",
     obstacles: readonly BuildingObstacle[],
-    subBuildings?: readonly SubBuilding[]
+    subBuildings?: readonly SubBuilding[],
+    lootSpawners?: readonly LootSpawner[],
 ): BuildingDefinition => {
     const colors = ["white", "red", "green", "blue", "yellow"] as const;
     const color = pickRandomInArray(colors);
@@ -1255,6 +1256,7 @@ const truckContainer = (
         spawnHitbox: RectangleHitbox.fromRect(18, 42),
         obstacles,
         ...(subBuildings === undefined ? {} : { subBuildings }),
+        ...(lootSpawners === undefined ? {} : { lootSpawners }),
         floorImages: [{
             key: `truck_container_floor_${model}`,
             position: Vec(0, 0),
@@ -9355,93 +9357,84 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
 
     // Two sided
     truckContainer(1, "two_sided", [
-        { idString: "regular_crate", position: Vec(-0.82, -13.3) },
-        { idString: "regular_crate", position: Vec(0.76, -3.71) },
-        { idString: "box", position: Vec(-2.32, 16.51) },
-        { idString: "box", position: Vec(-2.32, 11.39) },
-        { idString: "box", position: Vec(2.86, 12.63) }
+        { idString: "regular_crate", position: Vec(0, -12.4) },
+        { idString: "box", position: Vec(2.6, 14.5) },
+        { idString: "box", position: Vec(2.6, 9.4) }
     ]),
 
     truckContainer(2, "two_sided", [
-        { idString: "regular_crate", position: Vec(0.08, 14.32) },
-        { idString: "propane_tank", position: Vec(2.55, 6.99) }
     ], [
-        { idString: randomPallet, position: Vec(0.09, -13.43) }
+        { idString: randomPallet, position: Vec(0, -13) }
+    ], [
+        { table: "ground_loot", position: Vec(0, 10) }
     ]),
 
     truckContainer(3, "two_sided", [
-        { idString: "barrel", position: Vec(-1.55, -14.23) },
-        { idString: "box", position: Vec(-2.27, -7.29) },
-        { idString: "regular_crate", position: Vec(-0.06, 0.67) },
-        { idString: "regular_crate", position: Vec(0.68, 10.51) }
+        { idString: "propane_tank", position: Vec(-3.5, -16) },
+        { idString: "box", position: Vec(2.6, 14.5) },
+        { idString: "box", position: Vec(2.6, 9.4) }
+    ], [], [
+        { table: "ground_loot", position: Vec(0, -8) }
     ]),
 
     truckContainer(4, "two_sided", [
-        { idString: "ammo_crate", position: Vec(0, -12) },
-        { idString: "box", position: Vec(-3.14, 7.99) },
-        { idString: "box", position: Vec(-3.21, 12.87) },
-        { idString: "gun_case", position: Vec(2.77, 13.65), rotation: 3 }
+        { idString: "ammo_crate", position: Vec(0, -12.3) },
+        { idString: "gun_case", position: Vec(2.75, 11.5), rotation: 3 }
     ]),
 
     truckContainer(5, "two_sided", [
-        { idString: "propane_tank", position: Vec(2.91, -15.8) },
-        { idString: "propane_tank", position: Vec(-2.93, -9.67) },
-        { idString: "box", position: Vec(-2.76, -14.84) },
-        { idString: "box", position: Vec(2.56, -8.72) },
-        { idString: "ammo_crate", position: Vec(0.02, 7) },
-        { idString: "gun_case", position: Vec(0.11, 15.5), rotation: 0 }
+        { idString: "grenade_box", position: Vec(0, -10.2) },
+        { idString: "grenade_box", position: Vec(-2.5, -15.2) },
+        { idString: "grenade_box", position: Vec(2.5, -15.2) }
+    ], [], [
+        { table: "ground_loot", position: Vec(0, 10) }
     ]),
 
     truckContainer(6, "two_sided", [
-        { idString: "box", position: Vec(-2.62, -6.11) },
-        { idString: "box", position: Vec(2.7, 16.4) }
+        { idString: "box", position: Vec(-2.6, -6) },
+        { idString: "pallet", position: Vec(0, 9.6), rotation: 0 }
     ], [
-        { idString: randomPallet, position: Vec(0, -13.22) },
-        { idString: randomPallet, position: Vec(0, 9.63) }
+        { idString: randomPallet, position: Vec(0, -13) }
     ]),
 
     // One sided
     truckContainer(7, "one_sided", [
-        { idString: "box", position: Vec(3.25, 15.3) },
-        { idString: "box", position: Vec(3.18, 10.34) },
-        { idString: "propane_tank", position: Vec(3.27, 5.38) }
+        { idString: "box", position: Vec(2.6, 14.5) },
+        { idString: "box", position: Vec(2.6, 9.4) }
     ], [
-        { idString: randomPallet, position: Vec(0.05, -13.22) }
+        { idString: randomPallet, position: Vec(0, -13) }
     ]),
 
     truckContainer(8, "one_sided", [
-        { idString: "barrel", position: Vec(-1.48, 14.27) },
-        { idString: "barrel", position: Vec(1.73, 5.53) },
-        { idString: "gun_case", position: Vec(2.5, -12.56), rotation: 3 }
+        { idString: "grenade_crate", position: Vec(-1.85, -14.3) },
+        { idString: "gun_case", position: Vec(2.75, 11.5), rotation: 3 }
     ]),
 
     truckContainer(9, "one_sided", [
-        { idString: "trash_bag", position: Vec(-2.7, -15.18) },
-        { idString: "trash_bag", position: Vec(2.85, -12.26) },
-        { idString: "trash_bag", position: Vec(-2.92, -7.89) },
-        { idString: "trash_bag", position: Vec(-2.33, 9.25) },
-        { idString: "trash_bag", position: Vec(2.42, 2.62) }
+        { idString: "trash_bag", position: Vec(-2.5, -15.2) },
+        { idString: "trash_bag", position: Vec(2.5, -12.3) },
+        { idString: "trash_bag", position: Vec(-2.5, -7.9) },
+        { idString: "trash_bag", position: Vec(-2.5, 9.25) },
+        { idString: "trash_bag", position: Vec(2.5, -3.1) }
     ]),
 
     truckContainer(10, "one_sided", [
-        { idString: "box", position: Vec(-2.77, -6.21) },
-        { idString: "ammo_crate", position: Vec(0, 10.54) }
+        { idString: "box", position: Vec(-2.6, -6) },
+        { idString: "pallet", position: Vec(0, 9.6), rotation: 0 }
     ], [
-        { idString: randomPallet, position: Vec(0.05, -13.22) }
+        { idString: randomPallet, position: Vec(0, -13) }
     ]),
 
     truckContainer(11, "one_sided", [
-        { idString: "gun_locker", position: Vec(3, -11.37), rotation: 3 },
-        { idString: "grenade_crate", position: Vec(-2.41, 8.66) },
-        { idString: "box", position: Vec(3.23, 7.78) }
+        { idString: "propane_tank", position: Vec(-3.5, -16) },
+        { idString: "gun_locker", position: Vec(2.6, -11.2), rotation: 3 },
+        { idString: "box", position: Vec(2.6, 14.5) },
+        { idString: "box", position: Vec(2.6, 9.4) }
     ]),
 
     truckContainer(12, "one_sided", [
-        { idString: "flint_crate", position: Vec(0, -12.59) },
-        { idString: "gun_case", position: Vec(2.46, -2.23), rotation: 3 },
-        { idString: "box", position: Vec(2.71, 5.74) },
-        { idString: "gun_locker", position: Vec(-3.01, 0.22), rotation: 3 }, // LMAO no
-        { idString: "ammo_crate", position: Vec(0.04, 13.03) }
+        { idString: "flint_crate", position: Vec(0, -12.4) },
+        { idString: "gun_mount_ak47", position: Vec(3.9, 11.5), rotation: 3 }
     ]),
 
     {
