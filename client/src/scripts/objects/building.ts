@@ -71,7 +71,7 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
 
         let visible = true;
 
-        if (GameConsole.getBuiltInCVar("db_hideCeilings")) {
+        if (GameConsole.getBuiltInCVar("db_hide_ceilings")) {
             visible = false;
         } else if (this.layer === Layer.Upstairs && !Game.hideSecondFloor) {
             visible = true;
