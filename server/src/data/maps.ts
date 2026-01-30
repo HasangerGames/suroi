@@ -1421,13 +1421,13 @@ const maps = {
         oceanSize: 64,
         onGenerate(map) {
             // pallets
-            let palletVariantCount = 6;
+            const palletVariantCount = 6;
             for (let i = 0; i < palletVariantCount; i++) {
                 map.generateBuilding(`pallet_${i + 1}`, Vec(120 + (i * 15), 256));
             }
 
             // containers
-            let containersList = [
+            const containersList = [
                 "container_red_closed",
                 "container_yellow_closed",
                 "container_green_closed",
@@ -1461,7 +1461,7 @@ const maps = {
 
             // truck containers
             // note that the tints are randomized; don't worry about them
-            let truckContainerCount = 12;
+            const truckContainerCount = 12;
             for (let i = 0; i < truckContainerCount; i++) {
                 map.generateBuilding(`truck_container_${i + 1}`, Vec(120 + ((i % 8) * 20), 310 + (50 * Math.floor(i / 8))), 0);
             }
