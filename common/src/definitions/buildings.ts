@@ -1984,24 +1984,22 @@ const shed = (num: number, ceilingTint: number): BuildingDefinition => ({
 
 export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     pallet(1, [
-        { idString: "box", position: Vec(-2.2, -1.9) },
-        { idString: "box", position: Vec(2.2, 1.9) }
+        { idString: "box", position: Vec(-2.3, -1.5) },
+        { idString: "box", position: Vec(2.3, 1.5) }
     ]),
     pallet(2, [
-        { idString: "propane_tank", position: Vec(-2.41, -2.19) },
-        { idString: "fence", position: Vec(-0.23, 2), rotation: 0 },
-        { idString: "grenade_box", position: Vec(2.5, -1.8) }
+        { idString: "grenade_box", position: Vec(-2.3, 2.3) },
+        { idString: "propane_tank", position: Vec(-2.3, -2.3) },
+        { idString: "grenade_box", position: Vec(2.3, 0) }
     ]),
     pallet(3, [{ idString: "regular_crate", position: Vec(0, 0) }]),
     pallet(4, [
-        { idString: "box", position: Vec(-2.73, -2.5) },
-        { idString: "box", position: Vec(2.73, -2.4) },
-        { idString: "grenade_box", position: Vec(-1.5, 2.15) }
+        { idString: "grenade_box", position: Vec(-2.3, 2.3) },
+        { idString: "box", position: Vec(-2.3, -2.3) },
+        { idString: "box", position: Vec(2.3, 0) }
     ]),
-    pallet(5, [
-        { idString: "fence", position: Vec(3.7, 0), rotation: 1 },
-        { idString: randomBarrel, position: Vec(-1.16, 0.73) }
-    ]),
+    pallet(5, [{ idString: "grenade_crate", position: Vec(0, 0) }]),
+
     pallet(6, []), // blank/empty pallet
     {
         idString: "porta_potty",
