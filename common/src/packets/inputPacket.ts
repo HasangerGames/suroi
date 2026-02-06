@@ -118,7 +118,7 @@ export const InputPacket = new Packet<InputData>(PacketType.Input, {
 
         stream.writeArray(data.actions, action => {
             if ("slot" in action) {
-                // slot is 2 bits, InputActions is 4
+                // slot is 2 bits, InputActions is 6
                 // move the slot info to the MSB and leave
                 // the enum member as the LSB for compatibility
                 // with the other branch
@@ -190,8 +190,8 @@ export const InputPacket = new Packet<InputData>(PacketType.Input, {
         // Actions
         data.actions = stream.readArray(() => {
             const data = stream.readUint8();
-            // hiMask = 2 msb, type = 4 lsb
-            const [hiMask, type] = [data & 0b1100_0000, (data & 0b0000_1111) as InputActions];
+            // hiMask = 2 msb, type = 6 lsb
+            const [hiMask, type] = [data & 0b1100_0000, (data & 0b0011_1111) as InputActions];
 
             let slot: number | undefined;
             let item: HealingItemDefinition | ScopeDefinition | ArmorDefinition | AmmoDefinition | BackpackDefinition | PerkDefinition | undefined;
