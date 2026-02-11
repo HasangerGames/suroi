@@ -1810,9 +1810,26 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { item: "mosin_nagant", weight: 0.95 },
             { item: "tango_51", weight: 0.9 },
             { item: "stoner_63", weight: 0.9 },
+            { item: "dual_yesaul", weight: 0.8 },
             { item: "model_89", weight: 0.6 },
             { item: "vks", weight: 0.6 },
             { item: "flare", weight: 0.1 }
+        ],
+        gold_airdrop_guns: [
+            { item: "m202", weight: 2 },
+            { item: "seedshot", weight: 1.21 },
+            { item: "m1_garand", weight: 1 },
+            { item: "dp12", weight: 1 },
+            { item: "rpk16", weight: 1 }
+            { item: "acr", weight: 1 },
+            { item: "pp19", weight: 1 },
+            { item: "negev", weight: 1 },
+            { item: "mg5", weight: 1 },
+            { item: "mk18", weight: 0.5 },
+            { item: "an94", weight: 0.5 },
+            { item: "l115a1", weight: 0.5 },
+            { item: "dual_rsh12", weight: 0.5 },
+            { item: "g19", weight: 0.0005 }
         ],
         hazel_crate: [
             [{ item: "m202", weight: 1 }],
