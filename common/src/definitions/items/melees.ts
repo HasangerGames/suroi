@@ -1216,7 +1216,7 @@ export const Melees = new InventoryItemDefinitions<MeleeDefinition>([
         defType: DefinitionType.Melee,
         tier: Tier.A,
         damage: 45,
-        noSwap: true, // halloween only, should be available in infection
+        // noSwap: true, // halloween only, should be available in infection
         speedMultiplier: 1,
         iceMultiplier: 2,
         swingSound: "heavy_swing",
