@@ -233,7 +233,7 @@ export class Terrain {
             } else {
                 if (this.grassHitbox.isPointInside(position)) {
                     // TODO Detect mode somehow (UNTIL WINTER IS OVER, FLOOR MUST BE SAND, DONT FORGET TO UNDO)
-                    floor = FloorNames.Sand;//FloorNames.Grass; // this.game.modeName === "winter" ? FloorNames.Sand : FloorNames.Grass;
+                    floor = FloorNames.Grass; // this.game.modeName === "winter" ? FloorNames.Sand : FloorNames.Grass;
                 } else {
                     floor = FloorNames.Sand;
                 }
