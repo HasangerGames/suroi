@@ -3237,7 +3237,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
         defType: DefinitionType.Gun,
         tier: Tier.S,
         ammoType: "icicle",
-        noSwap: true,
+        // noSwap: true, nvm its a fine gun to have
         ammoSpawnAmount: 0,
         fireDelay: 150,
         switchDelay: 420,
@@ -3260,7 +3260,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
             unloadedWorldImage: true
         },
         capacity: 1,
-        reloadTime: 1.6,
+        reloadTime: 2.95,
         ballistics: {
             damage: 75,
             obstacleMultiplier: 0.5,
