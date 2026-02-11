@@ -3237,6 +3237,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
         defType: DefinitionType.Gun,
         tier: Tier.S,
         ammoType: "icicle",
+        noSwap: true,
         ammoSpawnAmount: 0,
         fireDelay: 150,
         switchDelay: 420,
