@@ -15679,11 +15679,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "trash_bag", position: Vec(-45.97, 29.43), rotation: 0 },
             { idString: "super_barrel", position: Vec(26.57, 41.73) },
             { idString: "dumpster", position: Vec(-56.86, 30.23), rotation: 3 },
-            { idString: "large_coffin", position: Vec(21.61, 20.71), rotation: 2 },
-
-            // halloween only
-            { idString: "cobweb", position: Vec(-15.09, -26.11), rotation: 0 },
-            { idString: "cobweb", position: Vec(15.48, -26.12), rotation: 3 }
+            { idString: "large_coffin", position: Vec(21.61, 20.71), rotation: 2 }
         ],
         subBuildings: IS_CLIENT ? undefined : [
             { idString: "graveyard_basement", position: Vec(-18, -45.25), layer: Layer.Basement },
