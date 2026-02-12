@@ -16131,7 +16131,10 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         }],
         obstacles: IS_CLIENT ? undefined : [
             { idString: "aegis_crate", position: Vec(-34.97, 13.15) },
-            { idString: "grenade_crate", position: Vec(-25.96, -14.46) },
+            { idString: {
+                lighthouse_crate: 0.7,
+                grenade_crate: 0.575
+            }, position: Vec(-25.96, -14.46) },
             { idString: "box", position: Vec(-25.2, -8.1) },
             { idString: "small_drawer", position: Vec(10.54, 13.42), rotation: 2 },
             { idString: "small_drawer", position: Vec(35.35, -1.46), rotation: 3 },
