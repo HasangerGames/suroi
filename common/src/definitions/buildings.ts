@@ -1318,7 +1318,7 @@ const truckContainer = (
             RectangleHitbox.fromRect(12.93, 1.6, Vec(0.07, -19.01))
         );
 
-    const snowDecalDefinitions = {
+    const _snowDecalDefinitions = {
         one_sided: pickRandomInArray([
             [
                 {
@@ -1928,7 +1928,8 @@ const blueHouse = (idString: string, subBuildings: BuildingDefinition["subBuildi
     ceilingImages: [{
         key: "blue_house_ceiling",
         position: Vec(0, 1.5),
-        scale: Vec(2.1, 2.1)
+        // scale: Vec(2.1, 2.1) - for winter
+        scale: Vec(2.3, 2.3)
     }],
     floors: [
         {
@@ -5229,11 +5230,11 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: randomPortDamagedContainerReversed, position: Vec(-101.24, 0.44), orientation: 2 },
 
             {
-                /* idString: {
-                    cargo_ship_bottom_floor_vault: 1
-                    // cargo_ship_bottom_floor_vault_special: 0.1
-                }, */
-                idString: "cargo_ship_bottom_floor_vault",
+                idString: {
+                    cargo_ship_bottom_floor_vault: 1,
+                    cargo_ship_bottom_floor_vault_special: 0.1
+                },
+                // idString: "cargo_ship_bottom_floor_vault",
                 position: Vec(-32.38, 89.75),
                 orientation: 2
             },
@@ -6087,7 +6088,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             key: "mobile_home_ceiling",
             position: Vec(0, -1),
             residue: "mobile_home_residue",
-            scale: Vec(1.01, 1.01)
+            // scale: Vec(1.01, 1.01) - for winter
+            scale: Vec(1.07, 1.07)
         }],
         floors: [
             {
@@ -15679,11 +15681,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "trash_bag", position: Vec(-45.97, 29.43), rotation: 0 },
             { idString: "super_barrel", position: Vec(26.57, 41.73) },
             { idString: "dumpster", position: Vec(-56.86, 30.23), rotation: 3 },
-            { idString: "large_coffin", position: Vec(21.61, 20.71), rotation: 2 },
-
-            // halloween only
-            { idString: "cobweb", position: Vec(-15.09, -26.11), rotation: 0 },
-            { idString: "cobweb", position: Vec(15.48, -26.12), rotation: 3 }
+            { idString: "large_coffin", position: Vec(21.61, 20.71), rotation: 2 }
         ],
         subBuildings: IS_CLIENT ? undefined : [
             { idString: "graveyard_basement", position: Vec(-18, -45.25), layer: Layer.Basement },
@@ -16133,7 +16131,10 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         }],
         obstacles: IS_CLIENT ? undefined : [
             { idString: "aegis_crate", position: Vec(-34.97, 13.15) },
-            { idString: "grenade_crate", position: Vec(-25.96, -14.46) },
+            { idString: {
+                lighthouse_crate: 0.7,
+                grenade_crate: 0.575
+            }, position: Vec(-25.96, -14.46) },
             { idString: "box", position: Vec(-25.2, -8.1) },
             { idString: "small_drawer", position: Vec(10.54, 13.42), rotation: 2 },
             { idString: "small_drawer", position: Vec(35.35, -1.46), rotation: 3 },

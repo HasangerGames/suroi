@@ -969,7 +969,7 @@ const rshCase = (idString: string): RawObstacleDefinition => ({
     }
 });
 
-const column = (name: string, tint: number, particle: string, material: typeof Materials[number] = "stone"): RawObstacleDefinition => ({
+const column = (name: string, tint: number, particle: string, material: typeof Materials[number], _particleVariations?: number): RawObstacleDefinition => ({
     idString: name.toLowerCase().replace(/'/g, "").replace(/ /g, "_"),
     name,
     defType: DefinitionType.Obstacle,
@@ -989,7 +989,8 @@ const column = (name: string, tint: number, particle: string, material: typeof M
     },
     isWall: true,
     noResidue: true,
-    zIndex: ZIndexes.ObstaclesLayer1 + 0.1
+    zIndex: ZIndexes.ObstaclesLayer1 + 0.1,
+    ...(_particleVariations !== undefined ? { particleVariations: _particleVariations } : {})
 });
 
 const huntingStandWall = (length: number, hitbox: RectangleHitbox): RawObstacleDefinition => ({
@@ -4848,16 +4849,16 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         },
         isWall: true
     },
-    column("Port Main Office Column", 0xb98a46, "port_office_wall_particle"),
-    column("Cabin Column", 0x5d4622, "cabin_wall_particle"),
+    column("Port Main Office Column", 0xb98a46, "port_office_wall_particle", "stone"),
+    column("Cabin Column", 0x5d4622, "cabin_wall_particle", "stone"),
     column("Metal Column", 0x8f8f8f, "metal_column_particle", "metal_light"),
-    column("Sawmill Warehouse Column", 0x764423, "sawmill_warehouse_wall_particle"),
-    column("Sawmill Center Warehouse Column", 0x5a1919, "sawmill_warehouse_particle"),
-    column("Sawmill Storage Column", 0x5a1919, "hq_stone_wall_particle"),
-    column("Warehouse Hunted Column", 0x6e4f32, "warehouse_hunted_particle"),
-    column("Hunting Stand Column", 0x764423, "hunting_stand_particle"),
-    column("Tavern Column", 0x5a4320, "cabin_wall_particle"),
-    column("Mansion Column", 0x3a2d1f, "mansion_wall_particle"),
+    column("Sawmill Warehouse Column", 0x764423, "sawmill_warehouse_wall_particle", "stone", 2),
+    column("Sawmill Center Warehouse Column", 0x5a1919, "sawmill_warehouse_particle", "stone", 2),
+    column("Sawmill Storage Column", 0x5a1919, "hq_stone_wall_particle", "stone", 2),
+    column("Warehouse Hunted Column", 0x6e4f32, "warehouse_hunted_particle", "stone"),
+    column("Hunting Stand Column", 0x764423, "hunting_stand_particle", "stone"),
+    column("Tavern Column", 0x5a4320, "cabin_wall_particle", "stone"),
+    column("Mansion Column", 0x3a2d1f, "mansion_wall_particle", "stone"),
     column("Park Column", 0x6b5431, "cabin_wall_particle", "wood"),
     {
         idString: "potted_plant",
