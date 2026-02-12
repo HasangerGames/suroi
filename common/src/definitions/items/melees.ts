@@ -264,6 +264,7 @@ const saw = (name: string): MeleeDefinition => {
         damage: 23,
         speedMultiplier: 1,
         iceMultiplier: 2,
+        maxTargets: Infinity,
         swingSound: "soft_swing",
         killfeedFrame: "hand_saw",
         translationString: "hand_saw",
@@ -368,6 +369,7 @@ const chainSaw = (idString: string): MeleeDefinition => {
         stopSound: "chainsaw_stop",
         killfeedFrame: "chainsaw",
         translationString: "chainsaw",
+        maxTargets: Infinity,
         hitSound: "scythe_hit",
         offset: Vec(6.8, 0.5),
         cooldown: 10,
@@ -1217,6 +1219,7 @@ export const Melees = new InventoryItemDefinitions<MeleeDefinition>([
         tier: Tier.A,
         damage: 45,
         // noSwap: true, // halloween only, should be available in infection
+        maxTargets: Infinity,
         speedMultiplier: 1,
         iceMultiplier: 2,
         swingSound: "heavy_swing",
