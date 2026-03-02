@@ -254,6 +254,7 @@
 "settings_hide_minimap": "隐藏小地图"
 "settings_blur_splash": "模糊菜单界面"
 "settings_hide_rules": "隐藏规则按钮"
+"settings_hide_qq": "隐藏QQ群按钮"
 "settings_warn_before_leaving": "离开前警告"
 "settings_show_fps": "显示帧数"
 "settings_show_ping": "显示延迟"

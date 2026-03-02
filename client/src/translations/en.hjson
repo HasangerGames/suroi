@@ -84,6 +84,7 @@
 "settings_hide_minimap": "Hide minimap"
 "settings_blur_splash": "Blur splash screen"
 "settings_hide_rules": "Hide rules button"
+"settings_hide_qq": "Hide the QQ social media button"
 "settings_warn_before_leaving": "Warn before leaving"
 "settings_show_fps": "Show FPS"
 "settings_show_ping": "Show ping"

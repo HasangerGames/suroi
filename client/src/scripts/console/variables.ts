@@ -157,6 +157,7 @@ export const CVarCasters = Object.freeze({
 
     cv_rules_acknowledged: Casters.toBoolean,
     cv_hide_rules_button: Casters.toBoolean,
+    cv_hide_qq_social: Casters.toBoolean,
     cv_leave_warning: Casters.toBoolean,
     cv_ui_scale: Casters.toNumber,
     cv_draw_hud: Casters.toBoolean,
@@ -326,6 +327,7 @@ export const defaultClientCVars: SimpleCVarMapping = Object.freeze({
 
     cv_rules_acknowledged: false,
     cv_hide_rules_button: false,
+    cv_hide_qq_social: false,
     cv_leave_warning: true,
     cv_ui_scale: 1,
     cv_draw_hud: true,

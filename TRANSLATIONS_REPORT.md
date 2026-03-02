@@ -30,6 +30,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_cooler_weapon_gas` is not defined
 - Key `settings_record_res` is not defined
 - Key `settings_alt_texture_loading` is not defined
+- Key `settings_hide_qq` is not defined
 - Key `settings_show_inout` is not defined
 - Key `settings_weapon_compare` is not defined
 - Key `settings_weapon_compare_condensed` is not defined
@@ -227,6 +228,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_blood_splatter` is not defined
 - Key `settings_cooler_weapon_gas` is not defined
 - Key `settings_record_res` is not defined
+- Key `settings_hide_qq` is not defined
 - Key `settings_weapon_compare` is not defined
 - Key `settings_weapon_compare_condensed` is not defined
 - Key `settings_lock_joysticks` is not defined
@@ -310,6 +312,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_ambient_particles` is not defined
 - Key `settings_record_res` is not defined
 - Key `settings_alt_texture_loading` is not defined
+- Key `settings_hide_qq` is not defined
 - Key `settings_show_inout` is not defined
 - Key `settings_weapon_compare` is not defined
 - Key `settings_weapon_compare_condensed` is not defined
@@ -501,6 +504,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_blood_splatter` is not defined
 - Key `settings_cooler_weapon_gas` is not defined
 - Key `settings_record_res` is not defined
+- Key `settings_hide_qq` is not defined
 - Key `settings_show_inout` is not defined
 - Key `settings_weapon_compare` is not defined
 - Key `settings_weapon_compare_condensed` is not defined
@@ -677,6 +681,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_cooler_weapon_gas` is not defined
 - Key `settings_record_res` is not defined
 - Key `settings_alt_texture_loading` is not defined
+- Key `settings_hide_qq` is not defined
 - Key `settings_show_inout` is not defined
 - Key `settings_weapon_compare` is not defined
 - Key `settings_weapon_compare_condensed` is not defined
@@ -1001,6 +1006,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_bullet_trail_bloom` is not defined
 - Key `settings_blood_splatter` is not defined
 - Key `settings_cooler_weapon_gas` is not defined
+- Key `settings_hide_qq` is not defined
 - Key `settings_weapon_compare` is not defined
 - Key `settings_weapon_compare_condensed` is not defined
 - Key `settings_shake_to_reload` is not defined
@@ -1067,7 +1073,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
 
-## 🇮🇷 فارسی (96% Complete) - fa.hjson
+## 🇮🇷 فارسی (95% Complete) - fa.hjson
 
 ### (No Invalid Keys)
 
@@ -1078,6 +1084,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_bullet_trail_bloom` is not defined
 - Key `settings_blood_splatter` is not defined
 - Key `settings_cooler_weapon_gas` is not defined
+- Key `settings_hide_qq` is not defined
 - Key `settings_weapon_compare` is not defined
 - Key `settings_weapon_compare_condensed` is not defined
 - Key `kf_disconnected` is not defined
@@ -1118,6 +1125,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_cooler_weapon_gas` is not defined
 - Key `settings_record_res` is not defined
 - Key `settings_alt_texture_loading` is not defined
+- Key `settings_hide_qq` is not defined
 - Key `settings_show_inout` is not defined
 - Key `settings_weapon_compare` is not defined
 - Key `settings_weapon_compare_condensed` is not defined
@@ -1299,6 +1307,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_bullet_trail_bloom` is not defined
 - Key `settings_blood_splatter` is not defined
 - Key `settings_cooler_weapon_gas` is not defined
+- Key `settings_hide_qq` is not defined
 - Key `settings_weapon_compare` is not defined
 - Key `settings_weapon_compare_condensed` is not defined
 - Key `settings_shake_to_reload` is not defined
@@ -1347,7 +1356,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overweight` is not defined
 - Key `overweight_desc` is not defined
 
-## 🇬🇷 Ελληνικά (96% Complete) - gr.hjson
+## 🇬🇷 Ελληνικά (95% Complete) - gr.hjson
 
 ### (No Invalid Keys)
 
@@ -1358,6 +1367,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_bullet_trail_bloom` is not defined
 - Key `settings_blood_splatter` is not defined
 - Key `settings_cooler_weapon_gas` is not defined
+- Key `settings_hide_qq` is not defined
 - Key `settings_weapon_compare` is not defined
 - Key `settings_weapon_compare_condensed` is not defined
 - Key `kf_disconnected` is not defined
@@ -1405,6 +1415,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_ambient_particles` is not defined
 - Key `settings_record_res` is not defined
 - Key `settings_alt_texture_loading` is not defined
+- Key `settings_hide_qq` is not defined
 - Key `settings_show_inout` is not defined
 - Key `settings_weapon_compare` is not defined
 - Key `settings_weapon_compare_condensed` is not defined
@@ -1575,7 +1586,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `overdrive` is not defined
 - Key `overdrive_desc` is not defined
 
-## 🇭🇺 Magyar (83% Complete) - hu.hjson
+## 🇭🇺 Magyar (82% Complete) - hu.hjson
 
 ### Invalid Keys
 
@@ -1589,6 +1600,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_bullet_trail_bloom` is not defined
 - Key `settings_blood_splatter` is not defined
 - Key `settings_cooler_weapon_gas` is not defined
+- Key `settings_hide_qq` is not defined
 - Key `settings_weapon_compare` is not defined
 - Key `settings_weapon_compare_condensed` is not defined
 - Key `settings_shake_to_reload` is not defined
@@ -1702,6 +1714,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_ambient_particles` is not defined
 - Key `settings_record_res` is not defined
 - Key `settings_alt_texture_loading` is not defined
+- Key `settings_hide_qq` is not defined
 - Key `settings_show_inout` is not defined
 - Key `settings_weapon_compare` is not defined
 - Key `settings_weapon_compare_condensed` is not defined
@@ -2121,6 +2134,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_bullet_trail_bloom` is not defined
 - Key `settings_blood_splatter` is not defined
 - Key `settings_cooler_weapon_gas` is not defined
+- Key `settings_hide_qq` is not defined
 - Key `settings_weapon_compare` is not defined
 - Key `settings_weapon_compare_condensed` is not defined
 
@@ -2155,6 +2169,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_ambient_particles` is not defined
 - Key `settings_record_res` is not defined
 - Key `settings_alt_texture_loading` is not defined
+- Key `settings_hide_qq` is not defined
 - Key `settings_show_inout` is not defined
 - Key `settings_weapon_compare` is not defined
 - Key `settings_weapon_compare_condensed` is not defined
@@ -2354,6 +2369,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_ambient_particles` is not defined
 - Key `settings_record_res` is not defined
 - Key `settings_alt_texture_loading` is not defined
+- Key `settings_hide_qq` is not defined
 - Key `settings_show_inout` is not defined
 - Key `settings_weapon_compare` is not defined
 - Key `settings_weapon_compare_condensed` is not defined
@@ -2535,6 +2551,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_bullet_trail_bloom` is not defined
 - Key `settings_blood_splatter` is not defined
 - Key `settings_cooler_weapon_gas` is not defined
+- Key `settings_hide_qq` is not defined
 - Key `settings_weapon_compare` is not defined
 - Key `settings_weapon_compare_condensed` is not defined
 - Key `bindings_use_consumable vaccine_syringe` is not defined
@@ -2594,6 +2611,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_cooler_weapon_gas` is not defined
 - Key `settings_record_res` is not defined
 - Key `settings_alt_texture_loading` is not defined
+- Key `settings_hide_qq` is not defined
 - Key `settings_show_inout` is not defined
 - Key `settings_weapon_compare` is not defined
 - Key `settings_weapon_compare_condensed` is not defined
@@ -2776,6 +2794,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_cooler_weapon_gas` is not defined
 - Key `settings_record_res` is not defined
 - Key `settings_alt_texture_loading` is not defined
+- Key `settings_hide_qq` is not defined
 - Key `settings_lock_joysticks` is not defined
 - Key `settings_switch_joysticks` is not defined
 - Key `settings_left_joystick_color` is not defined
@@ -2938,6 +2957,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_bullet_trail_bloom` is not defined
 - Key `settings_blood_splatter` is not defined
 - Key `settings_cooler_weapon_gas` is not defined
+- Key `settings_hide_qq` is not defined
 - Key `settings_weapon_compare` is not defined
 - Key `settings_weapon_compare_condensed` is not defined
 - Key `bindings_use_consumable vaccine_syringe` is not defined
@@ -2988,6 +3008,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_bullet_trail_bloom` is not defined
 - Key `settings_blood_splatter` is not defined
 - Key `settings_cooler_weapon_gas` is not defined
+- Key `settings_hide_qq` is not defined
 - Key `settings_show_inout` is not defined
 - Key `settings_weapon_compare` is not defined
 - Key `settings_weapon_compare_condensed` is not defined
@@ -3043,6 +3064,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_bullet_trail_bloom` is not defined
 - Key `settings_blood_splatter` is not defined
 - Key `settings_cooler_weapon_gas` is not defined
+- Key `settings_hide_qq` is not defined
 - Key `settings_weapon_compare` is not defined
 - Key `settings_weapon_compare_condensed` is not defined
 - Key `settings_shake_delay` is not defined
@@ -3110,6 +3132,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_bullet_trail_bloom` is not defined
 - Key `settings_blood_splatter` is not defined
 - Key `settings_cooler_weapon_gas` is not defined
+- Key `settings_hide_qq` is not defined
 - Key `settings_weapon_compare` is not defined
 - Key `settings_weapon_compare_condensed` is not defined
 - Key `settings_shake_to_reload` is not defined
@@ -3468,6 +3491,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_bullet_trail_bloom` is not defined
 - Key `settings_blood_splatter` is not defined
 - Key `settings_cooler_weapon_gas` is not defined
+- Key `settings_hide_qq` is not defined
 - Key `settings_weapon_compare` is not defined
 - Key `settings_weapon_compare_condensed` is not defined
 - Key `kf_impact_of` is not defined
@@ -3488,6 +3512,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_bullet_trail_bloom` is not defined
 - Key `settings_blood_splatter` is not defined
 - Key `settings_cooler_weapon_gas` is not defined
+- Key `settings_hide_qq` is not defined
 - Key `settings_weapon_compare` is not defined
 - Key `settings_weapon_compare_condensed` is not defined
 - Key `settings_shake_to_reload` is not defined
