@@ -365,7 +365,8 @@ const perks = [
         spriteScale: 1.5,
         minHealth: 5,
         lootPush: 0.0005,
-        noDrop: true
+        noDrop: true,
+        infectedEffectIgnore: true
     },
     {
         idString: PerkIds.LastStand,
