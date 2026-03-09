@@ -75,7 +75,7 @@ export class ReloadAction extends Action {
     constructor(player: Player, readonly item: GunItem) {
         const fullReload = item.definition.reloadFullOnEmpty && item.ammo <= 0;
 
-        if (player.hasPerk(PerkIds.CombatExpert)) player.updateAndApplyModifiers();
+        if (player.hasPerk(PerkIds.TacticalReload)) player.updateAndApplyModifiers();
 
         super(
             player,

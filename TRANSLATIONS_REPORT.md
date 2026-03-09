@@ -148,8 +148,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `close_quarters_combat_desc` is not defined
 - Key `low_profile` is not defined
 - Key `low_profile_desc` is not defined
-- Key `combat_expert` is not defined
-- Key `combat_expert_desc` is not defined
+- Key `tactical_reload` is not defined
+- Key `tactical_reload_desc` is not defined
 - Key `precision_recycling` is not defined
 - Key `precision_recycling_desc` is not defined
 - Key `loot_baron` is not defined
@@ -3200,8 +3200,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `close_quarters_combat_desc` is not defined
 - Key `low_profile` is not defined
 - Key `low_profile_desc` is not defined
-- Key `combat_expert` is not defined
-- Key `combat_expert_desc` is not defined
+- Key `tactical_reload` is not defined
+- Key `tactical_reload_desc` is not defined
 - Key `precision_recycling` is not defined
 - Key `precision_recycling_desc` is not defined
 - Key `loot_baron` is not defined
