@@ -2113,8 +2113,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         }
 
         // easter egg
-        if (this.hasPerk(PerkIds.CombatExpert) && this.hasPerk(PerkIds.Butterfingers)) {
-            this.removePerk(PerkIds.CombatExpert);
+        if (this.hasPerk(PerkIds.TacticalReload) && this.hasPerk(PerkIds.Butterfingers)) {
+            this.removePerk(PerkIds.TacticalReload);
             this.removePerk(PerkIds.Butterfingers);
             this.game.addExplosion("corrupted_explosion", this.position, this, this.layer);
         }
@@ -2228,7 +2228,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 break;
             }
             case PerkIds.Butterfingers:
-            case PerkIds.CombatExpert: {
+            case PerkIds.TacticalReload: {
                 if (this.action?.type === PlayerActions.Reload) this.action?.cancel();
                 break;
             }
@@ -2334,7 +2334,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 break;
             }
             case PerkIds.Butterfingers:
-            case PerkIds.CombatExpert: {
+            case PerkIds.TacticalReload: {
                 if (this.action?.type === PlayerActions.Reload) this.action?.cancel();
                 break;
             }
@@ -2881,7 +2881,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                     newModifiers.reload *= perk.reloadMod;
                     break;
                 }
-                case PerkIds.CombatExpert: {
+                case PerkIds.TacticalReload: {
                     const isEmpty = this.activeItem.isGun && this.activeItem.ammo <= 0;
                     newModifiers.reload *= isEmpty ? perk.reloadMod : 1;
                     break;

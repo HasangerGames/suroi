@@ -60,7 +60,7 @@ export const enum PerkIds {
     Berserker = "berserker",
     CloseQuartersCombat = "close_quarters_combat",
     LowProfile = "low_profile",
-    CombatExpert = "combat_expert",
+    TacticalReload = "tactical_reload",
     PrecisionRecycling = "precision_recycling",
     LootBaron = "loot_baron",
     Overclocked = "overclocked",
@@ -223,8 +223,8 @@ const perks = [
         explosionMod: 0.5 // multiplicative
     },
     {
-        idString: PerkIds.CombatExpert,
-        name: "Combat Expert",
+        idString: PerkIds.TacticalReload,
+        name: "Tactical Reload",
         defType: DefinitionType.Perk,
         category: PerkCategories.Normal,
         reloadMod: 1.25
