@@ -1,7 +1,7 @@
 import { FlyoverPref, Layer, Layers, MapObjectSpawnMode, RotationMode, ZIndexes } from "../constants";
 import { type Orientation, type Variation } from "../typings";
-import { CircleHitbox, GroupHitbox, PolygonHitbox, RectangleHitbox, type Hitbox } from "../utils/hitbox";
-import { DefinitionType, ObjectDefinitions, type ObjectDefinition, type ReferenceOrRandom, type ReferenceTo } from "../utils/objectDefinitions";
+import { CircleHitbox, GroupHitbox, type Hitbox, PolygonHitbox, RectangleHitbox } from "../utils/hitbox";
+import { DefinitionType, type ObjectDefinition, ObjectDefinitions, type ReferenceOrRandom, type ReferenceTo } from "../utils/objectDefinitions";
 import { pickRandomInArray, random, randomBoolean } from "../utils/random";
 import { FloorNames } from "../utils/terrain";
 import { Vec, type Vector } from "../utils/vector";
@@ -3891,8 +3891,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             // Right Side: Top Left
             { key: "planted_bushes_residue", position: Vec(91.67, -225.15) },
 
-            { key: "barrier_floor", position: Vec(0, -183.1) },
-            { key: "barrier_floor", position: Vec(81.8, 54.9), rotation: Math.PI / 2 }
+            { key: "port_barrier_floor", position: Vec(0, -183.1) },
+            { key: "port_barrier_floor", position: Vec(81.8, 54.9), rotation: Math.PI / 2 }
         ],
         obstacles: IS_CLIENT ? undefined : [
 
@@ -4713,7 +4713,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         defType: DefinitionType.Building,
         spawnHitbox: RectangleHitbox.fromRect(180, 400, Vec(-1.5, -1.8)),
         puzzle: {
-            triggerOnSolve: "vault_door_deactivated",
+            triggerOnSolve: "vault_door2",
             delay: 2000,
             unlockOnly: true
         },
@@ -4733,14 +4733,14 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 outdoors: true
             },
             {
-                idString: "vault_door_deactivated",
+                idString: "vault_door2",
                 position: Vec(25.6, -60),
                 rotation: 0,
                 locked: true,
                 layer: Layer.Ground
             },
             {
-                idString: "vault_door_deactivated",
+                idString: "vault_door2",
                 position: Vec(42.5, -119.53),
                 rotation: 2,
                 locked: true,
@@ -5935,14 +5935,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         ceilingHitbox: RectangleHitbox.fromRect(43.5, 20, Vec(0, -1)),
         floorImages: [
             {
-                key: "mobile_home_floor_1",
-                position: Vec(-11, 0),
-                scale: Vec(1.07, 1.07)
-            },
-            {
-                key: "mobile_home_floor_2",
-                position: Vec(11, 0.01),
-                scale: Vec(1.07, 1.07)
+                key: "mobile_home_floor",
+                position: Vec(0, 0)
             }
         ],
         ceilingImages: [{
@@ -5963,19 +5957,19 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         ],
         wallsToDestroy: 2,
         obstacles: IS_CLIENT ? undefined : [
-            { idString: "small_drawer", position: Vec(8.5, -5.5), rotation: 0 },
-            { idString: "sink", position: Vec(-16.8, -4.6), rotation: 1 },
+            { idString: "small_drawer", position: Vec(8, -5.5), rotation: 0 },
+            { idString: "sink", position: Vec(-16.6, -4.6), rotation: 1 },
             { idString: randomSmallStove, position: Vec(-16.8, 3.9), rotation: 1 },
-            { idString: "door", position: Vec(4.5, 8.45), rotation: 2 },
-            { idString: "mobile_home_wall_4", position: Vec(15.5, 8.45), rotation: 0 },
-            { idString: "mobile_home_wall_2", position: Vec(-10.5, 8.45), rotation: 0 },
-            { idString: "tire", position: Vec(-24.25, 4.85), rotation: 0, outdoors: true },
+            { idString: "mobile_home_wall_2", position: Vec(-10.42, 8.45), rotation: 0 },
+            { idString: "door", position: Vec(4.4, 8.45), rotation: 2 },
+            { idString: "mobile_home_wall_3", position: Vec(15.25, 8.45), rotation: 0 },
+            { idString: "tire", position: Vec(-23.95, 4.85), rotation: 0, outdoors: true },
             { idString: "small_bed", position: Vec(16.8, -1), rotation: 0 },
-            { idString: "mobile_home_window", position: Vec(-6.6, -10.5), rotation: 0 },
-            { idString: "mobile_home_wall_1", position: Vec(-17.25, -10.5), rotation: 0 },
-            { idString: "mobile_home_wall_2", position: Vec(21.7, -1), rotation: 1 },
-            { idString: "mobile_home_wall_2", position: Vec(-21.7, -1), rotation: 1 },
-            { idString: "mobile_home_wall_3", position: Vec(10.6, -10.5), rotation: 0 },
+            { idString: "mobile_home_wall_1", position: Vec(-17.1, -10.33), rotation: 0 },
+            { idString: "mobile_home_window", position: Vec(-6.6, -10.33), rotation: 0 },
+            { idString: "mobile_home_wall_2", position: Vec(10.55, -10.33), rotation: 0 },
+            { idString: "mobile_home_wall_2", position: Vec(21.4, -0.94), rotation: 1 },
+            { idString: "mobile_home_wall_2", position: Vec(-21.45, -0.94), rotation: 1 },
             { idString: "box", position: Vec(25.7, -3.5), outdoors: true },
             { idString: "box", position: Vec(27.5, 1.55), outdoors: true }
         ]
@@ -6432,7 +6426,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         ceilingHitbox: RectangleHitbox.fromRect(20, 20),
         ceilingZIndex: ZIndexes.BuildingsCeiling - 1,
         ceilingImages: [{
-            key: "secret_room_ceiling",
+            key: "headquarters_secret_room_ceiling",
             position: Vec(0, 0),
             scale: Vec(1.1, 1.01)
         }],
@@ -6942,9 +6936,9 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "bookshelf", position: Vec(12, -59.5), rotation: 0 },
 
             // secret room
-            { idString: "secret_door", position: Vec(-3.85, -99.4), rotation: 3 },
+            { idString: "headquarters_secret_door", position: Vec(-3.85, -99.4), rotation: 3 },
             { idString: "aegis_golden_case", position: Vec(14, -98.5), lootSpawnOffset: Vec(-1, 1), rotation: 3 },
-            { idString: "secret_door", position: Vec(2.5, -83.8), rotation: 0 },
+            { idString: "headquarters_secret_door", position: Vec(2.5, -83.8), rotation: 0 },
 
             // ---------------------------------------------------------------------------------------------------------------
             // discussion room? (bottom left)
@@ -9435,18 +9429,6 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         { idString: "gun_mount_ak47", position: Vec(3.9, 11.5), rotation: 3 }
     ]),
 
-    {
-        // we use tugboat "HACK" to generate these in the ocean
-        idString: "buoy",
-        name: "Buoy",
-        defType: DefinitionType.Building,
-        spawnMode: MapObjectSpawnMode.Beach,
-        spawnHitbox: RectangleHitbox.fromRect(70, 110, Vec(50, 0)),
-        obstacles: IS_CLIENT ? undefined : [{
-            idString: "buoy",
-            get position() { return Vec(random(50, 100), 0); }
-        }]
-    },
     { // implemented by pap with a lot of love >w<
         idString: "campsite",
         name: "Campsite",
@@ -11026,7 +11008,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         spawnHitbox: RectangleHitbox.fromRect(34.05, 28),
         ceilingHitbox: RectangleHitbox.fromRect(34.05, 28),
         ceilingImages: [{
-            key: "vault_ceiling",
+            key: "hunted_vault_ceiling",
             position: Vec(0, 0),
             scale: Vec(2.68, 2.16)
         }]
@@ -11323,7 +11305,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         spawnHitbox: RectangleHitbox.fromRect(25, 25),
         ceilingHitbox: RectangleHitbox.fromRect(22, 22),
         ceilingImages: [{
-            key: "vault_ceiling",
+            key: "hunted_vault_ceiling",
             position: Vec(0, 0),
             scale: Vec(3.745, 1.78)
         }]
@@ -14348,7 +14330,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 position: Vec(2.37, 1.3)
             },
             {
-                key: "barricade_line_shooting_range",
+                key: "shooting_range_barricade_line",
                 position: Vec(-51.86, 1.26)
             },
             {
@@ -14600,11 +14582,11 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 position: Vec(-6.27, -4)
             },
             {
-                key: "barricade_line_carport",
+                key: "carport_barricade_line",
                 position: Vec(43.91, -26.63)
             },
             {
-                key: "barricade_line_carport",
+                key: "carport_barricade_line",
                 position: Vec(8.48, 46.67),
                 rotation: Math.PI / 2
             }

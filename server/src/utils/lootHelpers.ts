@@ -1,3 +1,4 @@
+import { BuildingDefinition, Buildings } from "@common/definitions/buildings";
 import { Ammos } from "@common/definitions/items/ammos";
 import { Armors } from "@common/definitions/items/armors";
 import { Backpacks } from "@common/definitions/items/backpacks";
@@ -10,13 +11,12 @@ import { Skins } from "@common/definitions/items/skins";
 import { Throwables } from "@common/definitions/items/throwables";
 import { ItemType, LootDefForType, LootDefinition, Loots } from "@common/definitions/loots";
 import { ModeName } from "@common/definitions/modes";
+import { ObstacleDefinition, Obstacles } from "@common/definitions/obstacles";
 import { isArray } from "@common/utils/misc";
 import { DefinitionType, NullString, ObjectDefinition, ObjectDefinitions, ReferenceOrRandom, ReferenceTo } from "@common/utils/objectDefinitions";
 import { random, weightedRandom } from "@common/utils/random";
 import { LootTables } from "../data/lootTables";
-import { MapDefinition } from "../data/maps";
-import { BuildingDefinition, Buildings } from "@common/definitions/buildings";
-import { ObstacleDefinition, Obstacles } from "@common/definitions/obstacles";
+import { MapDefinition, Maps } from "../data/maps";
 
 export type WeightedItem =
     (
@@ -174,20 +174,14 @@ export type Cache = {
     [K in ItemType]?: LootDefForType<K>[] | undefined;
 };
 
-export function getSpawnableLoots(modeName: ModeName, mapDef: MapDefinition, cache: Cache): ItemRegistry {
-    /*
-        we have a collection of loot tables, but not all of them are necessarily reachable
-        for example, if loot table A belongs to obstacle A, but said obstacle is never spawned,
-        then we mustn't take loot table A into account
-    */
-
+export function getReachableBuildings(mapDef: MapDefinition): BuildingDefinition[] {
     // first, get all the reachable buildings
     // to do this, we get all the buildings in the map def, then for each one, include itself and any subbuildings
     // flatten that array, and that's the reachable buildings
     // and for good measure, we exclude duplicates by using a set
-    const reachableBuildings = [
+    return [
         ...new Set(
-            Object.keys(mapDef.buildings ?? {}).map(building => {
+            [...Object.keys(mapDef.buildings ?? {}), ...(mapDef.majorBuildings ?? [])].map(building => {
                 const b = Buildings.fromString(building);
 
                 // for each subbuilding, we either take it as-is, or take all possible spawn options
@@ -197,11 +191,13 @@ export function getSpawnableLoots(modeName: ModeName, mapDef: MapDefinition, cac
             }).flat(2)
         )
     ] satisfies readonly BuildingDefinition[];
+}
 
+export function getReachableObstacles(mapDef: MapDefinition, reachableBuildings: BuildingDefinition[]): ObstacleDefinition[] {
     // now obstacles
     // for this, we take the list of obstacles from the map def, and append to that alllllll the obstacles from the
     // reachable buildings, which again involves flattening some arrays
-    const reachableObstacles = [
+    return [
         ...new Set(
             Object.keys(mapDef.obstacles ?? {}).map(o => Obstacles.fromString(o)).concat(
                 reachableBuildings.map(
@@ -212,6 +208,17 @@ export function getSpawnableLoots(modeName: ModeName, mapDef: MapDefinition, cac
             )
         )
     ] satisfies readonly ObstacleDefinition[];
+}
+
+export function getSpawnableLoots(modeName: ModeName, mapDef: MapDefinition, cache: Cache): ItemRegistry {
+    /*
+        we have a collection of loot tables, but not all of them are necessarily reachable
+        for example, if loot table A belongs to obstacle A, but said obstacle is never spawned,
+        then we mustn't take loot table A into account
+    */
+
+    const reachableBuildings = getReachableBuildings(mapDef);
+    const reachableObstacles = getReachableObstacles(mapDef, reachableBuildings);
 
     // and now, we generate the list of reachable tables, by taking those from map def, and adding those from
     // both the obstacles and the buildings

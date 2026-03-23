@@ -174,8 +174,7 @@ const maps = {
             container_blue_open2_damaged: 2,
             container_yellow_open1: 1,
             container_yellow_open2: 2,
-            memorial: 1,
-            buoy: 12
+            memorial: 1
         },
         quadBuildingLimit: {
             port: 1,
@@ -213,7 +212,8 @@ const maps = {
             melee_crate: 1,
             gold_rock: 1,
             loot_barrel: 1,
-            flint_lockbox: 1
+            flint_lockbox: 1,
+            buoy: 12
         },
         obstacleClumps: [
             {
@@ -338,8 +338,7 @@ const maps = {
             tent_3: 3,
             tent_4: 3,
             tent_5: 1,
-            outhouse: 10,
-            buoy: 16
+            outhouse: 10
         },
         quadBuildingLimit: {
             river_hut_4: 2,
@@ -383,7 +382,8 @@ const maps = {
             loot_barrel: 1,
             flint_lockbox: 1,
             pumpkin: 200,
-            large_pumpkin: 5
+            large_pumpkin: 5,
+            buoy: 16
         },
         obstacleClumps: [
             {
@@ -548,7 +548,6 @@ const maps = {
             outhouse: 5,
             porta_potty: 5,
             mobile_home: 6,
-            buoy: 14,
             hollow_log_1: 5,
             hollow_log_2: 5,
             hollow_log_3: 5,
@@ -610,7 +609,8 @@ const maps = {
             diseased_mini_plumpkin: 140,
             large_pumpkin: 40,
             plumpkin: 5,
-            gravestone: 60
+            gravestone: 60,
+            buoy: 14
         },
         obstacleClumps: [
             {
@@ -705,8 +705,7 @@ const maps = {
             container_blue_open2_damaged: 2,
             container_yellow_open1: 1,
             container_yellow_open2: 2,
-            memorial: 1,
-            buoy: 12
+            memorial: 1
         },
         majorBuildings: [
             "port",
@@ -748,7 +747,8 @@ const maps = {
             melee_crate: 1,
             gold_rock: 1,
             loot_barrel: 1,
-            flint_lockbox: 1
+            flint_lockbox: 1,
+            buoy: 12
         },
         obstacleClumps: [
             {
@@ -973,7 +973,6 @@ const maps = {
             container_yellow_open1: 1,
             container_yellow_open2: 2,
             memorial: 1,
-            buoy: 16,
             christmas_camp: 1,
             igloo: 6
         },
@@ -1015,7 +1014,8 @@ const maps = {
             melee_crate_winter: 1,
             gold_rock: 1,
             loot_barrel: 1,
-            flint_lockbox_winter: 1
+            flint_lockbox_winter: 1,
+            buoy: 16
         },
         obstacleClumps: [
             {
@@ -1100,8 +1100,7 @@ const maps = {
                 small_bunker_winter: 1,
                 fulcrum_bunker_winter: 1,
                 construction_site: 1,
-                memorial: 1,
-                buoy: 12
+                memorial: 1
             };
 
             const obstacles = {
@@ -1130,10 +1129,10 @@ const maps = {
                 green_gift: 6,
                 black_gift: 2,
                 purple_gift: Math.random() > 0.9 ? 2 : 0,
-
                 viking_chest: Math.random() > 0.9 ? 1 : 0,
                 tango_crate: Math.random() > 0.8 ? 1 : 0,
-                lux_crate: Math.random() > 0.8 ? 1 : 0
+                lux_crate: Math.random() > 0.8 ? 1 : 0,
+                buoy: 12
             };
 
             const loots = {

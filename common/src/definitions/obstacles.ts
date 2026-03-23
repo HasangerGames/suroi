@@ -136,6 +136,8 @@ type CommonObstacleDefinition = ObjectDefinition & {
     }
 
     readonly spawnMode?: MapObjectSpawnMode
+    readonly spawnOrientation?: Orientation
+    readonly spawnOffset?: Vector | { min: Vector, max: Vector }
     readonly tint?: number
     readonly particlesOnDestroy?: ReferenceTo<SyncedParticleDefinition>
     readonly additionalDestroySounds?: readonly string[]
@@ -266,8 +268,6 @@ export const MaterialSounds: Record<string, { hit?: string, destroyed?: string }
 };
 
 export const TintedParticles: Record<string, { readonly base: string, readonly tint: number, readonly variants?: number }> = {
-    _glow_: { base: "_glow_", tint: 0xffffff },
-
     cabin_wall_particle: { base: "wood_particle", tint: 0x5d4622 },
     cabin_particle: { base: "wood_particle", tint: 0x49371d },
     metal_particle: { base: "metal_particle_1", tint: 0x5f5f5f },
@@ -3228,7 +3228,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         particleVariations: 2
     },
     {
-        idString: "secret_door",
+        idString: "headquarters_secret_door",
         name: "Secret Door",
         defType: DefinitionType.Obstacle,
         material: "wood",
@@ -3425,7 +3425,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         }
     },
     {
-        idString: "vault_door_deactivated",
+        idString: "vault_door2",
         name: "Vault Door",
         defType: DefinitionType.Obstacle,
         material: "metal_heavy",
@@ -3755,7 +3755,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         rotationMode: RotationMode.Limited,
         frames: {
             particle: "couch_part_particle",
-            residue: "brown_couch_part_residue"
+            residue: "couch_part_residue"
         }
     },
     {
@@ -3780,7 +3780,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         zIndex: ZIndexes.ObstaclesLayer2,
         frames: {
             particle: "couch_part_particle",
-            residue: "brown_couch_part_residue"
+            residue: "couch_part_residue"
         }
     },
     {
@@ -3806,7 +3806,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         rotationMode: RotationMode.Limited,
         frames: {
             particle: "couch_part_particle",
-            residue: "brown_couch_part_residue"
+            residue: "couch_part_residue"
         }
     },
     {
@@ -3832,7 +3832,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         rotationMode: RotationMode.Limited,
         frames: {
             particle: "couch_part_particle",
-            residue: "brown_couch_part_residue"
+            residue: "couch_part_residue"
         }
     },
     {
@@ -5154,10 +5154,9 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
             activated: "button_activated"
         }
     },
-    mobileHomeWall("1", RectangleHitbox.fromRect(7.5, 1.68)),
-    mobileHomeWall("2", RectangleHitbox.fromRect(20.6, 1.68)),
-    mobileHomeWall("3", RectangleHitbox.fromRect(20.5, 1.68)),
-    mobileHomeWall("4", RectangleHitbox.fromRect(10.65, 1.68)),
+    mobileHomeWall("1", RectangleHitbox.fromRect(7.25, 1.68)),
+    mobileHomeWall("2", RectangleHitbox.fromRect(20.46, 1.68)),
+    mobileHomeWall("3", RectangleHitbox.fromRect(10.66, 1.68)),
     kitchenUnit("1", RectangleHitbox.fromRect(6.61, 6.61, Vec(0, -0.45))),
     kitchenUnit("2", RectangleHitbox.fromRect(6.61, 6.61)),
     kitchenUnit("3", RectangleHitbox.fromRect(9.45, 6.61, Vec(0, -0.48)), "sink_residue"),
@@ -5393,8 +5392,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         hasLoot: true,
         hideOnMap: true,
         frames: {
-            particle: "chest_particle",
-            residue: "chest_residue"
+            particle: "chest_particle"
         },
         spawnMode: MapObjectSpawnMode.Beach,
         allowFlyover: FlyoverPref.Always
@@ -6357,6 +6355,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         indestructible: true,
         reflectBullets: true,
         hitbox: new CircleHitbox(7.27),
+        spawnHitbox: RectangleHitbox.fromRect(70, 110),
         frames: {
             particle: "buoy_particle"
         },
@@ -6366,8 +6365,9 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
             scaleX: 2.4,
             scaleY: 2.4
         },
-        allowFlyover: FlyoverPref.Always
-        // spawnMode: MapObjectSpawnMode.Beach // todo: ocean spawn mode
+        allowFlyover: FlyoverPref.Always,
+        spawnMode: MapObjectSpawnMode.Beach,
+        spawnOffset: { min: Vec(50, 0), max: Vec(100, 0) }
     },
     {
         idString: "large_logs_pile",

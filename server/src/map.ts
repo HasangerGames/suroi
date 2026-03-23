@@ -1,15 +1,16 @@
 import { GameConstants, Layer, MapObjectSpawnMode, ObjectCategory, RotationMode } from "@common/constants";
-import { BuildingObstacle, Buildings, SubBuilding, type BuildingDefinition } from "@common/definitions/buildings";
-import { Obstacles, type ObstacleDefinition } from "@common/definitions/obstacles";
-import { MapPacket, type MapData } from "@common/packets/mapPacket";
+import { type BuildingDefinition, Buildings } from "@common/definitions/buildings";
+import { Modes } from "@common/definitions/modes";
+import { type ObstacleDefinition, Obstacles } from "@common/definitions/obstacles";
+import { type MapData, MapPacket } from "@common/packets/mapPacket";
 import { PacketStream } from "@common/packets/packetStream";
 import { type Orientation, type Variation } from "@common/typings";
-import { CircleHitbox, GroupHitbox, HitboxType, RectangleHitbox, type Hitbox } from "@common/utils/hitbox";
+import { CircleHitbox, GroupHitbox, type Hitbox, HitboxType, RectangleHitbox } from "@common/utils/hitbox";
 import { equalLayer } from "@common/utils/layer";
 import { Angle, Collision, Geometry, Numeric, τ } from "@common/utils/math";
 import { removeFrom, SDeepMutable } from "@common/utils/misc";
 import { NullString, ReferenceOrNull, type ReferenceTo, type ReifiableDef } from "@common/utils/objectDefinitions";
-import { SeededRandom, pickRandomInArray, random, randomBoolean, randomFloat, randomPointInsideCircle, randomRotation, randomVector } from "@common/utils/random";
+import { pickRandomInArray, random, randomBoolean, randomFloat, randomPointInsideCircle, randomRotation, randomVector, SeededRandom } from "@common/utils/random";
 import { FloorNames, River, Terrain } from "@common/utils/terrain";
 import { Vec, type Vector } from "@common/utils/vector";
 import { MapDefinition, MapName, Maps, ObstacleClump, RiverDefinition } from "./data/maps";
@@ -18,7 +19,6 @@ import { Building } from "./objects/building";
 import { Obstacle } from "./objects/obstacle";
 import { getLootFromTable } from "./utils/lootHelpers";
 import { CARDINAL_DIRECTIONS, getRandomIDString } from "./utils/misc";
-import { Modes } from "@common/definitions/modes";
 
 export interface MapOptions {
     scale?: number
@@ -791,7 +791,14 @@ export class GameMap {
         // i don't know why "definition = Obstacles.reify(definition)" doesn't work anymore, but it doesn't
         const def = Obstacles.reify(definition);
 
-        const { scale = { spawnMin: 1, spawnMax: 1 }, variations, rotationMode } = def;
+        const {
+            scale = { spawnMin: 1, spawnMax: 1 },
+            variations,
+            rotationMode,
+            spawnMode,
+            spawnOrientation,
+            spawnOffset
+        } = def;
         const { spawnMin, spawnMax } = scale;
         const effSpawnHitbox = def.spawnHitbox ?? def.hitbox;
 
@@ -812,7 +819,11 @@ export class GameMap {
                 getPosition,
                 scale,
                 orientation,
-                spawnMode: def.spawnMode,
+                spawnMode,
+                spawnOffset,
+                orientationConsumer: (newOrientation: Orientation) => {
+                    orientation = spawnOrientation ? Numeric.addOrientations(newOrientation, spawnOrientation) : newOrientation;
+                },
                 ignoreClearings: this.mapDef.clearings?.allowedObstacles.includes(def.idString)
             });
 

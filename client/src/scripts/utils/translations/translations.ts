@@ -26,7 +26,7 @@ export const TRANSLATIONS: {
     translations: {
         hp18: {
             name: "HP-18",
-            flag: "<img height=\"20\" src=\"./img/game/shared/weapons/hp18.svg\" />",
+            flag: "<img height=\"20\" src=\"./img/game/weapons/hp18.svg\" />",
             percentage: "HP-18%",
             no_resize: true
         }

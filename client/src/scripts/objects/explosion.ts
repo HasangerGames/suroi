@@ -5,16 +5,16 @@ import { EaseFunctions } from "@common/utils/math";
 import { randomFloat, randomPointInsideCircle } from "@common/utils/random";
 import { FloorTypes } from "@common/utils/terrain";
 import { Vec, type Vector } from "@common/utils/vector";
-import { Game } from "../game";
-import { DIFF_LAYER_HITBOX_OPACITY, SHOCKWAVE_EXPLOSION_MULTIPLIERS } from "../utils/constants";
-import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { isMobile } from "pixi.js";
-import { CameraManager } from "../managers/cameraManager";
 import { GameConsole } from "../console/gameConsole";
-import { DebugRenderer } from "../utils/debugRenderer";
+import { Game } from "../game";
+import { CameraManager } from "../managers/cameraManager";
 import { MapManager } from "../managers/mapManager";
 import { ParticleManager } from "../managers/particleManager";
 import { SoundManager } from "../managers/soundManager";
+import { DIFF_LAYER_HITBOX_OPACITY, SHOCKWAVE_EXPLOSION_MULTIPLIERS } from "../utils/constants";
+import { DebugRenderer } from "../utils/debugRenderer";
+import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 
 export function explosion(definition: ExplosionDefinition, position: Vector, layer: Layer): void {
     const pixiPos = toPixiCoords(position);
