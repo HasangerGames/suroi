@@ -1,7 +1,7 @@
-import { Modes, type ModeName } from "@common/definitions/modes";
-import { HitboxType, type Hitbox } from "@common/utils/hitbox";
+import { type ModeName } from "@common/definitions/modes";
+import { type Hitbox, HitboxType } from "@common/utils/hitbox";
 import { Vec, type Vector } from "@common/utils/vector";
-import { Assets, Graphics, RendererType, Sprite, Spritesheet, Texture, type ColorSource, type Renderer, type SpritesheetData, type WebGLRenderer } from "pixi.js";
+import { Assets, type ColorSource, Graphics, type Renderer, RendererType, Sprite, Spritesheet, Texture, type WebGLRenderer } from "pixi.js";
 import type { ImageSpritesheetImporter } from "../../../vite/plugins/image-spritesheet-plugin";
 import { UIManager } from "../managers/uiManager";
 import { PIXI_SCALE } from "./constants";

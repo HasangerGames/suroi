@@ -2,13 +2,16 @@ public/img/game/manifests/shared.txt
 
 public/img/game/buildings/armory
 public/img/game/buildings/blue_house
+public/img/game/buildings/blue_stair
 public/img/game/buildings/cargo_ship
 public/img/game/buildings/construction_site
 public/img/game/buildings/container
 public/img/game/buildings/fulcrum_bunker
 public/img/game/buildings/green_house
+public/img/game/buildings/hay_shed/hay_shed_ceiling_2.svg
 public/img/game/buildings/headquarters
 public/img/game/buildings/large_bridge
+public/img/game/buildings/large_truck
 public/img/game/buildings/large_warehouse
 public/img/game/buildings/lighthouse
 public/img/game/buildings/memorial_bunker
@@ -26,6 +29,8 @@ public/img/game/buildings/truck_container
 public/img/game/buildings/tugboat_red
 public/img/game/buildings/tugboat_white
 public/img/game/buildings/warehouse
+
+public/img/game/decals/floor_oil
 
 public/img/game/obstacles/aegis_crate
 public/img/game/obstacles/aegis_golden_case
@@ -46,7 +51,9 @@ public/img/game/obstacles/buoy
 public/img/game/obstacles/bush
 public/img/game/obstacles/button
 public/img/game/obstacles/cabinet
+public/img/game/obstacles/cargo_ship_stair
 public/img/game/obstacles/chair
+public/img/game/obstacles/column
 public/img/game/obstacles/control_panel
 public/img/game/obstacles/control_panel2
 public/img/game/obstacles/control_panel_small
@@ -87,6 +94,7 @@ public/img/game/obstacles/headquarters_secret_door
 public/img/game/obstacles/headquarters_security_desk
 public/img/game/obstacles/hq_toilet_paper_wall
 public/img/game/obstacles/kitchen_unit
+public/img/game/obstacles/lamp
 public/img/game/obstacles/large_drawer
 public/img/game/obstacles/large_refinery_barrel
 public/img/game/obstacles/large_table
@@ -131,7 +139,7 @@ public/img/game/obstacles/sink2
 public/img/game/obstacles/small_bed
 public/img/game/obstacles/small_desk
 public/img/game/obstacles/small_drawer
-public/img/game/obstacles/small_lamp_thingy
+public/img/game/obstacles/small_lamp
 public/img/game/obstacles/small_pan_stove
 public/img/game/obstacles/small_refinery_barrel
 public/img/game/obstacles/small_stove
@@ -141,6 +149,7 @@ public/img/game/obstacles/smokestack
 public/img/game/obstacles/speaker
 public/img/game/obstacles/stove
 public/img/game/obstacles/super_barrel
+public/img/game/obstacles/tango_crate
 public/img/game/obstacles/tear_gas_crate
 public/img/game/obstacles/tire
 public/img/game/obstacles/toilet

@@ -4,41 +4,25 @@ import path from "path";
 import { type SpritesheetData } from "pixi.js";
 import spritesheetc from "spritesheetc";
 import { type Plugin } from "vite";
-import { type ModeName, Modes, type SpritesheetNames } from "../../../common/src/definitions/modes";
-import segfaultHandler from "segfault-handler";
-
-segfaultHandler.registerHandler();
+import { Modes, type SpritesheetNames } from "../../../common/src/definitions/modes";
 
 const PLUGIN_NAME = "vite-spritesheet-plugin";
 
-export interface Atlas {
-    readonly json: SpritesheetData
-    readonly image: Buffer
-    readonly cacheName?: string
-}
-
-export interface Spritesheet {
-    readonly low: Atlas[]
-    readonly high: Atlas[]
-}
-
 export interface ImageSpritesheetImporter {
-    readonly importSpritesheet: (name: string) => Promise<ImageSpritesheetList>
+    readonly importSpritesheet: (name: string) => Promise<{ readonly spritesheets: SpritesheetData[] }>
 }
 
-export interface ImageSpritesheetList {
-    readonly spritesheets: SpritesheetData[]
-}
+const spritesheetNames = Object.keys(Modes) as SpritesheetNames[];
 
-const spritesheetNames = Object.keys(Modes);
+const spritesheetVirtualModuleIds = spritesheetNames.flatMap(dir => [
+    `virtual:image-spritesheets-low-res-${dir}`,
+    `virtual:image-spritesheets-high-res-${dir}`
+]);
 
 const virtualModuleIds = [
     "virtual:image-spritesheets-importer-low-res",
     "virtual:image-spritesheets-importer-high-res",
-    ...spritesheetNames.flatMap(dir => [
-        `virtual:image-spritesheets-low-res-${dir}`,
-        `virtual:image-spritesheets-high-res-${dir}`
-    ])
+    ...spritesheetVirtualModuleIds
 ];
 
 const files = new Map<string, Buffer>();
@@ -98,8 +82,8 @@ export function imageSpritesheet(): Plugin[] {
             name: `${PLUGIN_NAME}:build`,
             apply: "build",
             buildStart() {
-                for (const modeName of Object.keys(Modes) as ModeName[]) {
-                    buildSpritesheets(modeName);
+                for (const sheet of spritesheetNames) {
+                    buildSpritesheets(sheet);
                 }
             },
             generateBundle() {
@@ -114,27 +98,13 @@ export function imageSpritesheet(): Plugin[] {
             name: `${PLUGIN_NAME}:serve`,
             apply: "serve",
             configureServer(server) {
-                const onChange = (filename: string): void => {
-                    const dirNames = filename.split(path.sep);
-                    let dir = dirNames[3];
-                    if (dir === "manifests") {
-                        dir = dirNames[4];
-                        dir = dir.substring(0, dir.indexOf("."));
-                    }
-                    console.log(dir);
-                    const invalidatedModes = Object.entries(Modes)
-                        .filter(([, mode]) => mode.spriteSheets.includes(dir as SpritesheetNames))
-                        .map(([modeName]) => modeName);
-
-                    const invalidateModule = (moduleId: string): void => {
+                const onChange = (): void => {
+                    // Invalidate all spritesheet modules
+                    // TODO Invalidate only modules affected by the detected changes
+                    for (const moduleId of spritesheetVirtualModuleIds) {
                         modules.delete(moduleId);
                         const module = server.moduleGraph.getModuleById(moduleId);
                         if (module !== undefined) void server.reloadModule(module);
-                    };
-
-                    for (const modeName of invalidatedModes) {
-                        invalidateModule(`virtual:image-spritesheets-low-res-${modeName}`);
-                        invalidateModule(`virtual:image-spritesheets-high-res-${modeName}`);
                     }
                 };
                 watcher = watch("public/img/game", { ignoreInitial: true })

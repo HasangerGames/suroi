@@ -1123,7 +1123,7 @@ const maps = {
                 gold_rock: 1,
                 loot_tree: 1,
                 loot_barrel: 1,
-                small_lamp_thingy: 50,
+                small_lamp: 50,
                 red_gift: 6,
                 blue_gift: 6,
                 green_gift: 6,

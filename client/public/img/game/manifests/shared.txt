@@ -5,7 +5,19 @@ public/img/game/badges
 public/img/game/emotes
 public/img/game/particles
 public/img/game/skins
+public/img/game/trails
 public/img/game/weapons
+
+public/img/game/decals/blood_decal.svg
+
+public/img/game/decals/cola_residue.svg
+public/img/game/decals/gauze_residue.svg
+public/img/game/decals/medikit_residue.svg
+public/img/game/decals/tablets_residue.svg
+
+public/img/game/decals/explosion_decal.svg
+public/img/game/decals/frag_explosion_decal.svg
+public/img/game/decals/smoke_explosion_decal.svg
 
 public/img/game/equipment/basic_helmet_world.svg
 public/img/game/equipment/basic_pack_world.svg

@@ -279,7 +279,7 @@ export const TintedParticles: Record<string, { readonly base: string, readonly t
     dumpster_particle: { base: "metal_particle_1", tint: 0x3c7033 },
     solid_crate_particle: { base: "wood_particle", tint: 0x595959 },
     washing_machine_particle: { base: "metal_particle_1", tint: 0xb3b3b3 },
-    small_lamp_thingy_particle: { base: "window_particle", tint: 0xb3b3b3 },
+    small_lamp_particle: { base: "window_particle", tint: 0xb3b3b3 },
     fridge_particle: { base: "metal_particle_1", tint: 0x666666 },
     tv_particle: { base: "metal_particle_1", tint: 0x333333 },
     smokestack_particle: { base: "metal_particle_1", tint: 0xb5b5b5 },
@@ -3436,15 +3436,15 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         rotationMode: RotationMode.Limited,
         isDoor: true,
         openOnce: true,
-        doorSound: "vault_door_powered",
+        doorSound: "vault_door2",
         requiresPower: true,
         animationDuration: 2000,
         interactionDelay: 2500,
         hingeOffset: Vec(-5.6, -2.3),
         frames: {
             particle: "metal_particle",
-            powered: "vault_door_activated",
-            opened: "vault_door_off"
+            powered: "vault_door2_activated",
+            opened: "vault_door2_off"
         }
     },
     {
@@ -6494,7 +6494,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         hasLoot: true
     },
     {
-        idString: "small_lamp_thingy",
+        idString: "small_lamp",
         name: "Small Lamp",
         defType: DefinitionType.Obstacle,
         material: "glass",
