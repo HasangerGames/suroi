@@ -5,7 +5,7 @@ import { type PlayerPing } from "@common/definitions/mapPings";
 import { type ObstacleDefinition } from "@common/definitions/obstacles";
 import { type InputData } from "@common/packets/inputPacket";
 import { type JoinData } from "@common/packets/joinPacket";
-import { PlayerModifiers, Variation, type Orientation } from "@common/typings";
+import { PlayerModifiers, type Orientation } from "@common/typings";
 import { ExtendedMap } from "@common/utils/misc";
 import { Vector } from "@common/utils/vector";
 import { Config } from "./utils/config";
@@ -548,7 +548,6 @@ export interface EventDataMap {
         readonly rotation: number
         readonly layer: number
         readonly scale: number
-        readonly variation?: Variation
         readonly lootSpawnOffset?: Vector
         readonly parentBuilding?: Building
         readonly puzzlePiece?: string | boolean

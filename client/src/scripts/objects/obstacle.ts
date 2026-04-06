@@ -108,7 +108,9 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
             this.layer = full.layer;
             this.updateLayer();
 
-            this.variation = full.variation;
+            this.variation = definition.variations !== undefined
+                ? (this.id % definition.variations) as Variation
+                : undefined;
 
             if (definition.graphics?.length && !this.graphics) {
                 this.graphics = new Graphics();

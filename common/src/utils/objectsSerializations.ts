@@ -83,7 +83,6 @@ export interface ObjectsNetData extends BaseObjectsNetData {
                 readonly orientation: Orientation
                 readonly rotation: number
             }
-            readonly variation?: Variation
             readonly activated?: boolean
             readonly door?: {
                 readonly offset: number
@@ -404,7 +403,6 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                     rotation,
                     door,
                     activated,
-                    variation,
                     layer
                 }
             }
@@ -419,25 +417,12 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 this is really peak tryharding
                 we have:
                 - a rotation
-                - a variation (maybe)
                 possibly one of:
                     - door stuff
                     - activation stuff
             */
 
-            // variations leave at least 5 vacant bits, which is enough for the rest of our data
             let obstacleData = 0;
-            if (definition.variations !== undefined && variation !== undefined) {
-                // variation being undefined is equivalent to it being 0
-
-                // make the variation stuff take up the MSBs, leaving the LSBs for the other stuff
-                obstacleData += variation << (8 - definition.variationBits);
-                /*
-                    for example, variation = 3, variationBits = 3
-                    we then have 0110 0000
-                    the 5 least-significant bits are free for use
-                */
-            }
 
             if (definition.isDoor && door) {
                 // 3 bits
@@ -455,7 +440,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             /*
                 what remains is the door/activation/detector stuff
                 door stuff is 3 bits, the other two are 1 bit
-                thus, we conclude that obstacleData will never exceed 6 bits
+                thus, we conclude that obstacleData will never exceed 3 bits
 
                 RotationMode.Full takes a clean 2 bytes, so it's not of a concern
                 Limited and Binary take 2 and 1 respectively
@@ -463,17 +448,14 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 thus we see that if the mode is limited or binary, we can fit
                 the rotation and the data in a single 8-bit number
 
-                for example, with variation 3 over 3 bits,
-                and door offset of 2 and locked
+                for example, with rotation 2 and door offset of 2 and locked
 
                 we get
-                0 1 1 0 0 1 0 1
-                |___|     |_| |
-                |          | locked
-                variation  |
-                        offset
-
-                the two middle bits are free to use
+                0 0 0 1 0 1 0 1
+                      |_| | |
+                       |  | locked
+                    rotation
+                          offset
             */
 
             switch (definition.rotationMode) {
@@ -494,7 +476,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                     break;
                 }
                 case RotationMode.None: {
-                    // there may be no rotation data, but there's still variation data and
+                    // there may be no rotation data, but there's still obstacle data and
                     // all the other thingies
                     stream.writeUint8(obstacleData);
                     break;
@@ -551,10 +533,6 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 // }
             }
 
-            if (definition.variations !== undefined && variation !== undefined) {
-                data.variation = stream.readUint8();
-            }
-
             if (definition.isDoor && door) {
                 const door = stream.readUint8();
                 data.door = {
@@ -566,11 +544,6 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             }
             */
             const obstacleData = stream.readUint8();
-            if (definition.variations !== undefined) {
-                const bits = 8 - definition.variationBits;
-                data.variation = (obstacleData & (0xFF - (2 ** bits - 1))) >> bits as Variation;
-                //                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ mask the most significant bits
-            }
 
             if (definition.isDoor) {
                 data.door = {

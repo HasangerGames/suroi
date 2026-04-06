@@ -8,7 +8,7 @@ import { Loots } from "@common/definitions/loots";
 import { ModeName } from "@common/definitions/modes";
 import { Obstacles, type ObstacleDefinition } from "@common/definitions/obstacles";
 import { PacketType } from "@common/packets/packet";
-import { Orientation, type Variation } from "@common/typings";
+import { Orientation } from "@common/typings";
 import { CircleHitbox } from "@common/utils/hitbox";
 import { Collision } from "@common/utils/math";
 import { DefinitionType, type ReferenceTo } from "@common/utils/objectDefinitions";
@@ -1177,13 +1177,12 @@ const maps = {
             Object.entries(obstacles).forEach(([obstacle, count]) => {
                 const def = Obstacles.reify(obstacle);
 
-                const { scale = { spawnMin: 1, spawnMax: 1 }, variations, rotationMode } = def;
+                const { scale = { spawnMin: 1, spawnMax: 1 }, rotationMode } = def;
                 const { spawnMin, spawnMax } = scale;
                 const effSpawnHitbox = def.spawnHitbox ?? def.hitbox;
 
                 for (let i = 0; i < count; i++) {
                     const scale = randomFloat(spawnMin ?? 1, spawnMax ?? 1);
-                    const variation = (variations !== undefined ? random(0, variations - 1) : 0) as Variation;
                     const rotation = GameMap.getRandomRotation(rotationMode);
 
                     let orientation: Orientation = 0;
@@ -1202,7 +1201,7 @@ const maps = {
                         continue;
                     }
 
-                    map.generateObstacle(def, position, { layer: Layer.Ground, scale, variation });
+                    map.generateObstacle(def, position, { layer: Layer.Ground, scale });
                 }
             });
 
@@ -1263,7 +1262,7 @@ const maps = {
             for (const obstacle of Obstacles.definitions) {
                 if (obstacle.invisible) continue;
                 for (let i = 0; i < (obstacle.variations ?? 1); i++) {
-                    map.generateObstacle(obstacle.idString, obstaclePos, { variation: i as Variation });
+                    map.generateObstacle(obstacle.idString, obstaclePos);
 
                     obstaclePos.x += 20;
                     if (obstaclePos.x > map.width / 2 - 20) {
@@ -1775,13 +1774,12 @@ const maps = {
             Object.entries(obstacles).forEach(([obstacle, count]) => {
                 const def = Obstacles.reify(obstacle);
 
-                const { scale = { spawnMin: 1, spawnMax: 1 }, variations, rotationMode } = def;
+                const { scale = { spawnMin: 1, spawnMax: 1 }, rotationMode } = def;
                 const { spawnMin, spawnMax } = scale;
                 const effSpawnHitbox = def.spawnHitbox ?? def.hitbox;
 
                 for (let i = 0; i < count; i++) {
                     const scale = randomFloat(spawnMin ?? 1, spawnMax ?? 1);
-                    const variation = (variations !== undefined ? random(0, variations - 1) : 0) as Variation;
                     const rotation = GameMap.getRandomRotation(rotationMode);
 
                     let orientation: Orientation = 0;
@@ -1800,7 +1798,7 @@ const maps = {
                         continue;
                     }
 
-                    map.generateObstacle(def, position, { layer: Layer.Ground, scale, variation });
+                    map.generateObstacle(def, position, { layer: Layer.Ground, scale });
                 }
             });
 
