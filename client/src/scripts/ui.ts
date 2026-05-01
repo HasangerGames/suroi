@@ -425,6 +425,21 @@ export async function setUpUI(): Promise<void> {
 
     createDropdown("#language-dropdown");
 
+    const qq = $<HTMLButtonElement>(".btn-qq")
+    // Hide the QQ social media button
+    addCheckboxListener(
+        "#toggle-hide-qq",
+        "cv_hide_qq_social",
+        value => {
+            qq.toggle(!value);
+        }
+    );
+    const isChinese = GameConsole.getBuiltInCVar("cv_language") === "zh" || navigator.languages.includes("zh-CN");
+    qq.toggle(isChinese && !GameConsole.getBuiltInCVar("cv_hide_qq_social"));
+
+    // Hide option to hide qq if the language is not Chinese
+    $(".checkbox-setting").has("#toggle-hide-qq").toggle(isChinese);
+
     ui.lockedInfo.on("click", () => ui.lockedTooltip.fadeToggle(250));
 
     const joinGame = async(): Promise<void> => {
