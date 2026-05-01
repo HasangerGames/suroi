@@ -498,6 +498,7 @@ Perk Icons:
   Aching Knees: Skullboi249
   Plumpkin Shuffle: sniperboi4/TjCj
   Last Stand: Skullboi249
+  Tactical Reload: AnnihilatingFox
 
 Saw Killfeed - AnnihilatingFox
 
