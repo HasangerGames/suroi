@@ -158,7 +158,7 @@
       <!-- Logo -->
       <div id="splash-logo">
         <img
-          src="./img/logos/suroi_beta.svg"
+          src="./img/logos/suroi.svg"
           alt="Suroi logo"
           draggable="false"
         />
@@ -174,7 +174,7 @@
       <!-- Main menu -->
       <div id="splash-modals">
         <!-- News (left pane) -->
-        <div id="splash-news" class="persistent-scrollbar">
+        <div id="splash-news" class="persistent-scrollbar" style="display: none">
           <h2>
             <a href="./news/">
               <i class="fa-solid fa-newspaper"></i>
@@ -185,8 +185,35 @@
           <div id="news-posts">%NEWS%</div>
         </div>
 
+        <div id="splash-tabs">
+          <button class="btn btn-lg btn-darken btn-alert" id="btn-play">
+            <i class="fa-solid fa-play"></i>
+            <span>Play</span>
+          </button>
+
+          <button class="btn btn-lg btn-darken btn-secondary" id="btn-customize">
+            <i class="fa-solid fa-shirt"></i>
+            <span translation="loadout"></span>
+          </button>
+
+          <button class="btn btn-lg btn-darken btn-secondary" id="btn-customize">
+            <i class="fa-solid fa-circle-user"></i>
+            <span>Account</span>
+          </button>
+
+          <button class="btn btn-lg btn-darken btn-secondary" id="btn-news">
+            <i class="fa-solid fa-newspaper"></i>
+            <span translation="news"></span>
+          </button>
+
+          <button class="btn btn-lg btn-darken btn-secondary" id="btn-settings">
+            <i class="fa-solid fa-gear"></i>
+            <span translation="settings"></span>
+          </button>
+        </div>
+
         <!-- Center pane -->
-        <div id="splash-center">
+        <div id="splash-play">
           <!-- Error messages from the server -->
           <div id="splash-server-message" style="display: none">
             <span id="splash-server-message-text"></span>
@@ -198,148 +225,319 @@
           </div>
 
           <!-- Username field, server selector, play buttons, & rules button -->
-          <div id="splash-options" class="loading">
-            <!-- Loading icon (spinning Suroi logo) -->
-            <div id="loader-container">
-              <div class="loader"></div>
-              <span id="loader-text" translation="msg_loading"></span>
+          <div id="splash-options">
+            <div id="team-menu-container">
+              <div class="teammate-preview">
+                <!-- Skin preview -->
+                <div class="skin-small">
+                  <div class="skin-base"></div>
+                  <div class="skin-left-fist"></div>
+                  <div class="skin-right-fist"></div>
+                </div>
+                <span class="teammate-name" style="color:red">hasanger <img class="teammate-badge" src="./img/game/shared/badges/bdg_ownr.svg" /></span>
+              </div>
+              <div class="teammate-preview">
+                <!-- Skin preview -->
+                <div class="skin-small">
+                  <div class="skin-base"></div>
+                  <div class="skin-left-fist"></div>
+                  <div class="skin-right-fist"></div>
+                </div>
+                <span class="teammate-name" style="color:red">hasanger <img class="teammate-badge" src="./img/game/shared/badges/bdg_ownr.svg" /></span>
+              </div>
+              <div class="teammate-preview">
+                <!-- Skin preview -->
+                <div class="skin-small">
+                  <div class="skin-base"></div>
+                  <div class="skin-left-fist"></div>
+                  <div class="skin-right-fist"></div>
+                </div>
+                <span class="teammate-name" style="color:red">hasanger <img class="teammate-badge" src="./img/game/shared/badges/bdg_ownr.svg" /></span>
+              </div>
+              <div class="teammate-preview">
+                <!-- Skin preview -->
+                <div class="skin-small">
+                  <div class="skin-base"></div>
+                  <div class="skin-left-fist"></div>
+                  <div class="skin-right-fist"></div>
+                </div>
+                <span class="teammate-name" style="color:red">hasanger <img class="teammate-badge" src="./img/game/shared/badges/bdg_ownr.svg" /></span>
+              </div>
+              <!-- <div class="teammate-preview">
+                <div style="display: flex; gap: 5px; flex-direction: column">
+                  <button class="btn btn-lg btn-darken btn-purple" id="btn-join-team" translation="join_team"></button>
+                  <button class="btn btn-lg btn-darken btn-purple" id="btn-create-team" translation="create_team"></button>
+                </div>
+              </div> -->
             </div>
 
-            <div id="splash-options-wrapper">
-              <!-- Username input -->
-              <input
-                type="text"
-                name="username-input"
-                id="username-input"
-                placeholder="Enter a nickname"
-                autocomplete="off"
-                maxlength="16"
-              />
-              <!-- Dummy input to make password managers ignore the nickname field -->
-              <input type="password" style="width:0;height:0;background:transparent;border:none;padding:0;margin:0;display:block">
-
-              <!-- Server selector -->
-              <div id="server-select" class="dropdown">
-                <button id="btn-server-select">
-                  <span id="server-name">-</span>
-                  <span style="margin-left: auto">
-                    <img src="./img/misc/player_icon.svg" width="16" height="16" alt="Player count">
-                    <span id="server-player-count">-</span>
-                  </span>
+            <div style="display: flex; align-items: center; gap: 5px; height: fit-content">
+              <div id="create-team-url">
+                <button class="btn btn-lg btn-danger btn-darken" id="btn-hide-team-url">
+                  <i class="fa-solid fa-eye-slash"></i>
+                </button>
+                <input
+                  type="text"
+                  readonly
+                  id="create-team-url-field"
+                />
+                <button class="btn btn-lg btn-darken btn-secondary" id="btn-copy-team-url">
+                  <i class="fa-solid fa-clipboard"></i>
+                  <span translation="copy"></span>
+                </button>
+              </div>
+              <div id="create-team-options" class="dropdown">
+                <button class="btn btn-darken btn-lg btn-secondary" id="btn-team-options">
+                  Team
                   <i class="fa-solid fa-caret-down"></i>
                 </button>
-                <ul class="dropdown-content" id="server-list"></ul>
+                <div id="create-team-toggles" class="dropdown-content" style="display: none">
+                  <label>
+                    <span class="setting-title" translation="create_team_autofill"></span>
+                    <input type="checkbox" id="create-team-toggle-auto-fill">
+                  </label>
+                  <label>
+                    <span class="setting-title" translation="create_team_lock"></span>
+                    <input type="checkbox" id="create-team-toggle-lock">
+                  </label>
+                  <label>
+                    <span class="setting-title" translation="create_team_force_start"></span>
+                    <input type="checkbox" id="create-team-toggle-force-start">
+                  </label>
+                </div>
               </div>
-
-              <!-- Play buttons -->
-              <button class="btn btn-lg btn-darken btn-primary" id="btn-play-solo">
-                <span translation="play_solo"></span>
-              </button>
-              <div class="team-btns-container">
-                <button class="btn btn-lg btn-darken btn-primary" id="btn-play-duo">
-                  <span translation="play_duo"></span>
-                </button>
-                <button class="btn btn-lg btn-darken btn-primary" id="btn-play-squad">
-                  <span translation="play_squad"></span>
-                </button>
-              </div>
-              <div id="team-option-btns" class="team-btns-container">
-                <button class="btn btn-lg btn-darken btn-purple" id="btn-join-team" translation="join_team"></button>
-                <button class="btn btn-lg btn-darken btn-purple" id="btn-create-team" translation="create_team"></button>
-              </div>
-
-              <!-- Mode/team switch messages -->
-              <div id="next-switch-messages">
-                <span id="next-team-size-msg" class="next-switch-msg" style="display: none">
-                  <div class="next-switch-icon"></div>
-                  <span class="next-switch-time"></span>
-                </span>
-                <span id="next-mode-msg" class="next-switch-msg" style="display: none">
-                  <div class="next-switch-icon"></div>
-                  <span class="next-switch-time"></span>
-                </span>
-              </div>
-
-              <!-- Rules & tutorial button -->
-              <button class="btn btn-lg btn-darken btn-secondary" id="btn-rules" style="display: none">
-                <div class="pulsating-circle" style="display: none"></div>
-                <span translation="rules_and_tutorial"></span>
-                <button class="btn-darken" id="rules-close-btn" style="display: none">
-                  <i class="fa-solid fa-xmark"></i>
-                </button>
-              </button>
             </div>
+
+            <!-- Play buttons -->
+            <button class="btn btn-lg btn-darken btn-primary" id="btn-play-solo">
+              <span translation="play_solo"></span>
+            </button>
+
+            <!-- Server selector -->
+            <div id="server-select" class="dropdown">
+              <button id="btn-server-select">
+                <span id="server-name">-</span>
+                <span id="server-player-count-wrapper">
+                  <img src="./img/misc/player_icon.svg" width="16" height="16" alt="Player count">
+                  <span id="server-player-count">-</span>
+                </span>
+                <i class="fa-solid fa-caret-down"></i>
+              </button>
+              <ul class="dropdown-content" id="server-list"></ul>
+            </div>
+
+            <!-- Mode/team switch messages -->
+            <div id="next-switch-messages">
+              <span id="next-team-size-msg" class="next-switch-msg" style="display: none">
+                <div class="next-switch-icon"></div>
+                <span class="next-switch-time"></span>
+              </span>
+              <span id="next-mode-msg" class="next-switch-msg" style="display: none">
+                <div class="next-switch-icon"></div>
+                <span class="next-switch-time"></span>
+              </span>
+            </div>
+
+            <!-- Rules & tutorial button -->
+            <button class="btn btn-lg btn-darken btn-secondary" id="btn-rules" style="display: none">
+              <div class="pulsating-circle" style="display: none"></div>
+              <span translation="rules_and_tutorial"></span>
+              <button class="btn-darken" id="rules-close-btn" style="display: none">
+                <i class="fa-solid fa-xmark"></i>
+              </button>
+            </button>
           </div>
+        </div>
 
-          <!-- Social buttons -->
-          <div id="splash-socials">
-            <div>
-              <a class="btn btn-darken btn-wiki" href="https://wiki.suroi.io" target="_blank">
-                <img src="img/socials/wiki.svg" width="32">
-                <span translation="wiki" style="color: white"></span>
-              </a>
-              <a class="btn btn-darken btn-kofi" href="https://ko-fi.com/suroi" target="_blank">
-                <img src="img/socials/kofi.svg" width="32">
-                <span translation="donate" style="color: white"></span>
-              </a>
+        <div id="splash-loadout" style="display: none">
+          <!-- Username input -->
+          <input
+            type="text"
+            name="username-input"
+            id="username-input"
+            placeholder="Enter a nickname"
+            autocomplete="off"
+            maxlength="16"
+          />
+          <!-- Dummy input to make password managers ignore the nickname field -->
+          <input type="password" style="width:0;height:0;background:transparent;border:none;padding:0;margin:0;display:block">
+
+          <div id="customize-tabs-container">
+            <!-- Tab buttons -->
+            <div class="tab-bar" id="customize-tab-bar">
+              <button class="tab active" id="tab-skins"><i class="fa-solid fa-shirt"></i><span translation="loadout_skins"></span></button>
+              <button class="tab" id="tab-emotes"><img src="./img/misc/emotes_icon.svg"><span translation="loadout_emotes"></span></button>
+              <button class="tab" id="tab-crosshairs"><img src="./img/misc/crosshair_icon.svg"><span translation="loadout_crosshairs"></span></button>
+              <button class="tab" id="tab-badges" style="display: none"><i class="fa-solid fa-certificate"></i><span translation="loadout_badges"></span></button>
+              <button class="tab" id="tab-special" style="display: none"><i class="fa-solid fa-code"></i><span translation="loadout_special"></span></button>
             </div>
-            <div>
-              <a
-                href="https://discord.suroi.io"
-                rel="noopener noreferrer"
-                class="btn btn-darken btn-social btn-discord"
-                target="_blank"
-              ></a>
-              <a href="https://reddit.com/r/suroigame" rel="noopener noreferrer" class="btn btn-darken btn-social btn-reddit" target="_blank"></a>
-              <a
-                href="https://bsky.app/profile/suroi.io"
-                rel="noopener noreferrer"
-                class="btn btn-darken btn-social btn-bsky"
-                target="_blank"
-              ></a>
-              <a
-                href="https://instagram.com/suroigame"
-                rel="noopener noreferrer"
-                class="btn btn-darken btn-social btn-instagram"
-                target="_blank"
-              ></a>
-              <a
-                href="https://www.youtube.com/@suroigame"
-                rel="noopener noreferrer"
-                class="btn btn-darken btn-social btn-youtube"
-                target="_blank"
-              ></a>
-              <a
-                href="https://github.com/HasangerGames/suroi"
-                rel="noopener noreferrer"
-                class="btn btn-darken btn-social btn-github"
-                target="_blank"
-              ></a>
+
+            <!-- Tabs -->
+            <div id="customize-tabs">
+              <!-- Skins tab -->
+              <div class="tab-content active" id="tab-skins-content">
+                <div id="skins-list"></div>
+              </div>
+
+              <!-- Emotes tab -->
+              <div class="tab-content" id="tab-emotes-content" style="display: none">
+                <div id="emote-wheel-container">
+                  <div id="emote-customize-wheel">
+                    <div class="emote-top emote-display"></div>
+                    <div class="emote-right emote-display"></div>
+                    <div class="emote-bottom emote-display"></div>
+                    <div class="emote-left emote-display"></div>
+                    <div class="emote-extra1 emote-display">
+                      <i class="fa-solid fa-trash" title="Remove emote"></i>
+                    </div>
+                    <div class="emote-extra2 emote-display">
+                      <i class="fa-solid fa-trash" title="Remove emote"></i>
+                    </div>
+                  </div>
+                  <div id="emote-wheel-bottom">
+                    <div class="emote-win emote-display">
+                      <i class="fa-solid fa-crown"></i>
+                      <i class="fa-solid fa-trash" title="Remove emote"></i>
+                    </div>
+                    <div class="emote-death emote-display">
+                      <img src="./img/misc/skull_icon.svg" />
+                      <i class="fa-solid fa-trash" title="Remove emote"></i>
+                    </div>
+                  </div>
+                </div>
+                <div id="emotes-list"></div>
+              </div>
+
+              <!-- Crosshairs tab -->
+              <div class="tab-content" id="tab-crosshairs-content" style="display: none;">
+                <div id="crosshair-customize">
+                  <div id="crosshair-preview">
+                    <div id="crosshair-image"></div>
+                  </div>
+                  <div id="crosshair-controls">
+                    <span id="crosshair-controls-disabled" style="display: none" translation="loadout_crosshairs_default"></span>
+                    <div class="modal-item">
+                      <label>
+                        <span class="setting-title" translation="loadout_crosshairs_size"></span>
+                        <span class="range-input-value"></span>
+                        <input type="range" max="5" min="0.5" id="slider-crosshair-size" step="0.1">
+                      </label>
+                    </div>
+                    <div class="modal-item">
+                      <label>
+                        <span class="setting-title" translation="loadout_crosshairs_color"></span>
+                        <input type="color" id="crosshair-color-picker" value="#000000">
+                      </label>
+                    </div>
+                    <div class="modal-item">
+                      <label>
+                        <span class="setting-title" translation="loadout_crosshairs_stroke_size"></span>
+                        <span class="range-input-value"></span>
+                        <input type="range" max="0.2" min="0" id="slider-crosshair-stroke-size" step="0.005">
+                      </label>
+                    </div>
+                    <div class="modal-item">
+                      <label>
+                        <span class="setting-title" translation="loadout_crosshairs_stroke_color"></span>
+                        <input type="color" id="crosshair-stroke-picker" value="#000000">
+                      </label>
+                    </div>
+                  </div>
+                </div>
+                <div id="crosshairs-list"></div>
+              </div>
+
+              <!-- Badges tab -->
+              <div class="tab-content" id="tab-badges-content" style="display: none">
+                <div id="badges-list"></div>
+              </div>
+
+              <!-- Developer tab -->
+              <div class="tab-content" id="tab-special-content" style="display: none;">
+                <div class="modal-item">
+                  Note that the role you are inputting may not exist on the game server configuration.
+                </div>
+                <div class="modal-item">
+                  <label>
+                    <span class="setting-title">Role Name:</span>
+                    <input type="text" class="text-field" id="role-name">
+                  </label>
+                </div>
+                <div class="modal-item">
+                  <label>
+                    <span class="setting-title">Role Password:</span>
+                    <input type="password" class="text-field" id="role-password">
+                  </label>
+                </div>
+                <div class="modal-item">
+                  <button class="btn btn-primary btn-lg" onclick="window.location.reload(false)">Login</button>
+                </div>
+                <div class="modal-item">
+                  Note that some of these settings may not be avaliable depending on game server configuration.
+                </div>
+                <div class="modal-item">
+                  <label>
+                    <span class="setting-title">Name Color:</span>
+                    <input type="color" id="namecolor-color-picker" value="#000000">
+                  </label>
+                </div>
+                <div class="modal-item checkbox-setting">
+                  <label>
+                    <span class="setting-title">Developer Cheats</span>
+                    <input type="checkbox" id="toggle-lobbyclearing">
+                  </label>
+                </div>
+                <div class="modal-item">
+                  <label>
+                    <span class="setting-title">Weapon Preset:</span>
+                    <input type="text" class="text-field" id="weapon-preset" placeholder="USAGE: Gun1 Gun2 Melee" title="NOTE: Please use valid weapon ids from Guns.ts">
+                  </label>
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
-        <!-- Settings & skin options (right pane) -->
-        <div id="splash-customize">
-          <!-- Skin preview -->
-          <div id="skin-container">
-            <div id="skin-base"></div>
-            <div id="skin-left-fist"></div>
-            <div id="skin-right-fist"></div>
-          </div>
-
-          <!-- Loadout & settings buttons -->
-          <div style="display: flex; flex-direction: row; gap: 15px">
-            <button class="btn btn-lg btn-darken btn-primary" id="btn-customize">
-              <i class="fa-solid fa-shirt"></i>
-              <span translation="loadout"></span>
-            </button>
-
-            <button class="btn btn-lg btn-darken btn-secondary" id="btn-settings">
-              <i class="fa-solid fa-gear"></i>
-              <span translation="settings"></span>
-            </button>
-          </div>
+        <div id="splash-socials">
+            <a
+              href="https://discord.suroi.io"
+              rel="noopener noreferrer"
+              class="btn btn-darken btn-social btn-discord"
+              target="_blank"
+            ></a>
+            <a href="https://reddit.com/r/suroigame" rel="noopener noreferrer" class="btn btn-darken btn-social btn-reddit" target="_blank"></a>
+            <a
+              href="https://bsky.app/profile/suroi.io"
+              rel="noopener noreferrer"
+              class="btn btn-darken btn-social btn-bsky"
+              target="_blank"
+            ></a>
+            <a
+              href="https://instagram.com/suroigame"
+              rel="noopener noreferrer"
+              class="btn btn-darken btn-social btn-instagram"
+              target="_blank"
+            ></a>
+            <a
+              href="https://www.youtube.com/@suroigame"
+              rel="noopener noreferrer"
+              class="btn btn-darken btn-social btn-youtube"
+              target="_blank"
+            ></a>
+            <a
+              href="https://github.com/HasangerGames/suroi"
+              rel="noopener noreferrer"
+              class="btn btn-darken btn-social btn-github"
+              target="_blank"
+            ></a>
+            <a class="btn btn-darken btn-wiki" href="https://wiki.suroi.io" target="_blank">
+              <img src="img/socials/wiki.svg" width="32">
+              <span translation="wiki" style="color: white"></span>
+            </a>
+            <a class="btn btn-darken btn-kofi" href="https://ko-fi.com/suroi" target="_blank">
+              <img src="img/socials/kofi.svg" width="32">
+              <span translation="donate" style="color: white"></span>
+            </a>
         </div>
 
         <!-- Featured Youtubr & Streamr -->
@@ -1224,195 +1422,6 @@
             </div>
             <p style="color: red"><i translation="settings_performance_warning"></i></p>
           </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Loadout menu -->
-    <div class="modal dialog persistent-scrollbar" id="customize-menu" style="display: none">
-      <!-- Header -->
-      <div class="dialog-header">
-        <h3 translation="loadout"></h3>
-        <span class="dialog-close-btn fa-solid fa-xmark" id="close-customize"></span>
-      </div>
-
-      <!-- Content -->
-      <div id="customize-tabs-container">
-        <!-- Tab buttons -->
-        <div class="tab-bar" id="customize-tab-bar">
-          <button class="tab active" id="tab-skins"><i class="fa-solid fa-shirt"></i><span translation="loadout_skins"></span></button>
-          <button class="tab" id="tab-emotes"><img src="./img/misc/emotes_icon.svg"><span translation="loadout_emotes"></span></button>
-          <button class="tab" id="tab-crosshairs"><img src="./img/misc/crosshair_icon.svg"><span translation="loadout_crosshairs"></span></button>
-          <button class="tab" id="tab-badges" style="display: none"><i class="fa-solid fa-certificate"></i><span translation="loadout_badges"></span></button>
-          <button class="tab" id="tab-special" style="display: none"><i class="fa-solid fa-code"></i><span translation="loadout_special"></span></button>
-        </div>
-
-        <!-- Tabs -->
-        <div id="customize-tabs">
-          <!-- Skins tab -->
-          <div class="tab-content active" id="tab-skins-content">
-            <div id="skins-list"></div>
-          </div>
-
-          <!-- Emotes tab -->
-          <div class="tab-content" id="tab-emotes-content" style="display: none">
-            <div id="emote-wheel-container">
-              <div id="emote-customize-wheel">
-                <div class="emote-top emote-display"></div>
-                <div class="emote-right emote-display"></div>
-                <div class="emote-bottom emote-display"></div>
-                <div class="emote-left emote-display"></div>
-                <div class="emote-extra1 emote-display">
-                  <i class="fa-solid fa-trash" title="Remove emote"></i>
-                </div>
-                <div class="emote-extra2 emote-display">
-                  <i class="fa-solid fa-trash" title="Remove emote"></i>
-                </div>
-              </div>
-              <div id="emote-wheel-bottom">
-                <div class="emote-win emote-display">
-                  <i class="fa-solid fa-crown"></i>
-                  <i class="fa-solid fa-trash" title="Remove emote"></i>
-                </div>
-                <div class="emote-death emote-display">
-                  <img src="./img/misc/skull_icon.svg" />
-                  <i class="fa-solid fa-trash" title="Remove emote"></i>
-                </div>
-              </div>
-            </div>
-            <div id="emotes-list"></div>
-          </div>
-
-          <!-- Crosshairs tab -->
-          <div class="tab-content" id="tab-crosshairs-content" style="display: none;">
-            <div id="crosshair-customize">
-              <div id="crosshair-preview">
-                <div id="crosshair-image"></div>
-              </div>
-              <div id="crosshair-controls">
-                <span id="crosshair-controls-disabled" style="display: none" translation="loadout_crosshairs_default"></span>
-                <div class="modal-item">
-                  <label>
-                    <span class="setting-title" translation="loadout_crosshairs_size"></span>
-                    <span class="range-input-value"></span>
-                    <input type="range" max="5" min="0.5" id="slider-crosshair-size" step="0.1">
-                  </label>
-                </div>
-                <div class="modal-item">
-                  <label>
-                    <span class="setting-title" translation="loadout_crosshairs_color"></span>
-                    <input type="color" id="crosshair-color-picker" value="#000000">
-                  </label>
-                </div>
-                <div class="modal-item">
-                  <label>
-                    <span class="setting-title" translation="loadout_crosshairs_stroke_size"></span>
-                    <span class="range-input-value"></span>
-                    <input type="range" max="0.2" min="0" id="slider-crosshair-stroke-size" step="0.005">
-                  </label>
-                </div>
-                <div class="modal-item">
-                  <label>
-                    <span class="setting-title" translation="loadout_crosshairs_stroke_color"></span>
-                    <input type="color" id="crosshair-stroke-picker" value="#000000">
-                  </label>
-                </div>
-              </div>
-            </div>
-            <div id="crosshairs-list"></div>
-          </div>
-
-          <!-- Badges tab -->
-          <div class="tab-content" id="tab-badges-content" style="display: none">
-            <div id="badges-list"></div>
-          </div>
-
-          <!-- Developer tab -->
-          <div class="tab-content" id="tab-special-content" style="display: none;">
-            <div class="modal-item">
-              Note that the role you are inputting may not exist on the game server configuration.
-            </div>
-            <div class="modal-item">
-              <label>
-                <span class="setting-title">Role Name:</span>
-                <input type="text" class="text-field" id="role-name">
-              </label>
-            </div>
-            <div class="modal-item">
-              <label>
-                <span class="setting-title">Role Password:</span>
-                <input type="password" class="text-field" id="role-password">
-              </label>
-            </div>
-            <div class="modal-item">
-              <button class="btn btn-primary btn-lg" onclick="window.location.reload(false)">Login</button>
-            </div>
-            <div class="modal-item">
-              Note that some of these settings may not be avaliable depending on game server configuration.
-            </div>
-            <div class="modal-item">
-              <label>
-                <span class="setting-title">Name Color:</span>
-                <input type="color" id="namecolor-color-picker" value="#000000">
-              </label>
-            </div>
-            <div class="modal-item checkbox-setting">
-              <label>
-                <span class="setting-title">Developer Cheats</span>
-                <input type="checkbox" id="toggle-lobbyclearing">
-              </label>
-            </div>
-            <div class="modal-item">
-              <label>
-                <span class="setting-title">Weapon Preset:</span>
-                <input type="text" class="text-field" id="weapon-preset" placeholder="USAGE: Gun1 Gun2 Melee" title="NOTE: Please use valid weapon ids from Guns.ts">
-              </label>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Team menu -->
-    <div class="modal dialog persistent-scrollbar" id="create-team-menu" style="display: none">
-      <div class="dialog-header">
-        <h3 translation="create_team"></h3>
-        <span class="dialog-close-btn fa-solid fa-xmark" id="close-create-team"></span>
-      </div>
-      <div id="create-team-container">
-        <div id="create-team-players"></div>
-        <div id="create-team-url">
-          <button class="btn btn-lg btn-danger btn-darken" id="btn-hide-team-url">
-            <i class="fa-solid fa-eye-slash"></i>
-          </button>
-          <input
-            type="text"
-            readonly
-            id="create-team-url-field"
-          />
-          <button class="btn btn-lg btn-darken btn-secondary" id="btn-copy-team-url">
-            <i class="fa-solid fa-clipboard"></i>
-            <span translation="copy"></span>
-          </button>
-        </div>
-        <div id="create-team-options">
-          <div id="create-team-toggles">
-            <label>
-              <span class="setting-title" translation="create_team_autofill"></span>
-              <input type="checkbox" id="create-team-toggle-auto-fill">
-            </label>
-            <label>
-              <span class="setting-title" translation="create_team_lock"></span>
-              <input type="checkbox" id="create-team-toggle-lock">
-            </label>
-            <label>
-              <span class="setting-title" translation="create_team_force_start"></span>
-              <input type="checkbox" id="create-team-toggle-force-start">
-            </label>
-          </div>
-          <button class="btn btn-lg btn-darken btn-primary" id="btn-start-game">
-            <span translation="create_team_play"></span>
-          </button>
         </div>
       </div>
     </div>

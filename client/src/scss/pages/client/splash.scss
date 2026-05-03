@@ -50,17 +50,15 @@
 
 #splash-modals {
     display: flex;
+    flex-direction: column;
     justify-content: center;
-    align-items: flex-start;
+    align-items: center;
     gap: 16px;
     margin-bottom: 16px;
 
     width: 100vw;
-    max-height: 299px;
 
     text-align: center;
-
-    font-size: 20px;
 
     @media screen and (max-width: variables.$screen_medium) and (max-height: variables.$screen_medium) {
         gap: 8px;
@@ -68,16 +66,6 @@
 
         button span {
             font-size: 16px;
-        }
-
-        #splash-options,
-        #splash-customize,
-        #splash-socials,
-        #splash-rotate-message,
-        #splash-server-message,
-        #splash-customize,
-        #splash-news {
-            max-width: 300px;
         }
 
         #splash-customize {
@@ -142,7 +130,6 @@
         align-items: center;
         padding: 5px;
 
-        #splash-options,
         #splash-customize,
         #splash-socials,
         #splash-rotate-message,
@@ -297,32 +284,14 @@
 #splash-server-message,
 #splash-rotate-message,
 #splash-hw-acceleration-warning {
-    background: palette.$transparent_bg;
-    width: 370px;
+    background: palette.$dark_transparent_bg;
+    max-width: 375px;
 
     padding: 20px;
     border-radius: 20px;
 
     @media screen and (max-width: variables.$screen_large) {
         padding: 15px;
-    }
-}
-
-.blur {
-    #splash-news,
-    #splash-options,
-    #splash-customize,
-    #splash-server-message,
-    #splash-rotate-message,
-    #splash-socials,
-    #splash-hw-acceleration-warning,
-    #splash-backlinks,
-    .featured-container,
-    .server-list-item {
-        backdrop-filter: blur(8px);
-    }
-    .create-team-server-list-item {
-        backdrop-filter: blur(8px);
     }
 }
 
@@ -431,46 +400,56 @@
     }
 }
 
-#splash-center {
-    max-width: 370px;
+#splash-tabs {
+    display: flex;
+    gap: 5px;
 }
 
-#splash-customize {
+.setting-title {
+    margin: 0.2em;
+    font-weight: bold;
+    font-size: 16px;
+    @include variables.text-shadow;
+
+    i {
+        color: red;
+    }
+}
+
+#team-menu-container {
     display: flex;
-    flex-direction: column;
-    gap: 16px;
+    gap: 5px;
+    justify-content: center;
+    width: 100%;
+    overflow-x: scroll;
 
-    #skin-container {
-        position: relative;
-        width: 153px;
-        height: 147px;
+    .teammate-preview {
+        min-width: 64px;
+        padding: 8px 12px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        background-color: #111;
+        border-radius: 16px;
 
-        #skin-base {
-            position: absolute;
-            top: 0;
-            left: 9px;
-            width: 130px;
-            height: 130px;
-            background-size: cover;
-            mask-size: cover;
-            background-blend-mode: multiply;
-            transform: rotate(90deg);
+        .teammate-name {
+            width: max-content;
+            font-size: 20px;
+            font-weight: bold;
+            @include variables.text-shadow;
         }
 
-        #skin-left-fist,
-        #skin-right-fist {
-            position: absolute;
-            top: 96px;
-            width: 50px;
-            height: 50px;
-            background-size: cover;
-            mask-size: cover;
-            background-blend-mode: multiply;
-            transform: rotate(90deg);
+        .teammate-badge {
+            display: inline-block;
+            height: 24px;
+            margin-bottom: -5px;
         }
 
-        #skin-right-fist {
-            right: 6px;
+        &.no-teammate {
+            background-image: url(./img/misc/add_teammate_icon.svg);
+            background-position: center;
+            background-repeat: no-repeat;
         }
     }
 }
@@ -481,7 +460,20 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 312px;
+    gap: 10px;
+
+    min-width: 500px;
+    max-width: 750px;
+
+    flex-direction: column;
+
+    #btn-play-solo {
+        font-size: 32px;
+        font-weight: 600;
+        padding: 16px 96px;
+        width: fit-content;
+        height: unset;
+    }
 
     #splash-options-wrapper {
         flex: 1 1 auto;
@@ -539,63 +531,75 @@
 
     #btn-server-select {
         background: transparent;
-        color: white;
+        border: none;
 
-        width: 100%;
-        height: 50px;
+        cursor: pointer;
 
-        padding: 0.375rem 1rem 0.375rem 1rem;
-
-        margin-top: 10px;
-        margin-bottom: 10px;
-
-        border: 3px solid palette.$orange;
-        border-radius: 10px;
-
-        transition: 0.15s box-shadow;
-
-        font-size: 18px;
-        text-align-last: center;
-        line-height: 1.5;
+        font-size: 14px;
 
         display: flex;
         align-items: center;
 
-        filter: drop-shadow(1px 1px 3px rgba(0, 0, 0, 0.5));
+        @include variables.text-shadow;
+
+        #server-player-count-wrapper {
+            margin-left: 8px;
+            margin-bottom: -1px;
+
+            img {
+                margin-bottom: -2px;
+            }
+        }
 
         i {
-            // caret
-            margin-left: 10px;
-            margin-top: -2px;
+            margin-left: 8px;
+            margin-top: 2px;
+        }
+    }
+
+    #server-list {
+        z-index: 1000;
+        box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.8);
+        margin: 0;
+        padding: 0;
+        border-radius: 10px;
+        border: 2px solid #ff7500;
+
+        .server-list-item {
+            list-style-type: none;
+            display: flex;
+            gap: 16px;
+            padding: 10px 18px 10px 18px;
+            font-size: 18px;
+            color: white;
+            text-shadow: none;
+            user-select: none;
+            cursor: pointer;
+            transition: filter 0.25s ease;
+            background-color: rgba($color: #000000, $alpha: 0.8);
+
+            &:hover {
+                filter: brightness(80%);
+            }
+
+            &:first-child {
+                border-top: 1px solid rgba($color: #000000, $alpha: 0.8);
+                border-top-left-radius: 8px;
+                border-top-right-radius: 8px;
+                padding-top: 12px;
+            }
+
+            &:last-child {
+                border-bottom-left-radius: 8px;
+                border-bottom-right-radius: 8px;
+                padding-bottom: 12px;
+            }
         }
     }
 
     .btn {
         font-size: 18px;
         width: 100%;
-    }
-
-    #btn-play-solo, #btn-play-duo {
-        margin-bottom: 5px;
-    }
-
-    .team-btns-container {
-        display: flex;
-        gap: 5px;
-    }
-
-    .locked {
-        filter: brightness(70%) blur(2px);
-        pointer-events: none;
-        animation: none;
-
-        & .btn, &.btn {
-            color: transparent;
-            text-shadow: none;
-            img {
-                display: none;
-            }
-        }
     }
 
     #next-switch-messages {
@@ -643,152 +647,23 @@
     }
 }
 
-#btn-create-team-server-select {
-    background: transparent;
-    color: white;
-
-    width: 100%;
-    height: 50px;
-
-    padding: 0.375rem 1rem 0.375rem 1rem;
-
-    margin-top: 10px;
-    margin-bottom: 10px;
-
-    border: 3px solid palette.$orange;
-    border-radius: 10px;
-
-    transition: 0.15s box-shadow;
-
-    font-size: 18px;
-    text-align-last: center;
-    line-height: 1.5;
-
-    display: flex;
-    align-items: center;
-
-    i {
-        // caret
-        margin-left: 10px;
-        margin-top: -2px;
-    }
-}
-
-#server-list {
-    z-index: 1000;
-    width: calc(100% - 40px);
-    box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.8);
-    margin: 0;
-    padding: 0;
-    border-radius: 10px;
-    border: 2px solid #ff7500;
-
-    .server-list-item {
-        list-style-type: none;
-        display: flex;
-        padding: 10px 18px 10px 18px;
-        font-size: 18px;
-        color: white;
-        text-shadow: none;
-        user-select: none;
-        cursor: pointer;
-        transition: filter 0.25s ease;
-        background-color: rgba($color: #000000, $alpha: 0.8);
-
-        &:hover {
-            filter: brightness(80%);
-        }
-
-        &:first-child {
-            border-top: 1px solid rgba($color: #000000, $alpha: 0.8);
-            border-top-left-radius: 8px;
-            border-top-right-radius: 8px;
-            padding-top: 12px;
-        }
-
-        &:last-child {
-            border-bottom-left-radius: 8px;
-            border-bottom-right-radius: 8px;
-            padding-bottom: 12px;
-        }
-    }
-
-    img {
-        display: inline-block;
-    }
-}
-
-#create-team-server-list {
-    z-index: 1000;
-    width: calc(100% - 40px);
-    box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.8);
-    margin: 0;
-    padding: 0;
-    border-radius: 10px;
-    border: 2px solid #ff7500;
-    width: 255px;
-
-    .create-team-server-list-item {
-        list-style-type: none;
-        display: flex;
-        padding: 10px 18px 10px 18px;
-        font-size: 18px;
-        color: white;
-        text-shadow: none;
-        user-select: none;
-        width: 250px;
-        cursor: pointer;
-        transition: filter 0.25s ease;
-        background-color: rgba($color: #000000, $alpha: 0.8);
-
-        &:hover {
-            filter: brightness(80%);
-        }
-
-        &:first-child {
-            border-top: 1px solid rgba($color: #000000, $alpha: 0.8);
-            border-top-left-radius: 10px;
-            border-top-right-radius: 10px;
-            padding-top: 12px;
-        }
-
-        &:last-child {
-            border-bottom-left-radius: 10px;
-            border-bottom-right-radius: 10px;
-            padding-bottom: 12px;
-        }
-    }
-
-    img {
-        display: inline-block;
-    }
+#server-player-count, .server-player-count {
+    font-family: "JetBrains Mono", monospace;
 }
 
 #splash-socials {
+    position: absolute;
+    bottom: 5px;
+    left: 50%;
+    transform: translateX(-50%);
     margin-top: 14px;
     display: flex;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: 10px;
-    background: palette.$transparent_bg;
-    padding: 20px;
+    gap: 8px;
+    background: palette.$dark_transparent_bg;
+    padding: 10px;
     border-radius: 20px;
-
-    @media screen and (max-width: variables.$screen_large) {
-        padding: 15px;
-    }
-
-    & > div {
-        width: 100%;
-        display: flex;
-        gap: 8px;
-        justify-content: space-evenly;
-
-        a {
-            flex: 1 1 0;
-        }
-    }
 }
 
 #splash-customize {
@@ -830,8 +705,8 @@
     }
 
     .featured-container {
-        background: palette.$transparent_bg;
-        border-radius: 10px;
+        background: palette.$dark_transparent_bg;
+        border-radius: 16px;
         padding: 10px 20px;
         width: fit-content;
         height: 90px;
@@ -886,23 +761,6 @@
         @media screen and (max-width: 1200px) {
             font-size: 14px;
         }
-    }
-}
-
-#splash-more {
-    position: absolute;
-    right: 1rem;
-    top: 1rem;
-
-    button {
-        width: 136px;
-    }
-
-    .dropdown-content {
-        background: palette.$blue;
-
-        top: 34px;
-        right: 0;
     }
 }
 

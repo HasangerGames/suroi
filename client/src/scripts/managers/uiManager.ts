@@ -269,8 +269,6 @@ class UIManagerClass {
         modeSwitchTime: $<HTMLSpanElement>("#next-mode-msg .next-switch-time"),
 
         playSoloBtn: $<HTMLDivElement>("#btn-play-solo"),
-        playDuoBtn: $<HTMLDivElement>("#btn-play-duo"),
-        playSquadBtn: $<HTMLDivElement>("#btn-play-squad"),
 
         teamOptionBtns: $<HTMLDivElement>("#team-option-btns"),
 

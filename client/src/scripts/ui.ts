@@ -75,8 +75,7 @@ export function unlockPlayButtons(): void { buttonsLocked = false; }
 let lastDisconnectTime: number | undefined;
 export function updateDisconnectTime(): void { lastDisconnectTime = Date.now(); }
 
-let btnMap: ReadonlyArray<readonly [TeamMode, JQuery<HTMLDivElement>]>;
-export function resetPlayButtons(): void { // TODO Refactor this method to use uiManager for jQuery calls
+export function resetPlayButtons(): void {
     if (buttonsLocked) return;
 
     const ui = UIManager.ui;
@@ -86,16 +85,6 @@ export function resetPlayButtons(): void { // TODO Refactor this method to use u
     ui.loaderText.text("");
 
     const isSolo = teamMode === TeamMode.Solo;
-
-    for (
-        const [size, btn] of (
-            btnMap ??= [
-                [TeamMode.Solo, ui.playSoloBtn],
-                [TeamMode.Duo, ui.playDuoBtn],
-                [TeamMode.Squad, ui.playSquadBtn]
-            ]
-        )
-    ) btn.toggleClass("locked", teamMode !== undefined && teamMode !== size);
 
     ui.teamOptionBtns.toggleClass("locked", isSolo);
 
@@ -134,7 +123,7 @@ export async function fetchServerData(): Promise<void> {
         serverList.append(
             regionUICache[regionID] = $<HTMLLIElement>(`
                 <li class="server-list-item" data-region="${regionID}">
-                    <span class="server-name">${flag ?? ""}${getTranslatedString(`region_${regionID}` as TranslationKeys)}</span>
+                    <span class="server-name">${flag} ${getTranslatedString(`region_${regionID}` as TranslationKeys)}</span>
                     <span style="margin-left: auto">
                       <img src="./img/misc/player_icon.svg" width="16" height="16" alt="Player count">
                       <span class="server-player-count">-</span>
@@ -250,7 +239,7 @@ export async function fetchServerData(): Promise<void> {
         Game.modeName = selectedRegion.mode ?? GameConstants.defaultMode;
 
         const region = GameConsole.getBuiltInCVar("cv_region") || Config.defaultRegion;
-        serverName.text(`${selectedRegion.flag ?? ""}${getTranslatedString(`region_${region}` as TranslationKeys)}`);
+        serverName.text(`${selectedRegion.flag} ${getTranslatedString(`region_${region}` as TranslationKeys)}`);
         playerCount.text(selectedRegion.playerCount ?? "-");
         // $("#server-ping").text(selectedRegion.ping && selectedRegion.ping > 0 ? selectedRegion.ping : "-");
         updateSwitchTime();
@@ -298,7 +287,7 @@ export async function finalizeUI(): Promise<void> {
     $("#splash-ui").css("background-image", `url(./img/backgrounds/menu/${modeName}.png)`);
 
     if (specialLogo) {
-        $("#splash-logo").children("img").attr("src", `./img/logos/suroi_beta_${_modeName}.svg`);
+        $("#splash-logo").children("img").attr("src", `./img/logos/suroi_${modeName}.svg`);
     }
 
     if (playButtonImage) {
@@ -424,6 +413,8 @@ export async function setUpUI(): Promise<void> {
     }
 
     createDropdown("#language-dropdown");
+
+    createDropdown("#create-team-options");
 
     ui.lockedInfo.on("click", () => ui.lockedTooltip.fadeToggle(250));
 
@@ -1050,8 +1041,8 @@ export async function setUpUI(): Promise<void> {
         GameConsole.setBuiltInCVar("cv_loadout_skin", defaultClientCVars.cv_loadout_skin as string);
     }
 
-    const base = $<HTMLDivElement>("#skin-base");
-    const fists = $<HTMLDivElement>("#skin-left-fist, #skin-right-fist");
+    const base = $<HTMLDivElement>(".teammate-preview .skin-base");
+    const fists = $<HTMLDivElement>(".teammate-preview .skin-left-fist, .teammate-preview .skin-right-fist");
 
     const updateSplashCustomize = (skinID: string): void => {
         const skinDef = Skins.fromString(skinID);

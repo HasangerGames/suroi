@@ -1,4 +1,3 @@
-import "../../src/dropdown";
 import News from "./News.svelte";
 import { mount } from "svelte";
 

@@ -4,46 +4,41 @@ import type { ModeName } from "@common/definitions/modes";
 export const Config = {
     regions: {
         dev: {
-            name: "Local Server",
+            flag: "🏠",
             mainAddress: "http://127.0.0.1:8000",
             gameAddress: "ws://127.0.0.1:<gameID>",
             offset: 8001
-        }/* ,
+        },
         na: {
-            name: "North America",
-            flag: "🇺🇸 ",
+            flag: "🇺🇸",
             mainAddress: "https://na.suroi.io",
             gameAddress: "wss://na.suroi.io/game/<gameID>",
             offset: 1
         },
         eu: {
-            name: "Europe",
-            flag: "🇩🇪 ",
+            flag: "🇩🇪",
             mainAddress: "https://eu.suroi.io",
             gameAddress: "wss://eu.suroi.io/game/<gameID>",
             offset: 1
         },
         sa: {
-            name: "South America",
-            flag: "🇧🇷 ",
+            flag: "🇧🇷",
             mainAddress: "https://sa.suroi.io",
             gameAddress: "wss://sa.suroi.io/game/<gameID>",
             offset: 1
         },
         as: {
-            name: "Asia",
-            flag: "🇭🇰 ",
+            flag: "🇭🇰",
             mainAddress: "https://as.suroi.io",
             gameAddress: "wss://as.suroi.io/game/<gameID>",
             offset: 1
         },
         oc: {
-            name: "Oceania",
-            flag: "🇦🇺 ",
+            flag: "🇦🇺",
             mainAddress: "https://oc.suroi.io",
             gameAddress: "wss://oc.suroi.io/game/<gameID>",
             offset: 1
-        } */
+        }
     },
     defaultRegion: "dev"
 } satisfies ConfigType as ConfigType;
@@ -55,14 +50,9 @@ export interface ConfigType {
 
 export interface Region {
     /**
-     * The human-readable name of the region, displayed in the server selector.
-     */
-    readonly name: string
-
-    /**
      * An emoji flag to display alongside the region name.
      */
-    readonly flag?: string
+    readonly flag: string
 
     /**
      * The address of the region's main server.

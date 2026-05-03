@@ -72,144 +72,130 @@
     max-width: 850px;
 }
 
-#create-team-menu {
-    background-color: palette.$bg;
-    width: fit-content;
-    max-width: unset;
+#create-team-players {
     display: flex;
+    gap: 8px;
+    margin-left: auto;
+    margin-right: auto;
 
-    #create-team-container {
+    .create-team-player-container {
+        min-width: 150px;
+        height: 150px;
+        background-color: #545663;
+        border-radius: 8px;
+
+        position: relative;
+
         display: flex;
         flex-direction: column;
+        justify-content: center;
+        align-items: center;
 
-        width: inherit;
-        min-width: 644px;
-        padding: 10px;
-
-        #create-team-players {
-            display: flex;
-            gap: 8px;
-            margin-left: auto;
-            margin-right: auto;
-
-            .create-team-player-container {
-                min-width: 150px;
-                height: 150px;
-                background-color: #545663;
-                border-radius: 8px;
-
-                position: relative;
-
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                align-items: center;
-
-                // leader indicator/kick button
-                .fa-crown, .fa-xmark {
-                    position: absolute;
-                    font-size: 24px;
-                    top: 5px;
-                    right: 5px;
-                }
-
-                .fa-xmark {
-                    cursor: pointer;
-                }
-
-                // ready indicator
-                .fa-circle-check {
-                    position: absolute;
-                    font-size: 24px;
-                    color: limegreen;
-                    top: 5px;
-                    left: 5px;
-                }
-
-                .create-team-player-name-container {
-                    display: flex;
-                    justify-content: center;
-                    margin: 10px 5px 0 5px;
-
-                    .create-team-player-name {
-                        font-size: 20px;
-                        font-weight: bold;
-                        @include variables.text-shadow;
-                    }
-
-                    .create-team-player-badge {
-                        display: inline-block;
-                        height: 24px;
-                        margin-left: 5px;
-                    }
-                }
-            }
+        // leader indicator/kick button
+        .fa-crown, .fa-xmark {
+            position: absolute;
+            font-size: 24px;
+            top: 5px;
+            right: 5px;
         }
 
-        #create-team-url {
+        .fa-xmark {
+            cursor: pointer;
+        }
+
+        // ready indicator
+        .fa-circle-check {
+            position: absolute;
+            font-size: 24px;
+            color: limegreen;
+            top: 5px;
+            left: 5px;
+        }
+
+        .create-team-player-name-container {
             display: flex;
-            padding-top: 10px;
             justify-content: center;
+            margin: 10px 5px 0 5px;
 
-            #create-team-url-field {
-                font-family: "JetBrains Mono", monospace;
-                color: black;
-                user-select: all;
-                font-size: 18px;
-                flex-grow: 1;
-                padding: 4px 8px;
-                outline: none;
-                border: none;
-                border-bottom: 2px solid rgb(209, 207, 207);
-                box-shadow: inset 0 -2px rgb(209, 207, 207);
+            .create-team-player-name {
+                font-size: 20px;
+                font-weight: bold;
+                @include variables.text-shadow;
             }
 
-            #btn-copy-team-url {
-                border-top-left-radius: 0;
-                border-bottom-left-radius: 0;
-            }
-
-            #btn-hide-team-url {
-                border-top-right-radius: 0;
-                border-bottom-right-radius: 0;
-                width: 4rem;
+            .create-team-player-badge {
+                display: inline-block;
+                height: 24px;
+                margin-left: 5px;
             }
         }
+    }
+}
 
-        #create-team-options {
+#create-team-url {
+    display: flex;
+    justify-content: center;
+
+    #create-team-url-field {
+        font-family: "JetBrains Mono", monospace;
+        color: black;
+        user-select: all;
+        font-size: 18px;
+        flex-grow: 1;
+        padding: 4px 8px;
+        outline: none;
+        border: none;
+        border-bottom: 2px solid rgb(209, 207, 207);
+        box-shadow: inset 0 -2px rgb(209, 207, 207);
+    }
+
+    #btn-copy-team-url {
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+        width: fit-content;
+    }
+
+    #btn-hide-team-url {
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+        width: 4rem;
+    }
+}
+
+#create-team-options {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+
+    #create-team-toggles {
+        display: flex;
+        justify-content: center;
+        gap: 12px;
+        background-color: #555;
+        border-radius: 12px;
+        margin-top: 50px;
+        min-width: 170px;
+        padding: 4px;
+
+        &.disabled {
+            pointer-events: none;
+            filter: brightness(80%);
+        }
+
+        label {
             display: flex;
-            justify-content: space-between;
-            gap: 8px;
-            padding-top: 12px;
+            justify-content: center;
+            align-items: center;
+            padding: 5px 8px;
 
-            #create-team-toggles {
-                display: flex;
-                justify-content: center;
-                gap: 12px;
+            span {
+                margin-right: 10px;
+            }
 
-                &.disabled {
-                    pointer-events: none;
-                    filter: brightness(80%);
-                }
-
-                label {
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    background-color: #555;
-                    padding: 5px 8px;
-                    border-radius: 10px;
-
-                    span {
-                        margin-right: 10px;
-                    }
-
-                    input {
-                        margin-left: auto;
-                        font-family: "JetBrains Mono", monospace;
-                        bottom: -5px;
-                    }
-                }
+            input {
+                margin-left: auto;
+                font-family: "JetBrains Mono", monospace;
+                bottom: -5px;
             }
         }
     }
@@ -298,6 +284,64 @@
     }
 }
 
+.skin {
+    position: relative;
+    width: 102px;
+    height: 98px;
+
+    .skin-base {
+        position: relative;
+        top: 0;
+        left: 6px;
+        width: 90px;
+        height: 90px;
+        transform: rotate(90deg);
+    }
+
+    .skin-left-fist,
+    .skin-right-fist {
+        position: absolute;
+        top: 64px;
+        width: 34px;
+        height: 34px;
+        transform: rotate(90deg);
+    }
+
+    .skin-right-fist {
+        left: 68px;
+    }
+}
+
+.skin-small {
+    position: relative;
+    width: 77px;
+    height: 74px;
+
+    .skin-base {
+        position: relative;
+        top: 0;
+        left: 5px;
+        width: 68px;
+        height: 68px;
+        transform: rotate(90deg);
+        background-size: cover;
+    }
+
+    .skin-left-fist,
+    .skin-right-fist {
+        position: absolute;
+        top: 48px;
+        width: 26px;
+        height: 26px;
+        transform: rotate(90deg);
+        background-size: cover;
+    }
+
+    .skin-right-fist {
+        left: 51px;
+    }
+}
+
 // TODO Refactor this, make classes
 .dialog {
     user-select: none;
@@ -357,34 +401,6 @@
         width: 100%;
         font-size: 35px;
         font-weight: bold;
-    }
-
-    .skin {
-        position: relative;
-        width: 102px;
-        height: 98px;
-
-        .skin-base {
-            position: relative;
-            top: 0;
-            left: 6px;
-            width: 90px;
-            height: 90px;
-            transform: rotate(90deg);
-        }
-
-        .skin-left-fist,
-        .skin-right-fist {
-            position: absolute;
-            top: 64px;
-            width: 34px;
-            height: 34px;
-            transform: rotate(90deg);
-        }
-
-        .skin-right-fist {
-            left: 68px;
-        }
     }
 
     #skins-list {
@@ -824,17 +840,6 @@
     .tab-content {
         width: 100%;
         border-radius: 0;
-    }
-
-    .setting-title {
-        margin: 0.2em;
-        font-weight: bold;
-        font-size: 16px;
-        @include variables.text-shadow;
-
-        i {
-            color: red;
-        }
     }
 
     .modal-item {

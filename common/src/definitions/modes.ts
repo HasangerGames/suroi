@@ -227,7 +227,7 @@ export const Modes: Record<ModeName, ModeDefinition> = {
         forcedGoldAirdropStage: 5,
         overrideUpstairsFunctionality: true,
         replaceMenuMusic: true,
-        playButtonImage: "./img/logos/lansirama_logo.svg",
+        playButtonImage: "./img/misc/lansirama_logo.svg",
         particleEffects: {
             frames: ["bush_particle_1", "bush_particle_2", "dead_pine_tree_particle", "pine_tree_particle"],
             delay: 1000
