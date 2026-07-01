@@ -6739,7 +6739,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "grey_office_chair", position: Vec(-60, 18), rotation: 0 },
             { idString: "powered_metal_door", position: Vec(-64.25, -0.65), rotation: 0, locked: true },
             { idString: "security_desk", position: Vec(-55.9, 33.25), rotation: 0, puzzlePiece: true },
-            { idString: "gun_mount_mini14", position: Vec(-68, -27), lootSpawnOffset: Vec(5, 0.5), rotation: 1 },
+            { idString: { gun_mount_dual_rsh12: 0.1, gun_mount_mini14: 1, gun_mount_m590m: 0.2 }, position: Vec(-68, -27), lootSpawnOffset: Vec(5, 0.5), rotation: 1 },
             { idString: "gun_locker", position: Vec(-62.5, -13.5), lootSpawnOffset: Vec(0.5, 0), rotation: 0 },
             { idString: "gun_locker", position: Vec(-62.5, -19), lootSpawnOffset: Vec(0.5, 0), rotation: 2 },
             { idString: "box", position: Vec(-53, -19) },
