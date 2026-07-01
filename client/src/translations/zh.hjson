@@ -364,7 +364,7 @@
 "action_vaccine_syringe_use": "注射疫苗中"
 "interact_airdrop_crate_locked": "解锁空投"
 "interact_control_panel": "激活控制台"
-"interact_headquarters_security_desk": "激活控制台"
+"interact_security_desk": "激活控制台"
 "interact_generator": "启动发电机"
 "interact_button": "按下按钮"
 "interact_speaker": "播放音箱"

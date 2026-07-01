@@ -123,7 +123,7 @@
 "action_tablets_use": "食梗<item>"
 "interact_airdrop_crate_locked": "解開空投"
 "interact_control_panel": "着個控制台"
-"interact_headquarters_security_desk": "着個控制台"
+"interact_security_desk": "着個控制台"
 "interact_generator": "着個發電機"
 "interact_button": "暗掣"
 "loading_spritesheets": "Load梗入去<progress>"

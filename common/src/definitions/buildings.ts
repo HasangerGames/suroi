@@ -6738,7 +6738,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "grey_office_chair", position: Vec(-47, 26), rotation: 0 },
             { idString: "grey_office_chair", position: Vec(-60, 18), rotation: 0 },
             { idString: "powered_metal_door", position: Vec(-64.25, -0.65), rotation: 0, locked: true },
-            { idString: "headquarters_security_desk", position: Vec(-55.9, 33.25), rotation: 0, puzzlePiece: true },
+            { idString: "security_desk", position: Vec(-55.9, 33.25), rotation: 0, puzzlePiece: true },
             { idString: "gun_mount_mini14", position: Vec(-68, -27), lootSpawnOffset: Vec(5, 0.5), rotation: 1 },
             { idString: "gun_locker", position: Vec(-62.5, -13.5), lootSpawnOffset: Vec(0.5, 0), rotation: 0 },
             { idString: "gun_locker", position: Vec(-62.5, -19), lootSpawnOffset: Vec(0.5, 0), rotation: 2 },
@@ -8841,7 +8841,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "gun_case", position: Vec(18.07, -4.83), rotation: 1 },
             { idString: "ammo_crate", position: Vec(63.73, -20.65) },
             { idString: "barrel", position: Vec(73.17, -21.67) },
-            { idString: "pipe", position: Vec(106.85, -16.65), rotation: 0, variation: 4 }, // why does dv hate this? (variation: 4)
+            { idString: "pipe", position: Vec(106.85, -16.65), rotation: 0, variation: 3 },
             { idString: "pipe", position: Vec(62.22, -86.05), rotation: 0, variation: 1 },
             { idString: "ammo_crate", position: Vec(107.16, -12.64) },
             { idString: "ammo_crate", position: Vec(134.15, -20.66) },
@@ -8884,7 +8884,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "red_metal_auto_door", position: Vec(52.68, -82.25), rotation: 3 },
             { idString: "red_metal_auto_door", position: Vec(12.34, -33.03), rotation: 3 },
             { idString: "red_metal_auto_door", position: Vec(-38.1, -33.03), rotation: 3 },
-            { idString: "headquarters_security_desk", position: Vec(-22.75, -52.96), rotation: 2, puzzlePiece: true }
+            { idString: "security_desk", position: Vec(-22.75, -52.96), rotation: 2, puzzlePiece: true }
         ]
     },
     {
@@ -11271,7 +11271,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "chair", position: Vec(-50.33, -7.62), rotation: 1 },
             { idString: "desk_right", position: Vec(-48.54, 28.09), rotation: 2 },
             { idString: "bookshelf", position: Vec(-21.11, -4.29), rotation: 1 },
-            { idString: "headquarters_security_desk", position: Vec(-39.3, -31.52), rotation: 2, activated: true },
+            { idString: "security_desk", position: Vec(-39.3, -31.52), rotation: 2, activated: true },
             { idString: "box", position: Vec(-56.01, 19.08) },
             { idString: "box", position: Vec(50.75, -21.72) },
             { idString: "box", position: Vec(56.05, -24.02) },
@@ -11867,7 +11867,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "log", position: Vec(72.02, -42.31), rotation: 3, variation: 2 },
 
             { idString: "saw", position: Vec(5.88, -10.22), rotation: 0 },
-            { idString: "headquarters_security_desk", position: Vec(85.04, 118.94), rotation: 2, puzzlePiece: true }
+            { idString: "security_desk", position: Vec(85.04, 118.94), rotation: 2, puzzlePiece: true }
         ],
         subBuildings: IS_CLIENT ? undefined : [
             { idString: randomPallet, position: Vec(-70.25, 64.65) }, // P3
@@ -12195,7 +12195,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             }
         ],
         obstacles: IS_CLIENT ? undefined : [
-            // { idString: "headquarters_security_desk", position: Vec(-11.33, -17.63), rotation: 2, activated: true },
+            // { idString: "security_desk", position: Vec(-11.33, -17.63), rotation: 2, activated: true },
             { idString: "gun_mount_hatchet", position: Vec(10.05, -0.99), rotation: 2 },
             { idString: randomToilet, position: Vec(-20.58, -46.84), rotation: 1 },
             { idString: "box", position: Vec(-41.54, 6.09) },

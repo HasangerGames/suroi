@@ -127,7 +127,7 @@
 "settings_haptics": "ハプティクス"
 "settings_shake_to_reload": "振ってリロード"
 "settings_shake_count": "振り回数しきい値"
-"settings_shake_force": "振り力しきい値" 
+"settings_shake_force": "振り力しきい値"
 "settings_shake_delay": "振り時間しきい値"
 
 "loadout_skins": "スキン"
@@ -189,7 +189,7 @@
 "action_vaccine_syringe_use": "ワクチンを注射しています…"
 "interact_airdrop_crate_locked": "補給物資を開ける" // Apparently PUBG's Japanese version uses 補給物資
 "interact_control_panel": "コントロールパネルを起動する"
-"interact_headquarters_security_desk": "コントロールパネルを起動する"
+"interact_security_desk": "コントロールパネルを起動する"
 "interact_generator": "発電機を起動する"
 "interact_button": "ボタンを押す"
 "interact_monument": "敬意を表す"

@@ -6180,7 +6180,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         }
     },
     {
-        idString: "headquarters_security_desk",
+        idString: "security_desk",
         name: "Headquarters Security Desk",
         defType: DefinitionType.Obstacle,
         material: "wood",
@@ -6198,7 +6198,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         isActivatable: true,
         allowFlyover: FlyoverPref.Always,
         replaceWith: {
-            idString: "headquarters_security_desk_activated",
+            idString: "security_desk_activated",
             delay: 0
         },
         sound: {
@@ -6209,7 +6209,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         }
     },
     {
-        idString: "headquarters_security_desk_activated",
+        idString: "security_desk_activated",
         name: "Headquarters Security Panel (active)",
         defType: DefinitionType.Obstacle,
         material: "wood",

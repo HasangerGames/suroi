@@ -99,7 +99,7 @@ public/img/game/obstacles/gun_mount
 public/img/game/obstacles/gun_mount_melee
 public/img/game/obstacles/hazel_crate
 public/img/game/obstacles/headquarters_secret_door
-public/img/game/obstacles/headquarters_security_desk
+public/img/game/obstacles/security_desk
 public/img/game/obstacles/hq_toilet_paper_wall
 public/img/game/obstacles/infected_wall
 public/img/game/obstacles/kitchen_unit

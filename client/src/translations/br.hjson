@@ -173,7 +173,7 @@
 
 "interact_airdrop_crate_locked": "Abrir Caixa de Suprimentos"
 "interact_control_panel": "Ativar Painel de Controle"
-"interact_headquarters_security_desk": "Ativar Painel de Controle"
+"interact_security_desk": "Ativar Painel de Controle"
 "interact_generator": "Ativar Gerador"
 "interact_button": "Pressionar Botão"
 "interact_speaker": "Tocar Alto-falante"

@@ -133,7 +133,7 @@
 "action_tablets_use": "Taking <item>"
 "interact_airdrop_crate_locked": "Avaa Ilmapudotus"
 "interact_control_panel": "Activate Control Panel"
-"interact_headquarters_security_desk": "Activate Control Panel"
+"interact_security_desk": "Activate Control Panel"
 "interact_generator": "Activate Generator"
 "interact_button": "Press Button"
 "interact_speaker": "Play Speaker"

@@ -64,6 +64,8 @@ public/img/game/obstacles/couch_end_right
 public/img/game/obstacles/couch_part
 public/img/game/obstacles/desk_left
 public/img/game/obstacles/desk_right
+public/img/game/obstacles/detector_top
+public/img/game/obstacles/detector_walls
 public/img/game/obstacles/diseased_plumpkin
 public/img/game/obstacles/door
 public/img/game/obstacles/door2
@@ -80,6 +82,7 @@ public/img/game/obstacles/flint_crate
 public/img/game/obstacles/flint_lockbox
 public/img/game/obstacles/forklift
 public/img/game/obstacles/fridge
+public/img/game/obstacles/generator
 public/img/game/obstacles/glass_door
 public/img/game/obstacles/gold_rock
 public/img/game/obstacles/grenade_box
@@ -88,6 +91,7 @@ public/img/game/obstacles/grey_office_chair
 public/img/game/obstacles/gun_case
 public/img/game/obstacles/gun_locker
 public/img/game/obstacles/gun_mount
+public/img/game/obstacles/gun_mount_dual_rsh12
 public/img/game/obstacles/gun_mount_melee
 public/img/game/obstacles/hatchet_stump
 public/img/game/obstacles/hay_bale
@@ -136,6 +140,7 @@ public/img/game/obstacles/rock
 public/img/game/obstacles/rock_normal
 public/img/game/obstacles/round_table
 public/img/game/obstacles/sandbags
+public/img/game/obstacles/security_desk
 public/img/game/obstacles/sink
 public/img/game/obstacles/sink2
 public/img/game/obstacles/small_bed

@@ -123,7 +123,7 @@
 "action_tablets_use": "Izmantot <item>"
 "interact_airdrop_crate_locked": "Atvērt airdropu"
 "interact_control_panel": "Aktivizēt kontroles paneli"
-"interact_headquarters_security_desk": "Aktivizēt kontroles paneli"
+"interact_security_desk": "Aktivizēt kontroles paneli"
 "interact_generator": "Aktivizēt ģeneratoru"
 "interact_button": "Nospiest pogu"
 "loading_spritesheets": "Ielādē spritesheets <progress>"

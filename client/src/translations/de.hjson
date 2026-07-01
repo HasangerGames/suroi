@@ -138,7 +138,7 @@
 "action_tablets_use": "<item> einnehmen"
 "interact_airdrop_crate_locked": "Airdrop öffnen"
 "interact_control_panel": "Bedienfeld aktivieren"
-"interact_headquarters_security_desk": "Bedienfeld aktivieren"
+"interact_security_desk": "Bedienfeld aktivieren"
 "interact_generator": "Generator aktivieren"
 "interact_button": "Knopf drücken"
 "interact_speaker": "Lautsprecher abspielen"

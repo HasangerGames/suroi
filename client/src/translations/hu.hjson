@@ -157,7 +157,7 @@
 "action_vaccine_syringe_use": "Injekció beszúrása"
 "interact_airdrop_crate_locked": "Airdrop kinyitása"
 "interact_control_panel": "Irányító Panel aktiválása"
-"interact_headquarters_security_desk": "Irányító Panel aktiválása"
+"interact_security_desk": "Irányító Panel aktiválása"
 "interact_generator": "Generátor aktiválása"
 "interact_button": "Gomb megnyomása"
 "interact_speaker": "Hangszóró lejátszása"

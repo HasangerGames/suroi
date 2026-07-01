@@ -152,7 +152,7 @@
 "action_tablets_use": "Utilisant <item>"
 "interact_airdrop_crate_locked": "Ouvrir l'Airdrop"
 "interact_control_panel": "Activer le panneau de contrôle"
-"interact_headquarters_security_desk": "Activer le panneau de contrôle"
+"interact_security_desk": "Activer le panneau de contrôle"
 "interact_generator": "Remplir le Générateur"
 "interact_speaker": "Allumer l'enceinte"
 "interact_monument": "Faire hommage"

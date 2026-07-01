@@ -75,7 +75,7 @@ public/img/game/obstacles/gun_locker
 public/img/game/obstacles/gun_mount
 public/img/game/obstacles/gun_mount_melee
 public/img/game/obstacles/hatchet_stump
-public/img/game/obstacles/headquarters_security_desk
+public/img/game/obstacles/security_desk
 public/img/game/obstacles/hollow_log_wall
 public/img/game/obstacles/humvee
 public/img/game/obstacles/kitchen_unit

@@ -1740,7 +1740,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `final_gas_advancing` is not defined
 - Key `action_vaccine_syringe_use` is not defined
 - Key `interact_server` is not defined
-- Key `interact_headquarters_security_desk` is not defined
+- Key `interact_security_desk` is not defined
 - Key `interact_speaker` is not defined
 - Key `interact_monument` is not defined
 - Key `interact_recorder_interactable` is not defined

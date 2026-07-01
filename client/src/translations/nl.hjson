@@ -158,7 +158,7 @@
 "action_tablets_use": "<item> pakken"
 "interact_airdrop_crate_locked": "Luchtdrop openen"
 "interact_control_panel": "Controlepaneel activeren"
-"interact_headquarters_security_desk": "Controlepaneel activeren"
+"interact_security_desk": "Controlepaneel activeren"
 "interact_generator": "Generator activeren"
 "interact_button": "Druk op knop"
 "interact_speaker": "Speaker Spelen"
