@@ -1,8 +1,8 @@
 import { FlyoverPref, GameConstants, Layers, MapObjectSpawnMode, RotationMode, ZIndexes } from "../constants";
 import { Orientation, type Variation } from "../typings";
-import { CircleHitbox, GroupHitbox, RectangleHitbox, type Hitbox, PolygonHitbox } from "../utils/hitbox";
+import { CircleHitbox, GroupHitbox, type Hitbox, RectangleHitbox } from "../utils/hitbox";
 import { type Mutable } from "../utils/misc";
-import { DefinitionType, ObjectDefinitions, type ObjectDefinition, type ReferenceOrRandom, type ReferenceTo } from "../utils/objectDefinitions";
+import { DefinitionType, type ObjectDefinition, ObjectDefinitions, type ReferenceOrRandom, type ReferenceTo } from "../utils/objectDefinitions";
 import { Vec, type Vector } from "../utils/vector";
 import { ContainerTints, TentTints, TruckContainerTints } from "./buildings";
 import { type GunDefinition } from "./items/guns";
@@ -136,6 +136,8 @@ type CommonObstacleDefinition = ObjectDefinition & {
     }
 
     readonly spawnMode?: MapObjectSpawnMode
+    readonly spawnOrientation?: Orientation
+    readonly spawnOffset?: Vector | { min: Vector, max: Vector }
     readonly tint?: number
     readonly particlesOnDestroy?: ReferenceTo<SyncedParticleDefinition>
     readonly additionalDestroySounds?: readonly string[]
@@ -266,8 +268,6 @@ export const MaterialSounds: Record<string, { hit?: string, destroyed?: string }
 };
 
 export const TintedParticles: Record<string, { readonly base: string, readonly tint: number, readonly variants?: number }> = {
-    _glow_: { base: "_glow_", tint: 0xffffff },
-
     cabin_wall_particle: { base: "wood_particle", tint: 0x5d4622 },
     cabin_particle: { base: "wood_particle", tint: 0x49371d },
     metal_particle: { base: "metal_particle_1", tint: 0x5f5f5f },
@@ -279,7 +279,7 @@ export const TintedParticles: Record<string, { readonly base: string, readonly t
     dumpster_particle: { base: "metal_particle_1", tint: 0x3c7033 },
     solid_crate_particle: { base: "wood_particle", tint: 0x595959 },
     washing_machine_particle: { base: "metal_particle_1", tint: 0xb3b3b3 },
-    small_lamp_thingy_particle: { base: "window_particle", tint: 0xb3b3b3 },
+    small_lamp_particle: { base: "window_particle", tint: 0xb3b3b3 },
     fridge_particle: { base: "metal_particle_1", tint: 0x666666 },
     tv_particle: { base: "metal_particle_1", tint: 0x333333 },
     smokestack_particle: { base: "metal_particle_1", tint: 0xb5b5b5 },
@@ -380,11 +380,7 @@ export const TintedParticles: Record<string, { readonly base: string, readonly t
     container_particle_blue: { base: "metal_particle_1", tint: ContainerTints.blue },
     container_particle_yellow: { base: "metal_particle_1", tint: ContainerTints.yellow },
     container_particle_gas_can: { base: "metal_particle_1", tint: ContainerTints.gas_can },
-
-    container_particle_military_green: { base: "metal_particle_1", tint: ContainerTints.military_green },
-    container_particle_military_orange: { base: "metal_particle_1", tint: ContainerTints.military_orange },
-    container_particle_military_marine: { base: "metal_particle_1", tint: ContainerTints.military_marine },
-    container_particle_military_lime: { base: "metal_particle_1", tint: ContainerTints.military_lime },
+    container_particle_nsd: { base: "metal_particle_1", tint: ContainerTints.nsd },
 
     tent_particle_1: { base: "ceiling_particle", tint: TentTints.red },
     tent_particle_2: { base: "ceiling_particle", tint: TentTints.green },
@@ -514,7 +510,7 @@ const hqWall = (lengthNumber: number, hitbox: RectangleHitbox, customHealth = fa
     hitbox,
     isWall: true,
     wall: {
-        borderColor: customHealth ? 0x23282a : 0x4a4134,
+        borderColor: customHealth ? 0x23282a : 0x2e2921,
         color: customHealth ? 0x74858b : 0xafa08c,
         ...(customHealth ? {} : { rounded: !customHealth })
     }
@@ -700,7 +696,7 @@ const innerConcreteWall = (id: number, hitbox: Hitbox): RawObstacleDefinition =>
     isWall: true,
     wall: {
         color: 0x808080,
-        borderColor: 0x484848
+        borderColor: 0x2a2a2a
     }
 });
 
@@ -720,7 +716,7 @@ const mobileHomeWall = (lengthNumber: string, hitbox: RectangleHitbox): RawObsta
     },
     isWall: true,
     wall: {
-        borderColor: 0x666666,
+        borderColor: 0x2f2f2f,
         color: 0xbfbfbf
     }
 });
@@ -775,7 +771,7 @@ const portaPottyWall = (
     isWall: true,
     wall: outhouse
         ? { color: 0x6e4d2f, borderColor: 0x261b14 }
-        : { color: 0x1c71d8, borderColor: 0x0d3565 },
+        : { color: 0x1c71d8, borderColor: 0x092444 },
     frames: {
         particle: outhouse
             ? "outhouse_wall_particle"
@@ -1565,11 +1561,10 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         spawnHitbox: new CircleHitbox(5),
         rotationMode: RotationMode.Full,
         allowFlyover: FlyoverPref.Always,
+        hasLoot: true,
         frames: {
-            base: "plumpkin_base",
-            particle: "plumpkin_particle"
-        },
-        hasLoot: true
+            base: "plumpkin_base"
+        }
     },
     {
         idString: "diseased_plumpkin",
@@ -3233,7 +3228,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         particleVariations: 2
     },
     {
-        idString: "secret_door",
+        idString: "headquarters_secret_door",
         name: "Secret Door",
         defType: DefinitionType.Obstacle,
         material: "wood",
@@ -3430,7 +3425,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         }
     },
     {
-        idString: "vault_door_deactivated",
+        idString: "vault_door2",
         name: "Vault Door",
         defType: DefinitionType.Obstacle,
         material: "metal_heavy",
@@ -3441,15 +3436,15 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         rotationMode: RotationMode.Limited,
         isDoor: true,
         openOnce: true,
-        doorSound: "vault_door_powered",
+        doorSound: "vault_door2",
         requiresPower: true,
         animationDuration: 2000,
         interactionDelay: 2500,
         hingeOffset: Vec(-5.6, -2.3),
         frames: {
             particle: "metal_particle",
-            powered: "vault_door_activated",
-            opened: "vault_door_off"
+            powered: "vault_door2_activated",
+            opened: "vault_door2_off"
         }
     },
     {
@@ -3711,7 +3706,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         ),
         rotationMode: RotationMode.Limited,
         frames: {
-            particle: "white_small_couch_particle"
+            base: "small_couch",
+            residue: "small_couch_residue"
         }
     },
     {
@@ -3735,9 +3731,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         ),
         rotationMode: RotationMode.Limited,
         frames: {
-            base: "white_small_couch",
-            residue: "white_small_couch_residue",
-            particle: "red_small_couch_particle"
+            base: "small_couch",
+            residue: "small_couch_residue"
         }
     },
     {
@@ -3760,7 +3755,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         rotationMode: RotationMode.Limited,
         frames: {
             particle: "couch_part_particle",
-            residue: "brown_couch_part_residue"
+            residue: "couch_part_residue"
         }
     },
     {
@@ -3785,7 +3780,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         zIndex: ZIndexes.ObstaclesLayer2,
         frames: {
             particle: "couch_part_particle",
-            residue: "brown_couch_part_residue"
+            residue: "couch_part_residue"
         }
     },
     {
@@ -3811,7 +3806,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         rotationMode: RotationMode.Limited,
         frames: {
             particle: "couch_part_particle",
-            residue: "brown_couch_part_residue"
+            residue: "couch_part_residue"
         }
     },
     {
@@ -3837,7 +3832,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         rotationMode: RotationMode.Limited,
         frames: {
             particle: "couch_part_particle",
-            residue: "brown_couch_part_residue"
+            residue: "couch_part_residue"
         }
     },
     {
@@ -4831,7 +4826,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         }
     },
     {
-        idString: "house_column",
+        idString: "column",
         name: "House Column",
         defType: DefinitionType.Obstacle,
         material: "stone",
@@ -4871,7 +4866,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
             spawnMax: 1,
             destroy: 0.95
         },
-        hitbox: new CircleHitbox(2.45, Vec(-0.15, 0.9)),
+        hitbox: new CircleHitbox(2.45),
         rotationMode: RotationMode.Full,
         allowFlyover: FlyoverPref.Always,
         hasLoot: true
@@ -5159,10 +5154,9 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
             activated: "button_activated"
         }
     },
-    mobileHomeWall("1", RectangleHitbox.fromRect(7.5, 1.68)),
-    mobileHomeWall("2", RectangleHitbox.fromRect(20.6, 1.68)),
-    mobileHomeWall("3", RectangleHitbox.fromRect(20.5, 1.68)),
-    mobileHomeWall("4", RectangleHitbox.fromRect(10.65, 1.68)),
+    mobileHomeWall("1", RectangleHitbox.fromRect(7.25, 1.68)),
+    mobileHomeWall("2", RectangleHitbox.fromRect(20.46, 1.68)),
+    mobileHomeWall("3", RectangleHitbox.fromRect(10.66, 1.68)),
     kitchenUnit("1", RectangleHitbox.fromRect(6.61, 6.61, Vec(0, -0.45))),
     kitchenUnit("2", RectangleHitbox.fromRect(6.61, 6.61)),
     kitchenUnit("3", RectangleHitbox.fromRect(9.45, 6.61, Vec(0, -0.48)), "sink_residue"),
@@ -5398,8 +5392,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         hasLoot: true,
         hideOnMap: true,
         frames: {
-            particle: "chest_particle",
-            residue: "chest_residue"
+            particle: "chest_particle"
         },
         spawnMode: MapObjectSpawnMode.Beach,
         allowFlyover: FlyoverPref.Always
@@ -5428,7 +5421,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         allowFlyover: FlyoverPref.Always
     },
     {
-        idString: "cargo_ship_stair_entrance_walls",
+        idString: "cargo_ship_stair_entrance",
         name: "Cargo Ship Stair",
         defType: DefinitionType.Obstacle,
         material: "metal_heavy",
@@ -5442,7 +5435,6 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
             RectangleHitbox.fromRect(2.36, 16.68, Vec(6.46, 0.19))
         ),
         frames: {
-            base: "cargo_ship_stair_entrance",
             particle: "cargo_ship_particle"
         },
         rotationMode: RotationMode.Limited
@@ -6362,6 +6354,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         indestructible: true,
         reflectBullets: true,
         hitbox: new CircleHitbox(7.27),
+        spawnHitbox: RectangleHitbox.fromRect(70, 110),
         frames: {
             particle: "buoy_particle"
         },
@@ -6371,8 +6364,9 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
             scaleX: 2.4,
             scaleY: 2.4
         },
-        allowFlyover: FlyoverPref.Always
-        // spawnMode: MapObjectSpawnMode.Beach // todo: ocean spawn mode
+        allowFlyover: FlyoverPref.Always,
+        spawnMode: MapObjectSpawnMode.Beach,
+        spawnOffset: { min: Vec(50, 0), max: Vec(100, 0) }
     },
     {
         idString: "large_logs_pile",
@@ -6499,7 +6493,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         hasLoot: true
     },
     {
-        idString: "small_lamp_thingy",
+        idString: "small_lamp",
         name: "Small Lamp",
         defType: DefinitionType.Obstacle,
         material: "glass",
@@ -6569,7 +6563,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         }
     },
     {
-        idString: "large_logs_pile_2",
+        idString: "large_logs_pile2",
         name: "Large Logs Pile",
         defType: DefinitionType.Obstacle,
         variations: 2,

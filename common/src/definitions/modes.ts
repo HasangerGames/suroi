@@ -114,7 +114,7 @@ export const Modes: Record<ModeName, ModeDefinition> = {
         },
         spriteSheets: ["shared", "fall"],
         replaceMenuMusic: true,
-        playButtonImage: "./img/game/fall/obstacles/pumpkin.svg"
+        playButtonImage: "./img/game/obstacles/pumpkin/pumpkin.svg"
     },
     halloween: {
         colors: {
@@ -142,7 +142,7 @@ export const Modes: Record<ModeName, ModeDefinition> = {
             ],
             delay: 1000
         },
-        playButtonImage: "./img/game/halloween/obstacles/jack_o_lantern.svg",
+        playButtonImage: "./img/game/obstacles/jack_o_lantern/jack_o_lantern.svg",
         canvasFilters: {
             brightness: 0.6,
             saturation: 0.85
@@ -162,7 +162,7 @@ export const Modes: Record<ModeName, ModeDefinition> = {
         },
         ambience: "wind_ambience",
         spriteSheets: ["shared", "normal", "infection"],
-        playButtonImage: "./img/game/shared/perks/infected.svg",
+        playButtonImage: "./img/game/perks/infection/infected.svg",
         weaponSwap: true,
         canvasFilters: {
             brightness: 0.8,
@@ -206,7 +206,7 @@ export const Modes: Record<ModeName, ModeDefinition> = {
         },
         obstacleVariants: true,
         specialLogo: true,
-        playButtonImage: "./img/game/winter/obstacles/red_gift.svg",
+        playButtonImage: "./img/game/obstacles/red_gift/red_gift.svg",
         replaceWaterBy: FloorNames.Ice,
         enhancedAirdropParticles: true
     },
@@ -259,7 +259,7 @@ export const Modes: Record<ModeName, ModeDefinition> = {
         obstacleVariants: true,
         specialLogo: true,
         bulletFilters: true,
-        playButtonImage: "./img/game/winter/obstacles/christmas_tree.svg",
+        playButtonImage: "./img/game/obstacles/christmas_tree/christmas_tree.svg",
         canvasFilters: {
             brightness: 0.6,
             saturation: 0.85

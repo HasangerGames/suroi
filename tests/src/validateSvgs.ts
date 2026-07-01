@@ -1,6 +1,6 @@
+import * as fs from "node:fs";
 import { ColorStyles, styleText } from "@common/utils/logging";
 import { readDirectory } from "@common/utils/readDirectory";
-import * as fs from "node:fs";
 import * as svgParser from "svg-parser";
 
 const MAX_SIZES: Record<string, number> = {
@@ -21,8 +21,9 @@ const MAX_SIZES: Record<string, number> = {
     decals: 50_000,
     explosions: 25_000,
     mapPings: 25_000,
+    indicators: 75_000,
     player: 25_000,
-    shared: 10_000, // theres only missing_texture there lol
+    game: 10_000, // theres only missing_texture there lol
     casings: 5_000,
     trails: 6_000
 };
@@ -62,7 +63,12 @@ const fileSizes: Record<string, {
     biggest: number
 }> = {};
 
-const unminifiedFiles: string[] | undefined = process.argv.includes("--fix") ? [] : undefined;
+const unminifiedFiles: string[] | undefined = process.argv.includes("--fix-unminified") ? [] : undefined;
+
+const fixNonIntegerSizes: string[] | undefined = process.argv.includes("--fix-non-integer-sizes") ? [] : undefined;
+
+// pixels to mm * magical scaling
+const nonIntegerFixScale = (96 / 25.4) * 0.9364705882352942;
 
 const svgPaths = [
     ...readDirectory("../client/public/img/game", /\.(svg)$/i),
@@ -73,21 +79,6 @@ function checkNode(path: string, node: svgParser.ElementNode): void {
     if (!node) return;
 
     switch (node.tagName) {
-        case "svg": {
-            /* TODO: reenable this after fixing all files that trigger it
-
-            if (!node.properties) break;
-            const { width, height } = node.properties;
-
-            if (typeof width !== "number" || typeof height !== "number") {
-                addError(
-                    path,
-                    `Root element sizes are not integers; width: ${width}, height: ${height}`
-                );
-            }
-            */
-            break;
-        }
         case "path": {
             if (!node.properties) break;
             if (typeof node.properties.d !== "string") {
@@ -103,9 +94,10 @@ function checkNode(path: string, node: svgParser.ElementNode): void {
             }
             break;
         }
-        case "image":
+        case "image": {
             addError(path, "Embedded image tag");
             break;
+        }
     }
 
     for (const child of node.children) {
@@ -118,37 +110,63 @@ function checkNode(path: string, node: svgParser.ElementNode): void {
 for (const path of svgPaths) {
     const stats = fs.statSync(path);
 
-    // biome-ignore lint/style/noNonNullAssertion: yes
-    const baseDir = path.split("/").at(-2)!;
+    const dirSplit = path.split("/");
+    // biome-ignore lint/style/noNonNullAssertion: we assume dirSplit is at least 3 long
+    const baseDir = dirSplit.at(-2)! in MAX_SIZES ? dirSplit.at(-2)! : dirSplit.at(-3)!;
 
-    let maxSize = MAX_SIZES[baseDir];
+    const maxSize = MAX_SIZES[baseDir];
+    if (maxSize) {
+        if (stats.size > maxSize) {
+            addError(
+                path,
+                `Size is ${humanSize(stats.size)} (max for ${baseDir}: ${humanSize(maxSize)})`
+            );
+        }
 
-    if (!maxSize) {
-        console.warn(`missing max size for directory ${baseDir}`);
-        maxSize = 100_000;
+        fileSizes[baseDir] ??= {
+            size: 0,
+            count: 0,
+            biggest: 0
+        };
+        fileSizes[baseDir].biggest = Math.max(fileSizes[baseDir].biggest, stats.size);
+        fileSizes[baseDir].size += stats.size;
+        fileSizes[baseDir].count++;
+    } else {
+        console.warn(`missing max size for directory (full path: ${path})`);
     }
-
-    if (stats.size > maxSize) {
-        addError(
-            path,
-            `Size is ${humanSize(stats.size)} (max for ${baseDir}: ${humanSize(maxSize)})`
-        );
-    }
-
-    fileSizes[baseDir] ??= {
-        size: 0,
-        count: 0,
-        biggest: 0
-    };
-    fileSizes[baseDir].biggest = Math.max(fileSizes[baseDir].biggest, stats.size);
-    fileSizes[baseDir].size += stats.size;
-    fileSizes[baseDir].count++;
 
     const content = fs.readFileSync(path, "utf8");
 
     if (content.split("\n").length > 1) {
         addError(path, "Unminified svg");
         unminifiedFiles?.push(path);
+    }
+
+    // this may be the worst hack i've ever written, but it seems to work so
+    const dimensions = /(.*)(<svg[^>]+)(width="|height=")([\d.m]+)("[^>]+)(width="|height=")([\d.m]+)(".*)/s.exec(content);
+    if (dimensions) {
+        const dim1 = dimensions[4];
+        const dim2 = dimensions[7];
+        if (dim1.endsWith("mm") || dim2.endsWith("mm")) {
+            // if first dimension (yes, dimensions[3]) is height, the second must be width,
+            // meaning width must be dim2 and height must be dim1
+            const swapDims = dimensions[3].startsWith("height");
+            const width = swapDims ? dim2 : dim1;
+            const height = swapDims ? dim1 : dim2;
+            addError(
+                path,
+                `${fixNonIntegerSizes ? "[FIXED] " : ""}SVG dimensions are in millimeters; width: ${width}, height: ${height}`
+            );
+
+            dimensions[swapDims ? 7 : 4] = (parseFloat(width.slice(0, -2)) * nonIntegerFixScale).toFixed(3);
+            dimensions[swapDims ? 4 : 7] = (parseFloat(height.slice(0, -2)) * nonIntegerFixScale).toFixed(3);
+
+            if (fixNonIntegerSizes) {
+                fs.writeFileSync(path, dimensions.slice(1).join("")); // since everything is in capture groups, all we have to do is stitch them back together
+            }
+        }
+    } else {
+        addError(path, "Dimensions could not be read");
     }
 
     const rootNode = svgParser.parse(content);

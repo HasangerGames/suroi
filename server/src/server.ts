@@ -1,9 +1,9 @@
+import Cluster from "node:cluster";
+import { URLSearchParams } from "node:url";
 import { GameConstants, TeamMode } from "@common/constants";
 import { Badges } from "@common/definitions/badges";
 import { Skins } from "@common/definitions/items/skins";
 import { CustomTeamMessage, PunishmentMessage } from "@common/typings";
-import Cluster from "node:cluster";
-import { URLSearchParams } from "node:url";
 import os from "os";
 import { version } from "../../package.json";
 import { GameManager } from "./gameManager";
@@ -28,6 +28,32 @@ export function resetTeams(): void {
 declare global {
     var initialSetupComplete: boolean | undefined
 }
+
+//
+// Code for
+//
+// const name = "infection";
+// const mapDef = Maps[name];
+// console.log(
+//     getReachableBuildings(mapDef)
+//         .map(o => `public/img/game/buildings/${o.idString}`)
+//         .sort()
+//         .join("\n")
+// );
+// console.log(
+//     Array.from(new Set([
+//         ...[
+//             ...Object.keys(mapDef.obstacles ?? {}),
+//             ...Object.keys(mapDef.rivers?.obstacles ?? {}),
+//             ...(mapDef.obstacleClumps ?? []).flatMap(c => c.clump.obstacles),
+//         ].map(o => Obstacles.fromString(o)),
+//         ...getReachableObstacles(mapDef, getReachableBuildings(mapDef))
+//     ]))
+//         .filter(o => !o.wall && !o.invisible)
+//         .map(o => `public/img/game/obstacles/${o.idString}`)
+//         .sort()
+//         .join("\n")
+// );
 
 if (Cluster.isPrimary && require.main === module) {
     //                   ^^^^^^^^^^^^^^^^^^^^^^^ only starts server if called directly from command line (not imported)

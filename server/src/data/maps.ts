@@ -166,16 +166,15 @@ const maps = {
             construction_site: 1,
             mobile_home: 10,
             porta_potty: 12,
-            container_3: 2,
-            container_4: 2,
-            container_5: 2,
-            container_6: 2,
-            container_7: 1,
-            container_8: 2,
-            container_9: 1,
-            container_10: 2,
-            memorial: 1,
-            buoy: 12
+            container_green_open1: 2,
+            container_green_open1_damaged: 2,
+            container_blue_open1: 2,
+            container_blue_open1_damaged: 2,
+            container_blue_open2: 1,
+            container_blue_open2_damaged: 2,
+            container_yellow_open1: 1,
+            container_yellow_open2: 2,
+            memorial: 1
         },
         quadBuildingLimit: {
             port: 1,
@@ -213,7 +212,8 @@ const maps = {
             melee_crate: 1,
             gold_rock: 1,
             loot_barrel: 1,
-            flint_lockbox: 1
+            flint_lockbox: 1,
+            buoy: 12
         },
         obstacleClumps: [
             {
@@ -338,8 +338,7 @@ const maps = {
             tent_3: 3,
             tent_4: 3,
             tent_5: 1,
-            outhouse: 10,
-            buoy: 16
+            outhouse: 10
         },
         quadBuildingLimit: {
             river_hut_4: 2,
@@ -383,7 +382,8 @@ const maps = {
             loot_barrel: 1,
             flint_lockbox: 1,
             pumpkin: 200,
-            large_pumpkin: 5
+            large_pumpkin: 5,
+            buoy: 16
         },
         obstacleClumps: [
             {
@@ -489,7 +489,7 @@ const maps = {
                 "rock",
                 "plumpkin",
                 "diseased_plumpkin",
-                "vibrant_bush", 
+                "vibrant_bush",
                 "river_chest",
                 "lily_pad",
                 "grenade_crate",
@@ -548,7 +548,6 @@ const maps = {
             outhouse: 5,
             porta_potty: 5,
             mobile_home: 6,
-            buoy: 14,
             hollow_log_1: 5,
             hollow_log_2: 5,
             hollow_log_3: 5,
@@ -610,7 +609,8 @@ const maps = {
             diseased_mini_plumpkin: 140,
             large_pumpkin: 40,
             plumpkin: 5,
-            gravestone: 60
+            gravestone: 60,
+            buoy: 14
         },
         obstacleClumps: [
             {
@@ -697,16 +697,15 @@ const maps = {
             red_house_v2: 3,
             mobile_home: 8,
             porta_potty: 8,
-            container_3: 2,
-            container_4: 2,
-            container_5: 2,
-            container_6: 2,
-            container_7: 1,
-            container_8: 2,
-            container_9: 1,
-            container_10: 2,
-            memorial: 1,
-            buoy: 12
+            container_green_open1: 2,
+            container_green_open1_damaged: 2,
+            container_blue_open1: 2,
+            container_blue_open1_damaged: 2,
+            container_blue_open2: 1,
+            container_blue_open2_damaged: 2,
+            container_yellow_open1: 1,
+            container_yellow_open2: 2,
+            memorial: 1
         },
         majorBuildings: [
             "port",
@@ -748,7 +747,8 @@ const maps = {
             melee_crate: 1,
             gold_rock: 1,
             loot_barrel: 1,
-            flint_lockbox: 1
+            flint_lockbox: 1,
+            buoy: 12
         },
         obstacleClumps: [
             {
@@ -852,7 +852,7 @@ const maps = {
         obstacles: {
             stump: 80,
             small_logs_pile: 30,
-            large_logs_pile_2: 20,
+            large_logs_pile2: 20,
             clearing_boulder: 22,
             pine_tree: 100,
             spruce_tree: 92,
@@ -964,16 +964,15 @@ const maps = {
             construction_site: 1,
             mobile_home: 10,
             porta_potty: 12,
-            container_3: 2,
-            container_4: 2,
-            container_5: 2,
-            container_6: 2,
-            container_7: 1,
-            container_8: 2,
-            container_9: 1,
-            container_10: 2,
+            container_green_open1: 2,
+            container_green_open1_damaged: 2,
+            container_blue_open1: 2,
+            container_blue_open1_damaged: 2,
+            container_blue_open2: 1,
+            container_blue_open2_damaged: 2,
+            container_yellow_open1: 1,
+            container_yellow_open2: 2,
             memorial: 1,
-            buoy: 16,
             christmas_camp: 1,
             igloo: 6
         },
@@ -1015,7 +1014,8 @@ const maps = {
             melee_crate_winter: 1,
             gold_rock: 1,
             loot_barrel: 1,
-            flint_lockbox_winter: 1
+            flint_lockbox_winter: 1,
+            buoy: 16
         },
         obstacleClumps: [
             {
@@ -1087,21 +1087,20 @@ const maps = {
                 igloo: 5,
 
                 warehouse: 5,
-                container_3: 2,
-                container_4: 2,
-                container_5: 2,
-                container_6: 2,
-                container_7: 2,
-                container_8: 2,
-                container_9: 2,
-                container_10: 2,
-                container_20: 3,
-                container_26: 3,
+                container_green_open1: 2,
+                container_green_open1_damaged: 2,
+                container_blue_open1: 2,
+                container_blue_open1_damaged: 2,
+                container_blue_open2: 2,
+                container_blue_open2_damaged: 2,
+                container_yellow_open1: 2,
+                container_yellow_open2: 2,
+                container_green_damaged1: 3,
+                container_white_damaged1: 3,
                 small_bunker_winter: 1,
                 fulcrum_bunker_winter: 1,
                 construction_site: 1,
-                memorial: 1,
-                buoy: 12
+                memorial: 1
             };
 
             const obstacles = {
@@ -1124,16 +1123,16 @@ const maps = {
                 gold_rock: 1,
                 loot_tree: 1,
                 loot_barrel: 1,
-                small_lamp_thingy: 50,
+                small_lamp: 50,
                 red_gift: 6,
                 blue_gift: 6,
                 green_gift: 6,
                 black_gift: 2,
                 purple_gift: Math.random() > 0.9 ? 2 : 0,
-
                 viking_chest: Math.random() > 0.9 ? 1 : 0,
                 tango_crate: Math.random() > 0.8 ? 1 : 0,
-                lux_crate: Math.random() > 0.8 ? 1 : 0
+                lux_crate: Math.random() > 0.8 ? 1 : 0,
+                buoy: 12
             };
 
             const loots = {
@@ -1412,6 +1411,60 @@ const maps = {
             { name: "stark is pro", position: Vec(0.5, 0.5) }
         ]
     },
+    layoutFixes: { // temporary map, delete later ass code
+        width: 576,
+        height: 576,
+        spawn: { mode: "fixed" },
+        beachSize: 32,
+        oceanSize: 64,
+        onGenerate(map) {
+            // pallets
+            const palletVariantCount = 6;
+            for (let i = 0; i < palletVariantCount; i++) {
+                map.generateBuilding(`pallet_${i + 1}`, Vec(120 + (i * 15), 256));
+            }
+
+            // containers
+            const containersList = [
+                "container_red_closed",
+                "container_yellow_closed",
+                "container_green_closed",
+                "container_white_closed",
+                "container_yellow_open1",
+                "container_green_open1",
+                "container_green_open1_damaged",
+                "container_blue_open1",
+                "container_blue_open1_damaged",
+                "container_yellow_open2",
+                "container_yellow_open2_damaged",
+                "container_blue_open2",
+                "container_blue_open2_damaged",
+                "container_yellow_damaged2",
+                "container_green_damaged2",
+                "container_blue_damaged2",
+                "container_yellow_damaged2_reversed",
+                "container_green_damaged2_reversed",
+                "container_blue_damaged2_reversed",
+                "container_red_damaged1",
+                "container_yellow_damaged1",
+                "container_green_damaged1",
+                "container_blue_damaged1",
+                "container_white_damaged1",
+                "container_gas_can",
+                "container_nsd"
+            ];
+            for (let i = 0; i < containersList.length; i++) {
+                map.generateBuilding(containersList[i], Vec(120 + ((i % 8) * 20), 120 + (34 * Math.floor(i / 8))), 0);
+            }
+
+            // truck containers
+            // note that the tints are randomized; don't worry about them
+            const truckContainerCount = 12;
+            for (let i = 0; i < truckContainerCount; i++) {
+                map.generateBuilding(`truck_container_${i + 1}`, Vec(120 + ((i % 8) * 20), 310 + (50 * Math.floor(i / 8))), 0);
+            }
+        }
+    },
     singleBuilding: {
         width: 1024,
         height: 1024,
@@ -1420,9 +1473,12 @@ const maps = {
         oceanSize: 64,
         onGenerate(map, [building]) {
             // map.game.grid.addObject(new Decal(map.game, "lodge_decal", Vec(this.width / 2, this.height / 2), 0));
-            /* for (let i = 0; i < 10; i++) {
-                map.generateBuilding(`container_${i + 1}`, Vec((this.width / 2) + 15 * i, this.height / 2 - 15), 0);
-            } */
+            // let i = 0;
+            // for (const def of Buildings.definitions) {
+            //     if (!def.idString.startsWith("container_") || def.graphics) continue;
+            //     map.generateBuilding(def.idString, Vec((this.width / 2) + 15 * i, this.height / 2 - 15), 0);
+            //     i++;
+            // }
             map.generateBuilding(building, Vec(this.width / 2, this.height / 2), 0);
         }
     },
@@ -1636,14 +1692,14 @@ const maps = {
                 porta_potty: (Math.random() * 5) + 3,
 
                 warehouse: 1,
-                container_3: 1,
-                container_4: 1,
-                container_5: 1,
-                container_6: 1,
-                container_7: 1,
-                container_8: 1,
-                container_9: 1,
-                container_10: 1,
+                container_green_open1: 1,
+                container_green_open1_damaged: 1,
+                container_blue_open1: 1,
+                container_blue_open1_damaged: 1,
+                container_blue_open2: 1,
+                container_blue_open2_damaged: 1,
+                container_yellow_open1: 1,
+                container_yellow_open2: 1,
                 small_bunker: 1
             };
 

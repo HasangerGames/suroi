@@ -1,8 +1,8 @@
-import { ModeName } from "@common/definitions/modes";
 import { PerkIds } from "@common/definitions/items/perks";
+import { ModeName } from "@common/definitions/modes";
+import { Obstacles } from "@common/definitions/obstacles";
 import { NullString } from "@common/utils/objectDefinitions";
 import { LootTable } from "../utils/lootHelpers";
-import { Obstacles } from "@common/definitions/obstacles";
 
 export const LootTables: Record<ModeName, Record<string, LootTable>> = {
     normal: {
@@ -1087,8 +1087,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { item: "aged_seedshot", weight: 0.25 },
             { item: "dp12", weight: 0.2 },
             { item: "pp19", weight: 0.2 },
-            { item: "ulr338", weight: 0.1 },
-            { item: "power_cell", weight: 0.005 } // haha FuCk yuo!!1
+            { item: "ulr338", weight: 0.1 }
         ],
         pumpkin_airdrop: [
             [{ table: "airdrop_equipment", weight: 1 }],

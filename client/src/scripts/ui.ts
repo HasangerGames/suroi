@@ -113,7 +113,7 @@ export function resetPlayButtons(): void { // TODO Refactor this method to use u
 
     ui.nextModeMsg.toggle(nextMode !== undefined);
     // biome-ignore lint/style/noNonNullAssertion: nextMode must be set here
-    ui.nextModeIcon.css("background-image", `url(${Modes[nextMode!]?.playButtonImage ?? "./img/game/shared/emotes/suroi_logo.svg"})`);
+    ui.nextModeIcon.css("background-image", `url(${Modes[nextMode!]?.playButtonImage ?? "./img/game/emotes/suroi_logo.svg"})`);
 }
 
 let forceReload = false;
@@ -340,7 +340,7 @@ export async function setUpUI(): Promise<void> {
 
         // Team container
         ui.teamContainer.show();
-        ui.teamContainer.html("<div class=\"teammate-container\"><svg class=\"teammate-health-indicator\" width=\"48\" height=\"48\" xmlns=\"http://www.w3.org/2000/svg\"><circle r=\"21\" cy=\"24\" cx=\"24\" stroke-width=\"6\" stroke-dasharray=\"132\" fill=\"none\" style=\"transition: stroke-dashoffset 50ms ease-in-out; stroke: rgb(189, 199, 208); stroke-dashoffset: 0px;\"></circle></svg><div class=\"teammate-indicator-container\" style=\"background-color: rgb(0, 255, 255);\"><img class=\"teammate-indicator\" src=\"./img/game/shared/player/player_indicator.svg\"></div><span class=\"teammate-name\" style=\"color: rgb(0, 125, 128);\">pap_local_test23</span><img class=\"teammate-badge\" src=\"./img/game/shared/badges/bdg_developr.svg\"></div><div class=\"teammate-container\"><svg class=\"teammate-health-indicator\" width=\"48\" height=\"48\" xmlns=\"http://www.w3.org/2000/svg\"><circle r=\"21\" cy=\"24\" cx=\"24\" stroke-width=\"6\" stroke-dasharray=\"132\" fill=\"none\" style=\"transition: stroke-dashoffset 50ms ease-in-out; stroke: rgb(189, 199, 208); stroke-dashoffset: 0px;\"></circle></svg><div class=\"teammate-indicator-container\" style=\"background-color: rgb(255, 0, 255);\"><img class=\"teammate-indicator\" src=\"./img/game/shared/player/player_indicator.svg\"></div><span class=\"teammate-name\" style=\"color: rgb(0, 125, 128);\">pap_local_test23</span><img class=\"teammate-badge\" src=\"./img/game/shared/badges/bdg_developr.svg\"></div><div class=\"teammate-container\"><svg class=\"teammate-health-indicator\" width=\"48\" height=\"48\" xmlns=\"http://www.w3.org/2000/svg\"><circle r=\"21\" cy=\"24\" cx=\"24\" stroke-width=\"6\" stroke-dasharray=\"132\" fill=\"none\" style=\"transition: stroke-dashoffset 50ms ease-in-out; stroke: rgb(189, 199, 208); stroke-dashoffset: 0px;\"></circle></svg><div class=\"teammate-indicator-container\" style=\"background-color: rgb(255, 255, 0);\"><img class=\"teammate-indicator\" src=\"./img/game/shared/player/player_indicator.svg\"></div><span class=\"teammate-name\" style=\"color: rgb(0, 125, 128);\">pap_local_test23</span><img class=\"teammate-badge\" src=\"./img/game/shared/badges/bdg_developr.svg\"></div><div class=\"teammate-container\"><svg class=\"teammate-health-indicator\" width=\"48\" height=\"48\" xmlns=\"http://www.w3.org/2000/svg\"><circle r=\"21\" cy=\"24\" cx=\"24\" stroke-width=\"6\" stroke-dasharray=\"132\" fill=\"none\" style=\"transition: stroke-dashoffset 50ms ease-in-out; stroke: rgb(189, 199, 208); stroke-dashoffset: 0px;\"></circle></svg><div class=\"teammate-indicator-container\" style=\"background-color: rgb(255, 128, 0);\"><img class=\"teammate-indicator\" src=\"./img/game/shared/player/player_indicator.svg\"></div><span class=\"teammate-name\" style=\"color: rgb(0, 125, 128);\">pap_local_test23</span><img class=\"teammate-badge\" src=\"./img/game/shared/badges/bdg_developr.svg\" style=\"\"></div>");
+        ui.teamContainer.html("<div class=\"teammate-container\"><svg class=\"teammate-health-indicator\" width=\"48\" height=\"48\" xmlns=\"http://www.w3.org/2000/svg\"><circle r=\"21\" cy=\"24\" cx=\"24\" stroke-width=\"6\" stroke-dasharray=\"132\" fill=\"none\" style=\"transition: stroke-dashoffset 50ms ease-in-out; stroke: rgb(189, 199, 208); stroke-dashoffset: 0px;\"></circle></svg><div class=\"teammate-indicator-container\" style=\"background-color: rgb(0, 255, 255);\"><img class=\"teammate-indicator\" src=\"./img/game/player/player_indicator.svg\"></div><span class=\"teammate-name\" style=\"color: rgb(0, 125, 128);\">pap_local_test23</span><img class=\"teammate-badge\" src=\"./img/game/badges/bdg_developr.svg\"></div><div class=\"teammate-container\"><svg class=\"teammate-health-indicator\" width=\"48\" height=\"48\" xmlns=\"http://www.w3.org/2000/svg\"><circle r=\"21\" cy=\"24\" cx=\"24\" stroke-width=\"6\" stroke-dasharray=\"132\" fill=\"none\" style=\"transition: stroke-dashoffset 50ms ease-in-out; stroke: rgb(189, 199, 208); stroke-dashoffset: 0px;\"></circle></svg><div class=\"teammate-indicator-container\" style=\"background-color: rgb(255, 0, 255);\"><img class=\"teammate-indicator\" src=\"./img/game/player/player_indicator.svg\"></div><span class=\"teammate-name\" style=\"color: rgb(0, 125, 128);\">pap_local_test23</span><img class=\"teammate-badge\" src=\"./img/game/badges/bdg_developr.svg\"></div><div class=\"teammate-container\"><svg class=\"teammate-health-indicator\" width=\"48\" height=\"48\" xmlns=\"http://www.w3.org/2000/svg\"><circle r=\"21\" cy=\"24\" cx=\"24\" stroke-width=\"6\" stroke-dasharray=\"132\" fill=\"none\" style=\"transition: stroke-dashoffset 50ms ease-in-out; stroke: rgb(189, 199, 208); stroke-dashoffset: 0px;\"></circle></svg><div class=\"teammate-indicator-container\" style=\"background-color: rgb(255, 255, 0);\"><img class=\"teammate-indicator\" src=\"./img/game/player/player_indicator.svg\"></div><span class=\"teammate-name\" style=\"color: rgb(0, 125, 128);\">pap_local_test23</span><img class=\"teammate-badge\" src=\"./img/game/badges/bdg_developr.svg\"></div><div class=\"teammate-container\"><svg class=\"teammate-health-indicator\" width=\"48\" height=\"48\" xmlns=\"http://www.w3.org/2000/svg\"><circle r=\"21\" cy=\"24\" cx=\"24\" stroke-width=\"6\" stroke-dasharray=\"132\" fill=\"none\" style=\"transition: stroke-dashoffset 50ms ease-in-out; stroke: rgb(189, 199, 208); stroke-dashoffset: 0px;\"></circle></svg><div class=\"teammate-indicator-container\" style=\"background-color: rgb(255, 128, 0);\"><img class=\"teammate-indicator\" src=\"./img/game/player/player_indicator.svg\"></div><span class=\"teammate-name\" style=\"color: rgb(0, 125, 128);\">pap_local_test23</span><img class=\"teammate-badge\" src=\"./img/game/badges/bdg_developr.svg\" style=\"\"></div>");
 
         // Kill message
         ui.killMsgHeader.text("Kills: 7");
@@ -361,8 +361,8 @@ export async function setUpUI(): Promise<void> {
 
         // Perk message
         // ui.perkMsg.html(`
-        //     <div id="perk" style="background-image: url(./img/game/shared/loot/loot_background_perk.svg);">
-        //         <img class="perk-img" src="./img/game/shared/perks/loot_baron.svg" draggable="false" width="50" height="50"/>
+        //     <div id="perk" style="background-image: url(./img/game/loot/loot_background_perk.svg);">
+        //         <img class="perk-img" src="./img/game/perks/loot_baron.svg" draggable="false" width="50" height="50"/>
         //     </div>
         //     <strong class="perk-name">Loot Baron</strong>
         // `);
@@ -633,7 +633,7 @@ export async function setUpUI(): Promise<void> {
                                     ${renderSkin(skin)}
                                     <div class="create-team-player-name-container">
                                         <span class="create-team-player-name"${nameColor ? ` style="color: ${new Color(nameColor).toHex()}"` : ""}>${name}</span>
-                                        ${badge ? `<img class="create-team-player-badge" draggable="false" src="./img/game/shared/${isEmoteBadge(badge) ? "emotes" : "badges"}/${getBadgeIdString(badge)}.svg" />` : ""}
+                                        ${badge ? `<img class="create-team-player-badge" draggable="false" src="./img/game/${isEmoteBadge(badge) ? "emotes" : "badges"}/${getBadgeIdString(badge)}.svg" />` : ""}
                                     </div>
                                 </div>
                                 `
@@ -1070,8 +1070,8 @@ export async function setUpUI(): Promise<void> {
 
     const updateSplashCustomize = (skinID: string): void => {
         const skinDef = Skins.fromString(skinID);
-        const baseImage = `url('./img/game/shared/skins/${skinDef.baseImage ?? `${skinDef.idString}_base`}.svg')`;
-        const fistImage = `url('./img/game/shared/skins/${skinDef.fistImage ?? `${skinDef.idString}_fist`}.svg')`;
+        const baseImage = `url('./img/game/skins/${skinDef.baseImage ?? `${skinDef.idString}_base`}.svg')`;
+        const fistImage = `url('./img/game/skins/${skinDef.fistImage ?? `${skinDef.idString}_fist`}.svg')`;
 
         const hasBaseTint = skinDef.baseTint !== undefined;
         base.css({
@@ -1104,8 +1104,8 @@ export async function setUpUI(): Promise<void> {
 
     function renderSkin(skin: ReifiableDef<SkinDefinition>): string {
         const skinDef = Skins.reify(skin);
-        const baseImage = `url('./img/game/shared/skins/${skinDef.baseImage ?? `${skinDef.idString}_base`}.svg')`;
-        const fistImage = `url('./img/game/shared/skins/${skinDef.fistImage ?? `${skinDef.idString}_fist`}.svg')`;
+        const baseImage = `url('./img/game/skins/${skinDef.baseImage ?? `${skinDef.idString}_base`}.svg')`;
+        const fistImage = `url('./img/game/skins/${skinDef.fistImage ?? `${skinDef.idString}_fist`}.svg')`;
 
         const getTint = (mask: string, tint?: number): string =>
             tint !== undefined
@@ -1188,7 +1188,7 @@ export async function setUpUI(): Promise<void> {
             const idString = emote.idString;
             const emoteItem = $<HTMLDivElement>(
                 `<div id="emote-${idString}" class="emotes-list-item-container">
-                    <div class="emotes-list-item" style="background-image: url(./img/game/shared/emotes/${idString}.svg)"></div>
+                    <div class="emotes-list-item" style="background-image: url(./img/game/emotes/${idString}.svg)"></div>
                     <span class="emote-name">${getTranslatedString(`emote_${idString}` as TranslationKeys)}</span>
                 </div>`
             );
@@ -1211,7 +1211,7 @@ export async function setUpUI(): Promise<void> {
                     emoteWheelUiCache[cvarName] ??= $(`#emote-wheel-container .emote-${cvarName}`)
                 ).css(
                     "background-image",
-                    `url("./img/game/shared/emotes/${emote.idString}.svg")`
+                    `url("./img/game/emotes/${emote.idString}.svg")`
                 );
             });
 
@@ -1226,7 +1226,7 @@ export async function setUpUI(): Promise<void> {
     function changeEmoteSlotImage(slot: typeof EMOTE_SLOTS[number], emote: ReferenceTo<EmoteDefinition>): JQuery<HTMLDivElement> {
         return (
             emoteWheelUiCache[slot] ??= $(`#emote-wheel-container .emote-${slot}`)
-        ).css("background-image", emote ? `url("./img/game/shared/emotes/${emote}.svg")` : "none");
+        ).css("background-image", emote ? `url("./img/game/emotes/${emote}.svg")` : "none");
     }
 
     for (const slot of EMOTE_SLOTS) {
@@ -1417,7 +1417,7 @@ export async function setUpUI(): Promise<void> {
                 const badgeItem = badgeUiCache[idString] = $<HTMLDivElement>(
                     `<div id="badge-${idString}" class="badges-list-item-container${idString === activeBadge ? " selected" : ""}">\
                         <div class="badges-list-item">\
-                            <div style="background-image: url('./img/game/shared/${isEmoteBadge(idString) ? "emotes" : "badges"}/${getBadgeIdString(idString)}.svg')"></div>\
+                            <div style="background-image: url('./img/game/${isEmoteBadge(idString) ? "emotes" : "badges"}/${getBadgeIdString(idString)}.svg')"></div>\
                         </div>\
                         <span class="badge-name">${getTranslatedString(idString as TranslationKeys)}</span>\
                     </div>`
@@ -2106,7 +2106,7 @@ export async function setUpUI(): Promise<void> {
         Scopes.definitions.map(scope => {
             const ele = $<HTMLDivElement>(
                 `<div class="inventory-slot item-slot" id="${scope.idString}-slot" style="display: none;">
-                    <img class="item-image" src="./img/game/shared/loot/${scope.idString}.svg" draggable="false">
+                    <img class="item-image" src="./img/game/loot/${scope.idString}.svg" draggable="false">
                     <div class="item-tooltip">${scope.name.split(" ")[0]}</div>
                 </div>`
             );
@@ -2144,7 +2144,7 @@ export async function setUpUI(): Promise<void> {
         HealingItems.definitions.map(item => {
             const ele = $<HTMLDivElement>(
                 html`<div class="inventory-slot item-slot active" id="${item.idString}-slot">
-                    <img class="item-image" src="./img/game/shared/loot/${item.idString}.svg" draggable="false">
+                    <img class="item-image" src="./img/game/loot/${item.idString}.svg" draggable="false">
                     <span class="item-count" id="${item.idString}-count">0</span>
                     <div class="item-tooltip">
                         ${getTranslatedString(
@@ -2209,7 +2209,7 @@ export async function setUpUI(): Promise<void> {
 
         const ele = $<HTMLDivElement>(
             `<div class="inventory-slot item-slot ammo-slot active" id="${ammo.idString}-slot">
-                <img class="item-image" src="./img/game/shared/loot/${ammo.idString}.svg" draggable="false">
+                <img class="item-image" src="./img/game/loot/${ammo.idString}.svg" draggable="false">
                 <span class="item-count" id="${ammo.idString}-count">0</span>
             </div>`
         );

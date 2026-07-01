@@ -31,7 +31,7 @@ type LoosenNumerics<T> = T extends object
 
 export type PerkDefinition = LoosenNumerics<typeof perks[number]> & BasePerkDefinition;
 
-export const enum PerkCategories {
+export enum PerkCategories {
     Normal,
     Halloween,
     Hunted,

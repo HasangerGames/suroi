@@ -213,6 +213,7 @@ export const CVarCasters = Object.freeze({
     db_zoom_override: Casters.toNumber,
     db_no_clip: Casters.toBoolean,
     db_invulnerable: Casters.toBoolean,
+    db_hide_ceilings: Casters.toBoolean,
 
     mb_controls_enabled: Casters.toBoolean,
     mb_joystick_size: Casters.toNumber,
@@ -398,6 +399,7 @@ export const defaultClientCVars: SimpleCVarMapping = Object.freeze({
     db_zoom_override: DEFAULT_SCOPE.zoomLevel,
     db_no_clip: false,
     db_invulnerable: false,
+    db_hide_ceilings: false,
 
     mb_switch_joysticks: false,
     mb_controls_enabled: true,

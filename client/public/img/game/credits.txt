@@ -451,6 +451,7 @@ Other:
   A.E.G.I.S. Logo: Katloo
   Flint Logo: Katloo
   Tap Icon - "One Finger Tap Gesture Of Outlined Hand Symbol" from OnlineWebFonts: https://www.onlinewebfonts.com/icon/57341
+  NSD container camo: https://www.vecteezy.com/vector-art/106851-free-camouflage-seamless-vector
 
 Perk Icons:
   Advanced Athletics: Winter

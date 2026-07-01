@@ -1,13 +1,15 @@
 import { type ModeName } from "@common/definitions/modes";
-import { HitboxType, type Hitbox } from "@common/utils/hitbox";
+import { type Hitbox, HitboxType } from "@common/utils/hitbox";
 import { Vec, type Vector } from "@common/utils/vector";
-import { Assets, Graphics, RendererType, Sprite, Spritesheet, Texture, type ColorSource, type Renderer, type WebGLRenderer } from "pixi.js";
+import { Assets, type ColorSource, Graphics, type Renderer, RendererType, Sprite, Spritesheet, Texture, type WebGLRenderer } from "pixi.js";
 import type { ImageSpritesheetImporter } from "../../../vite/plugins/image-spritesheet-plugin";
 import { UIManager } from "../managers/uiManager";
 import { PIXI_SCALE } from "./constants";
 import { getTranslatedString } from "./translations/translations";
 
 export let spritesheetsLoaded = false;
+
+const textures: Record<string, Texture> = {};
 
 const spritesheetCallbacks: Array<() => void> = [];
 
@@ -45,34 +47,30 @@ export async function loadSpritesheets(modeName: ModeName, renderer: Renderer, h
         try {
             const sheetTexture = await Assets.load<Texture>(image);
             await renderer.prepare.upload(sheetTexture);
-            const textures = await new Spritesheet(sheetTexture, spritesheet).parse();
-            for (const [key, texture] of Object.entries(textures)) {
-                Assets.cache.set(key, texture);
-            }
+            const spritesheetTextures = await new Spritesheet(sheetTexture, spritesheet).parse();
+            Object.assign(textures, spritesheetTextures);
 
             const resolvedCount = ++resolved;
             const progress = `(${resolvedCount} / ${count})`;
             UIManager.ui.loaderText.text(getTranslatedString("loading_spritesheets", { progress }));
             console.log(`Atlas ${image} loaded ${progress}`);
-
-            if (resolvedCount === count) {
-                spritesheetsLoaded = true;
-                for (const resolve of spritesheetCallbacks) resolve();
-            }
         } catch (e) {
             ++resolved;
             console.error(`Atlas ${image} failed to load. Details:`, e);
         }
     }));
+
+    spritesheetsLoaded = true;
+    for (const resolve of spritesheetCallbacks) resolve();
 }
 
 export class SuroiSprite extends Sprite {
     static getTexture(frame: string): Texture {
-        if (!Assets.cache.has(frame)) {
+        if (!textures[frame]) {
             console.warn(`Texture not found: "${frame}"`);
             frame = "_missing_texture";
         }
-        return Texture.from(frame);
+        return textures[frame];
     }
 
     constructor(frame?: string) {

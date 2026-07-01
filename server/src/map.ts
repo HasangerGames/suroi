@@ -1,15 +1,16 @@
 import { GameConstants, Layer, MapObjectSpawnMode, ObjectCategory, RotationMode } from "@common/constants";
-import { BuildingObstacle, Buildings, SubBuilding, type BuildingDefinition } from "@common/definitions/buildings";
-import { Obstacles, type ObstacleDefinition } from "@common/definitions/obstacles";
-import { MapPacket, type MapData } from "@common/packets/mapPacket";
+import { type BuildingDefinition, Buildings } from "@common/definitions/buildings";
+import { Modes } from "@common/definitions/modes";
+import { type ObstacleDefinition, Obstacles } from "@common/definitions/obstacles";
+import { type MapData, MapPacket } from "@common/packets/mapPacket";
 import { PacketStream } from "@common/packets/packetStream";
 import { type Orientation } from "@common/typings";
-import { CircleHitbox, GroupHitbox, HitboxType, RectangleHitbox, type Hitbox } from "@common/utils/hitbox";
+import { CircleHitbox, GroupHitbox, type Hitbox, HitboxType, RectangleHitbox } from "@common/utils/hitbox";
 import { equalLayer } from "@common/utils/layer";
 import { Angle, Collision, Geometry, Numeric, τ } from "@common/utils/math";
 import { removeFrom, SDeepMutable } from "@common/utils/misc";
-import { NullString, type ReferenceTo, type ReifiableDef } from "@common/utils/objectDefinitions";
-import { SeededRandom, pickRandomInArray, random, randomBoolean, randomFloat, randomPointInsideCircle, randomRotation, randomVector } from "@common/utils/random";
+import { NullString, ReferenceOrNull, type ReferenceTo, type ReifiableDef } from "@common/utils/objectDefinitions";
+import { pickRandomInArray, random, randomBoolean, randomFloat, randomPointInsideCircle, randomRotation, randomVector, SeededRandom } from "@common/utils/random";
 import { FloorNames, River, Terrain } from "@common/utils/terrain";
 import { Vec, type Vector } from "@common/utils/vector";
 import { MapDefinition, MapName, Maps, ObstacleClump, RiverDefinition } from "./data/maps";
@@ -18,7 +19,6 @@ import { Building } from "./objects/building";
 import { Obstacle } from "./objects/obstacle";
 import { getLootFromTable } from "./utils/lootHelpers";
 import { CARDINAL_DIRECTIONS, getRandomIDString } from "./utils/misc";
-import { Modes } from "@common/definitions/modes";
 
 export interface MapOptions {
     scale?: number
@@ -666,44 +666,30 @@ export class GameMap {
 
         const building = new Building(this.game, definition, Vec.clone(position), orientation, layer);
 
-        const obstacleDefinitionData = definition.obstacles ?? [];
+        const obstacles = definition.obstacles ?? [];
 
-        // ---------------------------------------------------------------------------
-        // Stage 1: Collect all replaceable obstacles.
-        // ---------------------------------------------------------------------------
-        const replaceableObstacles: BuildingObstacle[] = [];
-        for (const obstacleData of obstacleDefinitionData) {
-            if (obstacleData.replaceableBy !== undefined) {
-                replaceableObstacles.push(obstacleData);
+        const replaceableObstacleIndexes: number[] = [];
+        for (let i = 0; i < obstacles.length; i++) {
+            if (obstacles[i].replaceableBy !== undefined) {
+                replaceableObstacleIndexes.push(i);
             }
         }
-        // ---------------------------------------------------------------------------
+        const obstacleReplaceIdx = replaceableObstacleIndexes.length ? pickRandomInArray(replaceableObstacleIndexes) : -1;
 
-        // ---------------------------------------------------------------------------
-        // Stage 2: Pick Random
-        // ---------------------------------------------------------------------------
-        const chosenReplaceableObstacle = pickRandomInArray(replaceableObstacles);
-        // ---------------------------------------------------------------------------
-
-        for (const obstacleData of obstacleDefinitionData) {
-            let idString = getRandomIDString<ObstacleDefinition>(obstacleData.idString);
-            if (idString === NullString) continue;
-            if (obstacleData.outdoors && this.game.mode.obstacleVariants) {
-                const _modeName = Modes[this.game.modeName].similarTo ?? this.game.modeName;
-                idString = `${idString}_${_modeName}`;
-            }
-
-            // ------------------------------------------------------------------------------------------------
-            // Stage 3: Find it and then replace it by changing the idString before generation.
-            // ------------------------------------------------------------------------------------------------
-            let isChosenObstacle = false;
-            if (obstacleData.replaceableBy !== undefined) {
-                isChosenObstacle = idString === chosenReplaceableObstacle.idString && Vec.equals(obstacleData.position, chosenReplaceableObstacle.position);
-                if (isChosenObstacle && chosenReplaceableObstacle.replaceableBy !== undefined) {
-                    idString = chosenReplaceableObstacle.replaceableBy;
+        for (let i = 0; i < obstacles.length; i++) {
+            const obstacleData = obstacles[i];
+            let idString: ReferenceOrNull<ObstacleDefinition>;
+            const isChosenObstacle = i === obstacleReplaceIdx;
+            if (isChosenObstacle && obstacleData.replaceableBy) {
+                idString = obstacleData.replaceableBy;
+            } else {
+                idString = getRandomIDString<ObstacleDefinition>(obstacleData.idString);
+                if (idString === NullString) continue;
+                if (obstacleData.outdoors && this.game.mode.obstacleVariants) {
+                    const _modeName = Modes[this.game.modeName].similarTo ?? this.game.modeName;
+                    idString = `${idString}_${_modeName}`;
                 }
             }
-            // ------------------------------------------------------------------------------------------------
 
             const obstacleDef = Obstacles.fromString(idString);
             let obstacleRotation = obstacleData.rotation ?? GameMap.getRandomRotation(obstacleDef.rotationMode);
@@ -754,28 +740,25 @@ export class GameMap {
             }
         }
 
-        const subBuildingsData = definition.subBuildings ?? [];
+        const subBuildings = definition.subBuildings ?? [];
 
-        const replaceableSubBuildings: SubBuilding[] = [];
-        for (const subBuilding of subBuildingsData) {
-            if (subBuilding.replaceableBy !== undefined) {
-                replaceableSubBuildings.push(subBuilding);
+        const replaceableSubBuildingIndexes: number[] = [];
+        for (let i = 0; i < subBuildings.length; i++) {
+            if (subBuildings[i].replaceableBy !== undefined) {
+                replaceableSubBuildingIndexes.push(i);
             }
         }
+        const subBuildingReplaceIdx = replaceableSubBuildingIndexes.length ? pickRandomInArray(replaceableSubBuildingIndexes) : -1;
 
-        const chosenReplaceableSubBuilding = pickRandomInArray(replaceableSubBuildings);
-
-        for (const subBuilding of subBuildingsData) {
-            let idString = getRandomIDString<BuildingDefinition>(subBuilding.idString);
-
-            if (idString === NullString) continue;
-
-            let isChosenSubBuilding = false;
-            if (subBuilding.replaceableBy !== undefined) {
-                isChosenSubBuilding = idString === chosenReplaceableSubBuilding.idString && Vec.equals(subBuilding.position, chosenReplaceableSubBuilding.position);
-                if (isChosenSubBuilding && chosenReplaceableSubBuilding.replaceableBy !== undefined) {
-                    idString = chosenReplaceableSubBuilding.replaceableBy;
-                }
+        for (let i = 0; i < subBuildings.length; i++) {
+            const subBuilding = subBuildings[i];
+            let idString: ReferenceOrNull<ObstacleDefinition>;
+            const isChosenSubBuilding = i === subBuildingReplaceIdx;
+            if (isChosenSubBuilding && subBuilding.replaceableBy) {
+                idString = subBuilding.replaceableBy;
+            } else {
+                idString = getRandomIDString<BuildingDefinition>(subBuilding.idString);
+                if (idString === NullString) continue;
             }
 
             const finalOrientation = Numeric.addOrientations(orientation, subBuilding.orientation ?? 0);
@@ -807,7 +790,13 @@ export class GameMap {
         // i don't know why "definition = Obstacles.reify(definition)" doesn't work anymore, but it doesn't
         const def = Obstacles.reify(definition);
 
-        const { scale = { spawnMin: 1, spawnMax: 1 }, rotationMode } = def;
+        const {
+            scale = { spawnMin: 1, spawnMax: 1 },
+            rotationMode,
+            spawnMode,
+            spawnOrientation,
+            spawnOffset
+        } = def;
         const { spawnMin, spawnMax } = scale;
         const effSpawnHitbox = def.spawnHitbox ?? def.hitbox;
 
@@ -827,7 +816,11 @@ export class GameMap {
                 getPosition,
                 scale,
                 orientation,
-                spawnMode: def.spawnMode,
+                spawnMode,
+                spawnOffset,
+                orientationConsumer: (newOrientation: Orientation) => {
+                    orientation = spawnOrientation ? Numeric.addOrientations(newOrientation, spawnOrientation) : newOrientation;
+                },
                 ignoreClearings: this.mapDef.clearings?.allowedObstacles.includes(def.idString)
             });
 

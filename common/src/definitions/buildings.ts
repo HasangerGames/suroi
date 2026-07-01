@@ -1,7 +1,7 @@
 import { FlyoverPref, Layer, Layers, MapObjectSpawnMode, RotationMode, ZIndexes } from "../constants";
 import { type Orientation, type Variation } from "../typings";
-import { CircleHitbox, GroupHitbox, PolygonHitbox, RectangleHitbox, type Hitbox } from "../utils/hitbox";
-import { DefinitionType, ObjectDefinitions, type ObjectDefinition, type ReferenceOrRandom, type ReferenceTo } from "../utils/objectDefinitions";
+import { CircleHitbox, GroupHitbox, type Hitbox, PolygonHitbox, RectangleHitbox } from "../utils/hitbox";
+import { DefinitionType, type ObjectDefinition, ObjectDefinitions, type ReferenceOrRandom, type ReferenceTo } from "../utils/objectDefinitions";
 import { pickRandomInArray, random, randomBoolean } from "../utils/random";
 import { FloorNames } from "../utils/terrain";
 import { Vec, type Vector } from "../utils/vector";
@@ -290,56 +290,42 @@ const randomCelebrationWinterTree = {
     pine_tree: 0.9
 };
 
-const randomPortOpenContainerOneSide = {
-    container_3: 1,
-    container_4: 1,
-    container_5: 1,
-    container_6: 1,
-    container_9: 1,
+const randomContainerOpen1 = {
+    container_green_open1: 1,
+    container_green_open1_damaged: 1,
+    container_blue_open1: 1,
+    container_blue_open1_damaged: 1,
+    container_yellow_open1: 1,
 
-    // Military
-    container_22: 0.05,
-    container_23: 0.05,
-    container_24: 0.05,
-    container_25: 0.05
+    container_nsd: 0.05
 };
 
-const randomPortOpenContainerTwoSide = {
-    container_1: 0.25,
-    container_2: 0.25,
-    container_7: 2,
-    container_8: 2,
-    container_16: 2
+const randomContainerOpen2 = {
+    container_white_closed: 0.25,
+    container_red_closed: 0.25,
+    container_blue_open2: 2,
+    container_blue_open2_damaged: 2,
+    container_yellow_open2_damaged: 2
 };
 
-const randomPortDamagedContainer = {
-    container_13: 1,
-    container_14: 1,
-    container_15: 1
+const randomContainerDamaged1 = {
+    container_red_damaged1: 1,
+    container_yellow_damaged1: 1,
+    container_green_damaged1: 1,
+    container_blue_damaged1: 1
 };
 
-const randomPortDamagedContainerReversed = {
-    container_17: 1,
-    container_18: 1,
-    container_19: 1
+const randomContainerDamaged2 = {
+    container_yellow_damaged2: 1,
+    container_green_damaged2: 1,
+    container_blue_damaged2: 1
 };
 
-/* const randomContainer1 = {
-    container_1: 1,
-    container_2: 2,
-    container_3: 3,
-    container_4: 4,
-    container_5: 3,
-    container_6: 4,
-    container_7: 3,
-    container_8: 4,
-    container_10: 3
-}; */
-
-/* const randomContainer2 = {
-    ...randomContainer1,
-    [NullString]: 7
-}; */
+const randomContainerDamaged2Reversed = {
+    container_blue_damaged2_reversed: 1,
+    container_yellow_damaged2_reversed: 1,
+    container_green_damaged2_reversed: 1
+};
 
 const warehouseObstacle = {
     regular_crate: 2,
@@ -413,36 +399,7 @@ export const ContainerTints = {
     blue: 0x2e6e9e,
     yellow: 0xc1b215,
     gas_can: 0xd64533,
-    military_green: 0x243315,
-    military_orange: 0x918556,
-    military_marine: 0x273b3b,
-    military_lime: 0x727825
-};
-
-const ContainerWallOutlineTints = {
-    white: 0x797979,
-    red: 0x661900,
-    green: 0x006608,
-    blue: 0x003b66,
-    yellow: 0x808000,
-    gas_can: 0x571b14,
-    military_green: 0x161f0d,
-    military_orange: 0x574f33,
-    military_marine: 0x172424,
-    military_lime: 0x3f4214
-};
-
-const ContainerWallTints = {
-    white: 0xa8a8a8,
-    red: 0x8f2400,
-    green: 0x008f0c,
-    blue: 0x00538f,
-    yellow: 0xb3b300,
-    gas_can: 0xd64533,
-    military_green: 0x31451c,
-    military_orange: 0xab9d65,
-    military_marine: 0x3e5e5e,
-    military_lime: 0x838a2b
+    nsd: 0x2a2d24
 };
 
 export const TentTints = {
@@ -497,20 +454,14 @@ const iglooLayout = (id: number, obstacles: readonly BuildingObstacle[]): Buildi
     obstacles
 });
 
-type ContainerVariation = "open2" | "open1" | "closed" | "closed_damaged" | "damaged" | "damaged_reversed" | "gas_can";
+type ContainerVariation = "closed" | "open1" | "open2" | "damaged1" | "damaged2" | "gas_can" | "nsd";
 const container = (
-    id: number,
     color: keyof typeof ContainerTints,
     variant: ContainerVariation,
-    damaged?: boolean
+    damaged?: boolean,
+    reversed?: boolean
 ): BuildingDefinition => {
     const tint = ContainerTints[color];
-
-    let hitbox: Hitbox;
-    let wallHitbox: Hitbox | undefined;
-    let spawnHitbox: Hitbox;
-    let upperCeilingImage;
-    let lowerCeilingImage;
 
     const _snowDecalDefinitions = {
         closed: pickRandomInArray([
@@ -1011,178 +962,116 @@ const container = (
         ])
     };
 
-    switch (variant) {
-        case "damaged_reversed": // thanks designers
-            upperCeilingImage = "container_ceiling_6";
-            lowerCeilingImage = "container_ceiling_7";
-            hitbox = new GroupHitbox(
-                RectangleHitbox.fromRect(1.85, 8, Vec(-6.1, 10)),
-                RectangleHitbox.fromRect(1.85, 8, Vec(-6.1, -10)),
-                RectangleHitbox.fromRect(1.85, 28, Vec(6.1, 0)),
-                RectangleHitbox.fromRect(14, 1.85, Vec(0, -13.07))
-            );
-            wallHitbox = new GroupHitbox(
-                RectangleHitbox.fromRect(0.91, 7.05, Vec(-6.1, 10)),
-                RectangleHitbox.fromRect(0.91, 7.05, Vec(-6.1, -10)),
-                RectangleHitbox.fromRect(0.91, 27.05, Vec(6.1, 0)),
-                RectangleHitbox.fromRect(13.05, 0.91, Vec(0, -13.07))
-            );
-            spawnHitbox = RectangleHitbox.fromRect(16, 34.9, Vec(0, 2));
-            break;
-        case "damaged":
-            upperCeilingImage = "container_ceiling_6";
-            lowerCeilingImage = "container_ceiling_7";
-            hitbox = new GroupHitbox(
-                RectangleHitbox.fromRect(1.85, 8, Vec(6.1, 10)),
-                RectangleHitbox.fromRect(1.85, 8, Vec(6.1, -10)),
-                RectangleHitbox.fromRect(1.85, 28, Vec(-6.1, 0)),
-                RectangleHitbox.fromRect(14, 1.85, Vec(0, -13.07))
-            );
-            wallHitbox = new GroupHitbox(
-                RectangleHitbox.fromRect(0.91, 7.05, Vec(6.1, 10)),
-                RectangleHitbox.fromRect(0.91, 7.05, Vec(6.1, -10)),
-                RectangleHitbox.fromRect(0.91, 27.05, Vec(-6.1, 0)),
-                RectangleHitbox.fromRect(13.05, 0.91, Vec(0, -13.07))
-            );
-            spawnHitbox = RectangleHitbox.fromRect(16, 34.9, Vec(0, 2));
-            break;
-        case "open2":
-            hitbox = new GroupHitbox(
-                RectangleHitbox.fromRect(1.85, 28, Vec(6.1, 0)),
-                RectangleHitbox.fromRect(1.85, 28, Vec(-6.1, 0))
-            );
-            wallHitbox = new GroupHitbox(
-                RectangleHitbox.fromRect(0.91, 27.05, Vec(-6.11, 0)),
-                RectangleHitbox.fromRect(0.91, 27.05, Vec(6.11, 0))
-            );
-            spawnHitbox = RectangleHitbox.fromRect(16, 39.9);
-            upperCeilingImage = damaged ? "container_ceiling_3" : "container_ceiling_2";
-            lowerCeilingImage = "container_ceiling_2";
-            break;
-        case "open1":
-            hitbox = new GroupHitbox(
-                RectangleHitbox.fromRect(1.85, 28, Vec(6.1, 0)),
-                RectangleHitbox.fromRect(1.85, 28, Vec(-6.1, 0)),
-                RectangleHitbox.fromRect(14, 1.85, Vec(0, -13.07))
-            );
-            wallHitbox = new GroupHitbox(
-                RectangleHitbox.fromRect(0.91, 27.05, Vec(-6.11, 0)),
-                RectangleHitbox.fromRect(0.91, 27.05, Vec(6.11, 0)),
-                RectangleHitbox.fromRect(13.13, 0.92, Vec(0, -13.07))
-            );
-            spawnHitbox = RectangleHitbox.fromRect(16, 34.9, Vec(0, 2));
-            upperCeilingImage = damaged ? "container_ceiling_4" : "container_ceiling_1";
-            lowerCeilingImage = damaged ? "container_ceiling_5" : "container_ceiling_2";
-            break;
-        case "closed_damaged":
-        case "gas_can":
-            upperCeilingImage = "container_ceiling_8";
-            lowerCeilingImage = "container_ceiling_9";
-            hitbox = new GroupHitbox(
-                RectangleHitbox.fromRect(1.85, 8, Vec(-6.1, 10)),
-                RectangleHitbox.fromRect(1.85, 8, Vec(-6.1, -10)),
-                RectangleHitbox.fromRect(1.85, 28, Vec(6.1, 0)),
-                RectangleHitbox.fromRect(14, 1.85, Vec(0, -13.07)),
-                RectangleHitbox.fromRect(14, 1.85, Vec(0, 13.07))
-            );
-            wallHitbox = new GroupHitbox(
-                RectangleHitbox.fromRect(0.91, 7.05, Vec(-6.1, 10)),
-                RectangleHitbox.fromRect(0.91, 7.05, Vec(-6.1, -10)),
-                RectangleHitbox.fromRect(0.91, 27.05, Vec(6.1, 0)),
-                RectangleHitbox.fromRect(13.05, 0.91, Vec(0, -13.07)),
-                RectangleHitbox.fromRect(13.05, 0.91, Vec(0, 13.07))
-            );
-            spawnHitbox = RectangleHitbox.fromRect(16, 34.9, Vec(0, 2));
-            break;
-        case "closed":
-        default:
-            hitbox = RectangleHitbox.fromRect(14, 28);
-            spawnHitbox = RectangleHitbox.fromRect(16, 30);
-            upperCeilingImage = lowerCeilingImage = "container_ceiling_1";
-            break;
+    const hitboxes: Record<ContainerVariation, Hitbox> = {
+        closed: RectangleHitbox.fromRect(14, 28),
+        open1: new GroupHitbox(
+            RectangleHitbox.fromRect(1.5, 28, Vec(6.25, 0)),
+            RectangleHitbox.fromRect(1.5, 28, Vec(-6.25, 0)),
+            RectangleHitbox.fromRect(14, 1.5, Vec(0, -13.2))
+        ),
+        open2: new GroupHitbox(
+            RectangleHitbox.fromRect(1.5, 28, Vec(6.25, 0)),
+            RectangleHitbox.fromRect(1.5, 28, Vec(-6.25, 0)),
+        ),
+        damaged1: new GroupHitbox(
+            RectangleHitbox.fromRect(1.5, 8, Vec(-6.25, 10)),
+            RectangleHitbox.fromRect(1.5, 8, Vec(-6.25, -10)),
+            RectangleHitbox.fromRect(1.5, 28, Vec(6.25, 0)),
+            RectangleHitbox.fromRect(14, 1.5, Vec(0, -13.2)),
+            RectangleHitbox.fromRect(14, 1.5, Vec(0, 13.2))
+        ),
+        damaged2: new GroupHitbox(
+            RectangleHitbox.fromRect(1.5, 8, Vec(reversed ? -6.25 : 6.25, 10)),
+            RectangleHitbox.fromRect(1.5, 8, Vec(reversed ? -6.25 : 6.25, -10)),
+            RectangleHitbox.fromRect(1.5, 28, Vec(reversed ? 6.25 : -6.25, 0)),
+            RectangleHitbox.fromRect(14, 1.5, Vec(0, -13.2))
+        ),
+        gas_can: new GroupHitbox(
+            RectangleHitbox.fromRect(1.5, 8, Vec(-6.25, 10)),
+            RectangleHitbox.fromRect(1.5, 8, Vec(-6.25, -10)),
+            RectangleHitbox.fromRect(1.5, 28, Vec(6.25, 0)),
+            RectangleHitbox.fromRect(14, 1.5, Vec(0, -13.2)),
+            RectangleHitbox.fromRect(14, 1.5, Vec(0, 13.2))
+        ),
+        nsd: new GroupHitbox(
+            RectangleHitbox.fromRect(1.5, 28, Vec(6.25, 0)),
+            RectangleHitbox.fromRect(1.5, 28, Vec(-6.25, 0)),
+            RectangleHitbox.fromRect(14, 1.5, Vec(0, -13.2))
+        )
+    };
+
+    let floorImage: string;
+    if (variant === "gas_can") {
+        floorImage = "damaged1";
+    } else if (variant === "nsd") {
+        floorImage = "open1";
+    } else {
+        floorImage = variant;
     }
 
-    const closed = variant === "closed";
+    let lootSpawners: LootSpawner[] | undefined;
+    if (!IS_CLIENT) {
+        if (variant === "gas_can") {
+            lootSpawners = [
+                {
+                    position: Vec(0, -8.5),
+                    table: "gas_can"
+                }
+            ];
+        } else if (variant === "nsd") {
+            lootSpawners = [
+                {
+                    position: Vec(0, 0),
+                    table: "airdrop_guns"
+                },
+                {
+                    position: Vec(0, 0),
+                    table: "military_container_skins"
+                }
+            ];
+        } else if (variant !== "closed") {
+            lootSpawners = [
+                {
+                    position: Vec(0, 0),
+                    table: "ground_loot"
+                }
+            ];
+        }
+    }
 
     return {
-        idString: `container_${id}`,
-        name: `Container ${id}`,
+        idString: `container_${color}${variant === color ? "" : `_${variant}`}${damaged ? "_damaged" : ""}${reversed ? "_reversed" : ""}`,
+        name: "Container",
         defType: DefinitionType.Building,
-        hitbox,
+        hitbox: hitboxes[variant],
         reflectBullets: true,
         material: "metal_heavy",
         particle: `container_particle_${color}`,
-        spawnHitbox,
+        spawnHitbox: RectangleHitbox.fromRect(16, 39.9),
         ceilingHitbox: RectangleHitbox.fromRect(12, 27),
         ceilingZIndex: ZIndexes.BuildingsCeiling - 0.5,
-        // TODO this is a bit of a mess, refactor
-        graphics: closed
-            ? []
-            : wallHitbox
-                ? [
-                    { color: tint, hitbox: RectangleHitbox.fromRect(14, 28) },
-                    { color: ContainerWallOutlineTints[color], hitbox },
-                    { color: ContainerWallTints[color], hitbox: wallHitbox }
-                ]
-                : [
-                    { color: tint, hitbox: RectangleHitbox.fromRect(14, 28) },
-                    { color: ContainerWallOutlineTints[color], hitbox }
-                ],
-        graphicsZIndex: ZIndexes.BuildingsFloor + 1,
         ceilingImages: [
             {
-                key: upperCeilingImage,
-                position: Vec(0, -6.97),
-                ...(variant === "damaged_reversed" ? { scale: Vec(-1, 1) } : {}),
-                tint
+                key: `container_ceiling_${variant === "gas_can" ? "damaged1" : variant}${damaged ? "_damaged" : ""}`,
+                position: Vec(0, 0),
+                scale: Vec(reversed ? -1 : 1, 1),
+                tint: variant === "nsd" ? 0xffffff : tint
             },
-            {
-                key: lowerCeilingImage,
-                position: Vec(-0.04, 6.97),
-                ...(variant === "damaged_reversed" ? { scale: Vec(-1, 1) } : {}),
-                rotation: Math.PI,
-                tint
-            },
-            ...(variant === "gas_can"
-                ? [
-                    {
-                        key: "fire_danger_symbol",
-                        position: Vec(0, 0),
-                        rotation: -Math.PI / 4
-                    },
-                    {
-                        key: "danger_tape",
-                        position: Vec(0, -10.1)
-                    },
-                    {
-                        key: "danger_tape",
-                        position: Vec(0, 10.1)
-                    }
-                ]
-                : []),
-            ...(color.includes("military")
-                ? [
-                    {
-                        key: "nsd_logo_cont",
-                        position: Vec(0, 0),
-                        scale: Vec(2, 2),
-                        tint
-                    },
-                    {
-                        key: "danger_tape",
-                        position: Vec(0, -10.1),
-                        scale: Vec(-1, 1),
-                        alpha: 0.5,
-                        tint: 0xff9500
-                    },
-                    {
-                        key: "danger_tape",
-                        position: Vec(0, 10.1),
-                        alpha: 0.5,
-                        tint: 0xff9500
-                    }
-                ]
-                : []),
+            ...(variant === "gas_can" ? [
+                {
+                    key: "fire_danger_symbol",
+                    position: Vec(0, 0),
+                    rotation: -Math.PI / 4
+                },
+                {
+                    key: "danger_tape",
+                    position: Vec(0, -10.1)
+                },
+                {
+                    key: "danger_tape",
+                    position: Vec(0, 10.1)
+                }
+            ] : []),
                 // Also, we need to figure out how to make the containers inside the hyperion non-snow variations. Probably gonna need to use
                 // a similar way to obstacle [outdoors] method with the _winter part.
                 // gas can container has the same snow decals as the closed damaged variant
@@ -1190,65 +1079,33 @@ const container = (
             // TODO Detect mode somehow
             // ...(GameConstants.modeName === "winter" ? snowDecalDefinitions[open] : [])
         ],
+        floorImages: [
+            ...(variant.includes("closed") ? [] : [{
+                key: `container_floor_${floorImage}`,
+                position: Vec(0, 0),
+                scale: Vec(reversed ? -1 : 1, 1),
+                tint
+            }]),
+            ...(variant === "gas_can" ? [{
+                key: "large_refinery_barrel_residue",
+                position: Vec(-4, 0),
+                scale: Vec(0.5, 0.5),
+                alpha: 0.8
+            }] : [])
+        ],
         floors: [{
             type: FloorNames.Metal,
             hitbox: RectangleHitbox.fromRect(14, 28)
         }],
         floorZIndex: ZIndexes.BuildingsFloor + 1.1,
-        ...(variant === "gas_can"
-            ? {
-                floorImages: [{
-                    key: "large_refinery_barrel_residue",
-                    position: Vec(-4, 0),
-                    scale: Vec(0.5, 0.5),
-                    alpha: 0.8
-                }]
-            }
-            : {}),
-        ...(
-            closed
-                ? {}
-                : variant === "gas_can"
-                    ? {
-                        lootSpawners: IS_CLIENT ? undefined : [
-                            {
-                                position: Vec(0, -8.5),
-                                table: "gas_can"
-                            }
-                        ]
-                    }
-                    : color.includes("military")
-                        ? {
-                            lootSpawners: IS_CLIENT ? undefined : [
-                                {
-                                    position: Vec(0, 0),
-                                    table: "airdrop_guns"
-                                },
-                                {
-                                    position: Vec(0, 0),
-                                    table: "military_container_skins"
-                                }
-                            ]
-                        }
-                        : {
-                            lootSpawners: IS_CLIENT ? undefined : [
-                                {
-                                    position: Vec(0, 0),
-                                    table: "ground_loot"
-                                }
-                            ]
-                        }
-        ),
-        ...(variant === "gas_can"
-            ? {
-                obstacles: IS_CLIENT ? undefined : [
-                    { idString: "propane_tank", position: Vec(3, 10) },
-                    { idString: "propane_tank", position: Vec(-3, 10) }
-                ]
-            }
-            : {})
+        lootSpawners,
+        obstacles: variant !== "gas_can" || IS_CLIENT ? undefined : [
+            { idString: "propane_tank", position: Vec(3, 10) },
+            { idString: "propane_tank", position: Vec(-3, 10) }
+        ]
     } as const; // <-- ??
 };
+
 const hollowLog = (
     id: number,
     variant: "damaged" | "moldy" | "extended"
@@ -1298,10 +1155,12 @@ const truckContainer = (
     id: number,
     model: "two_sided" | "one_sided",
     obstacles: readonly BuildingObstacle[],
-    subBuildings?: readonly SubBuilding[]
+    subBuildings?: readonly SubBuilding[],
+    lootSpawners?: readonly LootSpawner[],
 ): BuildingDefinition => {
-    const chosen = pickRandomInArray(Object.keys(TruckContainerTints));
-    const tint = TruckContainerTints[chosen as "teal" | "orange" | "purple" | "green" | "red"];
+    const colors = ["white", "red", "green", "blue", "yellow"] as const;
+    const color = pickRandomInArray(colors);
+    const tint = ContainerTints[color];
 
     const hitbox = model === "one_sided"
         ? new GroupHitbox(
@@ -1392,11 +1251,12 @@ const truckContainer = (
         defType: DefinitionType.Building,
         reflectBullets: true,
         material: "metal_heavy",
-        particle: `truck_container_particle_${chosen}`,
+        particle: `truck_container_particle_${color}`,
         hitbox,
         spawnHitbox: RectangleHitbox.fromRect(18, 42),
         obstacles,
         ...(subBuildings === undefined ? {} : { subBuildings }),
+        ...(lootSpawners === undefined ? {} : { lootSpawners }),
         floorImages: [{
             key: `truck_container_floor_${model}`,
             position: Vec(0, 0),
@@ -1600,7 +1460,7 @@ const hayShed = (
     spawnHitbox: RectangleHitbox.fromRect(47, 32),
     ceilingHitbox: RectangleHitbox.fromRect(33.5, 24.5, Vec(-1.2, -0.5)),
     floorImages: [{
-        key: "fall_patch_floor",
+        key: "hay_shed_floor",
         position: Vec(0, 0),
         scale: Vec(2.14, 2.14),
         zIndex: ZIndexes.Ground
@@ -2003,7 +1863,7 @@ const blueHouse = (idString: string, subBuildings: BuildingDefinition["subBuildi
         // TEMP: Remove if halloween ends.
         // { idString: "cobweb", position: Vec(28.86, -24.21), rotation: 3 },
         // { idString: "jack_o_lantern", position: Vec(11.49, -35.99), rotation: 3 },
-        // { idString: "small_lamp_thingy", position: Vec(-1.25, -3.7) }
+        // { idString: "small_lamp", position: Vec(-1.25, -3.7) }
     ],
     subBuildings: subBuildings.length > 1
         ? [
@@ -2125,24 +1985,22 @@ const shed = (num: number, ceilingTint: number): BuildingDefinition => ({
 
 export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     pallet(1, [
-        { idString: "box", position: Vec(-2.2, -1.9) },
-        { idString: "box", position: Vec(2.2, 1.9) }
+        { idString: "box", position: Vec(-2.3, -1.5) },
+        { idString: "box", position: Vec(2.3, 1.5) }
     ]),
     pallet(2, [
-        { idString: "propane_tank", position: Vec(-2.41, -2.19) },
-        { idString: "fence", position: Vec(-0.23, 2), rotation: 0 },
-        { idString: "grenade_box", position: Vec(2.5, -1.8) }
+        { idString: "grenade_box", position: Vec(-2.3, 2.3) },
+        { idString: "propane_tank", position: Vec(-2.3, -2.3) },
+        { idString: "grenade_box", position: Vec(2.3, 0) }
     ]),
     pallet(3, [{ idString: "regular_crate", position: Vec(0, 0) }]),
     pallet(4, [
-        { idString: "box", position: Vec(-2.73, -2.5) },
-        { idString: "box", position: Vec(2.73, -2.4) },
-        { idString: "grenade_box", position: Vec(-1.5, 2.15) }
+        { idString: "grenade_box", position: Vec(-2.3, 2.3) },
+        { idString: "box", position: Vec(-2.3, -2.3) },
+        { idString: "box", position: Vec(2.3, 0) }
     ]),
-    pallet(5, [
-        { idString: "fence", position: Vec(3.7, 0), rotation: 1 },
-        { idString: randomBarrel, position: Vec(-1.16, 0.73) }
-    ]),
+    pallet(5, [{ idString: "grenade_crate", position: Vec(0, 0) }]),
+
     pallet(6, []), // blank/empty pallet
     {
         idString: "porta_potty",
@@ -2563,8 +2421,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: warehouseObstacle, position: Vec(-19.39, 36.48) },
 
             // TEMP: Remove if halloween ends.
-            // { idString: "small_lamp_thingy", position: Vec(0.27, 26.93) },
-            // { idString: "small_lamp_thingy", position: Vec(0.27, -25.15) },
+            // { idString: "small_lamp", position: Vec(0.27, 26.93) },
+            // { idString: "small_lamp", position: Vec(0.27, -25.15) },
             // { idString: "cobweb", position: Vec(-20.19, -37.18), rotation: 0 },
             // { idString: "cobweb", position: Vec(20.14, 37.32), rotation: 2 }
         ],
@@ -3034,8 +2892,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             // { idString: "cobweb", position: Vec(43.93, -12.29), rotation: 2 },
             // { idString: "cobweb", position: Vec(-43.82, 30.13), rotation: 1 },
             // { idString: "cobweb", position: Vec(117.2, -34.21), rotation: 3 },
-            // { idString: "small_lamp_thingy", position: Vec(71.97, 44.39) },
-            // { idString: "small_lamp_thingy", position: Vec(92.74, -14.86) }
+            // { idString: "small_lamp", position: Vec(71.97, 44.39) },
+            // { idString: "small_lamp", position: Vec(92.74, -14.86) }
         ] as BuildingObstacle[],
         subBuildings: IS_CLIENT ? undefined : [
             {
@@ -3103,7 +2961,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             // { idString: "cobweb", position: Vec(-25.11, 23.03), rotation: 1 },
             // { idString: "jack_o_lantern", position: Vec(6.2, -36.5), rotation: 3 },
             // { idString: "jack_o_lantern", position: Vec(27.2, -36.5), rotation: 3 },
-            // { idString: "small_lamp_thingy", position: Vec(3.36, -11.02) },
+            // { idString: "small_lamp", position: Vec(3.36, -11.02) },
             // -----------------------------------------------------------------------
 
             { idString: "house_wall_4", position: Vec(8.6, -18), rotation: 1 },
@@ -3297,7 +3155,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             // { idString: "cobweb", position: Vec(-25.88, 23.18), rotation: 1 },
             // { idString: "jack_o_lantern", position: Vec(-3.3, -36.8), rotation: 3 },
             // { idString: "jack_o_lantern", position: Vec(17.7, -36.8), rotation: 3 },
-            // { idString: "small_lamp_thingy", position: Vec(-15.22, 0.56) },
+            // { idString: "small_lamp", position: Vec(-15.22, 0.56) },
             // -----------------------------------------------------------------------
 
             { idString: "door", position: Vec(7.6, -29.6), rotation: 0 },
@@ -3416,7 +3274,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             // { idString: "cobweb", position: Vec(-44.2, -24.57), rotation: 0 },
             // { idString: "jack_o_lantern", position: Vec(-46.48, 35.06), rotation: -0.1 }, // cursed
             // { idString: "jack_o_lantern", position: Vec(40.24, 24), rotation: -1 },
-            // { idString: "small_lamp_thingy", position: Vec(17.45, 18.24) },
+            // { idString: "small_lamp", position: Vec(17.45, 18.24) },
             // -----------------------------------------------------------------------
 
             { idString: "window", position: Vec(32.99, -12.81), rotation: 0 },
@@ -3640,7 +3498,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             },
 
             // TEMP: Remove if halloween ends.
-            // { idString: "small_lamp_thingy", position: Vec(-23.98, 7.26) },
+            // { idString: "small_lamp", position: Vec(-23.98, 7.26) },
             // { idString: "cobweb", position: Vec(-26.54, 23.26), rotation: 1 },
             // { idString: "cobweb", position: Vec(26.62, -24.48), rotation: 3 }
         ],
@@ -3663,34 +3521,38 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     shed(2, 0xb96114),
     shed(3, 0x39626b),
 
-    container(1, "white", "closed"),
-    container(2, "red", "closed"),
-    container(3, "green", "open1"),
-    container(4, "green", "open1", true),
-    container(5, "blue", "open1"),
-    container(6, "blue", "open1", true),
-    container(7, "blue", "open2"),
-    container(8, "blue", "open2", true),
-    container(9, "yellow", "open1"),
-    container(10, "yellow", "open2"),
-    container(11, "green", "closed"),
-    container(12, "yellow", "closed"),
-    container(13, "yellow", "damaged"),
-    container(14, "green", "damaged"),
-    container(15, "blue", "damaged"),
-    container(16, "yellow", "open2", true),
-    container(17, "blue", "damaged_reversed"),
-    container(18, "yellow", "damaged_reversed"),
-    container(19, "green", "damaged_reversed"),
-    container(20, "red", "closed_damaged"),
-    container(26, "white", "closed_damaged"),
+    container("red", "closed"),
+    container("yellow", "closed"),
+    container("green", "closed"),
+    container("white", "closed"),
 
-    // special containers
-    container(21, "gas_can", "gas_can"),
-    container(22, "military_green", "open1"),
-    container(23, "military_orange", "open1"),
-    container(24, "military_marine", "open1"),
-    container(25, "military_lime", "open1"),
+    container("yellow", "open1"),
+    container("green", "open1"),
+    container("green", "open1", true),
+    container("blue", "open1"),
+    container("blue", "open1", true),
+
+    container("yellow", "open2"),
+    container("yellow", "open2", true),
+    container("blue", "open2"),
+    container("blue", "open2", true),
+
+    container("yellow", "damaged2"),
+    container("green", "damaged2"),
+    container("blue", "damaged2"),
+
+    container("yellow", "damaged2", false, true),
+    container("green", "damaged2", false, true),
+    container("blue", "damaged2", false, true),
+
+    container("red", "damaged1"),
+    container("yellow", "damaged1"),
+    container("green", "damaged1"),
+    container("blue", "damaged1"),
+    container("white", "damaged1"),
+
+    container("gas_can", "gas_can"),
+    container("nsd", "nsd"),
 
     bigTent(1, "red"),
     bigTent(2, "green"),
@@ -4030,8 +3892,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             // Right Side: Top Left
             { key: "planted_bushes_residue", position: Vec(91.67, -225.15) },
 
-            { key: "barrier_floor", position: Vec(0, -183.1) },
-            { key: "barrier_floor", position: Vec(81.8, 54.9), rotation: Math.PI / 2 }
+            { key: "port_barrier_floor", position: Vec(0, -183.1) },
+            { key: "port_barrier_floor", position: Vec(81.8, 54.9), rotation: Math.PI / 2 }
         ],
         obstacles: IS_CLIENT ? undefined : [
 
@@ -4447,7 +4309,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             // Left Side: Bottom Left
             { idString: "port_hay_shed", position: Vec(-73.7, -135), orientation: 1 },
             { idString: "porta_potty", position: Vec(130, -165.4), orientation: 2 },
-            { idString: randomPortOpenContainerOneSide, position: Vec(-168.2, -188.5), orientation: 1 }, // y, x
+            { idString: randomContainerOpen1, position: Vec(-168.2, -188.5), orientation: 1 }, // y, x
             { idString: randomPallet, position: Vec(-153.61, -104.34), orientation: 1 },
             { idString: randomPallet, position: Vec(-143.74, 170.4) },
             { idString: randomPallet, position: Vec(-121.96, -111.74), orientation: 1 },
@@ -4462,7 +4324,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
 
             // Large Warehouse
             { idString: "large_warehouse", position: Vec(-158.8, -76) },
-            { idString: randomPortDamagedContainer, position: Vec(194.2, 85.5), orientation: 2 },
+            { idString: randomContainerDamaged2, position: Vec(194.2, 85.5), orientation: 2 },
             { idString: randomPallet, position: Vec(-156.48, -14.52) },
             { idString: randomPallet, position: Vec(-136.78, -14.37) },
             { idString: randomPallet, position: Vec(-156.25, -142.2) },
@@ -4493,12 +4355,12 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "porta_potty", position: Vec(-50.4, -190.07), orientation: 3 }, // fucking porta potty in the middle of the road
             { idString: "large_truck", position: Vec(122.9, 159.1), orientation: 1 }, // y x
 
-            { idString: randomPortOpenContainerTwoSide, position: Vec(169.65, -15.05) },
-            { idString: randomPortOpenContainerOneSide, position: Vec(183.95, -15.05) },
-            { idString: randomPortOpenContainerOneSide, position: Vec(-155.35, 15.05), orientation: 2 },
+            { idString: randomContainerOpen2, position: Vec(169.65, -15.05) },
+            { idString: randomContainerOpen1, position: Vec(183.95, -15.05) },
+            { idString: randomContainerOpen1, position: Vec(-155.35, 15.05), orientation: 2 },
 
-            { idString: randomPortOpenContainerOneSide, position: Vec(155.35, 13.25) },
-            { idString: randomPortOpenContainerOneSide, position: Vec(141.05, 13.25) },
+            { idString: randomContainerOpen1, position: Vec(155.35, 13.25) },
+            { idString: randomContainerOpen1, position: Vec(141.05, 13.25) },
 
             // Right Side: Bottom Right
 
@@ -4509,20 +4371,20 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: randomPallet, position: Vec(182.22, 64.55) },
             { idString: "truck_1", position: Vec(100.1, 129.8) },
 
-            { idString: randomPortOpenContainerOneSide, position: Vec(-169.65, -55.05), orientation: 2 },
-            { idString: randomPortOpenContainerTwoSide, position: Vec(-155.35, -55.05), orientation: 2 },
-            { idString: randomPortOpenContainerOneSide, position: Vec(-141.05, -55.05), orientation: 2 },
+            { idString: randomContainerOpen1, position: Vec(-169.65, -55.05), orientation: 2 },
+            { idString: randomContainerOpen2, position: Vec(-155.35, -55.05), orientation: 2 },
+            { idString: randomContainerOpen1, position: Vec(-141.05, -55.05), orientation: 2 },
 
-            { idString: randomPortOpenContainerOneSide, position: Vec(169.65, 83.5) },
-            { idString: randomPortDamagedContainer, position: Vec(-155.35, -83.5), orientation: 2 },
-            { idString: randomPortOpenContainerOneSide, position: Vec(183.95, 83.5) },
+            { idString: randomContainerOpen1, position: Vec(169.65, 83.5) },
+            { idString: randomContainerDamaged2, position: Vec(-155.35, -83.5), orientation: 2 },
+            { idString: randomContainerOpen1, position: Vec(183.95, 83.5) },
 
             // y = 125
-            { idString: randomPortOpenContainerOneSide, position: Vec(-183.95, -125), orientation: 2 },
-            { idString: randomPortDamagedContainerReversed, position: Vec(169.65, 125) },
-            { idString: randomPortDamagedContainerReversed, position: Vec(-169.65, -153.5), orientation: 2 },
-            { idString: randomPortOpenContainerOneSide, position: Vec(141.05, 153.5) },
-            { idString: randomPortOpenContainerOneSide, position: Vec(155.35, 153.5) }
+            { idString: randomContainerOpen1, position: Vec(-183.95, -125), orientation: 2 },
+            { idString: randomContainerDamaged2Reversed, position: Vec(169.65, 125) },
+            { idString: randomContainerDamaged2Reversed, position: Vec(-169.65, -153.5), orientation: 2 },
+            { idString: randomContainerOpen1, position: Vec(141.05, 153.5) },
+            { idString: randomContainerOpen1, position: Vec(155.35, 153.5) }
         ],
         floors: [ // Follows ground graphics for most part
             {
@@ -4852,7 +4714,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         defType: DefinitionType.Building,
         spawnHitbox: RectangleHitbox.fromRect(180, 400, Vec(-1.5, -1.8)),
         puzzle: {
-            triggerOnSolve: "vault_door_deactivated",
+            triggerOnSolve: "vault_door2",
             delay: 2000,
             unlockOnly: true
         },
@@ -4872,14 +4734,14 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 outdoors: true
             },
             {
-                idString: "vault_door_deactivated",
+                idString: "vault_door2",
                 position: Vec(25.6, -60),
                 rotation: 0,
                 locked: true,
                 layer: Layer.Ground
             },
             {
-                idString: "vault_door_deactivated",
+                idString: "vault_door2",
                 position: Vec(42.5, -119.53),
                 rotation: 2,
                 locked: true,
@@ -4891,16 +4753,16 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "cargo_ship_bottom_floor", position: Vec(1.8, 0) },
 
             // Top
-            { idString: "container_20", position: Vec(27.75, 75.2), orientation: 2, replaceableBy: "container_21", layer: Layer.Upstairs },
-            { idString: "container_20", position: Vec(26.65, -103.75), replaceableBy: "container_21", layer: Layer.Upstairs },
-            { idString: "container_20", position: Vec(-27.55, -5), replaceableBy: "container_21", layer: Layer.Upstairs },
-            { idString: "container_20", position: Vec(12.32, 65.8), replaceableBy: "container_21", layer: Layer.Upstairs },
+            { idString: randomContainerDamaged1, position: Vec(27.75, 75.2), orientation: 2, replaceableBy: "container_gas_can", layer: Layer.Upstairs },
+            { idString: randomContainerDamaged1, position: Vec(26.65, -103.75), replaceableBy: "container_gas_can", layer: Layer.Upstairs },
+            { idString: randomContainerDamaged1, position: Vec(-27.55, -5), replaceableBy: "container_gas_can", layer: Layer.Upstairs },
+            { idString: randomContainerDamaged1, position: Vec(12.32, 65.8), replaceableBy: "container_gas_can", layer: Layer.Upstairs },
 
             // Bottom
-            { idString: "container_20", position: Vec(12.45, 65.25), replaceableBy: "container_21" },
-            { idString: "container_20", position: Vec(12.55, -104.15), replaceableBy: "container_21" },
-            { idString: "container_20", position: Vec(-13.09, -5.3), replaceableBy: "container_21" },
-            { idString: "container_20", position: Vec(135.95, -35.3), orientation: 3, replaceableBy: "container_21" }
+            { idString: randomContainerDamaged1, position: Vec(12.45, 65.25), replaceableBy: "container_gas_can" },
+            { idString: randomContainerDamaged1, position: Vec(12.55, -104.15), replaceableBy: "container_gas_can" },
+            { idString: randomContainerDamaged1, position: Vec(-13.09, -5.3), replaceableBy: "container_gas_can" },
+            { idString: randomContainerDamaged1, position: Vec(135.95, -35.3), orientation: 3, replaceableBy: "container_gas_can" }
         ]
     },
     {
@@ -5061,9 +4923,11 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         ],
         floorImages: [
             {
-                key: "floor_oil_ship",
-                position: Vec(-36.67, 157),
-                scale: Vec(2.3, 2.3)
+                key: "floor_oil_05",
+                position: Vec(-42, 158),
+                rotation: -0.5,
+                scale: Vec(1.5, 1.5),
+                alpha: 0.5
             },
             {
                 key: "cargo_ship_floor_bottom_1",
@@ -5227,7 +5091,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         ],
         subBuildings: IS_CLIENT ? undefined : [
             { idString: "mutated_forklift", position: Vec(-0.47, -76.52), orientation: 3 },
-            { idString: randomPortDamagedContainerReversed, position: Vec(-101.24, 0.44), orientation: 2 },
+            { idString: randomContainerDamaged2Reversed, position: Vec(-101.24, 0.44), orientation: 2 },
 
             {
                 idString: {
@@ -5244,17 +5108,17 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             // container distance X = 14.3
             // container distance Y = 28.55
             // ----------------------------------
-            { idString: randomPortOpenContainerOneSide, position: Vec(10.75, -75.60) },
-            { idString: randomPortOpenContainerTwoSide, position: Vec(-43.49, -5.3) },
-            { idString: randomPortDamagedContainerReversed, position: Vec(29.19, 5.3), orientation: 2 },
+            { idString: randomContainerOpen1, position: Vec(10.75, -75.60) },
+            { idString: randomContainerOpen2, position: Vec(-43.49, -5.3) },
+            { idString: randomContainerDamaged2Reversed, position: Vec(29.19, 5.3), orientation: 2 },
 
-            { idString: randomPortOpenContainerOneSide, position: Vec(43.49, -36.25), orientation: 2 },
-            { idString: randomPortOpenContainerOneSide, position: Vec(29.19, -36.25), orientation: 2 },
-            { idString: randomPortDamagedContainer, position: Vec(-29.19, 64.8) },
-            { idString: randomPortOpenContainerOneSide, position: Vec(-43.49, 64.8) },
+            { idString: randomContainerOpen1, position: Vec(43.49, -36.25), orientation: 2 },
+            { idString: randomContainerOpen1, position: Vec(29.19, -36.25), orientation: 2 },
+            { idString: randomContainerDamaged2, position: Vec(-29.19, 64.8) },
+            { idString: randomContainerOpen1, position: Vec(-43.49, 64.8) },
 
-            { idString: randomPortOpenContainerOneSide, position: Vec(39.25, 65.25) },
-            { idString: randomPortOpenContainerOneSide, position: Vec(-24.95, -65.25), orientation: 2 }
+            { idString: randomContainerOpen1, position: Vec(39.25, 65.25) },
+            { idString: randomContainerOpen1, position: Vec(-24.95, -65.25), orientation: 2 }
         ]
     },
     {
@@ -5467,9 +5331,9 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "cargo_ship_stair", position: Vec(-63.71, 21.75), rotation: 2, layer: Layer.ToBasement, outdoors: true },
             { idString: "cargo_ship_stair", position: Vec(-63.71, 121.65), rotation: 2, layer: Layer.ToBasement, outdoors: true },
 
-            { idString: "cargo_ship_stair_entrance_walls", position: Vec(0.11, -156.81), rotation: 0 },
-            { idString: "cargo_ship_stair_entrance_walls", position: Vec(26.3, -34.17), rotation: 3 },
-            { idString: "cargo_ship_stair_entrance_walls", position: Vec(-26.12, 106.47), rotation: 3 },
+            { idString: "cargo_ship_stair_entrance", position: Vec(0.11, -156.81), rotation: 0 },
+            { idString: "cargo_ship_stair_entrance", position: Vec(26.3, -34.17), rotation: 3 },
+            { idString: "cargo_ship_stair_entrance", position: Vec(-26.12, 106.47), rotation: 3 },
 
             { idString: "life_preserver", position: Vec(-48.2, 5.29), rotation: 2, outdoors: true },
             { idString: "life_preserver", position: Vec(-48.27, -4.55), rotation: 2, outdoors: true },
@@ -5567,37 +5431,37 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             // container distance Y = 28.55
             // ----------------------------------
 
-            { idString: randomPortOpenContainerOneSide, position: Vec(-30.75, -140.5) },
-            { idString: randomPortOpenContainerOneSide, position: Vec(30.75, -140.5) },
-            { idString: randomPortDamagedContainerReversed, position: Vec(16.3, -140.5) },
+            { idString: randomContainerOpen1, position: Vec(-30.75, -140.5) },
+            { idString: randomContainerOpen1, position: Vec(30.75, -140.5) },
+            { idString: randomContainerDamaged2Reversed, position: Vec(16.3, -140.5) },
 
-            { idString: randomPortOpenContainerOneSide, position: Vec(41.5, 97.75), orientation: 2 },
-            { idString: randomPortOpenContainerOneSide, position: Vec(27.2, 97.75), orientation: 2 },
-            { idString: randomPortOpenContainerOneSide, position: Vec(-41.5, -69.2) },
+            { idString: randomContainerOpen1, position: Vec(41.5, 97.75), orientation: 2 },
+            { idString: randomContainerOpen1, position: Vec(27.2, 97.75), orientation: 2 },
+            { idString: randomContainerOpen1, position: Vec(-41.5, -69.2) },
 
-            { idString: randomPortOpenContainerOneSide, position: Vec(-41.5, 97.75), orientation: 2 },
-            { idString: randomPortOpenContainerOneSide, position: Vec(41.5, -69.2) },
-            { idString: randomPortDamagedContainerReversed, position: Vec(27.2, -69.2) },
-            { idString: randomPortDamagedContainerReversed, position: Vec(-12.9, 69.2), orientation: 2 },
+            { idString: randomContainerOpen1, position: Vec(-41.5, 97.75), orientation: 2 },
+            { idString: randomContainerOpen1, position: Vec(41.5, -69.2) },
+            { idString: randomContainerDamaged2Reversed, position: Vec(27.2, -69.2) },
+            { idString: randomContainerDamaged2Reversed, position: Vec(-12.9, 69.2), orientation: 2 },
 
-            { idString: randomPortOpenContainerOneSide, position: Vec(-12.7, 1) },
-            { idString: randomPortOpenContainerOneSide, position: Vec(12.7, 27.55), orientation: 2 },
-            { idString: randomPortOpenContainerOneSide, position: Vec(27, 27.55), orientation: 2 },
-            { idString: randomPortOpenContainerTwoSide, position: Vec(-41.3, -27.55) },
+            { idString: randomContainerOpen1, position: Vec(-12.7, 1) },
+            { idString: randomContainerOpen1, position: Vec(12.7, 27.55), orientation: 2 },
+            { idString: randomContainerOpen1, position: Vec(27, 27.55), orientation: 2 },
+            { idString: randomContainerOpen2, position: Vec(-41.3, -27.55) },
 
-            { idString: randomPortOpenContainerOneSide, position: Vec(-41.37, -1.5), orientation: 2 },
-            { idString: randomPortOpenContainerOneSide, position: Vec(41.37, 30.05) },
-            { idString: randomPortOpenContainerOneSide, position: Vec(27.07, 30.05) },
+            { idString: randomContainerOpen1, position: Vec(-41.37, -1.5), orientation: 2 },
+            { idString: randomContainerOpen1, position: Vec(41.37, 30.05) },
+            { idString: randomContainerOpen1, position: Vec(27.07, 30.05) },
 
-            { idString: randomPortOpenContainerOneSide, position: Vec(27.07, -42.5), orientation: 2 },
-            { idString: randomPortOpenContainerOneSide, position: Vec(41.37, -42.5), orientation: 2 },
-            { idString: randomPortOpenContainerOneSide, position: Vec(-41.37, 71.05) },
-            { idString: randomPortDamagedContainer, position: Vec(-27.07, 71.05) },
+            { idString: randomContainerOpen1, position: Vec(27.07, -42.5), orientation: 2 },
+            { idString: randomContainerOpen1, position: Vec(41.37, -42.5), orientation: 2 },
+            { idString: randomContainerOpen1, position: Vec(-41.37, 71.05) },
+            { idString: randomContainerDamaged2, position: Vec(-27.07, 71.05) },
 
-            { idString: randomPortOpenContainerTwoSide, position: Vec(27.17, 71.8) },
-            { idString: randomPortOpenContainerOneSide, position: Vec(-41.47, -71.8), orientation: 2 },
-            { idString: randomPortDamagedContainer, position: Vec(-27.17, -100.35), orientation: 2 },
-            { idString: randomPortOpenContainerOneSide, position: Vec(41.47, 100.35) }
+            { idString: randomContainerOpen2, position: Vec(27.17, 71.8) },
+            { idString: randomContainerOpen1, position: Vec(-41.47, -71.8), orientation: 2 },
+            { idString: randomContainerDamaged2, position: Vec(-27.17, -100.35), orientation: 2 },
+            { idString: randomContainerOpen1, position: Vec(41.47, 100.35) }
         ],
         lootSpawners: IS_CLIENT ? undefined : [{
             table: "ship_skins",
@@ -5948,9 +5812,9 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             // -----------------------------------------------------
             // TEMP: Remove if halloween ends.
             // -----------------------------------------------------
-            // { idString: "small_lamp_thingy", position: Vec(-41.19, 33.19) },
-            // { idString: "small_lamp_thingy", position: Vec(56.28, 2.85) },
-            // { idString: "small_lamp_thingy", position: Vec(-64.12, -59.61) },
+            // { idString: "small_lamp", position: Vec(-41.19, 33.19) },
+            // { idString: "small_lamp", position: Vec(56.28, 2.85) },
+            // { idString: "small_lamp", position: Vec(-64.12, -59.61) },
             // { idString: "cobweb", position: Vec(65.91, -1.02), rotation: 3 },
             // { idString: "cobweb", position: Vec(-4.87, -47.66), rotation: 2 },
             // { idString: "cobweb", position: Vec(-65.14, -73.48), rotation: 0 },
@@ -6074,14 +5938,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         ceilingHitbox: RectangleHitbox.fromRect(43.5, 20, Vec(0, -1)),
         floorImages: [
             {
-                key: "mobile_home_floor_1",
-                position: Vec(-11, 0),
-                scale: Vec(1.07, 1.07)
-            },
-            {
-                key: "mobile_home_floor_2",
-                position: Vec(11, 0.01),
-                scale: Vec(1.07, 1.07)
+                key: "mobile_home_floor",
+                position: Vec(0, 0)
             }
         ],
         ceilingImages: [{
@@ -6103,19 +5961,19 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         ],
         wallsToDestroy: 2,
         obstacles: IS_CLIENT ? undefined : [
-            { idString: "small_drawer", position: Vec(8.5, -5.5), rotation: 0 },
-            { idString: "sink", position: Vec(-16.8, -4.6), rotation: 1 },
+            { idString: "small_drawer", position: Vec(8, -5.5), rotation: 0 },
+            { idString: "sink", position: Vec(-16.6, -4.6), rotation: 1 },
             { idString: randomSmallStove, position: Vec(-16.8, 3.9), rotation: 1 },
-            { idString: "door", position: Vec(4.5, 8.45), rotation: 2 },
-            { idString: "mobile_home_wall_4", position: Vec(15.5, 8.45), rotation: 0 },
-            { idString: "mobile_home_wall_2", position: Vec(-10.5, 8.45), rotation: 0 },
-            { idString: "tire", position: Vec(-24.25, 4.85), rotation: 0, outdoors: true },
+            { idString: "mobile_home_wall_2", position: Vec(-10.42, 8.45), rotation: 0 },
+            { idString: "door", position: Vec(4.4, 8.45), rotation: 2 },
+            { idString: "mobile_home_wall_3", position: Vec(15.25, 8.45), rotation: 0 },
+            { idString: "tire", position: Vec(-23.95, 4.85), rotation: 0, outdoors: true },
             { idString: "small_bed", position: Vec(16.8, -1), rotation: 0 },
-            { idString: "mobile_home_window", position: Vec(-6.6, -10.5), rotation: 0 },
-            { idString: "mobile_home_wall_1", position: Vec(-17.25, -10.5), rotation: 0 },
-            { idString: "mobile_home_wall_2", position: Vec(21.7, -1), rotation: 1 },
-            { idString: "mobile_home_wall_2", position: Vec(-21.7, -1), rotation: 1 },
-            { idString: "mobile_home_wall_3", position: Vec(10.6, -10.5), rotation: 0 },
+            { idString: "mobile_home_wall_1", position: Vec(-17.1, -10.33), rotation: 0 },
+            { idString: "mobile_home_window", position: Vec(-6.6, -10.33), rotation: 0 },
+            { idString: "mobile_home_wall_2", position: Vec(10.55, -10.33), rotation: 0 },
+            { idString: "mobile_home_wall_2", position: Vec(21.4, -0.94), rotation: 1 },
+            { idString: "mobile_home_wall_2", position: Vec(-21.45, -0.94), rotation: 1 },
             { idString: "box", position: Vec(25.7, -3.5), outdoors: true },
             { idString: "box", position: Vec(27.5, 1.55), outdoors: true }
         ]
@@ -6257,7 +6115,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             }
         ],
         obstacles: IS_CLIENT ? undefined : [
-            { idString: "small_lamp_thingy", position: Vec(-0.12, -22.2) },
+            { idString: "small_lamp", position: Vec(-0.12, -22.2) },
             { idString: "window", position: Vec(20.47, 11.8), rotation: 0 },
             { idString: "door", position: Vec(-0.02, 38), rotation: 0 },
             { idString: randomSmallStove, position: Vec(15.64, 33.27), rotation: 3 },
@@ -6572,7 +6430,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         ceilingHitbox: RectangleHitbox.fromRect(20, 20),
         ceilingZIndex: ZIndexes.BuildingsCeiling - 1,
         ceilingImages: [{
-            key: "secret_room_ceiling",
+            key: "headquarters_secret_room_ceiling",
             position: Vec(0, 0),
             scale: Vec(1.1, 1.01)
         }],
@@ -6747,8 +6605,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             // { idString: "jack_o_lantern", position: Vec(7.64, -112.63), rotation: 3 },
             // { idString: "jack_o_lantern", position: Vec(-56.86, 42.99), rotation: 0 },
             // { idString: "jack_o_lantern", position: Vec(-3.42, 42.99), rotation: 0 },
-            // { idString: "small_lamp_thingy", position: Vec(-7.16, 4.94) },
-            // { idString: "small_lamp_thingy", position: Vec(43.47, -52.67) },
+            // { idString: "small_lamp", position: Vec(-7.16, 4.94) },
+            // { idString: "small_lamp", position: Vec(43.47, -52.67) },
 
             // ------------------------------------------------------------------
 
@@ -6820,8 +6678,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "potted_plant", position: Vec(64.5, 5) },
             { idString: "bookshelf", position: Vec(42, 6.25), rotation: 0 },
             { idString: "headquarters_wall_6", position: Vec(50.05, 10), rotation: 0 },
-            { idString: "house_column", position: Vec(29, 9.9) },
-            { idString: "house_column", position: Vec(29, 34.38) },
+            { idString: "column", position: Vec(29, 9.9) },
+            { idString: "column", position: Vec(29, 34.38) },
             { idString: "headquarters_wall_1", position: Vec(29, 17), rotation: 1 },
             { idString: "door", position: Vec(29, 28.25), rotation: 3 },
             { idString: "gun_case", position: Vec(36, 14.5), rotation: 0 },
@@ -6842,8 +6700,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
 
             // under cafeteria
             { idString: "headquarters_wall_4", position: Vec(32.7, -73.55), rotation: 1 },
-            { idString: "house_column", position: Vec(32.7, -64) },
-            { idString: "house_column", position: Vec(32.75, -42.8) },
+            { idString: "column", position: Vec(32.7, -64) },
+            { idString: "column", position: Vec(32.75, -42.8) },
             { idString: "headquarters_wall_4", position: Vec(32.7, -33.5), rotation: 1 },
             { idString: "vending_machine", position: Vec(37.5, -30.5), rotation: 1 },
             { idString: "large_table", position: Vec(60.7, -60), rotation: 1, variation: 1 },
@@ -6970,7 +6828,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             },
             {
                 key: "headquarters_second_floor_bottom",
-                position: Vec(-5.6, 16)
+                position: Vec(-5.6, 16.3)
             }
         ],
         floors: [
@@ -7027,8 +6885,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             // { idString: "cobweb", position: Vec(-33.45, -100.2), rotation: 0 },
             // { idString: "cobweb", position: Vec(-33.22, -26.7), rotation: 3 },
             // { idString: "cobweb", position: Vec(-57.56, -71.91), rotation: 0 },
-            // { idString: "small_lamp_thingy", position: Vec(30.8, -74.01) },
-            // { idString: "small_lamp_thingy", position: Vec(0.16, -41.27) },
+            // { idString: "small_lamp", position: Vec(30.8, -74.01) },
+            // { idString: "small_lamp", position: Vec(0.16, -41.27) },
             // ------------------------------------------------------------------
 
             { idString: "fire_exit_railing", position: Vec(73.5, -56), rotation: 0 },
@@ -7070,7 +6928,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "headquarters_wall_5", position: Vec(-32.58, -54.5), rotation: 0 },
             { idString: "trash_can", position: Vec(-8.5, -58.5) },
             { idString: "potted_plant", position: Vec(-33, -59.3) },
-            { idString: "house_column", position: Vec(-3.6, -69.9) },
+            { idString: "column", position: Vec(-3.6, -69.9) },
             { idString: "headquarters_wall_1", position: Vec(-3.6, -77.1), rotation: 1 },
             { idString: "headquarters_wall_1", position: Vec(-3.6, -62.7), rotation: 1 },
             { idString: "grey_office_chair", position: Vec(-26.8, -90), rotation: 0 },
@@ -7082,9 +6940,9 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "bookshelf", position: Vec(12, -59.5), rotation: 0 },
 
             // secret room
-            { idString: "secret_door", position: Vec(-3.85, -99.4), rotation: 3 },
+            { idString: "headquarters_secret_door", position: Vec(-3.85, -99.4), rotation: 3 },
             { idString: "aegis_golden_case", position: Vec(14, -98.5), lootSpawnOffset: Vec(-1, 1), rotation: 3 },
-            { idString: "secret_door", position: Vec(2.5, -83.8), rotation: 0 },
+            { idString: "headquarters_secret_door", position: Vec(2.5, -83.8), rotation: 0 },
 
             // ---------------------------------------------------------------------------------------------------------------
             // discussion room? (bottom left)
@@ -7391,22 +7249,22 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "barn_stair_walls_top_floor", position: Vec(0, 0), rotation: 0, layer: Layer.Upstairs },
 
             // Columns
-            { idString: "house_column", position: Vec(-33.5, -11.6) },
-            { idString: "house_column", position: Vec(-33.5, -26.7) },
-            { idString: "house_column", position: Vec(-15, -26.7) },
-            { idString: "house_column", position: Vec(4.1, -26.7) },
-            { idString: "house_column", position: Vec(19.39, 3.36) },
-            { idString: "house_column", position: Vec(3.6, 3.36) },
-            { idString: "house_column", position: Vec(-12.36, 3.36) },
-            { idString: "house_column", position: Vec(-13.59, 40.32) },
-            { idString: "house_column", position: Vec(8.43, 40.32) },
-            { idString: "house_column", position: Vec(-32.29, 40.32) },
-            { idString: "house_column", position: Vec(-53.78, 40.32) },
+            { idString: "column", position: Vec(-33.5, -11.6) },
+            { idString: "column", position: Vec(-33.5, -26.7) },
+            { idString: "column", position: Vec(-15, -26.7) },
+            { idString: "column", position: Vec(4.1, -26.7) },
+            { idString: "column", position: Vec(19.39, 3.36) },
+            { idString: "column", position: Vec(3.6, 3.36) },
+            { idString: "column", position: Vec(-12.36, 3.36) },
+            { idString: "column", position: Vec(-13.59, 40.32) },
+            { idString: "column", position: Vec(8.43, 40.32) },
+            { idString: "column", position: Vec(-32.29, 40.32) },
+            { idString: "column", position: Vec(-53.78, 40.32) },
 
-            { idString: "house_column", position: Vec(-33.5, -26.7), layer: Layer.Upstairs },
-            { idString: "house_column", position: Vec(-15, -26.7), layer: Layer.Upstairs },
-            { idString: "house_column", position: Vec(4.1, -26.7), layer: Layer.Upstairs },
-            { idString: "house_column", position: Vec(-33.5, -11.6), layer: Layer.Upstairs },
+            { idString: "column", position: Vec(-33.5, -26.7), layer: Layer.Upstairs },
+            { idString: "column", position: Vec(-15, -26.7), layer: Layer.Upstairs },
+            { idString: "column", position: Vec(4.1, -26.7), layer: Layer.Upstairs },
+            { idString: "column", position: Vec(-33.5, -11.6), layer: Layer.Upstairs },
 
             // stairs
             { idString: "barn_stair", position: Vec(11, -35.35), rotation: 1, layer: Layer.ToUpstairs },
@@ -8121,7 +7979,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             // { idString: "cobweb", position: Vec(42.33, -30.14), rotation: 3 },
             // { idString: "cobweb", position: Vec(-20.75, 35.29), rotation: 1 },
             // { idString: "jack_o_lantern", position: Vec(-25.48, -66.63), rotation: 3 },
-            // { idString: "small_lamp_thingy", position: Vec(-2.41, 18.03) },
+            // { idString: "small_lamp", position: Vec(-2.41, 18.03) },
             // ------------------------------------------------------------------
 
             // windows
@@ -8324,7 +8182,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             // { idString: "cobweb", position: Vec(15.32, 35.27), rotation: 2 },
             // { idString: "cobweb", position: Vec(-20.76, -54.56), rotation: 0 },
             // { idString: "cobweb", position: Vec(-42.44, 1.57), rotation: 0 },
-            // { idString: "small_lamp_thingy", position: Vec(1.03, -19.13) },
+            // { idString: "small_lamp", position: Vec(1.03, -19.13) },
             // ------------------------------------------------------------------
 
             // near stairs
@@ -8810,8 +8668,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "couch_corner", position: Vec(-148.05, -41.34), rotation: 0 },
             { idString: "couch_part", position: Vec(-141.7, -41.19), rotation: 3 },
             { idString: "couch_end_right", position: Vec(-134.71, -40.81), rotation: 0 },
-            { idString: "house_column", position: Vec(-129.67, -12.68) },
-            { idString: "house_column", position: Vec(-129.67, 9.58) },
+            { idString: "column", position: Vec(-129.67, -12.68) },
+            { idString: "column", position: Vec(-129.67, 9.58) },
             { idString: "headquarters_wall_2", position: Vec(-141.6, -12.63), rotation: 0 },
             { idString: "headquarters_wall_2", position: Vec(-141.6, 9.58), rotation: 0 },
             { idString: "cabinet", position: Vec(-144.6, -8.7), rotation: 0 },
@@ -8876,7 +8734,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             // { idString: "graveyard_light", position: Vec(-99.08, -8.79) },
             // { idString: "graveyard_light", position: Vec(-99.08, 10.38) },
             // { idString: "graveyard_light", position: Vec(-3.5, 20.83) },
-            // { idString: "small_lamp_thingy", position: Vec(-20.99, 54.89) },
+            // { idString: "small_lamp", position: Vec(-20.99, 54.89) },
             // ------------------------------------------------------------------
 
             { idString: "control_panel2", position: Vec(-12.74, -99.53), rotation: 0 },
@@ -8908,8 +8766,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "file_cart", position: Vec(-21.24, -6.17), rotation: 3 },
             { idString: "headquarters_wall_4", position: Vec(3.21, -19.2), rotation: 0 },
             { idString: "headquarters_wall_4", position: Vec(3.21, 3.27), rotation: 0 },
-            { idString: "house_column", position: Vec(-6.3, -19.07) },
-            { idString: "house_column", position: Vec(-6.3, 3.22) },
+            { idString: "column", position: Vec(-6.3, -19.07) },
+            { idString: "column", position: Vec(-6.3, 3.22) },
             { idString: "house_wall_15", position: Vec(-44.24, -4.36), rotation: 0 },
 
             // northeast hall
@@ -9120,12 +8978,12 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "shed_3", position: Vec(22, -55), orientation: 3 },
             {
                 idString: {
-                    container_3: 1,
-                    container_4: 1,
-                    container_5: 1,
-                    container_6: 1,
-                    container_26: 1,
-                    container_20: 1
+                    container_green_open1: 1,
+                    container_green_open1_damaged: 1,
+                    container_blue_open1: 1,
+                    container_blue_open1_damaged: 1,
+                    container_white_damaged1: 1,
+                    container_green_damaged1: 1
                 }, position: Vec(30, -58), orientation: 1
             }
         ]
@@ -9477,8 +9335,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
 
         subBuildings: IS_CLIENT ? undefined : [
             { idString: "blue_stair", position: Vec(23.33, 12.89), orientation: 3 },
-            { idString: randomPortDamagedContainer, position: Vec(0, -22.7), orientation: 2 },
-            { idString: randomPortDamagedContainer, position: Vec(0, -5.1) }
+            { idString: randomContainerDamaged2, position: Vec(0, -22.7), orientation: 2 },
+            { idString: randomContainerDamaged2, position: Vec(0, -5.1) }
         ]
     },
 
@@ -9495,107 +9353,86 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
 
     // Two sided
     truckContainer(1, "two_sided", [
-        { idString: "regular_crate", position: Vec(-0.82, -13.3) },
-        { idString: "regular_crate", position: Vec(0.76, -3.71) },
-        { idString: "box", position: Vec(-2.32, 16.51) },
-        { idString: "box", position: Vec(-2.32, 11.39) },
-        { idString: "box", position: Vec(2.86, 12.63) }
+        { idString: "regular_crate", position: Vec(0, -12.4) },
+        { idString: "box", position: Vec(2.6, 14.5) },
+        { idString: "box", position: Vec(2.6, 9.4) }
     ]),
 
     truckContainer(2, "two_sided", [
-        { idString: "regular_crate", position: Vec(0.08, 14.32) },
-        { idString: "propane_tank", position: Vec(2.55, 6.99) }
     ], [
-        { idString: randomPallet, position: Vec(0.09, -13.43) }
+        { idString: randomPallet, position: Vec(0, -13) }
+    ], [
+        { table: "ground_loot", position: Vec(0, 10) }
     ]),
 
     truckContainer(3, "two_sided", [
-        { idString: "barrel", position: Vec(-1.55, -14.23) },
-        { idString: "box", position: Vec(-2.27, -7.29) },
-        { idString: "regular_crate", position: Vec(-0.06, 0.67) },
-        { idString: "regular_crate", position: Vec(0.68, 10.51) }
+        { idString: "propane_tank", position: Vec(-3.5, -16) },
+        { idString: "box", position: Vec(2.6, 14.5) },
+        { idString: "box", position: Vec(2.6, 9.4) }
+    ], [], [
+        { table: "ground_loot", position: Vec(0, -8) }
     ]),
 
     truckContainer(4, "two_sided", [
-        { idString: "ammo_crate", position: Vec(0, -12) },
-        { idString: "box", position: Vec(-3.14, 7.99) },
-        { idString: "box", position: Vec(-3.21, 12.87) },
-        { idString: "gun_case", position: Vec(2.77, 13.65), rotation: 3 }
+        { idString: "ammo_crate", position: Vec(0, -12.3) },
+        { idString: "gun_case", position: Vec(2.75, 11.5), rotation: 3 }
     ]),
 
     truckContainer(5, "two_sided", [
-        { idString: "propane_tank", position: Vec(2.91, -15.8) },
-        { idString: "propane_tank", position: Vec(-2.93, -9.67) },
-        { idString: "box", position: Vec(-2.76, -14.84) },
-        { idString: "box", position: Vec(2.56, -8.72) },
-        { idString: "ammo_crate", position: Vec(0.02, 7) },
-        { idString: "gun_case", position: Vec(0.11, 15.5), rotation: 0 }
+        { idString: "grenade_box", position: Vec(0, -10.2) },
+        { idString: "grenade_box", position: Vec(-2.5, -15.2) },
+        { idString: "grenade_box", position: Vec(2.5, -15.2) }
+    ], [], [
+        { table: "ground_loot", position: Vec(0, 10) }
     ]),
 
     truckContainer(6, "two_sided", [
-        { idString: "box", position: Vec(-2.62, -6.11) },
-        { idString: "box", position: Vec(2.7, 16.4) }
+        { idString: "box", position: Vec(-2.6, -6) },
+        { idString: "pallet", position: Vec(0, 9.6), rotation: 0 }
     ], [
-        { idString: randomPallet, position: Vec(0, -13.22) },
-        { idString: randomPallet, position: Vec(0, 9.63) }
+        { idString: randomPallet, position: Vec(0, -13) }
     ]),
 
     // One sided
     truckContainer(7, "one_sided", [
-        { idString: "box", position: Vec(3.25, 15.3) },
-        { idString: "box", position: Vec(3.18, 10.34) },
-        { idString: "propane_tank", position: Vec(3.27, 5.38) }
+        { idString: "box", position: Vec(2.6, 14.5) },
+        { idString: "box", position: Vec(2.6, 9.4) }
     ], [
-        { idString: randomPallet, position: Vec(0.05, -13.22) }
+        { idString: randomPallet, position: Vec(0, -13) }
     ]),
 
     truckContainer(8, "one_sided", [
-        { idString: "barrel", position: Vec(-1.48, 14.27) },
-        { idString: "barrel", position: Vec(1.73, 5.53) },
-        { idString: "gun_case", position: Vec(2.5, -12.56), rotation: 3 }
+        { idString: "grenade_crate", position: Vec(-1.85, -14.3) },
+        { idString: "gun_case", position: Vec(2.75, 11.5), rotation: 3 }
     ]),
 
     truckContainer(9, "one_sided", [
-        { idString: "trash_bag", position: Vec(-2.7, -15.18) },
-        { idString: "trash_bag", position: Vec(2.85, -12.26) },
-        { idString: "trash_bag", position: Vec(-2.92, -7.89) },
-        { idString: "trash_bag", position: Vec(-2.33, 9.25) },
-        { idString: "trash_bag", position: Vec(2.42, 2.62) }
+        { idString: "trash_bag", position: Vec(-2.5, -15.2) },
+        { idString: "trash_bag", position: Vec(2.5, -12.3) },
+        { idString: "trash_bag", position: Vec(-2.5, -7.9) },
+        { idString: "trash_bag", position: Vec(-2.5, 9.25) },
+        { idString: "trash_bag", position: Vec(2.5, -3.1) }
     ]),
 
     truckContainer(10, "one_sided", [
-        { idString: "box", position: Vec(-2.77, -6.21) },
-        { idString: "ammo_crate", position: Vec(0, 10.54) }
+        { idString: "box", position: Vec(-2.6, -6) },
+        { idString: "pallet", position: Vec(0, 9.6), rotation: 0 }
     ], [
-        { idString: randomPallet, position: Vec(0.05, -13.22) }
+        { idString: randomPallet, position: Vec(0, -13) }
     ]),
 
     truckContainer(11, "one_sided", [
-        { idString: "gun_locker", position: Vec(3, -11.37), rotation: 3 },
-        { idString: "grenade_crate", position: Vec(-2.41, 8.66) },
-        { idString: "box", position: Vec(3.23, 7.78) }
+        { idString: "propane_tank", position: Vec(-3.5, -16) },
+        { idString: "gun_locker", position: Vec(2.6, -11.2), rotation: 3 },
+        { idString: "box", position: Vec(2.6, 14.5) },
+        { idString: "box", position: Vec(2.6, 9.4) }
     ]),
 
     truckContainer(12, "one_sided", [
-        { idString: "flint_crate", position: Vec(0, -12.59) },
-        { idString: "gun_case", position: Vec(2.46, -2.23), rotation: 3 },
-        { idString: "box", position: Vec(2.71, 5.74) },
-        { idString: "gun_locker", position: Vec(-3.01, 0.22), rotation: 3 }, // LMAO no
-        { idString: "ammo_crate", position: Vec(0.04, 13.03) }
+        { idString: "flint_crate", position: Vec(0, -12.4) },
+        { idString: "gun_mount_ak47", position: Vec(3.9, 11.5), rotation: 3 }
     ]),
 
-    {
-        // we use tugboat "HACK" to generate these in the ocean
-        idString: "buoy",
-        name: "Buoy",
-        defType: DefinitionType.Building,
-        spawnMode: MapObjectSpawnMode.Beach,
-        spawnHitbox: RectangleHitbox.fromRect(70, 110, Vec(50, 0)),
-        obstacles: IS_CLIENT ? undefined : [{
-            idString: "buoy",
-            get position() { return Vec(random(50, 100), 0); }
-        }]
-    },
     { // implemented by pap with a lot of love >w<
         idString: "campsite",
         name: "Campsite",
@@ -11003,7 +10840,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             // Bathroom
             { idString: "house_wall_14", position: Vec(-15.98, -23.01), rotation: 0 },
             { idString: "house_wall_25", position: Vec(-5.98, -42.87), rotation: 1 },
-            { idString: "house_column", position: Vec(-6.05, -23.01) },
+            { idString: "column", position: Vec(-6.05, -23.01) },
             { idString: "door", position: Vec(-5.98, -30), rotation: 1 },
             { idString: randomToilet, position: Vec(-20.9, -46.45), rotation: 0 },
             { idString: "sink", position: Vec(-12.15, -46.84), rotation: 0 },
@@ -11011,7 +10848,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
 
             // Bedroom
             { idString: "house_wall_24", position: Vec(19.73, -31.19), rotation: 1 },
-            { idString: "house_column", position: Vec(19.73, -39.7) },
+            { idString: "column", position: Vec(19.73, -39.7) },
             { idString: "door", position: Vec(19.73, -46.67), rotation: 1 },
             { idString: "trash_can", position: Vec(23.71, -27.38) },
             { idString: "potted_plant", position: Vec(44.72, -28.24) },
@@ -11139,7 +10976,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             }
         ],
         obstacles: IS_CLIENT ? undefined : [
-            { idString: "small_lamp_thingy", position: Vec(18.18, 0) },
+            { idString: "small_lamp", position: Vec(18.18, 0) },
 
             { idString: "control_panel_small", position: Vec(-14.36, 11.22), rotation: 0 },
             { idString: "control_panel_small", position: Vec(-14.36, -9.22), rotation: 2 },
@@ -11175,7 +11012,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         spawnHitbox: RectangleHitbox.fromRect(34.05, 28),
         ceilingHitbox: RectangleHitbox.fromRect(34.05, 28),
         ceilingImages: [{
-            key: "vault_ceiling",
+            key: "hunted_vault_ceiling",
             position: Vec(0, 0),
             scale: Vec(2.68, 2.16)
         }]
@@ -11273,7 +11110,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             position: Vec(0, 0)
         }],
         obstacles: IS_CLIENT ? undefined : [
-            { idString: "small_lamp_thingy", position: Vec(0.09, -4.68) },
+            { idString: "small_lamp", position: Vec(0.09, -4.68) },
             { idString: "special_table_vest", position: Vec(0.19, 0.17), rotation: 1 },
 
             { idString: "pink_metal_auto_door", position: Vec(4.16, 11.81), rotation: 0, locked: true },
@@ -11419,7 +11256,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             position: Vec(0, 0)
         }],
         obstacles: IS_CLIENT ? undefined : [
-            { idString: "small_lamp_thingy", position: Vec(-17.05, -28.85) },
+            { idString: "small_lamp", position: Vec(-17.05, -28.85) },
             { idString: "regular_crate", position: Vec(-11.5, -6.15) },
             { idString: "regular_crate", position: Vec(12.73, 29.39) },
             { idString: "regular_crate", position: Vec(22.63, 27.75) },
@@ -11472,7 +11309,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         spawnHitbox: RectangleHitbox.fromRect(25, 25),
         ceilingHitbox: RectangleHitbox.fromRect(22, 22),
         ceilingImages: [{
-            key: "vault_ceiling",
+            key: "hunted_vault_ceiling",
             position: Vec(0, 0),
             scale: Vec(3.745, 1.78)
         }]
@@ -11828,12 +11665,12 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "small_logs_pile_2", position: Vec(63.51, 100.71), rotation: 0 },
             { idString: "small_logs_pile_2", position: Vec(84.21, 49.22), rotation: 0 },
 
-            { idString: "large_logs_pile_2", position: Vec(6.04, 93.4), rotation: 0, variation: 2 },
-            { idString: "large_logs_pile_2", position: Vec(-7.61, 89.32), rotation: 1, variation: 1 },
-            { idString: "large_logs_pile_2", position: Vec(-122.89, 146.31), rotation: 0, variation: 2 },
-            { idString: "large_logs_pile_2", position: Vec(-125.21, 170.94), rotation: 1, variation: 1 },
-            { idString: "large_logs_pile_2", position: Vec(-130.91, 184.79), rotation: 2, variation: 1 },
-            { idString: "large_logs_pile_2", position: Vec(22.94, 197.88), rotation: 1, variation: 1 },
+            { idString: "large_logs_pile2", position: Vec(6.04, 93.4), rotation: 0, variation: 2 },
+            { idString: "large_logs_pile2", position: Vec(-7.61, 89.32), rotation: 1, variation: 1 },
+            { idString: "large_logs_pile2", position: Vec(-122.89, 146.31), rotation: 0, variation: 2 },
+            { idString: "large_logs_pile2", position: Vec(-125.21, 170.94), rotation: 1, variation: 1 },
+            { idString: "large_logs_pile2", position: Vec(-130.91, 184.79), rotation: 2, variation: 1 },
+            { idString: "large_logs_pile2", position: Vec(22.94, 197.88), rotation: 1, variation: 1 },
 
             { idString: "pine_tree", position: Vec(7.32, 197.02) },
             { idString: "pine_tree", position: Vec(7.83, 140.01) },
@@ -11995,9 +11832,9 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "barrier", position: Vec(24.53, -203.9), rotation: 3 },
             { idString: "barrier", position: Vec(-96.93, -162.48), rotation: 0 },
 
-            { idString: "large_logs_pile_2", position: Vec(105.39, -101.22), rotation: 0, variation: 2 },
-            { idString: "large_logs_pile_2", position: Vec(90.8, -105.51), rotation: 1, variation: 1 },
-            { idString: "large_logs_pile_2", position: Vec(5.8, -140.08), rotation: 3, variation: 2 },
+            { idString: "large_logs_pile2", position: Vec(105.39, -101.22), rotation: 0, variation: 2 },
+            { idString: "large_logs_pile2", position: Vec(90.8, -105.51), rotation: 1, variation: 1 },
+            { idString: "large_logs_pile2", position: Vec(5.8, -140.08), rotation: 3, variation: 2 },
 
             { idString: "small_logs_pile_2", position: Vec(64.83, -115.86), rotation: 0 },
             { idString: "small_logs_pile_2", position: Vec(-71.44, -167.01), rotation: 2 },
@@ -12250,7 +12087,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "small_logs_pile_2", position: Vec(47.04, -31.65), rotation: 2 },
             { idString: "small_logs_pile_2", position: Vec(37.85, -27.06), rotation: 3 },
 
-            { idString: "large_logs_pile_2", position: Vec(-41.61, -17.12), rotation: 0, variation: 2 },
+            { idString: "large_logs_pile2", position: Vec(-41.61, -17.12), rotation: 0, variation: 2 },
 
             { idString: "small_moldy_logs", position: Vec(3.74, -47), rotation: 0 },
             { idString: "small_moldy_logs", position: Vec(47.7, -8.71), rotation: 1 },
@@ -12367,9 +12204,9 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "box", position: Vec(41.02, 21.62) },
             { idString: "box", position: Vec(-22.04, -9.38) },
             { idString: "box", position: Vec(42.06, -32.99) },
-            { idString: "large_logs_pile_2", position: Vec(-25.22, 7.95), rotation: 2, variation: 2 },
-            { idString: "large_logs_pile_2", position: Vec(-14.07, 17.72), rotation: 2, variation: 1 },
-            { idString: "large_logs_pile_2", position: Vec(1.56, 41.95), rotation: 1, variation: 1 },
+            { idString: "large_logs_pile2", position: Vec(-25.22, 7.95), rotation: 2, variation: 2 },
+            { idString: "large_logs_pile2", position: Vec(-14.07, 17.72), rotation: 2, variation: 1 },
+            { idString: "large_logs_pile2", position: Vec(1.56, 41.95), rotation: 1, variation: 1 },
             { idString: "barrel", position: Vec(-39.88, 54.75) },
             { idString: "barrel", position: Vec(40.35, 42.35) },
             { idString: "pallet", position: Vec(38.67, 20.25), rotation: 0 },
@@ -12731,7 +12568,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "grenade_crate", position: Vec(0.41, 8.53) },
             { idString: "pallet", position: Vec(0.2, 8.09), rotation: 0 },
             { idString: "small_logs_pile_2", position: Vec(-44.19, -1.03), rotation: 2 },
-            { idString: "large_logs_pile_2", position: Vec(39.26, 0.2), rotation: 2, variation: 2 },
+            { idString: "large_logs_pile2", position: Vec(39.26, 0.2), rotation: 2, variation: 2 },
             { idString: "porta_potty_toilet_open", position: Vec(-44.41, 11.59), rotation: 1 },
             { idString: "porta_potty_sink_wall", position: Vec(-39.6, 5.7), rotation: 2 }
         ]
@@ -14497,7 +14334,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 position: Vec(2.37, 1.3)
             },
             {
-                key: "barricade_line_shooting_range",
+                key: "shooting_range_barricade_line",
                 position: Vec(-51.86, 1.26)
             },
             {
@@ -14749,11 +14586,11 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 position: Vec(-6.27, -4)
             },
             {
-                key: "barricade_line_carport",
+                key: "carport_barricade_line",
                 position: Vec(43.91, -26.63)
             },
             {
-                key: "barricade_line_carport",
+                key: "carport_barricade_line",
                 position: Vec(8.48, 46.67),
                 rotation: Math.PI / 2
             }
@@ -14817,7 +14654,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "trash_bag", position: Vec(-1.15, -11.8), rotation: 0, outdoors: true },
             { idString: "trash_bag", position: Vec(5.49, -11.5), outdoors: true },
             { idString: "grenade_crate", position: Vec(21.61, -5), outdoors: true },
-            { idString: "large_logs_pile_2", position: Vec(22.8, 7.98), rotation: 1, variation: 1, outdoors: true }
+            { idString: "large_logs_pile2", position: Vec(22.8, 7.98), rotation: 1, variation: 1, outdoors: true }
         ]
     },
     {
@@ -15237,7 +15074,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "small_logs_pile_2", position: Vec(-29.45, -0.37), rotation: 0, outdoors: true },
             { idString: "small_logs_pile_2", position: Vec(-40.68, -8.1), rotation: 3, outdoors: true },
             { idString: "small_logs_pile_2", position: Vec(10.66, -0.08), rotation: 0, outdoors: true },
-            { idString: "large_logs_pile_2", position: Vec(31.79, -9.13), rotation: 2, outdoors: true }
+            { idString: "large_logs_pile2", position: Vec(31.79, -9.13), rotation: 2, outdoors: true }
         ],
         subBuildings: IS_CLIENT ? undefined : [
             { idString: randomHollowLog, position: Vec(9.21, -13.14), orientation: 1 },
@@ -16233,7 +16070,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 zIndex: ZIndexes.Decals
             },
             {
-                key: "medical_hazel_note",
+                key: "medical_camp_hazel_note",
                 position: Vec(-8.51, 5.87),
                 rotation: -Math.PI / 4,
                 zIndex: ZIndexes.Decals

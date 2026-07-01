@@ -1,19 +1,20 @@
 import { AnimationType, GameConstants, InputActions, Layer, ObjectCategory, PlayerActions, SpectateActions, ZIndexes } from "@common/constants";
-import { getBadgeIdString, type EmoteDefinition } from "@common/definitions/emotes";
+import { type EmoteDefinition, getBadgeIdString } from "@common/definitions/emotes";
 import { Ammos } from "@common/definitions/items/ammos";
-import { ArmorType, type ArmorDefinition } from "@common/definitions/items/armors";
+import { type ArmorDefinition, ArmorType } from "@common/definitions/items/armors";
 import { type BackpackDefinition } from "@common/definitions/items/backpacks";
 import { type GunDefinition, type SingleGunNarrowing } from "@common/definitions/items/guns";
-import { HealType, type HealingItemDefinition } from "@common/definitions/items/healingItems";
+import { type HealingItemDefinition, HealType } from "@common/definitions/items/healingItems";
 import { DEFAULT_HAND_RIGGING, type MeleeDefinition } from "@common/definitions/items/melees";
 import { PerkData, PerkIds } from "@common/definitions/items/perks";
-import { Skins, type SkinDefinition } from "@common/definitions/items/skins";
+import { type SkinDefinition, Skins } from "@common/definitions/items/skins";
 import { Loots, type WeaponDefinition } from "@common/definitions/loots";
 import { MaterialSounds, type ObstacleDefinition } from "@common/definitions/obstacles";
 import { SpectatePacket } from "@common/packets/spectatePacket";
+import { getMeleeHitbox, getMeleeTargets } from "@common/utils/gameHelpers";
 import { CircleHitbox } from "@common/utils/hitbox";
-import { adjacentOrEqualLayer, adjacentOrEquivLayer } from "@common/utils/layer";
-import { Angle, EaseFunctions, Geometry, Numeric } from "@common/utils/math";
+import { adjacentOrEqualLayer } from "@common/utils/layer";
+import { Angle, EaseFunctions, Geometry } from "@common/utils/math";
 import { removeFrom, type Timeout } from "@common/utils/misc";
 import { DefinitionType, type ReferenceTo } from "@common/utils/objectDefinitions";
 import { type ObjectsNetData } from "@common/utils/objectsSerializations";
@@ -21,15 +22,15 @@ import { pickRandomInArray, random, randomBoolean, randomFloat, randomPointInsid
 import { FloorNames, FloorTypes } from "@common/utils/terrain";
 import { Vec, type Vector } from "@common/utils/vector";
 import $ from "jquery";
-import { Container, Graphics, GraphicsContext, ObservablePoint, Text, type ColorSource } from "pixi.js";
+import { type ColorSource, Container, Graphics, GraphicsContext, ObservablePoint, Text } from "pixi.js";
 import { GameConsole } from "../console/gameConsole";
 import { Game } from "../game";
 import { CameraManager } from "../managers/cameraManager";
 import { InputManager } from "../managers/inputManager";
 import { MapManager } from "../managers/mapManager";
-import { ParticleManager, type Particle, type ParticleEmitter, type ParticleOptions } from "../managers/particleManager";
+import { type Particle, type ParticleEmitter, ParticleManager, type ParticleOptions } from "../managers/particleManager";
 import { PerkManager } from "../managers/perkManager";
-import { SoundManager, type GameSound } from "../managers/soundManager";
+import { type GameSound, SoundManager } from "../managers/soundManager";
 import { UIManager } from "../managers/uiManager";
 import { BULLET_WHIZ_SCALE, DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS, PIXI_SCALE, PLAYER_PARTICLE_ZINDEX, TEAMMATE_COLORS, UI_DEBUG_MODE } from "../utils/constants";
 import { DebugRenderer } from "../utils/debugRenderer";
@@ -42,7 +43,6 @@ import { GameObject } from "./gameObject";
 import { Loot } from "./loot";
 import { Obstacle } from "./obstacle";
 import type { Projectile } from "./projectile";
-import { getMeleeHitbox, getMeleeTargets } from "@common/utils/gameHelpers";
 
 export class Player extends GameObject.derive(ObjectCategory.Player) {
     teamID!: number;
@@ -1565,7 +1565,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
         if (def && def.level > 0) {
             container.children(".item-name").text(`Lvl. ${def.level}`);
-            container.children(".item-image").attr("src", `./img/game/shared/loot/${def.idString}.svg`);
+            container.children(".item-image").attr("src", `./img/game/loot/${def.idString}.svg`);
             container.children(".item-name").attr("style", `color: ${def.level >= (Game.mode.maxEquipmentLevel ?? 3) ? "#ff9900" : "#ffffff"};`);
 
             let itemTooltip = getTranslatedString(def.idString as TranslationKeys);

@@ -788,6 +788,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
     giveGun(idString: ReferenceTo<GunDefinition>): void {
         const primaryItem = this.inventory.getWeapon(this.inventory.appendWeapon(idString)) as GunItem;
+        if (!primaryItem) return;
         const primaryDefinition = primaryItem.definition;
 
         primaryItem.ammo = primaryDefinition.capacity;
