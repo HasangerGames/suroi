@@ -36,6 +36,7 @@ import { MapManager } from "./mapManager";
 import { PerkManager } from "./perkManager";
 import { ScreenRecordManager } from "./screenRecordManager";
 import { SoundManager } from "./soundManager";
+import { pickRandomInArray } from "@common/utils/random";
 
 function safeRound(value: number): number {
     if (0 < value && value <= 1) return 1;
@@ -1434,19 +1435,19 @@ class UIManagerClass {
                     case DamageSources.Melee:
                     case DamageSources.Throwable:
                     case DamageSources.Explosion: {
-                        let event: TranslationKeys | undefined;
+                        let event: string | undefined;
                         const suicide = attackerId === undefined;
                         if (!suicide) {
                             if (downed) {
-                                if (killed) event = "kf_finished_off";
-                                else event = "kf_knocked";
+                                if (killed) event = getTranslatedString("kf_finished_off");
+                                else event = getTranslatedString("kf_knocked");
                             } else {
-                                event = "kf_killed";
+                                event = pickRandomInArray(getTranslatedString("kf_killed").split(","));
                             }
 
                             feedMessage = getTranslatedString("kf_message", {
                                 player: attackerText,
-                                event: event ? getTranslatedString(event) : "",
+                                event: event ?? "",
                                 victim: victimText,
                                 with: weapon && getTranslatedString("with"),
                                 weapon
@@ -1462,7 +1463,7 @@ class UIManagerClass {
                             // Turkish and Estonian special condition ('i shouldn't appear in these messages)
                             feedMessage = getTranslatedString(`kf_message${(language === "tr" || language === "et") ? "_grammar" : ""}` as TranslationKeys, {
                                 player: victimText,
-                                event: event ? getTranslatedString(event) : "",
+                                event: event ? getTranslatedString(event as TranslationKeys) : "",
                                 victim: "",
                                 with: weapon && getTranslatedString("with"),
                                 weapon
@@ -1671,7 +1672,7 @@ class UIManagerClass {
             case DamageSources.Throwable:
             case DamageSources.Explosion: {
                 const suicide = attackerId === undefined;
-                let event: TranslationKeys | undefined;
+                let event: string | undefined;
                 if (activeId === victimId) {
                     if (!suicide) {
                         if (downed) {
@@ -1682,7 +1683,7 @@ class UIManagerClass {
                         }
                         modalMessage = getTranslatedString("kf_message", {
                             player: attackerText,
-                            event: getTranslatedString(event),
+                            event: getTranslatedString(event as TranslationKeys),
                             victim: "",
                             with: weapon && getTranslatedString("with"),
                             weapon
@@ -1701,14 +1702,14 @@ class UIManagerClass {
                 } else if (activeId === attackerId || activeId === creditedId || victimOnThisTeam) {
                     if (!suicide) {
                         if (downed) {
-                            if (killed) event = "kf_finished_off";
-                            else event = "kf_knocked";
+                            if (killed) event = getTranslatedString("kf_finished_off");
+                            else event = getTranslatedString("kf_knocked");
                         } else {
-                            event = "kf_killed";
+                            event = pickRandomInArray(getTranslatedString("kf_killed").split(","));
                         }
                         modalMessage = getTranslatedString("kf_message", {
                             player: activeId === attackerId ? getTranslatedString("you") : attackerText,
-                            event: getTranslatedString(event),
+                            event,
                             victim: victimText,
                             with: weapon && getTranslatedString("with"),
                             weapon
@@ -1724,7 +1725,7 @@ class UIManagerClass {
                         // Turkish and Estonian special condition ('i shouldn't appear in these messages)
                         modalMessage = getTranslatedString(`kf_message${(language === "tr" || language === "et") ? "_grammar" : ""}` as TranslationKeys, {
                             player: victimText,
-                            event: event ? getTranslatedString(event) : "",
+                            event: event ? getTranslatedString(event as TranslationKeys) : "",
                             victim: "",
                             with: weapon && getTranslatedString("with"),
                             weapon
