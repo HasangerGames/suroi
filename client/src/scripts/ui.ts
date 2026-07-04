@@ -35,6 +35,7 @@ import { TRANSLATIONS, translate } from "./utils/translations/translations";
 import type { TranslationKeys } from "./utils/translations/typings";
 import { CameraManager } from "./managers/cameraManager";
 import { isMobile } from "pixi.js";
+import pkg from "../../../package.json";
 
 interface RegionInfo extends Region {
     readonly playerCount?: number
@@ -395,6 +396,91 @@ export async function setUpUI(): Promise<void> {
     }
 
     GameConsole.variables.addChangeListener("cv_language", () => location.reload());
+
+    const marqueeContent = $(".marquee-content");
+    const updateSplash = () => marqueeContent.html(pickRandomInArray([
+        "Fat free!",
+        "Gluten free!",
+        "Tell your friends!",
+        "Support queer rights!",
+        "Support open source software!",
+        "Ad-free!",
+        "Free and open source!",
+        "Supported by donations!",
+        "Still in beta!",
+        'This is called a "marquee"!',
+        "Accounts before GTA 6!",
+        "Circles shooting circles since 2023!",
+        "Established 2023!",
+        `${new Date().getFullYear() - 2023} years and counting!`,
+        "Suroi Sundays!",
+        "We're back, baby!",                              // Title of the first ever Suroi news post
+        "Feeling gassy!",                                 // Former title of a Suroi news post
+        "Now featuring Fireball and Blueberry Smoothie!", // Skins previously rejected from Suroi for "not fitting the art style"
+        "Probably not copyright infringing!",             // Suroi's predecessor, Surviv Reloaded, was taken down for copyright infringement
+        "Is this thing on?",
+        '<span style="background-image: linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet); color: transparent; -webkit-background-clip: text;">rainbows are cool</span>',
+        "Does anyone even read these?",
+        "These are harder to come up with than you might think!",
+        "Now in color!",
+        `Version ${pkg.version}!`,
+        "Now in 2D!",
+        "It's not over yet!",
+        "Stay positive!",
+        "Woo, Linux!",
+        "Woo, Inkscape!", // Open source vector graphics software used to make most of Suroi's art
+        "Also try Minecraft!",                                          // Game: Terraria
+        "Also try Terraria!",                                           // Game: Minecraft
+        "I've come to make an announcement!",                           // Meme: Eggman's Announcement
+        "Sorry Link, I don't give credit!",                             // Meme: Morshu
+        "'Tis but a scratch!",                                          // Show: Monty Python and the Holy Grail
+        "9 + 10 = 21!",                                                 // Meme: 9 + 10 = 21/You stupid
+        "Never gonna give you up!",                                     // Song: Rick Astley - Never Gonna Give You Up
+        "When you need foundation repair, you want foundation repair!", // YouTube: cs188 - [YTP] No one needs foundation repair
+        "Did I ever tell you what the definition of insanity is?",      // Game: Far Cry 3
+        "Wake up, Mr. Freeman!",                                        // Game: Half-Life 2 (Intro)
+        "Galunga!",                                                     // Game: Half-Life 2 (Spoken by Vortigaunts)
+        "Nobody hurt me!",                                              // Book: Homer - Odyssey
+        "Mayonnaise is not an instrument!",                             // Meme: SpongeBob
+        "Please let this be a normal field trip...",                    // Song: Magic School Bus theme
+        "Stacy's mom has got it goin' on!",                             // Song: Fountains of Wayne - Stacy's Mom
+        "Michaelsoft Binbows!",                                         // Meme: Defunct Japanese computer repair store
+        "You're gonna have a bad time!",                                // Game: Undertale
+        "Bendgate!",                                                    // Issue affecting iPhone 6
+        "Taste of blood!",                                              // Game: Portal
+        "Frankenturrets!",                                              // Game: Portal 2
+        "I am not a moron!",                                            // Game: Portal 2
+        "I can't believe you've done this!",                            // Meme
+        "My new band is called Syskill!",                               // Meme: Catch the Ice Dude
+        "Are you sure?",                                                // Show: Invincible
+        "Living in an Amish paradise!",                                 // Song: "Weird Al" Yankovic - Amish Paradise
+        "Rip and tear!",                                                // Game: Doom
+        "Microslop!",                                                   // Derogatory name for Microsoft
+        "Do you know da wae?",                                          // Meme: Ugandan Knuckles
+        // Deltarune Chapter 5 Flowery voice clips
+        "Sustingus!",
+        "Heh, it's my jarona!",
+        "Sorry to keep you waiting!",
+        "Flowery!",
+        "Hey guys! I think I found a glue!",
+        "All according to plant!",
+        "Leaf it to me!",
+        "Here I come, San Frandiscooo!",
+        "Flowers blooms in your heart!",
+        "Hey boys!",
+        "Sorry about that, little guy!",
+        "Sorry to keep a lady in waiting!",
+        "Hey there, little guy!",
+        "Glue!",
+        "I'm sorry once again, I kept a lady in waiting!",
+        "LEND ME YOUR POWER!",
+        "Jarona!",
+        "With your powers combined... OMEGA FLOWERY!",
+        "Hahahahaflowershahahaha!",
+        // End Deltarune Chapter 5 Flowery voice clips
+    ]));
+    updateSplash();
+    marqueeContent.on("click", updateSplash);
 
     const params = new URLSearchParams(window.location.search);
 

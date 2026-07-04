@@ -172,6 +172,38 @@
     }
 }
 
+@keyframes marquee {
+    0% {
+        transform: translateX(calc(25vw + 50%));
+    }
+    100% {
+        transform: translateX(calc(-25vw - 50%));
+    }
+}
+
+.marquee-container {
+    white-space: nowrap;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+    top: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 50vw;
+    padding: 5px;
+    background: linear-gradient(to right, transparent 0%, palette.$bg 15%, palette.$bg 85%, transparent 100%);
+}
+
+.marquee-content {
+    animation: marquee 15s linear infinite;
+    display: inline-block;
+    font-weight: bold;
+    font-size: 24px;
+    filter: drop-shadow(2px 2px 5px black);
+    cursor: pointer;
+    user-select: none;
+}
+
 .pulsating-circle {
     position: absolute;
     top: 5px;
