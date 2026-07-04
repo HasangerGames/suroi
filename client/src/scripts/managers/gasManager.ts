@@ -4,7 +4,7 @@ import { Numeric } from "@common/utils/math";
 import { Vec, type Vector } from "@common/utils/vector";
 import $ from "jquery";
 import { Graphics } from "pixi.js";
-import { getTranslatedString } from "../utils/translations/translations";
+import { translate } from "../utils/translations/translations";
 import { Game } from "../game";
 import { UI_DEBUG_MODE } from "../utils/constants";
 import { formatDate } from "../utils/misc";
@@ -76,15 +76,15 @@ class GasManagerClass {
             const finalStage = gas.finalStage;
             switch (this.state) {
                 case GasState.Waiting: {
-                    gasMessage = getTranslatedString(finalStage ? "final_gas_waiting" : "gas_waiting", { time: formatDate(time) });
+                    gasMessage = translate(finalStage ? "final_gas_waiting" : "gas_waiting", { time: formatDate(time) });
                     break;
                 }
                 case GasState.Advancing: {
-                    gasMessage = getTranslatedString(finalStage ? "final_gas_advancing" : "gas_advancing");
+                    gasMessage = translate(finalStage ? "final_gas_advancing" : "gas_advancing");
                     break;
                 }
                 case GasState.Inactive: {
-                    gasMessage = getTranslatedString("gas_inactive");
+                    gasMessage = translate("gas_inactive");
                     break;
                 }
             }

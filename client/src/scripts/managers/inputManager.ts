@@ -15,7 +15,7 @@ import { defaultBinds } from "../console/variables";
 import { Game } from "../game";
 import { FORCE_MOBILE, PIXI_SCALE } from "../utils/constants";
 import { html } from "../utils/misc";
-import { getTranslatedString } from "../utils/translations/translations";
+import { translate } from "../utils/translations/translations";
 import { type TranslationKeys } from "../utils/translations/typings";
 import { CameraManager } from "./cameraManager";
 import { SoundManager } from "./soundManager";
@@ -800,7 +800,7 @@ class InputManagerClass {
 
         this._keybindsContainer.html("").append(html`
             <div class="modal-item" id="keybind-clear-tooltip">
-                ${getTranslatedString("keybind_clear_tooltip")}
+                ${translate("keybind_clear_tooltip")}
             </div>
         `);
 
@@ -810,7 +810,7 @@ class InputManagerClass {
 
             $("<div/>", {
                 class: "setting-title",
-                text: getTranslatedString(`bindings_${action}` as TranslationKeys)
+                text: translate(`bindings_${action}` as TranslationKeys)
             }).appendTo(bindContainer);
 
             const actions = this.binds.getInputsBoundToAction(action);
@@ -893,7 +893,7 @@ class InputManagerClass {
             html: html`
                 <span style="position: relative; top: -2px">
                     <i class="fa-solid fa-trash" style="font-size: 17px; margin-right: 3px; position: relative; top: -1px"></i>
-                    ${getTranslatedString("keybind_reset")}
+                    ${translate("keybind_reset")}
                 </span>`
         }).on("click", () => {
             this.binds.unbindAll();

@@ -31,7 +31,7 @@ import { EMOTE_SLOTS, UI_DEBUG_MODE } from "./utils/constants";
 import { Crosshairs, getCrosshair } from "./utils/crosshairs";
 import { html, requestFullscreen } from "./utils/misc";
 import { spritesheetLoadPromise } from "./utils/pixi";
-import { TRANSLATIONS, getTranslatedString } from "./utils/translations/translations";
+import { TRANSLATIONS, translate } from "./utils/translations/translations";
 import type { TranslationKeys } from "./utils/translations/typings";
 import { CameraManager } from "./managers/cameraManager";
 import { isMobile } from "pixi.js";
@@ -134,7 +134,7 @@ export async function fetchServerData(): Promise<void> {
         serverList.append(
             regionUICache[regionID] = $<HTMLLIElement>(`
                 <li class="server-list-item" data-region="${regionID}">
-                    <span class="server-name">${flag ?? ""}${getTranslatedString(`region_${regionID}` as TranslationKeys)}</span>
+                    <span class="server-name">${flag ?? ""}${translate(`region_${regionID}` as TranslationKeys)}</span>
                     <span style="margin-left: auto">
                       <img src="./img/misc/player_icon.svg" width="16" height="16" alt="Player count">
                       <span class="server-player-count">-</span>
@@ -144,7 +144,7 @@ export async function fetchServerData(): Promise<void> {
         );
     }
 
-    ui.loaderText.text(getTranslatedString("loading_fetching_data"));
+    ui.loaderText.text(translate("loading_fetching_data"));
     const selectedRegionID = GameConsole.getBuiltInCVar("cv_region");
     const regionPromises = Object.entries(regionMap).map(async([_, [regionID, region]]) => {
         const listItem = regionUICache[regionID];
@@ -181,10 +181,10 @@ export async function fetchServerData(): Promise<void> {
 
             if (punishment.message === "noname") {
                 ui.usernameInput.prop("disabled", true);
-                ui.usernameInput.attr("placeholder", getTranslatedString("msg_punishment_noname_reason", { reportID }));
+                ui.usernameInput.attr("placeholder", translate("msg_punishment_noname_reason", { reportID }));
             } else {
-                const message = getTranslatedString(`msg_punishment_${punishment.message}_reason`, { reason: punishment.reason ?? getTranslatedString("msg_no_reason") });
-                ui.warningTitle.text(getTranslatedString(`msg_punishment_${punishment.message}`));
+                const message = translate(`msg_punishment_${punishment.message}_reason`, { reason: punishment.reason ?? translate("msg_no_reason") });
+                ui.warningTitle.text(translate(`msg_punishment_${punishment.message}`));
                 ui.warningText.html(`${punishment.message !== "vpn" ? `<span class="case-id">Case ID: ${reportID}</span><br><br><br>` : ""}${message}`);
                 ui.warningAgreeOpts.toggle(punishment.message === "warn");
                 ui.warningAgreeCheckbox.prop("checked", false);
@@ -250,7 +250,7 @@ export async function fetchServerData(): Promise<void> {
         Game.modeName = selectedRegion.mode ?? GameConstants.defaultMode;
 
         const region = GameConsole.getBuiltInCVar("cv_region") || Config.defaultRegion;
-        serverName.text(`${selectedRegion.flag ?? ""}${getTranslatedString(`region_${region}` as TranslationKeys)}`);
+        serverName.text(`${selectedRegion.flag ?? ""}${translate(`region_${region}` as TranslationKeys)}`);
         playerCount.text(selectedRegion.playerCount ?? "-");
         // $("#server-ping").text(selectedRegion.ping && selectedRegion.ping > 0 ? selectedRegion.ping : "-");
         updateSwitchTime();
@@ -306,7 +306,7 @@ export async function finalizeUI(): Promise<void> {
         for (let buttonIndex = 0, len = playButtons.length; buttonIndex < len; buttonIndex++) {
             playButtons[buttonIndex]
                 .addClass(`event-${_modeName}`)
-                .html(`<img class="btn-icon" src=${playButtonImage}><span>${getTranslatedString(`play_${["solo", "duo", "squad"][buttonIndex]}` as TranslationKeys)}</span>`);
+                .html(`<img class="btn-icon" src=${playButtonImage}><span>${translate(`play_${["solo", "duo", "squad"][buttonIndex]}` as TranslationKeys)}</span>`);
         }
     }
 
@@ -451,7 +451,7 @@ export async function setUpUI(): Promise<void> {
 
         Game.connecting = true;
         ui.splashOptions.addClass("loading");
-        ui.loaderText.text(getTranslatedString("loading_finding_game"));
+        ui.loaderText.text(translate("loading_finding_game"));
         // ui.cancelFindingGame.css("display", "");
 
         type GetGameResponse = { success: true, gameID: number, mode: ModeName } | { success: false };
@@ -468,7 +468,7 @@ export async function setUpUI(): Promise<void> {
 
         if (!response?.success) {
             Game.connecting = false;
-            ui.splashMsgText.html(getTranslatedString("msg_err_finding"));
+            ui.splashMsgText.html(translate("msg_err_finding"));
             ui.splashMsg.show();
             resetPlayButtons();
             return;
@@ -531,14 +531,14 @@ export async function setUpUI(): Promise<void> {
         lastPlayButtonClickTime = now;
 
         ui.splashOptions.addClass("loading");
-        ui.loaderText.text(getTranslatedString("loading_connecting"));
+        ui.loaderText.text(translate("loading_connecting"));
 
         const params = new URLSearchParams();
 
         if (this.id === "btn-join-team") {
             // also rejects the empty string, but like who cares
             while (!teamID) {
-                teamID = prompt(getTranslatedString("msg_enter_team_code"));
+                teamID = prompt(translate("msg_enter_team_code"));
                 if (!teamID) {
                     resetPlayButtons();
                     return;
@@ -595,7 +595,7 @@ export async function setUpUI(): Promise<void> {
             } else {
                 str = "create_team_ready";
             }
-            ui.btnStartGame.text(getTranslatedString(str));
+            ui.btnStartGame.text(translate(str));
         };
 
         teamSocket.onmessage = (message: MessageEvent<string>): void => {
@@ -668,7 +668,7 @@ export async function setUpUI(): Promise<void> {
         };
 
         teamSocket.onerror = (): void => {
-            ui.splashMsgText.html(getTranslatedString("msg_error_joining_team"));
+            ui.splashMsgText.html(translate("msg_error_joining_team"));
             ui.splashMsg.show();
             resetPlayButtons();
             createTeamMenu.fadeOut(250);
@@ -681,7 +681,7 @@ export async function setUpUI(): Promise<void> {
             // The socket is set to undefined in the close button listener
             // If it's not undefined, the socket was closed by other means, so show an error message
             if (teamSocket) {
-                ui.splashMsgText.html(getTranslatedString(
+                ui.splashMsgText.html(translate(
                     joinedTeam
                         ? e.reason === "kicked"
                             ? "msg_error_kicked_team"
@@ -738,7 +738,7 @@ export async function setUpUI(): Promise<void> {
                     .css("pointer-events", "none")
                     .html(`
                         <i class="fa-solid fa-check" id="copy-team-btn-icon"></i>
-                        ${getTranslatedString("copied")}`
+                        ${translate("copied")}`
                     );
 
                 // After some seconds, reset the copy button's css
@@ -748,7 +748,7 @@ export async function setUpUI(): Promise<void> {
                         .css("pointer-events", "")
                         .html(`
                             <i class="fa-solid fa-clipboard" id="copy-team-btn-icon"></i>
-                            ${getTranslatedString("copy")}`
+                            ${translate("copy")}`
                         );
                 }, 2000); // 2 sec
             })
@@ -1131,7 +1131,7 @@ export async function setUpUI(): Promise<void> {
         const skinItem = skinUiCache[idString] = $<HTMLDivElement>(
             `<div id="skin-${idString}" class="skins-list-item-container${idString === currentSkin ? " selected" : ""}">
                 ${renderSkin(skin)}
-                <span class="skin-name">${getTranslatedString(idString as TranslationKeys)}</span>
+                <span class="skin-name">${translate(idString as TranslationKeys)}</span>
             </div>`
         );
 
@@ -1180,7 +1180,7 @@ export async function setUpUI(): Promise<void> {
         for (const emote of emotes) {
             if (emote.category !== lastCategory) {
                 emoteList.append($<HTMLDivElement>(
-                    `<div class="emote-list-header">${getTranslatedString(`emotes_category_${EmoteCategory[emote.category]}` as TranslationKeys)}</div>`
+                    `<div class="emote-list-header">${translate(`emotes_category_${EmoteCategory[emote.category]}` as TranslationKeys)}</div>`
                 ));
                 lastCategory = emote.category;
             }
@@ -1189,7 +1189,7 @@ export async function setUpUI(): Promise<void> {
             const emoteItem = $<HTMLDivElement>(
                 `<div id="emote-${idString}" class="emotes-list-item-container">
                     <div class="emotes-list-item" style="background-image: url(./img/game/emotes/${idString}.svg)"></div>
-                    <span class="emote-name">${getTranslatedString(`emote_${idString}` as TranslationKeys)}</span>
+                    <span class="emote-name">${translate(`emote_${idString}` as TranslationKeys)}</span>
                 </div>`
             );
 
@@ -1392,7 +1392,7 @@ export async function setUpUI(): Promise<void> {
         const noBadgeItem = $<HTMLDivElement>(
             html`<div id="badge-" class="badges-list-item-container">\
                 <div class="badges-list-item"> </div>\
-                <span class="badge-name">${getTranslatedString("none")}</span>\
+                <span class="badge-name">${translate("none")}</span>\
             </div>`
         );
 
@@ -1419,7 +1419,7 @@ export async function setUpUI(): Promise<void> {
                         <div class="badges-list-item">\
                             <div style="background-image: url('./img/game/${isEmoteBadge(idString) ? "emotes" : "badges"}/${getBadgeIdString(idString)}.svg')"></div>\
                         </div>\
-                        <span class="badge-name">${getTranslatedString(idString as TranslationKeys)}</span>\
+                        <span class="badge-name">${translate(idString as TranslationKeys)}</span>\
                     </div>`
                 );
 
@@ -1854,7 +1854,7 @@ export async function setUpUI(): Promise<void> {
     addSliderListener("#slider-joystick-size", "mb_joystick_size");
     addSliderListener("#slider-joystick-transparency", "mb_joystick_transparency");
     const joystickInfo = $("#mb-joystick-info");
-    const updateJoystickInfo = (switchJoysticks: boolean): JQuery => joystickInfo.text(getTranslatedString(switchJoysticks ? "settings_switched_joystick_info" : "settings_normal_joystick_info"));
+    const updateJoystickInfo = (switchJoysticks: boolean): JQuery => joystickInfo.text(translate(switchJoysticks ? "settings_switched_joystick_info" : "settings_normal_joystick_info"));
     addCheckboxListener("#toggle-mobile-joysticks", "mb_switch_joysticks", updateJoystickInfo);
     updateJoystickInfo(GameConsole.getBuiltInCVar("mb_switch_joysticks"));
     (document.getElementById("left-joystick-color-picker") as HTMLInputElement).value = GameConsole.getBuiltInCVar("mb_left_joystick_color");
@@ -2147,16 +2147,16 @@ export async function setUpUI(): Promise<void> {
                     <img class="item-image" src="./img/game/loot/${item.idString}.svg" draggable="false">
                     <span class="item-count" id="${item.idString}-count">0</span>
                     <div class="item-tooltip">
-                        ${getTranslatedString(
+                        ${translate(
                             item.healType === HealType.Special
                             ? "tt_desc"
                             : "tt_restores", {
-                    item: `<b>${getTranslatedString(item.idString as TranslationKeys)}</b><br>`,
+                    item: `<b>${translate(item.idString as TranslationKeys)}</b><br>`,
                     amount: item.restoreAmount.toString(),
                     type: item.healType === HealType.Adrenaline
-                        ? getTranslatedString("adrenaline")
-                        : getTranslatedString("health"),
-                    desc: getTranslatedString(`${item.idString}_desc` as TranslationKeys)
+                        ? translate("adrenaline")
+                        : translate("health"),
+                    desc: translate(`${item.idString}_desc` as TranslationKeys)
                 })}
                     </div>
                 </div>`
@@ -2464,5 +2464,5 @@ export async function setUpUI(): Promise<void> {
         }
     });
 
-    $("#username-input").attr("placeholder", getTranslatedString("username_placeholder"));
+    $("#username-input").attr("placeholder", translate("username_placeholder"));
 }

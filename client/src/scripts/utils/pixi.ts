@@ -5,7 +5,7 @@ import { Assets, type ColorSource, Graphics, type Renderer, RendererType, Sprite
 import type { ImageSpritesheetImporter } from "../../../vite/plugins/image-spritesheet-plugin";
 import { UIManager } from "../managers/uiManager";
 import { PIXI_SCALE } from "./constants";
-import { getTranslatedString } from "./translations/translations";
+import { translate } from "./translations/translations";
 
 export let spritesheetsLoaded = false;
 
@@ -52,7 +52,7 @@ export async function loadSpritesheets(modeName: ModeName, renderer: Renderer, h
 
             const resolvedCount = ++resolved;
             const progress = `(${resolvedCount} / ${count})`;
-            UIManager.ui.loaderText.text(getTranslatedString("loading_spritesheets", { progress }));
+            UIManager.ui.loaderText.text(translate("loading_spritesheets", { progress }));
             console.log(`Atlas ${image} loaded ${progress}`);
         } catch (e) {
             ++resolved;

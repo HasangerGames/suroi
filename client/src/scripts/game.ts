@@ -59,7 +59,7 @@ import { EMOTE_SLOTS, LAYER_TRANSITION_DELAY, PERK_MESSAGE_FADE_TIME, PIXI_SCALE
 import { DebugRenderer } from "./utils/debugRenderer";
 import { setUpNetGraph } from "./utils/graph/netGraph";
 import { loadSpritesheets, SuroiSprite } from "./utils/pixi";
-import { getTranslatedString, initTranslation } from "./utils/translations/translations";
+import { translate, initTranslation } from "./utils/translations/translations";
 import { type TranslationKeys } from "./utils/translations/typings";
 import { Tween, type TweenOptions } from "./utils/tween";
 import { colord } from "colord";
@@ -940,7 +940,7 @@ export const Game = new (class Game {
             this.pixi.stop();
             this.error = true;
             this.connecting = false;
-            ui.splashMsgText.html(getTranslatedString("msg_err_joining"));
+            ui.splashMsgText.html(translate("msg_err_joining"));
             ui.splashMsg.show();
             resetPlayButtons();
         };
@@ -1003,7 +1003,7 @@ export const Game = new (class Game {
 
                 if (message !== undefined) {
                     const { inventoryMsg } = UIManager.ui;
-                    inventoryMsg.text(getTranslatedString(this._inventoryMessageMap[message])).fadeOut(0).fadeIn(250);
+                    inventoryMsg.text(translate(this._inventoryMessageMap[message])).fadeOut(0).fadeIn(250);
 
                     clearTimeout(this.inventoryMsgTimeout);
                     this.inventoryMsgTimeout = window.setTimeout(() => inventoryMsg.fadeOut(250), 2500);
@@ -1095,7 +1095,7 @@ export const Game = new (class Game {
         ui.canvas.addClass("active");
         ui.splashUi.fadeOut(400, () => resetPlayButtons());
 
-        ui.killLeaderLeader.html(getTranslatedString("msg_waiting_for_leader"));
+        ui.killLeaderLeader.html(translate("msg_waiting_for_leader"));
         ui.killLeaderCount.text("0");
         ui.spectateKillLeader.addClass("btn-disabled");
 
@@ -1688,32 +1688,32 @@ export const Game = new (class Game {
                         switch (true) {
                             case object?.isObstacle: {
                                 if (object.definition.isActivatable || object.definition.customInteractMessage) {
-                                    text = getTranslatedString(`interact_${object.definition.interactObstacleIdString ?? object.definition.idString}` as TranslationKeys);
+                                    text = translate(`interact_${object.definition.interactObstacleIdString ?? object.definition.idString}` as TranslationKeys);
                                 } else if (object.definition.isDoor) {
                                     text = object.door?.offset === 0
-                                        ? getTranslatedString("action_open_door")
-                                        : getTranslatedString("action_close_door");
+                                        ? translate("action_open_door")
+                                        : translate("action_close_door");
                                 }
                                 break;
                             }
                             case object?.isLoot: {
                                 const definition = object.definition;
                                 const itemName = definition.defType === DefinitionType.Gun && definition.isDual
-                                    ? getTranslatedString(
+                                    ? translate(
                                         "dual_template",
-                                        { gun: getTranslatedString(definition.singleVariant as TranslationKeys) }
+                                        { gun: translate(definition.singleVariant as TranslationKeys) }
                                     )
-                                    : getTranslatedString(("translationString" in definition && "lootAndKillfeedTranslationString" in definition ? definition.translationString : definition.idString) as TranslationKeys);
+                                    : translate(("translationString" in definition && "lootAndKillfeedTranslationString" in definition ? definition.translationString : definition.idString) as TranslationKeys);
 
                                 text = `${itemName}${object.count > 1 ? ` (${object.count})` : ""}`;
                                 break;
                             }
                             case object?.isPlayer: {
-                                text = getTranslatedString("action_revive", { player: UIManager.getRawPlayerName(object.id) });
+                                text = translate("action_revive", { player: UIManager.getRawPlayerName(object.id) });
                                 break;
                             }
                             case isAction: {
-                                text = getTranslatedString("action_cancel");
+                                text = translate("action_cancel");
                                 break;
                             }
                         }

@@ -27,7 +27,7 @@ import { Player } from "../objects/player";
 import { PERK_MESSAGE_FADE_TIME, TEAMMATE_COLORS, UI_DEBUG_MODE } from "../utils/constants";
 import { formatDate, html } from "../utils/misc";
 import { SuroiSprite } from "../utils/pixi";
-import { getTranslatedString, TRANSLATIONS } from "../utils/translations/translations";
+import { translate, TRANSLATIONS } from "../utils/translations/translations";
 import { type TranslationKeys } from "../utils/translations/typings";
 import { CameraManager } from "./cameraManager";
 import { MapPingWheelManager } from "./emoteWheelManager";
@@ -513,16 +513,16 @@ class UIManagerClass {
 
             let message: string;
             if (won) {
-                message = getTranslatedString("msg_win");
+                message = translate("msg_win");
             } else {
                 if (Game.spectating) {
                     message = teamEliminated
-                        ? getTranslatedString("msg_the_team_eliminated")
-                        : getTranslatedString("msg_player_died", { player: name });
+                        ? translate("msg_the_team_eliminated")
+                        : translate("msg_player_died", { player: name });
                 } else {
                     message = teamEliminated
-                        ? getTranslatedString("msg_your_team_eliminated")
-                        : getTranslatedString("msg_you_died");
+                        ? translate("msg_your_team_eliminated")
+                        : translate("msg_you_died");
                 }
             }
             gameOverText.html(message);
@@ -540,19 +540,19 @@ class UIManagerClass {
               <h1 class="game-over-player-name" class="modal-item">${medalHTML}${name}${badgeHTML}</h1>
                 <div class="modal-item game-over-stats">
                 <div class="stat">
-                  <span class="stat-name" translation="go_kills">${getTranslatedString("go_kills")}</span>
+                  <span class="stat-name" translation="go_kills">${translate("go_kills")}</span>
                   <span class="stat-value">${kills}</span>
                 </div>
                 <div class="stat">
-                  <span class="stat-name" translation="go_damage_done">${getTranslatedString("go_damage_done")}</span>
+                  <span class="stat-name" translation="go_damage_done">${translate("go_damage_done")}</span>
                   <span class="stat-value">${damageDone}</span>
                 </div>
                 <div class="stat">
-                    <span class="stat-name" translation="go_damage_taken">${getTranslatedString("go_damage_taken")}</span>
+                    <span class="stat-name" translation="go_damage_taken">${translate("go_damage_taken")}</span>
                     <span class="stat-value">${damageTaken}</span>
                 </div>
                 <div class="stat">
-                  <span class="stat-name" translation="go_time_alive">${getTranslatedString("go_time_alive")}</span>
+                  <span class="stat-name" translation="go_time_alive">${translate("go_time_alive")}</span>
                   <span class="stat-value">${formatDate(timeAlive)}</span>
                 </div>
               </div>
@@ -568,7 +568,7 @@ class UIManagerClass {
         if (won) {
             void Game.music.play();
             if (hasTeammates) {
-                gameOverTeamKills.text(getTranslatedString("msg_kills", { kills: totalKills.toString() }));
+                gameOverTeamKills.text(translate("msg_kills", { kills: totalKills.toString() }));
                 gameOverTeamKillsContainer.show();
             } else {
                 gameOverTeamKillsContainer.hide();
@@ -1056,11 +1056,11 @@ class UIManagerClass {
 
                     itemName.text(
                         isGun && definition.isDual
-                            ? getTranslatedString(
+                            ? translate(
                                 "dual_template",
-                                { gun: getTranslatedString(definition.singleVariant as TranslationKeys) }
+                                { gun: translate(definition.singleVariant as TranslationKeys) }
                             )
-                            : getTranslatedString(("translationString" in definition ? definition.translationString : definition.idString) as TranslationKeys)
+                            : translate(("translationString" in definition ? definition.translationString : definition.idString) as TranslationKeys)
                     );
 
                     const isFists = definition.idString === "fists";
@@ -1160,7 +1160,7 @@ class UIManagerClass {
         const folder = PerkCategories[perkDef.category].toLowerCase(),
             perkSrc = `./img/game/perks/${folder}/${perkDef.idString}.svg`,
             lootBg = `./img/game/loot/loot_background_${perkDef.mechanical ? "mechanical_perk" : "perk"}.svg`,
-            perkName = getTranslatedString(perkDef.idString as unknown as TranslationKeys);
+            perkName = translate(perkDef.idString as unknown as TranslationKeys);
 
         const { killMsgModal, inventoryMsg, interactMsg } = this.ui;
 
@@ -1209,7 +1209,7 @@ class UIManagerClass {
 
         // eww
         container.children(".item-tooltip").html(
-            `<strong>${perkName}</strong><br>${getTranslatedString(
+            `<strong>${perkName}</strong><br>${translate(
                 `${perkDef.idString}_desc` as TranslationKeys, {
                     seconds: `${_duration / 1000}`
         })}`);
@@ -1402,10 +1402,10 @@ class UIManagerClass {
             && weaponUsed.defType !== DefinitionType.Explosion
             && weaponUsed.defType === DefinitionType.Throwable
         )
-            ? getTranslatedString("kf_impact_of")
+            ? translate("kf_impact_of")
             : "";
         let weaponName: string | undefined;
-        const weapon = weaponPresent ? `${grenadeImpactKill}${(weaponName = getTranslatedString(("translationString" in weaponUsed && "lootAndKillfeedTranslationString" in weaponUsed ? weaponUsed.translationString : weaponUsed.idString) as TranslationKeys)) === weaponUsed.idString ? weaponUsed.name : weaponName}` : "";
+        const weapon = weaponPresent ? `${grenadeImpactKill}${(weaponName = translate(("translationString" in weaponUsed && "lootAndKillfeedTranslationString" in weaponUsed ? weaponUsed.translationString : weaponUsed.idString) as TranslationKeys)) === weaponUsed.idString ? weaponUsed.name : weaponName}` : "";
 
         let victimText = this._getNameAndBadge(victimId);
         const attackerText = this._getNameAndBadge(attackerId);
@@ -1439,17 +1439,17 @@ class UIManagerClass {
                         const suicide = attackerId === undefined;
                         if (!suicide) {
                             if (downed) {
-                                if (killed) event = getTranslatedString("kf_finished_off");
-                                else event = getTranslatedString("kf_knocked");
+                                if (killed) event = translate("kf_finished_off");
+                                else event = translate("kf_knocked");
                             } else {
-                                event = pickRandomInArray(getTranslatedString("kf_killed").split(","));
+                                event = pickRandomInArray(translate("kf_killed").split(","));
                             }
 
-                            feedMessage = getTranslatedString("kf_message", {
+                            feedMessage = translate("kf_message", {
                                 player: attackerText,
                                 event: event ?? "",
                                 victim: victimText,
-                                with: weapon && getTranslatedString("with"),
+                                with: weapon && translate("with"),
                                 weapon
                             });
                         } else {
@@ -1461,24 +1461,24 @@ class UIManagerClass {
                             }
 
                             // Turkish and Estonian special condition ('i shouldn't appear in these messages)
-                            feedMessage = getTranslatedString(`kf_message${(language === "tr" || language === "et") ? "_grammar" : ""}` as TranslationKeys, {
+                            feedMessage = translate(`kf_message${(language === "tr" || language === "et") ? "_grammar" : ""}` as TranslationKeys, {
                                 player: victimText,
-                                event: event ? getTranslatedString(event as TranslationKeys) : "",
+                                event: event ? translate(event as TranslationKeys) : "",
                                 victim: "",
-                                with: weapon && getTranslatedString("with"),
+                                with: weapon && translate("with"),
                                 weapon
                             });
                         }
                         break;
                     }
                     case DamageSources.Gas:
-                        feedMessage = getTranslatedString(`kf_gas_${killed ? "kill" : "down"}`, { player: victimText });
+                        feedMessage = translate(`kf_gas_${killed ? "kill" : "down"}`, { player: victimText });
                         break;
                     case DamageSources.Obstacle:
-                        feedMessage = getTranslatedString(`kf_${weaponUsed?.idString ?? ""}_${killed ? "kill" : "down"}` as TranslationKeys, { player: victimText });
+                        feedMessage = translate(`kf_${weaponUsed?.idString ?? ""}_${killed ? "kill" : "down"}` as TranslationKeys, { player: victimText });
                         break;
                     case DamageSources.BleedOut:
-                        feedMessage = getTranslatedString(`kf_bleed_out_${killed ? "kill" : "down"}`, { player: victimText });
+                        feedMessage = translate(`kf_bleed_out_${killed ? "kill" : "down"}`, { player: victimText });
                         break;
                     case DamageSources.FinallyKilled: {
                         let event: TranslationKeys | undefined;
@@ -1489,11 +1489,11 @@ class UIManagerClass {
                         } else {
                             event = "kf_finally_died";
                         }
-                        feedMessage = getTranslatedString(event, { player: victimText });
+                        feedMessage = translate(event, { player: victimText });
                         break;
                     }
                     case DamageSources.Disconnect:
-                        feedMessage = getTranslatedString("kf_disconnected", { player: victimText });
+                        feedMessage = translate("kf_disconnected", { player: victimText });
                         break;
                 }
 
@@ -1630,15 +1630,15 @@ class UIManagerClass {
                 case DamageSources.Throwable:
                 case DamageSources.Explosion:
                     messageInner = attackerId !== undefined
-                        ? getTranslatedString("kf_kl_killed", { player: attackerText })
-                        : getTranslatedString("kf_kl_suicide");
+                        ? translate("kf_kl_killed", { player: attackerText })
+                        : translate("kf_kl_suicide");
                     break;
                 case DamageSources.Gas:
                 case DamageSources.Obstacle:
                 case DamageSources.BleedOut:
                 case DamageSources.FinallyKilled:
                 case DamageSources.Disconnect:
-                    messageInner = getTranslatedString("kf_kl_dead");
+                    messageInner = translate("kf_kl_dead");
                     break;
             }
             messageText = html`<img class="kill-icon" src="./img/misc/skull_icon.svg" alt="Skull"> ${messageInner}`;
@@ -1681,37 +1681,37 @@ class UIManagerClass {
                         } else {
                             event = "km_killed_you";
                         }
-                        modalMessage = getTranslatedString("kf_message", {
+                        modalMessage = translate("kf_message", {
                             player: attackerText,
-                            event: getTranslatedString(event as TranslationKeys),
+                            event: translate(event as TranslationKeys),
                             victim: "",
-                            with: weapon && getTranslatedString("with"),
+                            with: weapon && translate("with"),
                             weapon
                         });
                     } else {
-                        modalMessage = getTranslatedString("kf_message", {
-                            player: getTranslatedString("you"),
+                        modalMessage = translate("kf_message", {
+                            player: translate("you"),
                             event: downed
-                                ? getTranslatedString(killed ? "km_suicide_finished_off" : "km_suicide_down")
-                                : getTranslatedString("kf_suicide_kill", { player: "" }),
+                                ? translate(killed ? "km_suicide_finished_off" : "km_suicide_down")
+                                : translate("kf_suicide_kill", { player: "" }),
                             victim: "",
-                            with: weapon && getTranslatedString("with"),
+                            with: weapon && translate("with"),
                             weapon
                         });
                     }
                 } else if (activeId === attackerId || activeId === creditedId || victimOnThisTeam) {
                     if (!suicide) {
                         if (downed) {
-                            if (killed) event = getTranslatedString("kf_finished_off");
-                            else event = getTranslatedString("kf_knocked");
+                            if (killed) event = translate("kf_finished_off");
+                            else event = translate("kf_knocked");
                         } else {
-                            event = pickRandomInArray(getTranslatedString("kf_killed").split(","));
+                            event = pickRandomInArray(translate("kf_killed").split(","));
                         }
-                        modalMessage = getTranslatedString("kf_message", {
-                            player: activeId === attackerId ? getTranslatedString("you") : attackerText,
+                        modalMessage = translate("kf_message", {
+                            player: activeId === attackerId ? translate("you") : attackerText,
                             event,
                             victim: victimText,
-                            with: weapon && getTranslatedString("with"),
+                            with: weapon && translate("with"),
                             weapon
                         });
                     } else {
@@ -1723,11 +1723,11 @@ class UIManagerClass {
                         }
 
                         // Turkish and Estonian special condition ('i shouldn't appear in these messages)
-                        modalMessage = getTranslatedString(`kf_message${(language === "tr" || language === "et") ? "_grammar" : ""}` as TranslationKeys, {
+                        modalMessage = translate(`kf_message${(language === "tr" || language === "et") ? "_grammar" : ""}` as TranslationKeys, {
                             player: victimText,
-                            event: event ? getTranslatedString(event as TranslationKeys) : "",
+                            event: event ? translate(event as TranslationKeys) : "",
                             victim: "",
-                            with: weapon && getTranslatedString("with"),
+                            with: weapon && translate("with"),
                             weapon
                         });
                     }
@@ -1736,29 +1736,29 @@ class UIManagerClass {
             }
             case DamageSources.Gas:
                 if (activeId === victimId) {
-                    modalMessage = getTranslatedString(`km_gas_${killed ? "kill" : "down"}_you`);
+                    modalMessage = translate(`km_gas_${killed ? "kill" : "down"}_you`);
                 } else if (activeId === creditedId || victimOnThisTeam) {
-                    modalMessage = getTranslatedString(`kf_gas_${killed ? "kill" : "down"}`, { player: victimText });
+                    modalMessage = translate(`kf_gas_${killed ? "kill" : "down"}`, { player: victimText });
                 }
                 break;
             case DamageSources.Obstacle:
                 if (activeId === victimId) {
-                    modalMessage = getTranslatedString(`km_${weaponUsed?.idString ?? ""}_${killed ? "kill" : "down"}_you` as TranslationKeys);
+                    modalMessage = translate(`km_${weaponUsed?.idString ?? ""}_${killed ? "kill" : "down"}_you` as TranslationKeys);
                 } else if (activeId === creditedId || victimOnThisTeam) {
-                    modalMessage = getTranslatedString(`kf_${weaponUsed?.idString ?? ""}_${killed ? "kill" : "down"}` as TranslationKeys, { player: victimText });
+                    modalMessage = translate(`kf_${weaponUsed?.idString ?? ""}_${killed ? "kill" : "down"}` as TranslationKeys, { player: victimText });
                 }
                 break;
             case DamageSources.BleedOut: {
                 let player: string | undefined;
-                if (activeId === victimId) player = getTranslatedString("you");
+                if (activeId === victimId) player = translate("you");
                 else if (activeId === creditedId || victimOnThisTeam) player = victimText;
 
-                if (player) modalMessage = getTranslatedString(`kf_bleed_out_${killed ? "kill" : "down"}`, { player });
+                if (player) modalMessage = translate(`kf_bleed_out_${killed ? "kill" : "down"}`, { player });
                 break;
             }
             case DamageSources.FinallyKilled: {
                 let player: string | undefined;
-                if (activeId === victimId) player = getTranslatedString("you");
+                if (activeId === victimId) player = translate("you");
                 else if (activeId === creditedId || victimOnThisTeam) player = victimText;
 
                 if (player) {
@@ -1770,7 +1770,7 @@ class UIManagerClass {
                     } else {
                         event = "kf_finally_died";
                     }
-                    modalMessage = getTranslatedString(event, { player });
+                    modalMessage = translate(event, { player });
                 }
                 break;
             }
@@ -1780,7 +1780,7 @@ class UIManagerClass {
         if (!modalMessage) return;
 
         // special case for languages like hungarian and greek
-        if (getTranslatedString("you") === "") {
+        if (translate("you") === "") {
             // Remove useless spaces at start (from blank "you")
             modalMessage = modalMessage.trimStart();
 
@@ -1792,7 +1792,7 @@ class UIManagerClass {
             && kills !== undefined
             && gotKillCredit
         ) {
-            this.ui.killMsgHeader.text(getTranslatedString("msg_kills", { kills: kills.toString() }));
+            this.ui.killMsgHeader.text(translate("msg_kills", { kills: kills.toString() }));
             this.ui.killMsgCounter.text(kills);
             if (killstreak) modalMessage += ` (streak: ${killstreak})`;
         } else {
@@ -1823,7 +1823,7 @@ class UIManagerClass {
         const hasLeader = id !== 65535; // means no leader: server sent -1, value wrapped around to 65535
         const leaderText = hasLeader
             ? this._getNameAndBadge(id)
-            : getTranslatedString("msg_waiting_for_leader");
+            : translate("msg_waiting_for_leader");
 
         this.ui.killLeaderLeader.html(leaderText);
         this.ui.killLeaderCount.text(kills);
@@ -1831,7 +1831,7 @@ class UIManagerClass {
         this.ui.spectateKillLeader.removeClass("btn-disabled");
 
         if (hasLeader && this.killLeaderCache && this.killLeaderCache.id !== id) {
-            const messageText = html`<i class="fa-solid fa-crown"></i> ${getTranslatedString("kf_kl_promotion", { player: leaderText })}`;
+            const messageText = html`<i class="fa-solid fa-crown"></i> ${translate("kf_kl_promotion", { player: leaderText })}`;
             this._addKillFeedMessage(messageText, [id === Game.activePlayerID ? "kill-feed-item-killer" : "kill-feed-kill-leader"]);
             SoundManager.play("kill_leader_assigned");
         }
@@ -1845,7 +1845,7 @@ class UIManagerClass {
         this.ui.actionContainer.hide();
         this.ui.gameOverOverlay.hide();
         this.ui.canvas.removeClass("active");
-        this.ui.killLeaderLeader.text(getTranslatedString("msg_waiting_for_leader"));
+        this.ui.killLeaderLeader.text(translate("msg_waiting_for_leader"));
         this.ui.killLeaderCount.text("0");
 
         this.clearTeammateCache();

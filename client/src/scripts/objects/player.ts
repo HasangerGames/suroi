@@ -35,7 +35,7 @@ import { UIManager } from "../managers/uiManager";
 import { BULLET_WHIZ_SCALE, DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS, PIXI_SCALE, PLAYER_PARTICLE_ZINDEX, TEAMMATE_COLORS, UI_DEBUG_MODE } from "../utils/constants";
 import { DebugRenderer } from "../utils/debugRenderer";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
-import { getTranslatedString } from "../utils/translations/translations";
+import { translate } from "../utils/translations/translations";
 import { type TranslationKeys } from "../utils/translations/typings";
 import { type Tween } from "../utils/tween";
 import type { Building } from "./building";
@@ -654,7 +654,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     // somewhat an abuse of that system, but dedicating an
                     // entire "action" to this would be wasteful
                     if (this.beingRevived) {
-                        UIManager.animateAction(getTranslatedString("action_being_revived"), GameConstants.player.reviveTime, true);
+                        UIManager.animateAction(translate("action_being_revived"), GameConstants.player.reviveTime, true);
                     } else {
                         UIManager.cancelAction();
                     }
@@ -1065,7 +1065,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     actionSoundName = `${weaponDef.idString}_reload${reloadFullClip ? "_full" : ""}`;
                     if (this.isActivePlayer) {
                         UIManager.animateAction(
-                            getTranslatedString("action_reloading"),
+                            translate("action_reloading"),
                             (reloadFullClip ? weaponDef.fullReloadTime : weaponDef.reloadTime) / (this.reloadMod === 0 ? 1 : this.reloadMod)
                         );
                     }
@@ -1078,9 +1078,9 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     this.healingParticlesEmitter.active = true;
                     if (this.isActivePlayer) {
                         UIManager.animateAction(
-                            getTranslatedString(
+                            translate(
                                 `action_${itemDef.idString}_use` as TranslationKeys,
-                                { item: getTranslatedString(itemDef.idString as TranslationKeys) }
+                                { item: translate(itemDef.idString as TranslationKeys) }
                             ),
                             itemDef.useTime / PerkManager.mapOrDefault(PerkIds.FieldMedic, ({ usageMod }) => usageMod, 1)
                         );
@@ -1090,7 +1090,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 case PlayerActions.Revive: {
                     if (this.isActivePlayer) {
                         UIManager.animateAction(
-                            getTranslatedString("action_reviving"),
+                            translate("action_reviving"),
                             GameConstants.player.reviveTime / PerkManager.mapOrDefault(PerkIds.FieldMedic, ({ usageMod }) => usageMod, 1)
                         );
                     }
@@ -1568,10 +1568,10 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             container.children(".item-image").attr("src", `./img/game/loot/${def.idString}.svg`);
             container.children(".item-name").attr("style", `color: ${def.level >= (Game.mode.maxEquipmentLevel ?? 3) ? "#ff9900" : "#ffffff"};`);
 
-            let itemTooltip = getTranslatedString(def.idString as TranslationKeys);
+            let itemTooltip = translate(def.idString as TranslationKeys);
             if (def.defType === DefinitionType.Armor) {
-                itemTooltip = getTranslatedString("tt_reduces", {
-                    item: `<b>${getTranslatedString(def.idString as TranslationKeys)}</b><br>`,
+                itemTooltip = translate("tt_reduces", {
+                    item: `<b>${translate(def.idString as TranslationKeys)}</b><br>`,
                     percent: (def.damageReduction * 100).toString()
                 });
             }

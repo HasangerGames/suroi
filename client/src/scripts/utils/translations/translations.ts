@@ -73,7 +73,7 @@ export async function initTranslation(): Promise<void> {
     translateCurrentDOM();
 }
 
-export function getTranslatedString(key: TranslationKeys, replacements?: Record<string, string>): string {
+export function translate(key: TranslationKeys, replacements?: Record<string, string>): string {
     if (!setup) {
         console.error("Translation API not yet setup");
         return key;
@@ -156,7 +156,7 @@ function translateCurrentDOM(): void {
         const requestedTranslation = element.getAttribute("translation");
         if (!requestedTranslation) return;
 
-        const translatedString = getTranslatedString(requestedTranslation as TranslationKeys); // We pray
+        const translatedString = translate(requestedTranslation as TranslationKeys); // We pray
 
         element[
             element.getAttribute("use-html") === null

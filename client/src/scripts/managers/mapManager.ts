@@ -13,7 +13,7 @@ import { GameConsole } from "../console/gameConsole";
 import { Game } from "../game";
 import { DIFF_LAYER_HITBOX_OPACITY, FOOTSTEP_HITBOX_LAYER, PIXI_SCALE, TEAMMATE_COLORS } from "../utils/constants";
 import { SuroiSprite, drawGroundGraphics, drawHitbox, toPixiCoords } from "../utils/pixi";
-import { getTranslatedString } from "../utils/translations/translations";
+import { translate } from "../utils/translations/translations";
 import { CameraManager } from "./cameraManager";
 import { GasManager, GasRender } from "./gasManager";
 import { InputManager } from "./inputManager";
@@ -528,7 +528,7 @@ class MapManagerClass {
 
     updateFromPacket(mapPacket: MapData): void {
         console.log(`Joining game with seed: ${mapPacket.seed}`);
-        UIManager.ui.loaderText.text(getTranslatedString("loading_joining_game"));
+        UIManager.ui.loaderText.text(translate("loading_joining_game"));
 
         const width = this._width = mapPacket.width;
         const height = this._height = mapPacket.height;
