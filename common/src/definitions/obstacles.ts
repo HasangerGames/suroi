@@ -1968,7 +1968,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     },
     {
         idString: "lansirama_crate",
-        name: "Lansirama Crate",
+        name: "Länsirämä Crate",
         defType: DefinitionType.Obstacle,
         material: "crate",
         health: 80,
