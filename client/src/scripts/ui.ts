@@ -398,7 +398,7 @@ export async function setUpUI(): Promise<void> {
     GameConsole.variables.addChangeListener("cv_language", () => location.reload());
 
     const marqueeContent = $(".marquee-content");
-    const updateSplash = () => marqueeContent.html(pickRandomInArray([
+    const marqueeTexts = [
         "Fat free!",
         "Gluten free!",
         "Tell your friends!",
@@ -478,9 +478,10 @@ export async function setUpUI(): Promise<void> {
         "With your powers combined... OMEGA FLOWERY!",
         "Hahahahaflowershahahaha!",
         // End Deltarune Chapter 5 Flowery voice clips
-    ]));
-    updateSplash();
-    marqueeContent.on("click", updateSplash);
+    ];
+    const updateMarquee = () => marqueeContent.html(pickRandomInArray(marqueeTexts));
+    updateMarquee();
+    marqueeContent.on("click", updateMarquee);
 
     const params = new URLSearchParams(window.location.search);
 
