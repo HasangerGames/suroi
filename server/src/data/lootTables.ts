@@ -2305,5 +2305,5 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             ]
         ],
     },
-    birthday: {}
+    // birthday: {}
 };

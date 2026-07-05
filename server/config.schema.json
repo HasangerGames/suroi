@@ -259,6 +259,10 @@
         "disableBuildingCheck": {
             "description": "If true, allows things like scopes and flares to work in buildings.",
             "type": "boolean"
+        },
+        "randomizeLootTables": {
+            "description": "If true, any generated loot will be picked from a random table.",
+            "type": "boolean"
         }
     },
     "required": ["$schema", "hostname", "port", "map", "teamMode", "maxPlayersPerGame", "maxGames"],

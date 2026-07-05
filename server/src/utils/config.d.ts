@@ -211,4 +211,8 @@ export interface ConfigSchema {
    * If true, allows things like scopes and flares to work in buildings.
    */
   disableBuildingCheck?: boolean;
+  /**
+   * If true, any generated loot will be picked from a random table.
+   */
+  randomizeLootTables?: boolean;
 }

@@ -14,9 +14,10 @@ import { ModeName } from "@common/definitions/modes";
 import { ObstacleDefinition, Obstacles } from "@common/definitions/obstacles";
 import { isArray } from "@common/utils/misc";
 import { DefinitionType, NullString, ObjectDefinition, ObjectDefinitions, ReferenceOrRandom, ReferenceTo } from "@common/utils/objectDefinitions";
-import { random, weightedRandom } from "@common/utils/random";
+import { pickRandomInArray, random, weightedRandom } from "@common/utils/random";
 import { LootTables } from "../data/lootTables";
 import { MapDefinition, Maps } from "../data/maps";
+import { Config } from "./config";
 
 export type WeightedItem =
     (
@@ -81,7 +82,12 @@ export function getLootFromTable(modeName: ModeName, tableID: string, quality?: 
 }
 
 export function resolveTable(modeName: ModeName, tableID: string): LootTable {
-    return LootTables[modeName]?.[tableID] ?? LootTables.normal[tableID];
+    if (Config.randomizeLootTables) {
+        const randomMode = pickRandomInArray(Object.values(LootTables));
+        return pickRandomInArray(Object.values(randomMode));
+    } else {
+        return LootTables[modeName]?.[tableID] ?? LootTables.normal[tableID];
+    }
 }
 
 function getLoot(modeName: ModeName, items: WeightedItem[], noDuplicates: boolean, qualityValue?: number): LootItem[] {
