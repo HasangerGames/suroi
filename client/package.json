@@ -40,6 +40,6 @@
     "nipplejs": "^0.10.2",
     "pixi-filters": "^6.1.5",
     "pixi.js": "^8.14.3",
-    "spritesheetc": "../../spritesheetc/"
+    "spritesheetc": "^1.0.0-alpha3"
   }
 }
