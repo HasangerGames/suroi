@@ -83,11 +83,9 @@ export function getLootFromTable(modeName: ModeName, tableID: string, quality?: 
 
 export function resolveTable(modeName: ModeName, tableID: string): LootTable {
     if (Config.randomizeLootTables) {
-        const randomMode = pickRandomInArray(Object.values(LootTables));
-        return pickRandomInArray(Object.values(randomMode));
-    } else {
-        return LootTables[modeName]?.[tableID] ?? LootTables.normal[tableID];
+        modeName = pickRandomInArray(Object.keys(LootTables)) as ModeName;
     }
+    return LootTables[modeName]?.[tableID] ?? LootTables.normal[tableID];
 }
 
 function getLoot(modeName: ModeName, items: WeightedItem[], noDuplicates: boolean, qualityValue?: number): LootItem[] {
