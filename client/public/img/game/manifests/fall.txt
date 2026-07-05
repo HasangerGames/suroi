@@ -1,9 +1,7 @@
 public/img/game/manifests/shared.txt
 
-public/img/game/buildings/armory/armory_barracks_ceiling_1.svg
 public/img/game/buildings/armory/armory_barracks_floor_1.svg
 public/img/game/buildings/armory/armory_barracks_floor_2.svg
-public/img/game/buildings/armory/armory_center_ceiling_1.svg
 public/img/game/buildings/armory/armory_inner_vault_ceiling_1.svg
 public/img/game/buildings/armory/armory_inner_vault_ceiling_2.svg
 public/img/game/buildings/barn

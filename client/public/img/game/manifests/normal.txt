@@ -123,7 +123,6 @@ public/img/game/obstacles/pipe
 public/img/game/obstacles/planted_bushes
 public/img/game/obstacles/pole
 public/img/game/obstacles/porta_potty
-public/img/game/obstacles/porta_potty_toilet
 public/img/game/obstacles/potted_plant
 public/img/game/obstacles/propane_tank
 public/img/game/obstacles/regular_crate

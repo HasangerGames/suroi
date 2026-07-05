@@ -5502,18 +5502,11 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 position: Vec(0, 23.2)
             }
         ],
-        ceilingImages: [
-            {
-                key: "armory_barracks_ceiling_1",
-                position: Vec(0, -21),
-                scale: Vec(2, 2)
-            },
-            {
-                key: "armory_barracks_ceiling_2",
-                position: Vec(0, 20.6),
-                scale: Vec(2, 2)
-            }
-        ],
+        ceilingImages: [{
+            key: "armory_barracks_ceiling",
+            position: Vec(0, 0),
+            scale: Vec(2, 2)
+        }],
         floors: [{
             type: FloorNames.Wood,
             hitbox: RectangleHitbox.fromRect(50, 84)
@@ -5564,18 +5557,11 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 position: Vec(0, 11.5)
             }
         ],
-        ceilingImages: [
-            {
-                key: "armory_center_ceiling_1",
-                position: Vec(1.25, -11),
-                scale: Vec(2, 2)
-            },
-            {
-                key: "armory_center_ceiling_2",
-                position: Vec(1.25, 11.4),
-                scale: Vec(2, 2)
-            }
-        ],
+        ceilingImages: [{
+            key: "armory_center_ceiling",
+            position: Vec(1.25, 0),
+            scale: Vec(2, 2)
+        }],
         floors: [{
             type: FloorNames.Wood,
             hitbox: RectangleHitbox.fromRect(31, 44, Vec(1.5, 0))
@@ -7366,18 +7352,11 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { table: "cabinet", position: Vec(16, 20.9) },
             { table: "cabinet", position: Vec(16, 37.6) }
         ],
-        ceilingImages: [
-            {
-                key: "armory_barracks_ceiling_1",
-                position: Vec(0, -21),
-                scale: Vec(2, 2)
-            },
-            {
-                key: "armory_barracks_ceiling_2",
-                position: Vec(0, 20.6),
-                scale: Vec(2, 2)
-            }
-        ],
+        ceilingImages: [{
+            key: "armory_barracks_ceiling",
+            position: Vec(0, 0),
+            scale: Vec(2, 2)
+        }],
         floors: [{
             type: FloorNames.Wood,
             hitbox: RectangleHitbox.fromRect(50, 84)
@@ -7454,18 +7433,11 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 rotation: 2
             }
         ],
-        ceilingImages: [
-            {
-                key: "armory_center_ceiling_1",
-                position: Vec(1.25, -11),
-                scale: Vec(2, 2)
-            },
-            {
-                key: "armory_center_ceiling_2",
-                position: Vec(1.25, 11.4),
-                scale: Vec(2, 2)
-            }
-        ],
+        ceilingImages: [{
+            key: "armory_center_ceiling",
+            position: Vec(1.25, 0),
+            scale: Vec(2, 2)
+        }],
         floors: [{
             type: FloorNames.Wood,
             hitbox: RectangleHitbox.fromRect(31, 44, Vec(1.5, 0))
