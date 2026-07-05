@@ -46,7 +46,7 @@ const load = (id: string): string | undefined => {
     if (!data) {
         try {
             const spritesheetName = id.slice(id.lastIndexOf("-") + 1) as SpritesheetNames;
-            buildSpritesheets(spritesheetName, "fast");
+            buildSpritesheets(spritesheetName, ".spritesheet-cache", "fast");
         } catch (e) {
             console.error(e);
             return;
@@ -56,10 +56,10 @@ const load = (id: string): string | undefined => {
     return data;
 };
 
-function buildSpritesheets(spritesheetName: SpritesheetNames, speed: BuilderOptions["speed"]): void {
+function buildSpritesheets(spritesheetName: SpritesheetNames, outputDir: string, speed: BuilderOptions["speed"]): void {
     const filenames = spritesheetc.buildSpritesheets({
         inputs: [path.join("public", "img", "game", "manifests", `${spritesheetName}.txt`)],
-        outputDir: ".spritesheet-cache",
+        outputDir,
         atlasName: spritesheetName,
         resolutions: [0.5, 1],
         speed
@@ -68,8 +68,16 @@ function buildSpritesheets(spritesheetName: SpritesheetNames, speed: BuilderOpti
     const highSheets: string[] = [];
     for (const file of filenames) {
         const sheets = file.includes("@0.5x") ? lowSheets : highSheets;
-        sheets.push(readFileSync(`${file}.json`, "utf8"));
-        files.set(`img/atlases/${file}.webp`, readFileSync(file));
+        let json = readFileSync(`${file}.json`, "utf8");
+        if (outputDir === "client/dist/img/atlases") { // please fix me i am awful
+            json = json.replace("client/dist/", "");
+        }
+        let alteredFile = file;
+        if (file.startsWith("client/dist/img/atlases/")) { // please fix me i am awful
+            alteredFile = file.replace("client/dist/img/atlases/", "");
+        }
+        sheets.push(json);
+        files.set(`img/atlases/${alteredFile}`, readFileSync(file));
     }
     modules.set(`virtual:image-spritesheets-low-res-${spritesheetName}`, `export const spritesheets=[${lowSheets.join()}]`);
     modules.set(`virtual:image-spritesheets-high-res-${spritesheetName}`, `export const spritesheets=[${highSheets.join()}]`);
@@ -84,7 +92,7 @@ export function imageSpritesheet(): Plugin[] {
             apply: "build",
             buildStart() {
                 for (const sheet of spritesheetNames) {
-                    buildSpritesheets(sheet, "slow");
+                    buildSpritesheets(sheet, "client/dist/img/atlases", "slow");
                 }
             },
             generateBundle() {
