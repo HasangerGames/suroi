@@ -2065,7 +2065,7 @@ class TeammateIndicatorUI {
 
         if (recalcIndicatorFrame) {
             const frame = `player_indicator${this._normalizedHealth.value === 0 ? "_dead" : this._downed.value ? "_downed" : ""}`;
-            const newSrc = `./img/game/player/${frame}.svg`;
+            const newSrc = `./img/game/indicators/${frame}.svg`;
             if (this.teammateIndicator.attr("src") !== newSrc) {
                 this.teammateIndicator.attr("src", newSrc);
             }
