@@ -91,6 +91,7 @@ public/img/game/obstacles/forklift
 public/img/game/obstacles/fridge
 public/img/game/obstacles/generator
 public/img/game/obstacles/glass_door
+public/img/game/obstacles/gold_airdrop_crate
 public/img/game/obstacles/gold_rock
 public/img/game/obstacles/graveyard_light
 public/img/game/obstacles/grenade_box
