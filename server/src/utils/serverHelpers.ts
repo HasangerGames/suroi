@@ -1,8 +1,8 @@
-import { ColorStyles, Logger, styleText } from "@common/utils/logging";
+import { ColorStyles, Logger, styleText } from "$common/utils/logging";
 import { Cron } from "croner";
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
-import { Numeric } from "@common/utils/math";
-import { PunishmentMessage } from "@common/typings";
+import { Numeric } from "$common/utils/math";
+import { PunishmentMessage } from "$common/typings";
 import { Config } from "./config";
 
 export function serverLog(...message: unknown[]): void {

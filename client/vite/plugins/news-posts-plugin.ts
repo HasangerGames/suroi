@@ -1,11 +1,11 @@
 import { FSWatcher, watch } from "chokidar";
+import fm from "front-matter";
 import { readFileSync } from "fs";
+import { marked } from "marked";
 import path from "path";
 import type { Plugin } from "vite";
-import fm from "front-matter";
-import { marked } from "marked";
 import { readDirectory } from "../../../common/src/utils/readDirectory";
-import { humanDate } from "../../src/scripts/utils/misc";
+import { humanDate } from "../../src/lib/scripts/utils/misc";
 
 const PLUGIN_NAME = "vite-news-posts-plugin";
 const VIRTUAL_MODULE_ID = "virtual:news-posts";

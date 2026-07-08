@@ -1,11 +1,11 @@
-import { GameConstants, ObjectCategory } from "@common/constants";
-import { InternalAnimation, resolveNumericSpecifier, resolveVectorSpecifier, type SyncedParticleDefinition } from "@common/definitions/syncedParticles";
-import { type Variation } from "@common/typings";
-import { CircleHitbox } from "@common/utils/hitbox";
-import { EaseFunctions, Numeric } from "@common/utils/math";
-import { type FullData } from "@common/utils/objectsSerializations";
-import { random } from "@common/utils/random";
-import { Vec, type Vector } from "@common/utils/vector";
+import { GameConstants, ObjectCategory } from "$common/constants";
+import { InternalAnimation, resolveNumericSpecifier, resolveVectorSpecifier, type SyncedParticleDefinition } from "$common/definitions/syncedParticles";
+import { type Variation } from "$common/typings";
+import { CircleHitbox } from "$common/utils/hitbox";
+import { EaseFunctions, Numeric } from "$common/utils/math";
+import { type FullData } from "$common/utils/objectsSerializations";
+import { random } from "$common/utils/random";
+import { Vec, type Vector } from "$common/utils/vector";
 import { type Game } from "../game";
 import { BaseGameObject } from "./gameObject";
 

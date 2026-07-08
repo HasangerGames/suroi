@@ -1,4 +1,4 @@
-import { Vec } from "@common/utils/vector";
+import { Vec } from "$common/utils/vector";
 
 import { GamePlugin } from "../pluginManager";
 

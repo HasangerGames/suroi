@@ -1,9 +1,9 @@
 import Cluster from "node:cluster";
 import { URLSearchParams } from "node:url";
-import { GameConstants, TeamMode } from "@common/constants";
-import { Badges } from "@common/definitions/badges";
-import { Skins } from "@common/definitions/items/skins";
-import { CustomTeamMessage, PunishmentMessage } from "@common/typings";
+import { GameConstants, TeamMode } from "$common/constants";
+import { Badges } from "$common/definitions/badges";
+import { Skins } from "$common/definitions/items/skins";
+import { CustomTeamMessage, PunishmentMessage } from "$common/typings";
 import os from "os";
 import { version } from "../../package.json";
 import { GameManager } from "./gameManager";

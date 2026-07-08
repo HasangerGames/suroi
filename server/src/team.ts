@@ -1,6 +1,6 @@
-import { CustomTeamMessages, CustomTeamPlayerInfo, type CustomTeamMessage } from "@common/typings";
-import { removeFrom } from "@common/utils/misc";
-import { random } from "@common/utils/random";
+import { CustomTeamMessages, CustomTeamPlayerInfo, type CustomTeamMessage } from "$common/typings";
+import { removeFrom } from "$common/utils/misc";
+import { random } from "$common/utils/random";
 import { GameManager } from "./gameManager";
 import { type Player } from "./objects/player";
 

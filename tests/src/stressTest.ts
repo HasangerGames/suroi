@@ -1,4 +1,4 @@
-import { PacketDataIn, PacketDataOut, PacketType } from "@common/packets/packet";
+import { PacketDataIn, PacketDataOut, PacketType } from "$common/packets/packet";
 import { WebSocket, type MessageEvent } from "ws";
 import { GameConstants, InputActions, ObjectCategory } from "../../common/src/constants";
 import { EmoteCategory, Emotes, type EmoteDefinition } from "../../common/src/definitions/emotes";

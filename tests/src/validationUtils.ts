@@ -1,4 +1,4 @@
-import type { BaseBulletDefinition } from "@common/utils/baseBullet";
+import type { BaseBulletDefinition } from "$common/utils/baseBullet";
 import { Explosions } from "../../common/src/definitions/explosions";
 import { Loots } from "../../common/src/definitions/loots";
 import { type Animated, type SyncedParticleDefinition, type ValueSpecifier } from "../../common/src/definitions/syncedParticles";

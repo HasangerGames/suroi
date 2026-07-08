@@ -1,14 +1,14 @@
-import { AnimationType, FireMode } from "@common/constants";
-import { type MeleeDefinition } from "@common/definitions/items/melees";
-import { PerkIds } from "@common/definitions/items/perks";
-import { DefinitionType, type ReifiableDef } from "@common/utils/objectDefinitions";
+import { AnimationType, FireMode } from "$common/constants";
+import { type MeleeDefinition } from "$common/definitions/items/melees";
+import { PerkIds } from "$common/definitions/items/perks";
+import { DefinitionType, type ReifiableDef } from "$common/utils/objectDefinitions";
 import { Building } from "../objects/building";
 import { type ItemData } from "../objects/loot";
 import { Obstacle } from "../objects/obstacle";
 import { type Player } from "../objects/player";
 import { Projectile } from "../objects/projectile";
 import { InventoryItemBase } from "./inventoryItem";
-import { getMeleeHitbox, getMeleeTargets } from "@common/utils/gameHelpers";
+import { getMeleeHitbox, getMeleeTargets } from "$common/utils/gameHelpers";
 
 /**
  * A class representing a melee weapon

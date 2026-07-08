@@ -1,11 +1,11 @@
-import { AnimationType, GameConstants, PlayerActions } from "@common/constants";
-import { HealType, type HealingItemDefinition } from "@common/definitions/items/healingItems";
-import { PerkData, PerkIds } from "@common/definitions/items/perks";
-import { Loots } from "@common/definitions/loots";
-import { Numeric } from "@common/utils/math";
-import { type Timeout } from "@common/utils/misc";
-import { type ReifiableDef } from "@common/utils/objectDefinitions";
-import { randomRotation } from "@common/utils/random";
+import { AnimationType, GameConstants, PlayerActions } from "$common/constants";
+import { HealType, type HealingItemDefinition } from "$common/definitions/items/healingItems";
+import { PerkData, PerkIds } from "$common/definitions/items/perks";
+import { Loots } from "$common/definitions/loots";
+import { Numeric } from "$common/utils/math";
+import { type Timeout } from "$common/utils/misc";
+import { type ReifiableDef } from "$common/utils/objectDefinitions";
+import { randomRotation } from "$common/utils/random";
 import { type Player } from "../objects/player";
 import { type GunItem } from "./gunItem";
 

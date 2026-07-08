@@ -1,10 +1,10 @@
-import { Layer, ObjectCategory } from "@common/constants";
-import { DamageSources } from "@common/packets/killPacket";
-import { makeGameObjectTemplate } from "@common/utils/gameObject";
-import { type Hitbox } from "@common/utils/hitbox";
-import { ObjectSerializations, type FullData } from "@common/utils/objectsSerializations";
-import { SuroiByteStream } from "@common/utils/suroiByteStream";
-import { type Vector } from "@common/utils/vector";
+import { Layer, ObjectCategory } from "$common/constants";
+import { DamageSources } from "$common/packets/killPacket";
+import { makeGameObjectTemplate } from "$common/utils/gameObject";
+import { type Hitbox } from "$common/utils/hitbox";
+import { ObjectSerializations, type FullData } from "$common/utils/objectsSerializations";
+import { SuroiByteStream } from "$common/utils/suroiByteStream";
+import { type Vector } from "$common/utils/vector";
 import { type Game } from "../game";
 import { GunItem } from "../inventory/gunItem";
 import { MeleeItem } from "../inventory/meleeItem";

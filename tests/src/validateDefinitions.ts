@@ -1,6 +1,6 @@
-import { Perks } from "@common/definitions/items/perks";
-import { Modes, type ModeName } from "@common/definitions/modes";
-import { HitboxType, RectangleHitbox } from "@common/utils/hitbox";
+import { Perks } from "$common/definitions/items/perks";
+import { Modes, type ModeName } from "$common/definitions/modes";
+import { HitboxType, RectangleHitbox } from "$common/utils/hitbox";
 import { Config as ClientConfig } from "../../client/src/scripts/config";
 import { FireMode, GameConstants, Layers, RotationMode } from "../../common/src/constants";
 import { Buildings } from "../../common/src/definitions/buildings";

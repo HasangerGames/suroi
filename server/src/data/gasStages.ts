@@ -1,4 +1,4 @@
-import { GasState } from "@common/constants";
+import { GasState } from "$common/constants";
 
 export interface GasStage {
     readonly state: GasState

@@ -1,11 +1,11 @@
-import { Bullets, type BulletDefinition } from "@common/definitions/bullets";
-import { PerkIds } from "@common/definitions/items/perks";
-import { BaseBullet, type BulletOptions } from "@common/utils/baseBullet";
-import { RectangleHitbox } from "@common/utils/hitbox";
-import { Angle } from "@common/utils/math";
-import { DefinitionType, type ReferenceTo } from "@common/utils/objectDefinitions";
-import { randomFloat } from "@common/utils/random";
-import { Vec, type Vector } from "@common/utils/vector";
+import { Bullets, type BulletDefinition } from "$common/definitions/bullets";
+import { PerkIds } from "$common/definitions/items/perks";
+import { BaseBullet, type BulletOptions } from "$common/utils/baseBullet";
+import { RectangleHitbox } from "$common/utils/hitbox";
+import { Angle } from "$common/utils/math";
+import { DefinitionType, type ReferenceTo } from "$common/utils/objectDefinitions";
+import { randomFloat } from "$common/utils/random";
+import { Vec, type Vector } from "$common/utils/vector";
 import { type Game } from "../game";
 import { GunItem } from "../inventory/gunItem";
 import { Building } from "./building";
@@ -13,7 +13,7 @@ import { type Explosion } from "./explosion";
 import { type GameObject } from "./gameObject";
 import { Obstacle } from "./obstacle";
 import { type Player } from "./player";
-import { adjacentOrEquivLayer } from "@common/utils/layer";
+import { adjacentOrEquivLayer } from "$common/utils/layer";
 
 type Weapon = GunItem | Explosion;
 

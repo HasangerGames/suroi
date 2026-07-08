@@ -1,8 +1,8 @@
-import { type ObstacleDefinition } from "@common/definitions/obstacles";
-import { Orientation } from "@common/typings";
-import { ExtendedMap } from "@common/utils/misc";
-import { type ReferenceTo } from "@common/utils/objectDefinitions";
-import { Vec } from "@common/utils/vector";
+import { type ObstacleDefinition } from "$common/definitions/obstacles";
+import { Orientation } from "$common/typings";
+import { ExtendedMap } from "$common/utils/misc";
+import { type ReferenceTo } from "$common/utils/objectDefinitions";
+import { Vec } from "$common/utils/vector";
 
 import { Obstacle } from "../objects/obstacle";
 import { Player } from "../objects/player";

@@ -1,6 +1,6 @@
-import { TeamMode } from "@common/constants";
-import { ModeName } from "@common/definitions/modes";
-import { pickRandomInArray } from "@common/utils/random";
+import { TeamMode } from "$common/constants";
+import { ModeName } from "$common/definitions/modes";
+import { pickRandomInArray } from "$common/utils/random";
 import Cluster, { type Worker } from "node:cluster";
 import { Game } from "./game";
 import { PlayerSocketData } from "./objects/player";

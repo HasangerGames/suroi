@@ -1,9 +1,9 @@
-import { Layer, ObjectCategory } from "@common/constants";
-import { Decals, type DecalDefinition } from "@common/definitions/decals";
-import { type ReifiableDef } from "@common/utils/objectDefinitions";
-import { type FullData } from "@common/utils/objectsSerializations";
-import { randomRotation } from "@common/utils/random";
-import { type Vector } from "@common/utils/vector";
+import { Layer, ObjectCategory } from "$common/constants";
+import { Decals, type DecalDefinition } from "$common/definitions/decals";
+import { type ReifiableDef } from "$common/utils/objectDefinitions";
+import { type FullData } from "$common/utils/objectsSerializations";
+import { randomRotation } from "$common/utils/random";
+import { type Vector } from "$common/utils/vector";
 import { type Game } from "../game";
 import { BaseGameObject } from "./gameObject";
 

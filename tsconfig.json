@@ -1,6 +1,6 @@
 {
   "extends": [
-    "./client/tsconfig.node.json",
+    "./client/tsconfig.json",
     "./common/tsconfig.json",
     "./server/tsconfig.json"
   ],
@@ -8,7 +8,7 @@
   "exclude": ["node_modules"],
   "compilerOptions": {
     "paths": {
-      "@common/*": ["./common/src/*"]
+      "$common/*": ["./common/src/*"]
     }
   }
 }

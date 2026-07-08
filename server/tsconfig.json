@@ -12,7 +12,7 @@
     "skipLibCheck": true,
     "strict": true,
     "paths": {
-      "@common/*": ["../common/src/*"]
+      "$common/*": ["../common/src/*"]
     }
   },
   "include": [

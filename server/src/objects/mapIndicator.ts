@@ -1,8 +1,8 @@
-import { MapIndicatorDefinition, MapIndicators } from "@common/definitions/mapIndicators";
-import { MapIndicatorSerialization } from "@common/packets/updatePacket";
-import { Vec, Vector } from "@common/utils/vector";
+import { MapIndicatorDefinition, MapIndicators } from "$common/definitions/mapIndicators";
+import { MapIndicatorSerialization } from "$common/packets/updatePacket";
+import { Vec, Vector } from "$common/utils/vector";
 import { Game } from "../game";
-import { ReifiableDef } from "@common/utils/objectDefinitions";
+import { ReifiableDef } from "$common/utils/objectDefinitions";
 
 export class MapIndicator implements MapIndicatorSerialization {
     id: number;

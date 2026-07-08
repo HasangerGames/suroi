@@ -1,18 +1,18 @@
-import { GameConstants, ObjectCategory } from "@common/constants";
-import { PerkData, PerkIds } from "@common/definitions/items/perks";
-import { ThrowableDefinition, Throwables } from "@common/definitions/items/throwables";
-import { CircleHitbox, HitboxType, RectangleHitbox } from "@common/utils/hitbox";
-import { equivLayer } from "@common/utils/layer";
-import { Angle, Geometry, Numeric } from "@common/utils/math";
-import { type ReifiableDef } from "@common/utils/objectDefinitions";
-import { type FullData } from "@common/utils/objectsSerializations";
-import { FloorTypes } from "@common/utils/terrain";
-import { Vec, type Vector } from "@common/utils/vector";
+import { GameConstants, ObjectCategory } from "$common/constants";
+import { PerkData, PerkIds } from "$common/definitions/items/perks";
+import { ThrowableDefinition, Throwables } from "$common/definitions/items/throwables";
+import { CircleHitbox, HitboxType, RectangleHitbox } from "$common/utils/hitbox";
+import { equivLayer } from "$common/utils/layer";
+import { Angle, Geometry, Numeric } from "$common/utils/math";
+import { type ReifiableDef } from "$common/utils/objectDefinitions";
+import { type FullData } from "$common/utils/objectsSerializations";
+import { FloorTypes } from "$common/utils/terrain";
+import { Vec, type Vector } from "$common/utils/vector";
 import { type Game } from "../game";
 import type { ThrowableItem } from "../inventory/throwableItem";
 import { BaseGameObject, DamageParams, GameObject } from "./gameObject";
 import { Obstacle } from "./obstacle";
-import { randomFloat } from "@common/utils/random";
+import { randomFloat } from "$common/utils/random";
 import { Building } from "./building";
 
 export interface ProjectileParams {
@@ -318,7 +318,7 @@ export class Projectile extends BaseGameObject.derive(ObjectCategory.Projectile)
         if (decal !== undefined) {
             let decal_ = decal;
 
-            if (this.halloweenSkin && this.definition.pinSkin) decal_ += "_halloween"; 
+            if (this.halloweenSkin && this.definition.pinSkin) decal_ += "_halloween";
 
             game.addDecal(decal_, this.position, this.rotation, this.layer);
         }

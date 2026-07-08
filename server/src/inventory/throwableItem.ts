@@ -1,14 +1,14 @@
-import { AnimationType, GameConstants, InventoryMessages } from "@common/constants";
-import { PerkIds } from "@common/definitions/items/perks";
-import { type ThrowableDefinition } from "@common/definitions/items/throwables";
-import { Numeric } from "@common/utils/math";
-import { DefinitionType, type ReifiableDef } from "@common/utils/objectDefinitions";
-import { Vec } from "@common/utils/vector";
+import { AnimationType, GameConstants, InventoryMessages } from "$common/constants";
+import { PerkIds } from "$common/definitions/items/perks";
+import { type ThrowableDefinition } from "$common/definitions/items/throwables";
+import { Numeric } from "$common/utils/math";
+import { DefinitionType, type ReifiableDef } from "$common/utils/objectDefinitions";
+import { Vec } from "$common/utils/vector";
 import { type ItemData } from "../objects/loot";
 import { type Player } from "../objects/player";
 import { CountableInventoryItem } from "./inventoryItem";
-import { Timeout } from "@common/utils/misc";
-import { PickupPacket } from "@common/packets/pickupPacket";
+import { Timeout } from "$common/utils/misc";
+import { PickupPacket } from "$common/packets/pickupPacket";
 
 export class ThrowableItem extends CountableInventoryItem.derive(DefinitionType.Throwable) {
     count: number;

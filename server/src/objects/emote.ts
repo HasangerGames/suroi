@@ -1,4 +1,4 @@
-import { EmoteDefinition } from "@common/definitions/emotes";
+import { EmoteDefinition } from "$common/definitions/emotes";
 import { type Player } from "./player";
 
 export class Emote {

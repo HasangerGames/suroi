@@ -1,12 +1,12 @@
-import { svelte } from "@sveltejs/vite-plugin-svelte";
-import path, { resolve } from "path";
+import adapter from '@sveltejs/adapter-auto';
+import { sveltekit } from '@sveltejs/kit/vite';
+import tailwindcss from '@tailwindcss/vite';
 import { type UserConfig } from "vite";
-// import { ViteImageOptimizer } from "vite-plugin-image-optimizer";
-import pkg from "../../package.json";
+import pkg from "../package.json";
+import { audioSpritesheet } from "./plugins/audio-spritesheet-plugin";
+import { imageSpritesheet } from "./plugins/image-spritesheet-plugin";
 import { newsPosts } from "./plugins/news-posts-plugin";
 import { translations } from "./plugins/translations-plugin";
-import { imageSpritesheet } from "./plugins/image-spritesheet-plugin";
-import { audioSpritesheet } from "./plugins/audio-spritesheet-plugin";
 
 const commonConfig: UserConfig = {
     server: {
@@ -17,76 +17,31 @@ const commonConfig: UserConfig = {
         port: 3000,
         host: "0.0.0.0"
     },
-    build: {
-        chunkSizeWarningLimit: 2000,
-        sourcemap: true,
-        rollupOptions: {
-            input: {
-                main: resolve(__dirname, "../index.html"),
-                changelog: resolve(__dirname, "../changelog/index.html"),
-                news: resolve(__dirname, "../news/index.html"),
-                rules: resolve(__dirname, "../rules/index.html"),
-                privacy: resolve(__dirname, "../privacy/index.html"),
-                editor: resolve(__dirname, "../editor/index.html")
-            },
-            output: {
-                assetFileNames(assetInfo) {
-                    let path = "assets";
-                    switch (assetInfo.names[0].split(".").at(-1)) {
-                        case "css":
-                            path = "styles";
-                            break;
-                        case "ttf":
-                        case "woff":
-                        case "woff2":
-                            path = "fonts";
-                    }
-                    return `${path}/[name]-[hash][extname]`;
-                },
-                entryFileNames: "scripts/[name]-[hash].js",
-                chunkFileNames: "scripts/[name]-[hash].js",
-                manualChunks(id, _chunkInfo) {
-                    if (id.includes("node_modules")) {
-                        return "vendor";
-                    }
-                }
-            }
-        }
-    },
-
     plugins: [
-        svelte({
-            compilerOptions: {
-                warningFilter(warning) {
-                    // we dont care about accessibility warnings on the building editor lmao
-                    return !warning.code.includes("a11y");
+		tailwindcss(),
+		sveltekit({
+			compilerOptions: {
+				// Force runes mode for the project, except for libraries. Can be removed in svelte 6.
+				runes: ({ filename }) => filename.split(/[/\\]/).includes('node_modules') ? undefined : true,
+                experimental: {
+                    async: true
                 }
-            }
-        }),
-        // ViteImageOptimizer({
-        //     test: /\.(svg)$/i,
-        //     logStats: false
-        // }),
+			},
+
+			// adapter-auto only supports some environments, see https://svelte.dev/docs/kit/adapter-auto for a list.
+			// If your environment is not supported, or you settled on a specific environment, switch out the adapter.
+			// See https://svelte.dev/docs/kit/adapters for more information about adapters.
+			adapter: adapter(),
+
+            alias: {
+			    "$common/*": "../common/src/*"
+		    }
+		}),
         imageSpritesheet(),
         audioSpritesheet(),
         newsPosts(),
         translations()
     ],
-
-    css: {
-        preprocessorOptions: {
-            scss: {
-                api: "modern-compiler"
-            }
-        }
-    },
-
-    resolve: {
-        alias: {
-            "@common": path.resolve(__dirname, "../../common/src")
-        }
-    },
-
     define: {
         IS_CLIENT: true,
         APP_VERSION: JSON.stringify(pkg.version)

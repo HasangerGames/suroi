@@ -1,6 +1,6 @@
 import * as fs from "node:fs";
-import { ColorStyles, styleText } from "@common/utils/logging";
-import { readDirectory } from "@common/utils/readDirectory";
+import { ColorStyles, styleText } from "$common/utils/logging";
+import { readDirectory } from "$common/utils/readDirectory";
 import * as svgParser from "svg-parser";
 
 const MAX_SIZES: Record<string, number> = {

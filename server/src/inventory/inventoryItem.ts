@@ -1,8 +1,8 @@
-import { GameConstants } from "@common/constants";
-import { Loots, type LootDefForType, type LootDefinition, type WeaponTypes } from "@common/definitions/loots";
-import { Numeric } from "@common/utils/math";
-import type { AbstractConstructor, Constructor, PredicateFor } from "@common/utils/misc";
-import { DefinitionType, type ReifiableDef, type WearerAttributes } from "@common/utils/objectDefinitions";
+import { GameConstants } from "$common/constants";
+import { Loots, type LootDefForType, type LootDefinition, type WeaponTypes } from "$common/definitions/loots";
+import { Numeric } from "$common/utils/math";
+import type { AbstractConstructor, Constructor, PredicateFor } from "$common/utils/misc";
+import { DefinitionType, type ReifiableDef, type WearerAttributes } from "$common/utils/objectDefinitions";
 import { type ItemData } from "../objects/loot";
 import { type Player } from "../objects/player";
 import type { InventoryItem, WeaponItemTypeMap } from "./inventory";

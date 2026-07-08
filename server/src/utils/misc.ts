@@ -1,9 +1,9 @@
-import { GameConstants } from "@common/constants";
-import { ModeName, Modes } from "@common/definitions/modes";
-import { halfπ, τ } from "@common/utils/math";
-import { ReferenceOrNull, ReferenceOrRandom, type ObjectDefinition } from "@common/utils/objectDefinitions";
-import { weightedRandom } from "@common/utils/random";
-import { Vec, type Vector } from "@common/utils/vector";
+import { GameConstants } from "$common/constants";
+import { ModeName, Modes } from "$common/definitions/modes";
+import { halfπ, τ } from "$common/utils/math";
+import { ReferenceOrNull, ReferenceOrRandom, type ObjectDefinition } from "$common/utils/objectDefinitions";
+import { weightedRandom } from "$common/utils/random";
+import { Vec, type Vector } from "$common/utils/vector";
 import { Config } from "../utils/config";
 import { MapName, Maps } from "../data/maps";
 import { Game } from "../game";

@@ -1,7 +1,7 @@
-import { PerkIds } from "@common/definitions/items/perks";
-import { ModeName } from "@common/definitions/modes";
-import { Obstacles } from "@common/definitions/obstacles";
-import { NullString } from "@common/utils/objectDefinitions";
+import { PerkIds } from "$common/definitions/items/perks";
+import { ModeName } from "$common/definitions/modes";
+import { Obstacles } from "$common/definitions/obstacles";
+import { NullString } from "$common/utils/objectDefinitions";
 import { LootTable } from "../utils/lootHelpers";
 
 export const LootTables: Record<ModeName, Record<string, LootTable>> = {

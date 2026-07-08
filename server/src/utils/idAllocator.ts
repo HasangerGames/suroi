@@ -1,4 +1,4 @@
-import { Queue } from "@common/utils/misc";
+import { Queue } from "$common/utils/misc";
 
 /**
  * A class that manages a pool of numerical identifiers.

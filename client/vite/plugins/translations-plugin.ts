@@ -14,7 +14,7 @@ import type { Plugin } from "vite";
 const PLUGIN_NAME = "vite-translations-plugin";
 
 export const REFERENCE_LANGUAGE = "en";
-export const LANGUAGES_DIRECTORY = "src/translations/";
+export const LANGUAGES_DIRECTORY = "src/lib/translations/";
 
 const files = readdirSync(LANGUAGES_DIRECTORY).filter(file => file.endsWith(".hjson")).sort();
 
@@ -134,7 +134,7 @@ export async function buildTypings(keys: readonly string[]): Promise<void> {
     ].sort().map(key => `"${key}"`).join("\n|");
     buffer += ";";
 
-    await writeFile("src/scripts/utils/translations/typings.ts", buffer);
+    await writeFile("src/lib/scripts/utils/translations/typings.ts", buffer);
 }
 
 export function translations(): Plugin[] {

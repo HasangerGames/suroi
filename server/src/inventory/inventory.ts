@@ -1,15 +1,15 @@
-import { GameConstants } from "@common/constants";
-import { Ammos, type AmmoDefinition } from "@common/definitions/items/ammos";
-import { ArmorType, type ArmorDefinition } from "@common/definitions/items/armors";
-import { Backpacks, type BackpackDefinition } from "@common/definitions/items/backpacks";
-import { type DualGunNarrowing, type GunDefinition } from "@common/definitions/items/guns";
-import { HealType, HealingItems, type HealingItemDefinition } from "@common/definitions/items/healingItems";
-import { Loots, type LootDefForType, type LootDefinition, type WeaponDefinition, type WeaponTypes } from "@common/definitions/loots";
-import { DEFAULT_SCOPE, Scopes, type ScopeDefinition } from "@common/definitions/items/scopes";
-import { Throwables, type ThrowableDefinition } from "@common/definitions/items/throwables";
-import { Numeric } from "@common/utils/math";
-import { ExtendedMap, type AbstractConstructor, type GetEnumMemberName, type PredicateFor, type Timeout } from "@common/utils/misc";
-import { DefinitionType, type ReferenceTo, type ReifiableDef } from "@common/utils/objectDefinitions";
+import { GameConstants } from "$common/constants";
+import { Ammos, type AmmoDefinition } from "$common/definitions/items/ammos";
+import { ArmorType, type ArmorDefinition } from "$common/definitions/items/armors";
+import { Backpacks, type BackpackDefinition } from "$common/definitions/items/backpacks";
+import { type DualGunNarrowing, type GunDefinition } from "$common/definitions/items/guns";
+import { HealType, HealingItems, type HealingItemDefinition } from "$common/definitions/items/healingItems";
+import { Loots, type LootDefForType, type LootDefinition, type WeaponDefinition, type WeaponTypes } from "$common/definitions/loots";
+import { DEFAULT_SCOPE, Scopes, type ScopeDefinition } from "$common/definitions/items/scopes";
+import { Throwables, type ThrowableDefinition } from "$common/definitions/items/throwables";
+import { Numeric } from "$common/utils/math";
+import { ExtendedMap, type AbstractConstructor, type GetEnumMemberName, type PredicateFor, type Timeout } from "$common/utils/misc";
+import { DefinitionType, type ReferenceTo, type ReifiableDef } from "$common/utils/objectDefinitions";
 import { type ItemData } from "../objects/loot";
 import { type Player } from "../objects/player";
 import { HealingAction } from "./action";
@@ -17,8 +17,8 @@ import { GunItem } from "./gunItem";
 import { InventoryItemBase } from "./inventoryItem";
 import { MeleeItem } from "./meleeItem";
 import { ThrowableItem } from "./throwableItem";
-import { DEFAULT_INVENTORY } from "@common/defaultInventory";
-import { PerkIds } from "@common/definitions/items/perks";
+import { DEFAULT_INVENTORY } from "$common/defaultInventory";
+import { PerkIds } from "$common/definitions/items/perks";
 
 export type ReifiableItem = InventoryItem | ReifiableDef<InventoryItem["definition"]>;
 

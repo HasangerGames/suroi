@@ -1,5 +1,5 @@
-import { Collision } from "@common/utils/math";
-import { Vec, Vector } from "@common/utils/vector";
+import { Collision } from "$common/utils/math";
+import { Vec, Vector } from "$common/utils/vector";
 import { describe, expect, test } from "@jest/globals";
 
 describe("line segment intersection detection", () => {

@@ -1,4 +1,4 @@
-import { GameConstants } from "@common/constants";
+import { GameConstants } from "$common/constants";
 import { GamePlugin } from "../pluginManager";
 
 /**

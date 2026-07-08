@@ -1,13 +1,13 @@
-import { type InventoryMessages, type Layer } from "@common/constants";
-import { type BuildingDefinition } from "@common/definitions/buildings";
-import type { LootDefinition } from "@common/definitions/loots";
-import { type PlayerPing } from "@common/definitions/mapPings";
-import { type ObstacleDefinition } from "@common/definitions/obstacles";
-import { type InputData } from "@common/packets/inputPacket";
-import { type JoinData } from "@common/packets/joinPacket";
-import { PlayerModifiers, type Orientation } from "@common/typings";
-import { ExtendedMap } from "@common/utils/misc";
-import { Vector } from "@common/utils/vector";
+import { type InventoryMessages, type Layer } from "$common/constants";
+import { type BuildingDefinition } from "$common/definitions/buildings";
+import type { LootDefinition } from "$common/definitions/loots";
+import { type PlayerPing } from "$common/definitions/mapPings";
+import { type ObstacleDefinition } from "$common/definitions/obstacles";
+import { type InputData } from "$common/packets/inputPacket";
+import { type JoinData } from "$common/packets/joinPacket";
+import { PlayerModifiers, type Orientation } from "$common/typings";
+import { ExtendedMap } from "$common/utils/misc";
+import { Vector } from "$common/utils/vector";
 import { Config } from "./utils/config";
 import { Airdrop, Game } from "./game";
 import type { InventoryItem } from "./inventory/inventory";
@@ -16,7 +16,7 @@ import { DamageParams } from "./objects/gameObject";
 import { Loot, type ItemData } from "./objects/loot";
 import { Obstacle } from "./objects/obstacle";
 import { Player } from "./objects/player";
-import { EmoteDefinition } from "@common/definitions/emotes";
+import { EmoteDefinition } from "$common/definitions/emotes";
 
 interface PlayerDamageEvent extends DamageParams {
     readonly player: Player

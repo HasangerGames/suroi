@@ -30,7 +30,7 @@ const skin = (
     baseImage: baseTint !== undefined ? "plain_base" : undefined,
     fistImage: fistTint !== undefined ? "plain_fist" : undefined,
     baseTint,
-    fistTint: fistTint,
+    fistTint,
     backpackTint,
     rolesRequired
 });

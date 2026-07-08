@@ -57,8 +57,12 @@ export interface ModeDefinition {
         readonly gravity?: boolean
     }
     readonly specialLogo?: boolean
-    /** The image that will be used for the play button. */
-    readonly playButtonImage?: string
+    readonly playButton: {
+        readonly image: string
+    } & (
+        | { readonly color: string }
+        | { readonly colors: [string, string] }
+    )
     /** Enables weapon swap. If left unset/undefined, weapon swap will be disabled. */
     readonly weaponSwap?: boolean
     /** Used for H.U.N.T.E.D. mode bunkers. */
@@ -80,20 +84,27 @@ export interface ModeDefinition {
     readonly enhancedAirdropParticles?: boolean
 }
 
+// used by normal and birthday mode
+const normalColors: ModeDefinition["colors"] = {
+    grass: "hsl(95, 41%, 38%)",
+    water: "hsl(211, 63%, 42%)",
+    border: "hsl(211, 63%, 30%)",
+    beach: "hsl(40, 39%, 55%)",
+    riverBank: "hsl(34, 41%, 32%)",
+    trail: "hsl(35, 50%, 40%)",
+    gas: "hsla(17, 100%, 50%, 0.55)",
+    void: "hsl(25, 80%, 6%)"
+};
+
 export const Modes: Record<ModeName, ModeDefinition> = {
     normal: {
-        colors: {
-            grass: "hsl(95, 41%, 38%)",
-            water: "hsl(211, 63%, 42%)",
-            border: "hsl(211, 63%, 30%)",
-            beach: "hsl(40, 39%, 55%)",
-            riverBank: "hsl(34, 41%, 32%)",
-            trail: "hsl(35, 50%, 40%)",
-            gas: "hsla(17, 100%, 50%, 0.55)",
-            void: "hsl(25, 80%, 6%)"
-        },
+        colors: normalColors,
         ambience: "wind_ambience",
-        spriteSheets: ["shared", "normal"]
+        spriteSheets: ["shared", "normal"],
+        playButton: {
+            image: "../../lib/img/logos/suroi_favicon.svg",
+            color: "#5b8939"
+        }
     },
     fall: {
         colors: {
@@ -114,7 +125,10 @@ export const Modes: Record<ModeName, ModeDefinition> = {
         },
         spriteSheets: ["shared", "fall"],
         replaceMenuMusic: true,
-        playButtonImage: "./img/game/obstacles/pumpkin/pumpkin.svg"
+        playButton: {
+            image: "../../lib/img/game/obstacles/pumpkin/pumpkin.svg",
+            colors: ["#72742f", "#535421"]
+        }
     },
     halloween: {
         colors: {
@@ -142,7 +156,10 @@ export const Modes: Record<ModeName, ModeDefinition> = {
             ],
             delay: 1000
         },
-        playButtonImage: "./img/game/obstacles/jack_o_lantern/jack_o_lantern.svg",
+        playButton: {
+            image: "../../lib/img/game/obstacles/jack_o_lantern/jack_o_lantern.svg",
+            colors: ["#5a0e0e", "#440b0b"]
+        },
         canvasFilters: {
             brightness: 0.6,
             saturation: 0.85
@@ -162,26 +179,24 @@ export const Modes: Record<ModeName, ModeDefinition> = {
         },
         ambience: "wind_ambience",
         spriteSheets: ["shared", "normal", "infection"],
-        playButtonImage: "./img/game/perks/infection/infected.svg",
+        playButton: {
+            image: "../../lib/img/game/perks/infection/infected.svg",
+            colors: ["#ac539d", "#b946a6"]
+        },
         weaponSwap: true,
         canvasFilters: {
             brightness: 0.8,
             saturation: 0.8
         }
     },
-    birthday: { // copy of normal
-        colors: {
-            grass: "hsl(95, 41%, 38%)",
-            water: "hsl(211, 63%, 42%)",
-            border: "hsl(211, 63%, 30%)",
-            beach: "hsl(40, 39%, 55%)",
-            riverBank: "hsl(34, 41%, 32%)",
-            trail: "hsl(35, 50%, 40%)",
-            gas: "hsla(17, 100%, 50%, 0.55)",
-            void: "hsl(25, 80%, 6%)"
-        },
+    birthday: {
+        colors: normalColors,
         ambience: "wind_ambience",
-        spriteSheets: ["shared", "normal", "birthday"]
+        spriteSheets: ["shared", "normal", "birthday"],
+        playButton: {
+            image: "../../lib/img/logos/suroi_favicon.svg",
+            color: "#5b8939"
+        }
     },
     winter: {
         colors: {
@@ -206,7 +221,10 @@ export const Modes: Record<ModeName, ModeDefinition> = {
         },
         obstacleVariants: true,
         specialLogo: true,
-        playButtonImage: "./img/game/obstacles/red_gift/red_gift.svg",
+        playButton: {
+            image: "../../lib/img/game/obstacles/red_gift/red_gift.svg",
+            colors: ["#dcdcdc", "#aaa8a8"]
+        },
         replaceWaterBy: FloorNames.Ice,
         enhancedAirdropParticles: true
     },
@@ -227,7 +245,10 @@ export const Modes: Record<ModeName, ModeDefinition> = {
         forcedGoldAirdropStage: 5,
         overrideUpstairsFunctionality: true,
         replaceMenuMusic: true,
-        playButtonImage: "./img/logos/lansirama_logo.svg",
+        playButton: {
+            image: "../../lib/img/logos/lansirama_logo.svg",
+            colors: ["#0b521d", "#083d15"]
+        },
         particleEffects: {
             frames: ["bush_particle_1", "bush_particle_2", "dead_pine_tree_particle", "pine_tree_particle"],
             delay: 1000
@@ -259,7 +280,7 @@ export const Modes: Record<ModeName, ModeDefinition> = {
         obstacleVariants: true,
         specialLogo: true,
         bulletFilters: true,
-        playButtonImage: "./img/game/obstacles/christmas_tree/christmas_tree.svg",
+        playButtonImage: "../../lib/img/game/obstacles/christmas_tree/christmas_tree.svg",
         canvasFilters: {
             brightness: 0.6,
             saturation: 0.85
