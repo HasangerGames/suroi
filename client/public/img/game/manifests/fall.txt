@@ -1,5 +1,7 @@
 public/img/game/manifests/shared.txt
 
+public/img/game/airdrop/shared
+
 public/img/game/buildings/armory/armory_barracks_floor_1.svg
 public/img/game/buildings/armory/armory_barracks_floor_2.svg
 public/img/game/buildings/armory/armory_inner_vault_ceiling_1.svg
@@ -25,6 +27,7 @@ public/img/game/buildings/warehouse
 public/img/game/loot/loot_background_perk.svg
 
 public/img/game/obstacles/aegis_crate
+public/img/game/obstacles/airdrop_crate
 public/img/game/obstacles/ammo_crate
 public/img/game/obstacles/auto_door
 public/img/game/obstacles/baby_plumpkin

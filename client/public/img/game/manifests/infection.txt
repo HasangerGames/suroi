@@ -1,5 +1,7 @@
 public/img/game/manifests/shared.txt
 
+public/img/game/airdrop/shared
+
 public/img/game/buildings/armory
 public/img/game/buildings/blue_house
 public/img/game/buildings/blue_stair
@@ -37,6 +39,7 @@ public/img/game/decals/vaccine_syringe_residue.svg
 
 public/img/game/obstacles/aegis_crate
 public/img/game/obstacles/aegis_golden_case
+public/img/game/obstacles/airdrop_crate
 public/img/game/obstacles/ammo_crate
 public/img/game/obstacles/auto_door
 public/img/game/obstacles/baby_plumpkin/baby_plumpkin_residue.svg

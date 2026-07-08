@@ -1,5 +1,7 @@
 public/img/game/manifests/shared.txt
 
+public/img/game/airdrop/shared
+
 public/img/game/buildings/abandoned_warehouse
 public/img/game/buildings/bear_bunker
 public/img/game/buildings/blue_stair
@@ -25,7 +27,18 @@ public/img/game/buildings/warehouse_hunted
 public/img/game/decals/ground_crack
 public/img/game/decals/mud_decal
 
+public/img/game/indicators/helmet_indicator.svg
+public/img/game/indicators/juggernaut_indicator.svg
+public/img/game/indicators/pack_indicator.svg
+public/img/game/indicators/unlock_ping.svg
+public/img/game/indicators/vest_indicator.svg
+
+public/img/game/loot/power_helmet.svg
+public/img/game/loot/power_pack.svg
+public/img/game/loot/power_vest.svg
+
 public/img/game/obstacles/abandoned_bunker_entrance
+public/img/game/obstacles/airdrop_crate
 public/img/game/obstacles/ammo_crate
 public/img/game/obstacles/auto_door
 public/img/game/obstacles/bar_seat
@@ -156,3 +169,5 @@ public/img/game/obstacles/viking_chest
 public/img/game/obstacles/window
 public/img/game/obstacles/window2
 public/img/game/obstacles/wine_barrel
+
+public/img/game/player/shield.svg
