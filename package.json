@@ -28,7 +28,7 @@
   "license": "GPL-3.0",
   "devDependencies": {
     "@biomejs/biome": "2.2.4",
-    "@types/node": "^22.19.3",
+    "@types/node": "^22.20.1",
     "typescript": "^5.9.3"
   },
   "workspaces": ["client", "common", "server", "tests"],
