@@ -56,7 +56,7 @@ import { Player } from "./objects/player";
 import { Projectile } from "./objects/projectile";
 import { SyncedParticle } from "./objects/syncedParticle";
 import { autoPickup, fetchServerData, finalizeUI, resetPlayButtons, setUpUI, teamSocket, unlockPlayButtons, updateDisconnectTime } from "./ui";
-import { EMOTE_SLOTS, LAYER_TRANSITION_DELAY, PERK_MESSAGE_FADE_TIME, PIXI_SCALE, UI_DEBUG_MODE } from "./utils/constants";
+import { EMOTE_SLOTS, LAYER_TRANSITION_DELAY, PERK_MESSAGE_FADE_TIME, PIXI_SCALE } from "./utils/constants";
 import type { DebugMenu } from "./utils/debugMenu";
 import { DebugRenderer } from "./utils/debugRenderer";
 import { setUpNetGraph } from "./utils/graph/netGraph";
@@ -64,6 +64,7 @@ import { loadSpritesheets, SuroiSprite } from "./utils/pixi";
 import { initTranslation, translate } from "./utils/translations/translations";
 import { type TranslationKeys } from "./utils/translations/typings";
 import { Tween, type TweenOptions } from "./utils/tween";
+import { Config } from "./utils/config";
 
 
 interface ObjectClassMapping {
@@ -846,7 +847,7 @@ export const Game = new (class Game {
 
             for (const graph of Object.values(this.netGraph)) graph.clear();
 
-            if (!UI_DEBUG_MODE) {
+            if (!Config.uiDebugMode) {
                 clearTimeout(UIManager.gameOverScreenTimeout);
                 const ui = UIManager.ui;
 
@@ -1100,7 +1101,7 @@ export const Game = new (class Game {
         ui.killLeaderCount.text("0");
         ui.spectateKillLeader.addClass("btn-disabled");
 
-        if (!UI_DEBUG_MODE) ui.teamContainer.toggle(this.isTeamMode);
+        if (!Config.uiDebugMode) ui.teamContainer.toggle(this.isTeamMode);
 
         // send the packet to sync our local configs when joining
         this.debugMenu?.sendPacket();
@@ -1753,7 +1754,7 @@ export const Game = new (class Game {
                         if (player.downed && (object?.isLoot || (object?.isObstacle && object.definition.noInteractMessage))) interactMsg.hide();
                     }
                 } else {
-                   if (!UI_DEBUG_MODE) interactMsg.hide();
+                   if (!Config.uiDebugMode) interactMsg.hide();
                 }
 
                 renderWeaponComparison(comparisonPayload);

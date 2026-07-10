@@ -1,13 +1,13 @@
+import $ from "jquery";
+import { Graphics } from "pixi.js";
 import { GasState } from "$common/constants";
 import { type UpdateDataOut } from "$common/packets/updatePacket";
 import { Numeric } from "$common/utils/math";
 import { Vec, type Vector } from "$common/utils/vector";
-import $ from "jquery";
-import { Graphics } from "pixi.js";
-import { translate } from "../utils/translations/translations";
 import { Game } from "../game";
-import { UI_DEBUG_MODE } from "../utils/constants";
+import { Config } from "../utils/config";
 import { formatDate } from "../utils/misc";
+import { translate } from "../utils/translations/translations";
 import { UIManager } from "./uiManager";
 
 class GasManagerClass {
@@ -99,7 +99,7 @@ class GasManagerClass {
 
             if (
                 (isInactive || gas.currentDuration !== 0)
-                && !UI_DEBUG_MODE
+                && !Config.uiDebugMode
                 && (!Game.gameOver || Game.spectating)
             ) {
                 this._ui.msgText.text(gasMessage);

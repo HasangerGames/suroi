@@ -44,13 +44,13 @@ export const GameConstants = {
             maxShield: 1,
             baseSpeed: 1,
             size: 1,
-        reload: 1,
-        fireRate: 1,
-        adrenDrain: 1,
+            reload: 1,
+            fireRate: 1,
+            adrenDrain: 1,
 
-        minAdrenaline: 0,
-        hpRegen: 0,
-        shieldRegen: 0
+            minAdrenaline: 0,
+            hpRegen: 0,
+            shieldRegen: 0
         }),
         ice: {
             acceleration: 2.5,
@@ -123,6 +123,7 @@ export enum ZIndexes {
     Bullets,
     DownedPlayers,
     Players,
+    PlayerParticles,
     /**
      * bushes, tables etc
      */

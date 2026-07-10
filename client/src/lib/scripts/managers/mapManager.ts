@@ -1,5 +1,8 @@
-import { GameConstants, GasState, Layer, ObjectCategory, ZIndexes, Z_INDEX_COUNT } from "$common/constants";
+import $ from "jquery";
+import { type ColorSource, Container, Graphics, isMobile, RenderTexture, Sprite, Text, type Texture } from "pixi.js";
+import { GameConstants, GasState, Layer, ObjectCategory, Z_INDEX_COUNT, ZIndexes } from "$common/constants";
 import { type MapPingDefinition } from "$common/definitions/mapPings";
+import { Modes } from "$common/definitions/modes";
 import { type MapData } from "$common/packets/mapPacket";
 import { type MapIndicatorSerialization, type PingSerialization, type PlayerPingSerialization } from "$common/packets/updatePacket";
 import { type Variation } from "$common/typings";
@@ -7,20 +10,17 @@ import { RectangleHitbox } from "$common/utils/hitbox";
 import { Collision, Numeric } from "$common/utils/math";
 import { FloorNames, FloorTypes, River, Terrain } from "$common/utils/terrain";
 import { Vec, type Vector } from "$common/utils/vector";
-import $ from "jquery";
-import { Container, Graphics, RenderTexture, Sprite, Text, isMobile, type ColorSource, type Texture } from "pixi.js";
 import { GameConsole } from "../console/gameConsole";
 import { Game } from "../game";
-import { DIFF_LAYER_HITBOX_OPACITY, FOOTSTEP_HITBOX_LAYER, PIXI_SCALE, TEAMMATE_COLORS } from "../utils/constants";
-import { SuroiSprite, drawGroundGraphics, drawHitbox, toPixiCoords } from "../utils/pixi";
+import { DIFF_LAYER_HITBOX_OPACITY, PIXI_SCALE, TEAMMATE_COLORS } from "../utils/constants";
+import { drawGroundGraphics, drawHitbox, SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { translate } from "../utils/translations/translations";
+import type { Tween } from "../utils/tween";
 import { CameraManager } from "./cameraManager";
 import { GasManager, GasRender } from "./gasManager";
 import { InputManager } from "./inputManager";
 import { SoundManager } from "./soundManager";
 import { UIManager } from "./uiManager";
-import type { Tween } from "../utils/tween";
-import { Modes } from "$common/definitions/modes";
 
 class MapManagerClass {
     private _expanded = false;
@@ -490,7 +490,7 @@ class MapManagerClass {
         debugGraphics.clear();
         debugGraphics.zIndex = 999;
         for (const [hitbox, { floorType, layer }] of this._terrain.floors) {
-            drawHitbox(hitbox, (FloorTypes[floorType].debugColor * (2 ** 8) + 0x80).toString(16), debugGraphics, layer as Layer === FOOTSTEP_HITBOX_LAYER ? 1 : DIFF_LAYER_HITBOX_OPACITY);
+            drawHitbox(hitbox, (FloorTypes[floorType].debugColor * (2 ** 8) + 0x80).toString(16), debugGraphics, layer === Layer.Ground ? 1 : DIFF_LAYER_HITBOX_OPACITY);
             //                                                      ^^^^^^ using << 8 can cause 32-bit overflow lol
         }
 

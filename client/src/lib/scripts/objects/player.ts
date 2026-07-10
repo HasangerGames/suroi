@@ -32,7 +32,7 @@ import { type Particle, type ParticleEmitter, ParticleManager, type ParticleOpti
 import { PerkManager } from "../managers/perkManager";
 import { type GameSound, SoundManager } from "../managers/soundManager";
 import { UIManager } from "../managers/uiManager";
-import { BULLET_WHIZ_SCALE, DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS, PIXI_SCALE, PLAYER_PARTICLE_ZINDEX, TEAMMATE_COLORS, UI_DEBUG_MODE } from "../utils/constants";
+import { BULLET_WHIZ_SCALE as BULLET_WHIZ_RADIUS, DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS, PIXI_SCALE, TEAMMATE_COLORS } from "../utils/constants";
 import { DebugRenderer } from "../utils/debugRenderer";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { translate } from "../utils/translations/translations";
@@ -43,6 +43,7 @@ import { GameObject } from "./gameObject";
 import { Loot } from "./loot";
 import { Obstacle } from "./obstacle";
 import type { Projectile } from "./projectile";
+import { Config } from "../utils/config";
 
 export class Player extends GameObject.derive(ObjectCategory.Player) {
     teamID!: number;
@@ -187,7 +188,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
     private _hitbox = new CircleHitbox(GameConstants.player.radius);
     get hitbox(): CircleHitbox { return this._hitbox; }
 
-    private readonly _bulletWhizHitbox = new CircleHitbox(GameConstants.player.radius * BULLET_WHIZ_SCALE);
+    private readonly _bulletWhizHitbox = new CircleHitbox(GameConstants.player.radius * BULLET_WHIZ_RADIUS);
     get bulletWhizHitbox(): CircleHitbox { return this._bulletWhizHitbox; }
 
     floorType: FloorNames = FloorNames.Grass;
@@ -801,7 +802,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     if (!disguiseSprite) {
                         disguiseSprite = this.images.disguiseSprite = new SuroiSprite();
                         disguiseSprite.zIndex = 999; // this only applies within the player container, not globally
-                        disguiseContainer.zIndex = PLAYER_PARTICLE_ZINDEX;
+                        disguiseContainer.zIndex = ZIndexes.PlayerParticles;
                         disguiseContainer.addChild(disguiseSprite);
                     }
 
@@ -840,7 +841,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                             frames: "smoke_particle",
                             position: this.position,
                             layer: this.layer,
-                            zIndex: PLAYER_PARTICLE_ZINDEX,
+                            zIndex: ZIndexes.PlayerParticles,
                             lifetime: 3500,
                             scale: { start: 0, end: randomFloat(4, 5) },
                             alpha: { start: 0.9, end: 0 },
@@ -887,7 +888,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                             frames: perkDef.shieldParticle,
                             position: this.hitbox.randomPoint(),
                             layer: this.layer,
-                            zIndex: PLAYER_PARTICLE_ZINDEX,
+                            zIndex: ZIndexes.PlayerParticles,
                             lifetime: 1500,
                             rotation: {
                                 start: randomRotation(),
@@ -997,7 +998,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                             frames: perkDef.particle,
                             position: this.hitbox.randomPoint(),
                             layer: this.layer,
-                            zIndex: PLAYER_PARTICLE_ZINDEX,
+                            zIndex: ZIndexes.PlayerParticles,
                             lifetime: 5000,
                             rotation: {
                                 start: randomRotation(),
@@ -1580,7 +1581,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             container.css("outline", def.noDrop || Game.spectating ? "none" : "");
         }
 
-        container.css("visibility", (def?.level ?? 0) > 0 || UI_DEBUG_MODE ? "visible" : "hidden");
+        container.css("visibility", (def?.level ?? 0) > 0 || Config.uiDebugMode ? "visible" : "hidden");
 
         container[0].addEventListener(
             "pointerdown",
@@ -2293,7 +2294,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
         ParticleManager.spawnParticle({
             frames: particle,
-            zIndex: PLAYER_PARTICLE_ZINDEX,
+            zIndex: ZIndexes.PlayerParticles,
             layer: this.layer,
             position,
             lifetime: 1000,

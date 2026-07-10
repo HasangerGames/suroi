@@ -1,11 +1,13 @@
+import $ from "jquery";
+import { Color } from "pixi.js";
 import { GameConstants, ObjectCategory } from "$common/constants";
 import { DEFAULT_INVENTORY } from "$common/defaultInventory";
 import { type BadgeDefinition } from "$common/definitions/badges";
-import { getBadgeIdString, isEmoteBadge, type EmoteDefinition } from "$common/definitions/emotes";
+import { type EmoteDefinition, getBadgeIdString, isEmoteBadge } from "$common/definitions/emotes";
 import { Ammos } from "$common/definitions/items/ammos";
-import { HealingItems } from "$common/definitions/items/healingItems";
 import { type GunDefinition } from "$common/definitions/items/guns";
-import { PerkCategories, PerkIds, type PerkDefinition } from "$common/definitions/items/perks";
+import { HealingItems } from "$common/definitions/items/healingItems";
+import { PerkCategories, type PerkDefinition, PerkIds } from "$common/definitions/items/perks";
 import { DEFAULT_SCOPE, type ScopeDefinition } from "$common/definitions/items/scopes";
 import { Skins } from "$common/definitions/items/skins";
 import { Loots } from "$common/definitions/loots";
@@ -17,17 +19,17 @@ import { type PlayerData, type UpdateDataCommon } from "$common/packets/updatePa
 import { Numeric } from "$common/utils/math";
 import { ExtendedMap } from "$common/utils/misc";
 import { DefinitionType, type ReferenceTo } from "$common/utils/objectDefinitions";
+import { pickRandomInArray } from "$common/utils/random";
 import { Vec, type Vector } from "$common/utils/vector";
-import $ from "jquery";
-import { Color } from "pixi.js";
 import { GameConsole } from "../console/gameConsole";
 import { Game } from "../game";
 import { type GameObject } from "../objects/gameObject";
 import { Player } from "../objects/player";
-import { PERK_MESSAGE_FADE_TIME, TEAMMATE_COLORS, UI_DEBUG_MODE } from "../utils/constants";
+import { Config } from "../utils/config";
+import { PERK_MESSAGE_FADE_TIME, TEAMMATE_COLORS } from "../utils/constants";
 import { formatDate, html } from "../utils/misc";
 import { SuroiSprite } from "../utils/pixi";
-import { translate, TRANSLATIONS } from "../utils/translations/translations";
+import { TRANSLATIONS, translate } from "../utils/translations/translations";
 import { type TranslationKeys } from "../utils/translations/typings";
 import { CameraManager } from "./cameraManager";
 import { MapPingWheelManager } from "./emoteWheelManager";
@@ -36,7 +38,6 @@ import { MapManager } from "./mapManager";
 import { PerkManager } from "./perkManager";
 import { ScreenRecordManager } from "./screenRecordManager";
 import { SoundManager } from "./soundManager";
-import { pickRandomInArray } from "$common/utils/random";
 
 function safeRound(value: number): number {
     if (0 < value && value <= 1) return 1;
@@ -394,7 +395,7 @@ class UIManagerClass {
     }
 
     cancelAction(): void {
-        if (!UI_DEBUG_MODE) {
+        if (!Config.uiDebugMode) {
             this.ui.actionContainer
                 .hide()
                 .stop();
@@ -852,7 +853,7 @@ class UIManagerClass {
             this.updateWeapons();
         }
 
-        if (activeC4s !== undefined && !UI_DEBUG_MODE) {
+        if (activeC4s !== undefined && !Config.uiDebugMode) {
             this.ui.c4Button.toggle(activeC4s);
             this.hasC4s = activeC4s;
         }
@@ -989,7 +990,7 @@ class UIManagerClass {
             i < max;
             this._getSlotUI(i + 1).container.toggleClass(
                 "locked",
-                UI_DEBUG_MODE ? true : !!(this.inventory.lockedSlots & (1 << i))
+                Config.uiDebugMode ? true : !!(this.inventory.lockedSlots & (1 << i))
             ), i++
         );
     }
@@ -1142,7 +1143,7 @@ class UIManagerClass {
 
         container.children(".item-tooltip").html("");
         container.children(".item-image").attr("src", "");
-        container.css("visibility", UI_DEBUG_MODE ? "" : "hidden");
+        container.css("visibility", Config.uiDebugMode ? "" : "hidden");
         container.off("pointerdown");
     }
 
@@ -1262,7 +1263,7 @@ class UIManagerClass {
                 itemSlot.toggleClass("full", count >= backpack.maxCapacity[item]);
             }
 
-            const isPresent = count > 0 || UI_DEBUG_MODE;
+            const isPresent = count > 0 || Config.uiDebugMode;
 
             itemSlot.toggleClass("has-item", isPresent);
 
@@ -1272,7 +1273,7 @@ class UIManagerClass {
                 itemSlot.css("visibility", isPresent ? "visible" : "hidden");
             }
 
-            if (itemDef.defType === DefinitionType.Scope && !UI_DEBUG_MODE) {
+            if (itemDef.defType === DefinitionType.Scope && !Config.uiDebugMode) {
                 itemSlot.toggle(isPresent).removeClass("active");
             }
         }
@@ -1319,7 +1320,7 @@ class UIManagerClass {
             easing: "ease-in"
         });
 
-        if (!UI_DEBUG_MODE) {
+        if (!Config.uiDebugMode) {
             let iterationCount = 0;
             while (this.ui.killFeed.children().length > 5) {
                 if (++iterationCount === 1e3) {

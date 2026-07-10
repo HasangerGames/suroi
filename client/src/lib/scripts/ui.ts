@@ -1,41 +1,40 @@
+import { sound } from "@pixi/sound";
+import $ from "jquery";
+import { Color, ColorMatrixFilter, isMobile, isWebGLSupported, isWebGPUSupported } from "pixi.js";
 import { GameConstants, InputActions, ObjectCategory, SpectateActions, TeamMode } from "$common/constants";
-import { Badges, type BadgeDefinition } from "$common/definitions/badges";
-import { EmoteCategory, Emotes, getBadgeIdString, isEmoteBadge, type EmoteDefinition } from "$common/definitions/emotes";
-import { Ammos, type AmmoDefinition } from "$common/definitions/items/ammos";
+import { type BadgeDefinition, Badges } from "$common/definitions/badges";
+import { EmoteCategory, type EmoteDefinition, Emotes, getBadgeIdString, isEmoteBadge } from "$common/definitions/emotes";
+import { type AmmoDefinition, Ammos } from "$common/definitions/items/ammos";
 import { type ArmorDefinition } from "$common/definitions/items/armors";
 import type { BackpackDefinition } from "$common/definitions/items/backpacks";
-import { HealType, HealingItems, type HealingItemDefinition } from "$common/definitions/items/healingItems";
+import { type HealingItemDefinition, HealingItems, HealType } from "$common/definitions/items/healingItems";
 import { PerkIds, Perks } from "$common/definitions/items/perks";
-import { Scopes, type ScopeDefinition } from "$common/definitions/items/scopes";
-import { Skins, type SkinDefinition } from "$common/definitions/items/skins";
-import { Modes, type ModeName } from "$common/definitions/modes";
+import { type ScopeDefinition, Scopes } from "$common/definitions/items/scopes";
+import { type SkinDefinition, Skins } from "$common/definitions/items/skins";
+import { type ModeName, Modes } from "$common/definitions/modes";
 import { SpectatePacket } from "$common/packets/spectatePacket";
-import { CustomTeamMessages, type CustomTeamMessage, type CustomTeamPlayerInfo, type PunishmentMessage } from "$common/typings";
+import { type CustomTeamMessage, CustomTeamMessages, type CustomTeamPlayerInfo, type PunishmentMessage } from "$common/typings";
 import { ExtendedMap } from "$common/utils/misc";
 import { DefinitionType, type ReferenceTo, type ReifiableDef } from "$common/utils/objectDefinitions";
 import { pickRandomInArray } from "$common/utils/random";
-import { sound } from "@pixi/sound";
-import $ from "jquery";
-import { Color, ColorMatrixFilter, isWebGLSupported, isWebGPUSupported } from "pixi.js";
-import { Config, type Region, type ServerInfo } from "./config";
+import pkg from "../../../package.json";
 import { GameConsole } from "./console/gameConsole";
-import { defaultClientCVars, type CVarTypeMapping } from "./console/variables";
+import { type CVarTypeMapping, defaultClientCVars } from "./console/variables";
 import { Game } from "./game";
+import { CameraManager } from "./managers/cameraManager";
 import { EmoteWheelManager, MapPingWheelManager } from "./managers/emoteWheelManager";
 import { InputManager } from "./managers/inputManager";
 import { MapManager } from "./managers/mapManager";
 import { SoundManager } from "./managers/soundManager";
 import { UIManager } from "./managers/uiManager";
 import { body, createDropdown } from "./uiHelpers";
-import { EMOTE_SLOTS, UI_DEBUG_MODE } from "./utils/constants";
+import { Config, type Region, type ServerInfo } from "./utils/config";
+import { EMOTE_SLOTS } from "./utils/constants";
 import { Crosshairs, getCrosshair } from "./utils/crosshairs";
 import { html, requestFullscreen } from "./utils/misc";
 import { spritesheetLoadPromise } from "./utils/pixi";
 import { TRANSLATIONS, translate } from "./utils/translations/translations";
 import type { TranslationKeys } from "./utils/translations/typings";
-import { CameraManager } from "./managers/cameraManager";
-import { isMobile } from "pixi.js";
-import pkg from "../../../package.json";
 
 interface RegionInfo extends Region {
     readonly playerCount?: number
@@ -326,7 +325,7 @@ export async function finalizeUI(): Promise<void> {
 export async function setUpUI(): Promise<void> {
     const ui = UIManager.ui;
 
-    if (UI_DEBUG_MODE) {
+    if (Config.uiDebugMode) {
         ui.c4Button.show();
 
         ui.inventoryMsg.show();
@@ -2222,7 +2221,7 @@ export async function setUpUI(): Promise<void> {
                 }
             });
 
-            if (UI_DEBUG_MODE) ele.show();
+            if (Config.uiDebugMode) ele.show();
 
             return ele;
         })

@@ -1,3 +1,6 @@
+import { colord } from "colord";
+import { Color, Container } from "pixi.js";
+import { BloomFilter, GlowFilter, MultiColorReplaceFilter } from "pixi-filters";
 import { Layer, ObjectCategory, ZIndexes } from "$common/constants";
 import { BaseBullet, type BulletOptions } from "$common/utils/baseBullet";
 import { RectangleHitbox } from "$common/utils/hitbox";
@@ -5,15 +8,12 @@ import { adjacentOrEqualLayer, adjacentOrEquivLayer } from "$common/utils/layer"
 import { Geometry, Numeric, resolveStairInteraction } from "$common/utils/math";
 import { random, randomFloat, randomRotation } from "$common/utils/random";
 import { Vec } from "$common/utils/vector";
-import { colord } from "colord";
-import { BloomFilter, GlowFilter, MultiColorReplaceFilter } from "pixi-filters";
-import { Color, Container } from "pixi.js";
 import { GameConsole } from "../console/gameConsole";
 import { Game } from "../game";
 import { CameraManager } from "../managers/cameraManager";
 import { ParticleManager } from "../managers/particleManager";
 import { SoundManager } from "../managers/soundManager";
-import { PIXI_SCALE, SATURATION_SOUND_SPEED, SPLIT_SOUND_SPEED, THIN_SOUND_SPEED } from "../utils/constants";
+import { BULLET_SOUND_SPEED_MULTIPLIERS, PIXI_SCALE } from "../utils/constants";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 import type { Building } from "./building";
 import { type Obstacle } from "./obstacle";
@@ -110,28 +110,17 @@ export class Bullet extends BaseBullet {
 
         // Gun Sounds (shotFX basically makes it so that the sound is played once)
         if (this.shotFX) {
-            const gunIdString = this.definition.idString.slice(0, -7);
+            const gunIdString = this.definition.idString.slice(0, -7 /* "_bullet".length() */);
 
-            let soundSpeed: number;
-            switch (true) {
-                case this.split: {
-                    soundSpeed = SPLIT_SOUND_SPEED;
-                    break;
-                }
-
-                case this.saturate: {
-                    soundSpeed = SATURATION_SOUND_SPEED;
-                    break;
-                }
-
-                case this.thin: {
-                    soundSpeed = THIN_SOUND_SPEED;
-                    break;
-                }
-
-                default: {
-                    soundSpeed = 1;
-                }
+            let soundSpeed = 1;
+            if (this.split) {
+                soundSpeed *= BULLET_SOUND_SPEED_MULTIPLIERS.split;
+            }
+            if (this.saturate) {
+                soundSpeed *= BULLET_SOUND_SPEED_MULTIPLIERS.saturate;
+            }
+            if (this.thin) {
+                soundSpeed *= BULLET_SOUND_SPEED_MULTIPLIERS.thin;
             }
 
             const options = {

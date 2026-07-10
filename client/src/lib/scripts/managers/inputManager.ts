@@ -1,27 +1,28 @@
+import $ from "jquery";
+import nipplejs, { type JoystickOutputData } from "nipplejs";
+import { isMobile } from "pixi.js";
 import { GameConstants, InputActions } from "$common/constants";
+import { PerkIds } from "$common/definitions/items/perks";
 import { Scopes } from "$common/definitions/items/scopes";
-import { Throwables, type ThrowableDefinition } from "$common/definitions/items/throwables";
+import { type ThrowableDefinition, Throwables } from "$common/definitions/items/throwables";
 import { type WeaponDefinition } from "$common/definitions/loots";
-import { areDifferent, InputPacket, type InputAction, type InputData, type SimpleInputActions } from "$common/packets/inputPacket";
+import { areDifferent, type InputAction, type InputData, InputPacket, type SimpleInputActions } from "$common/packets/inputPacket";
 import { PacketType } from "$common/packets/packet";
 import { Geometry, Numeric } from "$common/utils/math";
 import { DefinitionType, type ItemDefinition } from "$common/utils/objectDefinitions";
 import { Vec } from "$common/utils/vector";
-import $ from "jquery";
-import nipplejs, { type JoystickOutputData } from "nipplejs";
-import { isMobile } from "pixi.js";
 import { GameConsole, type GameSettings, type PossibleError } from "../console/gameConsole";
 import { defaultBinds } from "../console/variables";
 import { Game } from "../game";
-import { FORCE_MOBILE, PIXI_SCALE } from "../utils/constants";
+import { Config } from "../utils/config";
+import { PIXI_SCALE } from "../utils/constants";
 import { html } from "../utils/misc";
 import { translate } from "../utils/translations/translations";
 import { type TranslationKeys } from "../utils/translations/typings";
 import { CameraManager } from "./cameraManager";
+import { PerkManager } from "./perkManager";
 import { SoundManager } from "./soundManager";
 import { UIManager } from "./uiManager";
-import { PerkIds } from "$common/definitions/items/perks";
-import { PerkManager } from "./perkManager";
 
 class InputMapper {
     // These two maps must be kept in sync!!
@@ -333,7 +334,7 @@ class InputManagerClass {
         this._initialized = true;
 
         // @ts-expect-error init code
-        this.isMobile = (isMobile.any && GameConsole.getBuiltInCVar("mb_controls_enabled")) || FORCE_MOBILE;
+        this.isMobile = (isMobile.any && GameConsole.getBuiltInCVar("mb_controls_enabled")) || Config.forceMobile;
 
         const gameContainer = $("#game")[0];
 

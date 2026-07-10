@@ -1,19 +1,12 @@
-import { Layer, ZIndexes } from "$common/constants";
 import { Color } from "pixi.js";
 
-export const FORCE_MOBILE = false;
-export const UI_DEBUG_MODE = false;
-export const DIFF_LAYER_HITBOX_OPACITY = 0.25;
-export const FOOTSTEP_HITBOX_LAYER = Layer.Ground;
+export const PIXI_SCALE = 20;
 
-export const SATURATION_SOUND_SPEED = 0.75;
-export const THIN_SOUND_SPEED = 1.75;
-export const SPLIT_SOUND_SPEED = 1.25;
+export const WALL_STROKE_WIDTH = 8;
+
+export const DIFF_LAYER_HITBOX_OPACITY = 0.25;
 
 export const LAYER_TRANSITION_DELAY = 200;
-export const SOUND_FILTER_FOR_LAYERS = true; // TODO: test this, unsure if it glitches the sound manager. From testing in test server most of the times the sound would cut off and glitch.
-
-export const PLAYER_PARTICLE_ZINDEX = ZIndexes.Players + 0.5;
 
 export const PERK_MESSAGE_FADE_TIME = 250;
 
@@ -43,11 +36,15 @@ export const TEAMMATE_COLORS = [
     new Color("#ff8000")
 ];
 
-export const PIXI_SCALE = 20;
-
-export const WALL_STROKE_WIDTH = 8;
-
 export const EMOTE_SLOTS = ["top", "right", "bottom", "left", "extra1", "extra2", "win", "death"] as const;
+
+export const BULLET_WHIZ_SCALE = 5;
+
+export const BULLET_SOUND_SPEED_MULTIPLIERS = Object.freeze({
+    saturate: 0.75,
+    thin: 1.75,
+    split: 1.25
+});
 
 export const SHOCKWAVE_EXPLOSION_MULTIPLIERS = Object.freeze({
     time: 5,
@@ -55,5 +52,3 @@ export const SHOCKWAVE_EXPLOSION_MULTIPLIERS = Object.freeze({
     wavelength: 1,
     speed: 100
 });
-
-export const BULLET_WHIZ_SCALE = 5;

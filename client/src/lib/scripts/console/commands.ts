@@ -6,9 +6,11 @@
  * quickly switch to using `this` if needed, instead of having to
  * change back from an arrow function
  */
+
+import { Rectangle, RendererType, Sprite, VERSION } from "pixi.js";
 import { GameConstants, InputActions, SpectateActions, TeamMode } from "$common/constants";
-import { HealingItems, type HealingItemDefinition } from "$common/definitions/items/healingItems";
-import { Scopes, type ScopeDefinition } from "$common/definitions/items/scopes";
+import { type HealingItemDefinition, HealingItems } from "$common/definitions/items/healingItems";
+import { type ScopeDefinition, Scopes } from "$common/definitions/items/scopes";
 import { Throwables } from "$common/definitions/items/throwables";
 import { Loots } from "$common/definitions/loots";
 import { type InputAction } from "$common/packets/inputPacket";
@@ -16,15 +18,14 @@ import { SpectatePacket } from "$common/packets/spectatePacket";
 import { Numeric } from "$common/utils/math";
 import { handleResult, type Result } from "$common/utils/misc";
 import { DefinitionType, type ReferenceTo } from "$common/utils/objectDefinitions";
-import { Rectangle, RendererType, Sprite, VERSION } from "pixi.js";
-import { Config, type ServerInfo } from "../config";
 import { Game } from "../game";
 import { CameraManager } from "../managers/cameraManager";
 import { EmoteWheelManager, MapPingWheelManager } from "../managers/emoteWheelManager";
-import { InputManager, type CompiledAction, type CompiledTuple } from "../managers/inputManager";
+import { type CompiledAction, type CompiledTuple, InputManager } from "../managers/inputManager";
 import { MapManager } from "../managers/mapManager";
 import { ScreenRecordManager } from "../managers/screenRecordManager";
 import { UIManager } from "../managers/uiManager";
+import { Config, type ServerInfo } from "../utils/config";
 import { requestFullscreen, sanitizeHTML, stringify } from "../utils/misc";
 import { GameConsole, type PossibleError, type Stringable } from "./gameConsole";
 import { Casters, ConVar } from "./variables";

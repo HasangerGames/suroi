@@ -1,8 +1,8 @@
-import { CircleHitbox, HitboxType, RectangleHitbox, type Hitbox } from "$common/utils/hitbox";
+import { type ColorSource, Graphics } from "pixi.js";
+import { CircleHitbox, type Hitbox, HitboxType, RectangleHitbox } from "$common/utils/hitbox";
 import { Vec, type Vector } from "$common/utils/vector";
-import { Graphics, type ColorSource } from "pixi.js";
-import { traceHitbox } from "./pixi";
 import { PIXI_SCALE } from "./constants";
+import { traceHitbox } from "./pixi";
 
 enum ShapeType {
     Line,
