@@ -2560,6 +2560,50 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
             range: 450
         }
     },
+        {
+        idString: "ssg82",
+        name: "SSG 82",
+        defType: DefinitionType.Gun,
+        tier: Tier.A,
+        ammoType: "545mm",
+        ammoSpawnAmount: 20,
+        spawnScope: "4x_scope",
+        capacity: 5,
+        extendedCapacity: 10,
+        reloadTime: 2.1,  //tbd based on sound
+        fireDelay: 650, //tbd
+        switchDelay: 700, //tbd
+        speedMultiplier: 1,
+        recoilMultiplier: 0.77,
+        recoilDuration: 700,
+        fireMode: FireMode.Single,
+        shotSpread: 0.65,
+        moveSpread: 1.1,
+        length: 8.40,
+        shootOnRelease: true,
+        fists: {
+            left: Vec(10, -4),
+            right: Vec(40, 0),
+            rightZIndex: 4,
+            animationDuration: 100
+        },
+        image: { position: Vec(85, 3.5) },
+        casingParticles: [{
+            position: Vec(3.7, 0.4),
+            ejectionDelay: 250
+        }],
+        gasParticles: gasParticlePresets.rifle,
+        ballistics: {
+            damage: 63,
+            obstacleMultiplier: 1,
+            speed: 0.41,
+            range: 275,
+            tracer: {
+                width: 1.3,
+                length: 2.5
+            }
+        }
+    },
     //
     // Designated marksman rifles (DMRs)
     //

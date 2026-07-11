@@ -418,6 +418,7 @@ export async function setUpUI(): Promise<void> {
         "Feeling gassy!",                                 // Former title of a Suroi news post
         "Now featuring Fireball and Blueberry Smoothie!", // Skins previously rejected from Suroi for "not fitting the art style"
         "Probably not copyright infringing!",             // Suroi's predecessor, Surviv Reloaded, was taken down for copyright infringement
+        "Dr. Giggletouch wuz here",                       // My (AnnihilatingFox) in game name :P
         "Is this thing on?",
         '<span style="background-image: linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet); color: transparent; -webkit-background-clip: text;">rainbows are cool</span>',
         "Does anyone even read these?",
