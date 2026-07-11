@@ -1,14 +1,12 @@
+import * as PixiSound from "@pixi/sound"; // add a namespace to pixi sound imports because it has annoying generic names like "sound" and "filters" without a namespace
 import { Layer } from "$common/constants";
-// import { equalLayer, isGroundLayer } from "$common/utils/layer";
+import { Modes } from "$common/definitions/modes";
 import { Numeric } from "$common/utils/math";
 import { Vec, type Vector } from "$common/utils/vector";
-import { Game } from "../game";
-// add a namespace to pixi sound imports because it has annoying generic names like "sound" and "filters" without a namespace
-import * as PixiSound from "@pixi/sound";
-import type { AudioSpritesheetImporter } from "../../../vite/plugins/audio-spritesheet-plugin";
+import type { AudioSpritesheetImporter } from "../../../../vite/plugins/audio-spritesheet-plugin";
 import { GameConsole } from "../console/gameConsole";
+import { Game } from "../game";
 import type { Tween } from "../utils/tween";
-import { Modes } from "$common/definitions/modes";
 
 export interface SoundOptions {
     position?: Vector

@@ -56,6 +56,7 @@ import { Player } from "./objects/player";
 import { Projectile } from "./objects/projectile";
 import { SyncedParticle } from "./objects/syncedParticle";
 import { autoPickup, fetchServerData, finalizeUI, resetPlayButtons, setUpUI, teamSocket, unlockPlayButtons, updateDisconnectTime } from "./ui";
+import { Config } from "./utils/config";
 import { EMOTE_SLOTS, LAYER_TRANSITION_DELAY, PERK_MESSAGE_FADE_TIME, PIXI_SCALE } from "./utils/constants";
 import type { DebugMenu } from "./utils/debugMenu";
 import { DebugRenderer } from "./utils/debugRenderer";
@@ -64,7 +65,7 @@ import { loadSpritesheets, SuroiSprite } from "./utils/pixi";
 import { initTranslation, translate } from "./utils/translations/translations";
 import { type TranslationKeys } from "./utils/translations/typings";
 import { Tween, type TweenOptions } from "./utils/tween";
-import { Config } from "./utils/config";
+import { gameState } from "$lib/legacy/legacyConnector.svelte";
 
 
 interface ObjectClassMapping {
@@ -650,7 +651,7 @@ export const Game = new (class Game {
 
     netGraph!: ReturnType<typeof setUpNetGraph>;
 
-    readonly fontObserver = new FontFaceObserver("Inter", { weight: 600 }).load();
+    readonly fontObserver = new FontFaceObserver("InterVariable", { weight: 600 }).load();
 
     music!: Sound;
 
@@ -942,9 +943,8 @@ export const Game = new (class Game {
             this.pixi.stop();
             this.error = true;
             this.connecting = false;
-            ui.splashMsgText.html(translate("msg_err_joining"));
-            ui.splashMsg.show();
-            resetPlayButtons();
+            gameState.state = "menu";
+            gameState.serverError = translate("msg_err_joining");
         };
 
         this._socket.onclose = (e: CloseEvent): void => {
@@ -963,9 +963,8 @@ export const Game = new (class Game {
 
             if (!this.gameOver) {
                 if (this.gameStarted) {
-                    ui.splashUi.fadeIn(400);
-                    ui.splashMsgText.html(reason);
-                    ui.splashMsg.show();
+                    gameState.state = "menu";
+                    gameState.serverError = reason;
                 }
                 ui.btnSpectate.addClass("btn-disabled");
                 if (!this.error) void this.endGame();
@@ -1095,7 +1094,7 @@ export const Game = new (class Game {
         ui.inventoryMsg.fadeOut(PERK_MESSAGE_FADE_TIME);
 
         ui.canvas.addClass("active");
-        ui.splashUi.fadeOut(400, () => resetPlayButtons());
+        gameState.state = "inGame";
 
         ui.killLeaderLeader.html(translate("msg_waiting_for_leader"));
         ui.killLeaderCount.text("0");
@@ -1111,15 +1110,15 @@ export const Game = new (class Game {
         return await new Promise(resolve => {
             const ui = UIManager.ui;
 
+            gameState.state = "menu";
+
             ui.gameMenu.fadeOut(250);
-            ui.splashOptions.addClass("loading");
-            ui.loaderText.text("");
 
             SoundManager.stopAll();
             this.gameOver = true;
             this._socket?.close();
 
-            ui.splashUi.fadeIn(400, async() => {
+            setTimeout(async() => {
                 this.pixi.stop();
                 void this.music?.play();
 
@@ -1150,7 +1149,7 @@ export const Game = new (class Game {
 
                 if (teamSocket) ui.createTeamMenu.fadeIn(250, resolve);
                 else resolve();
-            });
+            }, 400);
         });
     }
 

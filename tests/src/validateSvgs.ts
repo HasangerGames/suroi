@@ -71,8 +71,8 @@ const fixNonIntegerSizes: string[] | undefined = process.argv.includes("--fix-no
 const nonIntegerFixScale = (96 / 25.4) * 0.9364705882352942;
 
 const svgPaths = [
-    ...readDirectory("../client/public/img/game", /\.(svg)$/i),
-    ...readDirectory("../client/public/img/killfeed", /\.(svg)$/i)
+    ...readDirectory("../client/static/img/game", /\.(svg)$/i),
+    ...readDirectory("../client/static/img/killfeed", /\.(svg)$/i)
 ];
 
 function checkNode(path: string, node: svgParser.ElementNode): void {

@@ -35,7 +35,7 @@
 		"nipplejs": "^1.0.4",
 		"pixi-filters": "^6.1.5",
 		"pixi.js": "^8.19.0",
-		"spritesheetc": "^1.0.0-alpha5",
+		"spritesheetc": "../../spritesheetc",
 		"zod": "^4.4.3"
 	}
 }

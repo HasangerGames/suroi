@@ -1,9 +1,9 @@
+import { Assets, type ColorSource, Graphics, type Renderer, RendererType, Sprite, Spritesheet, Texture, type WebGLRenderer } from "pixi.js";
 import { type ModeName } from "$common/definitions/modes";
 import { type Hitbox, HitboxType } from "$common/utils/hitbox";
 import { Vec, type Vector } from "$common/utils/vector";
-import { Assets, type ColorSource, Graphics, type Renderer, RendererType, Sprite, Spritesheet, Texture, type WebGLRenderer } from "pixi.js";
-import type { ImageSpritesheetImporter } from "../../../vite/plugins/image-spritesheet-plugin";
-import { UIManager } from "../managers/uiManager";
+import { gameState } from "$lib/legacy/legacyConnector.svelte";
+import type { ImageSpritesheetImporter } from "../../../../vite/plugins/image-spritesheet-plugin";
 import { PIXI_SCALE } from "./constants";
 import { translate } from "./translations/translations";
 
@@ -52,7 +52,7 @@ export async function loadSpritesheets(modeName: ModeName, renderer: Renderer, h
 
             const resolvedCount = ++resolved;
             const progress = `(${resolvedCount} / ${count})`;
-            UIManager.ui.loaderText.text(translate("loading_spritesheets", { progress }));
+            gameState.connectingText = translate("loading_spritesheets", { progress });
             console.log(`Atlas ${image} loaded ${progress}`);
         } catch (e) {
             ++resolved;

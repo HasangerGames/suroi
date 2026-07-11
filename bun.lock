@@ -23,7 +23,7 @@
         "nipplejs": "^1.0.4",
         "pixi-filters": "^6.1.5",
         "pixi.js": "^8.19.0",
-        "spritesheetc": "^1.0.0-alpha5",
+        "spritesheetc": "../../spritesheetc",
         "zod": "^4.4.3",
       },
       "devDependencies": {
@@ -85,9 +85,9 @@
     },
   },
   "trustedDependencies": [
-    "unrs-resolver",
     "spritesheetc",
     "@swc/core",
+    "unrs-resolver",
   ],
   "packages": {
     "@apidevtools/json-schema-ref-parser": ["@apidevtools/json-schema-ref-parser@11.9.3", "", { "dependencies": { "@jsdevtools/ono": "^7.1.3", "@types/json-schema": "^7.0.15", "js-yaml": "^4.1.0" } }, "sha512-60vepv88RwcJtSHrD6MjIL6Ta3SOYbgfnkHb+ppAVK+o9mXprRtulx7VlRl3lN3bbvysAfCS7WMVfhUYemB0IQ=="],
@@ -1028,8 +1028,6 @@
 
     "sprintf-js": ["sprintf-js@1.0.3", "", {}, "sha512-D9cPgkvLlV3t3IzL0D0YLvGA9Ahk4PcvVwUbN0dSGr1aP0Nrt4AEnTUbuGvquEC0mA64Gqt1fzirlRs5ibXx8g=="],
 
-    "spritesheetc": ["spritesheetc@1.0.0-alpha5", "", { "dependencies": { "cmake-js": "^8.0.0", "commander": "^14.0.2", "node-addon-api": "^8.5.0", "pkg-prebuilds": "^1.0.0" }, "bin": { "spritesheetc": "spritesheetc.js" } }, "sha512-GDyFCPqA1k7O3IXHh1WnK+fevbcQN/WsGA5qQQCPZdVb3km8lTuHAF64BR7/fk7A/pNfLOEevUpQTok9pU8VJA=="],
-
     "stack-utils": ["stack-utils@2.0.6", "", { "dependencies": { "escape-string-regexp": "^2.0.0" } }, "sha512-XlkWvfIm6RmsWtNJx+uqtKLS8eqFbxUg0ZzLXqY0caEy9l7hruX8IpiDnjsLavoBgqCCR71TqWO8MaXYheJ3RQ=="],
 
     "string-length": ["string-length@4.0.2", "", { "dependencies": { "char-regex": "^1.0.2", "strip-ansi": "^6.0.0" } }, "sha512-+l6rNN5fYHNhZZy41RXsYptCjA2Igmq4EG7kZAYFQI1E1VTXarr6ZPXBg6eq7Y6eK4FEhY6AJlyuFIb/v/S0VQ=="],
@@ -1223,6 +1221,8 @@
     "@jest/types/@types/node": ["@types/node@26.1.1", "", { "dependencies": { "undici-types": "~8.3.0" } }, "sha512-nxAkRSVkN1Y0JC1W8ky/fTfkGsMmcrRsbx+3XoZE+rMOX71kLYTV7fLXpqud1GpbpP5TuffXFqfX7fH2GgZREw=="],
 
     "@suroi/client/@types/node": ["@types/node@26.1.1", "", { "dependencies": { "undici-types": "~8.3.0" } }, "sha512-nxAkRSVkN1Y0JC1W8ky/fTfkGsMmcrRsbx+3XoZE+rMOX71kLYTV7fLXpqud1GpbpP5TuffXFqfX7fH2GgZREw=="],
+
+    "@suroi/client/spritesheetc": ["spritesheetc@file:../spritesheetc", { "dependencies": { "cmake-js": "^8.0.0", "commander": "^14.0.2", "node-addon-api": "^8.5.0", "pkg-prebuilds": "^1.0.0" }, "bin": { "spritesheetc": "spritesheetc.js" } }],
 
     "@suroi/client/typescript": ["typescript@6.0.3", "", { "bin": { "tsc": "bin/tsc", "tsserver": "bin/tsserver" } }, "sha512-y2TvuxSZPDyQakkFRPZHKFm+KKVqIisdg9/CZwm9ftvKXLP8NRWj38/ODjNbr43SsoXqNuAisEf1GdCxqWcdBw=="],
 

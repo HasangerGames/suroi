@@ -6,8 +6,6 @@ import spritesheetc, { type BuilderOptions } from "spritesheetc";
 import { type Plugin } from "vite";
 import { Modes, type SpritesheetNames } from "../../../common/src/definitions/modes";
 
-const PLUGIN_NAME = "vite-spritesheet-plugin";
-
 export interface ImageSpritesheetImporter {
     readonly importSpritesheet: (name: string) => Promise<{ readonly spritesheets: SpritesheetData[] }>
 }
@@ -56,11 +54,11 @@ const load = (id: string): string | undefined => {
     return data;
 };
 
-function buildSpritesheets(spritesheetName: SpritesheetNames, outputDir: string, speed: BuilderOptions["speed"]): void {
+function buildSpritesheets(atlasName: SpritesheetNames, outputDir: string, speed: BuilderOptions["speed"]): void {
     const filenames = spritesheetc.buildSpritesheets({
-        inputs: [path.join("public", "img", "game", "manifests", `${spritesheetName}.txt`)],
+        inputs: [path.join("static", "img", "game", "manifests", `${atlasName}.txt`)],
         outputDir,
-        atlasName: spritesheetName,
+        atlasName,
         resolutions: [0.5, 1],
         speed
     });
@@ -68,19 +66,14 @@ function buildSpritesheets(spritesheetName: SpritesheetNames, outputDir: string,
     const highSheets: string[] = [];
     for (const file of filenames) {
         const sheets = file.includes("@0.5x") ? lowSheets : highSheets;
-        let json = readFileSync(`${file}.json`, "utf8");
-        if (outputDir === "client/dist/img/atlases") { // please fix me i am awful
-            json = json.replace("client/dist/", "");
-        }
-        let alteredFile = file;
-        if (file.startsWith("client/dist/img/atlases/")) { // please fix me i am awful
-            alteredFile = file.replace("client/dist/img/atlases/", "");
-        }
-        sheets.push(json);
-        files.set(`img/atlases/${alteredFile}`, readFileSync(file));
+        const sheetJson = JSON.parse(readFileSync(`${file}.json`, "utf8"));
+        const virtualPath = file.replace(outputDir, "img/atlases");
+        sheetJson.meta.image = virtualPath;
+        sheets.push(JSON.stringify(sheetJson));
+        files.set(virtualPath, readFileSync(file));
     }
-    modules.set(`virtual:image-spritesheets-low-res-${spritesheetName}`, `export const spritesheets=[${lowSheets.join()}]`);
-    modules.set(`virtual:image-spritesheets-high-res-${spritesheetName}`, `export const spritesheets=[${highSheets.join()}]`);
+    modules.set(`virtual:image-spritesheets-low-res-${atlasName}`, `export const spritesheets=[${lowSheets.join()}]`);
+    modules.set(`virtual:image-spritesheets-high-res-${atlasName}`, `export const spritesheets=[${highSheets.join()}]`);
 }
 
 export function imageSpritesheet(): Plugin[] {
@@ -88,7 +81,7 @@ export function imageSpritesheet(): Plugin[] {
 
     return [
         {
-            name: `${PLUGIN_NAME}:build`,
+            name: "vite-image-spritesheet-plugin:build",
             apply: "build",
             buildStart() {
                 for (const sheet of spritesheetNames) {
@@ -104,8 +97,9 @@ export function imageSpritesheet(): Plugin[] {
             load
         },
         {
-            name: `${PLUGIN_NAME}:serve`,
+            name: "vite-image-spritesheet-plugin:serve",
             apply: "serve",
+            enforce: "pre",
             configureServer(server) {
                 const onChange = (): void => {
                     // Invalidate all spritesheet modules
@@ -116,7 +110,7 @@ export function imageSpritesheet(): Plugin[] {
                         if (module !== undefined) void server.reloadModule(module);
                     }
                 };
-                watcher = watch("public/img/game", { ignoreInitial: true })
+                watcher = watch("static/img/game", { ignoreInitial: true })
                     .on("add", onChange)
                     .on("change", onChange)
                     .on("unlink", onChange);

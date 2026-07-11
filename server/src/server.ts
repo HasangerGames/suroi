@@ -36,7 +36,7 @@ declare global {
 // const mapDef = Maps[name];
 // console.log(
 //     getReachableBuildings(mapDef)
-//         .map(o => `public/img/game/buildings/${o.idString}`)
+//         .map(o => `static/img/game/buildings/${o.idString}`)
 //         .sort()
 //         .join("\n")
 // );
@@ -50,7 +50,7 @@ declare global {
 //         ...getReachableObstacles(mapDef, getReachableBuildings(mapDef))
 //     ]))
 //         .filter(o => !o.wall && !o.invisible)
-//         .map(o => `public/img/game/obstacles/${o.idString}`)
+//         .map(o => `static/img/game/obstacles/${o.idString}`)
 //         .sort()
 //         .join("\n")
 // );

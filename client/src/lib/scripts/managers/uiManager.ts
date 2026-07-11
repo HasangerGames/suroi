@@ -246,11 +246,6 @@ class UIManagerClass {
         killLeaderCount: $<HTMLSpanElement>("#kill-leader-kills-counter"),
         spectateKillLeader: $<HTMLButtonElement>("#btn-spectate-kill-leader"),
 
-        splashMsgText: $<HTMLSpanElement>("#splash-server-message-text"),
-        splashMsg: $<HTMLDivElement>("#splash-server-message"),
-        splashUi: $<HTMLDivElement>("#splash-ui"),
-        splashOptions: $<HTMLDivElement>("#splash-options"),
-
         btnReport: $<HTMLButtonElement>("#btn-report"),
         reportingName: $<HTMLSpanElement>("#reporting-name"),
         reportingId: $<HTMLSpanElement>("#report-id"),

@@ -1,8 +1,9 @@
 import adapter from '@sveltejs/adapter-auto';
+import { vitePreprocess } from "@sveltejs/vite-plugin-svelte";
 import { sveltekit } from '@sveltejs/kit/vite';
 import tailwindcss from '@tailwindcss/vite';
 import { type UserConfig } from "vite";
-import pkg from "../package.json";
+import pkg from "../../package.json";
 import { audioSpritesheet } from "./plugins/audio-spritesheet-plugin";
 import { imageSpritesheet } from "./plugins/image-spritesheet-plugin";
 import { newsPosts } from "./plugins/news-posts-plugin";
@@ -32,6 +33,8 @@ const commonConfig: UserConfig = {
 			// If your environment is not supported, or you settled on a specific environment, switch out the adapter.
 			// See https://svelte.dev/docs/kit/adapters for more information about adapters.
 			adapter: adapter(),
+
+            preprocess: vitePreprocess(),
 
             alias: {
 			    "$common/*": "../common/src/*"

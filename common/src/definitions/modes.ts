@@ -35,7 +35,7 @@ export interface ModeDefinition {
     readonly ambienceVolume?: number
     /** Disables river and ocean ambiences for the mode. Currently only used for winter mode. */
     readonly noRiverAmbience?: boolean
-    /** Replaces the menu's music by searching for a file with name `menu_music_[MODENAME].mp3` in the `/public/audio/music/` directory. */
+    /** Replaces the menu's music by searching for a file with name `menu_music_[MODENAME].mp3` in the `/static/audio/music/` directory. */
     readonly replaceMenuMusic?: boolean
     /** The default player spawning scope of the mode. */
     readonly defaultScope?: ReferenceTo<ScopeDefinition>
@@ -102,7 +102,7 @@ export const Modes: Record<ModeName, ModeDefinition> = {
         ambience: "wind_ambience",
         spriteSheets: ["shared", "normal"],
         playButton: {
-            image: "../../lib/img/logos/suroi_favicon.svg",
+            image: "/img/logos/suroi_favicon.svg",
             color: "#5b8939"
         }
     },
@@ -126,7 +126,7 @@ export const Modes: Record<ModeName, ModeDefinition> = {
         spriteSheets: ["shared", "fall"],
         replaceMenuMusic: true,
         playButton: {
-            image: "../../lib/img/game/obstacles/pumpkin/pumpkin.svg",
+            image: "/img/game/obstacles/pumpkin/pumpkin.svg",
             colors: ["#72742f", "#535421"]
         }
     },
@@ -157,7 +157,7 @@ export const Modes: Record<ModeName, ModeDefinition> = {
             delay: 1000
         },
         playButton: {
-            image: "../../lib/img/game/obstacles/jack_o_lantern/jack_o_lantern.svg",
+            image: "/img/game/obstacles/jack_o_lantern/jack_o_lantern.svg",
             colors: ["#5a0e0e", "#440b0b"]
         },
         canvasFilters: {
@@ -180,7 +180,7 @@ export const Modes: Record<ModeName, ModeDefinition> = {
         ambience: "wind_ambience",
         spriteSheets: ["shared", "normal", "infection"],
         playButton: {
-            image: "../../lib/img/game/perks/infection/infected.svg",
+            image: "/img/game/perks/infection/infected.svg",
             colors: ["#ac539d", "#b946a6"]
         },
         weaponSwap: true,
@@ -194,7 +194,7 @@ export const Modes: Record<ModeName, ModeDefinition> = {
         ambience: "wind_ambience",
         spriteSheets: ["shared", "normal", "birthday"],
         playButton: {
-            image: "../../lib/img/logos/suroi_favicon.svg",
+            image: "/img/logos/suroi_favicon.svg",
             color: "#5b8939"
         }
     },
@@ -222,7 +222,7 @@ export const Modes: Record<ModeName, ModeDefinition> = {
         obstacleVariants: true,
         specialLogo: true,
         playButton: {
-            image: "../../lib/img/game/obstacles/red_gift/red_gift.svg",
+            image: "/img/game/obstacles/red_gift/red_gift.svg",
             colors: ["#dcdcdc", "#aaa8a8"]
         },
         replaceWaterBy: FloorNames.Ice,
@@ -246,7 +246,7 @@ export const Modes: Record<ModeName, ModeDefinition> = {
         overrideUpstairsFunctionality: true,
         replaceMenuMusic: true,
         playButton: {
-            image: "../../lib/img/logos/lansirama_logo.svg",
+            image: "/img/logos/lansirama_logo.svg",
             colors: ["#0b521d", "#083d15"]
         },
         particleEffects: {
@@ -280,7 +280,7 @@ export const Modes: Record<ModeName, ModeDefinition> = {
         obstacleVariants: true,
         specialLogo: true,
         bulletFilters: true,
-        playButtonImage: "../../lib/img/game/obstacles/christmas_tree/christmas_tree.svg",
+        playButtonImage: "/img/game/obstacles/christmas_tree/christmas_tree.svg",
         canvasFilters: {
             brightness: 0.6,
             saturation: 0.85

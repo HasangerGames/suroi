@@ -3,8 +3,8 @@ import { Emotes } from "$common/definitions/emotes";
 import { Loots } from "$common/definitions/loots";
 import { Numeric } from "$common/utils/math";
 import type { TranslationManifest } from "../../../../vite/plugins/translations-plugin";
-// import { GameConsole } from "../../console/gameConsole";
-// import { defaultClientCVars } from "../../console/variables";
+import { GameConsole } from "../../console/gameConsole";
+import { defaultClientCVars } from "../../console/variables";
 import { type TranslationKeys } from "./typings";
 
 export type TranslationMap = Partial<Record<TranslationKeys, string>> & TranslationManifest;
@@ -42,11 +42,11 @@ export async function initTranslation(): Promise<void> {
 
     setup = true;
 
-    // defaultLanguage = typeof defaultClientCVars.cv_language === "object"
-    //     ? defaultClientCVars.cv_language.value
-    //     : defaultClientCVars.cv_language;
+    defaultLanguage = typeof defaultClientCVars.cv_language === "object"
+        ? defaultClientCVars.cv_language.value
+        : defaultClientCVars.cv_language;
 
-    // selectedLanguage = GameConsole.getBuiltInCVar("cv_language");
+    selectedLanguage = GameConsole.getBuiltInCVar("cv_language");
 
     defaultLanguage = selectedLanguage = "en";
 
@@ -72,7 +72,7 @@ export async function initTranslation(): Promise<void> {
         };
     }
 
-    // translateCurrentDOM();
+    translateCurrentDOM();
 }
 
 export function translate(key: TranslationKeys, replacements?: Record<string, string>): string {

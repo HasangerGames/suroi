@@ -13,6 +13,7 @@ import { type ScopeDefinition, Scopes } from "$common/definitions/items/scopes";
 import { type SkinDefinition, Skins } from "$common/definitions/items/skins";
 import { type ModeName, Modes } from "$common/definitions/modes";
 import { SpectatePacket } from "$common/packets/spectatePacket";
+import type { ClientConfig } from "$common/schemas/config/clientConfig";
 import { type CustomTeamMessage, CustomTeamMessages, type CustomTeamPlayerInfo, type PunishmentMessage } from "$common/typings";
 import { ExtendedMap } from "$common/utils/misc";
 import { DefinitionType, type ReferenceTo, type ReifiableDef } from "$common/utils/objectDefinitions";
@@ -28,14 +29,16 @@ import { MapManager } from "./managers/mapManager";
 import { SoundManager } from "./managers/soundManager";
 import { UIManager } from "./managers/uiManager";
 import { body, createDropdown } from "./uiHelpers";
-import { Config, type Region, type ServerInfo } from "./utils/config";
+import { Config, type ServerInfo } from "./utils/config";
 import { EMOTE_SLOTS } from "./utils/constants";
 import { Crosshairs, getCrosshair } from "./utils/crosshairs";
 import { html, requestFullscreen } from "./utils/misc";
 import { spritesheetLoadPromise } from "./utils/pixi";
 import { TRANSLATIONS, translate } from "./utils/translations/translations";
 import type { TranslationKeys } from "./utils/translations/typings";
+import { gameState, joinGame, setJoinGame } from "$lib/legacy/legacyConnector.svelte";
 
+type Region = ClientConfig["regions"][string];
 interface RegionInfo extends Region {
     readonly playerCount?: number
 
@@ -82,7 +85,6 @@ export function resetPlayButtons(): void { // TODO Refactor this method to use u
     const ui = UIManager.ui;
     const { teamMode, nextTeamMode, nextMode } = selectedRegion ?? regionInfo[Config.defaultRegion];
 
-    ui.splashOptions.removeClass("loading");
     ui.loaderText.text("");
 
     const isSolo = teamMode === TeamMode.Solo;
@@ -189,7 +191,6 @@ export async function fetchServerData(): Promise<void> {
                 ui.warningAgreeOpts.toggle(punishment.message === "warn");
                 ui.warningAgreeCheckbox.prop("checked", false);
                 ui.warningModal.show();
-                ui.splashOptions.addClass("loading");
             }
         }
 
@@ -288,27 +289,8 @@ export async function fetchServerData(): Promise<void> {
 }
 
 // Take the stuff that needs fetchServerData out of setUpUI and put it here
-// biome-ignore lint/suspicious/useAwait: there's a lot going on in this function
-export async function finalizeUI(): Promise<void> {
-    const { mode: { specialLogo, playButtonImage, canvasFilters }, modeName } = Game;
-
-    const _modeName = Modes[modeName].similarTo ?? modeName;
-
-    // Change the menu based on the mode.
-    $("#splash-ui").css("background-image", `url(./img/backgrounds/menu/${modeName}.png)`);
-
-    if (specialLogo) {
-        $("#splash-logo").children("img").attr("src", `./img/logos/suroi_beta_${_modeName}.svg`);
-    }
-
-    if (playButtonImage) {
-        const playButtons = [$("#btn-play-solo"), $("#btn-play-duo"), $("#btn-play-squad")];
-        for (let buttonIndex = 0, len = playButtons.length; buttonIndex < len; buttonIndex++) {
-            playButtons[buttonIndex]
-                .addClass(`event-${_modeName}`)
-                .html(`<img class="btn-icon" src=${playButtonImage}><span>${translate(`play_${["solo", "duo", "squad"][buttonIndex]}` as TranslationKeys)}</span>`);
-        }
-    }
+export function finalizeUI(): void {
+    const { canvasFilters } = Game.mode;
 
     // Apply filters to canvas
     let filter: ColorMatrixFilter | undefined;
@@ -528,7 +510,7 @@ export async function setUpUI(): Promise<void> {
 
     ui.lockedInfo.on("click", () => ui.lockedTooltip.fadeToggle(250));
 
-    const joinGame = async(): Promise<void> => {
+    setJoinGame(async(): Promise<void> => {
         if (
             Game.gameStarted
             || Game.connecting
@@ -536,9 +518,8 @@ export async function setUpUI(): Promise<void> {
         ) return;
 
         Game.connecting = true;
-        ui.splashOptions.addClass("loading");
-        ui.loaderText.text(translate("loading_finding_game"));
-        // ui.cancelFindingGame.css("display", "");
+        gameState.state = "connecting";
+        gameState.connectingText = translate("loading_finding_game");
 
         type GetGameResponse = { success: true, gameID: number, mode: ModeName } | { success: false };
         let response: GetGameResponse | undefined;
@@ -554,9 +535,8 @@ export async function setUpUI(): Promise<void> {
 
         if (!response?.success) {
             Game.connecting = false;
-            ui.splashMsgText.html(translate("msg_err_finding"));
-            ui.splashMsg.show();
-            resetPlayButtons();
+            gameState.state = "menu";
+            gameState.serverError = translate("msg_err_finding");
             return;
         }
 
@@ -594,11 +574,11 @@ export async function setUpUI(): Promise<void> {
         }
 
         Game.connect(`${selectedRegion.gameAddress.replace("<gameID>", (response.gameID + selectedRegion.offset).toString())}/play?${params.toString()}`);
-        ui.splashMsg.hide();
+        gameState.serverError = undefined;
 
         // Check again because there is a small chance that the create-team-menu element won't hide.
         if (createTeamMenu.css("display") !== "none") createTeamMenu.hide(); // what the if condition doin
-    };
+    });
 
     let lastPlayButtonClickTime = 0;
 
@@ -616,8 +596,7 @@ export async function setUpUI(): Promise<void> {
         if (now - lastPlayButtonClickTime < 1500 || teamSocket || selectedRegion === undefined) return;
         lastPlayButtonClickTime = now;
 
-        ui.splashOptions.addClass("loading");
-        ui.loaderText.text(translate("loading_connecting"));
+        gameState.connectingText = translate("loading_connecting");
 
         const params = new URLSearchParams();
 
@@ -754,46 +733,31 @@ export async function setUpUI(): Promise<void> {
         };
 
         teamSocket.onerror = (): void => {
-            ui.splashMsgText.html(translate("msg_error_joining_team"));
-            ui.splashMsg.show();
+            gameState.serverError = translate("msg_error_joining_team");
             resetPlayButtons();
             createTeamMenu.fadeOut(250);
-
-            // Dimmed backdrop on team menu. (Probably not needed here)
-            ui.splashUi.css({ filter: "", pointerEvents: "" });
         };
 
         teamSocket.onclose = (e): void => {
             // The socket is set to undefined in the close button listener
             // If it's not undefined, the socket was closed by other means, so show an error message
             if (teamSocket) {
-                ui.splashMsgText.html(translate(
+                gameState.serverError = translate(
                     joinedTeam
                         ? e.reason === "kicked"
                             ? "msg_error_kicked_team"
                             : "msg_lost_team_connection"
                         : "msg_error_joining_team"
-                ));
-                ui.splashMsg.show();
+                );
             }
-            resetPlayButtons();
             teamSocket = undefined;
             teamID = undefined;
             joinedTeam = false;
             window.location.hash = "";
             createTeamMenu.fadeOut(250);
-
-            // Dimmed backdrop on team menu.
-            ui.splashUi.css({ filter: "", pointerEvents: "" });
         };
 
         createTeamMenu.fadeIn(250);
-
-        // Dimmed backdrop on team menu.
-        ui.splashUi.css({
-            filter: "brightness(0.6)",
-            pointerEvents: "none"
-        });
     });
 
     ui.closeCreateTeam.on("click", () => {

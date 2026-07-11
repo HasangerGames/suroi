@@ -1,0 +1,44 @@
+@use "../palette.scss";
+
+.tab-bar {
+    user-select: none;
+    width: 140px;
+    flex-direction: column;
+}
+
+.tab {
+    background: none;
+    border: none;
+    outline: none;
+    padding: 10px;
+    cursor: pointer;
+    width: 140px;
+    text-align: left;
+    border-left: 2px solid transparent;
+
+    &.active {
+        border-color: palette.$orange;
+        background: palette.$transparent_bg;
+    }
+
+    i {
+        margin-right: 10px;
+        width: 15px;
+    }
+
+    span, i {
+        pointer-events: none;
+    }
+
+    &:focus {
+        text-decoration: underline;
+        text-decoration-color: palette.$blue;
+        text-decoration-thickness: 3px;
+        text-underline-offset: 3px;
+    }
+}
+
+.tab-content {
+    border-radius: 10px;
+    padding: 10px;
+}

@@ -1,0 +1,11 @@
+$screen_small:       640px;
+$screen_medium:      768px;
+$screen_large:       1280px;
+
+@mixin text-shadow {
+    text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.6);
+}
+
+@mixin drop-shadow {
+    filter: drop-shadow(1px 1px 4px rgba(0, 0, 0, 0.6));
+}

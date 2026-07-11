@@ -6,7 +6,7 @@ import { createHash } from "node:crypto";
 export function getPaths(modeName: ModeName, folder: string, filterRegex: RegExp): MapIterator<string> {
     const pathMap = new Map<string, string>();
     const files = Modes[modeName].spriteSheets
-        .flatMap(sheet => readDirectory(`public/${folder}/game/${sheet}`, filterRegex));
+        .flatMap(sheet => readDirectory(`static/${folder}/game/${sheet}`, filterRegex));
 
     // Maps have unique keys.
     // Since the filename is used as the key, and mode sprites are added to the map after the common sprites,

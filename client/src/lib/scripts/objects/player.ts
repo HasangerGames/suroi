@@ -1,3 +1,5 @@
+import $ from "jquery";
+import { type ColorSource, Container, Graphics, GraphicsContext, ObservablePoint, Text } from "pixi.js";
 import { AnimationType, GameConstants, InputActions, Layer, ObjectCategory, PlayerActions, SpectateActions, ZIndexes } from "$common/constants";
 import { type EmoteDefinition, getBadgeIdString } from "$common/definitions/emotes";
 import { Ammos } from "$common/definitions/items/ammos";
@@ -21,8 +23,6 @@ import { type ObjectsNetData } from "$common/utils/objectsSerializations";
 import { pickRandomInArray, random, randomBoolean, randomFloat, randomPointInsideCircle, randomRotation, randomSign, randomVector } from "$common/utils/random";
 import { FloorNames, FloorTypes } from "$common/utils/terrain";
 import { Vec, type Vector } from "$common/utils/vector";
-import $ from "jquery";
-import { type ColorSource, Container, Graphics, GraphicsContext, ObservablePoint, Text } from "pixi.js";
 import { GameConsole } from "../console/gameConsole";
 import { Game } from "../game";
 import { CameraManager } from "../managers/cameraManager";
@@ -32,6 +32,7 @@ import { type Particle, type ParticleEmitter, ParticleManager, type ParticleOpti
 import { PerkManager } from "../managers/perkManager";
 import { type GameSound, SoundManager } from "../managers/soundManager";
 import { UIManager } from "../managers/uiManager";
+import { Config } from "../utils/config";
 import { BULLET_WHIZ_SCALE as BULLET_WHIZ_RADIUS, DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS, PIXI_SCALE, TEAMMATE_COLORS } from "../utils/constants";
 import { DebugRenderer } from "../utils/debugRenderer";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
@@ -43,7 +44,6 @@ import { GameObject } from "./gameObject";
 import { Loot } from "./loot";
 import { Obstacle } from "./obstacle";
 import type { Projectile } from "./projectile";
-import { Config } from "../utils/config";
 
 export class Player extends GameObject.derive(ObjectCategory.Player) {
     teamID!: number;
