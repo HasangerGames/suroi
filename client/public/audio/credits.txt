@@ -79,6 +79,9 @@ Guns:
 
   Icicle Bow (Fire, Switch, Reload) - https://pixabay.com/sound-effects/mini-crossbow-foley-102860/
 
+  SSG 82 (Fire) - "Rifle sniper single shot" from Sound Dino: https://sounddino.com/en/effects/rifle/#group_997
+  SSG 82 (Reload + Switch) - "Sounds of reloading, changing rifle clips." from Sound Dino: https://sounddino.com/en/effects/rifle/#group_1001
+
   Other gun sound effects - Surviv.io Custom Sounds & Textures Resource Pack: https://github.com/humphreygaming/survivcustomsoundsandtextures
 
 Melees:
