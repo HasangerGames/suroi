@@ -55,6 +55,7 @@ public/img/game/obstacles/bush
 public/img/game/obstacles/button
 public/img/game/obstacles/cabinet
 public/img/game/obstacles/cargo_ship_stair
+public/img/game/obstacles/cargo_ship_stair_entrance
 public/img/game/obstacles/chair
 public/img/game/obstacles/column
 public/img/game/obstacles/control_panel
