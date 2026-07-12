@@ -215,4 +215,8 @@ export interface ConfigSchema {
    * If true, any generated loot will be picked from a random table.
    */
   randomizeLootTables?: boolean;
+  /**
+   * If present, every gun will be replaced with a random item from the given loot table.
+   */
+  overrideGunLootTable?: string;
 }
