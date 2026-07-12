@@ -145,6 +145,7 @@ public/img/game/obstacles/river_rock
 public/img/game/obstacles/roadblock
 public/img/game/obstacles/rock
 public/img/game/obstacles/rock_infection
+public/img/game/obstacles/rsh_case
 public/img/game/obstacles/sandbags
 public/img/game/obstacles/seedshot_case
 public/img/game/obstacles/ship_oil_source
