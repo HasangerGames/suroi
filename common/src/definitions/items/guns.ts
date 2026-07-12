@@ -3024,11 +3024,11 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
     },
     {
         idString: "mk14",
-        name: "Mk-14 EBR",
+        name: "Mk 14 EBR",
         defType: DefinitionType.Gun,
         tier: Tier.S,
         ammoType: "762mm",
-        ammoSpawnAmount: 30,
+        ammoSpawnAmount: 20,
         capacity: 10,
         extendedCapacity: 20,
         reloadTime: 2.5,
@@ -3040,7 +3040,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
         fireMode: FireMode.Auto,
         shotSpread: 1.5,
         moveSpread: 5,
-        length: 8,
+        length: 9.3,
         fists: {
             left: Vec(100, -8),
             right: Vec(40, 0),
