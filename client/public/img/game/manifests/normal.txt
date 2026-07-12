@@ -80,6 +80,7 @@ public/img/game/obstacles/falchion_case
 public/img/game/obstacles/fence
 public/img/game/obstacles/file_cart
 public/img/game/obstacles/filing_cabinet
+public/img/game/obstacles/fire_hatchet_case
 public/img/game/obstacles/flint_crate
 public/img/game/obstacles/flint_lockbox
 public/img/game/obstacles/forklift
