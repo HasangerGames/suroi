@@ -1,30 +1,16 @@
 @use "../main.scss";
 @use "../palette.scss";
 
-@use "client/splash.scss";
-@use "client/game.scss";
-@use "client/floatingWindow.scss";
-@use "client/console.scss";
-@use "client/debugMenu.scss";
-@use "dialog.scss";
-
-body {
-  background: palette.$grass_bg;
-  display: flex;
-  flex-direction: column;
-  overflow-y: hidden;
-
-  margin: 0;
-  padding: 0;
+:global {
+  @import "dialog.scss";
+  @import "client/game.scss";
+  @import "client/floatingWindow.scss";
+  @import "client/console.scss";
+  @import "client/debugMenu.scss";
 }
 
 #splash-ui, #game {
   opacity: 1 !important;
-}
-
-#initial-loader {
-  display: none;
-  animation: none;
 }
 
 .modal {
