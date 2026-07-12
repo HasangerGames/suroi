@@ -1124,13 +1124,13 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { item: "mosin_nagant", weight: 1 },
             { item: "tango_51", weight: 1 },
             { item: "cz600", weight: 1 },
-            { item: "l115a1", weight: 1 },
             { item: "rgs", weight: 1 },
             { item: "vks", weight: 1 },
-            { item: "ulr338", weight: 1 },
             { item: "ssg82", weight: 1 },
+            { item: "l115a1", weight: 0.1 },
             { item: "as_val", weight: 0.1 },
-            { item: "mk14", weight: 0.1 }
+            { item: "mk14", weight: 0.1 },
+            { item: "ulr338", weight: 0.08 }
         ]
     },
 
