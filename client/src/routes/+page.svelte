@@ -3,10 +3,10 @@
   import { fade, slide } from "svelte/transition";
   import { asset } from "$app/paths";
   import { Modes } from "$common/definitions/modes";
+  import Nav from "$lib/components/Nav.svelte";
   import Skin from "$lib/components/Skin.svelte";
   import LegacyUi from "$lib/legacy/LegacyUi.svelte";
-  import { gameState, joinGame } from "$lib/legacy/legacyConnector.svelte";
-    import Nav from "$lib/components/Nav.svelte";
+  import { endGame, gameState, joinGame } from "$lib/legacy/legacyConnector.svelte";
 
   function soloClick() {
     joinGame();
@@ -31,79 +31,83 @@
 
     <Nav />
 
-    <div class="ui-container mx-auto min-w-xl flex flex-col items-center gap-3 p-6">
-      {#if gameState.state === "menu"}
-        {#if gameState.serverError}
-          <div class="flex gap-2 items-center p-2 rounded-md font-bold bg-red-500/75" transition:slide>
-            <CircleAlert />
-            {gameState.serverError}
-            <X class="clickable" onclick={() => gameState.serverError = undefined} />
-          </div>
-        {/if}
-
-        <div class="flex gap-2">
-          <div class="skin-container">
-            <Skin idString="hasanger" />
-            <div class="flex items-center gap-2">
-              <span
-                bind:this={nicknameEditField}
-                contenteditable={nicknameEditMode ? "plaintext-only" : "false"}
-                placeholder="Player"
-                class="text-center text-xl font-bold focusable rounded-sm"
-              >{nickname}</span>
-              {#if nicknameEditMode}
-                <Check class="cursor-pointer hover:text-gray-400" onclick={() => nicknameEditMode = false} />
-              {:else}
-                <Pencil class="cursor-pointer hover:text-gray-400" onclick={() => nicknameEditMode = true} />
-              {/if}
+    <div class="ui-container mx-auto min-w-xl flex flex-col items-center gap-3 p-6 relative">
+      {#if gameState.state === "connecting"}
+        <div transition:fade class="absolute w-full h-full bg-suroi-gray-transparent rounded-3xl -mt-6 z-2">
+          <div class="bg-suroi-gray rounded-3xl z-2 absolute top-1/2 left-1/2 -translate-1/2 p-4 flex flex-col items-center justify-center">
+            <div class="flex gap-2 items-center mr-6">
+              <Skin idString="hasanger" class="scale-50 animate-spin [animation-duration:0.75s] origin-[calc(50%+6px)_50%]" />
+              <strong>{gameState.connectingText ?? ""}</strong>
             </div>
-          </div>
-          <div class="skin-container">
-            <button type="button" class="btn bg-violet-600">Make Team</button>
-            <button type="button" class="btn bg-violet-600">Join Team</button>
+            <button type="button" class="btn bg-blue-500" onclick={endGame}>Cancel</button>
           </div>
         </div>
-
-        <div class="flex gap-3 justify-stretch">
-          {#each modeDefs as [modeName, { playButton }]}
-            <button
-              type="button"
-              class="btn flex gap-2 justify-center items-center"
-              style={"colors" in playButton ? `background: radial-gradient(circle, ${playButton.colors[0]}, ${playButton.colors[1]})` : `background-color: ${playButton.color}`}
-            >
-              {#if playButton.image}
-                <img src={asset(playButton.image)} alt="Mode icon" width="24" />
-              {/if}
-              {`mode_${modeName}`}
-            </button>
-          {/each}
-        </div>
-
-        <div class="flex gap-3 justify-stretch">
-          <button type="button" class="btn bg-blue-500 flex flex-col justify-center text-xl grow" onclick={soloClick}>
-            <img src={asset("/img/misc/solo_icon.svg")} class="w-12 mx-auto drop-shadow-lg" alt="Solo icon" />
-            <span>Play Solo</span>
-          </button>
-          <button type="button" class="btn bg-blue-500 flex flex-col justify-center text-xl grow">
-            <img src={asset("/img/misc/duo_icon.svg")} class="w-12 mx-auto drop-shadow-lg" alt="Solo icon" />
-            <span>Play Duo</span>
-          </button>
-          <button type="button" class="btn bg-blue-500 flex flex-col justify-center text-xl grow">
-            <img src={asset("/img/misc/squad_icon.svg")} class="w-12 mx-auto drop-shadow-lg" alt="Squad icon" />
-            <span>Play Squad</span>
-          </button>
-          <button type="button" class="btn bg-blue-500 flex flex-col justify-center text-xl grow">
-            <Swords class="w-12 h-12 mx-auto drop-shadow-lg" />
-            <span>Play 1v1</span>
-          </button>
-        </div>
-      {:else if gameState.state === "connecting"}
-        <div class="flex gap-2 items-center">
-          <Skin idString="hasanger" class="scale-50 animate-spin origin-[calc(50%+6px)_50%]" />
-          <span class="text-xl">{gameState.connectingText ?? ""}</span>
-        </div>
-        <button type="button" class="btn bg-blue-500">Cancel</button>
       {/if}
+
+      {#if gameState.serverError}
+        <div class="flex gap-2 items-center p-2 rounded-md font-bold bg-red-500/75" transition:slide>
+          <CircleAlert />
+          {gameState.serverError}
+          <X class="clickable" onclick={() => gameState.serverError = undefined} />
+        </div>
+      {/if}
+
+      <div class="flex gap-2">
+        <div class="skin-container">
+          <Skin idString="hasanger" />
+          <div class="flex items-center gap-2">
+            <span
+              bind:this={nicknameEditField}
+              contenteditable={nicknameEditMode ? "plaintext-only" : "false"}
+              placeholder="Player"
+              class="text-center text-xl font-bold focusable rounded-sm"
+            >{nickname}</span>
+            {#if nicknameEditMode}
+              <Check class="cursor-pointer hover:text-gray-400" onclick={() => nicknameEditMode = false} />
+            {:else}
+              <Pencil class="cursor-pointer hover:text-gray-400" onclick={() => nicknameEditMode = true} />
+            {/if}
+          </div>
+        </div>
+        <div class="skin-container">
+          <button type="button" class="btn bg-violet-600">Make Team</button>
+          <button type="button" class="btn bg-violet-600">Join Team</button>
+        </div>
+      </div>
+
+      <div class="flex gap-3 justify-stretch">
+        {#each modeDefs as [modeName, { playButton }]}
+          <button
+            type="button"
+            class="btn flex gap-2 justify-center items-center"
+            style={"colors" in playButton ? `background: radial-gradient(circle, ${playButton.colors[0]}, ${playButton.colors[1]})` : `background-color: ${playButton.color}`}
+          >
+            {#if playButton.image}
+              <img src={asset(playButton.image)} alt="Mode icon" width="24" />
+            {/if}
+            {`mode_${modeName}`}
+          </button>
+        {/each}
+      </div>
+
+      <div class="flex gap-3 justify-stretch">
+        <button type="button" class="btn bg-blue-500 flex flex-col justify-center text-xl grow" onclick={soloClick}>
+          <img src={asset("/img/misc/solo_icon.svg")} class="w-12 mx-auto drop-shadow-lg" alt="Solo icon" />
+          <span>Play Solo</span>
+        </button>
+        <button type="button" class="btn bg-blue-500 flex flex-col justify-center text-xl grow">
+          <img src={asset("/img/misc/duo_icon.svg")} class="w-12 mx-auto drop-shadow-lg" alt="Solo icon" />
+          <span>Play Duo</span>
+        </button>
+        <button type="button" class="btn bg-blue-500 flex flex-col justify-center text-xl grow">
+          <img src={asset("/img/misc/squad_icon.svg")} class="w-12 mx-auto drop-shadow-lg" alt="Squad icon" />
+          <span>Play Squad</span>
+        </button>
+        <button type="button" class="btn bg-blue-500 flex flex-col justify-center text-xl grow">
+          <Swords class="w-12 h-12 mx-auto drop-shadow-lg" />
+          <span>Play 1v1</span>
+        </button>
+      </div>
     </div>
   </div>
 {/if}

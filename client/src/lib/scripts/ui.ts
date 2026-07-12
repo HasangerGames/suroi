@@ -36,7 +36,7 @@ import { html, requestFullscreen } from "./utils/misc";
 import { spritesheetLoadPromise } from "./utils/pixi";
 import { TRANSLATIONS, translate } from "./utils/translations/translations";
 import type { TranslationKeys } from "./utils/translations/typings";
-import { gameState, joinGame, setJoinGame } from "$lib/legacy/legacyConnector.svelte";
+import { gameState, joinGame, setEndGame, setJoinGame } from "$lib/legacy/legacyConnector.svelte";
 
 type Region = ClientConfig["regions"][string];
 interface RegionInfo extends Region {
@@ -510,12 +510,18 @@ export async function setUpUI(): Promise<void> {
 
     ui.lockedInfo.on("click", () => ui.lockedTooltip.fadeToggle(250));
 
+    let lastPlayButtonClickTime = 0;
+
     setJoinGame(async(): Promise<void> => {
         if (
             Game.gameStarted
             || Game.connecting
             || selectedRegion === undefined // shouldn't happen
         ) return;
+
+        const now = Date.now();
+        if (now - lastPlayButtonClickTime < 1500) return; // Play button rate limit
+        lastPlayButtonClickTime = now;
 
         Game.connecting = true;
         gameState.state = "connecting";
@@ -579,8 +585,7 @@ export async function setUpUI(): Promise<void> {
         // Check again because there is a small chance that the create-team-menu element won't hide.
         if (createTeamMenu.css("display") !== "none") createTeamMenu.hide(); // what the if condition doin
     });
-
-    let lastPlayButtonClickTime = 0;
+    setEndGame(Game.endGame);
 
     // Join server when play buttons are clicked
     $("#btn-play-solo, #btn-play-duo, #btn-play-squad").on("click", () => {

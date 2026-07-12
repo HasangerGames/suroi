@@ -951,7 +951,6 @@ export const Game = new (class Game {
             this.pixi.stop();
             this.connecting = false;
             this.socketCloseCallback?.(undefined);
-            resetPlayButtons();
 
             const reason = e.reason || "Connection lost";
 

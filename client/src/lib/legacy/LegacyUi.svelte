@@ -1,16 +1,13 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { asset } from "$app/paths";
-    import { X } from "@lucide/svelte";
+  import { Crown, X } from "@lucide/svelte";
 
   onMount(async() => {
     const { Game } = await import("$lib/scripts/game");
     await Game.init();
   });
 </script>
-
-<!-- Loader, appears on initial page load (spinning Suroi logo) -->
-<div id="initial-loader" class="loader"></div>
 
 <!-- Console -->
 <div id="console" class="floating-window" style="display: none">
@@ -363,12 +360,9 @@
     <div class="ui-leaderboard">
       <!-- Kill leader -->
       <div id="ui-kill-leader">
-        <div id="kill-leader-leader-container">
+        <div id="kill-leader-leader-container" class="flex gap-2 items-center">
           <span id="kill-leader-leader" translation="msg_waiting_for_leader"></span>
-          <i
-            class="fa-solid fa-crown"
-            style="margin-left: 5px; margin-right: 5px"
-          ></i>
+          <Crown />
           <span id="kill-leader-kills-counter">0</span>
         </div>
       </div>
@@ -1352,59 +1346,9 @@
 </div>
 
 <style lang="scss">
-  @import "./scss/pages/client.scss";
+  @use "./scss/pages/client.scss";
 
   #splash-ui, #game {
     opacity: 0;
-  }
-
-  .loader {
-    background-image: url('data:image/svg+xml,<svg width="96" height="96" xml:space="preserve" xmlns="http://www.w3.org/2000/svg"><circle style="fill:%23000000;fill-opacity:1;stroke:%23008af0;stroke-width:5.74001;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" cx="48" cy="48" r="45.13"/><circle style="fill:none;fill-opacity:1;stroke:%23ff7500;stroke-width:4.59201;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" cx="48" cy="48" r="43.707"/><path style="fill:%23ff7500;fill-opacity:1;stroke-width:4.41161" d="M45.105 10.499a21.548 21.621 0 0 0-18.674 21.37 21.548 21.621 0 0 0 .318 3.564 21.548 21.621 0 0 0-3.226 1.494 21.548 21.621 0 0 0-9.11 26.92l.672-.389a15.084 15.135 0 0 1 6.692-18.03 15.084 15.135 0 0 1 8.258-2.011 15.084 15.135 0 0 1 11.94 6.956l1.97-1.147a4.31 4.324 0 0 1-.276-1.502 4.31 4.324 0 0 1 3.587-4.255v-2.296a15.084 15.135 0 0 1-14.365-15.07 15.084 15.135 0 0 1 12.214-14.845Zm5.746 0v.76a15.084 15.135 0 0 1 12.215 14.844 15.084 15.135 0 0 1-14.365 15.113v2.253a4.31 4.324 0 0 1 3.587 4.255 4.31 4.324 0 0 1-.275 1.502l1.97 1.147a15.084 15.135 0 0 1 11.939-6.956 15.084 15.135 0 0 1 8.258 2.011 15.084 15.135 0 0 1 6.718 18.047l.688.397a21.548 21.621 0 0 0-9.152-26.945 21.548 21.621 0 0 0-3.226-1.494 21.548 21.621 0 0 0 .318-3.564 21.548 21.621 0 0 0-18.675-21.37Zm-6.184 39.978-1.944 1.13a15.084 15.135 0 0 1-5.867 20.033 15.084 15.135 0 0 1-18.898-3.193l-.671.388a21.548 21.621 0 0 0 27.784 5.541 21.548 21.621 0 0 0 2.925-2.045 21.548 21.621 0 0 0 2.89 2.045 21.548 21.621 0 0 0 27.784-5.54l-.67-.39a15.084 15.135 0 0 1-18.9 3.194 15.084 15.135 0 0 1-5.84-20.015l-1.97-1.14a4.31 4.324 0 0 1-3.312 1.563 4.31 4.324 0 0 1-3.311-1.57z"/><path style="fill:%23008aff;fill-opacity:1;stroke-width:4.41161" d="M47.978 28.27c-4.539 0-8.715 1.59-12.025 4.229a13.647 13.693 0 0 0 3.114 3.918 14.28 14.28 0 0 1 8.911-3.107c3.391 0 6.495 1.17 8.946 3.125a13.647 13.693 0 0 0 3.106-3.919c-3.315-2.65-7.502-4.246-12.052-4.246ZM29.966 44.858a13.647 13.693 0 0 0-1.153.052c-.134.922-.232 1.856-.232 2.814 0 8.199 5.113 15.225 12.292 18.082a13.647 13.693 0 0 0 1.841-4.67 14.365 14.365 0 0 1-9.101-13.412c0-.701.068-1.381.163-2.055a13.647 13.693 0 0 0-3.81-.81zm36.025 0a13.647 13.693 0 0 0-3.81.812c.094.673.163 1.353.163 2.054 0 6.107-3.74 11.295-9.058 13.404a13.647 13.693 0 0 0 1.832 4.67c7.162-2.866 12.258-9.887 12.258-18.074 0-.958-.098-1.892-.233-2.814a13.647 13.693 0 0 0-1.152-.052z"/></svg>');
-    width: 96px;
-    height: 96px;
-    animation: rotate 3s infinite linear;
-  }
-
-  #loader-container, #initial-loader {
-    position: absolute;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
-    margin: auto;
-    z-index: 1000;
-    pointer-events: none;
-  }
-
-  #loader-container {
-    display: flex;
-    gap: 10px;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-  }
-
-  #splash-options.loading #splash-options-wrapper {
-    filter: blur(3px);
-  }
-
-  #loader-text {
-    text-align: center;
-    font-size: 20px;
-    font-weight: bold;
-    text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.6);
-  }
-
-  #privacy-policy-link {
-    color: white;
-  }
-
-  @keyframes rotate {
-    from {
-      transform: rotate(0deg);
-    }
-    to {
-      transform: rotate(360deg);
-    }
   }
 </style>

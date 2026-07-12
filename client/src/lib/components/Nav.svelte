@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { Biohazard, BookOpenText, ChartColumn, Newspaper, PencilSparkles, Settings, Shield, Shirt, User } from "@lucide/svelte";
+  import { fade } from "svelte/transition";
 	import NavItem from "$lib/components/NavItem.svelte";
 </script>
 
