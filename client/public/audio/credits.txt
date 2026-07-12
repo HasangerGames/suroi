@@ -79,6 +79,15 @@ Guns:
 
   Icicle Bow (Fire, Switch, Reload) - https://pixabay.com/sound-effects/mini-crossbow-foley-102860/
 
+  SSG 82 (Fire) - "Rifle sniper single shot" from Sound Dino: https://sounddino.com/en/effects/rifle/#group_997
+  SSG 82 (Reload + Switch) - "Sounds of reloading, changing rifle clips." from Sound Dino: https://sounddino.com/en/effects/rifle/#group_1001
+
+  AS Val (Fire) - "Silenced Machine Gun Shot 3" from quicksounds.com: https://quicksounds.com/sound/18385/silenced-machine-gun-shot-3
+  AS Val (Reload + Switch) - "m40a1 Reload" by MORTAL_MUSIC from Pixabay: https://pixabay.com/sound-effects/film-special-effects-m40a1-reload-524732/
+
+  Mk 14 EBR (Fire) - "Shot from a rifle on a hunt" from Sound Dino: https://sounddino.com/en/effects/rifle/#group_1001
+  Mk 14 EBR (Reload + Switch) - "Winchester rifle loading and cocking" by SpliceSound (Freesound) from Pixabay: https://pixabay.com/sound-effects/film-special-effects-winchester-rifle-loading-and-cocking-34213/
+
   Other gun sound effects - Surviv.io Custom Sounds & Textures Resource Pack: https://github.com/humphreygaming/survivcustomsoundsandtextures
 
 Melees:
