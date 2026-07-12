@@ -17,7 +17,7 @@ public/img/game/buildings/large_truck
 public/img/game/buildings/large_warehouse
 public/img/game/buildings/lighthouse
 public/img/game/buildings/medical_camp
-public/img/game/buildings/memorial_bunker
+public/img/game/buildings/memorial
 public/img/game/buildings/mini_warehouse
 public/img/game/buildings/mobile_home
 public/img/game/buildings/mutated_forklift
