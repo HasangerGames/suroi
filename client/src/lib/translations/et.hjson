@@ -7,8 +7,8 @@
 // msg/warning * teavitused/hoiatused
 "msg_rotate": "Paremaks mängimiseks palun hoidke seadet horisontaalselt."
 "msg_loading": "Ühendamine"
-"msg_err_joining": "Viga mänguga ühinemisel."
-"msg_err_finding": "Viga mängu otsimisel."
+"error_joining_game": "Viga mänguga ühinemisel."
+"error_finding_game": "Viga mängu otsimisel."
 "msg_spectating": "Jälgite"
 "msg_enter_team_code": "Sisesta tiimi kood:"
 "msg_lost_team_connection": "Ühendus tiimiga katkes."

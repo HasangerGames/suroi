@@ -542,7 +542,7 @@ export async function setUpUI(): Promise<void> {
         if (!response?.success) {
             Game.connecting = false;
             menuUi.state = "menu";
-            menuUi.serverError = translate("msg_err_finding");
+            menuUi.serverError = translate("error_finding_game");
             return;
         }
 

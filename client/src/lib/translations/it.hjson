@@ -3,8 +3,8 @@
 
 "msg_rotate": "Per un'esperienza migliore, ruota il tuo dispositivo orizzontalmente."
 "msg_loading": "Connessione..."
-"msg_err_joining": "Impossibile entrare in partita."
-"msg_err_finding": "Impossibile trovare la partita."
+"error_joining_game": "Impossibile entrare in partita."
+"error_finding_game": "Impossibile trovare la partita."
 "msg_spectating": "Osservando"
 "msg_enter_team_code": "Inserisci un codice di squadra:"
 "msg_lost_team_connection": "Connessione alla squadra persa."

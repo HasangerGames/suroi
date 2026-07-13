@@ -944,7 +944,7 @@ export const Game = new (class Game {
             this.error = true;
             this.connecting = false;
             menuUi.state = "menu";
-            menuUi.serverError = translate("msg_err_joining");
+            menuUi.serverError = translate("error_joining_game");
         };
 
         this._socket.onclose = (e: CloseEvent): void => {

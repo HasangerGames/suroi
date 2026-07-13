@@ -4,8 +4,8 @@
 "no_resize": false
 "msg_rotate": "For a better experience, please rotate your device to landscape."
 "msg_loading": "Yhdistäminen"
-"msg_err_joining": "Virhe peliin liittymisessä."
-"msg_err_finding": "Virhe pelin etsimisessä."
+"error_joining_game": "Virhe peliin liittymisessä."
+"error_finding_game": "Virhe pelin etsimisessä."
 "msg_spectating": "Seuraat"
 "msg_enter_team_code": "Syötä tiimin koodi:"
 "msg_lost_team_connection": "Lost connection to team."

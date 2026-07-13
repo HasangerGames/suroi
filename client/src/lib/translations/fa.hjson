@@ -4,8 +4,8 @@
 "html_lang": fa
 "msg_rotate": "برای تجربه بهتر، دستگاه خود را بچرخانید"
 "msg_loading": "داره وصل میشه"
-"msg_err_joining": "مشکل در وصل به بازی"
-"msg_err_finding": "مشکل در پیدا کردن بازی"
+"error_joining_game": "مشکل در وصل به بازی"
+"error_finding_game": "مشکل در پیدا کردن بازی"
 "msg_spectating": "تماشای"
 "msg_enter_team_code": "کد برای تیم بنویس"
 "msg_lost_team_connection": "از تیم قطع شدی"

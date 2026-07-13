@@ -18,8 +18,8 @@
 
 "msg_rotate": "请将设备旋转至横向来获得更好的游戏体验。"
 "msg_loading": "连接中"
-"msg_err_joining": "加入游戏失败。"
-"msg_err_finding": "查找游戏失败。"
+"error_joining_game": "加入游戏失败。"
+"error_finding_game": "查找游戏失败。"
 "msg_lost_connection": "连接已丢失。"
 "msg_try_again": "请重试。"
 

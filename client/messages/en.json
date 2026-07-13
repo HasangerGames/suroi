@@ -3,14 +3,18 @@
 
 	"msg_rotate": "For a better experience, please rotate your device to landscape.",
 	"msg_loading": "Connecting",
-	"msg_err_joining": "Error joining game.",
-	"msg_err_finding": "Error finding game.",
+
+	"error_finding_game": "Error finding game.",
+	"error_joining_game": "Error joining game.",
+	"error_fetching_game_info": "Error fetching game info.",
+
 	"msg_spectating": "Spectating",
-	"msg_enter_team_code": "Enter a team code:",
 	"msg_lost_team_connection": "Lost connection to team.",
 	"msg_error_joining_team": "Error joining team.<br>It may not exist or it is full.",
 	"msg_error_kicked_team": "You were kicked from the team.",
 	"msg_try_again": "Please try again.",
+	"msg_enter_team_code": "Enter a team code:",
+
 	"msg_punishment_warn": "You have been warned!",
 	"msg_punishment_warn_reason": "You have received a warning by the moderators for reason: <reason>",
 	"msg_punishment_temp": "You have been temporarily banned!",
@@ -34,19 +38,26 @@
 	"stats": "Stats",
 	"news": "News",
 	"wiki": "Wiki",
+	"server_status": "Server Status",
 	"moderation": "Moderation",
 
-	"play_solo": "Play Solo",
-	"play_duo": "Play Duo",
-	"play_squad": "Play Squad",
-	"play_1v1": "Play 1v1",
-	"play_auto": "Play Auto",
+	"partners": "Partners",
+	"privacy": "Privacy",
+	"contact": "Contact",
+
+	"background_credits": "Background by {backgroundArtist}",
+	"full_credits": "Full Credits",
 
 	"solo": "Solo",
 	"duo": "Duo",
 	"squad": "Squad",
 	"duel": "1v1",
 	"auto": "Auto",
+
+	"normal": "Normal",
+	"fall": "Harvest",
+	"infection": "Infection",
+	"hunted": "Hunted",
 
 	"region_dev": "Local Server",
 	"region_na": "North America",
@@ -57,12 +68,14 @@
 	"region_oc": "Oceania",
 	"region_1v1": "North America (1v1)",
 	"region_ea1v1": "East Asia (1v1)",
-	"region_test": "Test",
+	"region_test": "Test Server",
 
 	"mode_normal": "Normal",
 	"mode_fall": "Harvest",
 	"mode_infection": "Infection",
 	"mode_hunted": "Hunted",
+
+	"new_game": "New Game",
 
 	"join_team": "Join Team",
 	"create_team": "Create Team",
@@ -75,8 +88,6 @@
 
 	"msg_locked_tooltip": "The game switches between modes every 24 hours, as there aren't enough players for all of them.",
 	"rules_and_tutorial": "Rules & Tutorial",
-	"privacy": "Privacy Policy",
-	"contact": "Contact",
 	"donate": "Donate",
 	"fullscreen": "Fullscreen",
 	"bindings_fullscreen": "Fullscreen",
@@ -328,7 +339,6 @@
 	"report_instructions": "\n      <p><strong>Please follow the instructions below!</strong> If you don't, your report will be ignored.</p>\n      <h4>How to Submit a Report</h4>\n      <ol>\n        <li>Join the <a href=\"https://discord.suroi.io\">Discord server.</a></li>\n        <li>Go to the <a href=\"https://discord.com/channels/1077043833621184563/1135288369526607973\">#player-reports\n            channel.</a></li>\n        <li>Read the report guidelines in the pinned post.</li>\n        <li>Submit your report as a post.</li>\n      </ol>",
 
 	"languages": "Languages",
-	"partners": "Partners",
 	"username_placeholder": "Enter a nickname",
 	"msg_contact": "Want to partner with us?",
 

@@ -1,4 +1,7 @@
 import { Color } from "pixi.js";
+import pkg from "../../../../../package.json";
+
+export const APP_VERSION = pkg.version;
 
 export const PIXI_SCALE = 20;
 

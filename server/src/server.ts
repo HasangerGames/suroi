@@ -6,11 +6,12 @@ import { Skins } from "$common/definitions/items/skins";
 import { CustomTeamMessage, PunishmentMessage } from "$common/typings";
 import os from "os";
 import { version } from "../../package.json";
-import { GameManager } from "./gameManager";
+import { GameContainer, GameManager } from "./gameManager";
 import { CustomTeam, CustomTeamPlayer, CustomTeamPlayerContainer } from "./team";
 import { Config } from "./utils/config";
 import { cleanUsername } from "./utils/misc";
 import { corsHeaders, getIP, getPunishment, getSearchParams, parseRole, RateLimiter, serverError, serverLog } from "./utils/serverHelpers";
+import { GameInfo } from "$common/schemas/api/games";
 
 let customTeams: Map<string, CustomTeam> | undefined;
 let teamsCreated: RateLimiter | undefined;
@@ -137,6 +138,22 @@ if (Cluster.isPrimary && require.main === module) {
                     modeSwitchTime: map.nextSwitch ? map.nextSwitch - Date.now() : undefined,
                     punishment
                 }, corsHeaders);
+            },
+            "/api/games": () => {
+                const response = gameManager.games
+                    .filter((g): g is GameContainer => g !== undefined)
+                    .map(({ aliveCount, startedTime }): GameInfo => ({
+                        id: "bleh",
+                        gameMode: gameManager.mode,
+                        teamMode: {
+                            [TeamMode.Solo]: "solo",
+                            [TeamMode.Duo]: "duo",
+                            [TeamMode.Squad]: "squad"
+                        }[gameManager.teamMode.current] as GameInfo["teamMode"],
+                        playerCount: aliveCount,
+                        startedTime
+                    }));
+                return Response.json(response, corsHeaders);
             },
             "/api/getGame": async req => {
                 let gameID: number | undefined;

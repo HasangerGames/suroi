@@ -278,20 +278,6 @@
       <i class="fa-solid fa-caret-down"></i></button>
     <div id="languages-selector" class="dropdown-content persistent-scrollbar"></div>
   </div>
-
-  <!-- Bottom left & right links -->
-  <div id="splash-version">
-    <a href="./changelog/" target="_blank" rel="noopener noreferrer">v%VITE_APP_VERSION%</a>
-  </div>
-  <div id="splash-partners">
-    <a id="partners-link" href="#" translation="partners"></a> |
-    <a id="privacy-policy-link" href="./privacy/" target="_blank" rel="noopener noreferrer" translation="privacy"></a> |
-    <a id="contact-link" href="mailto:support@suroi.io" target="_blank" rel="noopener noreferrer" translation="contact"></a>
-    <button class="btn btn-lg btn-darken btn-danger" id="btn-quit-suroi" style="margin-left: 8px; display: none">
-      <i class="fa-solid fa-arrow-right-from-bracket"></i>
-      <span translation="quit">Quit</span>
-    </button>
-  </div>
 </div>
 
 <!-- Game UI -->

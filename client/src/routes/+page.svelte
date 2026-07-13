@@ -1,18 +1,47 @@
 <script lang="ts">
-  import { Check, CircleAlert, Eye, Info, Pencil, RefreshCw, Swords, X, Zap } from "@lucide/svelte";
+  import { Check, CircleAlert, Pencil, RefreshCw, Swords, X, Zap } from "@lucide/svelte";
   import { fade, slide } from "svelte/transition";
   import { asset } from "$app/paths";
   import { Modes } from "$common/definitions/modes";
+  import { GamesApiResponse } from "$common/schemas/api/games";
+  import { pickRandomInArray } from "$common/utils/random";
   import Nav from "$lib/components/Nav.svelte";
   import Skin from "$lib/components/Skin.svelte";
   import LegacyUi from "$lib/legacy/LegacyUi.svelte";
   import { m } from "$lib/paraglide/messages";
   import { endGame, joinGame, menuUi } from "$lib/scripts/ui/menu.svelte";
   import { Config } from "$lib/scripts/utils/config";
+  import { APP_VERSION } from "$lib/scripts/utils/constants";
 
-  function soloClick() {
-    joinGame();
+  const backgrounds: [string, string][] = [
+    ["bridge_duel_precisederp.png", "@PreciseDerp"],
+    ["gun_vs_c4_precisederp.png", "@PreciseDerp"],
+    ["terrorizer_migraine7341.png", "@migraine7341"],
+    ["tango_51_boeing_777.jpg", "Boeing_777"]
+  ];
+  const [backgroundFilename, backgroundArtist] = pickRandomInArray(backgrounds);
+
+  const pad = (n: number): string | number => n < 10 ? `0${n}` : n;
+  const millisToTime = (millis: number): string => {
+    millis = Date.now() - millis;
+    if (millis < 0) return "--:--";
+
+    const days = Math.floor(millis / (1000 * 60 * 60 * 24));
+    const hours = Math.floor(millis / (1000 * 60 * 60)) % 24;
+    const minutes = Math.floor(millis / (1000 * 60)) % 60;
+    const seconds = Math.floor(millis / 1000) % 60;
+    return `${days > 0 ? `${pad(days)}:` : ""}${hours > 0 ? `${pad(hours)}:` : ""}${hours > 0 ? pad(minutes) : minutes}:${pad(seconds)}`;
+  };
+
+  async function updateGameSelector() {
+    try {
+      const response = await fetch(`http://127.0.0.1:8000/api/games`);
+      menuUi.games = GamesApiResponse.parse(await response.json());
+    } catch (e) {
+      menuUi.serverError = m.error_fetching_game_info();
+    }
   }
+  void updateGameSelector();
 
   const modeDefs = Object.entries(Modes)
     .filter(([modeName]) => ["normal", "fall", "infection", "hunted"].includes(modeName));
@@ -28,12 +57,12 @@
 </script>
 
 {#if menuUi.state !== "inGame"}
-  <div transition:fade class="absolute bottom-0 left-0 z-1 w-screen h-screen flex flex-col items-center" style="background-image: url(./img/backgrounds/menu/normal.png)">
+  <div transition:fade class="absolute bottom-0 left-0 z-1 w-screen h-screen flex flex-col items-center bg-cover" style="background-image: url({asset(`/img/backgrounds/menu/${backgroundFilename}`)})">
     <img src={asset("/img/logos/suroi.svg")} alt="Suroi logo" class="mx-auto mt-4 mb-8 w-xl select-none" draggable="false" />
 
     <Nav />
 
-    <div class="ui-container mx-auto min-w-xl flex flex-col items-center gap-3 p-6 relative">
+    <div class="ui-container mx-auto flex flex-col items-center gap-3 p-6 relative">
       {#if menuUi.state === "connecting"}
         <div transition:fade class="absolute w-full h-full bg-suroi-gray-transparent rounded-3xl -mt-6 z-2">
           <div class="bg-suroi-gray rounded-3xl z-2 absolute top-1/2 left-1/2 -translate-1/2 p-4 flex flex-col items-center justify-center">
@@ -78,8 +107,8 @@
       </div>
 
       <!-- Region/game selector -->
-      <div class="flex gap-3">
-        <select bind:value={menuUi.region} class="clickable bg-suroi-gray-transparent px-4 py-2 rounded-md">
+      <div class="flex gap-3 justify-stretch font-mono text-sm">
+        <select bind:value={menuUi.region} onchange={updateGameSelector} class="clickable bg-suroi-gray-transparent px-4 py-2 rounded-md">
           {#each Object.entries(Config.regions) as [id, region]}
             <option value={id}>
               {region.flag}
@@ -87,13 +116,21 @@
             </option>
           {/each}
         </select>
-        <button class="btn bg-suroi-gray-transparent rounded-full p-2"><Info /></button>
         <select class="clickable bg-suroi-gray-transparent px-4 py-2 rounded-md">
-          {#each menuUi.games ?? [] as game}
-            <option value={game.id}>{m[game.teamMode]()} [{game.playerCount} player{game.playerCount === 1 ? "" : "s"}]</option>
-          {/each}
+          {#if menuUi.games?.length}
+            {#each menuUi.games as game}
+              <option value={game.id}>
+                {m[game.gameMode]()}
+                {m[game.teamMode]()}
+                👤 {game.playerCount}
+                ⏲️ {millisToTime(game.startedTime)}
+              </option>
+            {/each}
+          {:else}
+            <option value="create">{m.new_game()}</option>
+          {/if}
         </select>
-        <button class="btn bg-suroi-gray-transparent rounded-full p-2"><RefreshCw /></button>
+        <button type="button" class="btn bg-suroi-gray-transparent rounded-full p-2" onclick={updateGameSelector}><RefreshCw /></button>
       </div>
 
       <!-- Game mode buttons -->
@@ -146,9 +183,23 @@
         </label>
       </div>
 
-      <button type="button" class="btn text-3xl bg-blue-500 w-full">
+      <button type="button" class="btn text-3xl bg-blue-500 w-full" onclick={joinGame}>
         <span class="mx-auto">{m.play()}</span>
       </button>
+    </div>
+
+    <!-- Bottom left & right links -->
+    <div class="*:fixed *:bottom-4 *:ui-container *:px-4 *:py-2 *:rounded-md">
+      <div class="left-4">
+        <a href="./changelog" target="_blank" rel="noopener noreferrer">v{APP_VERSION}</a> ·
+        <a href="#">{m.partners()}</a> ·
+        <a href="./privacy" target="_blank" rel="noopener noreferrer">{m.privacy()}</a> ·
+        <a id="contact-link" href="mailto:support@suroi.io" target="_blank" rel="noopener noreferrer">{m.contact()}</a>
+      </div>
+      <div class="right-4">
+        {m.background_credits({ backgroundArtist })} ·
+        <a href="./credits" target="_blank">{m.full_credits()}</a>
+      </div>
     </div>
   </div>
 {/if}

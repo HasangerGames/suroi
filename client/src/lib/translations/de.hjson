@@ -4,8 +4,8 @@
 "no_resize": true
 "msg_rotate": "Drehen Sie Ihr Gerät für ein besseres Spielerlebnis ins Querformat."
 "msg_loading": "Verbinde..."
-"msg_err_joining": "Fehler beim Beitritt zum Spiel."
-"msg_err_finding": "Fehler beim Suchen des Spiels."
+"error_joining_game": "Fehler beim Beitritt zum Spiel."
+"error_finding_game": "Fehler beim Suchen des Spiels."
 "msg_spectating": "Zuschauen"
 "msg_enter_team_code": "Teamcode eingeben:"
 "msg_lost_team_connection": "Verbindung zum Team verloren."

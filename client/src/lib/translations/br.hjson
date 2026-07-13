@@ -3,8 +3,8 @@
 
 "msg_rotate": "Para uma melhor experiência, por favor, gire seu dispositivo para paisagem."
 "msg_loading": "Conectando"
-"msg_err_joining": "Erro ao entrar no jogo."
-"msg_err_finding": "Erro ao encontrar jogo."
+"error_joining_game": "Erro ao entrar no jogo."
+"error_finding_game": "Erro ao encontrar jogo."
 "msg_spectating": "Espectando"
 "msg_enter_team_code": "Insira um código de equipe:"
 "msg_lost_team_connection": "Conexão com a equipe perdida."

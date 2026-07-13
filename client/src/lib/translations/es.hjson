@@ -4,8 +4,8 @@
 "no_resize": false
 "msg_rotate": "Para una experiencia mejor, gire su dispositivo a horizontal."
 "msg_loading": "Conectando"
-"msg_err_joining": "Error al unirse a la partida."
-"msg_err_finding": "Error al encontrar una partida."
+"error_joining_game": "Error al unirse a la partida."
+"error_finding_game": "Error al encontrar una partida."
 "msg_spectating": "Viendo a"
 "msg_enter_team_code": "Introduce un código de equipo:"
 "msg_lost_team_connection": "Conexión al equipo perdida."

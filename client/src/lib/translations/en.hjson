@@ -4,8 +4,8 @@
 "no_resize": true
 "msg_rotate": "For a better experience, please rotate your device to landscape."
 "msg_loading": "Connecting"
-"msg_err_joining": "Error joining game."
-"msg_err_finding": "Error finding game."
+"error_joining_game": "Error joining game."
+"error_finding_game": "Error finding game."
 "msg_spectating": "Spectating"
 "msg_enter_team_code": "Enter a team code:"
 "msg_lost_team_connection": "Lost connection to team."

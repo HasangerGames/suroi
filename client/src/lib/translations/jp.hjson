@@ -8,8 +8,8 @@
 
 "msg_rotate": "より良い体験のために、デバイスを横向きに回転してください。"
 "msg_loading": "接続中"
-"msg_err_joining": "ゲームへの参加中にエラーが発生しました。"
-"msg_err_finding": "ゲームが見つかりませんでした。"
+"error_joining_game": "ゲームへの参加中にエラーが発生しました。"
+"error_finding_game": "ゲームが見つかりませんでした。"
 "msg_spectating": "観戦中"
 "msg_enter_team_code": "チームコードを入力してください"
 "msg_lost_team_connection": "チームとの接続が失われました。"
