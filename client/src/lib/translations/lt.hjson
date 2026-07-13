@@ -15,7 +15,7 @@
 "msg_punishment_temp_reason": "Jūsų draudimas priežastis: <reason>"
 "msg_punishment_perma": "Jūsų paskyra užblokuota visam laikui!"
 "msg_punishment_perma_reason": "Jūsų draudimas priežastis: <reason>"
-"msg_no_reason": "Priežasties nenurodyta."
+"msg_punishment_no_reason": "Priežasties nenurodyta."
 "play_solo": "Žaisti vienas"
 "play_duo": "Žaisti dvejose"
 "play_squad": "Žaisti būriuose"

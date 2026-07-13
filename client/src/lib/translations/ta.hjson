@@ -11,7 +11,7 @@
 "msg_punishment_temp_reason": "நீ தடை செய்யப்பட்டுள்ளாய்! காரணம்: <reason>"
 "msg_punishment_perma": "நீ வாழ்நால் முழுவதும் தடை செய்யப்பட்டுள்ளாய்!"
 "msg_punishment_perma_reason": "நீ தடை செய்யப்பட்டுள்ளாய். காரணம்: <reason>"
-"msg_no_reason": "காரணம் கொடுக்கவில்லை."
+"msg_punishment_no_reason": "காரணம் கொடுக்கவில்லை."
 "msg_spectating": "பார்வையிடுகிறீர்"
 "msg_enter_team_code": "குழுமத்தின் எண்னை செலுத்துக:"
 "msg_lost_team_connection": "உன்னுடைய குழுமத்தின் தொடர்பு துன்டிக்கப்பட்டது."

@@ -20,7 +20,7 @@
 "msg_punishment_perma_reason": "Je bent verbannen met de reden: <reason>"
 "msg_punishment_vpn": "VPN/proxy gedetecteerd!"
 "msg_punishment_vpn_reason": "Om ontduiking van verbanningen nog moeilijker te maken, zijn VPNs en proxies verboden. Zet alstublieft uw VPN/proxy uit om de game te spelen. Als u denkt dat dit bericht onjuist is of als u een vrijstelling wilt aanvragen, neem dan contact op met een admin op de Discord-server (https://discord.suroi.io) of stuur een e-mail naar support@suroi.io."
-"msg_no_reason": "Geen reden opgegeven."
+"msg_punishment_no_reason": "Geen reden opgegeven."
 "msg_punishment_warn_agreement": "Ik heb de overtreding begrepen en zal het niet nog eens begaan."
 "warning_hw_accel_1": "Grafische versnelling is uitgeschakeld of wordt niet ondersteund door uw browser."
 "warning_hw_accel_2": "Suroi presteert mogelijk niet goed."

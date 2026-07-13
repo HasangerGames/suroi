@@ -16,7 +16,7 @@
 "msg_punishment_temp_reason": "我哋會將你暫時封禁，因為：<reason>"
 "msg_punishment_perma": "永久封禁通知"
 "msg_punishment_perma_reason": "我哋會將你永久封禁，原因：<reason>"
-"msg_no_reason": "俾唔到原因。"
+"msg_punishment_no_reason": "俾唔到原因。"
 "play_solo": "單機"
 "play_duo": "雙人"
 "play_squad": "四人"

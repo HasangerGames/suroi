@@ -21,7 +21,7 @@
 "msg_punishment_perma_reason": "你已被永久封禁，原因：<reason>"
 "msg_punishment_vpn": "因使用VPN，所以已被封禁"
 "msg_punishment_vpn_reason": "因使用VPN，所以已被封禁，原因：<reason>"
-"msg_no_reason": "未提供原因。"
+"msg_punishment_no_reason": "未提供原因。"
 "msg_contact": "想與我們合作？"
 "warning_hw_accel_1": "如果瀏覽器不能用圖形加速"
 "warning_hw_accel_2": "遊戲表現可能會變得更差"

@@ -20,7 +20,7 @@
 "msg_punishment_perma_reason": "Du wurdest gesperrt aus folgendem Grund: <reason>"
 "msg_punishment_vpn": "VPN/Proxy erkannt!"
 "msg_punishment_vpn_reason": "Um Sperrumgehungen zu erschweren, sind VPNs und Proxies nicht erlaubt. Bitte deaktiviere deinen VPN/Proxy, um das Spiel zu spielen. Wenn du glaubst, diese Meldung sei ein Irrtum oder eine Ausnahme beantragen möchtest, kontaktiere bitte einen Admin auf dem Discord-Server (https://discord.suroi.io) oder sende eine E-Mail an support@suroi.io."
-"msg_no_reason": "Kein Grund angegeben."
+"msg_punishment_no_reason": "Kein Grund angegeben."
 "msg_punishment_warn_agreement": "Ich nehme diese Warnung zur Kenntnis und werde den Verstoß nicht wiederholen."
 "play_solo": "Solo spielen"
 "play_duo": "Duo spielen"

@@ -15,7 +15,7 @@
 "msg_punishment_temp_reason": "Byli jste dočasně zabanováni pro důvod: <reason>"
 "msg_punishment_perma": "Jste permanentně zabanováni!"
 "msg_punishment_perma_reason": "Byli jste permanentně zabanováni pro důvod: <reason>"
-"msg_no_reason": "Důvod neuveden."
+"msg_punishment_no_reason": "Důvod neuveden."
 "play_solo": "Hrát solo"
 "play_duo": "Hrát duo"
 "play_squad": "Hrát skupina"

@@ -38,7 +38,7 @@
 "msg_punishment_noname_reason": "禁止更改昵称 · 举报ID：<reportID>"
 "msg_punishment_vpn": "检测到VPN/代理！"
 "msg_punishment_vpn_reason": "为了防止绕过封禁，不允许使用VPN和代理。请禁用你的VPN/代理后再进行游戏。如果你认为此消息有误，或者希望申请豁免，请联系Discord服务器（https://discord.suroi.io）上的管理员，或发送电子邮件至support@suroi.io。"
-"msg_no_reason": "未提供原因。"
+"msg_punishment_no_reason": "未提供原因。"
 
 "msg_contact": "想与我们合作？"
 

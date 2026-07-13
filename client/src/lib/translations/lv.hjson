@@ -15,7 +15,7 @@
 "msg_punishment_temp_reason": "Jums ir piemērots aizliegums iemeslu dēļ: <reason>"
 "msg_punishment_perma": "Jums ir mūžīgs liegums!"
 "msg_punishment_perma_reason": "Jums ir piemērots aizliegums iemeslu dēļ: <reason>"
-"msg_no_reason": "Nav norādīts iemesls."
+"msg_punishment_no_reason": "Nav norādīts iemesls."
 "play_solo": "Spēlēt Solo"
 "play_duo": "Spēlēt Duos"
 "play_squad": "Spēlēt Squads"

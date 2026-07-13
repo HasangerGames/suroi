@@ -8,6 +8,7 @@ import { audioSpritesheet } from "./plugins/audio-spritesheet-plugin";
 import { imageSpritesheet } from "./plugins/image-spritesheet-plugin";
 import { newsPosts } from "./plugins/news-posts-plugin";
 import { translations } from "./plugins/translations-plugin";
+import { paraglideVitePlugin } from '@inlang/paraglide-js';
 
 const commonConfig: UserConfig = {
     server: {
@@ -20,6 +21,11 @@ const commonConfig: UserConfig = {
     },
     plugins: [
 		tailwindcss(),
+        paraglideVitePlugin({
+            project: "./project.inlang",
+            outdir: "./src/lib/paraglide",
+            strategy: ["url", "cookie", "baseLocale"]
+        }),
 		sveltekit({
 			compilerOptions: {
 				// Force runes mode for the project, except for libraries. Can be removed in svelte 6.

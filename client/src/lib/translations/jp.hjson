@@ -28,7 +28,7 @@
 "msg_punishment_perma_reason": "下記の理由でBANされました： <reason>"
 "msg_punishment_vpn": "VPN/プロキシが検出されました！"
 "msg_punishment_vpn_reason": "BAN回避を困難にするため、VPNおよびプロキシの使用は禁止されています。ゲームをプレイするには、VPN・プロキシを無効にしてください。このメッセージが誤りであると思われる場合、または免除を申請する場合は、Discordサーバー（https://discord.suroi.io）の管理者に連絡するか、support@suroi.ioまでメールでお問い合わせください。"
-"msg_no_reason": "理由は示されていません。"
+"msg_punishment_no_reason": "理由は示されていません。"
 "msg_punishment_warn_agreement": "この警告を理解し、二度と違反行為をしません。"
 "msg_punishment_noname_reason": "変更禁止 · 通報ID：<reportID>"
 

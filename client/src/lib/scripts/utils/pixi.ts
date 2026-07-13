@@ -2,7 +2,7 @@ import { Assets, type ColorSource, Graphics, type Renderer, RendererType, Sprite
 import { type ModeName } from "$common/definitions/modes";
 import { type Hitbox, HitboxType } from "$common/utils/hitbox";
 import { Vec, type Vector } from "$common/utils/vector";
-import { gameState } from "$lib/legacy/legacyConnector.svelte";
+import { menuUi } from "$lib/scripts/ui/menu.svelte";
 import type { ImageSpritesheetImporter } from "../../../../vite/plugins/image-spritesheet-plugin";
 import { PIXI_SCALE } from "./constants";
 import { translate } from "./translations/translations";
@@ -52,7 +52,7 @@ export async function loadSpritesheets(modeName: ModeName, renderer: Renderer, h
 
             const resolvedCount = ++resolved;
             const progress = `(${resolvedCount} / ${count})`;
-            gameState.connectingText = translate("loading_spritesheets", { progress });
+            menuUi.connectingText = translate("loading_spritesheets", { progress });
             console.log(`Atlas ${image} loaded ${progress}`);
         } catch (e) {
             ++resolved;

@@ -19,7 +19,7 @@
 "msg_punishment_perma_reason": "You hab been banned fow weason: <reason>"
 "msg_punishment_vpn": "VPN/pwoxy detected!"
 "msg_punishment_vpn_reason": "To make ban evasion more difficult, VPNs and pwoxies are not allowed. Pwease disable your VPN/pwoxy to play the game. If you believe this message is an ewwow or would like to wequest an exemption, please contact an admin on the Discowd server (https://discord.suroi.io), or email support@suroi.io."
-"msg_no_reason": "No weason provided."
+"msg_punishment_no_reason": "No weason provided."
 "msg_punishment_warn_agreement": "I acknowledge this wawning and will not wepeat the offense. OwO"
 "warning_hw_accel_1": "Gwaphics accelewation has been disabled or is not suppowted by your bwowser."
 "warning_hw_accel_2": "Suwoi may not perform well."

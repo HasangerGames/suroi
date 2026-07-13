@@ -21,7 +21,7 @@ import { GasManager, GasRender } from "./gasManager";
 import { InputManager } from "./inputManager";
 import { SoundManager } from "./soundManager";
 import { UIManager } from "./uiManager";
-import { gameState } from "$lib/legacy/legacyConnector.svelte";
+import { menuUi } from "$lib/scripts/ui/menu.svelte";
 
 class MapManagerClass {
     private _expanded = false;
@@ -529,7 +529,7 @@ class MapManagerClass {
 
     updateFromPacket(mapPacket: MapData): void {
         console.log(`Joining game with seed: ${mapPacket.seed}`);
-        gameState.connectingText = translate("loading_joining_game");
+        menuUi.connectingText = translate("loading_joining_game");
 
         const width = this._width = mapPacket.width;
         const height = this._height = mapPacket.height;

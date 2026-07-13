@@ -15,7 +15,7 @@
 "msg_punishment_temp_reason": "Ju jeni ndaluar për arsye: <reason>"
 "msg_punishment_perma": "Ju jeni ndaluar përgjithmonë!"
 "msg_punishment_perma_reason": "Ju jeni ndaluar për arsye: <reason>"
-"msg_no_reason": "Asnjë arsye nuk është dhënë."
+"msg_punishment_no_reason": "Asnjë arsye nuk është dhënë."
 "play_solo": "Luaj Solo"
 "play_duo": "Luaj Dyshe"
 "play_squad": "Luaj me Skuadër"

@@ -17,7 +17,7 @@
 "msg_punishment_perma_reason": "Zostałeś/aś zbanowany/a na stałe za: <reason>"
 "msg_punishment_vpn": "Wykryto VPN/zaporę proxy!"
 "msg_punishment_vpn_reason": "Aby utrudnić unikanie kar, systemy VPN i zapory proxy nie są dozwolone. Proszę wyłączyć VPN/zaporę proxy aby grać. Jeżeli uważasz, że ta wiadomość jest błędna, lub chciałbyś poprosić o wyjątek, proszę skontakować się z administratorem na naszym serverze Discord (https://discord.suroi.io), lub wysłać maila na adres support@suroi.io."
-"msg_no_reason": "Nie podano powodu."
+"msg_punishment_no_reason": "Nie podano powodu."
 "play_solo": "Graj 1-osobowo"
 "play_duo": "Graj 2-osobowo"
 "play_squad": "Graj w zespole"

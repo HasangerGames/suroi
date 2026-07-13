@@ -1,3 +1,5 @@
+import type { GameInfo } from "$common/typings/api/games";
+
 export let joinGame: () => Promise<void>;
 export function setJoinGame(value: () => Promise<void>): void {
     joinGame = value;
@@ -8,12 +10,14 @@ export function setEndGame(value: () => Promise<void>): void {
     endGame = value;
 }
 
-export interface GameState {
-    state: "menu" | "connecting" | "inGame"
-    connectingText?: string
-    serverError?: string
+export interface MenuUi {
+    state: "menu" | "connecting" | "inGame";
+    region?: string;
+    games?: GameInfo[];
+    connectingText?: string;
+    serverError?: string;
 }
 
-export const gameState = $state<GameState>({
+export const menuUi = $state<MenuUi>({
     state: "menu"
 });

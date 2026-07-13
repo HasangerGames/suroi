@@ -36,7 +36,7 @@ import { html, requestFullscreen } from "./utils/misc";
 import { spritesheetLoadPromise } from "./utils/pixi";
 import { TRANSLATIONS, translate } from "./utils/translations/translations";
 import type { TranslationKeys } from "./utils/translations/typings";
-import { gameState, joinGame, setEndGame, setJoinGame } from "$lib/legacy/legacyConnector.svelte";
+import { menuUi, joinGame, setEndGame, setJoinGame } from "$lib/scripts/ui/menu.svelte";
 
 type Region = ClientConfig["regions"][string];
 interface RegionInfo extends Region {
@@ -185,7 +185,7 @@ export async function fetchServerData(): Promise<void> {
                 ui.usernameInput.prop("disabled", true);
                 ui.usernameInput.attr("placeholder", translate("msg_punishment_noname_reason", { reportID }));
             } else {
-                const message = translate(`msg_punishment_${punishment.message}_reason`, { reason: punishment.reason ?? translate("msg_no_reason") });
+                const message = translate(`msg_punishment_${punishment.message}_reason`, { reason: punishment.reason ?? translate("msg_punishment_no_reason") });
                 ui.warningTitle.text(translate(`msg_punishment_${punishment.message}`));
                 ui.warningText.html(`${punishment.message !== "vpn" ? `<span class="case-id">Case ID: ${reportID}</span><br><br><br>` : ""}${message}`);
                 ui.warningAgreeOpts.toggle(punishment.message === "warn");
@@ -524,8 +524,8 @@ export async function setUpUI(): Promise<void> {
         lastPlayButtonClickTime = now;
 
         Game.connecting = true;
-        gameState.state = "connecting";
-        gameState.connectingText = translate("loading_finding_game");
+        menuUi.state = "connecting";
+        menuUi.connectingText = translate("loading_finding_game");
 
         type GetGameResponse = { success: true, gameID: number, mode: ModeName } | { success: false };
         let response: GetGameResponse | undefined;
@@ -541,8 +541,8 @@ export async function setUpUI(): Promise<void> {
 
         if (!response?.success) {
             Game.connecting = false;
-            gameState.state = "menu";
-            gameState.serverError = translate("msg_err_finding");
+            menuUi.state = "menu";
+            menuUi.serverError = translate("msg_err_finding");
             return;
         }
 
@@ -580,7 +580,7 @@ export async function setUpUI(): Promise<void> {
         }
 
         Game.connect(`${selectedRegion.gameAddress.replace("<gameID>", (response.gameID + selectedRegion.offset).toString())}/play?${params.toString()}`);
-        gameState.serverError = undefined;
+        menuUi.serverError = undefined;
 
         // Check again because there is a small chance that the create-team-menu element won't hide.
         if (createTeamMenu.css("display") !== "none") createTeamMenu.hide(); // what the if condition doin
@@ -601,7 +601,7 @@ export async function setUpUI(): Promise<void> {
         if (now - lastPlayButtonClickTime < 1500 || teamSocket || selectedRegion === undefined) return;
         lastPlayButtonClickTime = now;
 
-        gameState.connectingText = translate("loading_connecting");
+        menuUi.connectingText = translate("loading_connecting");
 
         const params = new URLSearchParams();
 
@@ -738,7 +738,7 @@ export async function setUpUI(): Promise<void> {
         };
 
         teamSocket.onerror = (): void => {
-            gameState.serverError = translate("msg_error_joining_team");
+            menuUi.serverError = translate("msg_error_joining_team");
             resetPlayButtons();
             createTeamMenu.fadeOut(250);
         };
@@ -747,7 +747,7 @@ export async function setUpUI(): Promise<void> {
             // The socket is set to undefined in the close button listener
             // If it's not undefined, the socket was closed by other means, so show an error message
             if (teamSocket) {
-                gameState.serverError = translate(
+                menuUi.serverError = translate(
                     joinedTeam
                         ? e.reason === "kicked"
                             ? "msg_error_kicked_team"

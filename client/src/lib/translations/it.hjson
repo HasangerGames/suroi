@@ -16,7 +16,7 @@
 "msg_temp_ban_msg": "Sei stato/a bannato/a per il seguente motivo: <reason>"
 "msg_perma_ban": "Sei stato/a permanentemente bannato/a!"
 "msg_perma_ban_msg": "Sei stato/a bannato/a per il seguente motivo: <reason>"
-"msg_no_reason": "Nessuna motivazione fornita."
+"msg_punishment_no_reason": "Nessuna motivazione fornita."
 
 "play_solo": "Gioca in solitaria"
 "play_duo": "Gioca in coppia"

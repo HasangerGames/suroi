@@ -22,7 +22,7 @@
 "msg_punishment_perma_reason": "Ați fost permanent banat pentru: <reason>"
 "msg_punishment_vpn": "VPN/proxy detected!"
 "msg_punishment_vpn_reason": "Pentru a face evaziunea interzisă mai dificilă, VPN-urile și proxy-urile nu sunt permise. Vă rugăm să dezactivați VPN-ul/proxy-ul pentru a juca jocul. Dacă credeți că acest mesaj este o greșeală sau doriți să solicitați o scutire, vă rugăm să contactați un administrator de pe serverul de Discord (https://discord.suroi.io), sau contactați support@suroi.io."
-"msg_no_reason": "Niciun motiv dat."
+"msg_punishment_no_reason": "Niciun motiv dat."
 "msg_punishment_warn_agreement": "Recunosc acest avertisment și nu voi repeta greșeala."
 "warning_hw_accel_1": "Accelerația grafică a fost dezactivată sau nu este acceptată de browserul dvs."
 "warning_hw_accel_2": "Joaca poate să nu performe bine."

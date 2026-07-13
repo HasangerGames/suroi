@@ -18,7 +18,7 @@
 "msg_punishment_perma_reason": "Nedeniyle yasaklandınız: <reason>"
 "msg_punishment_vpn": "VPN tespit edildi!"
 "msg_punishment_vpn_reason": "Yasaklardan kaçmayı daha da zorlaştırmak için, VPN'lere izin verilmez. Oyunu oynamak için lütfen VPN'inizi devre dışı bırakın. Bu mesajın hatalı olduğunu düşünüyorsanız veya muafiyet talebinde bulunmak istiyorsanız, lütfen Discord sunucusundaki bir yöneticiyle iletişime geçin (https://discord.suroi.io/), veya support@suroi.io adresine e-posta gönderin."
-"msg_no_reason": "Herhangi bir neden belirtilmedi."
+"msg_punishment_no_reason": "Herhangi bir neden belirtilmedi."
 "msg_punishment_warn_agreement": "Bu uyarıyı kabul ediyorum ve suçu tekrarlamayacağım."
 "warning_hw_accel_1": "Grafik hızlandırma özelliği tarayıcınız tarafından devre dışı bırakıldı veya desteklenmiyor."
 "warning_hw_accel_2": "Suroi iyi performans gösteremeyebilir."

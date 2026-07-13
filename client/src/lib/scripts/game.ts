@@ -65,7 +65,7 @@ import { loadSpritesheets, SuroiSprite } from "./utils/pixi";
 import { initTranslation, translate } from "./utils/translations/translations";
 import { type TranslationKeys } from "./utils/translations/typings";
 import { Tween, type TweenOptions } from "./utils/tween";
-import { gameState } from "$lib/legacy/legacyConnector.svelte";
+import { menuUi } from "$lib/scripts/ui/menu.svelte";
 
 
 interface ObjectClassMapping {
@@ -943,8 +943,8 @@ export const Game = new (class Game {
             this.pixi.stop();
             this.error = true;
             this.connecting = false;
-            gameState.state = "menu";
-            gameState.serverError = translate("msg_err_joining");
+            menuUi.state = "menu";
+            menuUi.serverError = translate("msg_err_joining");
         };
 
         this._socket.onclose = (e: CloseEvent): void => {
@@ -962,8 +962,8 @@ export const Game = new (class Game {
 
             if (!this.gameOver) {
                 if (this.gameStarted) {
-                    gameState.state = "menu";
-                    gameState.serverError = reason;
+                    menuUi.state = "menu";
+                    menuUi.serverError = reason;
                 }
                 ui.btnSpectate.addClass("btn-disabled");
                 if (!this.error) void this.endGame();
@@ -1093,7 +1093,7 @@ export const Game = new (class Game {
         ui.inventoryMsg.fadeOut(PERK_MESSAGE_FADE_TIME);
 
         ui.canvas.addClass("active");
-        gameState.state = "inGame";
+        menuUi.state = "inGame";
 
         ui.killLeaderLeader.html(translate("msg_waiting_for_leader"));
         ui.killLeaderCount.text("0");
@@ -1109,7 +1109,7 @@ export const Game = new (class Game {
         return await new Promise(resolve => {
             const ui = UIManager.ui;
 
-            gameState.state = "menu";
+            menuUi.state = "menu";
 
             ui.gameMenu.fadeOut(250);
 

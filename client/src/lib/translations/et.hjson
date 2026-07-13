@@ -36,7 +36,7 @@
 "msg_punishment_perma_reason": "Teile määrati püsiv keeld põhjusega: <reason>"
 "msg_punishment_vpn": "VPN või proxy tuvastatud."
 "msg_punishment_vpn_reason": "Selleks, et sohki tegemise põhjusel määratud karistusest (st. ajutine või püsiv mängimise keeld) kõvale hoidumist ära hoida, ei ole VPNid ja proxyd Surois lubatud. Et Suroi mängimist jätkata, lülitage enda VPN või proxy välja. Kui te arvate, et see on viga või soovite erandit, võtke Suroi Discordi serveris (https://discord.suroi.io) ühendust mõne moderaatoriga või kirjutage e-kiri aadressile support@suroi.io."
-"msg_no_reason": "Põhjust pole esitatud."
+"msg_punishment_no_reason": "Põhjust pole esitatud."
 
 "username_placeholder": "Vali omale hüüdnimi"
 

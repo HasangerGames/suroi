@@ -19,7 +19,7 @@
 "msg_punishment_perma_reason": "Bạn đã bị cấm chơi với lí do: <reason>"
 "msg_punishment_vpn": "Đã phát hiện thấy VPN/proxy!"
 "msg_punishment_vpn_reason": "Để làm cho việc trốn lệnh cấm trở nên khó khăn hơn, VPN và proxy không được cho phép sử dụng. Vui lòng tắt VPN/proxy của bạn để chơi. Nếu bạn cho rằng thông báo này là do lỗi hoặc muốn được miễn trừ, vui lòng liên hệ với quản trị viên trên server Discord (https://discord.suroi.io) hoặc gửi email tới support@suroi.io."
-"msg_no_reason": "Không có lý do nào được cung cấp."
+"msg_punishment_no_reason": "Không có lý do nào được cung cấp."
 "msg_punishment_warn_agreement": "Tôi thừa nhận lỗi tôi đã gây ra và hứa sẽ không tái phạm."
 "warning_hw_accel_1": "Đồ họa tăng tốc đã bị vô hiệu hóa hoặc trình duyệt của bạn không hỗ trợ tính năng."
 "warning_hw_accel_2": "Suroi có thể không hoạt động được tốt."
