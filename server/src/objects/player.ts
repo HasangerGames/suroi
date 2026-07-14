@@ -425,7 +425,6 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
      * The distance from the player position to the player mouse in game units
      */
     distanceToMouse = GameConstants.player.maxMouseDist;
-
     /**
      * Keeps track of various fields which are "dirty"
      * and therefore need to be sent to the client for
