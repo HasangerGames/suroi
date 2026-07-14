@@ -421,6 +421,10 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
      */
     turning = false;
 
+    private lastValidatedAngle = 0;
+    private lastAngleChangeTime = 0;
+    private aimbotSuspicionScore = 0;
+
     /**
      * The distance from the player position to the player mouse in game units
      */
