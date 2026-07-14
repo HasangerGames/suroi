@@ -747,6 +747,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { item: "flare", weight: 0.01 },
             { item: "mosin_nagant", weight: 0.01 },
             { item: "vector", weight: 0.008 },
+            { item: "as_val", weight: 0.008 },
             { item: "deagle", weight: 0.008 },
             { item: "model_89", weight: 0.005 },
             { item: "vks", weight: 0.005 },
@@ -828,6 +829,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { item: "shak12", weight: 0.95 },
             { item: "tango_51", weight: 0.9 },
             { item: "stoner_63", weight: 0.9 },
+            { item: "as_val", weight: 0.9 },
             { item: "model_89", weight: 0.6 },
             { item: "vks", weight: 0.6 },
             { item: "flare", weight: 0.1 }
@@ -1117,6 +1119,18 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
                 { table: "airdrop_guns", weight: 0.5 },
                 { table: "silly_guns", weight: 0.1 }
             ]
+        ],
+        snipers_only: [
+            { item: "mosin_nagant", weight: 1 },
+            { item: "tango_51", weight: 1 },
+            { item: "cz600", weight: 1 },
+            { item: "rgs", weight: 1 },
+            { item: "vks", weight: 1 },
+            { item: "ssg82", weight: 1 },
+            { item: "l115a1", weight: 0.2 },
+            { item: "as_val", weight: 0.1 },
+            { item: "mk14", weight: 0.1 },
+            { item: "ulr338", weight: 0.08 }
         ]
     },
 
@@ -1666,6 +1680,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
 
             // 10% chance for one of these
             { item: "m590m", weight: 0.033 },
+            { item: "mk14", weight: 0.033 },
             { item: "vepr12", weight: 0.033 },
             { item: "flare", weight: 0.033 },
 
@@ -1692,6 +1707,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { item: "rsh12", weight: 0.03 },
             { item: "model_89", weight: 0.03 },
             { item: "vks", weight: 0.03 },
+            { item: "mk14", weight: 0.03 },
             { item: "tango_51", weight: 0.03 },
             { item: "m1_garand", weight: 0.03 },
 
@@ -2009,6 +2025,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { item: "rsh12", weight: 0.005 },
             { item: "mosin_nagant", weight: 0.005 },
             { item: "tango_51", weight: 0.005 },
+            { item: "ssg82", weight: 0.005 },
 
             // rare
             { item: "pk61", weight: 0.001 },

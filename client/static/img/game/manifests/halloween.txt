@@ -159,6 +159,7 @@ static/img/game/obstacles/roadblock
 static/img/game/obstacles/rock
 static/img/game/obstacles/rock_normal
 static/img/game/obstacles/round_table
+static/img/game/obstacles/rsh_case
 static/img/game/obstacles/sandbags
 static/img/game/obstacles/seedshot_case
 static/img/game/obstacles/sink

@@ -51,7 +51,7 @@ export class LootItem {
     ) { }
 }
 
-export function getLootFromTable(modeName: ModeName, tableID: string, quality?: number): LootItem[] {
+export function getLootFromTable(modeName: ModeName, tableID: string, quality?: number, overridingLootTable?: boolean): LootItem[] {
     const lootTable = resolveTable(modeName, tableID);
     if (lootTable === undefined) {
         throw new ReferenceError(`Unknown loot table: ${tableID}`);
@@ -73,10 +73,10 @@ export function getLootFromTable(modeName: ModeName, tableID: string, quality?: 
         isSimple && isArray(loot[0])
             ? (loot as readonly WeightedItem[][]).map(innerTable => getLoot(modeName, innerTable, noDuplicates ?? false))
             : min === 1 && max === 1
-                ? getLoot(modeName, loot as WeightedItem[], noDuplicates ?? false, quality ?? -1)
+                ? getLoot(modeName, loot as WeightedItem[], noDuplicates ?? false, quality ?? -1, overridingLootTable)
                 : Array.from(
                     { length: random(min, max) },
-                    () => getLoot(modeName, loot as WeightedItem[], noDuplicates ?? false, quality ?? -1)
+                    () => getLoot(modeName, loot as WeightedItem[], noDuplicates ?? false, quality ?? -1, overridingLootTable)
                 )
     ).flat();
 }
@@ -88,7 +88,7 @@ export function resolveTable(modeName: ModeName, tableID: string): LootTable {
     return LootTables[modeName]?.[tableID] ?? LootTables.normal[tableID];
 }
 
-function getLoot(modeName: ModeName, items: WeightedItem[], noDuplicates: boolean, qualityValue?: number): LootItem[] {
+function getLoot(modeName: ModeName, items: WeightedItem[], noDuplicates: boolean, qualityValue?: number, overridingLootTable?: boolean): LootItem[] {
 
     let _items = items;
     if (qualityValue && qualityValue !== -1) _items = items.filter(item => {
@@ -118,6 +118,10 @@ function getLoot(modeName: ModeName, items: WeightedItem[], noDuplicates: boolea
     }
 
     if (definition.defType === DefinitionType.Gun) {
+        if (Config.overrideGunLootTable && !overridingLootTable) {
+            return getLootFromTable(modeName, Config.overrideGunLootTable, undefined, true);
+        }
+
         let { ammoType, ammoSpawnAmount } = definition;
 
         if (selection.spawnSeparately) {

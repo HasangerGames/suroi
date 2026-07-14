@@ -1380,6 +1380,48 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
             range: 160
         }
     },
+    {
+        idString: "as_val",
+        name: "AS Val",
+        defType: DefinitionType.Gun,
+        tier: Tier.S,
+        ammoType: "9mm",
+        ammoSpawnAmount: 90,
+        capacity: 30,
+        extendedCapacity: 45,
+        reloadTime: 2.5,
+        fireDelay: 120,
+        switchDelay: 400,
+        speedMultiplier: 1,
+        recoilMultiplier: 0.7,
+        recoilDuration: 140,
+        fireMode: FireMode.Auto,
+        shotSpread: 2.5,
+        moveSpread: 6,
+        length: 7.2,
+        fists: {
+            left: Vec(92, -2),
+            right: Vec(40, 0),
+            rightZIndex: 4,
+            animationDuration: 100
+        },
+        image: { position: Vec(82, 0) },
+        casingParticles: [{
+            frame: "casing_9x39mm",
+            position: Vec(3.7, 0.5)
+        }],
+        noMuzzleFlash: true,
+        ballistics: {
+            damage: 18,
+            obstacleMultiplier: 1.5,
+            speed: 0.25,
+            range: 160,
+            tracer: {
+                opacity: 0.15,
+                length: 1.5
+            }
+        }
+    },
     //
     // Light machine guns (LMGs)
     //
@@ -2560,6 +2602,50 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
             range: 450
         }
     },
+    {
+        idString: "ssg82",
+        name: "SSG 82",
+        defType: DefinitionType.Gun,
+        tier: Tier.A,
+        ammoType: "545mm",
+        ammoSpawnAmount: 20,
+        spawnScope: "4x_scope",
+        capacity: 5,
+        extendedCapacity: 10,
+        reloadTime: 2.5,
+        fireDelay: 650,
+        switchDelay: 700,
+        speedMultiplier: 1,
+        recoilMultiplier: 0.75,
+        recoilDuration: 700,
+        fireMode: FireMode.Single,
+        shotSpread: 0.65,
+        moveSpread: 1.1,
+        length: 8.6,
+        shootOnRelease: true,
+        fists: {
+            left: Vec(100, -4),
+            right: Vec(40, 0),
+            rightZIndex: 4,
+            animationDuration: 100
+        },
+        image: { position: Vec(85, 3.5) },
+        casingParticles: [{
+            position: Vec(3.7, 0.4),
+            ejectionDelay: 250
+        }],
+        gasParticles: gasParticlePresets.rifle,
+        ballistics: {
+            damage: 65,
+            obstacleMultiplier: 1,
+            speed: 0.45,
+            range: 275,
+            tracer: {
+                width: 1.3,
+                length: 2.5
+            }
+        }
+    },
     //
     // Designated marksman rifles (DMRs)
     //
@@ -2934,6 +3020,47 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
                 length: 3
             },
             range: 250
+        }
+    },
+    {
+        idString: "mk14",
+        name: "Mk 14 EBR",
+        defType: DefinitionType.Gun,
+        tier: Tier.S,
+        ammoType: "762mm",
+        ammoSpawnAmount: 20,
+        capacity: 10,
+        extendedCapacity: 20,
+        reloadTime: 2.5,
+        fireDelay: 130,
+        switchDelay: 500,
+        speedMultiplier: 1,
+        recoilMultiplier: 0.7,
+        recoilDuration: 150,
+        fireMode: FireMode.Auto,
+        shotSpread: 1.5,
+        moveSpread: 5,
+        length: 9.3,
+        fists: {
+            left: Vec(100, -8),
+            right: Vec(40, 0),
+            rightZIndex: 4,
+            animationDuration: 100
+        },
+        image: { position: Vec(90, 1.5) },
+        casingParticles: [{
+            position: Vec(3.6, 0.4)
+        }],
+        noMuzzleFlash: true,
+        ballistics: {
+            damage: 25,
+            obstacleMultiplier: 1.5,
+            speed: 0.35,
+            range: 200,
+            tracer: {
+                length: 1.4,
+                opacity: 0.15
+            }
         }
     },
     //

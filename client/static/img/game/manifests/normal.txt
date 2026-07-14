@@ -16,7 +16,7 @@ static/img/game/buildings/large_bridge
 static/img/game/buildings/large_truck
 static/img/game/buildings/large_warehouse
 static/img/game/buildings/lighthouse
-static/img/game/buildings/memorial_bunker
+static/img/game/buildings/memorial
 static/img/game/buildings/mobile_home
 static/img/game/buildings/mutated_forklift
 static/img/game/buildings/port
@@ -55,6 +55,7 @@ static/img/game/obstacles/bush
 static/img/game/obstacles/button
 static/img/game/obstacles/cabinet
 static/img/game/obstacles/cargo_ship_stair
+static/img/game/obstacles/cargo_ship_stair_entrance
 static/img/game/obstacles/chair
 static/img/game/obstacles/column
 static/img/game/obstacles/control_panel
@@ -79,6 +80,7 @@ static/img/game/obstacles/falchion_case
 static/img/game/obstacles/fence
 static/img/game/obstacles/file_cart
 static/img/game/obstacles/filing_cabinet
+static/img/game/obstacles/fire_hatchet_case
 static/img/game/obstacles/flint_crate
 static/img/game/obstacles/flint_lockbox
 static/img/game/obstacles/forklift
@@ -135,6 +137,7 @@ static/img/game/obstacles/river_rock
 static/img/game/obstacles/roadblock
 static/img/game/obstacles/rock
 static/img/game/obstacles/rock_normal
+static/img/game/obstacles/rsh_case
 static/img/game/obstacles/sandbags
 static/img/game/obstacles/ship_oil_source
 static/img/game/obstacles/silo

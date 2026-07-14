@@ -4,7 +4,7 @@ import { CircleHitbox, GroupHitbox, type Hitbox, RectangleHitbox } from "../util
 import { type Mutable } from "../utils/misc";
 import { DefinitionType, type ObjectDefinition, ObjectDefinitions, type ReferenceOrRandom, type ReferenceTo } from "../utils/objectDefinitions";
 import { Vec, type Vector } from "../utils/vector";
-import { ContainerTints, TentTints, TruckContainerTints } from "./buildings";
+import { ContainerTints, TentTints } from "./buildings";
 import { type GunDefinition } from "./items/guns";
 import { PerkDefinition, PerkIds } from "./items/perks";
 import { type LootDefinition } from "./loots";
@@ -407,12 +407,6 @@ export const TintedParticles: Record<string, { readonly base: string, readonly t
     tent_ceiling_particle_purple_1: { base: "tent_ceiling_particle_1", tint: TentTints.purple },
     tent_ceiling_particle_purple_2: { base: "tent_ceiling_particle_2", tint: TentTints.purple },
     tent_ceiling_particle_purple_3: { base: "tent_ceiling_particle_3", tint: TentTints.purple },
-
-    truck_container_particle_teal: { base: "metal_particle_1", tint: TruckContainerTints.teal },
-    truck_container_particle_orange: { base: "metal_particle_1", tint: TruckContainerTints.orange },
-    truck_container_particle_purple: { base: "metal_particle_1", tint: TruckContainerTints.purple },
-    truck_container_particle_green: { base: "metal_particle_1", tint: TruckContainerTints.green },
-    truck_container_particle_red: { base: "metal_particle_1", tint: TruckContainerTints.red },
 
     abandoned_warehouse_1_particle_1: { base: "stone_particle_1", tint: 0x5a1919 },
     abandoned_warehouse_1_particle_2: { base: "stone_particle_1", tint: 0x5a1919 },

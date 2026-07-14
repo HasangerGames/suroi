@@ -384,14 +384,6 @@ const randomHayShed = {
     hay_shed_3: 1
 };
 
-export const TruckContainerTints = { // colors by angel and me :3
-    teal: 0x14544d,
-    orange: 0x994e11,
-    purple: 0x460e69,
-    green: 0x5cb64a,
-    red: 0xc02d0e
-};
-
 export const ContainerTints = {
     white: 0xc0c0c0,
     red: 0xa33229,
@@ -1251,7 +1243,7 @@ const truckContainer = (
         defType: DefinitionType.Building,
         reflectBullets: true,
         material: "metal_heavy",
-        particle: `truck_container_particle_${color}`,
+        particle: `container_particle_${color}`,
         hitbox,
         spawnHitbox: RectangleHitbox.fromRect(18, 42),
         obstacles,

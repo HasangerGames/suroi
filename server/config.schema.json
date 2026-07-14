@@ -263,6 +263,10 @@
         "randomizeLootTables": {
             "description": "If true, any generated loot will be picked from a random table.",
             "type": "boolean"
+        },
+        "overrideGunLootTable": {
+            "description": "If present, every gun will be replaced with a random item from the given loot table.",
+            "type": "string"
         }
     },
     "required": ["$schema", "hostname", "port", "map", "teamMode", "maxPlayersPerGame", "maxGames"],
