@@ -3386,6 +3386,30 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         this.stoppedAttacking ||= wasAttacking && !isAttacking;
 
         if (this.turning = packet.turning) {
+            const now = this.game.now;
+
+            // Normalize rotational difference avoiding heavy math objects inside hot path
+            let diff = Math.abs(packet.rotation - this.lastValidatedAngle);
+            diff = diff % (2 * Math.PI);
+            if (diff > Math.PI) diff = 2 * Math.PI - diff;
+
+            if (this.attacking && diff > 2.5) {
+                this.aimbotSuspicionScore++;
+                this.lastAngleChangeTime = now;
+
+                if (this.aimbotSuspicionScore >= 5) {
+                    serverWarn(`Player ${this.name} (${this.id}) flagged for aimbot review (high angular velocity).`);
+                    this.aimbotSuspicionScore = 0; // Prevent spamming console, non-disruptive mitigation.
+                }
+            } else if (now - this.lastAngleChangeTime > 1000 && this.aimbotSuspicionScore > 0) {
+                // Apply a smooth decay for every second without anomalous snapping
+                const decay = Math.floor((now - this.lastAngleChangeTime) / 1000);
+                this.aimbotSuspicionScore = Math.max(0, this.aimbotSuspicionScore - decay);
+                this.lastAngleChangeTime += decay * 1000;
+            }
+
+            this.lastValidatedAngle = packet.rotation;
+
             this.rotation = packet.rotation;
             this.distanceToMouse = packet.distanceToMouse;
         }
