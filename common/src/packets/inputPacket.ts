@@ -118,10 +118,6 @@ export const InputPacket = new Packet<InputData>(PacketType.Input, {
 
         stream.writeArray(data.actions, action => {
             if ("slot" in action) {
-                // slot is 2 bits, InputActions is 6
-                // move the slot info to the MSB and leave
-                // the enum member as the LSB for compatibility
-                // with the other branch
                 stream.writeUint8(action.type + (action.slot << 6));
             } else {
                 stream.writeUint8(action.type);
@@ -133,6 +129,7 @@ export const InputPacket = new Packet<InputData>(PacketType.Input, {
                 case InputActions.LockSlot:
                 case InputActions.UnlockSlot:
                 case InputActions.ToggleSlotLock:
+                case InputActions.Dodge: // <-- EXPLICITLY HANDLED FOR COMPILER SAFETY
                     // already handled above
                     break;
                 case InputActions.DropItem:
@@ -190,7 +187,6 @@ export const InputPacket = new Packet<InputData>(PacketType.Input, {
         // Actions
         data.actions = stream.readArray(() => {
             const data = stream.readUint8();
-            // hiMask = 2 msb, type = 6 lsb
             const [hiMask, type] = [data & 0b1100_0000, (data & 0b0011_1111) as InputActions];
 
             let slot: number | undefined;
@@ -206,6 +202,8 @@ export const InputPacket = new Packet<InputData>(PacketType.Input, {
                 case InputActions.UnlockSlot:
                 case InputActions.ToggleSlotLock:
                     slot = hiMask >> 6;
+                    break;
+                case InputActions.Dodge: // <-- EXPLICITLY HANDLED FOR COMPILER SAFETY
                     break;
                 case InputActions.DropItem:
                     item = Loots.readFromStream<
@@ -234,11 +232,6 @@ export const InputPacket = new Packet<InputData>(PacketType.Input, {
     }
 });
 
-/**
-* Compare two input packets to test if the information needs to be resent
-* @param newPacket The new packet to potentially sent
-* @param oldPacket The old packet (usually the last sent one) to compare against
-*/
 export function areDifferent(newPacket: InputData, oldPacket: InputData): boolean {
     if (newPacket.actions.length > 0) return true;
 
