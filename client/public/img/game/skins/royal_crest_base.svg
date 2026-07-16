@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 90 90">
+  <defs>
+    <linearGradient id="pewterSilver" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#ffffff" /><stop offset="30%" stop-color="#a6a6a6" /><stop offset="70%" stop-color="#4d4d4d" /><stop offset="100%" stop-color="#18181a" /></linearGradient>
+    <linearGradient id="goldTrim" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#ffe082" /><stop offset="50%" stop-color="#b78a39" /><stop offset="100%" stop-color="#5d3f10" /></linearGradient>
+    <linearGradient id="gunmetal" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#555d65" /><stop offset="50%" stop-color="#2d3238" /><stop offset="100%" stop-color="#0e1012" /></linearGradient>
+    <linearGradient id="crimsonEnamel" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#a30f14" /><stop offset="50%" stop-color="#4a0406" /><stop offset="100%" stop-color="#1b0002" /></linearGradient>
+    <radialGradient id="vampEye" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#ffffff" /><stop offset="20%" stop-color="#ffb74d" /><stop offset="60%" stop-color="#d50000" /><stop offset="90%" stop-color="#5c0000" /><stop offset="100%" stop-color="#140001" /></radialGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="3" result="blur" /><feComposite in="SourceGraphic" in2="blur" operator="over" /></filter>
+    <filter id="vampShadow" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="6" result="blur" /><feComposite in="SourceGraphic" in2="blur" operator="over" /></filter>
+  </defs>
+  <g transform="translate(45, 45) rotate(-90) scale(0.26) translate(-250, -220)">
+    <circle cx="250" cy="220" r="165" fill="#140001" opacity="0.65" filter="url(#vampShadow)" />
+    <circle cx="250" cy="220" r="160" fill="#1c1618" stroke="#110e10" stroke-width="6" />
+    <circle cx="250" cy="220" r="152" fill="none" stroke="#2b2427" stroke-width="2" />
+    <path d="M 250,85 C 190,85 160,110 160,130 C 160,200 190,290 250,335 C 310,290 340,200 340,130 C 340,110 310,85 250,85 Z" fill="url(#pewterSilver)" stroke="#0e1012" stroke-width="5" stroke-linejoin="round" />
+    <path d="M 250,91 C 195,91 166,114 166,132 C 166,196 194,282 250,326 C 306,282 334,196 334,132 C 334,114 305,91 250,91 Z" fill="none" stroke="url(#goldTrim)" stroke-width="2.5" />
+    <path d="M 250,94 C 198,94 169,116 169,133 C 169,194 196,278 250,321 C 304,278 331,194 331,133 C 331,116 302,94 250,94 Z" fill="url(#crimsonEnamel)" />
+    <g fill="none" stroke="url(#pewterSilver)" stroke-width="2" opacity="0.75" filter="url(#glow)">
+      <path d="M 235,115 C 215,100 185,115 180,135 C 175,155 200,165 210,150 C 220,135 195,125 185,145" />
+      <path d="M 185,150 C 195,165 210,175 220,185" />
+      <path d="M 265,115 C 285,100 315,115 320,135 C 325,155 300,165 290,150 C 280,135 305,125 315,145" />
+      <path d="M 315,150 C 305,165 290,175 280,185" />
+      <path d="M 185,250 C 185,280 205,280 215,260 C 220,250 205,240 195,255" />
+      <path d="M 315,250 C 315,280 295,280 285,260 C 280,250 295,240 305,255" />
+    </g>
+    <g transform="translate(250, 72) scale(0.68)">
+      <path d="M -30,10 C -55,0 -75,20 -60,40 C -45,25 -35,18 -15,14 Z" fill="url(#pewterSilver)" stroke="#110e10" stroke-width="2" />
+      <path d="M 30,10 C 55,0 75,20 60,40 C 45,25 35,18 15,14 Z" fill="url(#pewterSilver)" stroke="#110e10" stroke-width="2" />
+      <path d="M -15,-5 L -26,-25 L -10,-10 Z" fill="url(#pewterSilver)" stroke="#110e10" stroke-width="2.5" />
+      <path d="M 15,-5 L 26,-25 L 10,-10 Z" fill="url(#pewterSilver)" stroke="#110e10" stroke-width="2.5" />
+      <path d="M -16,-5 C -10,12 10,12 16,-5 C 10,8 -10,8 -16,-5 Z" fill="url(#pewterSilver)" stroke="#110e10" stroke-width="2.5" />
+      <path d="M -8,5 L -6,1 L 0,3 L 6,1 L 8,5 Z" fill="#ffffff" />
+      <circle cx="-5" cy="-2" r="2" fill="#ff1744" />
+      <circle cx="5" cy="-2" r="2" fill="#ff1744" />
+      <path d="M -14,-15 L -20,-30 L -10,-22 L 0,-34 L 10,-22 L 20,-30 L 14,-15 Z" fill="url(#pewterSilver)" stroke="#110e10" stroke-width="2" />
+      <circle cx="-20" cy="-32" r="2.5" fill="#ff1744" />
+      <circle cx="0" cy="-36" r="3" fill="#ff1744" />
+      <circle cx="20" cy="-32" r="2.5" fill="#ff1744" />
+    </g>
+    <path d="M 140,210 C 185,150 315,150 360,210 C 315,270 185,270 140,210 Z" fill="url(#pewterSilver)" stroke="#110e10" stroke-width="5" stroke-linejoin="round" />
+    <path d="M 148,210 C 188,162 312,162 352,210 C 312,258 188,258 148,210 Z" fill="#140203" stroke="#050101" stroke-width="1.5" />
+    <path d="M 154,210 C 190,170 310,170 346,210 C 310,250 190,250 154,210 Z" fill="url(#vampEye)" />
+    <path d="M 250,212 C 242,216 230,215 224,203 C 235,190 240,197 244,188 C 246,191 248,191 250,188 C 252,191 254,191 256,188 C 260,197 265,190 276,203 C 270,215 258,216 250,212 Z" fill="#000000" />
+    <ellipse cx="235" cy="195" rx="5" ry="10" fill="#ffffff" opacity="0.65" transform="rotate(-15 235 195)" />
+    <circle cx="265" cy="220" r="3" fill="#ffffff" opacity="0.45" />
+    <g transform="translate(205, 292)">
+      <circle cx="0" cy="0" r="16" fill="url(#gunmetal)" stroke="url(#pewterSilver)" stroke-width="2" />
+      <path d="M -10,3 C -10,3 -4,-8 4,-4 C 8,0 4,8 0,8 C -4,8 -6,6 -10,3 Z" fill="none" stroke="url(#pewterSilver)" stroke-width="1.5" />
+      <path d="M -10,3 Q -3,-1 2,4" fill="none" stroke="url(#pewterSilver)" stroke-width="1" />
+    </g>
+    <g transform="translate(295, 292)">
+      <circle cx="0" cy="0" r="16" fill="url(#gunmetal)" stroke="url(#pewterSilver)" stroke-width="2" />
+      <path d="M 10,3 C 10,3 4,-8 -4,-4 C -8,0 -4,8 0,8 C 4,8 6,6 10,3 Z" fill="none" stroke="url(#pewterSilver)" stroke-width="1.5" />
+      <path d="M 10,3 Q 3,-1 -2,4" fill="none" stroke="url(#pewterSilver)" stroke-width="1" />
+    </g>
+    <g transform="translate(250, 292) scale(0.9)" filter="url(#glow)">
+      <path d="M -10,-18 L 5,-18 C 15,-18 20,-10 20,-1 C 20,8 12,16 -3,16 L -10,16 Z M -2,-12 L -2,10 L 1,10 C 8,10 12,5 12,-1 C 12,-7 8,-12 1,-12 Z" fill="url(#pewterSilver)" stroke="#0e1012" stroke-width="1.5" />
+      <path d="M -10,-18 L -6,-18 L -10,-12 Z M -10,16 L -6,16 L -10,10 Z" fill="url(#pewterSilver)" />
+    </g>
+  </g>
+</svg>
