@@ -93,6 +93,24 @@ export const Skins = new ObjectDefinitions<SkinDefinition>([
     ] satisfies ReadonlyArray<readonly [string, number?, number?, number?]>)
         .map(([name, baseTint, fistsTint, backpackTint]) => skin(name, baseTint, fistsTint, backpackTint)),
 
+    // new skins 
+    {
+        ...skin("Amber Drake", undefined, undefined, undefined),
+        noDrop: true
+    },
+    {
+        ...skin("Jade Sentinel", undefined, undefined, undefined),
+        noDrop: true
+    },
+    {
+        ...skin("Obsidian Wing", undefined, undefined, undefined),
+        noDrop: true
+    },
+    {
+        ...skin("Royal Crest", undefined, undefined, undefined),
+        noDrop: true
+    },
+
     // Hidden from loadout
     ...([
         // NAME                 BASE       FIST     BACKPACK
