@@ -350,15 +350,18 @@ class InputManagerClass {
         }
 
         window.addEventListener("blur", () => {
-     
-            if (this.isMobile) {
-                this.movement.moving = false;
-                this.attacking = false;
-            }
-            
-            this._focusController.forEach(key => this.handleLostFocus(key));
-            this._focusController.clear();
-        });
+    for (const k of this._focusController) {
+        this.handleLostFocus(k);
+    }
+
+    this._focusController.clear();
+
+    
+    if (this.isMobile) {
+        this.movement.moving = false;
+        this.attacking = false;
+    }
+});
 
         // different event targets… why?
         window.addEventListener("keydown", this.handleInputEvent.bind(this, true));
