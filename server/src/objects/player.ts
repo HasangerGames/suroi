@@ -791,7 +791,11 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         if (!primaryItem) return;
         const primaryDefinition = primaryItem.definition;
 
-        primaryItem.ammo = primaryDefinition.capacity;
+        if (this.hasPerk("extended_mags") && primaryDefinition.extendedCapacity !== undefined) {
+            primaryItem.ammo = primaryDefinition.extendedCapacity;
+        } else {
+            primaryItem.ammo = primaryDefinition.capacity;
+        }
 
         if (!Ammos.fromString(primaryDefinition.ammoType).ephemeral) {
             this.inventory.items.setItem(
