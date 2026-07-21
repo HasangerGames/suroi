@@ -1,19 +1,22 @@
-import adapter from '@sveltejs/adapter-auto';
+import { paraglideVitePlugin } from "@inlang/paraglide-js";
+import adapter from "@sveltejs/adapter-auto";
+import { sveltekit } from "@sveltejs/kit/vite";
 import { vitePreprocess } from "@sveltejs/vite-plugin-svelte";
-import { sveltekit } from '@sveltejs/kit/vite';
-import tailwindcss from '@tailwindcss/vite';
+import tailwindcss from "@tailwindcss/vite";
 import { type UserConfig } from "vite";
 import pkg from "../../package.json";
 import { audioSpritesheet } from "./plugins/audio-spritesheet-plugin";
 import { imageSpritesheet } from "./plugins/image-spritesheet-plugin";
 import { newsPosts } from "./plugins/news-posts-plugin";
 import { translations } from "./plugins/translations-plugin";
-import { paraglideVitePlugin } from '@inlang/paraglide-js';
 
 const commonConfig: UserConfig = {
     server: {
         port: 3000,
-        host: "0.0.0.0"
+        host: "0.0.0.0",
+        fs: {
+            allow: ["./config.json"]
+        }
     },
     preview: {
         port: 3000,
@@ -29,7 +32,7 @@ const commonConfig: UserConfig = {
 		sveltekit({
 			compilerOptions: {
 				// Force runes mode for the project, except for libraries. Can be removed in svelte 6.
-				runes: ({ filename }) => filename.split(/[/\\]/).includes('node_modules') ? undefined : true,
+				runes: ({ filename }) => filename.split(/[/\\]/).includes("node_modules") ? undefined : true,
                 experimental: {
                     async: true
                 }

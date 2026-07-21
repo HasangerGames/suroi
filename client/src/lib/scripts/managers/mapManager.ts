@@ -2,7 +2,7 @@ import $ from "jquery";
 import { type ColorSource, Container, Graphics, isMobile, RenderTexture, Sprite, Text, type Texture } from "pixi.js";
 import { GameConstants, GasState, Layer, ObjectCategory, Z_INDEX_COUNT, ZIndexes } from "$common/constants";
 import { type MapPingDefinition } from "$common/definitions/mapPings";
-import { Modes } from "$common/definitions/modes";
+import { GameModes } from "$common/definitions/gameModes";
 import { type MapData } from "$common/packets/mapPacket";
 import { type MapIndicatorSerialization, type PingSerialization, type PlayerPingSerialization } from "$common/packets/updatePacket";
 import { type Variation } from "$common/typings";
@@ -22,6 +22,7 @@ import { InputManager } from "./inputManager";
 import { SoundManager } from "./soundManager";
 import { UIManager } from "./uiManager";
 import { menuUi } from "$lib/scripts/ui/menu.svelte";
+import { PixiManager } from "./pixiManager";
 
 class MapManagerClass {
     private _expanded = false;
@@ -209,7 +210,7 @@ class MapManagerClass {
                 ctx.beginPath();
                 drawGroundGraphics(ground.hitbox.transform(building.position, 1, building.orientation), ctx, scale);
                 ctx.closePath();
-                ctx.fill(ground.waterTint ? Game.mode.colors.water : ground.color);
+                ctx.fill(ground.waterTint ? colors.water : ground.color);
             }
         }
 
@@ -441,7 +442,7 @@ class MapManagerClass {
             antialias: GameConsole.getBuiltInCVar("cv_antialias")
         });
 
-        Game.pixi.renderer.render({ container: mapRender, target: this._texture, clearColor: colors.grass });
+        PixiManager.pixi.renderer.render({ container: mapRender, target: this._texture, clearColor: colors.grass });
         this.sprite.texture.destroy(true);
         this.sprite.texture = this._texture;
         mapRender.destroy({
@@ -544,7 +545,7 @@ class MapManagerClass {
         const rivers: River[] = [];
         rivers.push(...mapPacket.rivers.map(({ width, points, isTrail }) => new River(width, points as Vector[], rivers, mapBounds, isTrail)));
 
-        const baseMode = Modes[Game.mode.similarTo ?? Game.modeName];
+        const baseMode = GameModes[Game.gameModeDef.similarTo ?? Game.gameMode];
         const waterType = baseMode.replaceWaterBy ?? FloorNames.Water;
 
         this._terrain = new Terrain(

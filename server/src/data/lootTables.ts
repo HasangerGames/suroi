@@ -1,10 +1,10 @@
 import { PerkIds } from "$common/definitions/items/perks";
-import { ModeName } from "$common/definitions/modes";
+import { GameMode } from "$common/definitions/gameModes";
 import { Obstacles } from "$common/definitions/obstacles";
 import { NullString } from "$common/utils/objectDefinitions";
 import { LootTable } from "../utils/lootHelpers";
 
-export const LootTables: Record<ModeName, Record<string, LootTable>> = {
+export const LootTables: Record<GameMode, Record<string, LootTable>> = {
     normal: {
         ground_loot: [
             { table: "equipment", weight: 1 },

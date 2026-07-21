@@ -7,8 +7,8 @@
  * change back from an arrow function
  */
 
-import { Rectangle, RendererType, Sprite, VERSION } from "pixi.js";
-import { GameConstants, InputActions, SpectateActions, TeamMode } from "$common/constants";
+import { Rectangle, Sprite } from "pixi.js";
+import { GameConstants, InputActions, SpectateActions } from "$common/constants";
 import { type HealingItemDefinition, HealingItems } from "$common/definitions/items/healingItems";
 import { type ScopeDefinition, Scopes } from "$common/definitions/items/scopes";
 import { Throwables } from "$common/definitions/items/throwables";
@@ -23,9 +23,9 @@ import { CameraManager } from "../managers/cameraManager";
 import { EmoteWheelManager, MapPingWheelManager } from "../managers/emoteWheelManager";
 import { type CompiledAction, type CompiledTuple, InputManager } from "../managers/inputManager";
 import { MapManager } from "../managers/mapManager";
+import { PixiManager } from "../managers/pixiManager";
 import { ScreenRecordManager } from "../managers/screenRecordManager";
 import { UIManager } from "../managers/uiManager";
-import { Config, type ServerInfo } from "../utils/config";
 import { requestFullscreen, sanitizeHTML, stringify } from "../utils/misc";
 import { GameConsole, type PossibleError, type Stringable } from "./gameConsole";
 import { Casters, ConVar } from "./variables";
@@ -754,7 +754,7 @@ export function setUpCommands(): void {
             // create a new sprite since the map one has opacity
             const sprite = new Sprite();
             sprite.texture = MapManager.sprite.texture;
-            const canvas = Game.pixi.renderer.extract.canvas(sprite);
+            const canvas = PixiManager.pixi.renderer.extract.canvas(sprite);
             if (canvas.toBlob) {
                 canvas.toBlob(blob => {
                     if (blob) window.open(URL.createObjectURL(blob));
@@ -784,7 +784,7 @@ export function setUpCommands(): void {
                 height / container.scale.y
             );
 
-            const canvas = Game.pixi.renderer.extract.canvas({
+            const canvas = PixiManager.pixi.renderer.extract.canvas({
                 clearColor: Game.colors.background,
                 target: container,
                 frame: rectangle,
@@ -1695,84 +1695,85 @@ export function setUpCommands(): void {
         }
     );
 
-    Command.createCommand(
-        "dump_client_info",
-        function(raw): undefined {
-            const data = {
-                version: APP_VERSION,
-                api_url: API_URL,
-                client_protocol_version: GameConstants.protocolVersion,
-                pixi: {
-                    version: VERSION,
-                    renderer_info: {
-                        type: RendererType[Game.pixi.renderer.type],
-                        resolution: Game.pixi.renderer.resolution
-                    }
-                },
-                user_agent: {
-                    ua_string: navigator.userAgent,
-                    language: navigator.language,
-                    online: navigator.onLine
-                },
-                regions: Config.regions as unknown as Record<string, ServerInfo>,
-                default_region: Config.defaultRegion
-            };
+    // TODO Update this command
+    // Command.createCommand(
+    //     "dump_client_info",
+    //     function(raw): undefined {
+    //         const data = {
+    //             version: APP_VERSION,
+    //             api_url: API_URL,
+    //             client_protocol_version: GameConstants.protocolVersion,
+    //             pixi: {
+    //                 version: VERSION,
+    //                 renderer_info: {
+    //                     type: RendererType[PixiManager.pixi.renderer.type],
+    //                     resolution: PixiManager.pixi.renderer.resolution
+    //                 }
+    //             },
+    //             user_agent: {
+    //                 ua_string: navigator.userAgent,
+    //                 language: navigator.language,
+    //                 online: navigator.onLine
+    //             },
+    //             regions: Config.regions as unknown as Record<string, ServerInfo>,
+    //             default_region: Config.defaultRegion
+    //         };
 
-            if (handleResult(Casters.toBoolean(raw ?? "false"), () => false)) {
-                GameConsole.log.raw(
-                    JSON.stringify(data, null, 2)
-                        .replace(/\n| /g, r => ({ "\n": "<br>", " ": "&nbsp;" }[r] ?? ""))
-                );
-            } else {
-                GameConsole.log.raw(
-                    (function construct(obj: Record<string, unknown>): string {
-                        let retVal = "<ul>";
+    //         if (handleResult(Casters.toBoolean(raw ?? "false"), () => false)) {
+    //             GameConsole.log.raw(
+    //                 JSON.stringify(data, null, 2)
+    //                     .replace(/\n| /g, r => ({ "\n": "<br>", " ": "&nbsp;" }[r] ?? ""))
+    //             );
+    //         } else {
+    //             GameConsole.log.raw(
+    //                 (function construct(obj: Record<string, unknown>): string {
+    //                     let retVal = "<ul>";
 
-                        for (const [key, value] of Object.entries(obj)) {
-                            retVal += `<li><b>${key}</b>: ${
-                                typeof value === "object" && value !== null && !(value instanceof Date)
-                                    ? construct(value as Record<string, unknown>)
-                                    : String(value)
-                            }</li>`;
-                        }
+    //                     for (const [key, value] of Object.entries(obj)) {
+    //                         retVal += `<li><b>${key}</b>: ${
+    //                             typeof value === "object" && value !== null && !(value instanceof Date)
+    //                                 ? construct(value as Record<string, unknown>)
+    //                                 : String(value)
+    //                         }</li>`;
+    //                     }
 
-                        return `${retVal}</ul>`;
-                    })({
-                        ...data,
-                        regions: Object.fromEntries(
-                            Object.entries(data.regions).map(
-                                ([k, v]) => [
-                                    k,
-                                    {
-                                        ...v,
-                                        ...(typeof v.teamModeSwitchTime === "number" ? { teamModeSwitchTime: new Date(v.teamModeSwitchTime) } : {}),
-                                        ...(typeof v.teamMode === "number" ? { teamMode: TeamMode[v.teamMode] } : {})
-                                    }
-                                ]
-                            )
-                        )
-                    })
-                );
-            }
-        },
-        {
-            short: "Gives info about the client",
-            long: "Dumps a variety of information about the current client. For debugging purposes. If <code>raw</code> is set to true, "
-                + "the data is outputted as raw JSON; otherwise, it is displayed in a list (default option).",
-            signatures: [
-                {
-                    args: [
-                        {
-                            name: "raw",
-                            type: ["boolean"],
-                            optional: true
-                        }
-                    ],
-                    noexcept: true
-                }
-            ]
-        }
-    );
+    //                     return `${retVal}</ul>`;
+    //                 })({
+    //                     ...data,
+    //                     regions: Object.fromEntries(
+    //                         Object.entries(data.regions).map(
+    //                             ([k, v]) => [
+    //                                 k,
+    //                                 {
+    //                                     ...v,
+    //                                     ...(typeof v.teamModeSwitchTime === "number" ? { teamModeSwitchTime: new Date(v.teamModeSwitchTime) } : {}),
+    //                                     ...(typeof v.teamMode === "number" ? { teamMode: TeamMode[v.teamMode] } : {})
+    //                                 }
+    //                             ]
+    //                         )
+    //                     )
+    //                 })
+    //             );
+    //         }
+    //     },
+    //     {
+    //         short: "Gives info about the client",
+    //         long: "Dumps a variety of information about the current client. For debugging purposes. If <code>raw</code> is set to true, "
+    //             + "the data is outputted as raw JSON; otherwise, it is displayed in a list (default option).",
+    //         signatures: [
+    //             {
+    //                 args: [
+    //                     {
+    //                         name: "raw",
+    //                         type: ["boolean"],
+    //                         optional: true
+    //                     }
+    //                 ],
+    //                 noexcept: true
+    //             }
+    //         ]
+    //     }
+    // );
 
     Command.createCommand(
         "screen_record",

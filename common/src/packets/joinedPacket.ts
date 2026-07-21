@@ -1,23 +1,23 @@
-import { TeamMode } from "../constants";
-import { Emotes, type EmoteDefinition } from "../definitions/emotes";
+import { type EmoteDefinition, Emotes } from "../definitions/emotes";
+import { TeamMode } from "../schemas/misc";
 import { DataSplitTypes, Packet, PacketType } from "./packet";
 
 export type JoinedData = {
     readonly type: PacketType.Joined
     readonly emotes: ReadonlyArray<EmoteDefinition | undefined>
 } & (
-    | { readonly teamMode: TeamMode.Solo }
+    | { readonly teamMode: "solo" }
     | {
-        readonly teamMode: Exclude<TeamMode, TeamMode.Solo>
-        readonly teamID: number
+        readonly teamMode: Exclude<TeamMode, "solo">
+        readonly teamId: number
     }
 );
 
 export const JoinedPacket = new Packet<JoinedData>(PacketType.Joined, {
     serialize(stream, data) {
-        stream.writeUint8(data.teamMode);
-        if (data.teamMode !== TeamMode.Solo) {
-            stream.writeUint8(data.teamID);
+        stream.writeTeamMode(data.teamMode);
+        if (data.teamMode !== "solo") {
+            stream.writeUint8(data.teamId);
         }
 
         const emotes = data.emotes;
@@ -41,9 +41,9 @@ export const JoinedPacket = new Packet<JoinedData>(PacketType.Joined, {
     deserialize(stream, data, saveIndex, recordTo) {
         saveIndex();
 
-        data.teamMode = stream.readUint8();
-        if (data.teamMode !== TeamMode.Solo) {
-            data.teamID = stream.readUint8();
+        data.teamMode = stream.readTeamMode();
+        if (data.teamMode !== "solo") {
+            data.teamId = stream.readUint8();
         }
 
         const emotes = stream.readBooleanGroup();

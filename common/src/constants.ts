@@ -1,5 +1,5 @@
 import type { ItemType, WeaponTypes } from "./definitions/loots";
-import { type ModeName } from "./definitions/modes";
+import { type GameMode } from "./definitions/gameModes";
 import { PlayerModifiers } from "./typings";
 import { DefinitionType } from "./utils/objectDefinitions";
 
@@ -13,7 +13,7 @@ export const GameConstants = {
     maxPosition: 1924,
     objectMinScale: 0.15,
     objectMaxScale: 3,
-    defaultMode: "normal" satisfies ModeName as ModeName,
+    defaultMode: "normal" satisfies GameMode as GameMode,
     player: {
         radius: 2.25,
         baseSpeed: 0.03,
@@ -62,23 +62,23 @@ export const GameConstants = {
         damageScaleFactor: 0.005, // Extra damage, linear per distance unit into the gas
         unscaledDamageDist: 12 // Don't scale damage for a certain distance into the gas
     },
-    lootSpawnMaxJitter: 0.7,
     loot: {
+        maxSpawnJitter: 0.7,
         drag: 0.003,
-        iceDrag: 0.0008
+        iceDrag: 0.0008,
+        radius: {
+            [DefinitionType.Gun]: 3.4,
+            [DefinitionType.Ammo]: 2,
+            [DefinitionType.Melee]: 3,
+            [DefinitionType.Throwable]: 3,
+            [DefinitionType.HealingItem]: 2.5,
+            [DefinitionType.Armor]: 3,
+            [DefinitionType.Backpack]: 3,
+            [DefinitionType.Scope]: 3,
+            [DefinitionType.Skin]: 3,
+            [DefinitionType.Perk]: 3
+        } satisfies Record<ItemType, number>
     },
-    lootRadius: {
-        [DefinitionType.Gun]: 3.4,
-        [DefinitionType.Ammo]: 2,
-        [DefinitionType.Melee]: 3,
-        [DefinitionType.Throwable]: 3,
-        [DefinitionType.HealingItem]: 2.5,
-        [DefinitionType.Armor]: 3,
-        [DefinitionType.Backpack]: 3,
-        [DefinitionType.Scope]: 3,
-        [DefinitionType.Skin]: 3,
-        [DefinitionType.Perk]: 3
-    } satisfies Record<ItemType, number>,
     defaultSpeedModifiers: {
         [DefinitionType.Gun]: 0.88,
         [DefinitionType.Melee]: 1,
@@ -102,7 +102,7 @@ export const GameConstants = {
     },
     explosionMaxDistSquared: 128 ** 2,
     trailPadding: 384,
-    explosionRayDistance: 2
+    explosionRayDistance: 2,
 };
 
 export enum ZIndexes {
@@ -156,12 +156,6 @@ export const enum Layers {
     All,      // Collide with objects on all layers
     Adjacent, // Collide with objects on the same or adjacent layers
     Equal     // Only collide with objects on the same layer
-}
-
-export enum TeamMode {
-    Solo = 1,
-    Duo = 2,
-    Squad = 4
 }
 
 export enum ObjectCategory {

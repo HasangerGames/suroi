@@ -109,12 +109,20 @@ export function styleText(string: string, ...styles: Array<Colors[Channel][Color
     return `${opening}${string.split(CLOSING_CODE).join(opening)}${CLOSING_CODE}`;
 }
 
+const LOG_FORMAT = new Intl.DateTimeFormat("en-US", {
+    month: "2-digit",
+    day: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    hour12: true,
+    minute: "2-digit",
+    second: "2-digit"
+});
+
 export const Logger = {
     log(...message: unknown[]): void {
-        const date = new Date();
-
         console.log(
-            styleText(`[${date.toLocaleDateString("en-US")} ${date.toLocaleTimeString("en-US")}]`, ColorStyles.foreground.blue.bright),
+            styleText(`[${LOG_FORMAT.format().replace(",", "")}]`, ColorStyles.foreground.blue.bright),
             ...message
         );
     },

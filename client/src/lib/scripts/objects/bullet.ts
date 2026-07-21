@@ -69,7 +69,7 @@ export class Bullet extends BaseBullet {
             ];
         }
 
-        if (Game.mode.bulletFilters) {
+        if (Game.gameModeDef.bulletFilters) {
             this._image.filters = [
                 new GlowFilter({
                     distance: 15,
@@ -95,7 +95,7 @@ export class Bullet extends BaseBullet {
                 ? random(0, white)
                 : tracerStats?.color ?? white
         );
-        if (Game.mode.bulletTrailAdjust) color.multiply(Game.mode.bulletTrailAdjust);
+        if (Game.gameModeDef.bulletTrailAdjust) color.multiply(Game.gameModeDef.bulletTrailAdjust);
         if (this.saturate) {
             const hsl = colord(color.toRgbaString()).saturate(50);
             color.value = (hsl.brightness() < 0.6 ? hsl.lighten(0.1) : hsl.darken(0.2)).rgba;

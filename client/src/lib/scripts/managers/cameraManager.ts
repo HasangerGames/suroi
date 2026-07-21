@@ -14,6 +14,7 @@ import { getLayerContainer as getLayerContainerIndex, LayerContainer } from "$co
 import { type Timeout } from "$common/utils/misc";
 import { InputManager } from "./inputManager";
 import { EmoteWheelManager, MapPingWheelManager } from "./emoteWheelManager";
+import { PixiManager } from "./pixiManager";
 
 class CameraManagerClass {
     container = new Container();
@@ -70,8 +71,8 @@ class CameraManagerClass {
     }
 
     resize(animation = false): void {
-        this.width = Game.pixi.screen.width;
-        this.height = Game.pixi.screen.height;
+        this.width = PixiManager.pixi.screen.width;
+        this.height = PixiManager.pixi.screen.height;
 
         const minDimension = Numeric.min(this.width, this.height);
         const maxDimension = Numeric.max(this.width, this.height);
@@ -97,7 +98,7 @@ class CameraManagerClass {
         }
 
         if (InputManager.isMobile) {
-            EmoteWheelManager.container.position = MapPingWheelManager.position = Vec(Game.pixi.screen.width / 2, Game.pixi.screen.height / 2);
+            EmoteWheelManager.container.position = MapPingWheelManager.position = Vec(PixiManager.pixi.screen.width / 2, PixiManager.pixi.screen.height / 2);
         }
     }
 
@@ -173,7 +174,7 @@ class CameraManagerClass {
             // if showing the container, it needs to be visible from the start or the transition won't work
             container.visible = true;
 
-            if (Game.mode.overrideUpstairsFunctionality && i === 2) container.visible = false; // hunting stand sucks balls
+            if (Game.gameModeDef.overrideUpstairsFunctionality && i === 2) container.visible = false; // hunting stand sucks balls
 
             this.layerTweens[i] = Game.addTween({
                 target: container,

@@ -1,8 +1,8 @@
 import { CustomTeamMessages, CustomTeamPlayerInfo, type CustomTeamMessage } from "$common/typings";
 import { removeFrom } from "$common/utils/misc";
-import { random } from "$common/utils/random";
 import { GameManager } from "./gameManager";
 import { type Player } from "./objects/player";
+import { randomId } from "./utils/misc";
 
 export class Team {
     readonly id: number;
@@ -133,9 +133,6 @@ export class Team {
 export interface CustomTeamPlayerContainer { player: CustomTeamPlayer }
 
 export class CustomTeam {
-    private static readonly _idChars = "abcdefghijklmnopqrstuvwxyz0123456789";
-    private static readonly _idCharMax = this._idChars.length - 1;
-
     readonly id: string;
 
     readonly players: CustomTeamPlayer[] = [];
@@ -144,12 +141,12 @@ export class CustomTeam {
     locked = false;
     forceStart = false;
 
-    gameID?: number;
+    gameId?: string;
     resetTimeout?: NodeJS.Timeout;
     keepAliveInterval?: NodeJS.Timeout;
 
     constructor(readonly gameManager: GameManager) {
-        this.id = Array.from({ length: 4 }, () => CustomTeam._idChars.charAt(random(0, CustomTeam._idCharMax))).join("");
+        this.id = randomId();
 
         // Send a keep alive message every minute so the WebSocket connection isn't terminated
         this.keepAliveInterval = setInterval(() => {
@@ -161,7 +158,7 @@ export class CustomTeam {
         this.players.push(player);
         player.sendMessage({
             type: CustomTeamMessages.Join,
-            teamID: this.id,
+            teamId: this.id,
             isLeader: player.isLeader,
             autoFill: this.autoFill,
             locked: this.locked,
@@ -235,9 +232,9 @@ export class CustomTeam {
         const result = await this.gameManager.findGame();
         if (result === undefined) return;
 
-        this.gameID = result;
+        this.gameId = result;
         clearTimeout(this.resetTimeout);
-        this.resetTimeout = setTimeout(() => this.gameID = undefined, 10000);
+        this.resetTimeout = setTimeout(() => this.gameId = undefined, 10000);
 
         for (const player of this.players) {
             player.ready = false;
@@ -282,7 +279,7 @@ export class CustomTeam {
 export class CustomTeamPlayer {
     get id(): number { return this.team.players.indexOf(this); }
     get isLeader(): boolean { return this.id === 0; }
-    socket?: Bun.ServerWebSocket<CustomTeamPlayerContainer>;
+    socket?: Bun.ServerWebSocket<CustomTeamPlayer>;
     ready = false;
 
     constructor(

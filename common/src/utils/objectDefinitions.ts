@@ -1,4 +1,4 @@
-import { ModeName } from "../definitions/modes";
+import { GameMode } from "../definitions/gameModes";
 import { type ByteStream } from "./byteStream";
 import { ReadonlyRecord } from "./misc";
 import { type Vector } from "./vector";
@@ -141,7 +141,7 @@ export interface ItemDefinition extends ObjectDefinition {
     readonly noDrop?: boolean
     readonly noSwap?: boolean
     readonly devItem?: boolean
-    readonly reskins?: ModeName[]
+    readonly reskins?: GameMode[]
     readonly mapIndicator?: string
     readonly hideInHUD?: boolean
 }

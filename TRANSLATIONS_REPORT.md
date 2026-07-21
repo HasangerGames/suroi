@@ -11,10 +11,10 @@ This file is a report of all errors and missing keys in the translation files of
 ### Undefined Keys
 
 - Key `msg_error_kicked_team` is not defined
-- Key `msg_punishment_noname_reason` is not defined
-- Key `msg_punishment_vpn` is not defined
-- Key `msg_punishment_vpn_reason` is not defined
-- Key `msg_punishment_warn_agreement` is not defined
+- Key `punishment_noname_reason` is not defined
+- Key `punishment_vpn` is not defined
+- Key `punishment_vpn_reason` is not defined
+- Key `punishment_warn_agreement` is not defined
 - Key `warning_hw_accel_1` is not defined
 - Key `warning_hw_accel_2` is not defined
 - Key `warning_hw_accel_link` is not defined
@@ -124,10 +124,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `pumpkin_explosion` is not defined
 - Key `region_ea` is not defined
 - Key `region_oc` is not defined
-- Key `mode_normal` is not defined
-- Key `mode_fall` is not defined
-- Key `mode_infection` is not defined
-- Key `mode_hunted` is not defined
+- Key `game_mode_normal` is not defined
+- Key `game_mode_fall` is not defined
+- Key `game_mode_infection` is not defined
+- Key `game_mode_hunted` is not defined
 - Key `second_wind` is not defined
 - Key `second_wind_desc` is not defined
 - Key `flechettes` is not defined
@@ -224,7 +224,7 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### Undefined Keys
 
-- Key `msg_punishment_noname_reason` is not defined
+- Key `punishment_noname_reason` is not defined
 - Key `bindings_fullscreen` is not defined
 - Key `recording` is not defined
 - Key `settings_explosion_shockwaves` is not defined
@@ -274,10 +274,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `pumpkin_explosion` is not defined
 - Key `region_ea` is not defined
 - Key `region_oc` is not defined
-- Key `mode_normal` is not defined
-- Key `mode_fall` is not defined
-- Key `mode_infection` is not defined
-- Key `mode_hunted` is not defined
+- Key `game_mode_normal` is not defined
+- Key `game_mode_fall` is not defined
+- Key `game_mode_infection` is not defined
+- Key `game_mode_hunted` is not defined
 - Key `plumpkin_shuffle` is not defined
 - Key `plumpkin_shuffle_desc` is not defined
 - Key `eternal_magnetism` is not defined
@@ -299,10 +299,10 @@ This file is a report of all errors and missing keys in the translation files of
 ### Undefined Keys
 
 - Key `msg_error_kicked_team` is not defined
-- Key `msg_punishment_noname_reason` is not defined
-- Key `msg_punishment_vpn` is not defined
-- Key `msg_punishment_vpn_reason` is not defined
-- Key `msg_punishment_warn_agreement` is not defined
+- Key `punishment_noname_reason` is not defined
+- Key `punishment_vpn` is not defined
+- Key `punishment_vpn_reason` is not defined
+- Key `punishment_warn_agreement` is not defined
 - Key `warning_hw_accel_1` is not defined
 - Key `warning_hw_accel_2` is not defined
 - Key `warning_hw_accel_link` is not defined
@@ -402,10 +402,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `pumpkin_explosion` is not defined
 - Key `region_ea` is not defined
 - Key `region_oc` is not defined
-- Key `mode_normal` is not defined
-- Key `mode_fall` is not defined
-- Key `mode_infection` is not defined
-- Key `mode_hunted` is not defined
+- Key `game_mode_normal` is not defined
+- Key `game_mode_fall` is not defined
+- Key `game_mode_infection` is not defined
+- Key `game_mode_hunted` is not defined
 - Key `second_wind` is not defined
 - Key `second_wind_desc` is not defined
 - Key `flechettes` is not defined
@@ -502,7 +502,7 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### Undefined Keys
 
-- Key `msg_punishment_noname_reason` is not defined
+- Key `punishment_noname_reason` is not defined
 - Key `warning_hw_accel_1` is not defined
 - Key `warning_hw_accel_2` is not defined
 - Key `warning_hw_accel_link` is not defined
@@ -575,10 +575,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `pumpkin_explosion` is not defined
 - Key `region_ea` is not defined
 - Key `region_oc` is not defined
-- Key `mode_normal` is not defined
-- Key `mode_fall` is not defined
-- Key `mode_infection` is not defined
-- Key `mode_hunted` is not defined
+- Key `game_mode_normal` is not defined
+- Key `game_mode_fall` is not defined
+- Key `game_mode_infection` is not defined
+- Key `game_mode_hunted` is not defined
 - Key `second_wind` is not defined
 - Key `second_wind_desc` is not defined
 - Key `flechettes` is not defined
@@ -682,7 +682,7 @@ This file is a report of all errors and missing keys in the translation files of
 ### Undefined Keys
 
 - Key `msg_error_kicked_team` is not defined
-- Key `msg_punishment_noname_reason` is not defined
+- Key `punishment_noname_reason` is not defined
 - Key `warning_hw_accel_1` is not defined
 - Key `warning_hw_accel_2` is not defined
 - Key `warning_hw_accel_link` is not defined
@@ -769,10 +769,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `pumpkin_explosion` is not defined
 - Key `region_ea` is not defined
 - Key `region_oc` is not defined
-- Key `mode_normal` is not defined
-- Key `mode_fall` is not defined
-- Key `mode_infection` is not defined
-- Key `mode_hunted` is not defined
+- Key `game_mode_normal` is not defined
+- Key `game_mode_fall` is not defined
+- Key `game_mode_infection` is not defined
+- Key `game_mode_hunted` is not defined
 - Key `second_wind` is not defined
 - Key `second_wind_desc` is not defined
 - Key `flechettes` is not defined
@@ -1020,7 +1020,7 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### Undefined Keys
 
-- Key `msg_punishment_noname_reason` is not defined
+- Key `punishment_noname_reason` is not defined
 - Key `contact` is not defined
 - Key `settings_explosion_shockwaves` is not defined
 - Key `settings_bullet_trail_bloom` is not defined
@@ -1063,10 +1063,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `confetti_grenade_explosion` is not defined
 - Key `pumpkin_explosion` is not defined
 - Key `region_ea` is not defined
-- Key `mode_normal` is not defined
-- Key `mode_fall` is not defined
-- Key `mode_infection` is not defined
-- Key `mode_hunted` is not defined
+- Key `game_mode_normal` is not defined
+- Key `game_mode_fall` is not defined
+- Key `game_mode_infection` is not defined
+- Key `game_mode_hunted` is not defined
 - Key `loot_baron` is not defined
 - Key `loot_baron_desc` is not defined
 - Key `overclocked` is not defined
@@ -1103,7 +1103,7 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### Undefined Keys
 
-- Key `msg_punishment_noname_reason` is not defined
+- Key `punishment_noname_reason` is not defined
 - Key `settings_explosion_shockwaves` is not defined
 - Key `settings_bullet_trail_bloom` is not defined
 - Key `settings_blood_splatter` is not defined
@@ -1112,10 +1112,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_weapon_compare` is not defined
 - Key `settings_weapon_compare_condensed` is not defined
 - Key `kf_disconnected` is not defined
-- Key `mode_normal` is not defined
-- Key `mode_fall` is not defined
-- Key `mode_infection` is not defined
-- Key `mode_hunted` is not defined
+- Key `game_mode_normal` is not defined
+- Key `game_mode_fall` is not defined
+- Key `game_mode_infection` is not defined
+- Key `game_mode_hunted` is not defined
 - Key `plumpkin_shuffle` is not defined
 - Key `plumpkin_shuffle_desc` is not defined
 - Key `eternal_magnetism` is not defined
@@ -1137,8 +1137,8 @@ This file is a report of all errors and missing keys in the translation files of
 ### Undefined Keys
 
 - Key `msg_error_kicked_team` is not defined
-- Key `msg_punishment_noname_reason` is not defined
-- Key `msg_punishment_warn_agreement` is not defined
+- Key `punishment_noname_reason` is not defined
+- Key `punishment_warn_agreement` is not defined
 - Key `warning_hw_accel_1` is not defined
 - Key `warning_hw_accel_2` is not defined
 - Key `warning_hw_accel_link` is not defined
@@ -1229,10 +1229,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `pumpkin_explosion` is not defined
 - Key `region_ea` is not defined
 - Key `region_oc` is not defined
-- Key `mode_normal` is not defined
-- Key `mode_fall` is not defined
-- Key `mode_infection` is not defined
-- Key `mode_hunted` is not defined
+- Key `game_mode_normal` is not defined
+- Key `game_mode_fall` is not defined
+- Key `game_mode_infection` is not defined
+- Key `game_mode_hunted` is not defined
 - Key `second_wind` is not defined
 - Key `second_wind_desc` is not defined
 - Key `flechettes` is not defined
@@ -1333,7 +1333,7 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### Undefined Keys
 
-- Key `msg_punishment_noname_reason` is not defined
+- Key `punishment_noname_reason` is not defined
 - Key `contact` is not defined
 - Key `settings_explosion_shockwaves` is not defined
 - Key `settings_bullet_trail_bloom` is not defined
@@ -1376,10 +1376,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `confetti_grenade_explosion` is not defined
 - Key `pumpkin_explosion` is not defined
 - Key `region_ea` is not defined
-- Key `mode_normal` is not defined
-- Key `mode_fall` is not defined
-- Key `mode_infection` is not defined
-- Key `mode_hunted` is not defined
+- Key `game_mode_normal` is not defined
+- Key `game_mode_fall` is not defined
+- Key `game_mode_infection` is not defined
+- Key `game_mode_hunted` is not defined
 - Key `loot_baron` is not defined
 - Key `loot_baron_desc` is not defined
 - Key `overclocked` is not defined
@@ -1398,7 +1398,7 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### Undefined Keys
 
-- Key `msg_punishment_noname_reason` is not defined
+- Key `punishment_noname_reason` is not defined
 - Key `settings_explosion_shockwaves` is not defined
 - Key `settings_bullet_trail_bloom` is not defined
 - Key `settings_blood_splatter` is not defined
@@ -1407,10 +1407,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_weapon_compare` is not defined
 - Key `settings_weapon_compare_condensed` is not defined
 - Key `kf_disconnected` is not defined
-- Key `mode_normal` is not defined
-- Key `mode_fall` is not defined
-- Key `mode_infection` is not defined
-- Key `mode_hunted` is not defined
+- Key `game_mode_normal` is not defined
+- Key `game_mode_fall` is not defined
+- Key `game_mode_infection` is not defined
+- Key `game_mode_hunted` is not defined
 - Key `plumpkin_shuffle` is not defined
 - Key `plumpkin_shuffle_desc` is not defined
 - Key `eternal_magnetism` is not defined
@@ -1422,7 +1422,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `plumpkin_blessing` is not defined
 - Key `plumpkin_blessing_desc` is not defined
 
-## 🇭🇰 🇲🇴 廣東話(香港/澳門) (54% Complete) - hk_mo.hjson
+## 🇭🇰 🇲🇴 廣東話(香港/澳門) (53% Complete) - hk_mo.hjson
 
 ### Invalid Keys
 
@@ -1433,10 +1433,10 @@ This file is a report of all errors and missing keys in the translation files of
 
 - Key `msg_error_joining_team` is not defined
 - Key `msg_error_kicked_team` is not defined
-- Key `msg_punishment_noname_reason` is not defined
-- Key `msg_punishment_vpn` is not defined
-- Key `msg_punishment_vpn_reason` is not defined
-- Key `msg_punishment_warn_agreement` is not defined
+- Key `punishment_noname_reason` is not defined
+- Key `punishment_vpn` is not defined
+- Key `punishment_vpn_reason` is not defined
+- Key `punishment_warn_agreement` is not defined
 - Key `warning_hw_accel_1` is not defined
 - Key `warning_hw_accel_2` is not defined
 - Key `warning_hw_accel_link` is not defined
@@ -1539,10 +1539,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `pumpkin_explosion` is not defined
 - Key `region_ea` is not defined
 - Key `region_oc` is not defined
-- Key `mode_normal` is not defined
-- Key `mode_fall` is not defined
-- Key `mode_infection` is not defined
-- Key `mode_hunted` is not defined
+- Key `game_mode_normal` is not defined
+- Key `game_mode_fall` is not defined
+- Key `game_mode_infection` is not defined
+- Key `game_mode_hunted` is not defined
 - Key `second_wind` is not defined
 - Key `second_wind_desc` is not defined
 - Key `flechettes` is not defined
@@ -1634,11 +1634,12 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### Invalid Keys
 
+- Key `msg_locked_tooltip` is not a valid key
 - Key `m16a4` is not a valid key
 
 ### Undefined Keys
 
-- Key `msg_punishment_noname_reason` is not defined
+- Key `punishment_noname_reason` is not defined
 - Key `contact` is not defined
 - Key `settings_explosion_shockwaves` is not defined
 - Key `settings_bullet_trail_bloom` is not defined
@@ -1683,10 +1684,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `confetti_grenade_explosion` is not defined
 - Key `pumpkin_explosion` is not defined
 - Key `region_ea` is not defined
-- Key `mode_normal` is not defined
-- Key `mode_fall` is not defined
-- Key `mode_infection` is not defined
-- Key `mode_hunted` is not defined
+- Key `game_mode_normal` is not defined
+- Key `game_mode_fall` is not defined
+- Key `game_mode_infection` is not defined
+- Key `game_mode_hunted` is not defined
 - Key `loot_baron` is not defined
 - Key `loot_baron_desc` is not defined
 - Key `overclocked` is not defined
@@ -1727,6 +1728,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_temp_ban_msg` is not a valid key
 - Key `msg_perma_ban` is not a valid key
 - Key `msg_perma_ban_msg` is not a valid key
+- Key `msg_locked_tooltip` is not a valid key
 - Key `create_team_waiting` is not a valid key
 - Key `saf_200` is not a valid key
 - Key `desstroyer_of_worlds` is not a valid key
@@ -1735,16 +1737,16 @@ This file is a report of all errors and missing keys in the translation files of
 ### Undefined Keys
 
 - Key `msg_error_kicked_team` is not defined
-- Key `msg_punishment_warn` is not defined
-- Key `msg_punishment_warn_reason` is not defined
-- Key `msg_punishment_temp` is not defined
-- Key `msg_punishment_temp_reason` is not defined
-- Key `msg_punishment_perma` is not defined
-- Key `msg_punishment_perma_reason` is not defined
-- Key `msg_punishment_noname_reason` is not defined
-- Key `msg_punishment_vpn` is not defined
-- Key `msg_punishment_vpn_reason` is not defined
-- Key `msg_punishment_warn_agreement` is not defined
+- Key `punishment_warn` is not defined
+- Key `punishment_warn_reason` is not defined
+- Key `punishment_temp` is not defined
+- Key `punishment_temp_reason` is not defined
+- Key `punishment_perma` is not defined
+- Key `punishment_perma_reason` is not defined
+- Key `punishment_noname_reason` is not defined
+- Key `punishment_vpn` is not defined
+- Key `punishment_vpn_reason` is not defined
+- Key `punishment_warn_agreement` is not defined
 - Key `warning_hw_accel_1` is not defined
 - Key `warning_hw_accel_2` is not defined
 - Key `warning_hw_accel_link` is not defined
@@ -1847,10 +1849,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `pumpkin_explosion` is not defined
 - Key `region_ea` is not defined
 - Key `region_oc` is not defined
-- Key `mode_normal` is not defined
-- Key `mode_fall` is not defined
-- Key `mode_infection` is not defined
-- Key `mode_hunted` is not defined
+- Key `game_mode_normal` is not defined
+- Key `game_mode_fall` is not defined
+- Key `game_mode_infection` is not defined
+- Key `game_mode_hunted` is not defined
 - Key `second_wind` is not defined
 - Key `second_wind_desc` is not defined
 - Key `flechettes` is not defined
@@ -1942,6 +1944,7 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### Invalid Keys
 
+- Key `msg_locked_tooltip` is not a valid key
 - Key `emote_happy_face` is not a valid key
 - Key `emote_sad_face` is not a valid key
 - Key `emote_thumbs_up` is not a valid key
@@ -2183,25 +2186,26 @@ This file is a report of all errors and missing keys in the translation files of
 ### Undefined Keys
 
 - Key `settings_hide_qq` is not defined
-- Key `mode_normal` is not defined
-- Key `mode_fall` is not defined
-- Key `mode_infection` is not defined
-- Key `mode_hunted` is not defined
+- Key `game_mode_normal` is not defined
+- Key `game_mode_fall` is not defined
+- Key `game_mode_infection` is not defined
+- Key `game_mode_hunted` is not defined
 
 ## 🇱🇹 Lietuvių (54% Complete) - lt.hjson
 
 ### Invalid Keys
 
+- Key `msg_locked_tooltip` is not a valid key
 - Key `create_team_waiting` is not a valid key
 - Key `m16a4` is not a valid key
 
 ### Undefined Keys
 
 - Key `msg_error_kicked_team` is not defined
-- Key `msg_punishment_noname_reason` is not defined
-- Key `msg_punishment_vpn` is not defined
-- Key `msg_punishment_vpn_reason` is not defined
-- Key `msg_punishment_warn_agreement` is not defined
+- Key `punishment_noname_reason` is not defined
+- Key `punishment_vpn` is not defined
+- Key `punishment_vpn_reason` is not defined
+- Key `punishment_warn_agreement` is not defined
 - Key `warning_hw_accel_1` is not defined
 - Key `warning_hw_accel_2` is not defined
 - Key `warning_hw_accel_link` is not defined
@@ -2301,10 +2305,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `pumpkin_explosion` is not defined
 - Key `region_ea` is not defined
 - Key `region_oc` is not defined
-- Key `mode_normal` is not defined
-- Key `mode_fall` is not defined
-- Key `mode_infection` is not defined
-- Key `mode_hunted` is not defined
+- Key `game_mode_normal` is not defined
+- Key `game_mode_fall` is not defined
+- Key `game_mode_infection` is not defined
+- Key `game_mode_hunted` is not defined
 - Key `second_wind` is not defined
 - Key `second_wind_desc` is not defined
 - Key `flechettes` is not defined
@@ -2396,16 +2400,17 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### Invalid Keys
 
+- Key `msg_locked_tooltip` is not a valid key
 - Key `create_team_waiting` is not a valid key
 - Key `m16a4` is not a valid key
 
 ### Undefined Keys
 
 - Key `msg_error_kicked_team` is not defined
-- Key `msg_punishment_noname_reason` is not defined
-- Key `msg_punishment_vpn` is not defined
-- Key `msg_punishment_vpn_reason` is not defined
-- Key `msg_punishment_warn_agreement` is not defined
+- Key `punishment_noname_reason` is not defined
+- Key `punishment_vpn` is not defined
+- Key `punishment_vpn_reason` is not defined
+- Key `punishment_warn_agreement` is not defined
 - Key `warning_hw_accel_1` is not defined
 - Key `warning_hw_accel_2` is not defined
 - Key `warning_hw_accel_link` is not defined
@@ -2505,10 +2510,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `pumpkin_explosion` is not defined
 - Key `region_ea` is not defined
 - Key `region_oc` is not defined
-- Key `mode_normal` is not defined
-- Key `mode_fall` is not defined
-- Key `mode_infection` is not defined
-- Key `mode_hunted` is not defined
+- Key `game_mode_normal` is not defined
+- Key `game_mode_fall` is not defined
+- Key `game_mode_infection` is not defined
+- Key `game_mode_hunted` is not defined
 - Key `second_wind` is not defined
 - Key `second_wind_desc` is not defined
 - Key `flechettes` is not defined
@@ -2600,11 +2605,12 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### Invalid Keys
 
+- Key `msg_locked_tooltip` is not a valid key
 - Key `m16a4` is not a valid key
 
 ### Undefined Keys
 
-- Key `msg_punishment_noname_reason` is not defined
+- Key `punishment_noname_reason` is not defined
 - Key `settings_explosion_shockwaves` is not defined
 - Key `settings_bullet_trail_bloom` is not defined
 - Key `settings_blood_splatter` is not defined
@@ -2632,10 +2638,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `frag_grenade_explosion` is not defined
 - Key `confetti_grenade_explosion` is not defined
 - Key `pumpkin_explosion` is not defined
-- Key `mode_normal` is not defined
-- Key `mode_fall` is not defined
-- Key `mode_infection` is not defined
-- Key `mode_hunted` is not defined
+- Key `game_mode_normal` is not defined
+- Key `game_mode_fall` is not defined
+- Key `game_mode_infection` is not defined
+- Key `game_mode_hunted` is not defined
 - Key `plumpkin_shuffle` is not defined
 - Key `plumpkin_shuffle_desc` is not defined
 - Key `eternal_magnetism` is not defined
@@ -2651,14 +2657,15 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### Invalid Keys
 
+- Key `msg_locked_tooltip` is not a valid key
 - Key `create_team_waiting` is not a valid key
 - Key `m16a4` is not a valid key
 
 ### Undefined Keys
 
 - Key `msg_error_kicked_team` is not defined
-- Key `msg_punishment_noname_reason` is not defined
-- Key `msg_punishment_warn_agreement` is not defined
+- Key `punishment_noname_reason` is not defined
+- Key `punishment_warn_agreement` is not defined
 - Key `warning_hw_accel_1` is not defined
 - Key `warning_hw_accel_2` is not defined
 - Key `warning_hw_accel_link` is not defined
@@ -2749,10 +2756,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `pumpkin_explosion` is not defined
 - Key `region_ea` is not defined
 - Key `region_oc` is not defined
-- Key `mode_normal` is not defined
-- Key `mode_fall` is not defined
-- Key `mode_infection` is not defined
-- Key `mode_hunted` is not defined
+- Key `game_mode_normal` is not defined
+- Key `game_mode_fall` is not defined
+- Key `game_mode_infection` is not defined
+- Key `game_mode_hunted` is not defined
 - Key `second_wind` is not defined
 - Key `second_wind_desc` is not defined
 - Key `flechettes` is not defined
@@ -2844,13 +2851,14 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### Invalid Keys
 
+- Key `msg_locked_tooltip` is not a valid key
 - Key `create_team_waiting` is not a valid key
 - Key `m16a4` is not a valid key
 
 ### Undefined Keys
 
 - Key `msg_error_kicked_team` is not defined
-- Key `msg_punishment_noname_reason` is not defined
+- Key `punishment_noname_reason` is not defined
 - Key `contact` is not defined
 - Key `bindings_fullscreen` is not defined
 - Key `recording` is not defined
@@ -2925,10 +2933,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `pumpkin_explosion` is not defined
 - Key `region_ea` is not defined
 - Key `region_oc` is not defined
-- Key `mode_normal` is not defined
-- Key `mode_fall` is not defined
-- Key `mode_infection` is not defined
-- Key `mode_hunted` is not defined
+- Key `game_mode_normal` is not defined
+- Key `game_mode_fall` is not defined
+- Key `game_mode_infection` is not defined
+- Key `game_mode_hunted` is not defined
 - Key `second_wind` is not defined
 - Key `second_wind_desc` is not defined
 - Key `flechettes` is not defined
@@ -3018,11 +3026,13 @@ This file is a report of all errors and missing keys in the translation files of
 
 ## 🇷🇴 Română (90% Complete) - ro.hjson
 
-### (No Invalid Keys)
+### Invalid Keys
+
+- Key `msg_locked_tooltip` is not a valid key
 
 ### Undefined Keys
 
-- Key `msg_punishment_noname_reason` is not defined
+- Key `punishment_noname_reason` is not defined
 - Key `settings_explosion_shockwaves` is not defined
 - Key `settings_bullet_trail_bloom` is not defined
 - Key `settings_blood_splatter` is not defined
@@ -3050,10 +3060,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `frag_grenade_explosion` is not defined
 - Key `confetti_grenade_explosion` is not defined
 - Key `pumpkin_explosion` is not defined
-- Key `mode_normal` is not defined
-- Key `mode_fall` is not defined
-- Key `mode_infection` is not defined
-- Key `mode_hunted` is not defined
+- Key `game_mode_normal` is not defined
+- Key `game_mode_fall` is not defined
+- Key `game_mode_infection` is not defined
+- Key `game_mode_hunted` is not defined
 - Key `plumpkin_shuffle` is not defined
 - Key `plumpkin_shuffle_desc` is not defined
 - Key `eternal_magnetism` is not defined
@@ -3069,6 +3079,7 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### Invalid Keys
 
+- Key `msg_locked_tooltip` is not a valid key
 - Key `create_team_waiting` is not a valid key
 - Key `handsaw` is not a valid key
 - Key `weak_stomach` is not a valid key
@@ -3076,7 +3087,7 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### Undefined Keys
 
-- Key `msg_punishment_noname_reason` is not defined
+- Key `punishment_noname_reason` is not defined
 - Key `contact` is not defined
 - Key `settings_explosion_shockwaves` is not defined
 - Key `settings_bullet_trail_bloom` is not defined
@@ -3117,10 +3128,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `confetti_grenade_explosion` is not defined
 - Key `pumpkin_explosion` is not defined
 - Key `region_ea` is not defined
-- Key `mode_normal` is not defined
-- Key `mode_fall` is not defined
-- Key `mode_infection` is not defined
-- Key `mode_hunted` is not defined
+- Key `game_mode_normal` is not defined
+- Key `game_mode_fall` is not defined
+- Key `game_mode_infection` is not defined
+- Key `game_mode_hunted` is not defined
 - Key `loot_baron` is not defined
 - Key `loot_baron_desc` is not defined
 - Key `baby_plumpkin_pie_desc` is not defined
@@ -3129,6 +3140,7 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### Invalid Keys
 
+- Key `msg_locked_tooltip` is not a valid key
 - Key `create_team_waiting` is not a valid key
 - Key `m16a4` is not a valid key
 - Key `interact_record_interactable` is not a valid key
@@ -3137,7 +3149,7 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### Undefined Keys
 
-- Key `msg_punishment_noname_reason` is not defined
+- Key `punishment_noname_reason` is not defined
 - Key `settings_explosion_shockwaves` is not defined
 - Key `settings_bullet_trail_bloom` is not defined
 - Key `settings_blood_splatter` is not defined
@@ -3169,10 +3181,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `frag_grenade_explosion` is not defined
 - Key `confetti_grenade_explosion` is not defined
 - Key `pumpkin_explosion` is not defined
-- Key `mode_normal` is not defined
-- Key `mode_fall` is not defined
-- Key `mode_infection` is not defined
-- Key `mode_hunted` is not defined
+- Key `game_mode_normal` is not defined
+- Key `game_mode_fall` is not defined
+- Key `game_mode_infection` is not defined
+- Key `game_mode_hunted` is not defined
 - Key `berserker` is not defined
 - Key `berserker_desc` is not defined
 - Key `overclocked` is not defined
@@ -3201,6 +3213,7 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### Invalid Keys
 
+- Key `msg_locked_tooltip` is not a valid key
 - Key `kf_message_grammar` is not a valid key
 - Key `create_team_waiting` is not a valid key
 - Key `m16a4` is not a valid key
@@ -3208,7 +3221,7 @@ This file is a report of all errors and missing keys in the translation files of
 ### Undefined Keys
 
 - Key `msg_error_kicked_team` is not defined
-- Key `msg_punishment_noname_reason` is not defined
+- Key `punishment_noname_reason` is not defined
 - Key `contact` is not defined
 - Key `settings_explosion_shockwaves` is not defined
 - Key `settings_bullet_trail_bloom` is not defined
@@ -3258,10 +3271,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `confetti_grenade_explosion` is not defined
 - Key `pumpkin_explosion` is not defined
 - Key `region_ea` is not defined
-- Key `mode_normal` is not defined
-- Key `mode_fall` is not defined
-- Key `mode_infection` is not defined
-- Key `mode_hunted` is not defined
+- Key `game_mode_normal` is not defined
+- Key `game_mode_fall` is not defined
+- Key `game_mode_infection` is not defined
+- Key `game_mode_hunted` is not defined
 - Key `second_wind` is not defined
 - Key `second_wind_desc` is not defined
 - Key `flechettes` is not defined
@@ -3354,6 +3367,7 @@ This file is a report of all errors and missing keys in the translation files of
 ### Invalid Keys
 
 - Key `msg_lost_connection` is not a valid key
+- Key `msg_locked_tooltip` is not a valid key
 - Key `create_team_waiting` is not a valid key
 - Key `developr_vest` is not a valid key
 - Key `destroyer_of_worlds` is not a valid key
@@ -3572,7 +3586,7 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### Undefined Keys
 
-- Key `msg_punishment_noname_reason` is not defined
+- Key `punishment_noname_reason` is not defined
 - Key `settings_explosion_shockwaves` is not defined
 - Key `settings_bullet_trail_bloom` is not defined
 - Key `settings_blood_splatter` is not defined
@@ -3582,21 +3596,22 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_weapon_compare_condensed` is not defined
 - Key `kf_impact_of` is not defined
 - Key `kf_disconnected` is not defined
-- Key `mode_normal` is not defined
-- Key `mode_fall` is not defined
-- Key `mode_infection` is not defined
-- Key `mode_hunted` is not defined
+- Key `game_mode_normal` is not defined
+- Key `game_mode_fall` is not defined
+- Key `game_mode_infection` is not defined
+- Key `game_mode_hunted` is not defined
 
 ## 🇻🇳 Tiếng Việt (82% Complete) - vi.hjson
 
 ### Invalid Keys
 
+- Key `msg_locked_tooltip` is not a valid key
 - Key `create_team_waiting` is not a valid key
 - Key `m16a4` is not a valid key
 
 ### Undefined Keys
 
-- Key `msg_punishment_noname_reason` is not defined
+- Key `punishment_noname_reason` is not defined
 - Key `contact` is not defined
 - Key `settings_explosion_shockwaves` is not defined
 - Key `settings_bullet_trail_bloom` is not defined
@@ -3638,10 +3653,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `confetti_grenade_explosion` is not defined
 - Key `pumpkin_explosion` is not defined
 - Key `region_ea` is not defined
-- Key `mode_normal` is not defined
-- Key `mode_fall` is not defined
-- Key `mode_infection` is not defined
-- Key `mode_hunted` is not defined
+- Key `game_mode_normal` is not defined
+- Key `game_mode_fall` is not defined
+- Key `game_mode_infection` is not defined
+- Key `game_mode_hunted` is not defined
 - Key `loot_baron` is not defined
 - Key `loot_baron_desc` is not defined
 - Key `overclocked` is not defined
@@ -3677,6 +3692,7 @@ This file is a report of all errors and missing keys in the translation files of
 ### Invalid Keys
 
 - Key `msg_lost_connection` is not a valid key
+- Key `msg_locked_tooltip` is not a valid key
 - Key `create_team_waiting` is not a valid key
 - Key `developr_vest` is not a valid key
 - Key `destroyer_of_worlds` is not a valid key
@@ -3897,8 +3913,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_blood_splatter` is not defined
 - Key `settings_cooler_weapon_gas` is not defined
 - Key `kf_disconnected` is not defined
-- Key `mode_normal` is not defined
-- Key `mode_fall` is not defined
-- Key `mode_infection` is not defined
-- Key `mode_hunted` is not defined
+- Key `game_mode_normal` is not defined
+- Key `game_mode_fall` is not defined
+- Key `game_mode_infection` is not defined
+- Key `game_mode_hunted` is not defined
 

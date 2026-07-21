@@ -73,7 +73,7 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
         this.definition = Loots.reify(basis);
         this.itemData = data;
 
-        this.hitbox = new CircleHitbox(GameConstants.lootRadius[this.definition.defType], Vec.clone(position));
+        this.hitbox = new CircleHitbox(GameConstants.loot.radius[this.definition.defType], Vec.clone(position));
         this.layer = layer;
 
         if ((this._count = count ?? 1) <= 0) {

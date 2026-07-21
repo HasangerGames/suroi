@@ -4,13 +4,13 @@ import path from "path";
 import { type SpritesheetData } from "pixi.js";
 import spritesheetc, { type BuilderOptions } from "spritesheetc";
 import { type Plugin } from "vite";
-import { Modes, type SpritesheetNames } from "../../../common/src/definitions/modes";
+import { GameModes, type SpritesheetNames } from "../../../common/src/definitions/gameModes";
 
 export interface ImageSpritesheetImporter {
     readonly importSpritesheet: (name: string) => Promise<{ readonly spritesheets: SpritesheetData[] }>
 }
 
-const spritesheetNames = Object.keys(Modes) as SpritesheetNames[];
+const spritesheetNames = Object.keys(GameModes) as SpritesheetNames[];
 
 const spritesheetVirtualModuleIds = spritesheetNames.flatMap(dir => [
     `virtual:image-spritesheets-low-res-${dir}`,

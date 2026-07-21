@@ -103,7 +103,7 @@ export class Loot extends GameObject.derive(ObjectCategory.Loot) {
             }
             if (scale) this.images.item.setScale(scale);
 
-            this.hitbox = new CircleHitbox(GameConstants.lootRadius[defType]);
+            this.hitbox = new CircleHitbox(GameConstants.loot.radius[defType]);
 
             /*
                 Infinity is serialized as 0 in the bit stream

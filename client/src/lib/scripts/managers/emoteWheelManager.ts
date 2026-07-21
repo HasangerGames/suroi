@@ -202,7 +202,7 @@ class EmoteWheelManagerClass {
 
         let position: Vector;
         if (InputManager.isMobile) {
-            position = Vec(Game.pixi.screen.width / 2, Game.pixi.screen.height / 2);
+            position = Vec(PixiManager.pixi.screen.width / 2, PixiManager.pixi.screen.height / 2);
         } else {
             // this whole mess makes it so the position doesn't change when switching between wheels
             if (EmoteWheelManager.active) {

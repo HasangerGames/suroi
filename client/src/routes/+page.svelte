@@ -1,30 +1,49 @@
 <script lang="ts">
-  import { Check, CircleAlert, Pencil, RefreshCw, Swords, X, Zap } from "@lucide/svelte";
+  import { Check, CircleAlert, Clock, Pencil, Plus, RefreshCw, Swords, X } from "@lucide/svelte";
   import { fade, slide } from "svelte/transition";
   import { asset } from "$app/paths";
-  import { Modes } from "$common/definitions/modes";
-  import { GamesApiResponse } from "$common/schemas/api/games";
+  import { GameModes } from "$common/definitions/gameModes";
+  import { GameMode, Region, TeamMode } from "$common/schemas/misc";
   import { pickRandomInArray } from "$common/utils/random";
   import Nav from "$lib/components/Nav.svelte";
   import Skin from "$lib/components/Skin.svelte";
   import LegacyUi from "$lib/legacy/LegacyUi.svelte";
   import { m } from "$lib/paraglide/messages";
-  import { endGame, joinGame, menuUi } from "$lib/scripts/ui/menu.svelte";
+  import { endGame, menuUi, play } from "$lib/scripts/ui/menu.svelte";
   import { Config } from "$lib/scripts/utils/config";
   import { APP_VERSION } from "$lib/scripts/utils/constants";
+  import type { PageProps } from "./$types";
+    import { invalidate } from "$app/navigation";
+
+  let { data }: PageProps = $props();
+  $effect(() => {
+    for (const game of data.games) {
+      menuUi.games.set(game.id, game);
+    }
+  });
 
   const backgrounds: [string, string][] = [
     ["bridge_duel_precisederp.png", "@PreciseDerp"],
     ["gun_vs_c4_precisederp.png", "@PreciseDerp"],
     ["terrorizer_migraine7341.png", "@migraine7341"],
-    ["tango_51_boeing_777.jpg", "Boeing_777"]
+    ["suroi_moment_migraine7341.png", "@migraine7341"],
+    ["tango_51_boeing_777.jpg", "Boeing_777"],
+    ["winter_confrontation_yoko.png", "Yoko"],
+    ["l115a1_sniper_yoko.png", "Yoko"],
+    ["untitled_winter_yoko.png", "Yoko"],
+    ["harvest_mode_yoko.png", "Yoko"],
+    ["hunted_mode_experience_deviouslemon331.png", "DeviousLemon331"],
+    ["monument_j.png", "J"],
+    ["rounds_j.png", "J"],
+    ["most_average_hunted_day_danzan.png", "danzan"],
+    ["infection_yoko.png", "Yoko"],
   ];
   const [backgroundFilename, backgroundArtist] = pickRandomInArray(backgrounds);
 
   const pad = (n: number): string | number => n < 10 ? `0${n}` : n;
-  const millisToTime = (millis: number): string => {
+  const millisToTime = (millis: number): string | undefined => {
     millis = Date.now() - millis;
-    if (millis < 0) return "--:--";
+    if (millis < 0) return;
 
     const days = Math.floor(millis / (1000 * 60 * 60 * 24));
     const hours = Math.floor(millis / (1000 * 60 * 60)) % 24;
@@ -33,23 +52,21 @@
     return `${days > 0 ? `${pad(days)}:` : ""}${hours > 0 ? `${pad(hours)}:` : ""}${hours > 0 ? pad(minutes) : minutes}:${pad(seconds)}`;
   };
 
-  async function updateGameSelector() {
-    try {
-      const response = await fetch(`http://127.0.0.1:8000/api/games`);
-      menuUi.games = GamesApiResponse.parse(await response.json());
-    } catch (e) {
-      menuUi.serverError = m.error_fetching_game_info();
+  function gameModeStyle(gameMode: GameMode | "any"): string | undefined {
+    if (gameMode === "any") return;
+
+    const { playButton } = GameModes[gameMode];
+    if ("colors" in playButton) {
+      return `background: radial-gradient(circle, ${playButton.colors[0]}, ${playButton.colors[1]})`;
+    } else {
+      return `background-color: ${playButton.color}`;
     }
   }
-  void updateGameSelector();
-
-  const modeDefs = Object.entries(Modes)
-    .filter(([modeName]) => ["normal", "fall", "infection", "hunted"].includes(modeName));
 
   let nicknameEditMode = $state(false);
   $effect(() => {
     if (nicknameEditMode) {
-      nicknameEditField.focus();
+      nicknameEditField?.focus();
     }
   });
   let nicknameEditField = $state<HTMLSpanElement>();
@@ -57,12 +74,12 @@
 </script>
 
 {#if menuUi.state !== "inGame"}
-  <div transition:fade class="absolute bottom-0 left-0 z-1 w-screen h-screen flex flex-col items-center bg-cover" style="background-image: url({asset(`/img/backgrounds/menu/${backgroundFilename}`)})">
+  <div transition:fade class="absolute bottom-0 left-0 z-1 w-screen h-screen flex flex-col items-center bg-cover bg-center" style="background-image: url({asset(`/img/backgrounds/menu/${backgroundFilename}`)})">
     <img src={asset("/img/logos/suroi.svg")} alt="Suroi logo" class="mx-auto mt-4 mb-8 w-xl select-none" draggable="false" />
 
     <Nav />
 
-    <div class="ui-container mx-auto flex flex-col items-center gap-3 p-6 relative">
+    <div class="ui-container mx-auto flex flex-col items-center gap-3 p-5 relative">
       {#if menuUi.state === "connecting"}
         <div transition:fade class="absolute w-full h-full bg-suroi-gray-transparent rounded-3xl -mt-6 z-2">
           <div class="bg-suroi-gray rounded-3xl z-2 absolute top-1/2 left-1/2 -translate-1/2 p-4 flex flex-col items-center justify-center">
@@ -105,87 +122,105 @@
           <button type="button" class="btn bg-purple-600">{m.join_team()}</button>
         </div>
       </div>
+      <div class="w-full flex flex-col gap-3 max-h-96 px-2 py-1 overflow-y-scroll *:btn *:select-none *:[&:has(>input:checked)]:ring-3 *:[&:has(>input:checked)]:ring-blue-300">
+        <button class="bg-stone-600 justify-center" onclick={() => invalidate("app:games")}><RefreshCw /> {m.refresh()}</button>
 
-      <!-- Region/game selector -->
-      <div class="flex gap-3 justify-stretch font-mono text-sm">
-        <select bind:value={menuUi.region} onchange={updateGameSelector} class="clickable bg-suroi-gray-transparent px-4 py-2 rounded-md">
-          {#each Object.entries(Config.regions) as [id, region]}
-            <option value={id}>
-              {region.flag}
-              {m[`region_${id}`]()}
-            </option>
-          {/each}
-        </select>
-        <select class="clickable bg-suroi-gray-transparent px-4 py-2 rounded-md">
-          {#if menuUi.games?.length}
-            {#each menuUi.games as game}
-              <option value={game.id}>
-                {m[game.gameMode]()}
-                {m[game.teamMode]()}
-                👤 {game.playerCount}
-                ⏲️ {millisToTime(game.startedTime)}
-              </option>
-            {/each}
-          {:else}
-            <option value="create">{m.new_game()}</option>
+        {#snippet gameIcons(gameMode: GameMode, teamMode: TeamMode, region: Region)}
+          <img src={asset(GameModes[gameMode].playButton.image)} alt="Mode icon" class="w-8 drop-shadow-lg" draggable="false" />
+          {#if teamMode === "solo"}
+            <img src={asset("/img/misc/solo_icon.svg")} class="w-8 h-8 drop-shadow-lg" alt="Solo icon" />
+          {:else if teamMode === "duo"}
+            <img src={asset("/img/misc/duo_icon.svg")} class="w-8 h-8 drop-shadow-lg" alt="Duo icon" />
+          {:else if teamMode === "squad"}
+            <img src={asset("/img/misc/squad_icon.svg")} class="w-8 h-8 drop-shadow-lg" alt="Squad icon" />
+          {:else if teamMode === "duel"}
+            <Swords class="w-8 h-8 drop-shadow-lg" />
           {/if}
-        </select>
-        <button type="button" class="btn bg-suroi-gray-transparent rounded-full p-2" onclick={updateGameSelector}><RefreshCw /></button>
-      </div>
+          <span class="text-2xl">{Config.regions[region].flag}</span>
+        {/snippet}
 
-      <!-- Game mode buttons -->
-      <div class="w-full flex gap-3 *:btn *:flex-1 *:flex-col *:gap-1 *:text-center *:select-none *:has-checked:ring-3 *:has-checked:ring-blue-300">
-        <label class="bg-linear-to-br from-[#5b8939] to-[#083d15]">
-          <Zap class="w-10 h-10 mx-auto drop-shadow-lg" />
-          {m.auto()}
-          <input type="radio" name="mode" value="auto" class="sr-only" />
+        <label style={gameModeStyle(menuUi.newGameMode)}>
+          <input type="radio" bind:group={menuUi.selectedGameId} value="new" class="sr-only" />
+
+          {@render gameIcons(menuUi.newGameMode, menuUi.newTeamMode, menuUi.newRegion)}
+
+          <div class="flex flex-col gap-1">
+            <div class="flex gap-1 *:btn *:p-1">
+              <select bind:value={menuUi.newGameMode}>
+                {#each ["normal", "fall", "infection", "hunted"] as gameMode}
+                  <option value={gameMode}>
+                    {m[`game_mode_${gameMode as GameMode}`]()}
+                  </option>
+                {/each}
+              </select>
+
+              <select bind:value={menuUi.newTeamMode}>
+                <option value="solo">{m.team_mode_solo()}</option>
+                <option value="duo">{m.team_mode_duo()}</option>
+                <option value="squad">{m.team_mode_squad()}</option>
+                <option value="duel">{m.team_mode_duel()}</option>
+              </select>
+
+              <select bind:value={menuUi.newRegion}>
+                {#each Object.keys(Config.regions) as region}
+                  <option value={region}>
+                    {m[`region_${region as Region}`]()}
+                  </option>
+                {/each}
+              </select>
+            </div>
+            <span class="flex gap-1 items-center text-sm font-mono"><Plus class="w-5 h-5" /> {m.new_game()}</span>
+          </div>
         </label>
-        {#each modeDefs as [modeName, { playButton }]}
-          <label
-            class="btn flex-1 flex-col gap-1 justify-center items-center has-checked:ring-3 has-checked:ring-blue-300"
-            style={"colors" in playButton ? `background: radial-gradient(circle, ${playButton.colors[0]}, ${playButton.colors[1]})` : `background-color: ${playButton.color}`}
-          >
-            {#if playButton.image}
-              <img src={asset(playButton.image)} alt="Mode icon" class="h-10 drop-shadow-lg" draggable="false" />
-            {/if}
-            {m[`mode_${modeName}`]()}
-            <input type="radio" name="mode" value={modeName} class="sr-only" />
+
+        {#each data.games as game}
+          <label style={gameModeStyle(game.gameMode)}>
+            <!-- FIXME hard coded join window -->
+            <input type="radio" bind:group={menuUi.selectedGameId} value={game.id} disabled={Date.now() - game.startedTime > 114000} class="sr-only" />
+
+            {@render gameIcons(game.gameMode, game.teamMode, game.region!)}
+
+            <div class="flex flex-col gap-1">
+              <span>
+                {m[`game_mode_${game.gameMode}`]()} · {m[`team_mode_${game.teamMode}`]()} · {m[`region_${game.region!}`]()}
+              </span>
+              <span class="flex gap-2 items-center *:flex *:gap-1 font-mono text-sm">
+                <div>
+                  <img src={asset("/img/misc/solo_icon.svg")} class="w-5 h-5 drop-shadow-lg" alt="Solo icon" />
+                  {game.playerCount?.toString().padEnd(2, "\u00a0" /* non-breaking space */)}
+                </div>
+                <div>
+                  <Clock class="w-5 h-5" />
+                  {game.startedTime ? millisToTime(game.startedTime) ?? "-:--" : "-:--"}
+                </div>
+                <!-- {#if game.ping < 50}
+                  <div class="text-green-300">
+                    <SignalHigh class="w-5 h-5" />
+                    {game.ping} {m.milliseconds()}
+                  </div>
+                {:else if game.ping >= 50 && game.ping < 100}
+                  <div class="text-yellow-300">
+                    <SignalMedium class="w-5 h-5" />
+                    {game.ping} {m.milliseconds()}
+                  </div>
+                {:else}
+                  <div class="text-red-300">
+                    <SignalLow class="w-5 h-5" />
+                    {game.ping} {m.milliseconds()}
+                  </div>
+                {/if} -->
+              </span>
+            </div>
           </label>
         {/each}
       </div>
 
-      <!-- Team mode buttons -->
-      <div class="w-full flex gap-3 text-lg *:btn *:flex-1 *:flex-col *:gap-1 *:text-center *:select-none *:has-checked:ring-3 *:has-checked:ring-blue-300">
-        <label class="bg-linear-to-br from-cyan-600 via-purple-600 to-rose-700">
-          <Zap class="w-10 h-10 mx-auto drop-shadow-lg" />
-          <span>{m.auto()}</span>
-          <input type="radio" name="teamMode" value="auto" class="sr-only" />
-        </label>
-        <label class="bg-cyan-700">
-          <img src={asset("/img/misc/solo_icon.svg")} class="w-10 h-10 mx-auto drop-shadow-lg" alt="Solo icon" />
-          <span>{m.solo()}</span>
-          <input type="radio" name="teamMode" value="solo" class="sr-only" />
-        </label>
-        <label class="bg-purple-600">
-          <img src={asset("/img/misc/duo_icon.svg")} class="w-10 h-10 mx-auto drop-shadow-lg" alt="Solo icon" />
-          <span>{m.duo()}</span>
-          <input type="radio" name="teamMode" value="duo" class="sr-only" />
-        </label>
-        <label class="bg-purple-600">
-          <img src={asset("/img/misc/squad_icon.svg")} class="w-10 h-10 mx-auto drop-shadow-lg" alt="Squad icon" />
-          <span>{m.squad()}</span>
-          <input type="radio" name="teamMode" value="squad" class="sr-only" />
-        </label>
-        <label class="bg-rose-700">
-          <Swords class="w-10 h-10 mx-auto drop-shadow-lg" />
-          <span>{m.duel()}</span>
-          <input type="radio" name="teamMode" value="duel" class="sr-only" />
-        </label>
-      </div>
-
-      <button type="button" class="btn text-3xl bg-blue-500 w-full" onclick={joinGame}>
-        <span class="mx-auto">{m.play()}</span>
-      </button>
+      {#if menuUi.selectedGameId !== undefined}
+        <div transition:slide class="w-full flex gap-2 text-xl">
+          <button class="btn bg-blue-600 grow justify-center" onclick={play}>{m.play()}</button>
+          <!-- <button class="btn bg-gray-600">{m.spectate()}</button> -->
+        </div>
+      {/if}
     </div>
 
     <!-- Bottom left & right links -->

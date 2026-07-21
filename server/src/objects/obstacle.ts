@@ -117,11 +117,11 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
         this.collidable = !definition.noCollisions;
 
         if (definition.hasLoot) {
-            this.loot = getLootFromTable(this.game.modeName, definition.lootTable ?? definition.idString);
+            this.loot = getLootFromTable(this.game.gameMode, definition.lootTable ?? definition.idString);
         }
 
         if (definition.spawnWithLoot) {
-            for (const item of getLootFromTable(this.game.modeName, definition.lootTable ?? definition.idString)) {
+            for (const item of getLootFromTable(this.game.gameMode, definition.lootTable ?? definition.idString)) {
                 this.game.addLoot(
                     item.idString,
                     this.position,
@@ -246,7 +246,7 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
                 // Infection bar logic
                 if (
                     definition.applyPerkOnDestroy
-                    && definition.applyPerkOnDestroy.mode === this.game.modeName
+                    && definition.applyPerkOnDestroy.mode === this.game.gameMode
                     && !(definition.applyPerkOnDestroy.perk === PerkIds.Infected && source.hasPerk(PerkIds.Immunity))
                 ) {
                     const position = source.position,
@@ -273,7 +273,7 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
 
             if (source instanceof BaseGameObject && source.isPlayer && source.hasPerk(PerkIds.PlumpkinBlessing) && this.definition.material === "pumpkin" && this.definition.hasLoot) {
                 const qualityValue = PerkData[PerkIds.PlumpkinBlessing].qualityValue;
-                this.loot = getLootFromTable(this.game.modeName, this.definition.lootTable ?? this.definition.idString, qualityValue);
+                this.loot = getLootFromTable(this.game.gameMode, this.definition.lootTable ?? this.definition.idString, qualityValue);
             }
 
             const lootSpawnPosition = position ?? (source as { readonly position?: Vector } | undefined)?.position ?? this.position;
@@ -297,12 +297,12 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
                 const perkBonus = PerkData[PerkIds.LootBaron].lootBonus;
 
                 for (let i = 0; i < perkBonus; i++) {
-                    let lootTable = getLootFromTable(this.game.modeName, definition.lootTable ?? definition.idString),
+                    let lootTable = getLootFromTable(this.game.gameMode, definition.lootTable ?? definition.idString),
                         isDuplicated = JSON.stringify(lootTable) === JSON.stringify(this.loot),
                         loopCount = 0;
 
                     while (isDuplicated && loopCount < 100) {
-                        lootTable = getLootFromTable(this.game.modeName, definition.lootTable ?? definition.idString);
+                        lootTable = getLootFromTable(this.game.gameMode, definition.lootTable ?? definition.idString);
                         isDuplicated = JSON.stringify(lootTable) === JSON.stringify(this.loot);
                         loopCount++;
                     }

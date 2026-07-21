@@ -8,7 +8,7 @@ import { ContainerTints, TentTints } from "./buildings";
 import { type GunDefinition } from "./items/guns";
 import { PerkDefinition, PerkIds } from "./items/perks";
 import { type LootDefinition } from "./loots";
-import { ModeName } from "./modes";
+import { GameMode } from "./gameModes";
 import { SyncedParticleDefinition } from "./syncedParticles";
 
 type CommonObstacleDefinition = ObjectDefinition & {
@@ -94,7 +94,7 @@ type CommonObstacleDefinition = ObjectDefinition & {
     readonly regenerateAfterDestroyed?: number
 
     readonly applyPerkOnDestroy?: {
-        readonly mode?: ModeName
+        readonly mode?: GameMode
         readonly perk: ReferenceTo<PerkDefinition>
     }
 

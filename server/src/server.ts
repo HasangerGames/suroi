@@ -1,37 +1,28 @@
 import Cluster from "node:cluster";
-import { URLSearchParams } from "node:url";
-import { GameConstants, TeamMode } from "$common/constants";
+import { BunRequest } from "bun";
+import os from "os";
+import { GameConstants } from "$common/constants";
 import { Badges } from "$common/definitions/badges";
 import { Skins } from "$common/definitions/items/skins";
+import { GameMode, TeamMode } from "$common/schemas/misc";
 import { CustomTeamMessage, PunishmentMessage } from "$common/typings";
-import os from "os";
 import { version } from "../../package.json";
+import { MapName } from "./data/maps";
 import { GameContainer, GameManager } from "./gameManager";
-import { CustomTeam, CustomTeamPlayer, CustomTeamPlayerContainer } from "./team";
+import { CustomTeam, CustomTeamPlayer } from "./team";
 import { Config } from "./utils/config";
-import { cleanUsername } from "./utils/misc";
+import { cleanUsername, memoryUsageMb } from "./utils/misc";
 import { corsHeaders, getIP, getPunishment, getSearchParams, parseRole, RateLimiter, serverError, serverLog } from "./utils/serverHelpers";
-import { GameInfo } from "$common/schemas/api/games";
 
 let customTeams: Map<string, CustomTeam> | undefined;
 let teamsCreated: RateLimiter | undefined;
-
-export function resetTeams(): void {
-    if (!customTeams) return;
-
-    for (const team of customTeams.values()) {
-        for (const player of team.players) player.socket?.close();
-    }
-    customTeams.clear();
-    teamsCreated?.reset();
-}
 
 declare global {
     var initialSetupComplete: boolean | undefined
 }
 
 //
-// Code for
+// Code for finding all buildings/obstacles for a mode
 //
 // const name = "infection";
 // const mapDef = Maps[name];
@@ -73,9 +64,7 @@ if (Cluster.isPrimary && require.main === module) {
             if (exiting) return;
             exiting = true;
             serverLog("Shutting down...");
-            for (const game of gameManager.games) {
-                game?.worker.kill();
-            }
+            gameManager.killAll();
             process.exit();
         };
         process.on("exit", exit);
@@ -85,16 +74,12 @@ if (Cluster.isPrimary && require.main === module) {
 
         process.on("uncaughtException", e => {
             serverError("An unhandled error occurred. Details:", e);
-            for (const game of gameManager.games) {
-                game?.worker.kill();
-            }
+            gameManager.killAll();
             process.exit(1);
         });
 
         setInterval(() => {
-            const memoryUsage = process.memoryUsage().rss;
-
-            let perfString = `RAM usage: ${Math.round(memoryUsage / 1024 / 1024 * 100) / 100} MB`;
+            let perfString = `RAM usage: ${memoryUsageMb()} MB`;
 
             // windows L
             if (os.platform() !== "win32") {
@@ -103,8 +88,6 @@ if (Cluster.isPrimary && require.main === module) {
             }
 
             serverLog(perfString);
-
-            gameManager.updateMapScaleRange();
         }, 60000);
     }
     globalThis.initialSetupComplete = true;
@@ -115,82 +98,59 @@ if (Cluster.isPrimary && require.main === module) {
         ? new RateLimiter(Config.maxCustomTeams)
         : undefined;
 
-    Bun.serve({
+    Bun.serve<CustomTeamPlayer>({
         hostname: Config.hostname,
-        port: Config.port,
+        port: Config.mainPort,
         routes: {
-            "/api/serverInfo": async(req, res) => {
+            "/api/serverInfo": async(req: BunRequest, res: Bun.Server<CustomTeamPlayer>) => {
                 let punishment: PunishmentMessage | undefined;
-                if (new URLSearchParams(req.url.slice(req.url.indexOf("?"))).get("checkPunishments") === "true") {
+                if (getSearchParams(req).get("checkPunishments") === "true") {
                     punishment = await getPunishment(getIP(req, res));
                 }
 
-                const { playerCount, teamMode, map, mode, nextMode } = gameManager;
-
                 return Response.json({
                     protocolVersion: GameConstants.protocolVersion,
-                    playerCount,
-                    teamMode: teamMode.current,
-                    nextTeamMode: teamMode.next,
-                    teamModeSwitchTime: teamMode.nextSwitch ? teamMode.nextSwitch - Date.now() : undefined,
-                    mode,
-                    nextMode,
-                    modeSwitchTime: map.nextSwitch ? map.nextSwitch - Date.now() : undefined,
+                    playerCount: gameManager.playerCount,
                     punishment
                 }, corsHeaders);
             },
-            "/api/games": () => {
+            "/api/game/list": () => {
                 const response = gameManager.games
+                    .values()
                     .filter((g): g is GameContainer => g !== undefined)
-                    .map(({ aliveCount, startedTime }): GameInfo => ({
-                        id: "bleh",
-                        gameMode: gameManager.mode,
-                        teamMode: {
-                            [TeamMode.Solo]: "solo",
-                            [TeamMode.Duo]: "duo",
-                            [TeamMode.Squad]: "squad"
-                        }[gameManager.teamMode.current] as GameInfo["teamMode"],
-                        playerCount: aliveCount,
-                        startedTime
-                    }));
+                    .map(({ gameInfo }) => gameInfo)
+                    .toArray();
                 return Response.json(response, corsHeaders);
             },
-            "/api/getGame": async req => {
-                let gameID: number | undefined;
-                const teamID = gameManager.teamMode.current !== TeamMode.Solo && getSearchParams(req).get("teamID");
-                if (teamID) {
-                    gameID = customTeams?.get(teamID)?.gameID;
+            "/api/game/new/:gameMode/:teamMode": async(req: BunRequest) => {
+                const gameMode = GameMode.parse(req.params.gameMode);
+                const teamMode = TeamMode.parse(req.params.teamMode);
+                const game = await gameManager.newGame(gameMode as MapName, teamMode);
+                if (game !== undefined) {
+                    return Response.json(game.gameInfo, corsHeaders);
                 } else {
-                    gameID = await gameManager.findGame();
+                    return new Response("403 Forbidden");
+                }
+            },
+            "/team": async(req: BunRequest, res: Bun.Server<CustomTeamPlayer>) => {
+                const ip = getIP(req, res);
+
+                if (teamsCreated?.isLimited(ip)) {
+                    return new Response("403 Forbidden");
                 }
 
-                return Response.json(
-                    gameID !== undefined
-                        ? { success: true, gameID, mode: gameManager.mode }
-                        : { success: false },
-                    corsHeaders
-                );
-            },
-            "/team": async(req, res) => {
-                const ip = getIP(req, res);
-                const searchParams = getSearchParams(req);
-                let punishmentMessage: string | undefined;
-
-                // Prevent connection if it's solos + check rate limits & punishments
-                if (
-                    gameManager.teamMode.current === TeamMode.Solo
-                    || teamsCreated?.isLimited(ip)
-                    || (punishmentMessage = (await getPunishment(ip))?.message) && punishmentMessage !== "noname"
-                ) {
+                const punishmentMessage = (await getPunishment(ip))?.message;
+                if (punishmentMessage && punishmentMessage !== "noname") {
                     return new Response("403 Forbidden");
                 }
 
                 // Get team
+                const searchParams = getSearchParams(req);
                 const teamID = searchParams.get("teamID");
                 let team: CustomTeam;
                 if (teamID !== null) {
                     const givenTeam = customTeams?.get(teamID);
-                    if (!givenTeam || givenTeam.locked || givenTeam.players.length >= (gameManager.teamMode.current as number)) {
+                    if (!givenTeam || givenTeam.locked || givenTeam.players.length >= 4) {
                         return new Response("403 Forbidden"); // TODO "Team is locked" and "Team is full" messages
                     }
                     team = givenTeam;
@@ -220,29 +180,29 @@ if (Cluster.isPrimary && require.main === module) {
 
                 // Upgrade the connection
                 res.upgrade(req, {
-                    data: { player: new CustomTeamPlayer(ip, team, name, skin, badge, nameColor) }
+                    data: new CustomTeamPlayer(ip, team, name, skin, badge, nameColor)
                 });
             }
         },
         websocket: {
             idleTimeout: 960,
-            open(socket: Bun.ServerWebSocket<CustomTeamPlayerContainer>) {
-                const { player } = socket.data;
+            open(socket: Bun.ServerWebSocket<CustomTeamPlayer>) {
+                const player = socket.data;
                 player.socket = socket;
                 player.team.addPlayer(player);
             },
 
-            message(socket: Bun.ServerWebSocket<CustomTeamPlayerContainer>, message: Buffer) {
+            message(socket: Bun.ServerWebSocket<CustomTeamPlayer>, message: string | Buffer<ArrayBuffer>) {
                 try {
-                    const { player } = socket.data;
+                    const player = socket.data;
                     void player.team.onMessage(player, JSON.parse(String(message)) as CustomTeamMessage);
                 } catch (e) {
                     serverError("Error parsing team socket message. Details:", e);
                 }
             },
 
-            close(socket: Bun.ServerWebSocket<CustomTeamPlayerContainer>) {
-                const { player } = socket.data;
+            close(socket: Bun.ServerWebSocket<CustomTeamPlayer>) {
+                const player = socket.data;
                 const team = player.team;
                 team.removePlayer(player);
                 if (!team.players.length) {
@@ -255,8 +215,6 @@ if (Cluster.isPrimary && require.main === module) {
 
     process.stdout.write("\x1Bc"); // clears screen
     serverLog(`Suroi Server v${version}`);
-    serverLog(`Listening on ${Config.hostname}:${Config.port}`);
+    serverLog(`Listening on ${Config.hostname}:${Config.mainPort}`);
     serverLog("Press Ctrl+C to exit.");
-
-    void gameManager.newGame(0);
 }

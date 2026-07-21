@@ -27,16 +27,16 @@
 */
 
 // punishments * karistused
-"msg_punishment_warn": "Teid on hoiatatud!"
-"msg_punishment_warn_reason": "Te olete saanud mängu moderaatoritelt hoiatuse põhjusega: <reason>"
-"msg_punishment_warn_agreement": "Ma sain hoiatusest aru ja ei korda oma viga."
-"msg_punishment_temp": "Teil on ajutine Suroi mängimise keeld!"
-"msg_punishment_temp_reason": "Teile määrati ajutine keeld põhjusega: <reason>"
-"msg_punishment_perma": "Teil on püsiv Suroi mängimise keeld!"
-"msg_punishment_perma_reason": "Teile määrati püsiv keeld põhjusega: <reason>"
-"msg_punishment_vpn": "VPN või proxy tuvastatud."
-"msg_punishment_vpn_reason": "Selleks, et sohki tegemise põhjusel määratud karistusest (st. ajutine või püsiv mängimise keeld) kõvale hoidumist ära hoida, ei ole VPNid ja proxyd Surois lubatud. Et Suroi mängimist jätkata, lülitage enda VPN või proxy välja. Kui te arvate, et see on viga või soovite erandit, võtke Suroi Discordi serveris (https://discord.suroi.io) ühendust mõne moderaatoriga või kirjutage e-kiri aadressile support@suroi.io."
-"msg_punishment_no_reason": "Põhjust pole esitatud."
+"punishment_warn": "Teid on hoiatatud!"
+"punishment_warn_reason": "Te olete saanud mängu moderaatoritelt hoiatuse põhjusega: <reason>"
+"punishment_warn_agreement": "Ma sain hoiatusest aru ja ei korda oma viga."
+"punishment_temp": "Teil on ajutine Suroi mängimise keeld!"
+"punishment_temp_reason": "Teile määrati ajutine keeld põhjusega: <reason>"
+"punishment_perma": "Teil on püsiv Suroi mängimise keeld!"
+"punishment_perma_reason": "Teile määrati püsiv keeld põhjusega: <reason>"
+"punishment_vpn": "VPN või proxy tuvastatud."
+"punishment_vpn_reason": "Selleks, et sohki tegemise põhjusel määratud karistusest (st. ajutine või püsiv mängimise keeld) kõvale hoidumist ära hoida, ei ole VPNid ja proxyd Surois lubatud. Et Suroi mängimist jätkata, lülitage enda VPN või proxy välja. Kui te arvate, et see on viga või soovite erandit, võtke Suroi Discordi serveris (https://discord.suroi.io) ühendust mõne moderaatoriga või kirjutage e-kiri aadressile support@suroi.io."
+"punishment_no_reason": "Põhjust pole esitatud."
 
 "username_placeholder": "Vali omale hüüdnimi"
 
@@ -44,7 +44,6 @@
 "play_solo": "Mängi Üksinda"
 "play_duo": "Mängi Kahekesi"
 "play_squad": "Mängi Neljakesi"
-"msg_locked_tooltip": "Suroi vahetab mängurežiimide vahel iga 24 tunni tagant, kuna kõikide jaoks korraga ei ole piisavalt palju mängijaid."
 
 // team * tiim
 "join_team": "Liitu Tiimiga"
@@ -185,8 +184,8 @@
 
 // btn
 "btn_report": "Raporteeri"
-"btn_spectate_kill_leader": "Jälgi Tapmiste Liidrit"
-"btn_spectate": "Jälgi"
+"spectate_kill_leader": "Jälgi Tapmiste Liidrit"
+"spectate": "Jälgi"
 "btn_play_again": "Mängi Uuesti"
 "btn_menu": "Menüü"
 

@@ -5,7 +5,7 @@ import { Backpacks } from "$common/definitions/items/backpacks";
 import { Guns } from "$common/definitions/items/guns";
 import { PerkCategories } from "$common/definitions/items/perks";
 import { Loots } from "$common/definitions/loots";
-import { ModeName } from "$common/definitions/modes";
+import { GameMode } from "$common/definitions/gameModes";
 import { Obstacles, type ObstacleDefinition } from "$common/definitions/obstacles";
 import { PacketType } from "$common/packets/packet";
 import { Orientation } from "$common/typings";
@@ -54,7 +54,7 @@ export interface RiverDefinition {
 export interface MapDefinition {
     readonly width: number
     readonly height: number
-    readonly mode?: ModeName
+    readonly mode?: GameMode
     readonly spawn?: SpawnOptions
     readonly oceanSize: number
     readonly beachSize: number
@@ -80,7 +80,7 @@ export interface MapDefinition {
     readonly quadBuildingLimit?: Record<ReferenceTo<BuildingDefinition>, number>
     readonly obstacles?: Record<ReferenceTo<ObstacleDefinition>, number>
     readonly obstacleClumps?: readonly ObstacleClump[]
-    readonly loots?: Record<keyof typeof LootTables[ModeName], number>
+    readonly loots?: Record<keyof typeof LootTables[GameMode], number>
 
     readonly places?: ReadonlyArray<{
         readonly name: string
@@ -1328,7 +1328,7 @@ const maps = {
                         ((item.defType === DefinitionType.Melee || item.defType === DefinitionType.Scope) && item.noDrop)
                         || (item.defType === DefinitionType.Ammo && item.ephemeral)
                         || (item.defType === DefinitionType.Backpack && item.level === 0)
-                        || (item.defType === DefinitionType.Perk && item.category === (game.modeName === "halloween" ? PerkCategories.Normal : PerkCategories.Halloween))
+                        || (item.defType === DefinitionType.Perk && item.category === (game.gameMode === "halloween" ? PerkCategories.Normal : PerkCategories.Halloween))
                         || item.defType === DefinitionType.Skin
                         || item.devItem
                         || item.hideInHUD

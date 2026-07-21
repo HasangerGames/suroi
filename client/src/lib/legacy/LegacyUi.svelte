@@ -333,7 +333,7 @@
         <button id="btn-spectate-next" class="btn btn-lg btn-primary">
           <i class="fa-solid fa-arrow-right"></i>
         </button>
-        <button id="btn-spectate-kill-leader" class="btn btn-lg btn-secondary" translation="btn_spectate_kill_leader"></button>
+        <button id="btn-spectate-kill-leader" class="btn btn-lg btn-secondary" translation="spectate_kill_leader"></button>
         <button id="btn-spectate-replay" class="btn btn-lg btn-primary" translation="btn_play_again"></button>
         <button id="btn-spectate-menu" class="btn btn-lg btn-secondary" translation="btn_menu"></button>
       </div>
@@ -582,7 +582,7 @@
       <div class="modal-item" id="game-over-buttons-holder">
         <button class="btn btn-lg btn-darken btn-primary" id="btn-play-again" translation="btn_play_again"></button>
         <div style="display: flex; gap: 8px">
-          <button class="btn btn-lg btn-darken btn-primary" id="btn-spectate" translation="btn_spectate"></button>
+          <button class="btn btn-lg btn-darken btn-primary" id="btn-spectate" translation="spectate"></button>
           <button class="btn btn-lg btn-darken btn-secondary" id="btn-menu" translation="btn_menu"></button>
         </div>
       </div>
@@ -641,7 +641,7 @@
     <div id="warning-modal-agree-options" style="display: none">
       <br><br>
       <input type="checkbox" class="regular-checkbox" id="warning-modal-agree-checkbox">
-      <label for="warning-modal-agree-checkbox" translation="msg_punishment_warn_agreement"></label>
+      <label for="warning-modal-agree-checkbox" translation="punishment_warn_agreement"></label>
       <br><br>
       <button class="btn btn-lg btn-darken btn-primary btn-disabled" id="warning-continue-btn" style="width: 100%"><strong>Continue</strong></button>
     </div>

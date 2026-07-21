@@ -2,7 +2,7 @@ import { FSWatcher, watch } from "chokidar";
 import { readFileSync } from "fs";
 import path from "path";
 import { type Plugin } from "vite";
-import { type ModeName, Modes, type SpritesheetNames } from "../../../common/src/definitions/modes";
+import { type GameMode, GameModes, type SpritesheetNames } from "../../../common/src/definitions/gameModes";
 import { readDirectory } from "../../../common/src/utils/readDirectory";
 import { getPaths, shortHash } from "./utils";
 
@@ -16,7 +16,7 @@ export interface AudioSpritesheetManifest {
     readonly spritesheet: Record<string, number>
 }
 
-const modeNames = Object.keys(Modes) as ModeName[];
+const modeNames = Object.keys(GameModes) as GameMode[];
 
 const virtualModuleIds = [
     "virtual:audio-spritesheet-importer",
@@ -39,7 +39,7 @@ const load = async(id: string): Promise<string | undefined> => {
     if (!virtualModuleIds.includes(id)) return;
     let data = modules.get(id);
     if (!data) {
-        const moduleName = id.match(/virtual:audio-spritesheet-(.*)/)?.[1] as ModeName | "no-preload";
+        const moduleName = id.match(/virtual:audio-spritesheet-(.*)/)?.[1] as GameMode | "no-preload";
         if (moduleName === "no-preload") await getNoPreloadPaths();
         else await buildSpritesheet(moduleName);
         data = modules.get(id);
@@ -49,7 +49,7 @@ const load = async(id: string): Promise<string | undefined> => {
 
 const removePathAndExtension = (f: string): string => f.slice(f.lastIndexOf(path.sep) + 1, -4);
 
-function buildSpritesheet(modeName: ModeName): void {
+function buildSpritesheet(modeName: GameMode): void {
     const start = performance.now();
 
     const sheet: Record<string, number> = {};
@@ -105,7 +105,7 @@ export function audioSpritesheet(): Plugin[] {
                     const dir = filename.split(path.sep)[3] as SpritesheetNames | "no-preload";
                     const invalidatedModules = dir === "no-preload"
                         ? ["no-preload"]
-                        : Object.entries(Modes)
+                        : Object.entries(GameModes)
                             .filter(([, mode]) => mode.spriteSheets.includes(dir))
                             .map(([modeName]) => modeName);
 

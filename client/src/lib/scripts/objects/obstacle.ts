@@ -257,7 +257,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
                         texture = this.definition.airdrop.unlockFrame;
 
                         if ((this.definition.airdrop.particleVariations ?? 2) > 1) {
-                            if (Game.mode.enhancedAirdropParticles) {
+                            if (Game.gameModeDef.enhancedAirdropParticles) {
                                 ParticleManager.spawnParticles(1, () => ({
                                     frames: "airdrop_particle_4",
                                     position: this.hitbox.randomPoint(),
@@ -318,7 +318,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
             const waterOverlaySpriteType: "circle" | "rect" = definition.hitbox.type === HitboxType.Circle ? "circle" : "rect";
 
             this.waterOverlaySprite = new SuroiSprite(`water_overlay_${waterOverlaySpriteType}`)
-                .setTint(Game.mode.colors.water)
+                .setTint(Game.colors.water)
                 .setZIndex(ZIndexes.BuildingsFloor);
 
             if (this.definition.waterOverlay !== undefined) {

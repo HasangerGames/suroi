@@ -1,19 +1,21 @@
-import { GameConstants, Layer, MapObjectSpawnMode, ObjectCategory, TeamMode } from "$common/constants";
-import { Bullets, type BulletDefinition } from "$common/definitions/bullets";
+import { GameConstants, Layer, MapObjectSpawnMode, ObjectCategory } from "$common/constants";
+import { type BulletDefinition, Bullets } from "$common/definitions/bullets";
+import { DecalDefinition } from "$common/definitions/decals";
 import { type ExplosionDefinition } from "$common/definitions/explosions";
+import { GameModeDefinition, GameModes } from "$common/definitions/gameModes";
 import type { SingleGunNarrowing } from "$common/definitions/items/guns";
 import { PerkData, PerkIds } from "$common/definitions/items/perks";
-import { Loots, type LootDefinition } from "$common/definitions/loots";
-import { MapPings, type MapPing } from "$common/definitions/mapPings";
-import { ModeDefinition, ModeName, Modes } from "$common/definitions/modes";
-import { Obstacles, type ObstacleDefinition } from "$common/definitions/obstacles";
-import { SyncedParticles, type SyncedParticleDefinition } from "$common/definitions/syncedParticles";
-import { type JoinData } from "$common/packets/joinPacket";
+import { type LootDefinition, Loots } from "$common/definitions/loots";
+import { type MapPing, MapPings } from "$common/definitions/mapPings";
+import { type ObstacleDefinition, Obstacles } from "$common/definitions/obstacles";
+import { type SyncedParticleDefinition, SyncedParticles } from "$common/definitions/syncedParticles";
 import { JoinedPacket } from "$common/packets/joinedPacket";
+import { type JoinData } from "$common/packets/joinPacket";
 import { DamageSources } from "$common/packets/killPacket";
 import { PacketDataIn, PacketType } from "$common/packets/packet";
 import { PacketStream } from "$common/packets/packetStream";
 import { MapIndicatorSerialization, type PingSerialization } from "$common/packets/updatePacket";
+import { GameMode, TeamMode } from "$common/schemas/misc";
 import { CircleHitbox, type Hitbox } from "$common/utils/hitbox";
 import { ColorStyles, Logger, styleText } from "$common/utils/logging";
 import { Angle, Geometry, Numeric, Statistics } from "$common/utils/math";
@@ -22,8 +24,6 @@ import { DefinitionType, type ReferenceTo, type ReifiableDef } from "$common/uti
 import { pickRandomInArray, randomPointInsideCircle, randomRotation } from "$common/utils/random";
 import { SuroiByteStream } from "$common/utils/suroiByteStream";
 import { Vec, type Vector } from "$common/utils/vector";
-
-import { DecalDefinition } from "$common/definitions/decals";
 import { GAME_SPAWN_WINDOW } from "./data/gasStages";
 import { MapName, Maps } from "./data/maps";
 import { type GameData } from "./gameManager";
@@ -37,7 +37,8 @@ import { Decal } from "./objects/decal";
 import { type Emote } from "./objects/emote";
 import { Explosion } from "./objects/explosion";
 import { type BaseGameObject, type GameObject } from "./objects/gameObject";
-import { Loot, type ItemData } from "./objects/loot";
+import { type ItemData, Loot } from "./objects/loot";
+import { MapIndicator } from "./objects/mapIndicator";
 import { Obstacle } from "./objects/obstacle";
 import { Parachute } from "./objects/parachute";
 import { Player, type PlayerSocketData } from "./objects/player";
@@ -49,19 +50,18 @@ import { Config } from "./utils/config";
 import { Grid } from "./utils/grid";
 import { IDAllocator } from "./utils/idAllocator";
 import { Cache, getAllLoots, getSpawnableLoots, ItemRegistry } from "./utils/lootHelpers";
-import { cleanUsername, modeFromMap } from "./utils/misc";
-import { MapIndicator } from "./objects/mapIndicator";
+import { cleanUsername, memoryUsageMb, modeFromMap } from "./utils/misc";
 
 export class Game implements GameData {
-    public readonly id: number;
+    public readonly id: string;
 
     readonly map: GameMap;
     readonly gas: Gas;
     readonly grid: Grid;
     readonly pluginManager = new PluginManager(this);
 
-    readonly modeName: ModeName;
-    readonly mode: ModeDefinition;
+    readonly gameMode: GameMode;
+    readonly mode: GameModeDefinition;
 
     readonly partialDirtyObjects = new Set<BaseGameObject>();
     readonly fullDirtyObjects = new Set<BaseGameObject>();
@@ -90,6 +90,15 @@ export class Game implements GameData {
     readonly teamMode: TeamMode;
 
     readonly isTeamMode: boolean;
+
+    get teamMaxPlayers(): number {
+        switch (this.teamMode) {
+            case "solo":  return 1;
+            case "duo":   return 2;
+            case "squad": return 4;
+            case "duel":  return 1;
+        }
+    }
 
     readonly teams = new (class SetArray<T> extends Set<T> {
         private _valueCache?: T[];
@@ -172,7 +181,7 @@ export class Game implements GameData {
 
     private _spawnableLoots: ItemRegistry | undefined;
     get spawnableLoots(): ItemRegistry {
-        return this._spawnableLoots ??= getSpawnableLoots(this.modeName, this.map.mapDef, this._spawnableItemTypeCache);
+        return this._spawnableLoots ??= getSpawnableLoots(this.gameMode, this.map.mapDef, this._spawnableItemTypeCache);
     }
 
     private readonly _allItemsTypeCache = [] as Cache;
@@ -191,7 +200,7 @@ export class Game implements GameData {
     }
 
     private _started = false;
-    private _stopped = false;
+    private _playerJoined = false;
 
     startedTime = Number.MAX_VALUE; // Default of Number.MAX_VALUE makes it so games that haven't started yet are joined first
     allowJoin = false;
@@ -237,10 +246,10 @@ export class Game implements GameData {
         return this._idAllocator.takeNext();
     }
 
-    constructor(id: number, teamMode: TeamMode, map: string, mapOptions: MapOptions = {}) {
+    constructor(id: string, teamMode: TeamMode, map: string, mapOptions: MapOptions = {}) {
         this.id = id;
         this.teamMode = teamMode;
-        this.isTeamMode = this.teamMode > TeamMode.Solo;
+        this.isTeamMode = this.teamMode === "duo" || this.teamMode === "squad";
         this.updateGameData({
             aliveCount: 0,
             allowJoin: false,
@@ -248,7 +257,8 @@ export class Game implements GameData {
             startedTime: Number.MAX_VALUE // Makes it so games that haven't started yet are joined first
         });
 
-        this.mode = Modes[this.modeName = modeFromMap(map)];
+        this.gameMode = modeFromMap(map);
+        this.mode = GameModes[this.gameMode];
 
         this.spawnWindow = mapOptions.gameSpawnWindow ?? GAME_SPAWN_WINDOW;
 
@@ -267,15 +277,15 @@ export class Game implements GameData {
     }
 
     log(...message: unknown[]): void {
-        Logger.log(styleText(`[Game ${this.id}]`, ColorStyles.foreground.green.normal), ...message);
+        Logger.log(styleText(`[${this.id}]`, ColorStyles.foreground.green.normal), ...message);
     }
 
     warn(...message: unknown[]): void {
-        Logger.log(styleText(`[Game ${this.id}] [WARNING]`, ColorStyles.foreground.yellow.normal), ...message);
+        Logger.log(styleText(`[${this.id}] [WARNING]`, ColorStyles.foreground.yellow.normal), ...message);
     }
 
     error(...message: unknown[]): void {
-        Logger.log(styleText(`[Game ${this.id}] [ERROR]`, ColorStyles.foreground.red.normal), ...message);
+        Logger.log(styleText(`[${this.id}] [ERROR]`, ColorStyles.foreground.red.normal), ...message);
     }
 
     onMessage(player: Player | undefined, message: ArrayBuffer): void {
@@ -518,7 +528,7 @@ export class Game implements GameData {
             && (Config.minTeamsToStart ?? 2) > 1
             && (
                 this.isTeamMode
-                    ? this.aliveCount <= (this.teamMode as number) && new Set([...this.livingPlayers].map(p => p.teamID)).size <= 1
+                    ? this.aliveCount <= this.teamMaxPlayers && new Set([...this.livingPlayers].map(p => p.teamID)).size <= 1
                     : this.aliveCount <= 1
             )
             && this.now - this.startedTime > 5000
@@ -537,13 +547,17 @@ export class Game implements GameData {
             this.setGameData({ allowJoin: false, over: true });
 
             // End the game in 1 second
-            this.addTimeout(() => {
-                for (const player of this.connectedPlayers) {
-                    player.disconnect("Game ended");
-                }
-                this._stopped = true;
-                this.log("Ended");
-            }, 1000);
+            this.addTimeout(this.exit, 1000);
+        }
+
+        // Delete game after 10 seconds if no one joins, or immediately if a player joins and leaves
+        if (
+            !this._started
+            && !this.over
+            && (this._playerJoined || now - this._start > 10000)
+            && this.connectedPlayers.size === 0
+        ) {
+            this.exit();
         }
 
         // Record performance and start the next tick
@@ -555,14 +569,20 @@ export class Game implements GameData {
         if (this._tickTimes.length >= 200) {
             const mspt = Statistics.average(this._tickTimes);
             const stddev = Statistics.stddev(this._tickTimes);
-            this.log(`ms/tick: ${mspt.toFixed(2)} ± ${stddev.toFixed(2)} | Load: ${((mspt / this.idealDt) * 100).toFixed(1)}%`);
+            this.log(`RAM usage: ${memoryUsageMb()} MB | ms/tick: ${mspt.toFixed(2)} ± ${stddev.toFixed(2)} | Load: ${((mspt / this.idealDt) * 100).toFixed(1)}%`);
             this._tickTimes.length = 0;
         }
 
         this.pluginManager.emit("game_tick", this);
 
-        if (!this._stopped) {
-            setTimeout(this.tick.bind(this), this.idealDt - (Date.now() - now));
+        setTimeout(this.tick.bind(this), this.idealDt - (Date.now() - now));
+    }
+
+    get oneTeamRemaining(): boolean {
+        if (this.teamMode === "solo") {
+            return this.aliveCount <= 1;
+        } else {
+            return this.aliveCount <= this.teamMaxPlayers && new Set([...this.livingPlayers].map(p => p.teamID)).size <= 1;
         }
     }
 
@@ -578,18 +598,12 @@ export class Game implements GameData {
         process.send?.(data);
     }
 
-    kill(): void {
+    exit(disconnectMessage = "Game ended", disconnectLog = "Ended", exitCode = 0): void {
         for (const player of this.connectedPlayers) {
-            player.disconnect("Game killed");
+            player.disconnect(disconnectMessage);
         }
-
-        this.setGameData({
-            allowJoin: false,
-            over: true
-        });
-        this._stopped = true;
-
-        this.log("Killed");
+        this.log(disconnectLog);
+        process.exit(exitCode);
     }
 
     updateKillLeader(player: Player): void {
@@ -642,7 +656,7 @@ export class Game implements GameData {
                 if (
                     !team // team doesn't exist
                     || (team.players.length && !team.hasLivingPlayers()) // team isn't empty but has no living players
-                    || team.players.length >= (this.teamMode as number) // team is full
+                    || team.players.length >= this.teamMaxPlayers  // team is full
                 ) {
                     this.teams.add(team = new Team(this.nextTeamID, autoFill));
                     this.customTeams.set(teamID, team);
@@ -651,7 +665,7 @@ export class Game implements GameData {
                 const vacantTeams = this.teams.valueArray.filter(
                     team =>
                         team.autoFill
-                        && team.players.length < (this.teamMode as number)
+                        && team.players.length < this.teamMaxPlayers
                         && team.hasLivingPlayers()
                 );
                 if (vacantTeams.length) {
@@ -790,6 +804,7 @@ export class Game implements GameData {
         player.setDirty();
         this.aliveCountDirty = true;
         this.updateObjects = true;
+        this._playerJoined = true;
         this.updateGameData({ aliveCount: this.aliveCount });
 
         player.joined = true;
@@ -798,7 +813,7 @@ export class Game implements GameData {
             JoinedPacket.create(
                 {
                     teamMode: this.teamMode,
-                    teamID: player.teamID ?? 0,
+                    teamId: player.teamID ?? 0,
                     emotes: player.loadout.emotes
                 }
             )
@@ -1028,7 +1043,7 @@ export class Game implements GameData {
             jitterSpawn
                 ? Vec.add(
                     position,
-                    randomPointInsideCircle(Vec(0, 0), GameConstants.lootSpawnMaxJitter)
+                    randomPointInsideCircle(Vec(0, 0), GameConstants.loot.maxSpawnJitter)
                 )
                 : position,
             layer,
@@ -1184,7 +1199,7 @@ export class Game implements GameData {
 
         const paddingFactor = 1.25;
 
-        const str = forceGold && this.modeName === "halloween" ? "pumpkin_airdrop_locked" : `airdrop_crate_locked${forceGold ? "_force" : ""}`;
+        const str = forceGold && this.gameMode === "halloween" ? "pumpkin_airdrop_locked" : `airdrop_crate_locked${forceGold ? "_force" : ""}`;
 
         const crateDef = Obstacles.fromString(str);
         const crateHitbox = (crateDef.spawnHitbox ?? crateDef.hitbox).clone();

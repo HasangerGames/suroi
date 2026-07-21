@@ -47,7 +47,7 @@ export interface CustomTeamPlayerInfo {
 export type CustomTeamMessage =
     | {
         type: CustomTeamMessages.Join
-        teamID: string
+        teamId: string
         isLeader: boolean
         autoFill: boolean
         locked: boolean

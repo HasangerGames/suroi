@@ -16,7 +16,7 @@
 "msg_temp_ban_msg": "Sei stato/a bannato/a per il seguente motivo: <reason>"
 "msg_perma_ban": "Sei stato/a permanentemente bannato/a!"
 "msg_perma_ban_msg": "Sei stato/a bannato/a per il seguente motivo: <reason>"
-"msg_punishment_no_reason": "Nessuna motivazione fornita."
+"punishment_no_reason": "Nessuna motivazione fornita."
 
 "play_solo": "Gioca in solitaria"
 "play_duo": "Gioca in coppia"
@@ -110,8 +110,8 @@
 "featured_streamr": "Streamr in evidenza"
 
 "btn_report": "Segnala"
-"btn_spectate_kill_leader": "Osserva il Leader delle Uccisioni"
-"btn_spectate": "Osserva"
+"spectate_kill_leader": "Osserva il Leader delle Uccisioni"
+"spectate": "Osserva"
 "btn_play_again": "Gioca ancora"
 "btn_menu": "Menù"
 

@@ -562,7 +562,7 @@ class UIManagerClass {
         gameOverRank.text(`#${rank}`).toggleClass("won", won);
 
         if (won) {
-            void Game.music.play();
+            void SoundManager.music.play();
             if (hasTeammates) {
                 gameOverTeamKills.text(translate("msg_kills", { kills: totalKills.toString() }));
                 gameOverTeamKillsContainer.show();
@@ -1080,7 +1080,7 @@ class UIManagerClass {
                         ) {
                             frame += "_halloween";
                         }
-                        weaponImage = `url(./img/game/${definition.reskins?.includes(Game.modeName) ? Game.modeName : ""}/weapons/${frame}.svg)`;
+                        weaponImage = `url(./img/game/${definition.reskins?.includes(Game.gameMode) ? Game.gameMode : ""}/weapons/${frame}.svg)`;
                     }
 
                     if (!force) this._playSlotAnimation(container);

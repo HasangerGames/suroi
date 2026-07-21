@@ -10,7 +10,7 @@ import { Scopes } from "$common/definitions/items/scopes";
 import { Skins } from "$common/definitions/items/skins";
 import { Throwables } from "$common/definitions/items/throwables";
 import { ItemType, LootDefForType, LootDefinition, Loots } from "$common/definitions/loots";
-import { ModeName } from "$common/definitions/modes";
+import { GameMode } from "$common/definitions/gameModes";
 import { ObstacleDefinition, Obstacles } from "$common/definitions/obstacles";
 import { isArray } from "$common/utils/misc";
 import { DefinitionType, NullString, ObjectDefinition, ObjectDefinitions, ReferenceOrRandom, ReferenceTo } from "$common/utils/objectDefinitions";
@@ -51,7 +51,7 @@ export class LootItem {
     ) { }
 }
 
-export function getLootFromTable(modeName: ModeName, tableID: string, quality?: number, overridingLootTable?: boolean): LootItem[] {
+export function getLootFromTable(modeName: GameMode, tableID: string, quality?: number, overridingLootTable?: boolean): LootItem[] {
     const lootTable = resolveTable(modeName, tableID);
     if (lootTable === undefined) {
         throw new ReferenceError(`Unknown loot table: ${tableID}`);
@@ -81,14 +81,14 @@ export function getLootFromTable(modeName: ModeName, tableID: string, quality?: 
     ).flat();
 }
 
-export function resolveTable(modeName: ModeName, tableID: string): LootTable {
+export function resolveTable(modeName: GameMode, tableID: string): LootTable {
     if (Config.randomizeLootTables) {
-        modeName = pickRandomInArray(Object.keys(LootTables)) as ModeName;
+        modeName = pickRandomInArray(Object.keys(LootTables)) as GameMode;
     }
     return LootTables[modeName]?.[tableID] ?? LootTables.normal[tableID];
 }
 
-function getLoot(modeName: ModeName, items: WeightedItem[], noDuplicates: boolean, qualityValue?: number, overridingLootTable?: boolean): LootItem[] {
+function getLoot(modeName: GameMode, items: WeightedItem[], noDuplicates: boolean, qualityValue?: number, overridingLootTable?: boolean): LootItem[] {
 
     let _items = items;
     if (qualityValue && qualityValue !== -1) _items = items.filter(item => {
@@ -218,7 +218,7 @@ export function getReachableObstacles(mapDef: MapDefinition, reachableBuildings:
     ] satisfies readonly ObstacleDefinition[];
 }
 
-export function getSpawnableLoots(modeName: ModeName, mapDef: MapDefinition, cache: Cache): ItemRegistry {
+export function getSpawnableLoots(modeName: GameMode, mapDef: MapDefinition, cache: Cache): ItemRegistry {
     /*
         we have a collection of loot tables, but not all of them are necessarily reachable
         for example, if loot table A belongs to obstacle A, but said obstacle is never spawned,

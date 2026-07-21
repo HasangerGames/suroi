@@ -10,7 +10,7 @@
     "dev:server": "cd server && bun dev",
     "dev:test": "cd tests && bun stressTest",
     "watch:server": "cd server && bunx --bun tsc --noEmit --watch",
-    "config:init": "bun common/src/initConfig.ts",
+    "initConfig": "bun common/src/initConfig.ts",
     "lint": "bunx --bun biome lint --fix",
     "lint:check": "bunx --bun biome lint",
     "validateDefinitions": "cd tests && bun validateDefinitions",

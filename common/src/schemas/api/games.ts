@@ -1,11 +1,15 @@
 import z from "zod";
+import { GameMode, Port, Region, TeamMode } from "../misc";
 
 export const GameInfo = z.object({
     id: z.string(),
-    gameMode: z.string(),
-    teamMode: z.enum(["solo", "duo", "squad", "duel"]),
+    port: Port,
+    gameMode: GameMode,
+    teamMode: TeamMode,
+    region: Region.optional(),
     playerCount: z.number(),
-    startedTime: z.number()
+    startedTime: z.number(),
+    ping: z.number().optional()
 });
 export type GameInfo = z.infer<typeof GameInfo>;
 

@@ -33,7 +33,7 @@ export class Plane {
 
         // awful temporary fix to blur airdrop plane in winter mode
         // (blurring the image breaks it)
-        if (Game.modeName === "winter") {
+        if (Game.gameMode === "winter") {
             this.image.filters = [new BlurFilter({ strength: 12 })];
         }
 

@@ -1,11 +1,11 @@
 import { readDirectory } from "../../../common/src/utils/readDirectory";
-import { Modes, type ModeName } from "../../../common/src/definitions/modes";
+import { GameModes, type GameMode } from "../../../common/src/definitions/gameModes";
 import path from "node:path";
 import { createHash } from "node:crypto";
 
-export function getPaths(modeName: ModeName, folder: string, filterRegex: RegExp): MapIterator<string> {
+export function getPaths(modeName: GameMode, folder: string, filterRegex: RegExp): MapIterator<string> {
     const pathMap = new Map<string, string>();
-    const files = Modes[modeName].spriteSheets
+    const files = GameModes[modeName].spriteSheets
         .flatMap(sheet => readDirectory(`static/${folder}/game/${sheet}`, filterRegex));
 
     // Maps have unique keys.

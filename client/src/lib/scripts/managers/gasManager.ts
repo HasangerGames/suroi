@@ -9,6 +9,7 @@ import { Config } from "../utils/config";
 import { formatDate } from "../utils/misc";
 import { translate } from "../utils/translations/translations";
 import { UIManager } from "./uiManager";
+import { GAS_COLOR } from "../utils/constants";
 
 class GasManagerClass {
     state = GasState.Inactive;
@@ -168,7 +169,7 @@ export class GasRender {
             .lineTo(GasRender._overdraw, GasRender._overdraw)
             .lineTo(-GasRender._overdraw, GasRender._overdraw)
             .closePath()
-            .fill(Game.colors.gas)
+            .fill(GAS_COLOR)
             .moveTo(0, 1);
 
         const tau = 2 * Math.PI;

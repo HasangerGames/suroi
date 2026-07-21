@@ -857,7 +857,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             if (infected !== this.infected) {
                 this.infected = infected;
                 this.container.tint = infected ? 0x8a4c70 : 0xffffff;
-                if (!isNew && Game.modeName === "infection") {
+                if (!isNew && Game.gameMode === "infection") {
                     if (infected) this.playSound("infected");
                     else this.playSound("cured");
                 }
@@ -1567,7 +1567,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         if (def && def.level > 0) {
             container.children(".item-name").text(`Lvl. ${def.level}`);
             container.children(".item-image").attr("src", `./img/game/loot/${def.idString}.svg`);
-            container.children(".item-name").attr("style", `color: ${def.level >= (Game.mode.maxEquipmentLevel ?? 3) ? "#ff9900" : "#ffffff"};`);
+            container.children(".item-name").attr("style", `color: ${def.level >= (Game.gameModeDef.maxEquipmentLevel ?? 3) ? "#ff9900" : "#ffffff"};`);
 
             let itemTooltip = translate(def.idString as TranslationKeys);
             if (def.defType === DefinitionType.Armor) {

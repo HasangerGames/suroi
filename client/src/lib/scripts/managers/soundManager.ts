@@ -1,12 +1,13 @@
 import * as PixiSound from "@pixi/sound"; // add a namespace to pixi sound imports because it has annoying generic names like "sound" and "filters" without a namespace
 import { Layer } from "$common/constants";
-import { Modes } from "$common/definitions/modes";
+import { GameModes } from "$common/definitions/gameModes";
 import { Numeric } from "$common/utils/math";
 import { Vec, type Vector } from "$common/utils/vector";
 import type { AudioSpritesheetImporter } from "../../../../vite/plugins/audio-spritesheet-plugin";
 import { GameConsole } from "../console/gameConsole";
 import { Game } from "../game";
 import type { Tween } from "../utils/tween";
+import type { GameMode } from "$common/schemas/misc";
 
 export interface SoundOptions {
     position?: Vector
@@ -158,6 +159,8 @@ export class GameSound {
 }
 
 class SoundManagerClass {
+    music!: PixiSound.Sound;
+
     readonly updatableSounds = new Set<GameSound>();
 
     sfxVolume = 0;
@@ -166,7 +169,7 @@ class SoundManagerClass {
     position = Vec(0, 0);
 
     private _initialized = false;
-    async init(): Promise<void> {
+    init(): void {
         if (this._initialized) {
             throw new Error("SoundManager has already been initialized");
         }
@@ -175,19 +178,36 @@ class SoundManagerClass {
         this.sfxVolume = GameConsole.getBuiltInCVar("cv_sfx_volume");
         this.ambienceVolume = GameConsole.getBuiltInCVar("cv_ambience_volume");
 
+        this.music = PixiSound.sound.add("menu_music", {
+            url: `./audio/music/menu_music${GameConsole.getBuiltInCVar("cv_use_old_menu_music") ? "_old" : ""}.mp3`,
+            singleInstance: true,
+            preload: true,
+            autoPlay: true,
+            loop: true,
+            volume: GameConsole.getBuiltInCVar("cv_music_volume")
+        });
+    }
+
+    async loadSounds(gameMode: GameMode): Promise<void> {
+        let gameModeDef = GameModes[gameMode];
+        if (gameModeDef.similarTo) gameModeDef = GameModes[gameModeDef.similarTo];
+
         const { importSpritesheet } = await import("virtual:audio-spritesheet-importer") as AudioSpritesheetImporter;
-        const _modeName = Modes[Game.modeName].similarTo ?? Game.modeName;
-        const { filename, spritesheet } = await importSpritesheet(_modeName);
+        const { filename, spritesheet } = await importSpritesheet(gameMode);
         const audio = await (await fetch(filename)).arrayBuffer();
         let offset = 0;
         for (const [id, length] of Object.entries(spritesheet)) {
-            this.addSound(id, { source: audio.slice(offset, offset + length) });
+            if (!PixiSound.sound.exists(id)) {
+                this.addSound(id, { source: audio.slice(offset, offset + length) });
+            }
             offset += length;
         }
 
         const { noPreloadSounds } = await import("virtual:audio-spritesheet-no-preload") as { noPreloadSounds: string[] };
         for (const id of noPreloadSounds) {
-            this.addSound(id, { url: `./audio/game/no-preload/${id}.mp3`, preload: false });
+            if (!PixiSound.sound.exists(id)) {
+                this.addSound(id, { url: `./audio/game/no-preload/${id}.mp3`, preload: false });
+            }
         }
     }
 

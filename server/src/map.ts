@@ -1,6 +1,6 @@
 import { GameConstants, Layer, MapObjectSpawnMode, ObjectCategory, RotationMode } from "$common/constants";
 import { type BuildingDefinition, Buildings } from "$common/definitions/buildings";
-import { Modes } from "$common/definitions/modes";
+import { GameModes } from "$common/definitions/gameModes";
 import { type ObstacleDefinition, Obstacles } from "$common/definitions/obstacles";
 import { type MapData, MapPacket } from "$common/packets/mapPacket";
 import { PacketStream } from "$common/packets/packetStream";
@@ -168,7 +168,7 @@ export class GameMap {
 
         packet.rivers = rivers;
 
-        const baseMode = Modes[this.game.mode.similarTo ?? this.game.modeName];
+        const baseMode = GameModes[this.game.mode.similarTo ?? this.game.gameMode];
         const waterType = baseMode.replaceWaterBy ?? FloorNames.Water;
 
         this.terrain = new Terrain(
@@ -686,7 +686,7 @@ export class GameMap {
                 idString = getRandomIDString<ObstacleDefinition>(obstacleData.idString);
                 if (idString === NullString) continue;
                 if (obstacleData.outdoors && this.game.mode.obstacleVariants) {
-                    const _modeName = Modes[this.game.modeName].similarTo ?? this.game.modeName;
+                    const _modeName = GameModes[this.game.gameMode].similarTo ?? this.game.gameMode;
                     idString = `${idString}_${_modeName}`;
                 }
             }
@@ -730,7 +730,7 @@ export class GameMap {
         }
 
         for (const lootData of definition.lootSpawners ?? []) {
-            for (const item of getLootFromTable(this.game.modeName, lootData.table)) {
+            for (const item of getLootFromTable(this.game.gameMode, lootData.table)) {
                 this.game.addLoot(
                     item.idString,
                     Vec.addAdjust(position, lootData.position, orientation),
@@ -952,7 +952,7 @@ export class GameMap {
 
     private _generateLoots(table: string, count: number): void {
         for (let i = 0; i < count; i++) {
-            const loot = getLootFromTable(this.game.modeName, table);
+            const loot = getLootFromTable(this.game.gameMode, table);
 
             const position = this.getRandomPosition(
                 new CircleHitbox(5),

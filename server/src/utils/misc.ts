@@ -1,27 +1,28 @@
 import { GameConstants } from "$common/constants";
-import { ModeName, Modes } from "$common/definitions/modes";
+import { GameMode, GameModes } from "$common/definitions/gameModes";
 import { halfπ, τ } from "$common/utils/math";
 import { ReferenceOrNull, ReferenceOrRandom, type ObjectDefinition } from "$common/utils/objectDefinitions";
-import { weightedRandom } from "$common/utils/random";
+import { random, weightedRandom } from "$common/utils/random";
 import { Vec, type Vector } from "$common/utils/vector";
-import { Config } from "../utils/config";
 import { MapName, Maps } from "../data/maps";
 import { Game } from "../game";
+import { Config } from "../utils/config";
+import { memoryUsage } from "bun:jsc";
 
-export function modeFromMap(map: string): ModeName {
+export function modeFromMap(map: string): GameMode {
     const args = map.split(":");
 
     const lastArg = args[args.length - 1];
-    if (lastArg in Modes) {
-        return lastArg as ModeName;
+    if (lastArg in GameModes) {
+        return lastArg as GameMode;
     }
 
     const mapName = args[0];
     const mapMode = Maps[mapName as MapName]?.mode;
     if (mapMode) {
         return mapMode;
-    } else if (mapName in Modes) {
-        return mapName as ModeName;
+    } else if (mapName in GameModes) {
+        return mapName as GameMode;
     } else {
         return GameConstants.defaultMode;
     }
@@ -52,6 +53,19 @@ export function getRandomIDString<T extends ObjectDefinition>(ref: ReferenceOrRa
         weights.push(weight);
     }
     return weightedRandom(items, weights);
+}
+
+const _idChars = "abcdefghijklmnopqrstuvwxyz0123456789";
+const _idCharMax = _idChars.length - 1;
+export function randomId(length: number) {
+    return Array.from(
+        { length },
+        () => _idChars[random(0, _idCharMax)]
+    ).join("");
+}
+
+export function memoryUsageMb(): string {
+    return (memoryUsage().current / 1000 / 1000).toFixed(2);
 }
 
 export const CARDINAL_DIRECTIONS = Array.from({ length: 4 }, (_, i) => i / τ);

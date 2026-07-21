@@ -1,86 +1,18 @@
-import { Assets, type ColorSource, Graphics, type Renderer, RendererType, Sprite, Spritesheet, Texture, type WebGLRenderer } from "pixi.js";
-import { type ModeName } from "$common/definitions/modes";
 import { type Hitbox, HitboxType } from "$common/utils/hitbox";
 import { Vec, type Vector } from "$common/utils/vector";
-import { menuUi } from "$lib/scripts/ui/menu.svelte";
-import type { ImageSpritesheetImporter } from "../../../../vite/plugins/image-spritesheet-plugin";
+import { type ColorSource, Graphics, Sprite } from "pixi.js";
+import { PixiManager } from "../managers/pixiManager";
 import { PIXI_SCALE } from "./constants";
-import { translate } from "./translations/translations";
-
-export let spritesheetsLoaded = false;
-
-const textures: Record<string, Texture> = {};
-
-const spritesheetCallbacks: Array<() => void> = [];
-
-// biome-ignore lint/suspicious/useAwait: we're returning a Promise here
-export async function spritesheetLoadPromise(): Promise<void> {
-    if (spritesheetsLoaded) return;
-    return new Promise(resolve => spritesheetCallbacks.push(resolve));
-}
-
-export async function loadSpritesheets(modeName: ModeName, renderer: Renderer, highResolution: boolean): Promise<void> {
-    // If device doesn't support 4096x4096 textures, force low resolution textures since they are 2048x2048
-    if (renderer.type as RendererType === RendererType.WEBGL) {
-        const gl = (renderer as WebGLRenderer).gl;
-        if (gl.getParameter(gl.MAX_TEXTURE_SIZE) < 4096) {
-            highResolution = false;
-        }
-    }
-
-    const { importSpritesheet } = (
-        highResolution
-            ? await import("virtual:image-spritesheets-importer-high-res")
-            : await import("virtual:image-spritesheets-importer-low-res")
-    ) as ImageSpritesheetImporter;
-    const { spritesheets } = await importSpritesheet(modeName);
-
-    let resolved = 0;
-    const count = spritesheets.length;
-
-    await Promise.all(spritesheets.map(async spritesheet => {
-        // biome-ignore lint/style/noNonNullAssertion: this is defined via vite-spritesheet-plugin, so it is never nullish
-        const image = spritesheet.meta.image!;
-
-        console.log(`Loading spritesheet ${location.origin}/${image}`);
-
-        try {
-            const sheetTexture = await Assets.load<Texture>(image);
-            await renderer.prepare.upload(sheetTexture);
-            const spritesheetTextures = await new Spritesheet(sheetTexture, spritesheet).parse();
-            Object.assign(textures, spritesheetTextures);
-
-            const resolvedCount = ++resolved;
-            const progress = `(${resolvedCount} / ${count})`;
-            menuUi.connectingText = translate("loading_spritesheets", { progress });
-            console.log(`Atlas ${image} loaded ${progress}`);
-        } catch (e) {
-            ++resolved;
-            console.error(`Atlas ${image} failed to load. Details:`, e);
-        }
-    }));
-
-    spritesheetsLoaded = true;
-    for (const resolve of spritesheetCallbacks) resolve();
-}
 
 export class SuroiSprite extends Sprite {
-    static getTexture(frame: string): Texture {
-        if (!textures[frame]) {
-            console.warn(`Texture not found: "${frame}"`);
-            frame = "_missing_texture";
-        }
-        return textures[frame];
-    }
-
     constructor(frame?: string) {
-        super(frame ? SuroiSprite.getTexture(frame) : undefined);
+        super(frame ? PixiManager.getTexture(frame) : undefined);
         this.anchor.set(0.5);
         this.setPos(0, 0);
     }
 
     setFrame(frame: string): this {
-        this.texture = SuroiSprite.getTexture(frame);
+        this.texture = PixiManager.getTexture(frame);
         return this;
     }
 

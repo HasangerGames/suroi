@@ -1,24 +1,25 @@
-import { type Sound, sound } from "@pixi/sound";
+import { colord } from "colord";
 import FontFaceObserver from "fontfaceobserver";
 import $ from "jquery";
-import { Application, Color, Container, loadTextures } from "pixi.js";
-import { InputActions, InventoryMessages, Layer, ObjectCategory, TeamMode, ZIndexes } from "$common/constants";
+import { Color, Container } from "pixi.js";
+import { InputActions, InventoryMessages, Layer, ObjectCategory, ZIndexes } from "$common/constants";
 import { type BadgeDefinition, Badges } from "$common/definitions/badges";
 import { Emotes } from "$common/definitions/emotes";
 import { Explosions } from "$common/definitions/explosions";
+import type { ColorKeys, GameModeDefinition } from "$common/definitions/gameModes";
+import { GameModes } from "$common/definitions/gameModes";
 import { Ammos } from "$common/definitions/items/ammos";
 import { ArmorType } from "$common/definitions/items/armors";
 import { type DualGunNarrowing, type GunDefinition } from "$common/definitions/items/guns";
 import { type MeleeDefinition } from "$common/definitions/items/melees";
 import { Skins } from "$common/definitions/items/skins";
 import { type LootDefinition, type WeaponDefinition } from "$common/definitions/loots";
-import type { ColorKeys, ModeDefinition, ModeName } from "$common/definitions/modes";
-import { Modes } from "$common/definitions/modes";
 import type { JoinedData } from "$common/packets/joinedPacket";
 import { JoinPacket } from "$common/packets/joinPacket";
 import { type DataSplit, type PacketDataIn, type PacketDataOut, PacketType } from "$common/packets/packet";
 import { PacketStream } from "$common/packets/packetStream";
 import { type UpdateDataOut } from "$common/packets/updatePacket";
+import type { GameMode } from "$common/schemas/misc";
 import { CircleHitbox } from "$common/utils/hitbox";
 import { adjacentOrEquivLayer, equalLayer } from "$common/utils/layer";
 import { EaseFunctions, Geometry, Numeric } from "$common/utils/math";
@@ -28,8 +29,10 @@ import { ObjectPool } from "$common/utils/objectPool";
 import { type ObjectsNetData } from "$common/utils/objectsSerializations";
 import { random, randomFloat, randomRotation, randomVector } from "$common/utils/random";
 import { Vec, type Vector } from "$common/utils/vector";
+import { menuUi } from "$lib/scripts/ui/menu.svelte";
 import "pixi.js/prepare";
-import { colord } from "colord";
+import { invalidate } from "$app/navigation";
+import { m } from "$lib/paraglide/messages";
 import { setUpCommands } from "./console/commands";
 import { GameConsole } from "./console/gameConsole";
 import { defaultClientCVars } from "./console/variables";
@@ -39,6 +42,7 @@ import { GasManager, GasRender } from "./managers/gasManager";
 import { InputManager } from "./managers/inputManager";
 import { MapManager } from "./managers/mapManager";
 import { ParticleManager } from "./managers/particleManager";
+import { PixiManager } from "./managers/pixiManager";
 import { ScreenRecordManager } from "./managers/screenRecordManager";
 import { GameSound, SoundManager } from "./managers/soundManager";
 import { UIManager } from "./managers/uiManager";
@@ -55,17 +59,16 @@ import { Plane } from "./objects/plane";
 import { Player } from "./objects/player";
 import { Projectile } from "./objects/projectile";
 import { SyncedParticle } from "./objects/syncedParticle";
-import { autoPickup, fetchServerData, finalizeUI, resetPlayButtons, setUpUI, teamSocket, unlockPlayButtons, updateDisconnectTime } from "./ui";
+import { autoPickup, setUpUI, teamSocket, updateDisconnectTime } from "./ui";
 import { Config } from "./utils/config";
-import { EMOTE_SLOTS, LAYER_TRANSITION_DELAY, PERK_MESSAGE_FADE_TIME, PIXI_SCALE } from "./utils/constants";
+import { EMOTE_SLOTS, LAYER_TRANSITION_DELAY, PERK_MESSAGE_FADE_TIME, PIXI_SCALE, VOID_COLOR } from "./utils/constants";
 import type { DebugMenu } from "./utils/debugMenu";
 import { DebugRenderer } from "./utils/debugRenderer";
 import { setUpNetGraph } from "./utils/graph/netGraph";
-import { loadSpritesheets, SuroiSprite } from "./utils/pixi";
+import { SuroiSprite } from "./utils/pixi";
 import { initTranslation, translate } from "./utils/translations/translations";
 import { type TranslationKeys } from "./utils/translations/typings";
 import { Tween, type TweenOptions } from "./utils/tween";
-import { menuUi } from "$lib/scripts/ui/menu.svelte";
 
 
 interface ObjectClassMapping {
@@ -583,18 +586,17 @@ export const Game = new (class Game {
 
     debugMenu?: DebugMenu;
 
-    _modeName: ModeName | undefined;
-    get modeName(): ModeName {
-        if (this._modeName === undefined) throw new Error("modeName accessed before initialization");
-        return this._modeName;
+    _gameMode: GameMode | undefined;
+    get gameMode(): GameMode | undefined {
+        return this._gameMode;
     }
 
-    set modeName(modeName: ModeName) {
-        this._modeName = modeName;
-        this._mode = Modes[this.modeName];
+    set gameMode(gameMode: GameMode) {
+        this._gameMode = gameMode;
+        this._gameModeDef = GameModes[gameMode];
 
         // Converts the strings in the mode definition to Color objects
-        this._colors = (Object.entries(this.mode.colors) as [ColorKeys, string][]).reduce(
+        this._colors = (Object.entries(this.gameModeDef.colors) as [ColorKeys, string][]).reduce(
             (result, [key, color]) => {
                 result[key] = new Color(color);
                 return result;
@@ -603,7 +605,7 @@ export const Game = new (class Game {
         );
 
         // pixi filters don't apply to the background, so we have to apply them here separately
-        const canvasFilters = this.mode.canvasFilters;
+        const canvasFilters = this.gameModeDef.canvasFilters;
         if (canvasFilters) {
             const { h, s, l } = colord(this.colors.grass.toRgbaString()).toHsl();
             this.colors.background = new Color(`hsl(${h}, ${s * canvasFilters.saturation}%, ${l * canvasFilters.brightness}%)`);
@@ -614,10 +616,10 @@ export const Game = new (class Game {
         this._colors.ghillie = new Color(this._colors.grass).multiply("hsl(0, 0%, 99%)");
     }
 
-    _mode: ModeDefinition | undefined;
-    get mode(): ModeDefinition {
-        if (!this._mode) throw new Error("mode accessed before initialization");
-        return this._mode;
+    _gameModeDef: GameModeDefinition | undefined;
+    get gameModeDef(): GameModeDefinition {
+        if (!this._gameModeDef) throw new Error("gameModeDef accessed before initialization");
+        return this._gameModeDef;
     }
 
     private _colors: Colors | undefined;
@@ -645,15 +647,11 @@ export const Game = new (class Game {
 
     hideSecondFloor = false;
 
-    readonly pixi = new Application();
-
     gasRender!: GasRender;
 
     netGraph!: ReturnType<typeof setUpNetGraph>;
 
     readonly fontObserver = new FontFaceObserver("InterVariable", { weight: 600 }).load();
-
-    music!: Sound;
 
     readonly tweens = new Set<Tween<object>>();
 
@@ -682,130 +680,15 @@ export const Game = new (class Game {
             this.debugMenu.init();
         }
         await setUpUI();
-        await fetchServerData();
-        this.gasRender = new GasRender(PIXI_SCALE);
         MapManager.init();
         CameraManager.init();
         GasManager.init();
-
-        const initPixi = async(): Promise<void> => {
-            const renderMode = GameConsole.getBuiltInCVar("cv_renderer");
-            const renderRes = GameConsole.getBuiltInCVar("cv_renderer_res");
-
-            const pixi = this.pixi;
-            await pixi.init({
-                resizeTo: window,
-                background: this.colors.background,
-                antialias: InputManager.isMobile
-                    ? GameConsole.getBuiltInCVar("mb_antialias")
-                    : GameConsole.getBuiltInCVar("cv_antialias"),
-                autoDensity: true,
-                preferWebGLVersion: renderMode === "webgl1" ? 1 : 2,
-                preference: renderMode === "webgpu" ? "webgpu" : "webgl",
-                resolution: renderRes === "auto" ? (window.devicePixelRatio || 1) : parseFloat(renderRes),
-                hello: true,
-                autoStart: false,
-                canvas: document.getElementById("game-canvas") as HTMLCanvasElement,
-                // we only use pixi click events (to spectate players on click)
-                // so other events can be disabled for performance
-                eventFeatures: {
-                    move: false,
-                    globalMove: false,
-                    wheel: false,
-                    click: true
-                }
-            });
-
-            // Setting preferCreateImageBitmap to false reduces RAM usage in most browsers
-            if (!GameConsole.getBuiltInCVar("cv_alt_texture_loading") && loadTextures.config) {
-                loadTextures.config.preferCreateImageBitmap = false;
-            }
-
-            void loadSpritesheets(
-                this.modeName,
-                pixi.renderer,
-                InputManager.isMobile
-                    ? GameConsole.getBuiltInCVar("mb_high_res_textures")
-                    : GameConsole.getBuiltInCVar("cv_high_res_textures")
-            ).then(() => {
-                EmoteWheelManager.init();
-                MapPingWheelManager.init();
-                MapPingWheelManager.setupSlots();
-            });
-
-            // HACK: the game ui covers the canvas
-            // so send pointer events manually to make clicking to spectate players work
-            UIManager.ui.gameUi[0].addEventListener("pointerdown", e => {
-                pixi.canvas.dispatchEvent(new PointerEvent("pointerdown", {
-                    pointerId: e.pointerId,
-                    button: e.button,
-                    clientX: e.clientX,
-                    clientY: e.clientY,
-                    screenY: e.screenY,
-                    screenX: e.screenX
-                }));
-            });
-
-            pixi.ticker.add(this.render.bind(this));
-
-            const gameContainer = new Container({ isRenderGroup: true });
-            gameContainer.addChild(CameraManager.container);
-            if (DEBUG_CLIENT) gameContainer.addChild(DebugRenderer.graphics);
-
-            const uiContainer = new Container({ isRenderGroup: true });
-            uiContainer.addChild(
-                MapManager.container,
-                MapManager.mask,
-                ...Object.values(this.netGraph).map(g => g.container),
-                EmoteWheelManager.container,
-                MapPingWheelManager.container
-            );
-
-            pixi.stage.addChild(gameContainer, uiContainer);
-
-            MapManager.visible = !GameConsole.getBuiltInCVar("cv_minimap_minimized");
-            MapManager.expanded = GameConsole.getBuiltInCVar("cv_map_expanded");
-            UIManager.ui.gameUi.toggle(GameConsole.getBuiltInCVar("cv_draw_hud"));
-
-            pixi.renderer.on("resize", () => this.resize());
-            this.resize();
-        };
-
-        let menuMusicSuffix: string;
-        if (GameConsole.getBuiltInCVar("cv_use_old_menu_music")) {
-            menuMusicSuffix = "_old";
-        } else if (this.mode.replaceMenuMusic) {
-            const modeName_ = Modes[this.modeName].similarTo ?? this.modeName;
-            menuMusicSuffix = `_${modeName_}`;
-        } else {
-            menuMusicSuffix = "";
-        }
-        this.music = sound.add("menu_music", {
-            url: `./audio/music/menu_music${menuMusicSuffix}.mp3`,
-            singleInstance: true,
-            preload: true,
-            autoPlay: true,
-            loop: true,
-            volume: GameConsole.getBuiltInCVar("cv_music_volume")
-        });
-
-        void Promise.all([
-            initPixi(),
-            SoundManager.init(),
-            finalizeUI()
-        ]).then(() => {
-            unlockPlayButtons();
-            resetPlayButtons();
-        });
-    }
-
-    resize(): void {
-        MapManager.resize();
-        CameraManager.resize(true);
+        void SoundManager.init();
+        void PixiManager.init();
     }
 
     updateAmbience(): void {
-        if (!this.activePlayer || this.mode.noRiverAmbience) return;
+        if (!this.activePlayer || this.gameModeDef.noRiverAmbience) return;
 
         const position = this.activePlayer.position;
 
@@ -839,8 +722,9 @@ export const Game = new (class Game {
         this._socket.binaryType = "arraybuffer";
 
         this._socket.onopen = (): void => {
-            this.pixi.start();
-            this.music?.stop();
+            PixiManager.pixi.start();
+            SoundManager.music?.stop();
+            this.gasRender = new GasRender(PIXI_SCALE);
             this.connecting = false;
             this.gameStarted = true;
             this.gameOver = false;
@@ -881,7 +765,7 @@ export const Game = new (class Game {
             CameraManager.addObject(this.gasRender.graphics);
             MapManager.indicator.setFrame("player_indicator");
 
-            const particleEffects = this.mode.particleEffects;
+            const particleEffects = this.gameModeDef.particleEffects;
 
             if (particleEffects !== undefined) {
                 const This = this;
@@ -940,15 +824,16 @@ export const Game = new (class Game {
         const ui = UIManager.ui;
 
         this._socket.onerror = (): void => {
-            this.pixi.stop();
+            PixiManager.pixi.stop();
             this.error = true;
             this.connecting = false;
             menuUi.state = "menu";
-            menuUi.serverError = translate("error_joining_game");
+            menuUi.serverError = m.error_joining_game();
+            invalidate("app:games");
         };
 
         this._socket.onclose = (e: CloseEvent): void => {
-            this.pixi.stop();
+            PixiManager.pixi.stop();
             this.connecting = false;
             this.socketCloseCallback?.(undefined);
 
@@ -1058,15 +943,15 @@ export const Game = new (class Game {
         // game started if page is out of focus.
         if (!document.hasFocus()) SoundManager.play("join_notification");
 
-        const ambience = this.mode.ambience;
+        const ambience = this.gameModeDef.ambience;
         if (ambience) {
             this.ambience = SoundManager.play(ambience, { loop: true, ambient: true });
-            if (this.mode.ambienceVolume !== undefined) {
-                this.ambience.volume = this.mode.ambienceVolume;
+            if (this.gameModeDef.ambienceVolume !== undefined) {
+                this.ambience.volume = this.gameModeDef.ambienceVolume;
             }
         }
 
-        if (!this.mode.noRiverAmbience) {
+        if (!this.gameModeDef.noRiverAmbience) {
             this.riverAmbience = SoundManager.play("river_ambience", { loop: true, ambient: true });
             this.riverAmbience.volume = 0;
 
@@ -1086,8 +971,8 @@ export const Game = new (class Game {
 
         const ui = UIManager.ui;
 
-        if (this.isTeamMode = packet.teamMode !== TeamMode.Solo) {
-            this.teamID = packet.teamID;
+        if (this.isTeamMode = packet.teamMode !== "solo") {
+            this.teamID = packet.teamId;
         }
 
         ui.inventoryMsg.fadeOut(PERK_MESSAGE_FADE_TIME);
@@ -1118,8 +1003,8 @@ export const Game = new (class Game {
             this._socket?.close();
 
             setTimeout(async() => {
-                this.pixi.stop();
-                void this.music?.play();
+                PixiManager.pixi.stop();
+                void SoundManager.music?.play();
 
                 for (const object of this.objects) object.destroy();
                 for (const plane of this.planes) plane.destroy();
@@ -1142,7 +1027,6 @@ export const Game = new (class Game {
                 }
 
                 updateDisconnectTime();
-                resetPlayButtons();
 
                 this.gameStarted = false;
 
@@ -1172,7 +1056,7 @@ export const Game = new (class Game {
 
     render(): void {
         if (!this.gameStarted) return;
-        const delta = this.pixi.ticker.deltaMS;
+        const delta = PixiManager.pixi.ticker.deltaMS;
 
         // execute timeouts
         const now = Date.now();
@@ -1231,7 +1115,7 @@ export const Game = new (class Game {
         }
 
         if (GameConsole.getBuiltInCVar("pf_show_fps")) {
-            const fps = Math.round(this.pixi.ticker.FPS);
+            const fps = Math.round(PixiManager.pixi.ticker.FPS);
             this.netGraph.fps.addEntry(fps);
         }
     }
@@ -1402,8 +1286,8 @@ export const Game = new (class Game {
         const basement = newLayer === Layer.Basement;
         MapManager.terrainGraphics.visible = !basement;
 
-        const currentColor = this.pixi.renderer.background.color;
-        const targetColor = basement ? this.colors.void : this.colors.background;
+        const currentColor = PixiManager.pixi.renderer.background.color;
+        const targetColor = basement ? VOID_COLOR : this.colors.background;
 
         if (currentColor.toNumber() !== targetColor.toNumber()) {
             const { red, green, blue } = currentColor;
@@ -1414,7 +1298,7 @@ export const Game = new (class Game {
                 target: color,
                 to: { r: targetColor.red * 255, g: targetColor.green * 255, b: targetColor.blue * 255 },
                 onUpdate: () => {
-                    this.pixi.renderer.background.color = new Color(color);
+                    PixiManager.pixi.renderer.background.color = new Color(color);
                 },
                 duration: LAYER_TRANSITION_DELAY,
                 onComplete: () => { this.backgroundTween = undefined; }

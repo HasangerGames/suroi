@@ -1,3 +1,4 @@
+import { TeamMode } from "../schemas/misc";
 import { Numeric, τ } from "./math";
 
 // note: the code in this file is optimized for speed, not for readability nor safety
@@ -672,6 +673,25 @@ export class ByteStream {
     //         () => elementReader(this)
     //     );
     // }
+
+    writeTeamMode(value: TeamMode): this {
+        switch (value) {
+            case "solo":  return this.writeUint8(0);
+            case "duo":   return this.writeUint8(1);
+            case "squad": return this.writeUint8(2);
+            case "duel":  return this.writeUint8(3);
+        }
+    }
+
+    readTeamMode(): TeamMode {
+        switch (this.readUint8()) {
+            case 0: return "solo";
+            case 1: return "duo";
+            case 2: return "squad";
+            case 3: return "duel";
+        }
+        return "solo";
+    }
 
     /**
      * Copies a section of a stream into this one. By default, the entire source stream is read and copied

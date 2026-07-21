@@ -1,10 +1,9 @@
-import { existsSync, readFileSync, writeFileSync } from "fs";
+import { z } from "zod";
+import { ServerConfig } from "$common/schemas/config/serverConfig";
+import config from "../../config.json";
 
-let configExists = existsSync("config.json");
-if (!configExists && existsSync("config.example.json")) {
-    writeFileSync("config.json", readFileSync("config.example.json", "utf8"));
-    configExists = true;
+const parsedConfig = ServerConfig.safeParse(config);
+if (parsedConfig.error) {
+    throw new Error(`Unable to parse client config. Details:\n${z.prettifyError(parsedConfig.error)}`);
 }
-
-import type { ConfigSchema } from "./config.d";
-export const Config = await import("../../config.json") as ConfigSchema;
+export const Config = parsedConfig.data;

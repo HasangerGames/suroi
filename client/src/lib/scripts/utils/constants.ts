@@ -39,6 +39,9 @@ export const TEAMMATE_COLORS = [
     new Color("#ff8000")
 ];
 
+export const GAS_COLOR = new Color("hsla(17, 100%, 50%, 0.55)");
+export const VOID_COLOR = new Color("hsl(25, 80%, 6%)");
+
 export const EMOTE_SLOTS = ["top", "right", "bottom", "left", "extra1", "extra2", "win", "death"] as const;
 
 export const BULLET_WHIZ_SCALE = 5;

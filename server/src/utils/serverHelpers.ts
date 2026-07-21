@@ -1,8 +1,6 @@
-import { ColorStyles, Logger, styleText } from "$common/utils/logging";
-import { Cron } from "croner";
-import { existsSync, readFileSync, writeFileSync } from "node:fs";
-import { Numeric } from "$common/utils/math";
 import { PunishmentMessage } from "$common/typings";
+import { ColorStyles, Logger, styleText } from "$common/utils/logging";
+import { Numeric } from "$common/utils/math";
 import { Config } from "./config";
 
 export function serverLog(...message: unknown[]): void {
@@ -30,7 +28,7 @@ export const corsHeaders = {
     }
 };
 
-export function getIP(req: Bun.BunRequest, res: Bun.Server): string {
+export function getIP(req: Bun.BunRequest, res: Bun.Server<unknown>): string {
     return (
         Config.ipHeader
             ? req.headers.get(Config.ipHeader)
@@ -139,59 +137,5 @@ export class RateLimiter {
 
     reset(): void {
         this._ipMap = {};
-    }
-}
-
-export type Switchable = string | number;
-export interface Switched<T extends Switchable> {
-    /**
-     * List of items to rotate between.
-     * When the end is reached, it will loop back to the beginning.
-     */
-    readonly rotation: T[]
-    /**
-     * Cron pattern to use for switching
-     */
-    readonly cron: string
-}
-export type StaticOrSwitched<T extends Switchable> = T | Switched<T>;
-
-export class Switcher<T extends Switchable> {
-    private readonly _cron: Cron | undefined;
-
-    private _index = 0;
-    get index(): number { return this._index; }
-
-    private _current: T;
-    get current(): T { return this._current; }
-
-    private _next: T | undefined;
-    get next(): T | undefined { return this._next; }
-
-    get nextSwitch(): number | undefined { return this._cron?.nextRun()?.getTime(); }
-
-    constructor(name: string, schedule: StaticOrSwitched<T>, callback: (current: T, next: T) => void) {
-        if (typeof schedule === "object") {
-            const rotation = schedule.rotation;
-            const length = rotation.length;
-            const filename = `${name}.txt`;
-
-            this._index = existsSync(filename)
-                ? parseInt(readFileSync(filename, "utf8"))
-                : 0;
-
-            this._current = rotation[this._index % length];
-            this._next = rotation[(this._index + 1) % length];
-
-            this._cron = new Cron(schedule.cron, () => {
-                this._current = rotation[++this._index % length];
-                this._next = rotation[(this._index + 1) % length];
-                writeFileSync(filename, this._index.toString());
-                callback(this._current, this._next);
-            });
-        } else {
-            this._current = schedule;
-            this._next = undefined;
-        }
     }
 }
