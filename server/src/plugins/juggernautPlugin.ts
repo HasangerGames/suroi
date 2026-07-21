@@ -24,6 +24,12 @@ export default class JuggernautPlugin extends GamePlugin {
             player.dirty.weapons = true;
         });
 
+        this.on("player_will_die", ({ player }) => {
+            player.removePerk("tactical_reload");
+            player.removePerk("extended_mags");
+            player.removePerk("flechettes");
+        });
+
         this.on("player_did_die", ({ player }) => {
             if (player.id === this.juggernautId) {
                 this.juggernautId = undefined;
