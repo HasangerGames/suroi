@@ -82,10 +82,10 @@
     <div class="ui-container mx-auto flex flex-col items-center gap-3 p-5 relative">
       {#if menuUi.state === "connecting"}
         <div transition:fade class="absolute w-full h-full bg-suroi-gray-transparent rounded-3xl -mt-6 z-2">
-          <div class="bg-suroi-gray rounded-3xl z-2 absolute top-1/2 left-1/2 -translate-1/2 p-4 flex flex-col items-center justify-center">
-            <div class="flex gap-2 items-center mr-6">
+          <div class="bg-suroi-gray rounded-3xl z-2 absolute top-1/2 left-1/2 -translate-1/2 p-4 flex flex-col items-center justify-center w-fit">
+            <div class="flex gap-2 items-center justify-center pr-5">
               <Skin idString="hasanger" class="scale-50 animate-spin [animation-duration:0.75s] origin-[calc(50%+6px)_50%]" />
-              <strong>{menuUi.connectingText ?? ""}</strong>
+              <strong class="w-max">{menuUi.connectingText ?? ""}</strong>
             </div>
             <button type="button" class="btn bg-blue-500" onclick={endGame}>{m.action_cancel()}</button>
           </div>

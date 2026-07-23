@@ -31,7 +31,7 @@ export class DeathMarker extends GameObject.derive(ObjectCategory.DeathMarker) {
             text: "",
             style: {
                 fontSize: 36,
-                fontFamily: "Inter",
+                fontFamily: "InterVariable",
                 dropShadow: {
                     alpha: 0.8,
                     color: "black",

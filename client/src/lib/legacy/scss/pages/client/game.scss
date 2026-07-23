@@ -358,8 +358,8 @@
 #ui-kill-leader {
     display: flex;
     position: absolute;
-    top: 15px;
-    right: 150px;
+    top: 0;
+    right: 125px;
     margin-left: auto;
     width: max-content;
     background: palette.$transparent_bg;
@@ -380,16 +380,16 @@
         font-size: 25px;
         @include variables.text-shadow;
 
-        .badge-icon {
-            width: 25px;
-            margin-left: 5px;
-            margin-bottom: -4px;
-        }
-
         @media screen and (max-width: variables.$screen_large) {
             font-size: 16px;
 
-            .badge-icon {
+            svg {
+                width: 16px;
+            }
+        }
+
+        @media screen and (max-width: variables.$screen_medium) {
+            svg {
                 width: 12px;
             }
         }
@@ -447,7 +447,7 @@
         border-radius: 8px;
         justify-content: center;
         align-items: center;
-        padding: 8px 10px 8px 16px;
+        padding: 0px 10px 0px 16px;
         gap: 10px;
         @include variables.text-shadow;
 
@@ -490,8 +490,8 @@
     }
 
     #kill-feed {
-        margin-right: 150px;
-        margin-top: -10px;
+        margin-right: 125px;
+        margin-top: -15px;
         @media screen and (max-width: variables.$screen_large) {
             margin-right: 28px;
             margin-top: -10px;
@@ -591,10 +591,13 @@
 
         #action-time {
             position: absolute;
-            top: calc(30% + 10px);
+            top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
             z-index: 1;
+            font-weight: bold;
+            font-size: 22px;
+            font-family: "JetBrains Mono", monospace;
         }
 
         svg {
@@ -2324,7 +2327,6 @@
     z-index: 1003;
 
     #btn-menu,
-    #btn-play-again,
     #btn-spectate {
         width: 150px;
     }
@@ -2344,6 +2346,7 @@
 
     #game-over-text {
         font-size: 40px;
+        font-weight: bold;
         margin: 0 0 10px;
         text-align: center;
 
@@ -2419,6 +2422,7 @@
         justify-content: center;
         align-items: center;
         font-size: 25px;
+        font-weight: bold;
         gap: 5px;
 
         .medal {

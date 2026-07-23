@@ -461,7 +461,7 @@ class MapManagerClass {
                     text: place.name,
                     style: {
                         fill: "white",
-                        fontFamily: "Inter",
+                        fontFamily: "InterVariable",
                         fontWeight: "600",
                         stroke: {
                             color: "black",

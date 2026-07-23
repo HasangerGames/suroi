@@ -176,3 +176,5 @@ static/img/game/obstacles/washing_machine
 static/img/game/obstacles/water_cooler
 static/img/game/obstacles/window
 static/img/game/obstacles/window2
+
+static/img/game/player/shield.svg

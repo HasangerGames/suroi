@@ -580,11 +580,8 @@
 
       <!-- Buttons -->
       <div class="modal-item" id="game-over-buttons-holder">
-        <button class="btn btn-lg btn-darken btn-primary" id="btn-play-again" translation="btn_play_again"></button>
-        <div style="display: flex; gap: 8px">
-          <button class="btn btn-lg btn-darken btn-primary" id="btn-spectate" translation="spectate"></button>
-          <button class="btn btn-lg btn-darken btn-secondary" id="btn-menu" translation="btn_menu"></button>
-        </div>
+        <button class="btn btn-lg btn-darken btn-primary" id="btn-spectate" translation="spectate"></button>
+        <button class="btn btn-lg btn-darken btn-secondary" id="btn-menu" translation="btn_menu"></button>
       </div>
     </div>
   </div>

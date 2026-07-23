@@ -1,9 +1,8 @@
-import { Armors } from "@common/definitions/items/armors";
-import { Backpacks } from "@common/definitions/items/backpacks";
-import { GamePlugin } from "../pluginManager";
+import { Armors } from "$common/definitions/items/armors";
+import { Backpacks } from "$common/definitions/items/backpacks";
+import { pickRandomInArray } from "$common/utils/random";
 import { Player } from "../objects/player";
-import { pickRandomInArray } from "@common/utils/random";
-import { GunItem } from "../inventory/gunItem";
+import { GamePlugin } from "../pluginManager";
 
 /**
  * Event plugin: Juggernaut

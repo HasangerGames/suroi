@@ -651,7 +651,7 @@ export const Game = new (class Game {
 
     netGraph!: ReturnType<typeof setUpNetGraph>;
 
-    readonly fontObserver = new FontFaceObserver("InterVariable", { weight: 600 }).load();
+    readonly fontObserver = new FontFaceObserver("InterVariable").load();
 
     readonly tweens = new Set<Tween<object>>();
 
