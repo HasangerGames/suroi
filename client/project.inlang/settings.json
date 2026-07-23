@@ -20,7 +20,6 @@
 		"fi",
 		"fr",
 		"gr",
-		"hk-mo",
 		"hu",
 		"it",
 		"jp",
@@ -28,12 +27,14 @@
 		"lv",
 		"nl",
 		"pl",
+		"qen",
 		"ro",
 		"ru",
 		"ta",
 		"tr",
 		"tw",
 		"vi",
-		"zh"
+		"zh-CN",
+		"zh-HK"
 	]
 }
