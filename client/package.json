@@ -37,7 +37,7 @@
     "colord": "^2.9.3",
     "fontfaceobserver": "^2.3.0",
     "jquery": "^3.7.1",
-    "nipplejs": "^0.10.2",
+    "nipplejs": "^1.0.4",
     "pixi-filters": "^6.1.5",
     "pixi.js": "^8.19.0",
     "spritesheetc": "^1.0.0-alpha5"
