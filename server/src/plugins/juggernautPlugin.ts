@@ -33,6 +33,7 @@ export default class JuggernautPlugin extends GamePlugin {
         this.on("player_will_piercing_damaged", ({ source, player }, { cancel }) => {
             if (
                 source instanceof Player
+                && source.id !== player.id
                 && source.id !== this.juggernautId
                 && player.id !== this.juggernautId
             ) {
