@@ -1,4 +1,4 @@
-import { DefinitionType, ObjectDefinitions, type ObjectDefinition } from "../utils/objectDefinitions";
+import { DefinitionType, type ObjectDefinition, ObjectDefinitions } from "../utils/objectDefinitions";
 import { BadgeDefinition } from "./badges";
 import { Ammos } from "./items/ammos";
 import { Guns } from "./items/guns";

@@ -8,7 +8,7 @@ import { EmoteWheelManager, MapPingWheelManager } from "./emoteWheelManager";
 import { CameraManager } from "./cameraManager";
 import { DebugRenderer } from "../utils/debugRenderer";
 import { InputManager } from "./inputManager";
-import { translate } from "../utils/translations/translations";
+import { translate } from "../utils/translations";
 import { menuUi } from "../ui/menu.svelte";
 import type { ImageSpritesheetImporter } from "../../../../vite/plugins/image-spritesheet-plugin";
 import { GameModes } from "$common/definitions/gameModes";

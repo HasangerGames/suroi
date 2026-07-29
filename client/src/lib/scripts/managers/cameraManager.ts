@@ -1,19 +1,19 @@
+import { Container, Filter } from "pixi.js";
+import { ShockwaveFilter } from "pixi-filters";
 import { Layer } from "$common/constants";
 import { DEFAULT_SCOPE, Scopes } from "$common/definitions/items/scopes";
+import { getLayerContainer as getLayerContainerIndex, LayerContainer } from "$common/utils/layer";
 import { EaseFunctions, Numeric } from "$common/utils/math";
+import { type Timeout } from "$common/utils/misc";
 import { randomPointInsideCircle } from "$common/utils/random";
 import { Vec, type Vector } from "$common/utils/vector";
-import { ShockwaveFilter } from "pixi-filters";
-import { Container, Filter } from "pixi.js";
 import { GameConsole } from "../console/gameConsole";
 import { Game } from "../game";
 import { LAYER_TRANSITION_DELAY, PIXI_SCALE } from "../utils/constants";
 import { SuroiSprite } from "../utils/pixi";
 import { type Tween } from "../utils/tween";
-import { getLayerContainer as getLayerContainerIndex, LayerContainer } from "$common/utils/layer";
-import { type Timeout } from "$common/utils/misc";
-import { InputManager } from "./inputManager";
 import { EmoteWheelManager, MapPingWheelManager } from "./emoteWheelManager";
+import { InputManager } from "./inputManager";
 import { PixiManager } from "./pixiManager";
 
 class CameraManagerClass {

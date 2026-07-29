@@ -18,8 +18,8 @@ import { CustomTeamMessages } from "$common/typings";
 import { ExtendedMap } from "$common/utils/misc";
 import { DefinitionType, type ReferenceTo, type ReifiableDef } from "$common/utils/objectDefinitions";
 import { pickRandomInArray } from "$common/utils/random";
+import { gameUi } from "$lib/legacy/GameUi.svelte.ts";
 import { menuUi, setEndGame, setJoinGame } from "$lib/scripts/ui/menu.svelte";
-import pkg from "../../../package.json";
 import { GameConsole } from "./console/gameConsole";
 import { type CVarTypeMapping, defaultClientCVars } from "./console/variables";
 import { Game } from "./game";
@@ -34,8 +34,7 @@ import { Config } from "./utils/config";
 import { EMOTE_SLOTS } from "./utils/constants";
 import { Crosshairs, getCrosshair } from "./utils/crosshairs";
 import { html, requestFullscreen } from "./utils/misc";
-import { TRANSLATIONS, translate } from "./utils/translations/translations";
-import type { TranslationKeys } from "./utils/translations/typings";
+import { translate, type TranslationKeys } from "./utils/translations";
 
 enum hideUnlessPresent {
     zh_tw = "🇹🇼"
@@ -43,10 +42,7 @@ enum hideUnlessPresent {
 
 export let teamSocket: WebSocket | undefined;
 let teamID: string | undefined | null;
-let joinedTeam = false;
 let autoFill = false;
-let globalIsLeader = false;
-let globalReady = false;
 
 export let autoPickup = true;
 
@@ -117,109 +113,6 @@ export async function setUpUI(): Promise<void> {
             );
         }
     }
-
-    const languageFieldset = $("#languages-selector");
-    for (const [language, languageInfo] of Object.entries(TRANSLATIONS.translations)) {
-        const isSelected = GameConsole.getBuiltInCVar("cv_language") === language;
-        languageFieldset.append(html`
-           <a id="language-${language}" ${isSelected ? 'class="selected"' : ""}>
-              ${Object.values(hideUnlessPresent).includes(languageInfo.flag as hideUnlessPresent) && !isSelected ? "" : languageInfo.flag} <strong>${languageInfo.name}</strong> [${!isSelected ? TRANSLATIONS.translations[language].percentage : languageInfo.percentage}]
-           </a>
-        `);
-
-        $(`#language-${language}`).on("click", () => {
-            GameConsole.setBuiltInCVar("cv_language", language);
-        });
-    }
-
-    GameConsole.variables.addChangeListener("cv_language", () => location.reload());
-
-    const marqueeContent = $(".marquee-content");
-    const marqueeTexts = [
-        "Fat free!",
-        "Gluten free!",
-        "Tell your friends!",
-        "Support queer rights!",
-        "Support open source software!",
-        "Ad-free!",
-        "Free and open source!",
-        "Supported by donations!",
-        "Still in beta!",
-        'This is called a "marquee"!',
-        "Accounts before GTA 6!",
-        "Circles shooting circles since 2023!",
-        "Established 2023!",
-        `${new Date().getFullYear() - 2023} years and counting!`,
-        "Suroi Sundays!",
-        "We're back, baby!",                              // Title of the first ever Suroi news post
-        "Feeling gassy!",                                 // Former title of a Suroi news post
-        "Now featuring Fireball and Blueberry Smoothie!", // Skins previously rejected from Suroi for "not fitting the art style"
-        "Probably not copyright infringing!",             // Suroi's predecessor, Surviv Reloaded, was taken down for copyright infringement
-        "Dr. Giggletouch wuz here",                       // My (AnnihilatingFox) in game name :P
-        "Is this thing on?",
-        '<span style="background-image: linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet); color: transparent; -webkit-background-clip: text;">rainbows are cool</span>',
-        "Does anyone even read these?",
-        "These are harder to come up with than you might think!",
-        "Now in color!",
-        `Version ${pkg.version}!`,
-        "Now in 2D!",
-        "It's not over yet!",
-        "Stay positive!",
-        "Woo, Linux!",
-        "Woo, Inkscape!", // Open source vector graphics software used to make most of Suroi's art
-        "Also try Minecraft!",                                          // Game: Terraria
-        "Also try Terraria!",                                           // Game: Minecraft
-        "I've come to make an announcement!",                           // Meme: Eggman's Announcement
-        "Sorry Link, I don't give credit!",                             // Meme: Morshu
-        "'Tis but a scratch!",                                          // Show: Monty Python and the Holy Grail
-        "9 + 10 = 21!",                                                 // Meme: 9 + 10 = 21/You stupid
-        "Never gonna give you up!",                                     // Song: Rick Astley - Never Gonna Give You Up
-        "When you need foundation repair, you want foundation repair!", // YouTube: cs188 - [YTP] No one needs foundation repair
-        "Did I ever tell you what the definition of insanity is?",      // Game: Far Cry 3
-        "Wake up, Mr. Freeman!",                                        // Game: Half-Life 2 (Intro)
-        "Galunga!",                                                     // Game: Half-Life 2 (Spoken by Vortigaunts)
-        "Nobody hurt me!",                                              // Book: Homer - Odyssey
-        "Mayonnaise is not an instrument!",                             // Meme: SpongeBob
-        "Please let this be a normal field trip...",                    // Song: Magic School Bus theme
-        "Stacy's mom has got it goin' on!",                             // Song: Fountains of Wayne - Stacy's Mom
-        "Michaelsoft Binbows!",                                         // Meme: Defunct Japanese computer repair store
-        "You're gonna have a bad time!",                                // Game: Undertale
-        "Bendgate!",                                                    // Issue affecting iPhone 6
-        "Taste of blood!",                                              // Game: Portal
-        "Frankenturrets!",                                              // Game: Portal 2
-        "I am not a moron!",                                            // Game: Portal 2
-        "I can't believe you've done this!",                            // Meme
-        "My new band is called Syskill!",                               // Meme: Catch the Ice Dude
-        "Are you sure?",                                                // Show: Invincible
-        "Living in an Amish paradise!",                                 // Song: "Weird Al" Yankovic - Amish Paradise
-        "Rip and tear!",                                                // Game: Doom
-        "Microslop!",                                                   // Derogatory name for Microsoft
-        "Do you know da wae?",                                          // Meme: Ugandan Knuckles
-        // Deltarune Chapter 5 Flowery voice clips
-        "Sustingus!",
-        "Heh, it's my jarona!",
-        "Sorry to keep you waiting!",
-        "Flowery!",
-        "Hey guys! I think I found a glue!",
-        "All according to plant!",
-        "Leaf it to me!",
-        "Here I come, San Frandiscooo!",
-        "Flowers blooms in your heart!",
-        "Hey boys!",
-        "Sorry about that, little guy!",
-        "Sorry to keep a lady in waiting!",
-        "Hey there, little guy!",
-        "Glue!",
-        "I'm sorry once again, I kept a lady in waiting!",
-        "LEND ME YOUR POWER!",
-        "Jarona!",
-        "With your powers combined... OMEGA FLOWERY!",
-        "Hahahahaflowershahahaha!",
-        // End Deltarune Chapter 5 Flowery voice clips
-    ];
-    const updateMarquee = () => marqueeContent.html(pickRandomInArray(marqueeTexts));
-    updateMarquee();
-    marqueeContent.on("click", updateMarquee);
 
     const params = new URLSearchParams(window.location.search);
 
@@ -602,146 +495,30 @@ export async function setUpUI(): Promise<void> {
         location.search = "";
     }
 
-    const usernameField = $<HTMLInputElement>("#username-input");
-
-    const youtubers = [
-        {
-            name: "Sapphire",
-            link: "https://www.youtube.com/channel/UCvsD5KTuL6aXFmiPFHLNq0g"
-        },
-        {
-            name: "End",
-            link: "https://www.youtube.com/channel/UCUEZCfGgTurhTqerJjIaFTQ"
-        },
-        {
-            name: "TEAMFIGHTER 27",
-            link: "https://www.youtube.com/channel/UCJF75th14wo3O4YvH8GfFXw"
-        },
-        {
-            name: "Red King Gaming",
-            link: "https://www.youtube.com/channel/UCr7jJLYLU9mCBVfL5rmpvXg"
-        },
-        {
-            name: "Viiper",
-            link: "https://www.youtube.com/channel/UCey8-fJfkF7UFYdWBcegzWA"
-        },
-        {
-            name: "123OP",
-            link: "https://www.youtube.com/@123op."
-        },
-        {
-            name: "PacifistX",
-            link: "https://www.youtube.com/@PacifstX"
-        },
-        {
-            name: "Pablo_Fan_",
-            link: "https://www.youtube.com/@Pablo_Fan_"
-        },
-        {
-            name: "this.is.gls_",
-            link: "https://www.youtube.com/@this.is.gls_"
-        },
-        {
-            name: "dReammakers.",
-            link: "https://www.youtube.com/channel/UCLid-yvmRUmpA5NBP34SOug"
-        },
-        {
-            name: "at6030",
-            link: "https://www.youtube.com/@aat6030"
-        }
-    ];
-    const youtuber = pickRandomInArray(youtubers);
-    $("#youtube-featured-name").text(youtuber.name);
-    $("#youtube-featured-content").attr("href", youtuber.link).removeAttr("target");
-
-    const streamers = [
-        {
-            name: "MikeMotions",
-            link: "https://www.twitch.tv/mikemotions"
-        },
-        {
-            name: "conduketive",
-            link: "https://www.twitch.tv/conduketive"
-        },
-        {
-            name: "youraopp",
-            link: "https://www.twitch.tv/youraopp"
-        },
-        {
-            name: "bcdf92",
-            link: "https://www.twitch.tv/bcdf92"
-        },
-        {
-            name: "bedbests",
-            link: "https://www.twitch.tv/bedbests"
-        }
-    ];
-    const streamer = pickRandomInArray(streamers);
-    $("#twitch-featured-name").text(streamer.name);
-    $("#twitch-featured-content").attr("href", streamer.link).removeAttr("target");
-
-    const toggleRotateMessage = (): JQuery =>
-        $("#splash-rotate-message").toggle(
-            window.innerWidth < window.innerHeight
-        );
-    toggleRotateMessage();
-    $(window).on("resize", toggleRotateMessage);
-
-    const gameMenu = ui.gameMenu;
     const settingsMenu = $("#settings-menu");
 
-    usernameField.val(GameConsole.getBuiltInCVar("cv_player_name"));
+    // menuUi.nickname = GameConsole.getBuiltInCVar("cv_player_name");
 
-    usernameField.on("input", function() {
-        // Replace fancy quotes & dashes, so they don't get stripped out
+    // usernameField.on("input", function() {
+    //     // Replace fancy quotes & dashes, so they don't get stripped out
 
-        GameConsole.setBuiltInCVar(
-            "cv_player_name",
-            this.value = this.value
-                .replace(/[\u201c\u201d\u201f]/g, '"')
-                //         |  “  |  ”  |  ‟  |
+    //     GameConsole.setBuiltInCVar(
+    //         "cv_player_name",
+    //         this.value = this.value
+    //             .replace(/[\u201c\u201d\u201f]/g, '"')
+    //             //         |  “  |  ”  |  ‟  |
 
-                .replace(/[\u2018\u2019\u201b]/g, "'")
-                //         |  ‘  |  ’  |  ‛  |
+    //             .replace(/[\u2018\u2019\u201b]/g, "'")
+    //             //         |  ‘  |  ’  |  ‛  |
 
-                .replace(/[\u2013\u2014]/g, "-")
-                //         |  –  |  —  |
+    //             .replace(/[\u2013\u2014]/g, "-")
+    //             //         |  –  |  —  |
 
-                // Strip out non-ASCII chars and
-                // the C0/C1 control characters
-                .replace(/[^\x20-\x7E]/g, "")
-        );
-    });
-
-    createDropdown("#server-select");
-
-    const serverSelect = $<HTMLSelectElement>("#server-select");
-
-    // Select region
-    serverSelect.on("change", () => {
-        // const value = serverSelect.val() as string | undefined;
-
-        /* if (value !== undefined) {
-            GameConsole.setBuiltInCVar("cv_region", value);
-        } */
-    });
-
-    const rulesBtn = $<HTMLButtonElement>("#btn-rules");
-
-    // Highlight rules & tutorial button for new players
-    if (!GameConsole.getBuiltInCVar("cv_rules_acknowledged")) {
-        rulesBtn.removeClass("btn-secondary").addClass("highlighted");
-    }
-
-    // Event listener for rules button
-    rulesBtn.on("click", () => {
-        GameConsole.setBuiltInCVar("cv_rules_acknowledged", true);
-        window.open("/rules/", "_blank")?.focus();
-    });
-
-    $("#btn-quit-game, #btn-spectate-menu, #btn-menu").on("click", () => {
-        void Game.endGame();
-    });
+    //             // Strip out non-ASCII chars and
+    //             // the C0/C1 control characters
+    //             .replace(/[^\x20-\x7E]/g, "")
+    //     );
+    // });
 
     // $("#btn-play-again, #btn-spectate-replay").on("click", async() => {
     //     await Game.endGame();
@@ -778,44 +555,22 @@ export async function setUpUI(): Promise<void> {
         sendSpectatePacket(SpectateActions.SpectateNext);
     });
 
-    $<HTMLButtonElement>("#btn-resume-game").on("click", () => gameMenu.fadeOut(250));
-    $<HTMLButtonElement>("#btn-fullscreen").on("click", () => {
-        requestFullscreen();
-        ui.gameMenu.hide();
-    });
+    function toggleGameMenu() {
+        if (gameUi.activeModal === "gameMenu") {
+            gameUi.activeModal = undefined;
+        } else {
+            gameUi.activeModal = "gameMenu";
+        }
+    }
 
     body.on("keydown", (e: JQuery.KeyDownEvent) => {
         if (e.key === "Escape") {
             if (ui.canvas.hasClass("active") && !GameConsole.isOpen) {
-                gameMenu.fadeToggle(250);
-                settingsMenu.fadeOut(250);
+                toggleGameMenu();
             }
             GameConsole.isOpen = false;
         }
     });
-
-    $<HTMLButtonElement>("#btn-settings").on("click", () => {
-        $(".dialog").fadeOut(250);
-        settingsMenu.fadeToggle(250);
-        settingsMenu.removeClass("in-game");
-    });
-
-    $<HTMLButtonElement>("#btn-settings-game").on("click", () => {
-        gameMenu.fadeOut(250);
-        settingsMenu.fadeToggle(250);
-        settingsMenu.addClass("in-game");
-    });
-
-    $<HTMLButtonElement>("#close-settings").on("click", () => settingsMenu.fadeOut(250));
-
-    const customizeMenu = $<HTMLButtonElement>("#customize-menu");
-    $<HTMLButtonElement>("#btn-customize").on("click", () => {
-        $(".dialog").hide();
-        customizeMenu.fadeToggle(250);
-    });
-    $<HTMLButtonElement>("#close-customize").on("click", () => customizeMenu.fadeOut(250));
-
-    $<HTMLButtonElement>("#close-report").on("click", () => ui.reportingModal.fadeOut(250));
 
     const partnersModal = $("#partners-modal");
 
@@ -834,31 +589,9 @@ export async function setUpUI(): Promise<void> {
         GameConsole.setBuiltInCVar("cv_loadout_skin", defaultClientCVars.cv_loadout_skin as string);
     }
 
-    const base = $<HTMLDivElement>("#skin-base");
-    const fists = $<HTMLDivElement>("#skin-left-fist, #skin-right-fist");
-
-    const updateSplashCustomize = (skinID: string): void => {
-        const skinDef = Skins.fromString(skinID);
-        const baseImage = `url('./img/game/skins/${skinDef.baseImage ?? `${skinDef.idString}_base`}.svg')`;
-        const fistImage = `url('./img/game/skins/${skinDef.fistImage ?? `${skinDef.idString}_fist`}.svg')`;
-
-        const hasBaseTint = skinDef.baseTint !== undefined;
-        base.css({
-            "background-image": baseImage,
-            "mask-image": hasBaseTint ? baseImage : "unset",
-            "background-color": hasBaseTint ? new Color(skinDef.baseTint).toHex() : "unset"
-        });
-
-        const hasFistTint = skinDef.fistTint !== undefined;
-        fists.css({
-            "background-image": fistImage,
-            "background-color": hasFistTint ? new Color(skinDef.fistTint).toHex() : "unset",
-            "mask-image": hasFistTint ? fistImage : "unset"
-        });
-    };
-
     const currentSkin = GameConsole.getBuiltInCVar("cv_loadout_skin");
-    updateSplashCustomize(currentSkin);
+    menuUi.skinIdString = currentSkin;
+
     const skinList = $<HTMLDivElement>("#skins-list");
 
     const skinUiCache: Record<ReferenceTo<SkinDefinition>, JQuery<HTMLDivElement>> = {};
@@ -868,7 +601,7 @@ export async function setUpUI(): Promise<void> {
             .siblings()
             .removeClass("selected");
 
-        updateSplashCustomize(idString);
+        menuUi.skinIdString = idString;
     }
 
     function renderSkin(skin: ReifiableDef<SkinDefinition>): string {
@@ -1034,7 +767,7 @@ export async function setUpUI(): Promise<void> {
 
         (
             emoteWheelUiCache[slot] ??= $(`#emote-wheel-container .emote-${slot}`)
-        ).children(".fa-trash")
+        ).children("svg")
             .on("click", () => {
                 GameConsole.setBuiltInCVar(cvar, "");
                 (
@@ -1598,12 +1331,10 @@ export async function setUpUI(): Promise<void> {
     );
     addCheckboxListener("#toggle-ambient-particles", "cv_ambient_particles");
 
-    const { gameUi } = UIManager.ui;
-
     GameConsole.variables.addChangeListener(
         "cv_draw_hud",
         newVal => {
-            gameUi.toggle(newVal);
+            ui.gameUi.toggle(newVal);
             MapManager.visible = !GameConsole.getBuiltInCVar("cv_minimap_minimized") && newVal;
         }
     );
@@ -1650,9 +1381,9 @@ export async function setUpUI(): Promise<void> {
     function updateUiScale(): void {
         const scale = GameConsole.getBuiltInCVar("cv_ui_scale");
 
-        gameUi.width(window.innerWidth / scale);
-        gameUi.height(window.innerHeight / scale);
-        gameUi.css("transform", `scale(${scale})`);
+        ui.gameUi.width(window.innerWidth / scale);
+        ui.gameUi.height(window.innerHeight / scale);
+        ui.gameUi.css("transform", `scale(${scale})`);
     }
     updateUiScale();
     window.addEventListener("resize", () => updateUiScale());
@@ -2108,12 +1839,9 @@ export async function setUpUI(): Promise<void> {
             .toggleClass("fa-eye-slash", visible);
     });
 
-    if (isMobile.any) { // bruh
-        $("#tab-mobile").show();
-        $("#mobile-options").show();
-    }
     // Mobile event listeners
     if (InputManager.isMobile) {
+        $("#mobile-options").show();
 
         // Interact message
         ui.interactMsg.on("click", () => {
@@ -2225,15 +1953,6 @@ export async function setUpUI(): Promise<void> {
         await fetch(`https://api.suroi.io/acknowledgeWarning`, { method: "DELETE" });
         ui.warningModal.hide();
     });
-
-    // Makes social buttons unclickable for 1.5 seconds after disconnecting, to prevent accidental clicks
-    $(".btn-social").on("click", e => {
-        if (lastDisconnectTime && Date.now() - lastDisconnectTime < 1500) {
-            e.preventDefault();
-        }
-    });
-
-    $("#username-input").attr("placeholder", translate("username_placeholder"));
 
     const joinTeam = (): void => {
         if (window.location.hash) {

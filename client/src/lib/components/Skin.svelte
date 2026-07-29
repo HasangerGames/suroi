@@ -4,22 +4,26 @@
 
   let { idString, ...props } = $props();
 
-  const skinDef = Skins.fromStringSafe(idString) ?? {} as SkinDefinition;
+  let baseStyle = $state<string>();
+  let fistStyle = $state<string>();
+  $effect(() => {
+    const skinDef = Skins.fromStringSafe(idString) ?? {} as SkinDefinition;
 
-  function skin(filename: string): string {
-    return asset(`/img/game/skins/${filename}.svg`);
-  }
-  const baseImage = skin(skinDef.baseImage ?? `${idString}_base`);
-  const fistImage = skin(skinDef.fistImage ?? `${idString}_fist`);
-
-  function getTint(mask: string, tint?: number): string {
-    if (tint !== undefined) {
-      return `;mask-image: url("${mask}");background-color: #${tint.toString(16)};background-blend-mode: multiply`;
+    function skin(filename: string): string {
+      return asset(`/img/game/skins/${filename}.svg`);
     }
-    return "";
-  }
-  const baseStyle = `background-image: url("${baseImage}")${getTint(baseImage, skinDef.baseTint)}`;
-  const fistStyle = `background-image: url("${fistImage}")${getTint(fistImage, skinDef.fistTint)}`;
+    const baseImage = skin(skinDef.baseImage ?? `${idString}_base`);
+    const fistImage = skin(skinDef.fistImage ?? `${idString}_fist`);
+
+    function getTint(mask: string, tint?: number): string {
+      if (tint !== undefined) {
+        return `;mask-image: url("${mask}");background-color: #${tint.toString(16)};background-blend-mode: multiply`;
+      }
+      return "";
+    }
+    baseStyle = `background-image: url("${baseImage}")${getTint(baseImage, skinDef.baseTint)}`;
+    fistStyle = `background-image: url("${fistImage}")${getTint(fistImage, skinDef.fistTint)}`;
+  });
 </script>
 
 <div class="relative w-[102px] h-[98px]" {...props}>

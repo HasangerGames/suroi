@@ -14,7 +14,7 @@ import { GameConsole } from "../console/gameConsole";
 import { Game } from "../game";
 import { DIFF_LAYER_HITBOX_OPACITY, PIXI_SCALE, TEAMMATE_COLORS } from "../utils/constants";
 import { drawGroundGraphics, drawHitbox, SuroiSprite, toPixiCoords } from "../utils/pixi";
-import { translate } from "../utils/translations/translations";
+import { translate } from "../utils/translations";
 import type { Tween } from "../utils/tween";
 import { CameraManager } from "./cameraManager";
 import { GasManager, GasRender } from "./gasManager";

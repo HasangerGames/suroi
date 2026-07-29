@@ -1,20 +1,7 @@
 <script lang="ts">
-	import {
-		Biohazard,
-		BookOpenText,
-		ChartColumn,
-		HandHeart,
-		Newspaper,
-		PencilSparkles,
-		Settings,
-		Shield,
-		Shirt,
-		User
-	} from "@lucide/svelte";
-	import { asset, resolve } from "$app/paths";
+	import { resolve } from "$app/paths";
 	import { page } from "$app/state";
 	import type { Pathname } from "$app/types";
-	import NavItem from "$lib/components/NavItem.svelte";
 	import { locales, localizeHref } from "$lib/paraglide/runtime";
 	import "./layout.css";
 

@@ -99,7 +99,7 @@ If this is also the case for Your language, You need to manually
 remove every single whitespace in the strings, and add
 `"no_space": true` to the file.
 - Turkish and Estonian `"kf_message"` should only have the `'i`
-after the `<victim>`, if the victim exists (this is not the case
+after the `{victim}`, if the victim exists (this is not the case
 for one party kills for example *commiting suicide*).
 - Hungarian and Greek have a blank `"you"` key for the kill
 modal, which requires no additional whitespace (` `) after it.
@@ -207,7 +207,7 @@ necessary):
 - keys of key-value pairs (i.e. the part before `:`)
 - values that are `true` or `false` (they must remain in
 English)
-- text inside `<>` (for example `<br>`, `<reason>`, `<player>`,
+- text inside `<>` (for example `<br>`, `{reason}`, `{player}`,
 `</li>`. These can be either HTML tags or variables.)
 - escape sequences a.k.a. a single character after a backslash
 (`\`), such as `\n`
@@ -264,8 +264,8 @@ These keys are used in translatable texts. Most of them are just
 simple texts, but there are some, that contain words like this:
 `<something>`. These "words" are called *variables*. Unless stated
 otherwise (via comments), these are special pieces of the text,
-as they are replaced with corresponding items, i.e. `<player>`
-is replaced with the name of the player, `<item>` is replaced
+as they are replaced with corresponding items, i.e. `{player}`
+is replaced with the name of the player, `{item}` is replaced
 with the usable item, etc.
 Note: You **can move** these *variables* around in the text, if
 it's required by the grammar of the language, but **do not**
@@ -273,13 +273,13 @@ remove them.
 ### Example:
 Original:
 ```
-"action_revive": "Revive <player>"
+"action_revive": "Revive {player}"
 ```
 Translated example (Hungarian):
 ```
-"action_revive": "<player> újraélesztése"
+"action_revive": "{player} újraélesztése"
 ```
-Note the changed position of the `<player>` variable.
+Note the changed position of the `{player}` variable.
 **IMPORTANT**: You should **never** remove variables, as they
 can break the translations.
 
@@ -303,57 +303,57 @@ but You should translate them anyways.
 the display that shows up, when the player gets a kill, along
 with their new kill count. This key contains 6 variables,
 their meanings:
-	- `<you>` - this will be replaced with the key `"you"`
+	- `{you}` - this will be replaced with the key `"you"`
 	- `<finally>` - this will be optionally replaced with the
 	key `"finally"` when appropriate
-	- `<event>` - this will be replaced with either
+	- `{event}` - this will be replaced with either
     `"km_killed"` or `"km_knocked"`, whichever is appropriate
-	- `<victim>` - this will be replaced with either the name of
+	- `{victim}` - this will be replaced with either the name of
 	the victim player, or the key `"yourself"`, whichever is
     appropriate
-	- `<with>` - this will be replaced with the key `"with"`
-	- `<weapon>` - this will be replaced with the weapon used by
+	- `{with}` - this will be replaced with the key `"with"`
+	- `{weapon}` - this will be replaced with the weapon used by
 	the player
 - `"kf_message"` - this key is used in the killfeed, whenever a
 player gets a kill. This key contains 6 variables, their
 meanings:
-	- `<player>` - this will be replaced with the name of the
+	- `{player}` - this will be replaced with the name of the
 	player, who got the kill
 	- `<finally>` - this will be optionally replaced with the
 	key `"finally"` when appropriate
-	- `<event>` - this will be replaced with either
+	- `{event}` - this will be replaced with either
     `"kf_killed"`, `"kf_knocked"`, or `"kf_finished_off"`,
 	whichever is appropriate
-	- `<victim>` - this will be replaced with either the name of
+	- `{victim}` - this will be replaced with either the name of
 	the victim player, or the key `"themselves"`, whichever is
 	appropriate
-	- `<with>` - this will be replaced with the keys `"with"`
-	- `<weapon>` - this will be replaced with the weapon used by
+	- `{with}` - this will be replaced with the keys `"with"`
+	- `{weapon}` - this will be replaced with the weapon used by
 	the player
 - `"tt_restores"` - tooltip for the healing items. This key
 contains 3 variables, their meanings:
-	- `<item>` - this will be replaced with either `"gauze"`,
+	- `{item}` - this will be replaced with either `"gauze"`,
 	`"medikit"`, `"cola"` or `"tablets"`
-	- `<amount>` - this will be replaced with a number
-	- `<type>` - will be replaced wiht either `"health"` or
+	- `{amount}` - this will be replaced with a number
+	- `{type}` - will be replaced wiht either `"health"` or
 	`"adrenaline"`
 - `"tt_reduces"` - tooltip for the equipment items. This key
 contains 2 variables, their meanings:
-	- `<item>` - this will be replaced with either
+	- `{item}` - this will be replaced with either
 	`"basic_vest"`, `"regular_vest"`, `"tactical_vest"`,
 	`"basic_helmet"`, `"regular_helmet"` or
 	`"tactical_helmet"`.
-	- `<percent>` - this will be replaced by a number (without
+	- `{percent}` - this will be replaced by a number (without
     the percent sign (`%`))
 
 ### Another example with variables
 Original:
 ```
-"km_message": "<you> <finally> <event> <victim> <with> <weapon>"
+"km_message": "{you} <finally> {event} {victim} {with} {weapon}"
 ```
 Translated example (German):
 ```
-"km_message": "<you> hast <victim> <finally> <with> <weapon> <event>"
+"km_message": "{you} hast {victim} <finally> {with} {weapon} {event}"
 ```
 Again, several *variables* have been moved, due to grammar. Text
 has also been added between the *variables*. Both of these

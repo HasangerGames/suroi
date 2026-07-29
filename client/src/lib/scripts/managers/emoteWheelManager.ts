@@ -1,18 +1,18 @@
+import { Color, type ColorSource, Container, Graphics } from "pixi.js";
 import { InputActions } from "$common/constants.js";
-import { Emotes, type EmoteDefinition } from "$common/definitions/emotes.js";
+import { type EmoteDefinition, Emotes } from "$common/definitions/emotes.js";
 import { MapPings } from "$common/definitions/mapPings.js";
 import { TAU } from "$common/utils/math.js";
 import type { ReferenceTo } from "$common/utils/objectDefinitions";
 import { Vec, type Vector } from "$common/utils/vector.js";
-import { Color, Container, Graphics, type ColorSource } from "pixi.js";
-import { SuroiSprite } from "../utils/pixi";
-import { InputManager } from "./inputManager";
-import { UIManager } from "./uiManager";
-import { Game } from "../game";
-import { MapManager } from "./mapManager";
-import { CameraManager } from "./cameraManager";
-import { PIXI_SCALE } from "../utils/constants";
 import { GameConsole } from "../console/gameConsole";
+import { PIXI_SCALE } from "../utils/constants";
+import { SuroiSprite } from "../utils/pixi";
+import { CameraManager } from "./cameraManager";
+import { InputManager } from "./inputManager";
+import { MapManager } from "./mapManager";
+import { PixiManager } from "./pixiManager";
+import { UIManager } from "./uiManager";
 
 class EmoteWheelManagerClass {
     static readonly COLORS = {

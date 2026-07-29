@@ -6,10 +6,10 @@ import { Numeric } from "$common/utils/math";
 import { Vec, type Vector } from "$common/utils/vector";
 import { Game } from "../game";
 import { Config } from "../utils/config";
-import { formatDate } from "../utils/misc";
-import { translate } from "../utils/translations/translations";
-import { UIManager } from "./uiManager";
 import { GAS_COLOR } from "../utils/constants";
+import { formatDate } from "../utils/misc";
+import { translate } from "../utils/translations";
+import { UIManager } from "./uiManager";
 
 class GasManagerClass {
     state = GasState.Inactive;

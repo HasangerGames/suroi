@@ -32,6 +32,7 @@ import { Vec, type Vector } from "$common/utils/vector";
 import { menuUi } from "$lib/scripts/ui/menu.svelte";
 import "pixi.js/prepare";
 import { invalidate } from "$app/navigation";
+import { gameUi } from "$lib/legacy/GameUi.svelte.ts";
 import { m } from "$lib/paraglide/messages";
 import { setUpCommands } from "./console/commands";
 import { GameConsole } from "./console/gameConsole";
@@ -66,8 +67,7 @@ import type { DebugMenu } from "./utils/debugMenu";
 import { DebugRenderer } from "./utils/debugRenderer";
 import { setUpNetGraph } from "./utils/graph/netGraph";
 import { SuroiSprite } from "./utils/pixi";
-import { initTranslation, translate } from "./utils/translations/translations";
-import { type TranslationKeys } from "./utils/translations/typings";
+import { type TranslationKeys, translate } from "./utils/translations";
 import { Tween, type TweenOptions } from "./utils/tween";
 
 
@@ -663,17 +663,16 @@ export const Game = new (class Game {
         return timeout;
     }
 
-    private _initialized = false;
+    initialized = false;
     async init(): Promise<void> {
-        if (this._initialized) {
+        if (this.initialized) {
             throw new Error("'Game' has already been initialized.");
         }
-        this._initialized = true;
+        this.initialized = true;
 
         GameConsole.init();
         this.netGraph = setUpNetGraph();
         setUpCommands();
-        await initTranslation();
         InputManager.init();
         if (DEBUG_CLIENT) {
             this.debugMenu = new (await import("./utils/debugMenu")).DebugMenu();
@@ -888,7 +887,7 @@ export const Game = new (class Game {
 
                 if (message !== undefined) {
                     const { inventoryMsg } = UIManager.ui;
-                    inventoryMsg.text(translate(this._inventoryMessageMap[message])).fadeOut(0).fadeIn(250);
+                    inventoryMsg.text(m[this._inventoryMessageMap[message]]()).fadeOut(0).fadeIn(250);
 
                     clearTimeout(this.inventoryMsgTimeout);
                     this.inventoryMsgTimeout = window.setTimeout(() => inventoryMsg.fadeOut(250), 2500);
@@ -931,7 +930,7 @@ export const Game = new (class Game {
         }
     }
 
-    private readonly _inventoryMessageMap: Record<InventoryMessages, TranslationKeys> = {
+    private readonly _inventoryMessageMap: Record<InventoryMessages, keyof typeof m> = {
         [InventoryMessages.NotEnoughSpace]: "msg_not_enough_space",
         [InventoryMessages.ItemAlreadyEquipped]: "msg_item_already_equipped",
         [InventoryMessages.BetterItemEquipped]: "msg_better_item_equipped",
@@ -995,8 +994,7 @@ export const Game = new (class Game {
             const ui = UIManager.ui;
 
             menuUi.state = "menu";
-
-            ui.gameMenu.fadeOut(250);
+            gameUi.activeModal = undefined;
 
             SoundManager.stopAll();
             this.gameOver = true;
@@ -1575,29 +1573,26 @@ export const Game = new (class Game {
                                     text = translate(`interact_${object.definition.interactObstacleIdString ?? object.definition.idString}` as TranslationKeys);
                                 } else if (object.definition.isDoor) {
                                     text = object.door?.offset === 0
-                                        ? translate("action_open_door")
-                                        : translate("action_close_door");
+                                        ? m.action_open_door()
+                                        : m.action_close_door();
                                 }
                                 break;
                             }
                             case object?.isLoot: {
                                 const definition = object.definition;
                                 const itemName = definition.defType === DefinitionType.Gun && definition.isDual
-                                    ? translate(
-                                        "dual_template",
-                                        { gun: translate(definition.singleVariant as TranslationKeys) }
-                                    )
+                                    ? m.dual_template({ gun: translate(definition.singleVariant as TranslationKeys) })
                                     : translate(("translationString" in definition && "lootAndKillfeedTranslationString" in definition ? definition.translationString : definition.idString) as TranslationKeys);
 
                                 text = `${itemName}${object.count > 1 ? ` (${object.count})` : ""}`;
                                 break;
                             }
                             case object?.isPlayer: {
-                                text = translate("action_revive", { player: UIManager.getRawPlayerName(object.id) });
+                                text = m.action_revive({ player: UIManager.getRawPlayerName(object.id) });
                                 break;
                             }
                             case isAction: {
-                                text = translate("action_cancel");
+                                text = m.action_cancel();
                                 break;
                             }
                         }

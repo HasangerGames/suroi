@@ -33,16 +33,32 @@ export function humanDate(timestamp: number | string | Date): string {
     });
 }
 
+const pad = (n: number): string | number => n < 10 ? `0${n}` : n;
+export function millisToTime(millis: number): string | undefined {
+    millis = Date.now() - millis;
+    if (millis < 0) return;
+
+    const days = Math.floor(millis / (1000 * 60 * 60 * 24));
+    const hours = Math.floor(millis / (1000 * 60 * 60)) % 24;
+    const minutes = Math.floor(millis / (1000 * 60)) % 60;
+    const seconds = Math.floor(millis / 1000) % 60;
+    return `${days > 0 ? `${pad(days)}:` : ""}${hours > 0 ? `${pad(hours)}:` : ""}${hours > 0 ? pad(minutes) : minutes}:${pad(seconds)}`;
+}
+
 export function stringify(val: unknown): string {
     switch (typeof val) {
         case "string":
         case "number":
         case "undefined":
         case "object":
-        case "boolean": return String(val);
-        case "bigint": return `${val}n`;
-        case "symbol": return val.toString();
-        case "function": return `function ${val.name}(${Array.from({ length: val.length }, (_, i) => `arg${i}`).join(", ")}) -> any`;
+        case "boolean":
+            return String(val);
+        case "bigint":
+            return `${val}n`;
+        case "symbol":
+            return val.toString();
+        case "function":
+            return `function ${val.name}(${Array.from({ length: val.length }, (_, i) => `arg${i}`).join(", ")}) -> any`;
     }
 }
 

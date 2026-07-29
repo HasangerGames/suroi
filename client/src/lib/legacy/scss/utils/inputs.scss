@@ -91,8 +91,8 @@ input[type="checkbox"]:not(.regular-checkbox) {
         padding: 2px;
         display: block;
         position: absolute;
-        left: -2px;
-        top: -2px;
+        left: 0;
+        top: 0;
         border-radius: 50%;
         background: palette.$light;
         transition: left linear 200ms;

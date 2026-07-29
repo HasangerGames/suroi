@@ -29,8 +29,7 @@ import { Config } from "../utils/config";
 import { PERK_MESSAGE_FADE_TIME, TEAMMATE_COLORS } from "../utils/constants";
 import { formatDate, html } from "../utils/misc";
 import { SuroiSprite } from "../utils/pixi";
-import { TRANSLATIONS, translate } from "../utils/translations/translations";
-import { type TranslationKeys } from "../utils/translations/typings";
+import { translate, type TranslationKeys } from "../utils/translations";
 import { CameraManager } from "./cameraManager";
 import { MapPingWheelManager } from "./emoteWheelManager";
 import { InputManager } from "./inputManager";
@@ -159,12 +158,6 @@ class UIManagerClass {
     }
 
     readonly ui = Object.freeze({
-        loaderText: $<HTMLDivElement>("#loader-text"),
-
-        serverList: $<HTMLUListElement>("#server-list"),
-
-        usernameInput: $<HTMLInputElement>("#username-input"),
-
         ammoCounterContainer: $<HTMLDivElement>("#weapon-ammo-container"),
         activeAmmo: $<HTMLSpanElement>("#weapon-clip-ammo"),
         activeAmmoCount: $<HTMLSpanElement>("#weapon-clip-ammo-count"),
@@ -252,7 +245,6 @@ class UIManagerClass {
         reportingModal: $<HTMLDivElement>("#report-modal"),
 
         game: $<HTMLDivElement>("#game"),
-        gameMenu: $<HTMLDivElement>("#game-menu"),
 
         canvas: $<HTMLCanvasElement>("canvas"),
 
@@ -1416,15 +1408,15 @@ class UIManagerClass {
             case "text": {
                 let feedMessage = "";
 
-                // Remove spaces if chinese/japanese language.
-                if (TRANSLATIONS.translations[language].no_space && messageText) {
-                    messageText = messageText.split("<span>").join("<span style=\"display:contents;\">");
-                }
+                // // Remove spaces if chinese/japanese language.
+                // if (TRANSLATIONS.translations[language].no_space && messageText) {
+                //     messageText = messageText.split("<span>").join("<span style=\"display:contents;\">");
+                // }
 
-                // special case for turkish
-                if (language === "tr") {
-                    victimText = victimText.replace("<span>", "<span style=\"display:contents;\">");
-                }
+                // // special case for turkish
+                // if (language === "tr") {
+                //     victimText = victimText.replace("<span>", "<span style=\"display:contents;\">");
+                // }
 
                 switch (damageSource) {
                     case DamageSources.Gun:

@@ -18,7 +18,7 @@
 
     &.active {
         border-color: palette.$orange;
-        background: palette.$transparent_bg;
+        background: var(--color-suroi-gray-transparent);
     }
 
     i {

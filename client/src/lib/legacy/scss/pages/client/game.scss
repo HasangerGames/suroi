@@ -1225,16 +1225,13 @@
     }
 
     #btn-spectate-previous, #btn-spectate-next {
-        width: 20%;
         display: flex;
         justify-content: center;
         align-items: center;
     }
 
     #btn-report {
-        display: flex;
-        justify-content: center;
-        align-items: center;
+        vertical-align: middle;
         flex-grow: 1;
     }
 }
@@ -2559,7 +2556,6 @@
 #healing-items-container,
 #ammos-container,
 #center-top-container,
-#game-menu,
 #mobile-options,
 #weapon-ammo-container,
 #interact-message,
@@ -2582,6 +2578,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
+        padding: 0;
         margin: 3px;
         border: none;
 
