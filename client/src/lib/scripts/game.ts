@@ -60,7 +60,7 @@ import { Plane } from "./objects/plane";
 import { Player } from "./objects/player";
 import { Projectile } from "./objects/projectile";
 import { SyncedParticle } from "./objects/syncedParticle";
-import { autoPickup, setUpUI, teamSocket, updateDisconnectTime } from "./ui";
+import { autoPickup, setUpUI } from "./ui";
 import { Config } from "./utils/config";
 import { EMOTE_SLOTS, LAYER_TRANSITION_DELAY, PERK_MESSAGE_FADE_TIME, PIXI_SCALE, VOID_COLOR } from "./utils/constants";
 import type { DebugMenu } from "./utils/debugMenu";
@@ -991,8 +991,6 @@ export const Game = new (class Game {
 
     async endGame(): Promise<void> {
         return await new Promise(resolve => {
-            const ui = UIManager.ui;
-
             menuUi.state = "menu";
             gameUi.activeModal = undefined;
 
@@ -1024,12 +1022,9 @@ export const Game = new (class Game {
                     await new Promise(resolve => this.socketCloseCallback = resolve);
                 }
 
-                updateDisconnectTime();
-
                 this.gameStarted = false;
 
-                if (teamSocket) ui.createTeamMenu.fadeIn(250, resolve);
-                else resolve();
+                resolve();
             }, 400);
         });
     }

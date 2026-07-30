@@ -1,9 +1,8 @@
 import { type GameInfo, GamesApiResponse } from "$common/schemas/api/games";
 import type { Region } from "$common/schemas/misc";
+import { randomBackground, randomMarqueeText } from "$lib/scripts/ui/menu.svelte";
 import { Config } from "$lib/scripts/utils/config";
 import type { PageServerLoad } from "./$types";
-
-export const ssr = false;
 
 export const load: PageServerLoad = async({ depends }) => {
     depends("app:games");
@@ -36,6 +35,10 @@ export const load: PageServerLoad = async({ depends }) => {
         console.log(`Loaded server info for region ${id}`);
     }));
 
-	return { games };
+	return {
+        games,
+        background: randomBackground(),
+        marqueeText: randomMarqueeText()
+    };
 };
 

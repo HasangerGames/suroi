@@ -12,7 +12,7 @@
   <NavItem href="#"           title={m.settings()}      icon="lucide:settings"        onclick={() => gameUi.activeModal = "settings"} />
   <NavItem href="/stats"      title={m.stats()}         icon="lucide:chart-column"    disabled />
   <NavItem href="/news"       title={m.news()}          icon="lucide:newspaper"    					   />
-  <NavItem href="/wiki"       title={m.wiki()}          icon="lucide:book-open-text" 					 />
+  <NavItem href="/wiki"       title={m.wiki()}          icon="lucide:book-open-text"  target="_blank" />
   <NavItem href="/status"     title={m.server_status()} icon="lucide:server"          disabled />
   <NavItem href="/moderation" title={m.moderation()}    icon="lucide:shield"     	    disabled />
 </nav>

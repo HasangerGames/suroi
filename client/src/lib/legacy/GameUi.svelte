@@ -50,7 +50,7 @@
 
     <!-- Button to close minimap -->
     <button
-      class="btn btn-lg btn-primary"
+      class="button bg-blue-500"
       id="btn-close-minimap"
       style="display: none"
     >
@@ -64,15 +64,15 @@
 
       <!-- Mobile options menu -->
       <div id="mobile-options" style="display: none">
-        <button id="btn-game-menu" class="btn btn-lg btn-primary"><Icon src="lucide:menu" size={5} /></button>
-        <button id="btn-emotes" class="btn btn-lg btn-primary"><Icon src="lucide:smile" size={5} /></button>
-        <button id="btn-toggle-ping" class="btn btn-lg btn-primary"><Icon src="lucide:radio-tower" size={5} /></button>
+        <button id="btn-game-menu" class="button bg-blue-500" onclick={() => gameUi.activeModal = "gameMenu"}><Icon src="lucide:menu" size={5} /></button>
+        <button id="btn-emotes" class="button bg-blue-500"><Icon src="lucide:smile" size={5} /></button>
+        <button id="btn-toggle-ping" class="button bg-blue-500"><Icon src="lucide:radio-tower" size={5} /></button>
       </div>
 
       <!-- Gas timer & coordinate display -->
       <div id="gas-and-debug">
         <div id="gas-timer">
-          <img id="gas-timer-image" src={asset("/img/misc/gas-waiting-icon.svg")} />
+          <img id="gas-timer-image" src={asset("/img/misc/gas-waiting-icon.svg")} alt="Gas icon" />
           <span id="gas-timer-text">0:00</span>
         </div>
         <div id="debug-hud">
@@ -111,7 +111,7 @@
       <!-- Alive & kill counters -->
       <div id="counter-holder">
         <div class="counter" id="kill-counter">
-          <img src={asset("/img/misc/skull_icon.svg")} />
+          <img src={asset("/img/misc/skull_icon.svg")} alt="Skull icon" />
           <div class="counter-text" id="ui-kills">0</div>
         </div>
         <div class="counter">
@@ -167,7 +167,7 @@
       <div id="weapon-ammo-container" style="display: none">
         <div id="weapon-clip-ammo">
           <span id="weapon-clip-ammo-count"></span>
-          <i id="weapon-clip-reload-icon" class="fa-solid fa-rotate-right" style="display: none"></i>
+          <Icon id="weapon-clip-reload-icon" src="lucide:rotate-cw" size={4} style="display: none" />
         </div>
         <div id="weapon-inventory-ammo"></div>
       </div>
@@ -864,7 +864,7 @@
       <button class="tab active" id="tab-skins"><Icon src="lucide:shirt" /> {m.loadout_skins()}</button>
       <button class="tab" id="tab-emotes"><Icon src="lucide:smile" /> {m.loadout_emotes()}</button>
       <button class="tab" id="tab-crosshairs"><Icon src="lucide:crosshair" /> {m.loadout_crosshairs()}</button>
-      <button class="tab" id="tab-badges" style="display: none"><Icon src="lucide:badge" /> {m.loadout_badges()}</button>
+      <button class="tab" id="tab-badges"><Icon src="lucide:badge" /> {m.loadout_badges()}</button>
       <button class="tab" id="tab-special" style="display: none"><Icon src="lucide:code" /> {m.loadout_special()}</button>
     </div>
 
@@ -905,7 +905,7 @@
       </div>
 
       <!-- Crosshairs tab -->
-      <div class="tab-content" id="tab-crosshairs-content" style="display: none;">
+      <div class="tab-content" id="tab-crosshairs-content" style="display: none">
         <div id="crosshair-customize">
           <div id="crosshair-preview">
             <div id="crosshair-image"></div>
@@ -949,7 +949,7 @@
       </div>
 
       <!-- Developer tab -->
-      <div class="tab-content" id="tab-special-content" style="display: none;">
+      <div class="tab-content" id="tab-special-content" style="display: none">
         <div class="modal-item">
           Note that the role you are inputting may not exist on the game server configuration.
         </div>
@@ -994,92 +994,46 @@
   </div>
 </div>
 
-<!-- Team menu -->
-<div class="modal dialog persistent-scrollbar" id="create-team-menu" style="display: none">
-  <div class="dialog-header">
-    <h3 translation="create_team"></h3>
-    <span class="dialog-close-btn fa-solid fa-xmark" id="close-create-team"></span>
-  </div>
-  <div id="create-team-container">
-    <div id="create-team-players"></div>
-    <div id="create-team-url">
-      <button class="btn btn-lg btn-danger btn-darken" id="btn-hide-team-url">
-        <i class="fa-solid fa-eye-slash"></i>
-      </button>
-      <input
-        type="text"
-        readonly
-        id="create-team-url-field"
-      />
-      <button class="btn btn-lg btn-darken btn-secondary" id="btn-copy-team-url">
-        <i class="fa-solid fa-clipboard"></i>
-        <span translation="copy"></span>
-      </button>
-    </div>
-    <div id="create-team-options">
-      <div id="create-team-toggles">
-        <label>
-          <span class="setting-title" translation="create_team_autofill"></span>
-          <input type="checkbox" id="create-team-toggle-auto-fill">
-        </label>
-        <label>
-          <span class="setting-title" translation="create_team_lock"></span>
-          <input type="checkbox" id="create-team-toggle-lock">
-        </label>
-        <label>
-          <span class="setting-title" translation="create_team_force_start"></span>
-          <input type="checkbox" id="create-team-toggle-force-start">
-        </label>
-      </div>
-      <button class="btn btn-lg btn-darken btn-primary" id="btn-start-game">
-        <span translation="create_team_play"></span>
-      </button>
-    </div>
-  </div>
-</div>
-
 <!-- Partners modal -->
-<div class="modal dialog" id="partners-modal" style="display: none">
-  <div class="dialog-header">
-    <h3 translation="partners"></h3>
-    <span class="dialog-close-btn fa-solid fa-xmark" id="close-partners"></span>
+{#if gameUi.activeModal === "partners"}
+  <div class="modal dialog ui-container max-w-[900px]">
+    <div class="dialog-header">
+      <h3>{m.partners()}</h3>
+      <button class="dialog-close-btn" onclick={() => gameUi.activeModal = undefined}><Icon src="lucide:x" /></button>
+    </div>
+    <div id="partners-list" class="persistent-scrollbar">
+      <a href="https://www.addictinggames.com" target="_blank">Addicting Games</a>
+      <a href="https://best-io-games.com" target="_blank">best-io-games.com</a>
+      <a href="https://www.brightestgames.com" target="_blank">Brightest Games</a>
+      <a href="https://www.brightygames.com" target="_blank">BrightyGames.com</a>
+      <a style="color:lightgreen;text-decoration:none">CrawMusic Records</a>
+      <a href="https://iogames.games" target="_blank">iogames.games</a>
+      <a href="https://io-games.onl" target="_blank">io-games.onl</a>
+      <a href="https://io-games.onl" target="_blank">iogames.onl</a>
+      <a href="https://iogamelist.com" target="_blank">iogamelist.com</a>
+      <a href="https://iogameslist.co" target="_blank">iogameslist.co</a>
+      <a href="https://io-game.com/en" target="_blank">io-game.com</a>
+      <a href="https://iogame.games" target="_blank">iogame.games</a>
+      <a href="https://iogame.io" target="_blank">iogame.io</a>
+      <a href="https://iogame.me/en" target="_blank">iogame.me</a>
+      <a href="https://iogames.fun" target="_blank">iogames.fun</a>
+      <a href="https://iogames.onl" target="_blank">iogames.onl</a>
+      <a href="https://www.jopi.com" target="_blank">Jopi</a>
+      <a href="https://www.miniplay.com" target="_blank">Miniplay</a>
+      <a href="https://onlinegames.io" target="_blank">OnlineGames.io</a>
+      <a href="https://play-games.com" target="_blank">Play-Games.com</a>
+      <a href="https://www.snokido.com" target="_blank">Snokido</a>
+      <a href="https://titotu.io" target="_blank">Titotu.io</a>
+      <a href="https://www.vitalitygames.com" target="_blank">Vitalitygames.com</a>
+      <a href="https://wackagames.com" target="_blank">WackaGames</a>
+    </div>
+    <div id="partners-contact">
+      <span>{m.msg_contact()}</span>
+      <a class="button bg-blue-500 text-white!" href="mailto:support@suroi.io">{m.contact()}</a>
+    </div>
   </div>
-  <div id="partners-list" class="persistent-scrollbar">
-    <a href="https://www.addictinggames.com" target="_blank">Addicting Games</a>
-    <a href="https://best-io-games.com" target="_blank">best-io-games.com</a>
-    <a href="https://www.brightestgames.com" target="_blank">Brightest Games</a>
-    <a href="https://www.brightygames.com" target="_blank">BrightyGames.com</a>
-    <a style="color:lightgreen;text-decoration:none">CrawMusic Records</a>
-    <a href="https://iogames.games" target="_blank">iogames.games</a>
-    <a href="https://io-games.onl" target="_blank">io-games.onl</a>
-    <a href="https://io-games.onl" target="_blank">iogames.onl</a>
-    <a href="https://iogamelist.com" target="_blank">iogamelist.com</a>
-    <a href="https://iogameslist.co" target="_blank">iogameslist.co</a>
-    <a href="https://io-game.com/en" target="_blank">io-game.com</a>
-    <a href="https://iogame.games" target="_blank">iogame.games</a>
-    <a href="https://iogame.io" target="_blank">iogame.io</a>
-    <a href="https://iogame.me/en" target="_blank">iogame.me</a>
-    <a href="https://iogames.fun" target="_blank">iogames.fun</a>
-    <a href="https://iogames.onl" target="_blank">iogames.onl</a>
-    <a href="https://www.jopi.com" target="_blank">Jopi</a>
-    <a href="https://www.miniplay.com" target="_blank">Miniplay</a>
-    <a href="https://onlinegames.io" target="_blank">OnlineGames.io</a>
-    <a href="https://play-games.com" target="_blank">Play-Games.com</a>
-    <a href="https://www.snokido.com" target="_blank">Snokido</a>
-    <a href="https://titotu.io" target="_blank">Titotu.io</a>
-    <a href="https://www.vitalitygames.com" target="_blank">Vitalitygames.com</a>
-    <a href="https://wackagames.com" target="_blank">WackaGames</a>
-  </div>
-  <div id="partners-contact">
-    <span translation="msg_contact"></span>
-    <a class="btn btn-primary" href="mailto:support@suroi.io" translation="contact"></a>
-  </div>
-</div>
+{/if}
 
 <style lang="scss">
   @use "./scss/pages/client.scss";
-
-  #splash-ui, #game {
-    opacity: 0;
-  }
 </style>

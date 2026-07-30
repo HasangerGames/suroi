@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { isWebGLSupported } from "pixi.js";
+  import { onMount } from "svelte";
   import { fade, slide } from "svelte/transition";
   import { invalidate } from "$app/navigation";
   import { asset } from "$app/paths";
@@ -8,20 +10,26 @@
   import Nav from "$lib/components/Nav.svelte";
   import Skin from "$lib/components/Skin.svelte";
   import GameUi from "$lib/legacy/GameUi.svelte";
+  import { gameUi } from "$lib/legacy/GameUi.svelte.ts";
   import { m } from "$lib/paraglide/messages";
-  import { endGame, menuUi, play, randomMarqueeText } from "$lib/scripts/ui/menu.svelte";
+  import { endGame, menuUi, play, randomMarqueeText, updateNickname } from "$lib/scripts/ui/menu.svelte";
   import { Config } from "$lib/scripts/utils/config";
   import { APP_VERSION } from "$lib/scripts/utils/constants";
   import { millisToTime } from "$lib/scripts/utils/misc";
   import type { PageProps } from "./$types";
 
   let { data }: PageProps = $props();
-  $effect(() => {
-    for (const game of data.games) {
-      menuUi.games.set(game.id, game);
-    }
-  });
+  menuUi.marqueeText = data.marqueeText;
+  menuUi.background = data.background;
 
+  onMount(() => {
+    menuUi.showHardwareAccelWarning = !isWebGLSupported(true);
+
+    window.addEventListener("resize", () => {
+        menuUi.showRotateMessage = window.innerWidth < window.innerHeight;
+    });
+    menuUi.showRotateMessage = window.innerWidth < window.innerHeight;
+  });
 
   function gameModeStyle(gameMode: GameMode | "any"): string | undefined {
     if (gameMode === "any") return;
@@ -35,19 +43,21 @@
   }
 
   let nicknameEditMode = $state(false);
+  let nicknameField = $state<HTMLSpanElement>();
+
   $effect(() => {
     if (nicknameEditMode) {
-      nicknameEditField?.focus();
+      nicknameField?.focus();
+    } else {
+      updateNickname?.();
     }
   });
-  let nicknameEditField = $state<HTMLSpanElement>();
-  let nickname = "Player";
 </script>
 
 {#if menuUi.state !== "inGame"}
-  <div transition:fade class="absolute bottom-0 left-0 z-1 w-screen h-screen flex flex-col items-center bg-cover bg-center" style="background-image: url({asset(`/img/backgrounds/menu/${menuUi.background.filename}`)})">
+  <div transition:fade class="absolute bottom-0 left-0 z-1 w-screen h-screen flex flex-col items-center bg-cover bg-center" style={menuUi.background ? `background-image: url(${asset(`/img/backgrounds/menu/${menuUi.background.filename}`)})` : ""}>
     <div class="absolute top-0 left-0 w-full h-8 bg-linear-to-b from-suroi-gray from-70% to-transparent">
-      <button type="button" class="marquee-content fixed top-0 text-sm font-bold cursor-pointer" onclick={() => menuUi.marqueeText = randomMarqueeText()}>{menuUi.marqueeText}</button>
+      <button type="button" class="marquee-content fixed top-0 text-sm font-bold cursor-pointer" onclick={() => menuUi.marqueeText = randomMarqueeText()}>{@html menuUi.marqueeText}</button>
     </div>
 
     <enhanced:img src={asset("/img/logos/suroi.svg")} alt="Suroi logo" class="mx-auto mt-10 mb-8 w-xl select-none" draggable="false" />
@@ -102,11 +112,12 @@
           <Skin idString={menuUi.skinIdString} />
           <div class="flex items-center gap-2">
             <span
-              bind:this={nicknameEditField}
+              bind:this={nicknameField}
+              oninput={e => (e as unknown as InputEvent).inputType === "insertLineBreak" && (nicknameEditMode = false)}
               contenteditable={nicknameEditMode ? "plaintext-only" : "false"}
               placeholder="Player"
               class="text-center text-xl font-bold focusable rounded-sm"
-            >{nickname}</span>
+            >{menuUi.nickname}</span>
             <Icon
               src={nicknameEditMode ? "lucide:check" : "lucide:pencil"}
               class="cursor-pointer hover:text-gray-400"
@@ -217,7 +228,7 @@
       <!-- Play & Spectate buttons -->
       {#if menuUi.selectedGameId !== undefined}
         <div transition:slide class="w-full flex gap-2 text-xl">
-          <button class="button bg-blue-600 grow justify-center" onclick={play}>{m.play()}</button>
+          <button class="button bg-blue-600 grow justify-center" onclick={() => play(data.games)}>{m.play()}</button>
           <button class="button bg-gray-600" disabled>{m.spectate()}</button>
         </div>
       {/if}
@@ -232,6 +243,7 @@
         <a target="_blank" href="https://instagram.com/suroigame"        class="bg-[#ff0069]"><Icon src="simple-icons:instagram" size={7} /></a>
         <a target="_blank" href="https://www.youtube.com/@suroigame"     class="bg-[#ff0033]"><Icon src="simple-icons:youtube"   size={7} /></a>
         <a target="_blank" href="https://github.com/HasangerGames/suroi" class="bg-[#101411]"><Icon src="simple-icons:github"    size={7} /></a>
+        <a target="_blank" href="https://ko-fi.com/suroi"                class="bg-[#ff6433]"><Icon src="simple-icons:kofi"      size={7} /></a>
       </div>
       <div class="right-4">
         <button class="button bg-blue-600" disabled>Sign Up</button>
@@ -243,7 +255,7 @@
     <div class="*:fixed *:bottom-4 *:ui-container *:px-4 *:py-2 *:rounded-lg">
       <div class="left-4">
         <a href="./changelog" target="_blank" rel="noopener noreferrer">v{APP_VERSION}</a> ·
-        <a href="#">{m.partners()}</a> ·
+        <button class="clickable" onclick={() => gameUi.activeModal = "partners"}>{m.partners()}</button> ·
         <a href="./privacy" target="_blank" rel="noopener noreferrer">{m.privacy()}</a> ·
         <a id="contact-link" href="mailto:support@suroi.io" target="_blank" rel="noopener noreferrer">{m.contact()}</a>
       </div>
@@ -256,6 +268,14 @@
 {/if}
 
 <GameUi />
+
+{#if menuUi.noBlur}
+  <style>
+    :root {
+      --blur-xl: 0 !important;
+    }
+  </style>
+{/if}
 
 <style>
   /*

@@ -29,7 +29,7 @@ import { Config } from "../utils/config";
 import { PERK_MESSAGE_FADE_TIME, TEAMMATE_COLORS } from "../utils/constants";
 import { formatDate, html } from "../utils/misc";
 import { SuroiSprite } from "../utils/pixi";
-import { translate, type TranslationKeys } from "../utils/translations";
+import { type TranslationKeys, translate } from "../utils/translations";
 import { CameraManager } from "./cameraManager";
 import { MapPingWheelManager } from "./emoteWheelManager";
 import { InputManager } from "./inputManager";
@@ -250,40 +250,11 @@ class UIManagerClass {
 
         playerAlive: $<HTMLDivElement>("#ui-players-alive"),
 
-        newsPosts: $<HTMLDivElement>("#news-posts"),
-
-        lockedInfo: $<HTMLButtonElement>("#locked-info"),
-        lockedTooltip: $<HTMLDivElement>("#locked-tooltip"),
-        teamModeSwitchTime: $<HTMLSpanElement>("#next-team-size-msg .next-switch-time"),
-        modeSwitchTime: $<HTMLSpanElement>("#next-mode-msg .next-switch-time"),
-
-        playSoloBtn: $<HTMLDivElement>("#btn-play-solo"),
-        playDuoBtn: $<HTMLDivElement>("#btn-play-duo"),
-        playSquadBtn: $<HTMLDivElement>("#btn-play-squad"),
-
-        teamOptionBtns: $<HTMLDivElement>("#team-option-btns"),
-
-        switchMessages: $<HTMLDivElement>("#next-switch-messages"),
-        nextTeamModeMsg: $<HTMLDivElement>("#next-team-size-msg"),
-        nextTeamModeIcon: $<HTMLDivElement>("#next-team-size-msg .next-switch-icon"),
-        nextModeMsg: $<HTMLDivElement>("#next-mode-msg"),
-        nextModeIcon: $<HTMLDivElement>("#next-mode-msg .next-switch-icon"),
-
         warningTitle: $<HTMLHeadingElement>("#warning-modal-title"),
         warningText: $<HTMLParagraphElement>("#warning-modal-text"),
         warningAgreeOpts: $<HTMLDivElement>("#warning-modal-agree-options"),
         warningAgreeCheckbox: $<HTMLInputElement>("#warning-modal-agree-checkbox"),
         warningModal: $<HTMLDivElement>("#warning-modal"),
-
-        btnStartGame: $<HTMLButtonElement>("#btn-start-game"),
-        createTeamToggles: $<HTMLDivElement>("#create-team-toggles"),
-
-        createTeamUrl: $<HTMLInputElement>("#create-team-url-field"),
-        createTeamAutoFill: $<HTMLInputElement>("#create-team-toggle-auto-fill"),
-        createTeamLock: $<HTMLInputElement>("#create-team-toggle-lock"),
-        createTeamForceStart: $<HTMLInputElement>("#create-team-toggle-force-start"),
-        createTeamPlayers: $<HTMLDivElement>("#create-team-players"),
-        closeCreateTeam: $<HTMLButtonElement>("#close-create-team"),
 
         c4Button: $<HTMLButtonElement>("#c4-detonate-btn"),
         detonateKey: $<HTMLDivElement>("#detonate-key"),
@@ -1600,9 +1571,9 @@ class UIManagerClass {
         }
 
         // Disable spaces in chinese languages.
-        if (TRANSLATIONS.translations[GameConsole.getBuiltInCVar("cv_language")].no_space) {
-            classes.push("no-spaces");
-        }
+        // if (TRANSLATIONS.translations[GameConsole.getBuiltInCVar("cv_language")].no_space) {
+        //     classes.push("no-spaces");
+        // }
 
         if (messageText) this._addKillFeedMessage(messageText, classes);
 

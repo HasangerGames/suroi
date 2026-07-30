@@ -162,8 +162,8 @@ class EmoteWheelManagerClass {
                 MapPingWheelManager._enabled = false;
                 MapPingWheelManager.close(false);
 
-                UIManager.ui.emoteButton.addClass("btn-primary").removeClass("btn-alert");
-                UIManager.ui.pingToggle.addClass("btn-primary").removeClass("btn-danger");
+                UIManager.ui.emoteButton.addClass("bg-blue-500").removeClass("bg-orange-500");
+                UIManager.ui.pingToggle.addClass("bg-blue-500").removeClass("bg-red-500");
                 UIManager.updateRequestableItems();
 
                 setTimeout(() => {

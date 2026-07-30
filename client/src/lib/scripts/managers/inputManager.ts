@@ -821,7 +821,7 @@ class InputManagerClass {
 
             const buttons = actions.map(bind => {
                 return $<HTMLButtonElement>("<button/>", {
-                    class: "btn btn-darken btn-lg btn-secondary btn-bind",
+                    class: "button bg-gray-600 btn-bind inline-block",
                     text: bind || "None"
                 }).appendTo(bindContainer)[0];
             });
@@ -889,7 +889,7 @@ class InputManagerClass {
 
         // Add the reset button
         $("<div/>", { class: "modal-item" }).append($("<button/>", {
-            class: "btn btn-darken btn-lg btn-danger",
+            class: "button bg-red-500 w-full justify-center",
             html: html`
                 <span style="position: relative; top: -2px">
                     <i class="fa-solid fa-trash" style="font-size: 17px; margin-right: 3px; position: relative; top: -1px"></i>

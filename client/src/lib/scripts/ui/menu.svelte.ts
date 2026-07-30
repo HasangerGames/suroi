@@ -1,4 +1,3 @@
-import { isWebGLSupported } from "pixi.js";
 import { invalidate } from "$app/navigation";
 import { GameConstants } from "$common/constants";
 import { GameInfo } from "$common/schemas/api/games";
@@ -12,17 +11,18 @@ export const menuUi = $state<{
     state: "menu" | "connecting" | "inGame";
 
     skinIdString: string;
+    nickname: string;
 
-    background: { filename: string, artist: string };
-    marqueeText: string;
+    background?: { filename: string, artist: string };
+    marqueeText?: string;
 
-    showHardwareAccelWarning: boolean;
-    showRotateMessage: boolean;
+    noBlur?: boolean;
+
+    showHardwareAccelWarning?: boolean;
+    showRotateMessage?: boolean;
 
     connectingText?: string;
     serverError?: string;
-
-    games: Map<string, GameInfo>;
 
     newRegion: Region;
     newGameMode: GameMode;
@@ -33,14 +33,7 @@ export const menuUi = $state<{
     state: "menu",
 
     skinIdString: GameConstants.player.defaultSkin,
-
-    background: randomBackground(),
-    marqueeText: randomMarqueeText(),
-
-    showHardwareAccelWarning: !isWebGLSupported(true),
-    showRotateMessage: initRotateMessage(),
-
-    games: new Map(),
+    nickname: GameConstants.player.defaultName,
 
     newRegion: Config.defaultRegion,
     newGameMode: "normal",
@@ -57,8 +50,13 @@ export function setEndGame(value: () => void): void {
     endGame = value;
 }
 
+export let updateNickname: () => void;
+export function setUpdateNickname(value: () => void): void {
+    updateNickname = value;
+}
+
 let lastPlayButtonClickTime = 0;
-export async function play() {
+export async function play(games: GameInfo[]) {
     if (menuUi.state !== "menu") return;
 
     // Play button rate limit
@@ -89,7 +87,7 @@ export async function play() {
             return;
         }
     } else if (menuUi.selectedGameId !== undefined) {
-        gameInfo = menuUi.games?.get(menuUi.selectedGameId);
+        gameInfo = games.find(game => game.id === menuUi.selectedGameId);
     }
 
     menuUi.selectedGameId = undefined;
@@ -103,7 +101,7 @@ export async function play() {
     await joinGame(gameInfo);
 }
 
-function randomBackground(): { filename: string, artist: string } {
+export function randomBackground(): { filename: string, artist: string } {
     const backgrounds: [string, string][] = [
         ["bridge_duel_precisederp.png", "@PreciseDerp"],
         ["gun_vs_c4_precisederp.png", "@PreciseDerp"],
@@ -136,16 +134,21 @@ export function randomMarqueeText(): string {
         "Supported by donations!",
         "Still in beta!",
         'This is called a "marquee"!',
+        "Kill or be killed!",
         "Accounts before GTA 6!",
         "Circles shooting circles since 2023!",
         "Established 2023!",
         `${new Date().getFullYear() - 2023} years and counting!`,
         "Suroi Sundays!",
+        "Hop on Suroi!",
         "We're back, baby!",                              // Title of the first ever Suroi news post
         "Feeling gassy!",                                 // Former title of a Suroi news post
         "Now featuring Fireball and Blueberry Smoothie!", // Skins previously rejected from Suroi for "not fitting the art style"
         "Probably not copyright infringing!",             // Suroi's predecessor, Surviv Reloaded, was taken down for copyright infringement
         "Dr. Giggletouch wuz here",                       // My (AnnihilatingFox) in game name :P
+        "Could cause Dwayne!",                            // Suroi inside joke
+        "That's just too much realism!",                  // Suroi inside joke
+        "Sur.oi Bero Roylae",                             // Suroi/Surviv.io inside joke, origin of the Suroi name
         "Is this thing on?",
         '<span style="background-image: linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet); color: transparent; -webkit-background-clip: text;">rainbows are cool</span>',
         "Does anyone even read these?",
@@ -174,7 +177,7 @@ export function randomMarqueeText(): string {
         "Stacy's mom has got it goin' on!",                             // Song: Fountains of Wayne - Stacy's Mom
         "Michaelsoft Binbows!",                                         // Meme: Defunct Japanese computer repair store
         "You're gonna have a bad time!",                                // Game: Undertale
-        "Bendgate!",                                                    // Issue affecting iPhone 6
+        "Bendgate!",                                                    // Meme: Issue affecting iPhone 6
         "Taste of blood!",                                              // Game: Portal
         "Frankenturrets!",                                              // Game: Portal 2
         "I am not a moron!",                                            // Game: Portal 2
@@ -183,37 +186,16 @@ export function randomMarqueeText(): string {
         "Are you sure?",                                                // Show: Invincible
         "Living in an Amish paradise!",                                 // Song: "Weird Al" Yankovic - Amish Paradise
         "Rip and tear!",                                                // Game: Doom
-        "Microslop!",                                                   // Derogatory name for Microsoft
+        "Microslop!",                                                   // Meme: Derogatory name for Microsoft
         "Do you know da wae?",                                          // Meme: Ugandan Knuckles
         "Don't you lecture me with your 30 dollar haircut!",            // Show: Dragon Ball Z: Super Android 13!
         "Rock and Stone!",                                              // Game: Deep Rock Galactic
-        // Deltarune Chapter 5 Flowery voice clips
-        "Sustingus!",
-        "Heh, it's my jarona!",
-        "Sorry to keep you waiting!",
-        "Flowery!",
-        "Hey guys! I think I found a glue!",
-        "All according to plant!",
-        "Leaf it to me!",
-        "Here I come, San Frandiscooo!",
-        "Flowers blooms in your heart!",
-        "Hey boys!",
-        "Sorry about that, little guy!",
-        "Sorry to keep a lady in waiting!",
-        "Hey there, little guy!",
-        "Glue!",
-        "I'm sorry once again, I kept a lady in waiting!",
-        "LEND ME YOUR POWER!",
-        "Jarona!",
-        "With your powers combined... OMEGA FLOWERY!",
-        "Hahahahaflowershahahaha!",
-        // End Deltarune Chapter 5 Flowery voice clips
+        "FIRE IN THE HOLE!",                                            // Meme: Lobotomy Dash (Geometry Dash)
+        "Sustingus!",                                                   // Game: Deltarune Chapter 5 (Flowery voice clip)
+        "Sorry to keep you waiting!",                                   // Game: Deltarune Chapter 5 (Flowery voice clip)
+        "Flowery!",                                                     // Game: Deltarune Chapter 5 (Flowery voice clip)
+        "Hey guys! I think I found a glue!",                            // Game: Deltarune Chapter 5 (Flowery voice clip)
+        "Here I come, San Frandiscooo!",                                // Game: Deltarune Chapter 5 (Flowery voice clip)
+        "Jarona!",                                                      // Game: Deltarune Chapter 5 (Flowery voice clip)
     ]);
-}
-
-function initRotateMessage(): boolean {
-    window.addEventListener("resize", () => {
-        menuUi.showRotateMessage = window.innerWidth < window.innerHeight;
-    });
-    return window.innerWidth < window.innerHeight;
 }

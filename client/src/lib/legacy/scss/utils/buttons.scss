@@ -210,10 +210,10 @@
   font-size: 14px;
   margin-inline: 2.5%;
   width: 45%;
+}
 
-  &.active {
-    outline: 5px solid palette.$blue;
-  }
+.btn-bind.active {
+  outline: 5px solid palette.$blue !important;
 }
 
 .btn-spectate-kill-leader {
