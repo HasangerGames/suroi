@@ -8,7 +8,7 @@
     "error_finding_game": "尋找出錯。",
     "msg_spectating": "睇梗人哋",
     "msg_enter_team_code": "打隊伍代碼",
-    "msg_lost_team_connection": "同隊伍失去連接",
+    "error_lost_team_connection": "同隊伍失去連接",
     "msg_try_again": "請重試。",
     "punishment_warn": "警告！",
     "punishment_warn_reason": "你已經被警告，因為：{reason}",

@@ -433,7 +433,7 @@ export class Game implements GameData {
                 enemySpeedMultiplier
                 && object.isPlayer
                 && source.isPlayer
-                && (!this.isTeamMode || object.teamID !== source.teamID || object.id === source.id)
+                && (!this.isTeamMode || object.teamId !== source.teamId || object.id === source.id)
             ) {
                 object.effectSpeedMultiplier = enemySpeedMultiplier.multiplier;
                 object.effectSpeedTimeout?.kill();
@@ -528,7 +528,7 @@ export class Game implements GameData {
             && (Config.minTeamsToStart ?? 2) > 1
             && (
                 this.isTeamMode
-                    ? this.aliveCount <= this.teamMaxPlayers && new Set([...this.livingPlayers].map(p => p.teamID)).size <= 1
+                    ? this.aliveCount <= this.teamMaxPlayers && new Set([...this.livingPlayers].map(p => p.teamId)).size <= 1
                     : this.aliveCount <= 1
             )
             && this.now - this.startedTime > 5000
@@ -582,7 +582,7 @@ export class Game implements GameData {
         if (this.teamMode === "solo") {
             return this.aliveCount <= 1;
         } else {
-            return this.aliveCount <= this.teamMaxPlayers && new Set([...this.livingPlayers].map(p => p.teamID)).size <= 1;
+            return this.aliveCount <= this.teamMaxPlayers && new Set([...this.livingPlayers].map(p => p.teamId)).size <= 1;
         }
     }
 
@@ -648,10 +648,10 @@ export class Game implements GameData {
 
         let team: Team | undefined;
         if (this.isTeamMode) {
-            const { teamID, autoFill } = socket?.data ?? {};
+            const { teamId, autoFill } = socket?.data ?? {};
 
-            if (teamID) {
-                team = this.customTeams.get(teamID);
+            if (teamId) {
+                team = this.customTeams.get(teamId);
 
                 if (
                     !team // team doesn't exist
@@ -659,7 +659,7 @@ export class Game implements GameData {
                     || team.players.length >= this.teamMaxPlayers  // team is full
                 ) {
                     this.teams.add(team = new Team(this.nextTeamID, autoFill));
-                    this.customTeams.set(teamID, team);
+                    this.customTeams.set(teamId, team);
                 }
             } else {
                 const vacantTeams = this.teams.valueArray.filter(
@@ -813,7 +813,7 @@ export class Game implements GameData {
             JoinedPacket.create(
                 {
                     teamMode: this.teamMode,
-                    teamId: player.teamID ?? 0,
+                    teamId: player.teamId ?? 0,
                     emotes: player.loadout.emotes
                 }
             )
@@ -904,7 +904,7 @@ export class Game implements GameData {
                 team.removePlayer(player);
                 if (!team.players.length) this.teams.delete(team);
                 player.team = undefined;
-                player.teamID = undefined;
+                player.teamId = undefined;
             }
         }
 

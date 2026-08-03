@@ -158,7 +158,7 @@ export class Bullet extends BaseBullet {
                     && this.game.isTeamMode
                     && this.shooter.isPlayer
                     && object.isPlayer
-                    && object.teamID === this.shooter.teamID
+                    && object.teamId === this.shooter.teamId
                     && object.id !== this.shooter.id
                 )
                     ? -definition.teammateHeal
@@ -172,7 +172,7 @@ export class Bullet extends BaseBullet {
                 });
 
                 if (object.isPlayer) {
-                    if (this.shooter.isPlayer && definition.infection !== undefined && object.teamID !== this.shooter.teamID) object.infection += definition.infection; // evil 1
+                    if (this.shooter.isPlayer && definition.infection !== undefined && object.teamId !== this.shooter.teamId) object.infection += definition.infection; // evil 1
                     if (definition.teammateHeal !== undefined) object.infection -= definition.teammateHeal * 10; // evil 2
                 }
 

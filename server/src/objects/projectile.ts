@@ -78,7 +78,7 @@ export class Projectile extends BaseGameObject.derive(ObjectCategory.Projectile)
         this.owner = params.owner;
         this.source = params.source;
         if (this.owner.isPlayer) {
-            this.throwerTeamID = this.owner.teamID ?? 0;
+            this.throwerTeamID = this.owner.teamId ?? 0;
             this.tintIndex = this.owner.colorIndex;
         }
 

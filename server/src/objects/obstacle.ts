@@ -1,8 +1,8 @@
 import { FlyoverPref, GameConstants, ObjectCategory, RotationMode } from "$common/constants";
 import { PerkData, PerkIds } from "$common/definitions/items/perks";
-import { Obstacles, type ObstacleDefinition } from "$common/definitions/obstacles";
+import { type ObstacleDefinition, Obstacles } from "$common/definitions/obstacles";
 import { type Orientation } from "$common/typings";
-import { CircleHitbox, RectangleHitbox, type Hitbox } from "$common/utils/hitbox";
+import { CircleHitbox, type Hitbox, RectangleHitbox } from "$common/utils/hitbox";
 import { Angle, calculateDoorHitboxes, Geometry, resolveStairInteraction } from "$common/utils/math";
 import { DefinitionType, NullString, type ReifiableDef } from "$common/utils/objectDefinitions";
 import { type FullData } from "$common/utils/objectsSerializations";
@@ -13,9 +13,9 @@ import { getLootFromTable, LootItem } from "../utils/lootHelpers";
 import { getRandomIDString, runOrWait } from "../utils/misc";
 import { type Building } from "./building";
 import { type Bullet } from "./bullet";
+import { Explosion } from "./explosion";
 import { BaseGameObject, DamageParams, type GameObject } from "./gameObject";
 import { type Player } from "./player";
-import { Explosion } from "./explosion";
 
 export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
     override readonly fullAllocBytes = 10;

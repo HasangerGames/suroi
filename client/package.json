@@ -3,7 +3,7 @@
 	"private": true,
 	"type": "module",
 	"scripts": {
-		"dev": "bunx --bun vite dev",
+		"dev": "vite dev",
 		"build": "bunx --bun vite build",
 		"preview": "bunx --bun vite preview",
 		"prepare": "svelte-kit sync || echo ''",
@@ -41,6 +41,7 @@
 		"pixi.js": "^8.19.0",
 		"simple-icons": "^16.27.0",
 		"spritesheetc": "../../spritesheetc",
+		"ws": "^8.21.1",
 		"zod": "^4.4.3"
 	}
 }

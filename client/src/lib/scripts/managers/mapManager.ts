@@ -1,8 +1,8 @@
 import $ from "jquery";
 import { type ColorSource, Container, Graphics, isMobile, RenderTexture, Sprite, Text, type Texture } from "pixi.js";
 import { GameConstants, GasState, Layer, ObjectCategory, Z_INDEX_COUNT, ZIndexes } from "$common/constants";
-import { type MapPingDefinition } from "$common/definitions/mapPings";
 import { GameModes } from "$common/definitions/gameModes";
+import { type MapPingDefinition } from "$common/definitions/mapPings";
 import { type MapData } from "$common/packets/mapPacket";
 import { type MapIndicatorSerialization, type PingSerialization, type PlayerPingSerialization } from "$common/packets/updatePacket";
 import { type Variation } from "$common/typings";
@@ -10,6 +10,7 @@ import { RectangleHitbox } from "$common/utils/hitbox";
 import { Collision, Numeric } from "$common/utils/math";
 import { FloorNames, FloorTypes, River, Terrain } from "$common/utils/terrain";
 import { Vec, type Vector } from "$common/utils/vector";
+import { MenuUi } from "../../../routes/+page.svelte";
 import { GameConsole } from "../console/gameConsole";
 import { Game } from "../game";
 import { DIFF_LAYER_HITBOX_OPACITY, PIXI_SCALE, TEAMMATE_COLORS } from "../utils/constants";
@@ -19,10 +20,9 @@ import type { Tween } from "../utils/tween";
 import { CameraManager } from "./cameraManager";
 import { GasManager, GasRender } from "./gasManager";
 import { InputManager } from "./inputManager";
+import { PixiManager } from "./pixiManager";
 import { SoundManager } from "./soundManager";
 import { UIManager } from "./uiManager";
-import { menuUi } from "$lib/scripts/ui/menu.svelte";
-import { PixiManager } from "./pixiManager";
 
 class MapManagerClass {
     private _expanded = false;
@@ -530,7 +530,7 @@ class MapManagerClass {
 
     updateFromPacket(mapPacket: MapData): void {
         console.log(`Joining game with seed: ${mapPacket.seed}`);
-        menuUi.connectingText = translate("loading_joining_game");
+        MenuUi.connectingText = translate("loading_joining_game");
 
         const width = this._width = mapPacket.width;
         const height = this._height = mapPacket.height;

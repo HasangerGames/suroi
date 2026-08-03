@@ -3,7 +3,8 @@
   import { asset } from "$app/paths";
   import Icon from "$lib/components/Icon.svelte";
   import { m } from "$lib/paraglide/messages";
-  import { endGame } from "$lib/scripts/ui/menu.svelte";
+  import { CustomTeamManager } from "$lib/scripts/managers/customTeamManager.svelte";
+  import { LegacyBridge } from "$lib/scripts/utils/legacyBridge";
   import { requestFullscreen } from "$lib/scripts/utils/misc";
   import { gameUi } from "./GameUi.svelte.ts";
 
@@ -12,6 +13,15 @@
     if (!Game.initialized) {
       await Game.init();
     }
+
+    function joinTeam(): void {
+      if (window.location.hash) {
+        const teamId = window.location.hash.slice(1);
+        CustomTeamManager.connect(teamId);
+      }
+    }
+    joinTeam();
+    window.addEventListener("hashchange", joinTeam);
   });
 </script>
 
@@ -90,7 +100,7 @@
           <Icon src="lucide:arrow-right" />
         </button>
         <button id="btn-spectate-kill-leader" class="btn btn-lg btn-secondary">{m.spectate_kill_leader()}</button>
-        <button id="btn-spectate-menu" class="btn btn-lg btn-secondary" onclick={endGame}>{m.btn_menu()}</button>
+        <button id="btn-spectate-menu" class="btn btn-lg btn-secondary" onclick={LegacyBridge.endGame}>{m.btn_menu()}</button>
       </div>
     </div>
 
@@ -335,7 +345,7 @@
 
       <!-- Buttons -->
       <div class="modal-item" id="game-over-buttons-holder">
-        <button class="btn btn-lg btn-darken btn-primary" id="btn-menu" onclick={endGame}>{m.btn_menu()}</button>
+        <button class="btn btn-lg btn-darken btn-primary" id="btn-menu" onclick={LegacyBridge.endGame}>{m.btn_menu()}</button>
         <button class="btn btn-lg btn-darken btn-secondary" id="btn-spectate">{m.spectate()}</button>
       </div>
     </div>
@@ -357,7 +367,7 @@
     <button class="bg-blue-600" onclick={() => gameUi.activeModal = undefined}>
       <Icon src="lucide:play" class="absolute left-4" /> {m.resume()}
     </button>
-    <button class="bg-red-500" onclick={endGame}>
+    <button class="bg-red-500" onclick={LegacyBridge.endGame}>
       <Icon src="lucide:square-arrow-right-exit" class="absolute left-4" /> {m.quit()}
     </button>
   </div>

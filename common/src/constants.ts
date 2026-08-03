@@ -1,5 +1,5 @@
 import type { ItemType, WeaponTypes } from "./definitions/loots";
-import { type GameMode } from "./definitions/gameModes";
+import { GameMode } from "./schemas/misc";
 import { PlayerModifiers } from "./typings";
 import { DefinitionType } from "./utils/objectDefinitions";
 

@@ -46,7 +46,7 @@ export interface ObjectsNetData extends BaseObjectsNetData {
             readonly dead: boolean
             readonly downed: boolean
             readonly beingRevived: boolean
-            readonly teamID: number
+            readonly teamId: number
             readonly invulnerable: boolean
             readonly activeItem: WeaponDefinition
             readonly sizeMod: number
@@ -243,7 +243,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 dead,
                 downed,
                 beingRevived,
-                teamID,
+                teamId,
                 invulnerable,
                 activeItem,
                 sizeMod,
@@ -288,7 +288,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 isCycling,
                 emitLowHealthParticles
             );
-            stream.writeUint8(teamID);
+            stream.writeUint8(teamId);
             Loots.writeToStream(stream, activeItem);
 
             stream.writeFloat(sizeMod, 0, 4, 1);
@@ -362,7 +362,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 beingRevived,
                 invulnerable,
                 halloweenThrowableSkin,
-                teamID: stream.readUint8(),
+                teamId: stream.readUint8(),
                 activeItem: Loots.readFromStream(stream),
                 sizeMod: stream.readFloat(0, 4, 1),
                 reloadMod: hasReloadMod ? stream.readFloat(0, 4, 1) : undefined,

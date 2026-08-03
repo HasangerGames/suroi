@@ -6,14 +6,14 @@
 
 	"error_finding_game": "Error finding game.",
 	"error_joining_game": "Error joining game.",
-	"error_fetching_game_info": "Error fetching game info.",
 	"error_creating_game": "Error creating game.",
+	"error_team_not_found": "Team does not exist.",
+	"error_team_full": "Team is full.",
+	"error_joining_team": "Error joining team.",
+	"error_lost_team_connection": "Lost connection to team.",
+	"error_kicked_team": "You were kicked from the team.",
 
 	"msg_spectating": "Spectating",
-	"msg_lost_team_connection": "Lost connection to team.",
-	"msg_error_joining_team": "Error joining team.<br>It may not exist or it is full.",
-	"msg_error_kicked_team": "You were kicked from the team.",
-	"msg_try_again": "Please try again.",
 	"msg_enter_team_code": "Enter a team code:",
 
 	"punishment_warn": "You have been warned!",
@@ -88,6 +88,10 @@
 	"create_team_ready": "Ready",
 	"create_team_not_ready": "Not Ready",
 	"create_team_play": "Start Game",
+	"copy_link": "Copy Link",
+	"link_copied": "Link copied to clipboard.",
+	"link_copy_failed": "Failed to copy link to clipboard: {link}",
+	"leave_team": "Leave Team",
 
 	"rules_and_tutorial": "Rules & Tutorial",
 	"donate": "Donate",

@@ -1,13 +1,14 @@
+import { memoryUsage } from "bun:jsc";
 import { GameConstants } from "$common/constants";
-import { GameMode, GameModes } from "$common/definitions/gameModes";
+import { GameModes } from "$common/definitions/gameModes";
+import { GameMode } from "$common/schemas/misc";
 import { halfπ, τ } from "$common/utils/math";
-import { ReferenceOrNull, ReferenceOrRandom, type ObjectDefinition } from "$common/utils/objectDefinitions";
-import { random, weightedRandom } from "$common/utils/random";
+import { type ObjectDefinition, ReferenceOrNull, ReferenceOrRandom } from "$common/utils/objectDefinitions";
+import { weightedRandom } from "$common/utils/random";
 import { Vec, type Vector } from "$common/utils/vector";
 import { MapName, Maps } from "../data/maps";
 import { Game } from "../game";
 import { Config } from "../utils/config";
-import { memoryUsage } from "bun:jsc";
 
 export function modeFromMap(map: string): GameMode {
     const args = map.split(":");
@@ -53,15 +54,6 @@ export function getRandomIDString<T extends ObjectDefinition>(ref: ReferenceOrRa
         weights.push(weight);
     }
     return weightedRandom(items, weights);
-}
-
-const _idChars = "abcdefghijklmnopqrstuvwxyz0123456789";
-const _idCharMax = _idChars.length - 1;
-export function randomId(length: number) {
-    return Array.from(
-        { length },
-        () => _idChars[random(0, _idCharMax)]
-    ).join("");
 }
 
 export function memoryUsageMb(): string {

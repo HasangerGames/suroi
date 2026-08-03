@@ -35,7 +35,7 @@ function serializePlayerData(
         activeC4s,
         perks,
       //  updatedPerks,
-        teamID,
+        teamId,
         blockEmoting
     }: PlayerData
 ): void {
@@ -55,7 +55,7 @@ function serializePlayerData(
     const hasActiveC4s          = activeC4s !== undefined;
     const hasPerks              = perks !== undefined;
    // const hasUpdatedPerks       = updatedPerks !== undefined;
-    const hasTeamID             = teamID !== undefined;
+    const hasTeamID             = teamId !== undefined;
 
     strm.writeBooleanGroup2(
         hasMinMax,
@@ -268,7 +268,7 @@ function serializePlayerData(
     // }
 
     if (hasTeamID) {
-        strm.writeUint8(teamID);
+        strm.writeUint8(teamId);
     }
 }
 
@@ -452,7 +452,7 @@ function deserializePlayerData(strm: SuroiByteStream): PlayerData {
     // }
 
     if (hasTeamID) {
-        data.teamID = strm.readUint8();
+        data.teamId = strm.readUint8();
     }
 
     return data;
@@ -570,7 +570,7 @@ export interface PlayerData {
     activeC4s?: boolean
     perks?: PerkDefinition[]
   //  updatedPerks?: PerkDefinition[]
-    teamID?: number
+    teamId?: number
 }
 
 export interface UpdateDataCommon {

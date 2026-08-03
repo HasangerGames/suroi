@@ -8,6 +8,7 @@ import { type UserConfig } from "vite";
 import pkg from "../../package.json";
 import { audioSpritesheet } from "./plugins/audio-spritesheet-plugin";
 import { imageSpritesheet } from "./plugins/image-spritesheet-plugin";
+import { teamSocket } from "./plugins/team-socket-plugin";
 
 const commonConfig: UserConfig = {
     server: {
@@ -51,6 +52,7 @@ const commonConfig: UserConfig = {
 		}),
         imageSpritesheet(),
         audioSpritesheet(),
+        teamSocket(),
     ],
     define: {
         IS_CLIENT: true,

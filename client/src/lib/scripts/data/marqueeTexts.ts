@@ -1,126 +1,5 @@
-import { invalidate } from "$app/navigation";
-import { GameConstants } from "$common/constants";
-import { GameInfo } from "$common/schemas/api/games";
-import type { GameMode, Region, TeamMode } from "$common/schemas/misc";
 import { pickRandomInArray } from "$common/utils/random";
-import { m } from "$lib/paraglide/messages";
 import pkg from "../../../../../package.json";
-import { Config } from "../utils/config";
-
-export const menuUi = $state<{
-    state: "menu" | "connecting" | "inGame";
-
-    skinIdString: string;
-    nickname: string;
-
-    background?: { filename: string, artist: string };
-    marqueeText?: string;
-
-    noBlur?: boolean;
-
-    showHardwareAccelWarning?: boolean;
-    showRotateMessage?: boolean;
-
-    connectingText?: string;
-    serverError?: string;
-
-    newRegion: Region;
-    newGameMode: GameMode;
-    newTeamMode: TeamMode;
-
-    selectedGameId?: string;
-}>({
-    state: "menu",
-
-    skinIdString: GameConstants.player.defaultSkin,
-    nickname: GameConstants.player.defaultName,
-
-    newRegion: Config.defaultRegion,
-    newGameMode: "normal",
-    newTeamMode: "solo",
-});
-
-export let joinGame: (gameInfo: GameInfo) => Promise<void>;
-export function setJoinGame(value: (gameInfo: GameInfo) => Promise<void>): void {
-    joinGame = value;
-}
-
-export let endGame: () => void;
-export function setEndGame(value: () => void): void {
-    endGame = value;
-}
-
-export let updateNickname: () => void;
-export function setUpdateNickname(value: () => void): void {
-    updateNickname = value;
-}
-
-let lastPlayButtonClickTime = 0;
-export async function play(games: GameInfo[]) {
-    if (menuUi.state !== "menu") return;
-
-    // Play button rate limit
-    const now = Date.now();
-    if (now - lastPlayButtonClickTime < 1500) return;
-    lastPlayButtonClickTime = now;
-
-    menuUi.state = "connecting";
-
-    function serverError(message: string): void {
-        menuUi.state = "menu";
-        menuUi.serverError = message;
-        invalidate("app:games");
-    }
-
-    let gameInfo: GameInfo | undefined;
-    if (menuUi.selectedGameId === "new") {
-        try {
-            menuUi.connectingText = m.loading_creating_game();
-            const response = await fetch(`${Config.regions[menuUi.newRegion].mainAddress}/api/game/new/${menuUi.newGameMode}/${menuUi.newTeamMode}`);
-            gameInfo = {
-                ...GameInfo.parse(await response.json()),
-                region: menuUi.newRegion,
-            };
-        } catch (e) {
-            console.error(e);
-            serverError(m.error_creating_game());
-            return;
-        }
-    } else if (menuUi.selectedGameId !== undefined) {
-        gameInfo = games.find(game => game.id === menuUi.selectedGameId);
-    }
-
-    menuUi.selectedGameId = undefined;
-
-    if (!gameInfo) {
-        serverError(m.error_finding_game());
-        return;
-    }
-
-    menuUi.connectingText = m.loading_connecting();
-    await joinGame(gameInfo);
-}
-
-export function randomBackground(): { filename: string, artist: string } {
-    const backgrounds: [string, string][] = [
-        ["bridge_duel_precisederp.png", "@PreciseDerp"],
-        ["gun_vs_c4_precisederp.png", "@PreciseDerp"],
-        ["terrorizer_migraine7341.png", "@migraine7341"],
-        ["suroi_moment_migraine7341.png", "@migraine7341"],
-        ["tango_51_boeing_777.jpg", "Boeing_777"],
-        ["winter_confrontation_yoko.png", "Yoko"],
-        ["l115a1_sniper_yoko.png", "Yoko"],
-        ["untitled_winter_yoko.png", "Yoko"],
-        ["harvest_mode_yoko.png", "Yoko"],
-        ["hunted_mode_experience_deviouslemon331.png", "DeviousLemon331"],
-        ["monument_j.png", "J"],
-        ["rounds_j.png", "J"],
-        ["most_average_hunted_day_danzan.png", "danzan"],
-        ["infection_yoko.png", "Yoko"],
-    ];
-    const [filename, artist] = pickRandomInArray(backgrounds);
-    return { filename, artist };
-}
 
 export function randomMarqueeText(): string {
     return pickRandomInArray([
@@ -131,7 +10,7 @@ export function randomMarqueeText(): string {
         "Support open source software!",
         "Ad-free!",
         "Free and open source!",
-        "Supported by donations!",
+        "Created by volunteers, supported by donations!",
         "Still in beta!",
         'This is called a "marquee"!',
         "Kill or be killed!",
@@ -148,7 +27,7 @@ export function randomMarqueeText(): string {
         "Dr. Giggletouch wuz here",                       // My (AnnihilatingFox) in game name :P
         "Could cause Dwayne!",                            // Suroi inside joke
         "That's just too much realism!",                  // Suroi inside joke
-        "Sur.oi Bero Roylae",                             // Suroi/Surviv.io inside joke, origin of the Suroi name
+        "Sur.oi Bero Roylae",                             // Surviv.io inside joke, origin of the Suroi name
         "Is this thing on?",
         '<span style="background-image: linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet); color: transparent; -webkit-background-clip: text;">rainbows are cool</span>',
         "Does anyone even read these?",

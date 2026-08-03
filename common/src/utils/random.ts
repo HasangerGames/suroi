@@ -87,6 +87,15 @@ export function pickRandomInArray<T>(items: readonly T[]): T {
     return items[Math.floor(Math.random() * items.length)];
 }
 
+const _idChars = "abcdefghijklmnopqrstuvwxyz0123456789";
+const _idCharMax = _idChars.length - 1;
+export function randomId(length: number) {
+    return Array.from(
+        { length },
+        () => _idChars[random(0, _idCharMax)]
+    ).join("");
+}
+
 export class SeededRandom {
     private _rng = 0;
 

@@ -1,13 +1,14 @@
+import $ from "jquery";
 import { Badges } from "$common/definitions/badges";
 import { Numeric } from "$common/utils/math";
-import $ from "jquery";
-import { InputManager, type CompiledAction, type CompiledTuple } from "../managers/inputManager";
+import { Game } from "../game";
+import { type CompiledAction, type CompiledTuple, InputManager } from "../managers/inputManager";
 import { FloatingWindow } from "../utils/floatingWindow";
+import { LegacyBridge } from "../utils/legacyBridge";
 import { sanitizeHTML } from "../utils/misc";
 import { type Command } from "./commands";
 import { evalQuery, extractCommandsAndArgs } from "./internals";
-import { Casters, ConsoleVariables, ConVar, defaultBinds, defaultClientCVars, flagBitfieldToInterface, type CVarTypeMapping } from "./variables";
-import { Game } from "../game";
+import { Casters, ConsoleVariables, ConVar, type CVarTypeMapping, defaultBinds, defaultClientCVars, flagBitfieldToInterface } from "./variables";
 
 const enum MessageType {
     Log = "log",
@@ -941,3 +942,6 @@ declare global {
 }
 
 window.GameConsole = GameConsole;
+
+LegacyBridge.getBuiltInCVar = GameConsole.getBuiltInCVar.bind(GameConsole);
+LegacyBridge.setBuiltInCVar = GameConsole.setBuiltInCVar.bind(GameConsole);

@@ -2,50 +2,18 @@ import Cluster from "node:cluster";
 import { BunRequest } from "bun";
 import os from "os";
 import { GameConstants } from "$common/constants";
-import { Badges } from "$common/definitions/badges";
-import { Skins } from "$common/definitions/items/skins";
 import { GameMode, TeamMode } from "$common/schemas/misc";
-import { CustomTeamMessage, PunishmentMessage } from "$common/typings";
+import { PunishmentMessage } from "$common/typings";
 import { version } from "../../package.json";
 import { MapName } from "./data/maps";
 import { GameContainer, GameManager } from "./gameManager";
-import { CustomTeam, CustomTeamPlayer } from "./team";
 import { Config } from "./utils/config";
-import { cleanUsername, memoryUsageMb } from "./utils/misc";
-import { corsHeaders, getIP, getPunishment, getSearchParams, parseRole, RateLimiter, serverError, serverLog } from "./utils/serverHelpers";
-
-let customTeams: Map<string, CustomTeam> | undefined;
-let teamsCreated: RateLimiter | undefined;
+import { memoryUsageMb } from "./utils/misc";
+import { corsHeaders, getIP, getPunishment, getSearchParams, serverError, serverLog } from "./utils/serverHelpers";
 
 declare global {
     var initialSetupComplete: boolean | undefined
 }
-
-//
-// Code for finding all buildings/obstacles for a mode
-//
-// const name = "infection";
-// const mapDef = Maps[name];
-// console.log(
-//     getReachableBuildings(mapDef)
-//         .map(o => `static/img/game/buildings/${o.idString}`)
-//         .sort()
-//         .join("\n")
-// );
-// console.log(
-//     Array.from(new Set([
-//         ...[
-//             ...Object.keys(mapDef.obstacles ?? {}),
-//             ...Object.keys(mapDef.rivers?.obstacles ?? {}),
-//             ...(mapDef.obstacleClumps ?? []).flatMap(c => c.clump.obstacles),
-//         ].map(o => Obstacles.fromString(o)),
-//         ...getReachableObstacles(mapDef, getReachableBuildings(mapDef))
-//     ]))
-//         .filter(o => !o.wall && !o.invisible)
-//         .map(o => `static/img/game/obstacles/${o.idString}`)
-//         .sort()
-//         .join("\n")
-// );
 
 if (Cluster.isPrimary && require.main === module) {
     //                   ^^^^^^^^^^^^^^^^^^^^^^^ only starts server if called directly from command line (not imported)
@@ -92,17 +60,11 @@ if (Cluster.isPrimary && require.main === module) {
     }
     globalThis.initialSetupComplete = true;
 
-    customTeams = new Map<string, CustomTeam>();
-
-    teamsCreated = Config.maxCustomTeams
-        ? new RateLimiter(Config.maxCustomTeams)
-        : undefined;
-
-    Bun.serve<CustomTeamPlayer>({
+    Bun.serve({
         hostname: Config.hostname,
         port: Config.mainPort,
         routes: {
-            "/api/serverInfo": async(req: BunRequest, res: Bun.Server<CustomTeamPlayer>) => {
+            "/api/serverInfo": async(req, res) => {
                 let punishment: PunishmentMessage | undefined;
                 if (getSearchParams(req).get("checkPunishments") === "true") {
                     punishment = await getPunishment(getIP(req, res));
@@ -132,84 +94,6 @@ if (Cluster.isPrimary && require.main === module) {
                     return new Response("403 Forbidden");
                 }
             },
-            "/team": async(req: BunRequest, res: Bun.Server<CustomTeamPlayer>) => {
-                const ip = getIP(req, res);
-
-                if (teamsCreated?.isLimited(ip)) {
-                    return new Response("403 Forbidden");
-                }
-
-                const punishmentMessage = (await getPunishment(ip))?.message;
-                if (punishmentMessage && punishmentMessage !== "noname") {
-                    return new Response("403 Forbidden");
-                }
-
-                // Get team
-                const searchParams = getSearchParams(req);
-                const teamID = searchParams.get("teamID");
-                let team: CustomTeam;
-                if (teamID !== null) {
-                    const givenTeam = customTeams?.get(teamID);
-                    if (!givenTeam || givenTeam.locked || givenTeam.players.length >= 4) {
-                        return new Response("403 Forbidden"); // TODO "Team is locked" and "Team is full" messages
-                    }
-                    team = givenTeam;
-                } else {
-                    team = new CustomTeam(gameManager);
-                    customTeams?.set(team.id, team);
-                }
-
-                // Get name, skin, badge, & role
-                const name = punishmentMessage === "noname" ? GameConstants.player.defaultName : cleanUsername(searchParams.get("name"));
-                let skin = searchParams.get("skin") ?? GameConstants.player.defaultSkin;
-                let badge = searchParams.get("badge") ?? undefined;
-                const { role = "", nameColor } = parseRole(searchParams);
-
-                // Validate skin
-                const skinDefinition = Skins.fromStringSafe(skin);
-                const rolesRequired = skinDefinition?.rolesRequired;
-                if (!skinDefinition || (rolesRequired && !rolesRequired.includes(role))) {
-                    skin = GameConstants.player.defaultSkin;
-                }
-
-                // Validate badge
-                const badgeDefinition = badge ? Badges.fromStringSafe(badge) : undefined;
-                if (!badgeDefinition || (badgeDefinition.roles && !badgeDefinition.roles.includes(role))) {
-                    badge = undefined;
-                }
-
-                // Upgrade the connection
-                res.upgrade(req, {
-                    data: new CustomTeamPlayer(ip, team, name, skin, badge, nameColor)
-                });
-            }
-        },
-        websocket: {
-            idleTimeout: 960,
-            open(socket: Bun.ServerWebSocket<CustomTeamPlayer>) {
-                const player = socket.data;
-                player.socket = socket;
-                player.team.addPlayer(player);
-            },
-
-            message(socket: Bun.ServerWebSocket<CustomTeamPlayer>, message: string | Buffer<ArrayBuffer>) {
-                try {
-                    const player = socket.data;
-                    void player.team.onMessage(player, JSON.parse(String(message)) as CustomTeamMessage);
-                } catch (e) {
-                    serverError("Error parsing team socket message. Details:", e);
-                }
-            },
-
-            close(socket: Bun.ServerWebSocket<CustomTeamPlayer>) {
-                const player = socket.data;
-                const team = player.team;
-                team.removePlayer(player);
-                if (!team.players.length) {
-                    customTeams?.delete(team.id);
-                }
-                teamsCreated?.decrement(player.ip);
-            }
         }
     });
 

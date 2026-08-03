@@ -60,7 +60,7 @@ import type { DebugPacket } from "$common/packets/debugPacket";
 export interface PlayerSocketData {
     player?: Player
     readonly ip?: string
-    readonly teamID?: string
+    readonly teamId?: string
     readonly autoFill: boolean
     readonly noName?: boolean
     readonly role?: string
@@ -97,7 +97,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     overdriveCooldown?: Timeout;
     canUseOverdrive = true;
 
-    teamID?: number;
+    teamId?: number;
     colorIndex = 0; // Assigned in the team.ts file.
 
     isConsumingItem = false;
@@ -450,7 +450,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         activeC4s: true,
         perks: true,
      //   updatedPerks: true,
-        teamID: true
+        teamId: true
     };
 
     readonly inventory = new Inventory(this);
@@ -660,7 +660,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
         if (team) {
             this._team = team;
-            this.teamID = team.id;
+            this.teamId = team.id;
 
             team.reassignColorIndexes();
             team.addPlayer(this);
@@ -1953,8 +1953,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         //     playerData.updatedPerks = player.updatedPerks;
         // }
 
-        if (player.dirty.teamID || forceInclude) {
-            playerData.teamID = player.teamID;
+        if (player.dirty.teamId || forceInclude) {
+            playerData.teamId = player.teamId;
         }
 
         // Cull bullets
@@ -2014,7 +2014,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         // New/deleted players
         packet.newPlayers = [];
         for (const newPlayer of newPlayers) {
-            const { id, teamID, name, hasColor, nameColor, loadout: { badge } } = newPlayer;
+            const { id, teamId, name, hasColor, nameColor, loadout: { badge } } = newPlayer;
 
             packet.newPlayers.push({
                 id,
@@ -2025,7 +2025,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             } as (UpdateDataCommon["newPlayers"] & object)[number]);
 
             // Add new teammates to full objects
-            if (!this.game.isTeamMode || teamID !== player.teamID) continue;
+            if (!this.game.isTeamMode || teamId !== player.teamId) continue;
             fullObjects.add(newPlayer);
         }
         packet.deletedPlayers = game.deletedPlayers;
@@ -2088,7 +2088,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
      * @returns true if the player is on the same team with the given player.
      */
     isSameTeam(player: Player): boolean {
-        return this.game.isTeamMode && player.teamID === this.teamID;
+        return this.game.isTeamMode && player.teamId === this.teamId;
     }
 
     // updatePerk(perk: ReifiableDef<PerkDefinition>): void {
@@ -2573,7 +2573,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         }
 
         if (this.game.isTeamMode) {
-            this.teamID = toSpectate.teamID;
+            this.teamId = toSpectate.teamId;
             this.setDirty();
         }
 
@@ -2672,7 +2672,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             || (
                 this.game.isTeamMode
                 && source instanceof Player
-                && source.teamID === this.teamID
+                && source.teamId === this.teamId
                 && source.id !== this.id
                 && !this.disconnected
                 && amount > 0
@@ -3035,7 +3035,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
             // Give kill credit to the player who downed if they're on the same team as the killer.
             // Otherwise, the killer always gets credit.
-            if (downedBy && downedBy.teamID === source.teamID) {
+            if (downedBy && downedBy.teamId === source.teamId) {
                 packet.creditedId = downedBy.id;
                 packet.kills = ++downedBy.kills;
             } else {
@@ -3334,7 +3334,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             && this.downed
             && !this.beingRevivedBy
             && this !== player
-            && this.teamID === player.teamID
+            && this.teamId === player.teamId
             && adjacentOrEqualLayer(this.layer, player.layer);
     }
 
@@ -3670,7 +3670,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 dead: this.dead,
                 downed: this.downed,
                 beingRevived: !!this.beingRevivedBy,
-                teamID: this.teamID ?? 0,
+                teamId: this.teamId ?? 0,
                 invulnerable: this.invulnerable,
                 activeItem: this.activeItem.definition,
                 sizeMod: this.sizeMod,

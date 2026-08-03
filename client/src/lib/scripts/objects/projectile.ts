@@ -125,7 +125,7 @@ export class Projectile extends GameObject.derive(ObjectCategory.Projectile) {
             if (Game.isTeamMode
                 && this.throwerTeamID !== undefined
                 && this.tintIndex !== undefined
-                && Game.teamID === this.throwerTeamID
+                && Game.teamId === this.throwerTeamID
             ) {
                 this.image.setTint(TEAMMATE_COLORS[this.tintIndex]);
             }

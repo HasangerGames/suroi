@@ -34,8 +34,10 @@
   "workspaces": ["client", "common", "server", "tests"],
   "trustedDependencies": [
     "@parcel/watcher",
+    "@suroi/client",
     "@swc/core",
     "esbuild",
+    "sharp",
     "spritesheetc",
     "unrs-resolver"
   ]

@@ -35,41 +35,40 @@ export const enum CustomTeamMessages {
 }
 
 export interface CustomTeamPlayerInfo {
-    id: number
-    isLeader?: boolean
-    ready: boolean
-    name: string
-    skin: string
-    badge?: string
-    nameColor?: number
+    id: number;
+    isLeader?: boolean;
+    ready: boolean;
+    name: string;
+    skin: string;
+    badge?: string;
+    nameColor?: number | string;
 }
 
 export type CustomTeamMessage =
     | {
-        type: CustomTeamMessages.Join
-        teamId: string
-        isLeader: boolean
-        autoFill: boolean
-        locked: boolean
-        forceStart: boolean
+        type: CustomTeamMessages.Join;
+        teamId: string;
+        isLeader: boolean;
+        autoFill: boolean;
+        forceStart: boolean;
+        gameId?: string;
     }
     | {
-        type: CustomTeamMessages.Update
-        players: CustomTeamPlayerInfo[]
-        isLeader: boolean
-        ready: boolean
-        forceStart: boolean
+        type: CustomTeamMessages.Update;
+        players: CustomTeamPlayerInfo[];
+        isLeader: boolean;
+        ready: boolean;
     }
     | {
-        type: CustomTeamMessages.Settings
-        autoFill?: boolean
-        locked?: boolean
-        forceStart?: boolean
+        type: CustomTeamMessages.Settings;
+        autoFill?: boolean;
+        forceStart?: boolean;
+        gameId?: string;
     }
     | {
-        type: CustomTeamMessages.KickPlayer
-        playerId: number
+        type: CustomTeamMessages.KickPlayer;
+        id: number;
     }
     | {
-        type: CustomTeamMessages.Start | CustomTeamMessages.Started | CustomTeamMessages.KeepAlive
+        type: CustomTeamMessages.Start | CustomTeamMessages.Started | CustomTeamMessages.KeepAlive;
     };

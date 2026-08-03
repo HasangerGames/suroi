@@ -1,13 +1,13 @@
 import Cluster, { type Worker } from "node:cluster";
-import { random } from "$common/utils/random";
+import { GameInfo } from "$common/schemas/api/games";
+import { TeamMode } from "$common/schemas/misc";
+import { random, randomId } from "$common/utils/random";
 import { MapName } from "./data/maps";
 import { Game } from "./game";
 import { PlayerSocketData } from "./objects/player";
 import { Config } from "./utils/config";
-import { modeFromMap, randomId } from "./utils/misc";
+import { modeFromMap } from "./utils/misc";
 import { getIP, getPunishment, getSearchParams, parseRole, RateLimiter, serverLog } from "./utils/serverHelpers";
-import { TeamMode } from "$common/schemas/misc";
-import { GameInfo } from "$common/schemas/api/games";
 
 export interface GameData {
     aliveCount: number
@@ -176,7 +176,7 @@ if (!Cluster.isPrimary) {
                 res.upgrade(req, {
                     data: {
                         ip,
-                        teamID: searchParams.get("teamID") ?? undefined,
+                        teamId: searchParams.get("teamId") ?? undefined,
                         autoFill: Boolean(searchParams.get("autoFill")),
                         noName: punishment?.message === "noname",
                         role,

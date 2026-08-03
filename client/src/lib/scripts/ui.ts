@@ -1,7 +1,6 @@
 import { sound } from "@pixi/sound";
 import $ from "jquery";
 import { Color, isWebGLSupported, isWebGPUSupported } from "pixi.js";
-import { invalidate } from "$app/navigation";
 import { GameConstants, InputActions, ObjectCategory, SpectateActions } from "$common/constants";
 import { type BadgeDefinition, Badges } from "$common/definitions/badges";
 import { EmoteCategory, type EmoteDefinition, Emotes, getBadgeIdString, isEmoteBadge } from "$common/definitions/emotes";
@@ -13,18 +12,17 @@ import { PerkIds, Perks } from "$common/definitions/items/perks";
 import { type ScopeDefinition, Scopes } from "$common/definitions/items/scopes";
 import { type SkinDefinition, Skins } from "$common/definitions/items/skins";
 import { SpectatePacket } from "$common/packets/spectatePacket";
-import type { GameInfo } from "$common/schemas/api/games";
 import { ExtendedMap } from "$common/utils/misc";
 import { DefinitionType, type ReferenceTo, type ReifiableDef } from "$common/utils/objectDefinitions";
 import { gameUi } from "$lib/legacy/GameUi.svelte.ts";
-import { menuUi, setEndGame, setJoinGame, setUpdateNickname } from "$lib/scripts/ui/menu.svelte";
+import { MenuUi } from "../../routes/+page.svelte";
 import { GameConsole } from "./console/gameConsole";
 import { type CVarTypeMapping, defaultClientCVars } from "./console/variables";
 import { Game } from "./game";
+import { CustomTeamManager } from "./managers/customTeamManager.svelte";
 import { EmoteWheelManager, MapPingWheelManager } from "./managers/emoteWheelManager";
 import { InputManager } from "./managers/inputManager";
 import { MapManager } from "./managers/mapManager";
-import { PixiManager } from "./managers/pixiManager";
 import { SoundManager } from "./managers/soundManager";
 import { UIManager } from "./managers/uiManager";
 import { body } from "./uiHelpers";
@@ -33,7 +31,6 @@ import { EMOTE_SLOTS } from "./utils/constants";
 import { Crosshairs, getCrosshair } from "./utils/crosshairs";
 import { html } from "./utils/misc";
 import { type TranslationKeys, translate } from "./utils/translations";
-import { CustomTeamManager } from "./managers/customTeamManager";
 
 export let autoPickup = true;
 
@@ -94,6 +91,17 @@ export async function setUpUI(): Promise<void> {
                     )
             );
         }
+
+        CustomTeamManager.teamId = "abcd";
+        CustomTeamManager.players = [{
+            id: 0,
+            name: "hasanger",
+            nameColor: "red",
+            badge: "bdg_ownr",
+            skin: "hasanger",
+            ready: true,
+            isLeader: true
+        }];
     }
 
     const params = new URLSearchParams(window.location.search);
@@ -112,294 +120,6 @@ export async function setUpUI(): Promise<void> {
 
     // Hide option to hide qq if the language is not Chinese
     $(".checkbox-setting").has("#toggle-hide-qq").toggle(isChinese);
-
-    setJoinGame(async(gameInfo: GameInfo): Promise<void> => {
-        if (gameInfo.gameMode !== Game.gameMode) {
-            Game.gameMode = gameInfo.gameMode;
-            await Promise.all([
-                PixiManager.loadGameMode(gameInfo.gameMode),
-                SoundManager.loadSounds(gameInfo.gameMode),
-            ]);
-        }
-
-        const params = new URLSearchParams();
-
-        const { teamId, autoFill } = CustomTeamManager;
-        if (teamId) params.set("teamID", teamId);
-        if (autoFill) params.set("autoFill", String(autoFill));
-
-        const devPass = GameConsole.getBuiltInCVar("dv_password");
-        if (devPass) params.set("password", devPass);
-
-        const role = GameConsole.getBuiltInCVar("dv_role");
-        if (role) params.set("role", role);
-
-        const lobbyClearing = GameConsole.getBuiltInCVar("dv_lobby_clearing");
-        if (lobbyClearing) params.set("lobbyClearing", "true");
-
-        const weaponPreset = GameConsole.getBuiltInCVar("dv_weapon_preset");
-        if (weaponPreset) params.set("weaponPreset", weaponPreset);
-
-        const nameColor = GameConsole.getBuiltInCVar("dv_name_color");
-        if (nameColor) {
-            try {
-                params.set("nameColor", new Color(nameColor).toNumber().toString());
-            } catch (e) {
-                GameConsole.setBuiltInCVar("dv_name_color", "");
-                console.error(e);
-            }
-        }
-
-        Game.connect(`${Config.regions[gameInfo.region].gameAddress}:${gameInfo.port}/?${params.toString()}`);
-        menuUi.serverError = undefined;
-    });
-    setEndGame(() => {
-        void Game.endGame();
-        void invalidate("app:games"); // reload the list of games
-    });
-
-    // const createTeamMenu = $("#create-team-menu");
-    // $<HTMLButtonElement>("#btn-create-team, #btn-join-team").on("click", function() {
-    //     const now = Date.now();
-    //     if (now - lastPlayButtonClickTime < 1500 || teamSocket) return;
-    //     lastPlayButtonClickTime = now;
-
-    //     menuUi.connectingText = translate("loading_connecting");
-
-    //     const params = new URLSearchParams();
-
-    //     if (this.id === "btn-join-team") {
-    //         // also rejects the empty string, but like who cares
-    //         while (!teamID) {
-    //             teamID = prompt(translate("msg_enter_team_code"));
-    //             if (!teamID) {
-    //                 return;
-    //             }
-
-    //             /*
-    //                 Allows people to paste links into the text field and still have the game parse
-    //                 them correctly (as opposed to simply doing `teamID = teamID.slice(1)`)
-    //             */
-    //             if (teamID.includes("#")) {
-    //                 teamID = teamID.split("#")[1];
-    //             }
-
-    //             if (/^[a-zA-Z0-9]{4}$/.test(teamID)) {
-    //                 break;
-    //             }
-
-    //             alert("Invalid team code.");
-    //         }
-
-    //         params.set("teamID", teamID);
-    //     }
-
-    //     params.set("name", GameConsole.getBuiltInCVar("cv_player_name"));
-    //     params.set("skin", GameConsole.getBuiltInCVar("cv_loadout_skin"));
-
-    //     const badge = GameConsole.getBuiltInCVar("cv_loadout_badge");
-    //     if (badge) params.set("badge", badge);
-
-    //     const devPass = GameConsole.getBuiltInCVar("dv_password");
-    //     if (devPass) params.set("password", devPass);
-
-    //     const role = GameConsole.getBuiltInCVar("dv_role");
-    //     if (role) params.set("role", role);
-
-    //     const nameColor = GameConsole.getBuiltInCVar("dv_name_color");
-    //     if (nameColor) {
-    //         try {
-    //             params.set("nameColor", new Color(nameColor).toNumber().toString());
-    //         } catch (e) {
-    //             GameConsole.setBuiltInCVar("dv_name_color", "");
-    //             console.error(e);
-    //         }
-    //     }
-
-    //     teamSocket = new WebSocket(`${selectedRegion.mainAddress.replace("http", "ws")}/team?${params.toString()}`);
-
-    //     const updateTeamStartButton = (isLeader: boolean, ready: boolean, forceStart: boolean): void => {
-    //         let str: TranslationKeys;
-    //         if (isLeader && forceStart) {
-    //             str = "create_team_play";
-    //         } else if (ready) {
-    //             str = "create_team_not_ready";
-    //         } else {
-    //             str = "create_team_ready";
-    //         }
-    //         ui.btnStartGame.text(translate(str));
-    //     };
-
-    //     teamSocket.onmessage = (message: MessageEvent<string>): void => {
-    //         const data = JSON.parse(message.data) as CustomTeamMessage;
-    //         switch (data.type) {
-    //             case CustomTeamMessages.Join: {
-    //                 joinedTeam = true;
-    //                 teamID = data.teamId;
-    //                 globalReady = false;
-    //                 window.location.hash = `#${teamID}`;
-
-    //                 ui.createTeamUrl.val(`${window.location.origin}/?region=${GameConsole.getBuiltInCVar("cv_region")}#${teamID}`);
-
-    //                 ui.createTeamAutoFill.prop("checked", data.autoFill);
-    //                 ui.createTeamLock.prop("checked", data.locked);
-    //                 ui.createTeamForceStart.prop("checked", data.forceStart);
-    //                 break;
-    //             }
-    //             case CustomTeamMessages.Update: {
-    //                 const { players, isLeader: playerIsLeader, ready, forceStart } = data;
-    //                 ui.createTeamPlayers.html(
-    //                     players.map(
-    //                         ({
-    //                             id,
-    //                             isLeader,
-    //                             ready,
-    //                             name,
-    //                             skin,
-    //                             badge,
-    //                             nameColor
-    //                         }: CustomTeamPlayerInfo): string => `
-    //                             <div class="create-team-player-container" data-id="${id}">
-    //                                 ${ready ? '<i class="fa-regular fa-circle-check"></i>' : ""}
-    //                                 ${playerIsLeader || isLeader ? `<i class="fa-solid ${isLeader ? "fa-crown" : "fa-xmark"}"></i>` : ""}
-    //                                 ${renderSkin(skin)}
-    //                                 <div class="create-team-player-name-container">
-    //                                     <span class="create-team-player-name"${nameColor ? ` style="color: ${new Color(nameColor).toHex()}"` : ""}>${name}</span>
-    //                                     ${badge ? `<img class="create-team-player-badge" draggable="false" src="./img/game/${isEmoteBadge(badge) ? "emotes" : "badges"}/${getBadgeIdString(badge)}.svg" />` : ""}
-    //                                 </div>
-    //                             </div>
-    //                             `
-    //                     ).join("")
-    //                 );
-    //                 $("#create-team-players .fa-xmark").off().on("click", function() {
-    //                     teamSocket?.send(JSON.stringify({
-    //                         type: CustomTeamMessages.KickPlayer,
-    //                         playerId: parseInt($(this).parent().attr("data-id") ?? "-1")
-    //                     }));
-    //                 });
-    //                 ui.createTeamToggles.toggleClass("disabled", !playerIsLeader);
-    //                 updateTeamStartButton(playerIsLeader, ready, forceStart);
-    //                 globalIsLeader = playerIsLeader;
-    //                 globalReady = ready;
-    //                 break;
-    //             }
-    //             case CustomTeamMessages.Settings: {
-    //                 const { autoFill, locked, forceStart } = data;
-    //                 ui.createTeamAutoFill.prop("checked", autoFill);
-    //                 ui.createTeamLock.prop("checked", locked);
-    //                 ui.createTeamForceStart.prop("checked", forceStart);
-    //                 updateTeamStartButton(globalIsLeader, globalReady, !!forceStart);
-    //                 break;
-    //             }
-    //             case CustomTeamMessages.Started: {
-    //                 createTeamMenu.hide();
-    //                 void joinGame();
-    //                 break;
-    //             }
-    //         }
-    //     };
-
-    //     teamSocket.onerror = (): void => {
-    //         menuUi.serverError = translate("msg_error_joining_team");
-    //         createTeamMenu.fadeOut(250);
-    //     };
-
-    //     teamSocket.onclose = (e): void => {
-    //         // The socket is set to undefined in the close button listener
-    //         // If it's not undefined, the socket was closed by other means, so show an error message
-    //         if (teamSocket) {
-    //             menuUi.serverError = translate(
-    //                 joinedTeam
-    //                     ? e.reason === "kicked"
-    //                         ? "msg_error_kicked_team"
-    //                         : "msg_lost_team_connection"
-    //                     : "msg_error_joining_team"
-    //             );
-    //         }
-    //         teamSocket = undefined;
-    //         teamID = undefined;
-    //         joinedTeam = false;
-    //         window.location.hash = "";
-    //         createTeamMenu.fadeOut(250);
-    //     };
-
-    //     createTeamMenu.fadeIn(250);
-    // });
-
-    // ui.closeCreateTeam.on("click", () => {
-    //     const socket = teamSocket;
-    //     teamSocket = undefined;
-    //     socket?.close();
-    // });
-
-    // TODO
-    /* ui.cancelFindingGame.on("click", () => {
-         game.disconnect();
-     }); */
-
-    // const copyUrl = $<HTMLButtonElement>("#btn-copy-team-url");
-    // const hideUrl = $<HTMLButtonElement>("#btn-hide-team-url");
-
-    // copyUrl.on("click", () => {
-    //     const url = ui.createTeamUrl.val();
-    //     if (!url) {
-    //         alert("Unable to copy link to clipboard.");
-    //         return;
-    //     }
-    //     void navigator.clipboard
-    //         .writeText(url)
-    //         .then(() => {
-    //             copyUrl
-    //                 .addClass("btn-success")
-    //                 .css("pointer-events", "none")
-    //                 .html(`
-    //                     <i class="fa-solid fa-check" id="copy-team-btn-icon"></i>
-    //                     ${translate("copied")}`
-    //                 );
-
-    //             // After some seconds, reset the copy button's css
-    //             window.setTimeout(() => {
-    //                 copyUrl
-    //                     .removeClass("btn-success")
-    //                     .css("pointer-events", "")
-    //                     .html(`
-    //                         <i class="fa-solid fa-clipboard" id="copy-team-btn-icon"></i>
-    //                         ${translate("copy")}`
-    //                     );
-    //             }, 2000); // 2 sec
-    //         })
-    //         .catch(() => {
-    //             alert("Unable to copy link to clipboard.");
-    //         });
-    // });
-
-    // const icon = hideUrl.children("i");
-
-    // hideUrl.on("click", () => {
-    //     const urlField = ui.createTeamUrl;
-
-    //     if (urlField.hasClass("hidden")) {
-    //         icon.removeClass("fa-eye")
-    //             .addClass("fa-eye-slash");
-
-    //         urlField.removeClass("hidden")
-    //             .css({
-    //                 color: "",
-    //                 textShadow: ""
-    //             });
-
-    //         return;
-    //     }
-
-    //     icon.removeClass("fa-eye-slash")
-    //         .addClass("fa-eye");
-
-    //     urlField.addClass("hidden")
-    //         .css({
-    //             color: "transparent",
-    //             textShadow: "0 0 8px rgba(0, 0, 0, 0.5)"
-    //         });
-    // });
 
     // $<HTMLInputElement>("#create-team-toggle-auto-fill").on("click", function() {
     //     autoFill = this.checked;
@@ -449,30 +169,7 @@ export async function setUpUI(): Promise<void> {
         location.search = "";
     }
 
-    menuUi.nickname = GameConsole.getBuiltInCVar("cv_player_name");
-    setUpdateNickname(() => {
-        menuUi.nickname = menuUi.nickname
-            // Replace fancy quotes & dashes, so they don't get stripped out
-            .replace(/[\u201c\u201d\u201f]/g, '"')
-            //         |  “  |  ”  |  ‟  |
-
-            .replace(/[\u2018\u2019\u201b]/g, "'")
-            //         |  ‘  |  ’  |  ‛  |
-
-            .replace(/[\u2013\u2014]/g, "-")
-            //         |  –  |  —  |
-
-            // Strip out non-ASCII chars and the C0/C1 control characters
-            .replace(/[^\x20-\x7E]/g, "")
-            // Strip out newlines
-            .replace("\n", "");
-
-        if (menuUi.nickname.trim().length === 0) {
-            menuUi.nickname = GameConstants.player.defaultName;
-        }
-
-        menuUi.nickname = menuUi.nickname.slice(0, GameConstants.player.nameMaxLength);
-    });
+    MenuUi.nickname = GameConsole.getBuiltInCVar("cv_player_name");
 
     const sendSpectatePacket = (action: Exclude<SpectateActions, SpectateActions.SpectateSpecific>): void => {
         Game.sendPacket(
@@ -528,7 +225,7 @@ export async function setUpUI(): Promise<void> {
     }
 
     const currentSkin = GameConsole.getBuiltInCVar("cv_loadout_skin");
-    menuUi.skinIdString = currentSkin;
+    MenuUi.skinIdString = currentSkin;
 
     const skinList = $<HTMLDivElement>("#skins-list");
 
@@ -539,7 +236,7 @@ export async function setUpUI(): Promise<void> {
             .siblings()
             .removeClass("selected");
 
-        menuUi.skinIdString = idString;
+        MenuUi.skinIdString = idString;
     }
 
     function renderSkin(skin: ReifiableDef<SkinDefinition>): string {
@@ -1361,8 +1058,8 @@ export async function setUpUI(): Promise<void> {
     // Leave warning
     addCheckboxListener("#toggle-leave-warning", "cv_leave_warning");
 
-    menuUi.noBlur = !GameConsole.getBuiltInCVar("cv_blur_splash");
-    GameConsole.variables.addChangeListener("cv_blur_splash", val => menuUi.noBlur = !val);
+    MenuUi.noBlur = !GameConsole.getBuiltInCVar("cv_blur_splash");
+    GameConsole.variables.addChangeListener("cv_blur_splash", val => MenuUi.noBlur = !val);
 
     const button = $<HTMLButtonElement>("#btn-rules, #rules-close-btn");
     // Hide rules button
@@ -1875,13 +1572,4 @@ export async function setUpUI(): Promise<void> {
         await fetch(`https://api.suroi.io/acknowledgeWarning`, { method: "DELETE" });
         ui.warningModal.hide();
     });
-
-    // const joinTeam = (): void => {
-    //     if (window.location.hash) {
-    //         teamID = window.location.hash.slice(1);
-    //         $("#btn-join-team").trigger("click");
-    //     }
-    // };
-    // joinTeam();
-    // window.addEventListener("hashchange", joinTeam);
 }

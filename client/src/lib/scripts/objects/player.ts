@@ -45,7 +45,7 @@ import { Obstacle } from "./obstacle";
 import type { Projectile } from "./projectile";
 
 export class Player extends GameObject.derive(ObjectCategory.Player) {
-    teamID!: number;
+    teamId!: number;
 
     activeItem: WeaponDefinition = Loots.fromString("fists");
 
@@ -561,7 +561,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     dead,
                     downed,
                     beingRevived,
-                    teamID,
+                    teamId,
                     invulnerable,
                     activeItem,
                     sizeMod,
@@ -633,7 +633,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
             this.dead = dead;
 
-            this.teamID = teamID;
+            this.teamId = teamId;
 
             void Game.fontObserver.then(() => this.updateTeammateName());
 
@@ -1224,7 +1224,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 !this.isActivePlayer
                 && !this.teammateName
                 && !this.dead
-                && this.teamID === Game.teamID
+                && this.teamId === Game.teamId
             )
         ) {
             const name = Game.playerNames.get(this.id);
@@ -1270,7 +1270,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             && (
                 this.isActivePlayer
                 || this.dead
-                || this.teamID !== Game.teamID
+                || this.teamId !== Game.teamId
             )
         ) {
             const { text, badge, container } = this.teammateName;
@@ -1606,7 +1606,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             && this.downed
             && !this.beingRevived
             && this !== player
-            && this.teamID === player.teamID
+            && this.teamId === player.teamId
             && adjacentOrEqualLayer(this.layer, player.layer);
     }
 

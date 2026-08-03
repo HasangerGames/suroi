@@ -8,7 +8,7 @@
 
 <a
   href={disabled ? undefined : href}
-  class="flex gap-2 p-2 rounded-xl text-shadow-lg hover:text-gray-300 clickable select-none {active ? "bg-amber-600 text-gray-900 hover:text-gray-900 font-bold text-shadow-none" : ""} {disabled ? "text-gray-400 pointer-events-none" : ""}"
+  class="flex gap-2 p-2 rounded-xl text-shadow-lg hover:text-gray-300 focusable clickable select-none {active ? "bg-amber-600 text-gray-900 hover:text-gray-900 font-bold text-shadow-none" : ""} {disabled ? "text-gray-400 pointer-events-none" : ""}"
   aria-current={active ? "page" : undefined}
   {...props}
 >

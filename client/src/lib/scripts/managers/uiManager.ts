@@ -1556,7 +1556,7 @@ class UIManagerClass {
                     || (
                         (target = Game.objects.get(id))
                         && target.isPlayer
-                        && (target as Player).teamID === Game.teamID
+                        && (target as Player).teamId === Game.teamId
                     )
                 )
             );

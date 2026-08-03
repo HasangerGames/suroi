@@ -166,8 +166,8 @@ export function getMeleeTargets<T extends MeleeObject>(
 
     targets.sort((a, b) => {
         // give teammates a lower priority
-        if (teamMode && a.object.isPlayer && a.object.teamID === player.teamID) return Infinity;
-        if (teamMode && b.object.isPlayer && b.object.teamID === player.teamID) return -Infinity;
+        if (teamMode && a.object.isPlayer && a.object.teamId === player.teamId) return Infinity;
+        if (teamMode && b.object.isPlayer && b.object.teamId === player.teamId) return -Infinity;
 
         // sort by closest to player
         return a.distance - b.distance;

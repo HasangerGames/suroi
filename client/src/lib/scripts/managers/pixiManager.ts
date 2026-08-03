@@ -1,18 +1,17 @@
-import { GameMode } from "$common/schemas/misc";
-import { Application, Assets, ColorMatrixFilter, Container, loadTextures, type Renderer, RendererType, Spritesheet, Texture, WebGLRenderer } from "pixi.js";
-import { Game } from "../game";
-import { GameConsole } from "../console/gameConsole";
-import { UIManager } from "./uiManager";
-import { MapManager } from "./mapManager";
-import { EmoteWheelManager, MapPingWheelManager } from "./emoteWheelManager";
-import { CameraManager } from "./cameraManager";
-import { DebugRenderer } from "../utils/debugRenderer";
-import { InputManager } from "./inputManager";
-import { translate } from "../utils/translations";
-import { menuUi } from "../ui/menu.svelte";
-import type { ImageSpritesheetImporter } from "../../../../vite/plugins/image-spritesheet-plugin";
+import { Application, Assets, ColorMatrixFilter, Container, loadTextures, RendererType, Spritesheet, Texture, WebGLRenderer } from "pixi.js";
 import { GameModes } from "$common/definitions/gameModes";
+import { GameMode } from "$common/schemas/misc";
 import { m } from "$lib/paraglide/messages";
+import type { ImageSpritesheetImporter } from "../../../../vite/plugins/image-spritesheet-plugin";
+import { MenuUi } from "../../../routes/+page.svelte";
+import { GameConsole } from "../console/gameConsole";
+import { Game } from "../game";
+import { DebugRenderer } from "../utils/debugRenderer";
+import { CameraManager } from "./cameraManager";
+import { EmoteWheelManager, MapPingWheelManager } from "./emoteWheelManager";
+import { InputManager } from "./inputManager";
+import { MapManager } from "./mapManager";
+import { UIManager } from "./uiManager";
 
 class PixiManagerClass {
     readonly pixi = new Application();
@@ -148,7 +147,7 @@ class PixiManagerClass {
 
                 const resolvedCount = ++resolved;
                 const progress = `(${resolvedCount} / ${count})`;
-                menuUi.connectingText = m.loading_spritesheets({ progress });
+                MenuUi.connectingText = m.loading_spritesheets({ progress });
                 console.log(`Atlas ${image} loaded ${progress}`);
             } catch (e) {
                 ++resolved;

@@ -47,7 +47,7 @@ export type CommonObjectMapping = {
         readonly activeItemDefinition: WeaponDefinition
         readonly backEquippedMelee?: MeleeDefinition
         readonly sizeMod: number
-        readonly teamID?: number
+        readonly teamId?: number
     }
     [ObjectCategory.Obstacle]: {
         readonly definition: ObstacleDefinition

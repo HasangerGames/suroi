@@ -29,7 +29,6 @@ import { ObjectPool } from "$common/utils/objectPool";
 import { type ObjectsNetData } from "$common/utils/objectsSerializations";
 import { random, randomFloat, randomRotation, randomVector } from "$common/utils/random";
 import { Vec, type Vector } from "$common/utils/vector";
-import { menuUi } from "$lib/scripts/ui/menu.svelte";
 import "pixi.js/prepare";
 import { invalidate } from "$app/navigation";
 import { gameUi } from "$lib/legacy/GameUi.svelte.ts";
@@ -69,7 +68,10 @@ import { setUpNetGraph } from "./utils/graph/netGraph";
 import { SuroiSprite } from "./utils/pixi";
 import { type TranslationKeys, translate } from "./utils/translations";
 import { Tween, type TweenOptions } from "./utils/tween";
-
+import { GameInfo } from "$common/schemas/api/games";
+import { CustomTeamManager } from "./managers/customTeamManager.svelte";
+import { LegacyBridge } from "./utils/legacyBridge";
+import { MenuUi } from "../../routes/+page.svelte";
 
 interface ObjectClassMapping {
     readonly [ObjectCategory.Player]: typeof Player
@@ -580,7 +582,7 @@ export const Game = new (class Game {
     }>();
 
     activePlayerID = -1;
-    teamID = -1;
+    teamId = -1;
 
     isTeamMode = false;
 
@@ -712,6 +714,91 @@ export const Game = new (class Game {
         this.riverAmbience.volume = riverWeight;
     }
 
+
+    lastPlayButtonClickTime = 0;
+    async play(): Promise<void> {
+        if (MenuUi.state !== "menu") return;
+
+        // Play button rate limit
+        const now = Date.now();
+        if (now - this.lastPlayButtonClickTime < 1500) return;
+        this.lastPlayButtonClickTime = now;
+
+        MenuUi.state = "connecting";
+
+        function serverError(message: string): void {
+            MenuUi.state = "menu";
+            MenuUi.serverError = message;
+            invalidate("app:games");
+        }
+
+        let gameInfo: GameInfo | undefined;
+        if (MenuUi.selectedGameId === "new") {
+            try {
+                MenuUi.connectingText = m.loading_creating_game();
+                const response = await fetch(`${Config.regions[MenuUi.newRegion].mainAddress}/api/game/new/${MenuUi.newGameMode}/${MenuUi.newTeamMode}`);
+                gameInfo = {
+                    ...GameInfo.parse(await response.json()),
+                    region: MenuUi.newRegion,
+                };
+            } catch (e) {
+                console.error(e);
+                serverError(m.error_creating_game());
+                return;
+            }
+        } else if (MenuUi.selectedGameId !== undefined) {
+            gameInfo = MenuUi.games.find(game => game.id === MenuUi.selectedGameId);
+        }
+
+        MenuUi.selectedGameId = undefined;
+
+        if (!gameInfo) {
+            serverError(m.error_finding_game());
+            return;
+        }
+
+        MenuUi.connectingText = m.loading_connecting();
+
+        if (gameInfo.gameMode !== this.gameMode) {
+            this.gameMode = gameInfo.gameMode;
+            await Promise.all([
+                PixiManager.loadGameMode(gameInfo.gameMode),
+                SoundManager.loadSounds(gameInfo.gameMode),
+            ]);
+        }
+
+        const params = new URLSearchParams();
+
+        const { teamId, autoFill } = CustomTeamManager;
+        if (teamId) params.set("teamId", teamId);
+        if (autoFill) params.set("autoFill", String(autoFill));
+
+        const devPass = GameConsole.getBuiltInCVar("dv_password");
+        if (devPass) params.set("password", devPass);
+
+        const role = GameConsole.getBuiltInCVar("dv_role");
+        if (role) params.set("role", role);
+
+        const lobbyClearing = GameConsole.getBuiltInCVar("dv_lobby_clearing");
+        if (lobbyClearing) params.set("lobbyClearing", "true");
+
+        const weaponPreset = GameConsole.getBuiltInCVar("dv_weapon_preset");
+        if (weaponPreset) params.set("weaponPreset", weaponPreset);
+
+        const nameColor = GameConsole.getBuiltInCVar("dv_name_color");
+        if (nameColor) {
+            try {
+                params.set("nameColor", new Color(nameColor).toNumber().toString());
+            } catch (e) {
+                GameConsole.setBuiltInCVar("dv_name_color", "");
+                console.error(e);
+            }
+        }
+
+        this.connect(`${Config.regions[gameInfo.region].gameAddress}:${gameInfo.port}/?${params.toString()}`);
+        MenuUi.serverError = undefined;
+    }
+
     connect(address: string): void {
         this.error = false;
 
@@ -826,8 +913,8 @@ export const Game = new (class Game {
             PixiManager.pixi.stop();
             this.error = true;
             this.connecting = false;
-            menuUi.state = "menu";
-            menuUi.serverError = m.error_joining_game();
+            MenuUi.state = "menu";
+            MenuUi.serverError = m.error_joining_game();
             invalidate("app:games");
         };
 
@@ -846,8 +933,8 @@ export const Game = new (class Game {
 
             if (!this.gameOver) {
                 if (this.gameStarted) {
-                    menuUi.state = "menu";
-                    menuUi.serverError = reason;
+                    MenuUi.state = "menu";
+                    MenuUi.serverError = reason;
                 }
                 ui.btnSpectate.addClass("btn-disabled");
                 if (!this.error) void this.endGame();
@@ -971,13 +1058,13 @@ export const Game = new (class Game {
         const ui = UIManager.ui;
 
         if (this.isTeamMode = packet.teamMode !== "solo") {
-            this.teamID = packet.teamId;
+            this.teamId = packet.teamId;
         }
 
         ui.inventoryMsg.fadeOut(PERK_MESSAGE_FADE_TIME);
 
         ui.canvas.addClass("active");
-        menuUi.state = "inGame";
+        MenuUi.state = "inGame";
 
         ui.killLeaderLeader.html(translate("msg_waiting_for_leader"));
         ui.killLeaderCount.text("0");
@@ -991,7 +1078,8 @@ export const Game = new (class Game {
 
     async endGame(): Promise<void> {
         return await new Promise(resolve => {
-            menuUi.state = "menu";
+            invalidate("app:games"); // reload the list of games
+            MenuUi.state = "menu";
             gameUi.activeModal = undefined;
 
             SoundManager.stopAll();
@@ -1155,8 +1243,8 @@ export const Game = new (class Game {
             UIManager.updateUI(playerData);
             UIManager.updateWeaponSlots(); // to load reskins
 
-            if (this.spectating && playerData.teamID !== undefined && playerData.id !== undefined) {
-                this.teamID = playerData.teamID;
+            if (this.spectating && playerData.teamId !== undefined && playerData.id !== undefined) {
+                this.teamId = playerData.teamId;
             }
         }
 
@@ -1736,3 +1824,6 @@ export const Game = new (class Game {
         };
     })();
 })();
+
+LegacyBridge.play = Game.play.bind(Game);
+LegacyBridge.endGame = Game.endGame.bind(Game);
