@@ -1,4 +1,4 @@
-import { GameConstants, Layer, MapObjectSpawnMode, RotationMode } from "$common/constants";
+import { GAME_VERSION, GameConstants, Layer, MapObjectSpawnMode, RotationMode } from "$common/constants";
 import { Buildings, type BuildingDefinition } from "$common/definitions/buildings";
 import { Armors } from "$common/definitions/items/armors";
 import { Backpacks } from "$common/definitions/items/backpacks";
@@ -1310,29 +1310,29 @@ const maps = {
                 const itemPos = Vec.clone(startPos);
 
                 const countMap = {
-                    [DefinitionType.Gun]: 1,
-                    [DefinitionType.Ammo]: Infinity,
-                    [DefinitionType.Melee]: 1,
-                    [DefinitionType.Throwable]: Infinity,
-                    [DefinitionType.HealingItem]: Infinity,
-                    [DefinitionType.Armor]: 1,
-                    [DefinitionType.Backpack]: 1,
-                    [DefinitionType.Scope]: 1,
-                    [DefinitionType.Skin]: 1,
-                    [DefinitionType.Perk]: Infinity
+                    ["gun"]: 1,
+                    ["ammo"]: Infinity,
+                    ["melee"]: 1,
+                    ["throwable"]: Infinity,
+                    ["healingItem"]: Infinity,
+                    ["armor"]: 1,
+                    ["backpack"]: 1,
+                    ["scope"]: 1,
+                    ["skin"]: 1,
+                    ["perk"]: Infinity
                 };
 
                 const game = map.game;
                 for (const item of Loots.definitions) {
                     if (
-                        ((item.defType === DefinitionType.Melee || item.defType === DefinitionType.Scope) && item.noDrop)
-                        || (item.defType === DefinitionType.Ammo && item.ephemeral)
-                        || (item.defType === DefinitionType.Backpack && item.level === 0)
-                        || (item.defType === DefinitionType.Perk && item.category === (game.gameMode === "halloween" ? PerkCategories.Normal : PerkCategories.Halloween))
-                        || item.defType === DefinitionType.Skin
+                        ((item.defType === "melee" || item.defType === "scope") && item.noDrop)
+                        || (item.defType === "ammo" && item.ephemeral)
+                        || (item.defType === "backpack" && item.level === 0)
+                        || (item.defType === "perk" && item.category === (game.gameMode === "halloween" ? PerkCategories.Normal : PerkCategories.Halloween))
+                        || item.defType === "skin"
                         || item.devItem
                         || item.hideInHUD
-                        || ((item.defType === DefinitionType.Armor || item.defType === DefinitionType.Backpack) && item.perk)
+                        || ((item.defType === "armor" || item.defType === "backpack") && item.perk)
                     ) continue;
 
                     game.addLoot(item, itemPos, 0, { count: countMap[item.defType] ?? 1, pushVel: 0, jitterSpawn: false });
@@ -1529,11 +1529,11 @@ const maps = {
                                         bot,
                                         {
                                             type: PacketType.Join,
+                                            gameVersion: GAME_VERSION,
                                             name,
                                             isMobile: false,
                                             skin: Loots.fromString("hazel_jumpsuit"),
                                             emotes: Array.from({ length: 6 }, () => undefined),
-                                            protocolVersion: GameConstants.protocolVersion
                                         }
                                     );
 

@@ -1,4 +1,4 @@
-import { GameConstants, Layer, MapObjectSpawnMode, ObjectCategory } from "$common/constants";
+import { GAME_VERSION, GameConstants, Layer, MapObjectSpawnMode, ObjectCategory } from "$common/constants";
 import { type BulletDefinition, Bullets } from "$common/definitions/bullets";
 import { DecalDefinition } from "$common/definitions/decals";
 import { type ExplosionDefinition } from "$common/definitions/explosions";
@@ -225,7 +225,7 @@ export class Game implements GameData {
     private readonly _start = this._now;
     get start(): number { return this._start; }
 
-    private readonly idealDt = 1000 / (Config.tps ?? GameConstants.tps);
+    private readonly idealDt = 1000 / GameConstants.tps;
 
     /**
      * Game Tick delta time
@@ -768,8 +768,8 @@ export class Game implements GameData {
             return;
         }
 
-        if (packet.protocolVersion !== GameConstants.protocolVersion) {
-            player.disconnect(`Invalid game version (expected ${GameConstants.protocolVersion}, was ${packet.protocolVersion})`);
+        if (packet.gameVersion !== GAME_VERSION) {
+            player.disconnect(`Invalid game version (expected ${GAME_VERSION}, was ${packet.gameVersion})`);
             return;
         }
 
@@ -780,7 +780,7 @@ export class Game implements GameData {
         player.isMobile = packet.isMobile;
         const skin = packet.skin;
         if (
-            skin.defType === DefinitionType.Skin
+            skin.defType === "skin"
             && !skin.hideFromLoadout
             && (
                 skin.rolesRequired === undefined
@@ -887,7 +887,7 @@ export class Game implements GameData {
                 combatLogInfo
                 && combatLogInfo.player !== player
                 && !combatLogInfo.player.disconnected
-                && this.now - combatLogInfo.time <= GameConstants.player.combatLogTimeoutMs
+                && this.now - combatLogInfo.time <= GameConstants.player.killCreditTimeoutMs
             ) {
                 player.die({
                     source: combatLogInfo.player,
@@ -1025,7 +1025,7 @@ export class Game implements GameData {
         definition = Loots.reify<Def>(definition);
 
         // no ephemeral shit
-        if (definition.defType === DefinitionType.Ammo && definition.ephemeral && count !== 1) return;
+        if (definition.defType === "ammo" && definition.ephemeral && count !== 1) return;
 
         if (
             this.pluginManager.emit(

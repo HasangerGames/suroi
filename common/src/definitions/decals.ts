@@ -3,7 +3,7 @@ import { DefinitionType, ObjectDefinitions, type ObjectDefinition } from "../uti
 import { HealingItems } from "./items/healingItems";
 
 export interface DecalDefinition extends ObjectDefinition {
-    readonly defType: DefinitionType.Decal
+    readonly defType: "decal"
     readonly image?: string
     /**
      * @default {1}
@@ -18,61 +18,61 @@ export const Decals = new ObjectDefinitions<DecalDefinition>([
     {
         idString: "explosion_decal",
         name: "Explosion Decal",
-        defType: DefinitionType.Decal,
+        defType: "decal",
         rotationMode: RotationMode.Full
     },
     {
         idString: "frag_explosion_decal",
         name: "Frag Explosion Decal",
-        defType: DefinitionType.Decal,
+        defType: "decal",
         rotationMode: RotationMode.Full
     },
     {
         idString: "smoke_explosion_decal",
         name: "Smoke Explosion Decal",
-        defType: DefinitionType.Decal,
+        defType: "decal",
         rotationMode: RotationMode.Full
     },
     {
         idString: "seed_decal",
         name: "Seed Decal",
-        defType: DefinitionType.Decal,
+        defType: "decal",
         rotationMode: RotationMode.Full
     },
     {
         idString: "seed_explosion_decal",
         name: "Seed Explosion Decal",
-        defType: DefinitionType.Decal,
+        defType: "decal",
         rotationMode: RotationMode.Full
     },
     {
         idString: "used_flare_decal",
         name: "Used Flare Decal",
-        defType: DefinitionType.Decal,
+        defType: "decal",
         rotationMode: RotationMode.Full
     },
     {
         idString: "used_flare_decal_halloween",
         name: "Used Flare Decal",
-        defType: DefinitionType.Decal,
+        defType: "decal",
         rotationMode: RotationMode.Full
     },
     {
         idString: "seed_explosion_decal_infected",
         name: "Infected Seed Explosion Decal",
-        defType: DefinitionType.Decal,
+        defType: "decal",
         rotationMode: RotationMode.Full
     },
     {
         idString: "vomit_pool",
         name: "Vomit Pool",
-        defType: DefinitionType.Decal,
+        defType: "decal",
         rotationMode: RotationMode.Full
     },
     {
         idString: "vomit_pool_wtr",
         name: "Vomit Pool",
-        defType: DefinitionType.Decal,
+        defType: "decal",
         rotationMode: RotationMode.Full,
         alpha: 0.5,
         zIndex: ZIndexes.Ground,
@@ -82,7 +82,7 @@ export const Decals = new ObjectDefinitions<DecalDefinition>([
         return {
             idString: `${healingItem.idString}_residue`,
             name: `${healingItem.name} Residue`,
-            defType: DefinitionType.Decal,
+            defType: "decal",
             rotationMode: RotationMode.Full
         } as DecalDefinition;
     })

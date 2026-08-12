@@ -1,3 +1,4 @@
+import { dev } from "$app/environment";
 import { Layer, ObjectCategory, ZIndexes } from "$common/constants";
 import { Numeric } from "$common/utils/math";
 import { type ObjectsNetData } from "$common/utils/objectsSerializations";
@@ -96,7 +97,7 @@ export class Parachute extends GameObject.derive(ObjectCategory.Parachute) {
     override updateInterpolation(): void { /* bleh */ }
 
     override updateDebugGraphics(): void {
-        if (!DEBUG_CLIENT) return;
+        if (!dev) return;
 
         DebugRenderer.addCircle(this.height, this.position);
     }

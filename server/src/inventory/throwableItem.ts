@@ -10,7 +10,7 @@ import { CountableInventoryItem } from "./inventoryItem";
 import { Timeout } from "$common/utils/misc";
 import { PickupPacket } from "$common/packets/pickupPacket";
 
-export class ThrowableItem extends CountableInventoryItem.derive(DefinitionType.Throwable) {
+export class ThrowableItem extends CountableInventoryItem.derive("throwable") {
     count: number;
 
     private _cookStart?: number;
@@ -23,7 +23,7 @@ export class ThrowableItem extends CountableInventoryItem.derive(DefinitionType.
 
         this.count = count;
 
-        if (this.category !== DefinitionType.Throwable) {
+        if (this.category !== "throwable") {
             throw new TypeError(`Attempted to create a Throwable object based on a definition for a non-gun object (Received a ${this.category as unknown as string} definition)`);
         }
 

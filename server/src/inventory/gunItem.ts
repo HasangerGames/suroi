@@ -19,7 +19,7 @@ import { InventoryItemBase } from "./inventoryItem";
 /**
  * A class representing a firearm
  */
-export class GunItem extends InventoryItemBase.derive(DefinitionType.Gun) {
+export class GunItem extends InventoryItemBase.derive("gun") {
     ammo = 0;
 
     private _consecutiveShots = 0;
@@ -57,7 +57,7 @@ export class GunItem extends InventoryItemBase.derive(DefinitionType.Gun) {
     constructor(idString: ReifiableDef<GunDefinition>, owner: Player, data?: ItemData<GunDefinition>) {
         super(idString, owner);
 
-        if (this.category !== DefinitionType.Gun) {
+        if (this.category !== "gun") {
             throw new TypeError(`Attempted to create a Gun object based on a definition for a non-gun object (Received a ${this.category as unknown as string} definition)`);
         }
 

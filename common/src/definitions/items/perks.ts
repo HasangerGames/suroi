@@ -2,7 +2,7 @@ import { DefinitionType, ObjectDefinitions, type ItemDefinition } from "../../ut
 import { FloorTypes } from "../../utils/terrain";
 
 interface BasePerkDefinition extends ItemDefinition {
-    readonly defType: DefinitionType.Perk
+    readonly defType: "perk"
 
     readonly category: PerkCategories
     readonly mechanical?: boolean
@@ -111,7 +111,7 @@ const perks = [
     {
         idString: PerkIds.SecondWind,
         name: "Second Wind",
-        defType: DefinitionType.Perk,
+        defType: "perk",
         category: PerkCategories.Normal,
 
         cutoff: 0.5,
@@ -120,7 +120,7 @@ const perks = [
     {
         idString: PerkIds.Flechettes,
         name: "Fléchettes",
-        defType: DefinitionType.Perk,
+        defType: "perk",
         category: PerkCategories.Normal,
 
         split: 3,
@@ -130,7 +130,7 @@ const perks = [
     {
         idString: PerkIds.SabotRounds,
         name: "Sabot Rounds",
-        defType: DefinitionType.Perk,
+        defType: "perk",
         category: PerkCategories.Normal,
 
         rangeMod: 1.5,
@@ -142,7 +142,7 @@ const perks = [
     {
         idString: PerkIds.ExtendedMags,
         name: "Extended Mags",
-        defType: DefinitionType.Perk,
+        defType: "perk",
         category: PerkCategories.Normal
 
         // define for each weapon individually
@@ -150,7 +150,7 @@ const perks = [
     {
         idString: PerkIds.DemoExpert,
         name: "Demo Expert",
-        defType: DefinitionType.Perk,
+        defType: "perk",
         category: PerkCategories.Normal,
 
         updateInterval: 10e3, // milliseconds
@@ -160,7 +160,7 @@ const perks = [
     {
         idString: PerkIds.AdvancedAthletics,
         name: "Advanced Athletics",
-        defType: DefinitionType.Perk,
+        defType: "perk",
         category: PerkCategories.Normal,
 
         // all multiplicative
@@ -170,7 +170,7 @@ const perks = [
     {
         idString: PerkIds.Toploaded,
         name: "Toploaded",
-        defType: DefinitionType.Perk,
+        defType: "perk",
         category: PerkCategories.Normal,
 
         thresholds: [
@@ -181,7 +181,7 @@ const perks = [
     {
         idString: PerkIds.InfiniteAmmo,
         name: "Infinite Ammo",
-        defType: DefinitionType.Perk,
+        defType: "perk",
         category: PerkCategories.Normal,
 
         airdropCallerLimit: 3
@@ -189,7 +189,7 @@ const perks = [
     {
         idString: PerkIds.FieldMedic,
         name: "Field Medic",
-        defType: DefinitionType.Perk,
+        defType: "perk",
         category: PerkCategories.Normal,
 
         usageMod: 1.5 // divide
@@ -197,7 +197,7 @@ const perks = [
     {
         idString: PerkIds.Berserker,
         name: "Berserker",
-        defType: DefinitionType.Perk,
+        defType: "perk",
         category: PerkCategories.Normal,
 
         speedMod: 1.2, // multiplicative
@@ -206,7 +206,7 @@ const perks = [
     {
         idString: PerkIds.CloseQuartersCombat,
         name: "Close Quarters Combat",
-        defType: DefinitionType.Perk,
+        defType: "perk",
         category: PerkCategories.Normal,
 
         cutoff: 50,
@@ -216,7 +216,7 @@ const perks = [
     {
         idString: PerkIds.LowProfile,
         name: "Low Profile",
-        defType: DefinitionType.Perk,
+        defType: "perk",
         category: PerkCategories.Normal,
 
         sizeMod: 0.8, // multiplicative
@@ -225,14 +225,14 @@ const perks = [
     {
         idString: PerkIds.TacticalReload,
         name: "Tactical Reload",
-        defType: DefinitionType.Perk,
+        defType: "perk",
         category: PerkCategories.Normal,
         reloadMod: 1.25
     },
     {
         idString: PerkIds.PrecisionRecycling,
         name: "Precision Recycling",
-        defType: DefinitionType.Perk,
+        defType: "perk",
         category: PerkCategories.Normal,
         updateInterval: 1e3, // milliseconds
         hitReq: 2,
@@ -243,14 +243,14 @@ const perks = [
     {
         idString: PerkIds.LootBaron,
         name: "Loot Baron",
-        defType: DefinitionType.Perk,
+        defType: "perk",
         category: PerkCategories.Normal,
         lootBonus: 1
     },
     {
         idString: PerkIds.Overclocked,
         name: "Overclocked",
-        defType: DefinitionType.Perk,
+        defType: "perk",
         category: PerkCategories.Normal,
         fireRateMod: 0.65,
         spreadMod: 2
@@ -261,7 +261,7 @@ const perks = [
     {
         idString: PerkIds.PlumpkinGamble,
         name: "Plumpkin Gamble",
-        defType: DefinitionType.Perk,
+        defType: "perk",
         category: PerkCategories.Halloween,
         mechanical: true,
 
@@ -294,7 +294,7 @@ const perks = [
     {
         idString: PerkIds.PlumpkinShuffle,
         name: "Plumpkin Shuffle",
-        defType: DefinitionType.Perk,
+        defType: "perk",
         category: PerkCategories.Halloween,
         noDrop: true,
         plumpkinGambleIgnore: true,
@@ -308,7 +308,7 @@ const perks = [
     {
         idString: PerkIds.Lycanthropy,
         name: "Lycanthropy",
-        defType: DefinitionType.Perk,
+        defType: "perk",
         category: PerkCategories.Halloween,
         quality: PerkQualities.Positive,
 
@@ -322,7 +322,7 @@ const perks = [
     {
         idString: PerkIds.Bloodthirst,
         name: "Bloodthirst",
-        defType: DefinitionType.Perk,
+        defType: "perk",
         category: PerkCategories.Halloween,
         quality: PerkQualities.Neutral,
 
@@ -337,7 +337,7 @@ const perks = [
     {
         idString: PerkIds.PlumpkinBomb,
         name: "Plumpkin Bomb",
-        defType: DefinitionType.Perk,
+        defType: "perk",
         category: PerkCategories.Halloween,
         quality: PerkQualities.Positive,
 
@@ -347,7 +347,7 @@ const perks = [
     {
         idString: PerkIds.Shrouded,
         name: "Shrouded",
-        defType: DefinitionType.Perk,
+        defType: "perk",
         category: PerkCategories.Halloween,
         quality: PerkQualities.Positive,
 
@@ -357,7 +357,7 @@ const perks = [
     {
         idString: PerkIds.EternalMagnetism,
         name: "Eternal Magnetism",
-        defType: DefinitionType.Perk,
+        defType: "perk",
         category: PerkCategories.Halloween,
         quality: PerkQualities.Positive,
         radius: 20,
@@ -371,7 +371,7 @@ const perks = [
     {
         idString: PerkIds.LastStand,
         name: "Last Stand",
-        defType: DefinitionType.Perk,
+        defType: "perk",
         category: PerkCategories.Halloween,
         quality: PerkQualities.Positive,
         healthReq: 30,
@@ -382,7 +382,7 @@ const perks = [
     {
         idString: PerkIds.ExperimentalTreatment,
         name: "Experimental Treatment",
-        defType: DefinitionType.Perk,
+        defType: "perk",
         category: PerkCategories.Halloween,
         quality: PerkQualities.Neutral,
 
@@ -395,7 +395,7 @@ const perks = [
     {
         idString: PerkIds.Engorged,
         name: "Engorged",
-        defType: DefinitionType.Perk,
+        defType: "perk",
         category: PerkCategories.Halloween,
         quality: PerkQualities.Neutral,
 
@@ -408,7 +408,7 @@ const perks = [
     {
         idString: PerkIds.BabyPlumpkinPie,
         name: "Baby Plumpkin Pie",
-        defType: DefinitionType.Perk,
+        defType: "perk",
         category: PerkCategories.Halloween,
         quality: PerkQualities.Neutral, // how is this neutral it's annoying
 
@@ -418,7 +418,7 @@ const perks = [
     {
         idString: PerkIds.Costumed,
         name: "Costumed",
-        defType: DefinitionType.Perk,
+        defType: "perk",
         category: PerkCategories.Halloween,
         quality: PerkQualities.Neutral,
 
@@ -463,7 +463,7 @@ const perks = [
     {
         idString: PerkIds.PlumpkinBlessing,
         name: "Plumpkin's Blessing",
-        defType: DefinitionType.Perk,
+        defType: "perk",
         category: PerkCategories.Halloween,
         quality: PerkQualities.Positive,
         // damageReceivedMod: 1.5,
@@ -504,7 +504,7 @@ const perks = [
     {
         idString: PerkIds.TornPockets,
         name: "Torn Pockets",
-        defType: DefinitionType.Perk,
+        defType: "perk",
         category: PerkCategories.Halloween,
         quality: PerkQualities.Negative,
 
@@ -515,7 +515,7 @@ const perks = [
     {
         idString: PerkIds.Claustrophobic,
         name: "Claustrophobic",
-        defType: DefinitionType.Perk,
+        defType: "perk",
         category: PerkCategories.Halloween,
         quality: PerkQualities.Negative,
 
@@ -525,7 +525,7 @@ const perks = [
     {
         idString: PerkIds.LacedStimulants,
         name: "Laced Stimulants",
-        defType: DefinitionType.Perk,
+        defType: "perk",
         category: PerkCategories.Halloween,
         quality: PerkQualities.Negative,
 
@@ -536,7 +536,7 @@ const perks = [
     {
         idString: PerkIds.RottenPlumpkin,
         name: "Rotten Plumpkin",
-        defType: DefinitionType.Perk,
+        defType: "perk",
         category: PerkCategories.Halloween,
         quality: PerkQualities.Negative,
 
@@ -554,7 +554,7 @@ const perks = [
     {
         idString: PerkIds.PriorityTarget,
         name: "Priority Target",
-        defType: DefinitionType.Perk,
+        defType: "perk",
         category: PerkCategories.Halloween,
         quality: PerkQualities.Negative,
         mapIndicator: PerkIds.PriorityTarget,
@@ -563,7 +563,7 @@ const perks = [
     {
         idString: PerkIds.Butterfingers,
         name: "Butterfingers",
-        defType: DefinitionType.Perk,
+        defType: "perk",
         category: PerkCategories.Halloween,
         quality: PerkQualities.Negative,
         reloadMod: 0.75,
@@ -572,7 +572,7 @@ const perks = [
     {
         idString: PerkIds.Overweight,
         name: "Overweight",
-        defType: DefinitionType.Perk,
+        defType: "perk",
         category: PerkCategories.Halloween,
         quality: PerkQualities.Negative,
         sizeMod: 1.3,
@@ -581,7 +581,7 @@ const perks = [
     {
         idString: PerkIds.AchingKnees,
         name: "Aching Knees",
-        defType: DefinitionType.Perk,
+        defType: "perk",
         category: PerkCategories.Halloween,
         quality: PerkQualities.Negative,
         updateInterval: 10000,
@@ -593,7 +593,7 @@ const perks = [
     {
         idString: PerkIds.Infected,
         name: "Infected",
-        defType: DefinitionType.Perk,
+        defType: "perk",
         category: PerkCategories.Infection,
         quality: PerkQualities.Negative,
         updateInterval: 30000,
@@ -603,7 +603,7 @@ const perks = [
     {
         idString: PerkIds.Necrosis,
         name: "Necrosis",
-        defType: DefinitionType.Perk,
+        defType: "perk",
         category: PerkCategories.Infection,
         updateInterval: 1000,
         dps: 0.78,
@@ -617,7 +617,7 @@ const perks = [
     {
         idString: PerkIds.Immunity,
         name: "Immunity",
-        defType: DefinitionType.Perk,
+        defType: "perk",
         category: PerkCategories.Infection,
         quality: PerkQualities.Positive,
         duration: 15000,
@@ -630,7 +630,7 @@ const perks = [
     {
         idString: PerkIds.HollowPoints,
         name: "Hollow Points",
-        defType: DefinitionType.Perk,
+        defType: "perk",
         category: PerkCategories.Hunted,
         damageMod: 1.1,
         soundMod: 75,
@@ -641,7 +641,7 @@ const perks = [
     {
         idString: PerkIds.ExperimentalForcefield,
         name: "Experimental Forcefield",
-        defType: DefinitionType.Perk,
+        defType: "perk",
         category: PerkCategories.Hunted,
         noDrop: true,
         shieldRegenRate: 1,
@@ -656,7 +656,7 @@ const perks = [
     {
         idString: PerkIds.ThermalGoggles,
         name: "Thermal Goggles",
-        defType: DefinitionType.Perk,
+        defType: "perk",
         category: PerkCategories.Hunted,
         noDrop: true,
         detectionRadius: 100,
@@ -665,7 +665,7 @@ const perks = [
     {
         idString: PerkIds.Overdrive,
         name: "Overdrive",
-        defType: DefinitionType.Perk,
+        defType: "perk",
         category: PerkCategories.Hunted,
         quality: PerkQualities.Negative,
         plumpkinGambleIgnore: true,

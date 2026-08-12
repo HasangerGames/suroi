@@ -1,6 +1,6 @@
 import { PacketDataIn, PacketDataOut, PacketType } from "$common/packets/packet";
 import { WebSocket, type MessageEvent } from "ws";
-import { GameConstants, InputActions, ObjectCategory } from "../../common/src/constants";
+import { GAME_VERSION, GameConstants, InputActions, ObjectCategory } from "../../common/src/constants";
 import { EmoteCategory, Emotes, type EmoteDefinition } from "../../common/src/definitions/emotes";
 import { Skins, type SkinDefinition } from "../../common/src/definitions/items/skins";
 import { InputPacket, areDifferent, type InputAction, type InputData } from "../../common/src/packets/inputPacket";
@@ -182,6 +182,7 @@ class Bot {
 
         this.sendPacket(
             JoinPacket.create({
+                gameVersion: GAME_VERSION,
                 name,
                 isMobile: false,
                 skin: Skins.reify(pickRandomInArray(skins)),
@@ -242,7 +243,7 @@ class Bot {
             const slot = aimhax ? random(0, 1) : random(0, GameConstants.player.maxWeapons - 1);
             actions.push({ type: InputActions.EquipItem, slot });
 
-            if (GameConstants.player.inventorySlotTypings[slot] === DefinitionType.Throwable && this._shootStart) {
+            if (GameConstants.player.inventorySlotTypings[slot] === "throwable" && this._shootStart) {
                 this._dontCommitGrenadeSuicideTimer ??= setTimeout(() => {
                     this._grenadeSuicidePrevention = true;
                     this._dontCommitGrenadeSuicideTimer = undefined;

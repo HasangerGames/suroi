@@ -2,7 +2,7 @@ import { DefinitionType, ObjectDefinitions, type ItemDefinition } from "../../ut
 import { PerkIds } from "./perks";
 
 export interface HealingItemDefinition extends ItemDefinition {
-    readonly defType: DefinitionType.HealingItem
+    readonly defType: "healingItem"
 
     readonly healType: HealType
     readonly restoreAmount: number
@@ -27,7 +27,7 @@ export const HealingItems = new ObjectDefinitions<HealingItemDefinition>([
     {
         idString: "gauze",
         name: "Gauze",
-        defType: DefinitionType.HealingItem,
+        defType: "healingItem",
         healType: HealType.Health,
         restoreAmount: 20,
         useTime: 3
@@ -35,7 +35,7 @@ export const HealingItems = new ObjectDefinitions<HealingItemDefinition>([
     {
         idString: "medikit",
         name: "Medikit",
-        defType: DefinitionType.HealingItem,
+        defType: "healingItem",
         healType: HealType.Health,
         restoreAmount: 100,
         useTime: 6
@@ -44,7 +44,7 @@ export const HealingItems = new ObjectDefinitions<HealingItemDefinition>([
     {
         idString: "cola",
         name: "Cola",
-        defType: DefinitionType.HealingItem,
+        defType: "healingItem",
         healType: HealType.Adrenaline,
         restoreAmount: 25,
         useTime: 3
@@ -52,7 +52,7 @@ export const HealingItems = new ObjectDefinitions<HealingItemDefinition>([
     {
         idString: "tablets",
         name: "Tablets",
-        defType: DefinitionType.HealingItem,
+        defType: "healingItem",
         healType: HealType.Adrenaline,
         restoreAmount: 50,
         useTime: 4
@@ -60,7 +60,7 @@ export const HealingItems = new ObjectDefinitions<HealingItemDefinition>([
     {
         idString: "vaccine_syringe",
         name: "Vaccine Syringe",
-        defType: DefinitionType.HealingItem,
+        defType: "healingItem",
         healType: HealType.Special,
         restoreAmount: 0,
         useTime: 2,

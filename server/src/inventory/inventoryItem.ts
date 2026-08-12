@@ -1,5 +1,5 @@
 import { GameConstants } from "$common/constants";
-import { Loots, type LootDefForType, type LootDefinition, type WeaponTypes } from "$common/definitions/loots";
+import { type LootDefForType, type LootDefinition, Loots, type WeaponType } from "$common/definitions/loots";
 import { Numeric } from "$common/utils/math";
 import type { AbstractConstructor, Constructor, PredicateFor } from "$common/utils/misc";
 import { DefinitionType, type ReifiableDef, type WearerAttributes } from "$common/utils/objectDefinitions";
@@ -7,17 +7,17 @@ import { type ItemData } from "../objects/loot";
 import { type Player } from "../objects/player";
 import type { InventoryItem, WeaponItemTypeMap } from "./inventory";
 
-type PredicateForItem<Type extends WeaponTypes> = {
+type PredicateForItem<Type extends WeaponType> = {
     readonly category: Type
     readonly definition: LootDefForType<Type>
 } & PredicateFor<WeaponItemTypeMap, Type>;
 
-type LoosePredicateFor<Type extends WeaponTypes = WeaponTypes> = {
+type LoosePredicateFor<Type extends WeaponType = WeaponType> = {
     readonly category: Type
     readonly definition: LootDefForType<Type>
 } & {
-    // if Type === WeaponTypes, then they should all be boolean | undefined; if not, narrow as appropriate
-    readonly [K in (keyof WeaponItemTypeMap & string) as `is${K}`]: WeaponTypes extends Type
+    // if Type === WeaponType, then they should all be boolean | undefined; if not, narrow as appropriate
+    readonly [K in (keyof WeaponItemTypeMap & string) as `is${K}`]: WeaponType extends Type
         ? boolean | undefined
         : WeaponItemTypeMap[K] extends Type
             ? true
@@ -28,10 +28,10 @@ type LoosePredicateFor<Type extends WeaponTypes = WeaponTypes> = {
  * Represents some item in the player's inventory *that can be equipped*
  * @abstract
  */
-export abstract class InventoryItemBase<Type extends WeaponTypes = WeaponTypes> extends (() => {
-    type RealType<Type extends WeaponTypes = WeaponTypes> = typeof InventoryItemBase<Type> & AbstractConstructor<LoosePredicateFor<Type>>;
+export abstract class InventoryItemBase<Type extends WeaponType = WeaponType> extends (() => {
+    type RealType<Type extends WeaponType = WeaponType> = typeof InventoryItemBase<Type> & AbstractConstructor<LoosePredicateFor<Type>>;
 
-    abstract class InventoryItemBase<Type extends WeaponTypes = WeaponTypes> {
+    abstract class InventoryItemBase<Type extends WeaponType = WeaponType> {
         /**
          * The category of item this is, either melee, gun or throwable
          */
@@ -45,7 +45,7 @@ export abstract class InventoryItemBase<Type extends WeaponTypes = WeaponTypes> 
          */
         readonly owner: Player;
 
-        private readonly _modifiers = GameConstants.player.defaultModifiers();
+        private readonly _modifiers = structuredClone(GameConstants.player.defaultModifiers);
 
         /**
          * Returns a clone
@@ -101,14 +101,15 @@ export abstract class InventoryItemBase<Type extends WeaponTypes = WeaponTypes> 
 
         switchDate = 0;
 
-        private static readonly _subclasses: { [K in WeaponTypes]?: Constructor<InventoryItemBase<K> & PredicateForItem<K>> } = {};
+        private static readonly _subclasses: { [K in WeaponType]?: Constructor<InventoryItemBase<K> & PredicateForItem<K>> } = {};
 
         static derive<
             This extends AbstractConstructor,
-            Type extends WeaponTypes = WeaponTypes
+            Type extends WeaponType = WeaponType
         >(this: This, defType: Type): new (...args: ConstructorParameters<This>) => InstanceType<This> & PredicateForItem<Type> {
+            const categoryName = defType.slice(0, 1).toUpperCase() + defType.slice(1);
             if (defType in InventoryItemBase._subclasses) {
-                throw new Error(`Subclass for category '${DefinitionType[defType]}' already registered`);
+                throw new Error(`Subclass for category '${categoryName}' already registered`);
             }
 
             // @ts-expect-error i don't know
@@ -129,7 +130,7 @@ export abstract class InventoryItemBase<Type extends WeaponTypes = WeaponTypes> 
                     }
 
                     // @ts-expect-error it's easier this way lol
-                    this[`is${DefinitionType[defType]}`] = true;
+                    this[`is${categoryName}`] = true;
                 }
             };
         }
@@ -186,7 +187,7 @@ export abstract class InventoryItemBase<Type extends WeaponTypes = WeaponTypes> 
             if (!wearerAttributes) return;
 
             const { active, passive, on } = wearerAttributes;
-            const newModifiers = GameConstants.player.defaultModifiers();
+            const newModifiers = structuredClone(GameConstants.player.defaultModifiers);
 
             const applyModifiers = (modifiers: WearerAttributes): void => {
                 newModifiers.maxHealth *= modifiers.maxHealth ?? 1;
@@ -312,6 +313,6 @@ export abstract class InventoryItemBase<Type extends WeaponTypes = WeaponTypes> 
     declare readonly definition: LootDefForType<Type>;
 }
 
-export abstract class CountableInventoryItem<Type extends WeaponTypes = WeaponTypes> extends InventoryItemBase<Type> {
+export abstract class CountableInventoryItem<Type extends WeaponType = WeaponType> extends InventoryItemBase<Type> {
     abstract count: number;
 }

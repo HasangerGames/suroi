@@ -1,7 +1,7 @@
 import { DefinitionType, ObjectDefinitions, type ItemDefinition } from "../../utils/objectDefinitions";
 
 export interface AmmoDefinition extends ItemDefinition {
-    readonly defType: DefinitionType.Ammo
+    readonly defType: "ammo"
     readonly maxStackSize: number
     readonly minDropAmount: number
     readonly characteristicColor: {
@@ -25,7 +25,7 @@ export const Ammos = new ObjectDefinitions<AmmoDefinition>([
     {
         idString: "12g",
         name: "12 gauge",
-        defType: DefinitionType.Ammo,
+        defType: "ammo",
         maxStackSize: 20,
         minDropAmount: 3,
         characteristicColor: {
@@ -38,7 +38,7 @@ export const Ammos = new ObjectDefinitions<AmmoDefinition>([
     {
         idString: "556mm",
         name: "5.56mm",
-        defType: DefinitionType.Ammo,
+        defType: "ammo",
         maxStackSize: 60,
         minDropAmount: 5,
         characteristicColor: {
@@ -51,7 +51,7 @@ export const Ammos = new ObjectDefinitions<AmmoDefinition>([
     {
         idString: "762mm",
         name: "7.62mm",
-        defType: DefinitionType.Ammo,
+        defType: "ammo",
         maxStackSize: 60,
         minDropAmount: 5,
         characteristicColor: {
@@ -64,7 +64,7 @@ export const Ammos = new ObjectDefinitions<AmmoDefinition>([
     {
         idString: "9mm",
         name: "9mm",
-        defType: DefinitionType.Ammo,
+        defType: "ammo",
         maxStackSize: 90,
         minDropAmount: 5,
         characteristicColor: {
@@ -77,7 +77,7 @@ export const Ammos = new ObjectDefinitions<AmmoDefinition>([
     {
         idString: "50cal",
         name: ".50 Cal",
-        defType: DefinitionType.Ammo,
+        defType: "ammo",
         maxStackSize: 9,
         minDropAmount: 3,
         characteristicColor: {
@@ -91,7 +91,7 @@ export const Ammos = new ObjectDefinitions<AmmoDefinition>([
     {
         idString: "338lap",
         name: ".338 Lapua Magnum",
-        defType: DefinitionType.Ammo,
+        defType: "ammo",
         maxStackSize: 9,
         minDropAmount: 3,
         characteristicColor: {
@@ -105,7 +105,7 @@ export const Ammos = new ObjectDefinitions<AmmoDefinition>([
     {
         idString: "545mm",
         name: "5.45mm",
-        defType: DefinitionType.Ammo,
+        defType: "ammo",
         maxStackSize: 60,
         minDropAmount: 5,
         characteristicColor: {
@@ -119,7 +119,7 @@ export const Ammos = new ObjectDefinitions<AmmoDefinition>([
     {
         idString: "firework_rocket",
         name: "Firework Rocket",
-        defType: DefinitionType.Ammo,
+        defType: "ammo",
         maxStackSize: 5,
         minDropAmount: 1,
         characteristicColor: {
@@ -136,7 +136,7 @@ export const Ammos = new ObjectDefinitions<AmmoDefinition>([
     {
         idString: "seed",
         name: "Plumpkin Seed",
-        defType: DefinitionType.Ammo,
+        defType: "ammo",
         maxStackSize: 0,
         minDropAmount: 0,
         characteristicColor: {
@@ -149,7 +149,7 @@ export const Ammos = new ObjectDefinitions<AmmoDefinition>([
     {
         idString: "needle",
         name: "Needle",
-        defType: DefinitionType.Ammo,
+        defType: "ammo",
         maxStackSize: 0,
         minDropAmount: 0,
         characteristicColor: {
@@ -162,7 +162,7 @@ export const Ammos = new ObjectDefinitions<AmmoDefinition>([
     {
         idString: "plumpkin_ammo",
         name: "Plumpkin Ammo",
-        defType: DefinitionType.Ammo,
+        defType: "ammo",
         maxStackSize: 0,
         minDropAmount: 0,
         characteristicColor: {
@@ -175,7 +175,7 @@ export const Ammos = new ObjectDefinitions<AmmoDefinition>([
     {
         idString: "power_cell",
         name: "P.O.W.E.R. cell",
-        defType: DefinitionType.Ammo,
+        defType: "ammo",
         maxStackSize: 10,
         minDropAmount: 1,
         characteristicColor: {
@@ -189,7 +189,7 @@ export const Ammos = new ObjectDefinitions<AmmoDefinition>([
     {
         idString: "bb",
         name: "6mm BB",
-        defType: DefinitionType.Ammo,
+        defType: "ammo",
         maxStackSize: 240,
         minDropAmount: 1,
         characteristicColor: {
@@ -202,7 +202,7 @@ export const Ammos = new ObjectDefinitions<AmmoDefinition>([
     {
         idString: "icicle",
         name: "Icicle",
-        defType: DefinitionType.Ammo,
+        defType: "ammo",
         maxStackSize: 0,
         minDropAmount: 0,
         characteristicColor: {

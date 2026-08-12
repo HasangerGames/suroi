@@ -1,29 +1,56 @@
-import { existsSync, rmSync } from "fs";
-import { dirname, resolve } from "path";
-import { fileURLToPath } from "url";
+import { paraglideVitePlugin } from "@inlang/paraglide-js";
+import adapter from "@sveltejs/adapter-auto";
+import { enhancedImages } from "@sveltejs/enhanced-img";
+import { sveltekit } from "@sveltejs/kit/vite";
+import { vitePreprocess } from "@sveltejs/vite-plugin-svelte";
+import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "vite";
-import pkg from "../package.json";
+import { audioSpritesheet } from "./vite/audio-spritesheet-plugin";
+import { imageSpritesheet } from "./vite/image-spritesheet-plugin";
+import { teamSocket } from "./vite/team-socket-plugin";
 
-const DIRNAME = dirname(fileURLToPath(import.meta.url));
+export default defineConfig({
+    server: {
+        port: 3000,
+        host: "0.0.0.0"
+    },
+    preview: {
+        port: 3000,
+        host: "0.0.0.0"
+    },
+    plugins: [
+		tailwindcss(),
+        paraglideVitePlugin({
+            project: "./project.inlang",
+            outdir: "./src/lib/paraglide",
+            strategy: ["url", "cookie", "baseLocale"]
+        }),
+        enhancedImages(),
+		sveltekit({
+			compilerOptions: {
+				// Force runes mode for the project, except for libraries. Can be removed in svelte 6.
+				runes: ({ filename }) => filename.split(/[/\\]/).includes("node_modules") ? undefined : true,
+                experimental: {
+                    async: true
+                }
+			},
 
-export default defineConfig(async ({ command, mode }) => {
-    const isDev = command === "serve" && mode === "development";
+			// adapter-auto only supports some environments, see https://svelte.dev/docs/kit/adapter-auto for a list.
+			// If your environment is not supported, or you settled on a specific environment, switch out the adapter.
+			// See https://svelte.dev/docs/kit/adapters for more information about adapters.
+			adapter: adapter(),
 
-    // temporary hack until svelte rewrite
-    process.env = {
-        ...process.env,
-        VITE_APP_VERSION: pkg.version,
-        DEBUG_CLIENT: isDev.toString()
-    };
+            preprocess: vitePreprocess(),
 
-    // So output directory isn't included (thanks Vite).
-    if (isDev) {
-        if (existsSync(resolve(DIRNAME, "./dist"))) {
-            rmSync(resolve(DIRNAME, "./dist"), { recursive: true, force: true });
-        }
+            alias: {
+			    "$common/*": "../common/src/*"
+		    }
+		}),
+        imageSpritesheet(),
+        audioSpritesheet(),
+        teamSocket(),
+    ],
+    define: {
+        IS_CLIENT: true
     }
-
-    return (isDev
-        ? await import("./vite/vite.dev")
-        : await import("./vite/vite.prod")).default;
 });

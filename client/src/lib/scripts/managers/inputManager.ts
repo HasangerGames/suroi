@@ -223,7 +223,7 @@ class InputManagerClass {
             }
 
             if (
-                (item.defType === DefinitionType.Perk && PerkManager.has(PerkIds.Infected)) // locked perks?
+                (item.defType === "perk" && PerkManager.has(PerkIds.Infected)) // locked perks?
                 || item.noDrop
                 || Game.spectating
             ) return;
@@ -233,17 +233,17 @@ class InputManagerClass {
 
             if (playSound) {
                 switch (item.defType) {
-                    case DefinitionType.Ammo:
-                    case DefinitionType.HealingItem:
-                    case DefinitionType.Scope:
+                    case "ammo":
+                    case "healingItem":
+                    case "scope":
                         playSound = inventory.items[item.idString] > 0;
                         break;
-                    case DefinitionType.Throwable:
-                    case DefinitionType.Armor:
-                    case DefinitionType.Gun:
-                    case DefinitionType.Melee:
-                    case DefinitionType.Skin:
-                    case DefinitionType.Backpack:
+                    case "throwable":
+                    case "armor":
+                    case "gun":
+                    case "melee":
+                    case "skin":
+                    case "backpack":
                         playSound = true;
                         break;
                 }
@@ -459,12 +459,12 @@ class InputManagerClass {
 
                 const { aimTrail, altAimTrail } = activePlayer.images;
                 if (aimTrail) aimTrail.visible = true;
-                if (altAimTrail) altAimTrail.visible = def.defType === DefinitionType.Gun && (def.isDual ?? false);
+                if (altAimTrail) altAimTrail.visible = def.defType === "gun" && (def.isDual ?? false);
 
                 const attacking = data.distance > joystickSize / 3;
                 if (
-                    (def.defType === DefinitionType.Throwable && this.attacking)
-                    || (def.defType === DefinitionType.Gun && def.shootOnRelease)
+                    (def.defType === "throwable" && this.attacking)
+                    || (def.defType === "gun" && def.shootOnRelease)
                 ) {
                     shootOnRelease = true;
                     this.shootOnReleaseAngle = this.rotation;
@@ -757,7 +757,7 @@ class InputManagerClass {
 
     cycleThrowable(offset: number): void {
         const throwable = UIManager.inventory.weapons
-            .find(weapon => weapon?.definition.defType === DefinitionType.Throwable)
+            .find(weapon => weapon?.definition.defType === "throwable")
             ?.definition as ThrowableDefinition | undefined;
 
         if (!throwable) return;

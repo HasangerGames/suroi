@@ -7,7 +7,7 @@ import { Tier } from "./guns";
 import { InventoryItemDefinitions } from "./items";
 
 export type ThrowableDefinition = InventoryItemDefinition & {
-    readonly defType: DefinitionType.Throwable
+    readonly defType: "throwable"
 
     readonly tier: Tier
     /**
@@ -103,7 +103,7 @@ const seed = (idString: string, options: {
 }): ThrowableDefinition => ({
     idString: `proj_${idString}`,
     name: "Seed",
-    defType: DefinitionType.Throwable,
+    defType: "throwable",
     tier: Tier.S,
     cookable: true,
     fuseTime: 1500,
@@ -156,7 +156,7 @@ export const Throwables = new InventoryItemDefinitions<ThrowableDefinition>([
     {
         idString: "frag_grenade",
         name: "Frag Grenade",
-        defType: DefinitionType.Throwable,
+        defType: "throwable",
         tier: Tier.C,
         cookable: true,
         fuseTime: 4000,
@@ -201,7 +201,7 @@ export const Throwables = new InventoryItemDefinitions<ThrowableDefinition>([
     {
         idString: "smoke_grenade",
         name: "Smoke Grenade",
-        defType: DefinitionType.Throwable,
+        defType: "throwable",
         tier: Tier.D,
         cookable: false,
         fuseTime: 2000,
@@ -247,7 +247,7 @@ export const Throwables = new InventoryItemDefinitions<ThrowableDefinition>([
     {
         idString: "confetti_grenade",
         name: "Confetti Grenade",
-        defType: DefinitionType.Throwable,
+        defType: "throwable",
         tier: Tier.S,
         fuseTime: 4000,
         cookTime: 150,
@@ -292,7 +292,7 @@ export const Throwables = new InventoryItemDefinitions<ThrowableDefinition>([
     {
         idString: "c4",
         name: "C4",
-        defType: DefinitionType.Throwable,
+        defType: "throwable",
         tier: Tier.S,
         c4: true,
         cookable: false,
@@ -339,7 +339,7 @@ export const Throwables = new InventoryItemDefinitions<ThrowableDefinition>([
     {
         idString: "flare",
         name: "Flare",
-        defType: DefinitionType.Throwable,
+        defType: "throwable",
         tier: Tier.S,
         cookable: false,
         summonAirdrop: true,
@@ -393,7 +393,7 @@ export const Throwables = new InventoryItemDefinitions<ThrowableDefinition>([
     {
         idString: "sm56",
         name: "S.E.E.D.",
-        defType: DefinitionType.Throwable,
+        defType: "throwable",
         tier: Tier.A,
         cookable: true,
         noSkin: true,

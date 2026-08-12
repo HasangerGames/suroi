@@ -1,0 +1,150 @@
+{
+    "$schema": "config.schema.json",
+    "client": {
+        "forceMobile": false,
+        "uiDebugMode": false,
+        "defaultRegion": "dev",
+        "regions": {
+            "dev": {
+                "flag": "🏠",
+                "mainAddress": "http://127.0.0.1:42084",
+                "gameAddress": "ws://127.0.0.1"
+            },
+            "na": {
+                "flag": "🇺🇸",
+                "mainAddress": "https://na.suroi.io",
+                "gameAddress": "wss://na.suroi.io"
+            },
+            "eu": {
+                "flag": "🇩🇪",
+                "mainAddress": "https://eu.suroi.io",
+                "gameAddress": "wss://eu.suroi.io"
+            },
+            "sa": {
+                "flag": "🇧🇷",
+                "mainAddress": "https://sa.suroi.io",
+                "gameAddress": "wss://sa.suroi.io"
+            },
+            "as": {
+                "flag": "🇭🇰",
+                "mainAddress": "https://as.suroi.io",
+                "gameAddress": "wss://as.suroi.io"
+            }
+        }
+    },
+    "general": {
+        "tps": 40,
+        "gridSize": 32,
+        "maxPosition": 1924,
+        "objectMinScale": 0.15,
+        "objectMaxScale": 3,
+        "defaultMode": "normal",
+        "player": {
+            "radius": 2.25,
+            "baseSpeed": 0.03,
+            "defaultHealth": 100,
+            "maxAdrenaline": 100,
+            "maxShield": 100,
+            "maxInfection": 100,
+            "inventorySlotTypings": [
+                "gun",
+                "gun",
+                "melee",
+                "throwable"
+            ],
+            "maxWeapons": 4,
+            "maxPerks": 4,
+            "nameMaxLength": 16,
+            "defaultName": "Player",
+            "defaultSkin": "hazel_jumpsuit",
+            "killLeaderMinKills": 3,
+            "killCreditTimeoutMs": 12000,
+            "maxMouseDist": 256,
+            "reviveDurationMs": 8000,
+            "reviveMaxDistSquared": 49,
+            "knockedOutDamageAmount": 1,
+            "knockedOutDamageIntervalMs": 500,
+            "buildingVisionSize": 20,
+            "emoteLimit": {
+                "triggerAmount": 10,
+                "triggerDurationMs": 5000,
+                "punishmentDurationMs": 5000
+            },
+            "ice": {
+                "acceleration": 2.5,
+                "friction": 0.2,
+                "movingFriction": 0.45
+            }
+        },
+        "gas": {
+            "damageScaleFactor": 0.005,
+            "unscaledDamageDist": 12
+        },
+        "loot": {
+            "maxSpawnJitter": 0.7,
+            "drag": 0.003,
+            "iceDrag": 0.0008,
+            "radius": {
+                "gun": 3.4,
+                "ammo": 2,
+                "melee": 3,
+                "throwable": 3,
+                "healingItem": 2.5,
+                "armor": 3,
+                "backpack": 3,
+                "scope": 3,
+                "skin": 3,
+                "perk": 3
+            }
+        },
+        "defaultSpeedModifiers": {
+            "gun": 0.88,
+            "melee": 1,
+            "throwable": 0.92
+        },
+        "airdrop": {
+            "fallTime": 8000,
+            "flyTime": 30000,
+            "damage": 300
+        },
+        "projectiles": {
+            "maxHeight": 5,
+            "gravity": 10,
+            "distanceToMouseMultiplier": 1.5,
+            "drag": {
+                "air": 0.7,
+                "ground": 3,
+                "ice": 1,
+                "water": 5
+            }
+        },
+        "explosionMaxDistSquared": 16384,
+        "trailPadding": 384,
+        "explosionRayDistance": 2
+    },
+    "server": {
+        "hostname": "127.0.0.1",
+        "mainPort": 42084,
+        "gamePortRange": [42085, 43085],
+        "spawn": { "mode": "default" },
+        "minTeamsToStart": 2,
+        "maxPlayersPerGame": 80,
+        "maxGames": 10,
+        "roles": {
+            "developr": { "password": "developr", "isDev": true },
+            "dev_managr": { "password": "dev_managr" },
+            "designr": { "password": "designr" },
+            "vip_designr": { "password": "vip_designr" },
+            "sound_designr": { "password": "sound_designr" },
+            "moderatr": { "password": "moderatr" },
+            "administratr": { "password": "administratr" },
+            "lead_content_creatr": { "password": "lead_content_creatr", "isDev": true },
+            "content_creatr": { "password": "content_creatr" },
+            "donatr": { "password": "donatr" },
+            "marketr": { "password": "marketr", "isDev": true },
+
+            "hasanger": { "password": "hasanger", "isDev": true },
+            "pap": { "password": "pap", "isDev": true }
+        }
+    }
+}

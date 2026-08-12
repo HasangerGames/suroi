@@ -4,7 +4,7 @@ import path from "path";
 import { type SpritesheetData } from "pixi.js";
 import spritesheetc, { type BuilderOptions } from "spritesheetc";
 import { type Plugin } from "vite";
-import { GameModes, type SpritesheetNames } from "../../../common/src/definitions/gameModes";
+import { GameModes, type SpritesheetNames } from "../../common/src/definitions/gameModes";
 
 export interface ImageSpritesheetImporter {
     readonly importSpritesheet: (name: string) => Promise<{ readonly spritesheets: SpritesheetData[] }>

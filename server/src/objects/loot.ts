@@ -18,16 +18,16 @@ import { MapIndicator } from "./mapIndicator";
 import { type Player } from "./player";
 
 export type DataMap = Record<DefinitionType, unknown> & {
-    [DefinitionType.Gun]: {
+    ["gun"]: {
         readonly kills: number
         readonly damage: number
         readonly totalShots: number
     }
-    [DefinitionType.Melee]: {
+    ["melee"]: {
         readonly kills: number
         readonly damage: number
     }
-    [DefinitionType.Throwable]: {
+    ["throwable"]: {
         readonly kills: number
         readonly damage: number
     }
@@ -195,7 +195,7 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
         const definition = this.definition;
 
         switch (definition.defType) {
-            case DefinitionType.Gun: {
+            case "gun": {
                 let i = 0;
                 for (const weapon of inventory.weapons) {
                     if (
@@ -214,17 +214,17 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
                 return (!inventory.hasWeapon(0) && !inventory.isLocked(0)) // slot 0 available and not locked
                     || (!inventory.hasWeapon(1) && !inventory.isLocked(1)) // slot 1 available and not locked
                     || ( // active slot is a gun slot with a gun different from this loot's
-                        GameConstants.player.inventorySlotTypings[activeWeaponIndex] === DefinitionType.Gun
+                        GameConstants.player.inventorySlotTypings[activeWeaponIndex] === "gun"
                         && definition !== inventory.activeWeapon.definition
                         && !inventory.isLocked(activeWeaponIndex)
                     );
             }
-            case DefinitionType.HealingItem:
-            case DefinitionType.Ammo:
-            case DefinitionType.Throwable: {
+            case "healingItem":
+            case "ammo":
+            case "throwable": {
                 const idString = definition.idString;
 
-                if (definition.defType === DefinitionType.Throwable && inventory.isLocked(3)) {
+                if (definition.defType === "throwable" && inventory.isLocked(3)) {
                     return false;
                 } else if (inventory.items.getItem(idString) + 1 > (inventory.backpack.maxCapacity[idString] ?? 0)) {
                     return InventoryMessages.NotEnoughSpace;
@@ -232,10 +232,10 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
                     return true;
                 }
             }
-            case DefinitionType.Melee: {
+            case "melee": {
                 return definition !== inventory.getWeapon(2)?.definition && !inventory.isLocked(2);
             }
-            case DefinitionType.Armor: {
+            case "armor": {
                 let threshold = -Infinity;
                 switch (definition.armorType) {
                     case ArmorType.Helmet: {
@@ -256,7 +256,7 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
                     return true;
                 }
             }
-            case DefinitionType.Backpack: {
+            case "backpack": {
                 if (definition.level < inventory.backpack.level) {
                     return InventoryMessages.BetterItemEquipped;
                 } else if (definition.level === inventory.backpack.level) {
@@ -265,13 +265,13 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
                     return true;
                 }
             }
-            case DefinitionType.Scope: {
+            case "scope": {
                 return !inventory.items.hasItem(definition.idString) || InventoryMessages.ItemAlreadyEquipped;
             }
-            case DefinitionType.Skin: {
+            case "skin": {
                 return !player.loadout.skin.noSwap && (player.loadout.skin !== definition || InventoryMessages.ItemAlreadyEquipped);
             }
-            case DefinitionType.Perk: {
+            case "perk": {
                 return !player.perks[0]?.noSwap && (!(player.hasPerk(definition) && !definition.alwaysAllowSwap) || InventoryMessages.ItemAlreadyEquipped);
             }
         }
@@ -303,7 +303,7 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
         if (canPickup === false) return;
         else if (typeof canPickup === "number") { // means it's an inventory message
             // Do not play pickup & drop on melees and guns
-            if ([DefinitionType.Gun, DefinitionType.Melee].includes(this.definition.defType)) return;
+            if (["gun", "melee"].includes(this.definition.defType)) return;
 
             this.game.removeLoot(this);
             createNewItem();
@@ -318,8 +318,8 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
         const { idString, defType } = definition;
 
         switch (defType) {
-            case DefinitionType.Melee: {
-                const slot: number | undefined = (inventory.slotsByDefType[DefinitionType.Melee] ?? [])[0];
+            case "melee": {
+                const slot: number | undefined = (inventory.slotsByDefType["melee"] ?? [])[0];
 
                 // No melee slot? Nothing to do
                 if (slot === undefined) {
@@ -332,7 +332,7 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
 
                 break;
             }
-            case DefinitionType.Gun: {
+            case "gun": {
                 let gotDual = false;
                 for (let i = 0, l = inventory.weapons.length; i < l; i++) {
                     const weapon = inventory.weapons[i];
@@ -364,7 +364,7 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
                 }
                 if (gotDual) break;
 
-                const slot = inventory.appendWeapon<DefinitionType.Gun>(definition, (this as Loot<GunDefinition>).itemData);
+                const slot = inventory.appendWeapon<"gun">(definition, (this as Loot<GunDefinition>).itemData);
 
                 if (slot === -1) { // If it wasn't added, then either there are no gun slots or they're all occupied
                     /*
@@ -390,14 +390,14 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
                 }
 
                 // Swap to gun slot if current slot is melee
-                if (GameConstants.player.inventorySlotTypings[inventory.activeWeaponIndex] === DefinitionType.Melee) {
+                if (GameConstants.player.inventorySlotTypings[inventory.activeWeaponIndex] === "melee") {
                     inventory.setActiveWeaponIndex(slot);
                 }
                 break;
             }
-            case DefinitionType.HealingItem:
-            case DefinitionType.Ammo:
-            case DefinitionType.Throwable: {
+            case "healingItem":
+            case "ammo":
+            case "throwable": {
                 const currentCount = inventory.items.getItem(idString);
                 const maxCapacity = inventory.backpack.maxCapacity[idString] ?? 0;
 
@@ -414,8 +414,8 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
                     }
                 };
 
-                if (definition.defType === DefinitionType.Throwable) {
-                    const slot: number | undefined = (inventory.slotsByDefType[DefinitionType.Throwable] ?? [])[0];
+                if (definition.defType === "throwable") {
+                    const slot: number | undefined = (inventory.slotsByDefType["throwable"] ?? [])[0];
 
                     // No grenade slot? Nothing to do, don't even add it to the inventory's item collection
                     if (slot === undefined) {
@@ -434,7 +434,7 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
                 }
                 break;
             }
-            case DefinitionType.Armor: {
+            case "armor": {
                 switch (definition.armorType) {
                     case ArmorType.Helmet:
                         if (player.inventory.helmet) createNewItem({ type: player.inventory.helmet, count: 1 });
@@ -452,7 +452,7 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
                 player.setDirty();
                 break;
             }
-            case DefinitionType.Backpack: {
+            case "backpack": {
                 if (player.inventory.backpack.level > 0) createNewItem({ type: player.inventory.backpack, count: 1 });
                 player.inventory.backpack = definition;
 
@@ -463,7 +463,7 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
                 player.setDirty();
                 break;
             }
-            case DefinitionType.Scope: {
+            case "scope": {
                 inventory.items.setItem(idString, 1);
 
                 if (definition.zoomLevel > player.inventory.scope.zoomLevel) {
@@ -472,7 +472,7 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
 
                 break;
             }
-            case DefinitionType.Skin: {
+            case "skin": {
                 if (player.loadout.skin === definition) {
                     countToRemove = 0; // eipi's fix
                     break;
@@ -485,7 +485,7 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
                 break;
             }
 
-            case DefinitionType.Perk: {
+            case "perk": {
                 const perkToRemove = player.perks.find(perk => perk.category === definition.category);
 
                 if (perkToRemove !== undefined) {

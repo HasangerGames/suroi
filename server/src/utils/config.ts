@@ -1,4 +1,4 @@
-import { z } from "zod";
+import z from "zod";
 import { ServerConfig } from "$common/schemas/config/serverConfig";
 import config from "../../config.json";
 

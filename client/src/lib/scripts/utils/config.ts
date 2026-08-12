@@ -1,4 +1,4 @@
-import * as z from "zod";
+import z from "zod";
 import { ClientConfig } from "$common/schemas/config/clientConfig";
 
 const parsedConfig = ClientConfig.safeParse((await import("../../../../config.json")).default);

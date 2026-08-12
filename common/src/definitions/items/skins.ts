@@ -1,7 +1,7 @@
 import { DefinitionType, type ItemDefinition, ObjectDefinitions } from "../../utils/objectDefinitions";
 
 export interface SkinDefinition extends ItemDefinition {
-    readonly defType: DefinitionType.Skin
+    readonly defType: "skin"
 
     readonly hideFromLoadout?: boolean
     readonly grassTint?: boolean
@@ -26,7 +26,7 @@ const skin = (
 ): SkinDefinition => ({
     idString: name.toLowerCase().replace(/'/g, "").replace(/ /g, "_"),
     name,
-    defType: DefinitionType.Skin,
+    defType: "skin",
     baseImage: baseTint !== undefined ? "plain_base" : undefined,
     fistImage: fistTint !== undefined ? "plain_fist" : undefined,
     baseTint,

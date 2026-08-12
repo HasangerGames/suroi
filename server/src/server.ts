@@ -51,7 +51,7 @@ if (Cluster.isPrimary && require.main === module) {
 
             // windows L
             if (os.platform() !== "win32") {
-                const load = os.loadavg().join("%, ");
+                const load = os.loadavg().map(n => n.toFixed(2)).join("%, ");
                 perfString += ` | CPU usage (1m, 5m, 15m): ${load}%`;
             }
 

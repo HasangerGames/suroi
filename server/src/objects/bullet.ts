@@ -177,7 +177,7 @@ export class Bullet extends BaseBullet {
                 }
 
                 if (
-                    this.sourceGun.definition.defType === DefinitionType.Gun
+                    this.sourceGun.definition.defType === "gun"
                     && this.shooter.isPlayer
                     && this.shooter.hasPerk(PerkIds.PrecisionRecycling)
                 ) {

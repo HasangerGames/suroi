@@ -300,7 +300,7 @@ export class BaseBullet {
                 const activeDef = object.activeItemDefinition;
                 const backDef = object.backEquippedMelee;
 
-                if (activeDef.defType === DefinitionType.Melee && activeDef.reflectiveSurface) {
+                if (activeDef.defType === "melee" && activeDef.reflectiveSurface) {
                     const intersection = getIntersection(activeDef.reflectiveSurface);
                     if (intersection) {
                         collisions.push({

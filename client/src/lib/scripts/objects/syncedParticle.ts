@@ -1,14 +1,15 @@
+import { dev } from "$app/environment";
 import { ObjectCategory } from "$common/constants";
-import { resolveNumericSpecifier, type InternalAnimation, type NumericSpecifier, type SyncedParticleDefinition } from "$common/definitions/syncedParticles";
+import { type InternalAnimation, type NumericSpecifier, resolveNumericSpecifier, type SyncedParticleDefinition } from "$common/definitions/syncedParticles";
 import { Angle, EaseFunctions, Numeric } from "$common/utils/math";
 import { type ObjectsNetData } from "$common/utils/objectsSerializations";
 import { Vec, type Vector } from "$common/utils/vector";
+import { GameConsole } from "../console/gameConsole";
 import { Game } from "../game";
 import { DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS } from "../utils/constants";
 import { DebugRenderer } from "../utils/debugRenderer";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { GameObject } from "./gameObject";
-import { GameConsole } from "../console/gameConsole";
 
 export class SyncedParticle extends GameObject.derive(ObjectCategory.SyncedParticle) {
     readonly image = new SuroiSprite();
@@ -106,7 +107,7 @@ export class SyncedParticle extends GameObject.derive(ObjectCategory.SyncedParti
     }
 
     override updateDebugGraphics(): void {
-        if (!DEBUG_CLIENT) return;
+        if (!dev) return;
         if (!this.definition.hitbox) return;
         if (!GameConsole.getBuiltInCVar("db_show_hitboxes_synced_particles")) return;
 

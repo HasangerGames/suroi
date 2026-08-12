@@ -1,12 +1,12 @@
 import type { Plugin, ViteDevServer } from "vite";
 import WebSocket, { WebSocketServer } from "ws";
-import { GameConstants } from "../../../common/src/constants";
-import { Badges } from "../../../common/src/definitions/badges";
-import { Skins } from "../../../common/src/definitions/items/skins";
-import { type CustomTeamMessage, CustomTeamMessages, type CustomTeamPlayerInfo } from "../../../common/src/typings";
-import { Numeric } from "../../../common/src/utils/math";
-import { removeFrom } from "../../../common/src/utils/misc";
-import { randomId } from "../../../common/src/utils/random";
+import { GameConstants } from "../../common/src/constants";
+import { Badges } from "../../common/src/definitions/badges";
+import { Skins } from "../../common/src/definitions/items/skins";
+import { type CustomTeamMessage, CustomTeamMessages, type CustomTeamPlayerInfo } from "../../common/src/typings";
+import { Numeric } from "../../common/src/utils/math";
+import { removeFrom } from "../../common/src/utils/misc";
+import { randomId } from "../../common/src/utils/random";
 
 export class CustomTeam {
     readonly id: string;

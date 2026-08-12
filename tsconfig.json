@@ -4,7 +4,7 @@
     "./common/tsconfig.json",
     "./server/tsconfig.json"
   ],
-  "include": ["package.json", "client/src", "common/src", "server/src", "client/vite/plugins"],
+  "include": ["package.json", "client/src", "common/src", "server/src", "client/vite/plugins", "client/vite/audio-spritesheet-plugin.ts", "client/vite/config-plugin.ts", "client/vite/image-spritesheet-plugin.ts", "client/vite/news-posts-plugin.ts", "client/vite/team-socket-plugin.ts", "client/vite/utils.ts"],
   "exclude": ["node_modules"],
   "compilerOptions": {
     "paths": {

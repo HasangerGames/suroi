@@ -1,4 +1,5 @@
-import { GameMode } from "../definitions/gameModes";
+import z from "zod";
+import { GameMode } from "../schemas/misc";
 import { type ByteStream } from "./byteStream";
 import { ReadonlyRecord } from "./misc";
 import { type Vector } from "./vector";
@@ -86,28 +87,29 @@ export class ObjectDefinitions<Def extends ObjectDefinition = ObjectDefinition> 
     }
 }
 
-export enum DefinitionType {
-    Ammo,
-    Armor,
-    Backpack,
-    Badge,
-    Building,
-    Bullet,
-    Decal,
-    Emote,
-    Explosion,
-    Gun,
-    HealingItem,
-    MapPing,
-    MapIndicator,
-    Melee,
-    Obstacle,
-    Perk,
-    Scope,
-    Skin,
-    SyncedParticle,
-    Throwable
-}
+export const DefinitionType = z.enum([
+    "ammo",
+    "armor",
+    "backpack",
+    "badge",
+    "building",
+    "bullet",
+    "decal",
+    "emote",
+    "explosion",
+    "gun",
+    "healingItem",
+    "mapPing",
+    "mapIndicator",
+    "melee",
+    "obstacle",
+    "perk",
+    "scope",
+    "skin",
+    "syncedParticle",
+    "throwable"
+]);
+export type DefinitionType = z.infer<typeof DefinitionType>;
 
 export interface ObjectDefinition {
     readonly idString: string

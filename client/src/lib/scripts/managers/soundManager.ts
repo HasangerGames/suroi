@@ -3,7 +3,7 @@ import { Layer } from "$common/constants";
 import { GameModes } from "$common/definitions/gameModes";
 import { Numeric } from "$common/utils/math";
 import { Vec, type Vector } from "$common/utils/vector";
-import type { AudioSpritesheetImporter } from "../../../../vite/plugins/audio-spritesheet-plugin";
+import type { AudioSpritesheetImporter } from "../../../../vite/audio-spritesheet-plugin";
 import { GameConsole } from "../console/gameConsole";
 import { Game } from "../game";
 import type { Tween } from "../utils/tween";

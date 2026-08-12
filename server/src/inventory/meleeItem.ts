@@ -13,7 +13,7 @@ import { getMeleeHitbox, getMeleeTargets } from "$common/utils/gameHelpers";
 /**
  * A class representing a melee weapon
  */
-export class MeleeItem extends InventoryItemBase.derive(DefinitionType.Melee) {
+export class MeleeItem extends InventoryItemBase.derive("melee") {
     private _autoUseTimeoutID?: NodeJS.Timeout;
 
     /**
@@ -25,7 +25,7 @@ export class MeleeItem extends InventoryItemBase.derive(DefinitionType.Melee) {
     constructor(idString: ReifiableDef<MeleeDefinition>, owner: Player, data?: ItemData<MeleeDefinition>) {
         super(idString, owner);
 
-        if (this.category !== DefinitionType.Melee) {
+        if (this.category !== "melee") {
             throw new TypeError(`Attempted to create a Melee object based on a definition for a non-melee object (Received a ${this.category as unknown as string} definition)`);
         }
 
@@ -71,7 +71,7 @@ export class MeleeItem extends InventoryItemBase.derive(DefinitionType.Melee) {
             if (!satisfiesPreflights()) return;
             for (let i = 0; i < (definition.numberOfHits ?? 1); i++) {
                 this.owner.game.addTimeout((): void => {
-                    if (this.owner.activeItem.definition.defType !== DefinitionType.Melee) return;
+                    if (this.owner.activeItem.definition.defType !== "melee") return;
 
                     type MeleeObject = Player | Obstacle | Building | Projectile;
 

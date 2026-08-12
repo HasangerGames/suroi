@@ -2,23 +2,21 @@ import z from "zod";
 import { Port } from "../misc";
 
 export const ServerConfig = z.object({
-    $schema: z.literal("config.schema.json"),
     /**
      * The hostname to host the servers on.
      */
-    hostname: z.string().default("127.0.0.1"),
+    hostname: z.string(),
     /**
      * The port to host the main server on.
      */
-    mainPort: Port.default(42084),
+    mainPort: Port,
     /**
      * Range of ports to host the game servers on.
      * First number is minimum, second is maximum (inclusive).
      * This determines the maximum number of games.
      */
     gamePortRange: z.tuple([Port, Port])
-        .refine(([min, max]) => min < max, { error: "Minimum port must be smaller than maximum" })
-        .default([42085, 43085]),
+        .refine(([min, max]) => min < max, { error: "Minimum port must be smaller than maximum" }),
     /**
      * Overrides the map if present.
      * Must be a valid value from the server map definitions (maps.ts).
@@ -73,25 +71,20 @@ export const ServerConfig = z.object({
     /**
      * The minimum number of teams (players in solo) that must join a game for it to start.
      */
-    minTeamsToStart: z.int().positive().default(2).optional(),
+    minTeamsToStart: z.int().positive(),
     /**
      * The maximum number of players that can join a game.
      */
-    maxPlayersPerGame: z.int().positive().default(80).optional(),
+    maxPlayersPerGame: z.int().positive(),
     /**
      * The maximum number of games that can exist at once.
      */
-    maxGames: z.int().positive().default(10).optional(),
-    /**
-     * The number of game ticks that occur per second.
-     * Overrides the value of GameConstants.tps.
-     */
-    tps: z.int().positive().optional(),
+    maxGames: z.int().positive(),
     /**
      * List of plugins to load.
      * Each item must correspond to the name of a file in server/src/plugins, minus the extension.
      */
-    plugins: z.array(z.string()).default([]),
+    plugins: z.array(z.string()).optional(),
     /**
      * Options for the API server.
      */
@@ -125,10 +118,6 @@ export const ServerConfig = z.object({
         duration: z.number().positive()
     }).optional(),
     /**
-     * Limits the number of custom teams that can be created simultaneously by any one IP address.
-     */
-    maxCustomTeams: z.int().positive().optional(),
-    /**
      * List of regexes to test usernames against.
      * If a player's username matches one of the regexes in this array, it will be replaced with the default username.
      */
@@ -139,7 +128,7 @@ export const ServerConfig = z.object({
      * If `isDev` is set to true for a role, cheats will be enabled for that role.
      * To use roles, add "?password=PASSWORD&role=ROLE" (minus quotes) to the URL, for example: http://127.0.0.1:3000/?password=developr&role=developr
      * Dev cheats can be enabled using the "lobbyClearing" option (http://127.0.0.1:3000/?password=developr&role=developr&lobbyClearing=true),
-     * but the server must also have it enabled (thru the \"allowLobbyClearing\" property).
+     * but the server must also have it enabled (thru the "allowLobbyClearing" property).
      */
     roles: z.record(z.string(), z.object({
         password: z.string(),
@@ -153,13 +142,5 @@ export const ServerConfig = z.object({
      * If true, allows things like scopes and flares to work in buildings.
      */
     disableBuildingCheck: z.boolean().optional(),
-    /**
-     * If true, any generated loot will be picked from a random table.
-     */
-    randomizeLootTables: z.boolean().optional(),
-    /**
-     * If present, every gun will be replaced with a random item from the given loot table.
-     */
-    overrideGunLootTable: z.string().optional()
 });
 export type ServerConfig = z.infer<typeof ServerConfig>;

@@ -1,15 +1,13 @@
 import { FlyoverPref, Layer, Layers, MapObjectSpawnMode, RotationMode, ZIndexes } from "../constants";
 import { type Orientation, type Variation } from "../typings";
 import { CircleHitbox, GroupHitbox, type Hitbox, PolygonHitbox, RectangleHitbox } from "../utils/hitbox";
-import { DefinitionType, type ObjectDefinition, ObjectDefinitions, type ReferenceOrRandom, type ReferenceTo } from "../utils/objectDefinitions";
-import { pickRandomInArray, random, randomBoolean } from "../utils/random";
+import { type ObjectDefinition, ObjectDefinitions, type ReferenceOrRandom, type ReferenceTo } from "../utils/objectDefinitions";
+import { pickRandomInArray, randomBoolean } from "../utils/random";
 import { FloorNames } from "../utils/terrain";
 import { Vec, type Vector } from "../utils/vector";
 import { Materials, type ObstacleDefinition } from "./obstacles";
 import "../utils/isClient";
 import { ScopeDefinition } from "./items/scopes";
-
-declare const IS_CLIENT: boolean;
 
 export interface BuildingObstacle {
     readonly idString: ReferenceOrRandom<ObstacleDefinition>
@@ -67,7 +65,7 @@ interface BuildingGraphicsDefinition {
 }
 
 export interface BuildingDefinition extends ObjectDefinition {
-    readonly defType: DefinitionType.Building
+    readonly defType: "building"
 
     readonly noCollisions?: boolean
     readonly noBulletCollision?: boolean
@@ -409,7 +407,7 @@ const blueHouseVaultLayout = (
 ): BuildingDefinition => ({
     idString: `blue_house_vault_layout_${id}`,
     name: "Blue House Vault Layout",
-    defType: DefinitionType.Building,
+    defType: "building",
     spawnHitbox: RectangleHitbox.fromRect(40, 35, Vec(18.4, 18)),
     floorImages: [{
         key: subBuildings ? "blue_house_floor_2_2_special" : "blue_house_floor_2_2",
@@ -424,7 +422,7 @@ const blueHouseVaultLayout = (
 const warehouseLayout = (id: number, obstacles: readonly BuildingObstacle[]): BuildingDefinition => ({
     idString: `warehouse_layout_${id}`,
     name: "Warehouse Layout",
-    defType: DefinitionType.Building,
+    defType: "building",
     spawnHitbox: RectangleHitbox.fromRect(63.07, 114),
     obstacles
 });
@@ -432,7 +430,7 @@ const warehouseLayout = (id: number, obstacles: readonly BuildingObstacle[]): Bu
 const huntingStandLayout = (id: number, obstacles: readonly BuildingObstacle[], lootSpawners_?: readonly LootSpawner[]): BuildingDefinition => ({
     idString: `hunting_stand_layout_${id}`,
     name: "Hunting Stand Layout",
-    defType: DefinitionType.Building,
+    defType: "building",
     spawnHitbox: RectangleHitbox.fromRect(24.22, 30.14),
     obstacles,
     lootSpawners: lootSpawners_ ?? undefined
@@ -441,7 +439,7 @@ const huntingStandLayout = (id: number, obstacles: readonly BuildingObstacle[], 
 const iglooLayout = (id: number, obstacles: readonly BuildingObstacle[]): BuildingDefinition => ({
     idString: `igloo_layout_${id}`,
     name: "Igloo Layout",
-    defType: DefinitionType.Building,
+    defType: "building",
     spawnHitbox: new CircleHitbox(21.61, Vec(24.98, -3.64)),
     obstacles
 });
@@ -1034,7 +1032,7 @@ const container = (
     return {
         idString: `container_${color}${variant === color ? "" : `_${variant}`}${damaged ? "_damaged" : ""}${reversed ? "_reversed" : ""}`,
         name: "Container",
-        defType: DefinitionType.Building,
+        defType: "building",
         hitbox: hitboxes[variant],
         reflectBullets: true,
         material: "metal_heavy",
@@ -1105,7 +1103,7 @@ const hollowLog = (
     return {
         idString: `hollow_log_${id}`,
         name: "Hollow Log",
-        defType: DefinitionType.Building,
+        defType: "building",
         spawnHitbox: RectangleHitbox.fromRect(11.05, 21.97),
         ceilingHitbox: RectangleHitbox.fromRect(4.78, 19.66),
         ceilingImages: [{
@@ -1240,7 +1238,7 @@ const truckContainer = (
     return {
         idString: `truck_container_${id}`,
         name: `Truck Container ${id}`,
-        defType: DefinitionType.Building,
+        defType: "building",
         reflectBullets: true,
         material: "metal_heavy",
         particle: `container_particle_${color}`,
@@ -1287,7 +1285,7 @@ const truck = (
     return {
         idString: `truck_${id}`,
         name: `Truck ${id}`,
-        defType: DefinitionType.Building,
+        defType: "building",
         spawnHitbox: RectangleHitbox.fromRect(25, 60, Vec(0, 6)),
         obstacles: IS_CLIENT ? undefined : [
             { idString: "truck_front", position: Vec(0, -11.5), rotation: 0, outdoors: true },
@@ -1314,7 +1312,7 @@ const pallet = (
     return {
         idString: `pallet_${id}`,
         name: `Pallet ${id}`,
-        defType: DefinitionType.Building,
+        defType: "building",
         spawnHitbox: RectangleHitbox.fromRect(10.1, 9),
         obstacles: IS_CLIENT ? undefined : [
             { idString: "pallet", position: Vec(0, 0), rotation: 0 },
@@ -1328,7 +1326,7 @@ const riverHut = (id: number, obstacles: readonly BuildingObstacle[]): BuildingD
     return {
         idString: `river_hut_${id}`,
         name: "River Hut",
-        defType: DefinitionType.Building,
+        defType: "building",
         wallsToDestroy: 3,
         ceilingCollapseParticle: "river_hut_ceiling_particle",
         spawnMode: MapObjectSpawnMode.Beach, // TODO: river bank spawn mode support
@@ -1392,7 +1390,7 @@ const tent = (
     return {
         idString: `tent_${id}`,
         name: `Tent ${id}`,
-        defType: DefinitionType.Building,
+        defType: "building",
         spawnHitbox: RectangleHitbox.fromRect(31, 23),
         ceilingHitbox: RectangleHitbox.fromRect(26, 16),
         floorImages: [{
@@ -1448,7 +1446,7 @@ const hayShed = (
 ): BuildingDefinition => ({
     idString: `hay_shed_${id}`,
     name: `Hay Shed ${id}`,
-    defType: DefinitionType.Building,
+    defType: "building",
     spawnHitbox: RectangleHitbox.fromRect(47, 32),
     ceilingHitbox: RectangleHitbox.fromRect(33.5, 24.5, Vec(-1.2, -0.5)),
     floorImages: [{
@@ -1485,7 +1483,7 @@ const bigTent = (
     return {
         idString: `tent_big_${id}`,
         name: `Big Tent ${id}`,
-        defType: DefinitionType.Building,
+        defType: "building",
         spawnHitbox: RectangleHitbox.fromRect(58, 35),
         ceilingHitbox: RectangleHitbox.fromRect(44, 27),
         floorImages: [{
@@ -1537,7 +1535,7 @@ const bigTent = (
 const tugboat = (color: string, mainLoot: string): BuildingDefinition => ({
     idString: `tugboat_${color}`,
     name: "Tugboat",
-    defType: DefinitionType.Building,
+    defType: "building",
     reflectBullets: true,
     material: "metal_heavy",
     particle: "metal_particle",
@@ -1650,7 +1648,7 @@ const tugboat = (color: string, mainLoot: string): BuildingDefinition => ({
 const smallBunker = (idString: string): BuildingDefinition => ({
     idString,
     name: "Small Bunker",
-    defType: DefinitionType.Building,
+    defType: "building",
     material: "metal_heavy",
     particle: "metal_particle",
     reflectBullets: true,
@@ -1686,7 +1684,7 @@ const smallBunker = (idString: string): BuildingDefinition => ({
 const fulcrumBunker = (idString: string): BuildingDefinition => ({
     idString,
     name: "Fulcrum Bunker",
-    defType: DefinitionType.Building,
+    defType: "building",
     spawnHitbox: new GroupHitbox(
         RectangleHitbox.fromRect(14, 20.5, Vec(-9.81, 47.65)),
         RectangleHitbox.fromRect(14, 20.5, Vec(-30.2, -40.75)),
@@ -1739,7 +1737,7 @@ const fulcrumBunker = (idString: string): BuildingDefinition => ({
 const blueHouse = (idString: string, subBuildings: BuildingDefinition["subBuildings"] = []): BuildingDefinition => ({
     idString,
     name: "Blue House",
-    defType: DefinitionType.Building,
+    defType: "building",
     hitbox: new GroupHitbox(
         // Left.
         RectangleHitbox.fromRect(2, 11, Vec(-34.4, 18.25)),
@@ -1883,7 +1881,7 @@ const blueHouse = (idString: string, subBuildings: BuildingDefinition["subBuildi
 const shed = (num: number, ceilingTint: number): BuildingDefinition => ({
     idString: `shed_${num}`,
     name: "Shed",
-    defType: DefinitionType.Building,
+    defType: "building",
     material: "stone",
     particle: "rock_particle",
     particleVariations: 2,
@@ -1997,7 +1995,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "porta_potty",
         name: "Porta Potty",
-        defType: DefinitionType.Building,
+        defType: "building",
         spawnHitbox: RectangleHitbox.fromRect(20, 32),
         ceilingHitbox: RectangleHitbox.fromRect(14, 18),
         floorImages: [
@@ -2064,7 +2062,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "outhouse",
         name: "Outhouse",
-        defType: DefinitionType.Building,
+        defType: "building",
         spawnHitbox: RectangleHitbox.fromRect(19, 29),
         ceilingHitbox: RectangleHitbox.fromRect(14.94, 20, Vec(0, -2.02)),
         floorImages: [
@@ -2104,7 +2102,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "firework_warehouse",
         name: "Firework Warehouse",
-        defType: DefinitionType.Building,
+        defType: "building",
         material: "stone",
         particle: "wall_particle",
         hitbox: new GroupHitbox(
@@ -2180,7 +2178,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "mini_warehouse",
         name: "Mini Warehouse",
-        defType: DefinitionType.Building,
+        defType: "building",
         material: "stone",
         particle: "wall_particle",
         hitbox: new GroupHitbox(
@@ -2368,7 +2366,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "warehouse",
         name: "Warehouse",
-        defType: DefinitionType.Building,
+        defType: "building",
         reflectBullets: true,
         material: "metal_heavy",
         particle: "metal_particle",
@@ -2431,7 +2429,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "port_warehouse",
         name: "Port Warehouse",
-        defType: DefinitionType.Building,
+        defType: "building",
         reflectBullets: true,
         material: "metal_heavy",
         particle: "metal_particle",
@@ -2483,7 +2481,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "large_warehouse",
         name: "Large Warehouse",
-        defType: DefinitionType.Building,
+        defType: "building",
         reflectBullets: true,
         material: "metal_heavy",
         particle: "metal_particle",
@@ -2528,7 +2526,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "refinery",
         name: "Refinery",
-        defType: DefinitionType.Building,
+        defType: "building",
         material: "stone",
         particle: "rock_particle",
         particleVariations: 2,
@@ -2897,7 +2895,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "red_house",
         name: "Red House",
-        defType: DefinitionType.Building,
+        defType: "building",
         material: "stone",
         particle: "wall_particle",
         hitbox: new GroupHitbox(
@@ -3086,7 +3084,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "red_house_v2",
         name: "Red House Variation 2",
-        defType: DefinitionType.Building,
+        defType: "building",
         material: "stone",
         particle: "wall_particle",
         hitbox: new GroupHitbox(
@@ -3197,7 +3195,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "green_house",
         name: "Green House",
-        defType: DefinitionType.Building,
+        defType: "building",
         material: "stone",
         particle: "wall_particle",
         hitbox: new GroupHitbox(
@@ -3378,7 +3376,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "blue_house_vault",
         name: "Blue House Vault",
-        defType: DefinitionType.Building,
+        defType: "building",
         reflectBullets: true,
         material: "metal_heavy",
         particle: "metal_particle",
@@ -3399,7 +3397,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "blue_house_basement",
         name: "Blue House Basement",
-        defType: DefinitionType.Building,
+        defType: "building",
         reflectBullets: true,
         material: "metal_heavy",
         particle: "metal_particle",
@@ -3499,7 +3497,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "blue_house_basement_ceiling",
         name: "blue house basement ceiling",
-        defType: DefinitionType.Building,
+        defType: "building",
         spawnHitbox: RectangleHitbox.fromRect(21.5, 28.9, Vec(21, -15.3)),
         ceilingHitbox: RectangleHitbox.fromRect(21.5, 28.9, Vec(21, -15.3)),
         ceilingImages: [{
@@ -3593,7 +3591,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "port_hay_shed",
         name: "Port Hay Shed",
-        defType: DefinitionType.Building,
+        defType: "building",
         spawnHitbox: RectangleHitbox.fromRect(47, 32),
         ceilingHitbox: RectangleHitbox.fromRect(33.5, 24.5, Vec(-1.2, -0.5)),
         ceilingImages: [{
@@ -3615,7 +3613,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "port_gate_office",
         name: "Port Gate Office",
-        defType: DefinitionType.Building,
+        defType: "building",
         spawnHitbox: RectangleHitbox.fromRect(55, 32),
         ceilingHitbox: RectangleHitbox.fromRect(41.36, 20.56, Vec(2.04, -2.04)),
         material: "stone",
@@ -3665,7 +3663,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "port_storage",
         name: "Port Storage",
-        defType: DefinitionType.Building,
+        defType: "building",
         spawnHitbox: RectangleHitbox.fromRect(55, 32, Vec(-10, 0)),
         ceilingHitbox: RectangleHitbox.fromRect(42, 21.55, Vec(-7.7, -2.04)),
         material: "stone",
@@ -3711,7 +3709,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "port_main_office",
         name: "Port Main Office",
-        defType: DefinitionType.Building,
+        defType: "building",
         spawnHitbox: RectangleHitbox.fromRect(102, 112),
         ceilingHitbox: new GroupHitbox(
             RectangleHitbox.fromRect(81.49, 17.42, Vec(-0.2, 24.94)),
@@ -3862,7 +3860,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "port",
         name: "Port",
-        defType: DefinitionType.Building,
+        defType: "building",
         spawnHitbox: RectangleHitbox.fromRect(448, 490, Vec(0, -7.5)),
         spawnMode: MapObjectSpawnMode.Beach,
         spawnOrientation: 1,
@@ -4601,7 +4599,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "cargo_ship_bottom_floor_vault",
         name: "Cargo Ship Vault",
-        defType: DefinitionType.Building,
+        defType: "building",
         spawnHitbox: new GroupHitbox(
             RectangleHitbox.fromRect(28.15, 52.25),
             RectangleHitbox.fromRect(14, 4, Vec(7.1, 26.3)),
@@ -4647,7 +4645,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "cargo_ship_bottom_floor_vault_special",
         name: "Cargo Ship Vault",
-        defType: DefinitionType.Building,
+        defType: "building",
         spawnHitbox: new GroupHitbox(
             RectangleHitbox.fromRect(28.15, 52.25),
             RectangleHitbox.fromRect(14, 4, Vec(7.1, 26.3)),
@@ -4703,7 +4701,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "cargo_ship",
         name: "Hyperion",
-        defType: DefinitionType.Building,
+        defType: "building",
         spawnHitbox: RectangleHitbox.fromRect(180, 400, Vec(-1.5, -1.8)),
         puzzle: {
             triggerOnSolve: "vault_door2",
@@ -4760,7 +4758,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "cargo_ship_top_floor_shadow",
         name: "Cargo Ship Shadow",
-        defType: DefinitionType.Building,
+        defType: "building",
         spawnHitbox: RectangleHitbox.fromRect(180, 400, Vec(-1.5, -1.8)),
         ceilingZIndex: ZIndexes.BuildingsCeiling + 0.5,
         ceilingImages: [{
@@ -4773,7 +4771,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         // implemented by pap with a lot of love >w<
         idString: "cargo_ship_bottom_floor",
         name: "Cargo Ship (Bottom Floor)",
-        defType: DefinitionType.Building,
+        defType: "building",
         material: "metal_heavy",
         particle: "cargo_ship_particle",
         reflectBullets: true,
@@ -5116,7 +5114,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "cargo_ship_top_floor_control_room_ceiling",
         name: "Cargo Ship Control Room Ceiling",
-        defType: DefinitionType.Building,
+        defType: "building",
         spawnHitbox: new GroupHitbox(
             RectangleHitbox.fromRect(50.25, 61, Vec(0, 0.45)),
             RectangleHitbox.fromRect(100, 50, Vec(0, 6))
@@ -5136,7 +5134,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         // implemented by pap with a lot of love >w<
         idString: "cargo_ship_top_floor",
         name: "Cargo Ship (Top Floor)",
-        defType: DefinitionType.Building,
+        defType: "building",
         material: "metal_heavy",
         particle: "cargo_ship_particle",
         reflectBullets: true,
@@ -5463,7 +5461,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "armory_barracks",
         name: "Armory Barracks",
-        defType: DefinitionType.Building,
+        defType: "building",
         material: "stone",
         particle: "rock_particle",
         particleVariations: 2,
@@ -5525,7 +5523,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "armory_center",
         name: "Armory Center",
-        defType: DefinitionType.Building,
+        defType: "building",
         material: "stone",
         particle: "rock_particle",
         particleVariations: 2,
@@ -5573,7 +5571,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "armory_vault",
         name: "Armory Vault",
-        defType: DefinitionType.Building,
+        defType: "building",
         material: "stone",
         particle: "rock_particle",
         particleVariations: 2,
@@ -5655,7 +5653,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "armory_inner_vault",
         name: "Armory Inner Vault",
-        defType: DefinitionType.Building,
+        defType: "building",
         spawnHitbox: RectangleHitbox.fromRect(20.87, 36.34),
         ceilingHitbox: RectangleHitbox.fromRect(20.87, 36.34),
         ceilingImages: [
@@ -5672,7 +5670,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "armory",
         name: "Armory",
-        defType: DefinitionType.Building,
+        defType: "building",
         spawnHitbox: RectangleHitbox.fromRect(160, 176),
         spawnMode: MapObjectSpawnMode.GrassAndSand,
         subBuildings: IS_CLIENT ? undefined : [
@@ -5911,7 +5909,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "mobile_home",
         name: "Mobile Home",
-        defType: DefinitionType.Building,
+        defType: "building",
         spawnHitbox: RectangleHitbox.fromRect(65, 40),
         ceilingHitbox: RectangleHitbox.fromRect(43.5, 20, Vec(0, -1)),
         floorImages: [
@@ -5961,7 +5959,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "lighthouse",
         name: "Lighthouse",
-        defType: DefinitionType.Building,
+        defType: "building",
         material: "stone",
         particle: "rock_particle",
         particleVariations: 2,
@@ -6129,7 +6127,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "lighthouse_lighting",
         name: "Lighthouse Lighting",
-        defType: DefinitionType.Building,
+        defType: "building",
         spawnHitbox: RectangleHitbox.fromRect(0.25, 0.25, Vec(-3.3, 6)),
         ceilingHitbox: RectangleHitbox.fromRect(0.25, 0.25, Vec(-3.3, 6)),
         wallsToDestroy: 1,
@@ -6149,7 +6147,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "small_bridge",
         name: "Small Bridge",
-        defType: DefinitionType.Building,
+        defType: "building",
         noBulletCollision: true,
         allowFlyover: FlyoverPref.Always,
         material: "wood",
@@ -6196,7 +6194,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "large_bridge",
         name: "Large Bridge",
-        defType: DefinitionType.Building,
+        defType: "building",
         allowFlyover: FlyoverPref.Always,
         material: "stone",
         particle: "rock_particle",
@@ -6309,7 +6307,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "construction_site",
         name: "Construction Site",
-        defType: DefinitionType.Building,
+        defType: "building",
         spawnHitbox: RectangleHitbox.fromRect(75, 75, Vec(0, 0)),
         spawnMode: MapObjectSpawnMode.Grass,
         floorImages: [
@@ -6378,7 +6376,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "detector",
         name: "Detector",
-        defType: DefinitionType.Building,
+        defType: "building",
         spawnHitbox: RectangleHitbox.fromRect(9, 3, Vec(0, 1)),
         obstacles: IS_CLIENT ? undefined : [
             { idString: "detector_walls", position: Vec(0, 0), rotation: 0 },
@@ -6388,7 +6386,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "headquarters_vault",
         name: "Headquarters Vault",
-        defType: DefinitionType.Building,
+        defType: "building",
         spawnHitbox: RectangleHitbox.fromRect(22, 30.6, Vec(0, -7.2)),
         ceilingHitbox: RectangleHitbox.fromRect(22, 30.6, Vec(0, -7.2)),
         ceilingZIndex: ZIndexes.BuildingsCeiling - 1,
@@ -6403,7 +6401,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "headquarters_secret_room",
         name: "Headquarters Secret Room",
-        defType: DefinitionType.Building,
+        defType: "building",
         spawnHitbox: RectangleHitbox.fromRect(20, 20),
         ceilingHitbox: RectangleHitbox.fromRect(20, 20),
         ceilingZIndex: ZIndexes.BuildingsCeiling - 1,
@@ -6417,7 +6415,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "headquarters",
         name: "Headquarters",
-        defType: DefinitionType.Building,
+        defType: "building",
         material: "stone",
         particle: "hq_stone_wall_particle",
         particleVariations: 2,
@@ -6734,7 +6732,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "headquarters_second_floor",
         name: "Headquarters Second Floor",
-        defType: DefinitionType.Building,
+        defType: "building",
         material: "stone",
         particle: "hq_stone_wall_particle",
         particleVariations: 2,
@@ -6963,7 +6961,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "small_bunker_entrance",
         name: "Small Bunker Entrance",
-        defType: DefinitionType.Building,
+        defType: "building",
         reflectBullets: true,
         collideWithLayers: Layers.All,
         visibleFromLayers: Layers.All,
@@ -6985,7 +6983,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "small_bunker_main",
         name: "Small Bunker",
-        defType: DefinitionType.Building,
+        defType: "building",
         reflectBullets: true,
         collideWithLayers: Layers.Adjacent,
         material: "metal_heavy",
@@ -7045,7 +7043,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "barn_top_floor_shadow",
         name: "Barn Shadow",
-        defType: DefinitionType.Building,
+        defType: "building",
         spawnHitbox: new GroupHitbox(
             RectangleHitbox.fromRect(20, 55, Vec(-19, 0)),
             RectangleHitbox.fromRect(58, 14, Vec(0, -21))
@@ -7062,7 +7060,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "barn_top_floor",
         name: "Barn Top Floor",
-        defType: DefinitionType.Building,
+        defType: "building",
         material: "stone",
         particle: "wall_particle",
         hitbox: new GroupHitbox(
@@ -7117,7 +7115,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "barn_exterior", // spanAdjacent layer thingy no work
         name: "Barn Exterior",
-        defType: DefinitionType.Building,
+        defType: "building",
         material: "stone",
         particleVariations: 2,
         spawnHitbox: RectangleHitbox.fromRect(120, 92),
@@ -7134,7 +7132,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "barn_exterior_top_floor", // spanAdjacent layer thingy no work
         name: "Barn Exterior",
-        defType: DefinitionType.Building,
+        defType: "building",
         material: "stone",
         particleVariations: 2,
         spawnHitbox: RectangleHitbox.fromRect(120, 92),
@@ -7151,7 +7149,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "barn",
         name: "Barn",
-        defType: DefinitionType.Building,
+        defType: "building",
         spawnHitbox: new GroupHitbox(
             RectangleHitbox.fromRect(120, 92),
             // temp fix (bleh)
@@ -7301,7 +7299,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "bombed_armory_barracks",
         name: "Armory Barracks",
-        defType: DefinitionType.Building,
+        defType: "building",
         material: "stone",
         particle: "rock_particle",
         particleVariations: 2,
@@ -7373,7 +7371,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "bombed_armory_center",
         name: "Armory Center",
-        defType: DefinitionType.Building,
+        defType: "building",
         material: "stone",
         particle: "rock_particle",
         particleVariations: 2,
@@ -7454,7 +7452,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "bombed_armory_vault",
         name: "Armory Vault",
-        defType: DefinitionType.Building,
+        defType: "building",
         material: "stone",
         particle: "rock_particle",
         particleVariations: 2,
@@ -7551,7 +7549,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "bombed_armory",
         name: "Bombed Armory",
-        defType: DefinitionType.Building,
+        defType: "building",
         spawnHitbox: RectangleHitbox.fromRect(160, 176),
         spawnMode: MapObjectSpawnMode.GrassAndSand,
         subBuildings: IS_CLIENT ? undefined : [
@@ -7832,7 +7830,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "lodge",
         name: "Lodge",
-        defType: DefinitionType.Building,
+        defType: "building",
         hitbox: new GroupHitbox(
             RectangleHitbox.fromRect(10, 10, Vec(235.14, 40.53)),
             RectangleHitbox.fromRect(2.96, 2.98, Vec(20.05, 57.73)),
@@ -8063,7 +8061,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "lodge_second_floor",
         name: "Lodge Second Floor",
-        defType: DefinitionType.Building,
+        defType: "building",
         material: "stone",
         particle: "lodge_particle",
         hitbox: new GroupHitbox(
@@ -8197,7 +8195,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "lodge_secret_room",
         name: "Lodge Secret Room",
-        defType: DefinitionType.Building,
+        defType: "building",
         spawnHitbox: RectangleHitbox.fromRect(47.5, 24.5),
         ceilingHitbox: RectangleHitbox.fromRect(47.5, 24.5),
         ceilingImages: [
@@ -8212,7 +8210,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "plumpkin_bunker",
         name: "Plumpkin Bunker",
-        defType: DefinitionType.Building,
+        defType: "building",
         material: "metal_heavy",
         particle: "bunker_particle",
         reflectBullets: true,
@@ -8359,7 +8357,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "plumpkin_bunker_main",
         name: "Plumpkin Bunker Main",
-        defType: DefinitionType.Building,
+        defType: "building",
         material: "metal_heavy",
         particle: "bunker_particle",
         reflectBullets: true,
@@ -8822,7 +8820,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "plumpkin_bunker_second_puzzle",
         name: "Plumpkin Bunker Second Puzzle",
-        defType: DefinitionType.Building,
+        defType: "building",
         spawnHitbox: RectangleHitbox.fromRect(104.67, 37.14, Vec(0, -75.62)),
         sounds: {
             normal: "plumpkin_bunker_pump_ambience",
@@ -8854,7 +8852,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "plumpkin_bunker_third_puzzle",
         name: "Plumpkin Bunker Third Puzzle",
-        defType: DefinitionType.Building,
+        defType: "building",
         spawnHitbox: RectangleHitbox.fromRect(104.67, 37.14, Vec(0, -75.62)),
         sounds: {
             solved: "recorder_buzz",
@@ -8874,7 +8872,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "plumpkin_bunker_vault",
         name: "Plumpkin Bunker Vault",
-        defType: DefinitionType.Building,
+        defType: "building",
         spawnHitbox: RectangleHitbox.fromRect(33.39, 20.34, Vec(-67.67, 85.03)),
         ceilingHitbox: RectangleHitbox.fromRect(33.39, 20.34, Vec(-67.67, 85.03)),
         ceilingImages: [{
@@ -8886,7 +8884,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "christmas_camp",
         name: "Christmas Camp",
-        defType: DefinitionType.Building,
+        defType: "building",
         spawnHitbox: RectangleHitbox.fromRect(150, 75, Vec(0, -1)),
         obstacles: IS_CLIENT ? undefined : [
             { idString: "christmas_tree", position: Vec(0, 0) },
@@ -9038,7 +9036,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "memorial_bunker_entrance",
         name: "Memorial Bunker (Entrance)",
-        defType: DefinitionType.Building,
+        defType: "building",
         spawnHitbox: RectangleHitbox.fromRect(30, 30),
         material: "metal_heavy",
         particle: "bunker_particle",
@@ -9062,7 +9060,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "memorial_bunker_main",
         name: "Memorial Bunker",
-        defType: DefinitionType.Building,
+        defType: "building",
         spawnHitbox: RectangleHitbox.fromRect(30, 40),
         material: "metal_heavy",
         particle: "bunker_particle",
@@ -9103,7 +9101,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "memorial",
         name: "Memorial",
-        defType: DefinitionType.Building,
+        defType: "building",
         spawnHitbox: RectangleHitbox.fromRect(50, 50, Vec(0, -10)),
         bunkerSpawnHitbox: RectangleHitbox.fromRect(30, 40, Vec(0, -8.5)),
         rotationMode: RotationMode.None,
@@ -9141,7 +9139,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "blue_stair",
         name: "Blue Stair",
-        defType: DefinitionType.Building,
+        defType: "building",
         spawnHitbox: RectangleHitbox.fromRect(15, 15),
         material: "metal_heavy",
         particle: "cargo_ship_particle",
@@ -9168,7 +9166,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "mutated_forklift",
         name: "Mutated Forklift",
-        defType: DefinitionType.Building,
+        defType: "building",
         spawnHitbox: RectangleHitbox.fromRect(30, 45, Vec(0, -11)),
         ceilingHitbox: RectangleHitbox.fromRect(20, 10, Vec(0, -25)),
         noCeilingScopeEffect: true,
@@ -9209,7 +9207,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "large_truck",
         name: "Large Truck",
-        defType: DefinitionType.Building,
+        defType: "building",
         spawnHitbox: RectangleHitbox.fromRect(30, 85),
         floorImages: [
             {
@@ -9400,7 +9398,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     { // implemented by pap with a lot of love >w<
         idString: "campsite",
         name: "Campsite",
-        defType: DefinitionType.Building,
+        defType: "building",
         spawnHitbox: RectangleHitbox.fromRect(300, 250),
         floors: [
             {
@@ -10515,7 +10513,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "breached_dam",
         name: "Breached Dam(n)",
-        defType: DefinitionType.Building,
+        defType: "building",
         spawnHitbox: RectangleHitbox.fromRect(100, 230, Vec(-16, -4.25)),
         allowFlyover: FlyoverPref.Always,
         material: "stone",
@@ -10657,7 +10655,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "fulcrum_bunker_main",
         name: "Fulcrum Bunker",
-        defType: DefinitionType.Building,
+        defType: "building",
         spawnHitbox: RectangleHitbox.fromRect(150, 110),
         hitbox: new GroupHitbox(
             RectangleHitbox.fromRect(1.99, 12.68, Vec(-34.96, -40.11)),
@@ -10829,7 +10827,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "fulcrum_bunker_vault",
         name: "Fulcrum Bunker Vault",
-        defType: DefinitionType.Building,
+        defType: "building",
         spawnHitbox: RectangleHitbox.fromRect(26.4, 19.97),
         ceilingHitbox: RectangleHitbox.fromRect(26.4, 19.97),
         ceilingImages: [{
@@ -10841,7 +10839,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "fox_bunker",
         name: "Fox Bunker",
-        defType: DefinitionType.Building,
+        defType: "building",
         spawnMode: MapObjectSpawnMode.Ring,
         spawnRadius: 300,
         spawnHitbox: new GroupHitbox(
@@ -10876,7 +10874,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "fox_bunker_main",
         name: "Fox Bunker",
-        defType: DefinitionType.Building,
+        defType: "building",
         spawnHitbox: RectangleHitbox.fromRect(80, 80),
         ceilingHitbox: new GroupHitbox(
             RectangleHitbox.fromRect(43.32, 69.63, Vec(-14.31, 0.01)),
@@ -10972,7 +10970,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "fox_bunker_vault",
         name: "Fox Bunker Vault",
-        defType: DefinitionType.Building,
+        defType: "building",
         spawnHitbox: RectangleHitbox.fromRect(34.05, 28),
         ceilingHitbox: RectangleHitbox.fromRect(34.05, 28),
         ceilingImages: [{
@@ -10984,7 +10982,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "moose_bunker",
         name: "Moose Bunker",
-        defType: DefinitionType.Building,
+        defType: "building",
         spawnMode: MapObjectSpawnMode.Ring,
         spawnRadius: 300,
         spawnHitbox: new GroupHitbox(
@@ -11019,7 +11017,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "moose_bunker_main",
         name: "Tiger Bunker",
-        defType: DefinitionType.Building,
+        defType: "building",
         material: "metal_heavy",
         particle: "bunker_particle",
         collideWithLayers: Layers.Equal,
@@ -11118,7 +11116,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "moose_bunker_vault",
         name: "Tiger Bunker Vault",
-        defType: DefinitionType.Building,
+        defType: "building",
         spawnHitbox: RectangleHitbox.fromRect(25, 25),
         ceilingHitbox: RectangleHitbox.fromRect(22, 22),
         ceilingImages: [{
@@ -11130,7 +11128,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "bear_bunker",
         name: "Bear Bunker",
-        defType: DefinitionType.Building,
+        defType: "building",
         spawnMode: MapObjectSpawnMode.Ring,
         spawnRadius: 300,
         material: "metal_heavy",
@@ -11167,7 +11165,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "bear_bunker_main",
         name: "Bear Bunker",
-        defType: DefinitionType.Building,
+        defType: "building",
         spawnHitbox: RectangleHitbox.fromRect(130, 80),
         ceilingHitbox: RectangleHitbox.fromRect(120, 71),
         hitbox: new GroupHitbox(
@@ -11269,7 +11267,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "bear_bunker_vault",
         name: "Bear Bunker Vault",
-        defType: DefinitionType.Building,
+        defType: "building",
         spawnHitbox: RectangleHitbox.fromRect(25, 25),
         ceilingHitbox: RectangleHitbox.fromRect(22, 22),
         ceilingImages: [{
@@ -11281,7 +11279,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     { // mrrraowww :3
         idString: "sawmill",
         name: "sawmill",
-        defType: DefinitionType.Building,
+        defType: "building",
         spawnMode: MapObjectSpawnMode.River,
         bridgeSpawnRanges: [[0, 0.3], [0.7, 1]],
         asymmetricalBridgeHitbox: true,
@@ -11856,7 +11854,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "abandoned_warehouse_1",
         name: "Abandoned Warehouse",
-        defType: DefinitionType.Building,
+        defType: "building",
         spawnHitbox: RectangleHitbox.fromRect(98.99, 102.8, Vec(0.27, 0)),
         ceilingHitbox: RectangleHitbox.fromRect(77.17, 84.98, Vec(-1.36, 2.83)),
         material: "stone",
@@ -11943,7 +11941,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "sawmill_center_warehouse",
         name: "Sawmill Center Warehouse",
-        defType: DefinitionType.Building,
+        defType: "building",
         material: "stone",
         particleVariations: 2,
         particle: "sawmill_warehouse_particle",
@@ -12064,7 +12062,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "sawmill_warehouse",
         name: "sawmill Warehouse",
-        defType: DefinitionType.Building,
+        defType: "building",
         material: "stone",
         particleVariations: 2,
         particle: "sawmill_warehouse_particle",
@@ -12210,7 +12208,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "sawmill_office",
         name: "sawmill Office",
-        defType: DefinitionType.Building,
+        defType: "building",
         spawnHitbox: RectangleHitbox.fromRect(70, 42),
         ceilingHitbox: RectangleHitbox.fromRect(53.85, 24.8, Vec(-0.03, 0.35)),
         hitbox: new GroupHitbox(
@@ -12278,7 +12276,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "cabin",
         name: "Cabin",
-        defType: DefinitionType.Building,
+        defType: "building",
         material: "stone",
         particle: "cabin_particle",
         hitbox: new GroupHitbox(
@@ -12458,7 +12456,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "sawmill_storage",
         name: "Sawmill Storage",
-        defType: DefinitionType.Building,
+        defType: "building",
         spawnHitbox: RectangleHitbox.fromRect(114.82, 52.97, Vec(0.99, -0.09)),
         ceilingHitbox: new GroupHitbox(
             RectangleHitbox.fromRect(99.01, 39.08, Vec(-0.03, -0.3)),
@@ -12542,7 +12540,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         name: "Abandoned Warehouse",
         particle: "warehouse_hunted_particle",
         material: "stone",
-        defType: DefinitionType.Building,
+        defType: "building",
         spawnHitbox: RectangleHitbox.fromRect(120.62, 66.26, Vec(0.95, -0.4)),
         ceilingHitbox: new GroupHitbox(
             RectangleHitbox.fromRect(67.91, 31.66, Vec(-10.57, -8.33)),
@@ -13094,7 +13092,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "hunting_stand_bottom",
         name: "Hunting Stand (Bottom)",
-        defType: DefinitionType.Building,
+        defType: "building",
         spawnHitbox: RectangleHitbox.fromRect(24.22, 30.14),
         ceilingHitbox: RectangleHitbox.fromRect(20.77, 27.13),
         floorZIndex: ZIndexes.Ground,
@@ -13123,7 +13121,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "hunting_stand_top",
         name: "Hunting Stand (Top)",
-        defType: DefinitionType.Building,
+        defType: "building",
         material: "stone",
         particle: "hunting_stand_particle",
         collideWithLayers: Layers.Adjacent,
@@ -13187,7 +13185,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "hunting_stand",
         name: "Hunting Stand",
-        defType: DefinitionType.Building,
+        defType: "building",
         spawnHitbox: new GroupHitbox(
             RectangleHitbox.fromRect(30, 36, Vec(0.23, -5.57)),
             RectangleHitbox.fromRect(13.97, 14, Vec(-0.2, 13.47))
@@ -13212,7 +13210,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "tavern_recording_puzzle",
         name: "Tavern Recording Puzzle",
-        defType: DefinitionType.Building,
+        defType: "building",
         spawnHitbox: RectangleHitbox.fromRect(178.2, 147.94, Vec(2.31, -0.89)),
         puzzle: { delay: 0 },
         sounds: {
@@ -13229,7 +13227,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "tavern",
         name: "Tavern",
-        defType: DefinitionType.Building,
+        defType: "building",
         material: "stone",
         particle: "cabin_wall_particle",
         collideWithLayers: Layers.Equal,
@@ -13487,7 +13485,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "tavern_secret_ceiling",
         name: "Tavern Secret Ceiling",
-        defType: DefinitionType.Building,
+        defType: "building",
         ceilingZIndex: ZIndexes.BuildingsCeiling - 1,
         ceilingHiddenAlpha: 0.45,
         spawnHitbox: RectangleHitbox.fromRect(19.39, 40.15, Vec(0.24, -0.09)),
@@ -13504,7 +13502,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "tavern_basement",
         name: "Tavern Basement",
-        defType: DefinitionType.Building,
+        defType: "building",
         material: "metal_heavy",
         particle: "bunker_particle",
         reflectBullets: true,
@@ -13629,7 +13627,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "tavern_basement_vault_ceiling",
         name: "Tavern Basement Vault Ceiling",
-        defType: DefinitionType.Building,
+        defType: "building",
         ceilingHiddenAlpha: 0.5,
         spawnHitbox: RectangleHitbox.fromRect(50.85, 43.97),
         ceilingHitbox: RectangleHitbox.fromRect(43.81, 34.55),
@@ -13642,7 +13640,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "docks",
         name: "Docks",
-        defType: DefinitionType.Building,
+        defType: "building",
         spawnHitbox: RectangleHitbox.fromRect(87.43, 70.21, Vec(0.47, -0.4)),
         spawnMode: MapObjectSpawnMode.Beach,
         material: "metal_heavy",
@@ -13719,7 +13717,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "shooting_range",
         name: "Shooting Range",
-        defType: DefinitionType.Building,
+        defType: "building",
         spawnHitbox: RectangleHitbox.fromRect(214.75, 183.47, Vec(0.55, 1.27)),
         groundGraphics: [
             {
@@ -14139,7 +14137,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "shooting_range_garage",
         name: "Shooting Range Garage",
-        defType: DefinitionType.Building,
+        defType: "building",
         spawnHitbox: RectangleHitbox.fromRect(80, 97.82, Vec(-1, 0.08)),
         ceilingHitbox: new GroupHitbox(
             RectangleHitbox.fromRect(54.3, 83.98, Vec(-2.94, -0.24)),
@@ -14245,7 +14243,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "shooting_range_practice",
         name: "Shooting Range Practice",
-        defType: DefinitionType.Building,
+        defType: "building",
         material: "stone",
         particle: "abandoned_warehouse_1_particle",
         particleVariations: 2,
@@ -14341,7 +14339,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "shooting_range_office",
         name: "Shooting Range Office",
-        defType: DefinitionType.Building,
+        defType: "building",
         spawnHitbox: RectangleHitbox.fromRect(89.01, 75.58, Vec(-0.32, 1.66)),
         ceilingHitbox: new GroupHitbox(
             RectangleHitbox.fromRect(74.36, 46.33, Vec(-1.44, -6.92)),
@@ -14465,7 +14463,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "shooting_range_office_vault",
         name: "Shooting Range Office Vault",
-        defType: DefinitionType.Building,
+        defType: "building",
         spawnHitbox: RectangleHitbox.fromRect(22.75, 28.56, Vec(0.03, 0)),
         floorZIndex: ZIndexes.BuildingsFloor + 0.5,
         ceilingZIndex: ZIndexes.BuildingsCeiling - 0.5,
@@ -14512,7 +14510,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "carport",
         name: "Carport",
-        defType: DefinitionType.Building,
+        defType: "building",
         spawnHitbox: RectangleHitbox.fromRect(116.99, 112.22, Vec(-0.39, 0.4)),
         ceilingHitbox: new GroupHitbox(
             RectangleHitbox.fromRect(91.03, 92.07, Vec(-6.29, -4.11)),
@@ -14595,7 +14593,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "decayed_bridge_storage",
         name: "Decayed Bridge Storage",
-        defType: DefinitionType.Building,
+        defType: "building",
         spawnHitbox: RectangleHitbox.fromRect(48, 39.04, Vec(4.2, 0.3)),
         material: "stone",
         particleVariations: 2,
@@ -14624,7 +14622,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "decayed_bridge_lmr_office",
         name: "Decayed Bridge LMR Office",
-        defType: DefinitionType.Building,
+        defType: "building",
         spawnHitbox: RectangleHitbox.fromRect(59.15, 58.04, Vec(-3.4, -2.84)),
         material: "stone",
         hitbox: new GroupHitbox(
@@ -14658,7 +14656,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "decayed_bridge",
         name: "Decayed Bridge",
-        defType: DefinitionType.Building,
+        defType: "building",
         spawnMode: MapObjectSpawnMode.Beach,
         spawnOrientation: 3,
         spawnOffset: Vec(25, 0),
@@ -14793,7 +14791,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "train_engine",
         name: "Train Engine",
-        defType: DefinitionType.Building,
+        defType: "building",
         spawnHitbox: RectangleHitbox.fromRect(118.72, 34.81, Vec(-0.16, 0.08)),
         ceilingHitbox: RectangleHitbox.fromRect(29.91, 27.54, Vec(20.2, -0.04)),
         material: "metal_heavy",
@@ -14883,7 +14881,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "passenger_train",
         name: "Passenger Train",
-        defType: DefinitionType.Building,
+        defType: "building",
         spawnHitbox: RectangleHitbox.fromRect(118.72, 37, Vec(-0.16, 0.08)),
         ceilingHitbox: RectangleHitbox.fromRect(102.98, 27.95, Vec(1.27, 0.43)),
         material: "stone",
@@ -14985,7 +14983,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "wood_train",
         name: "Wood Train",
-        defType: DefinitionType.Building,
+        defType: "building",
         spawnHitbox: RectangleHitbox.fromRect(112.89, 37.98, Vec(0.07, 0.03)),
         material: "stone",
         particleVariations: 2,
@@ -15048,7 +15046,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "container_train",
         name: "Container Train",
-        defType: DefinitionType.Building,
+        defType: "building",
         spawnHitbox: RectangleHitbox.fromRect(115.01, 37.5, Vec(0.59, 0.24)),
         ceilingHitbox: RectangleHitbox.fromRect(100.71, 26.6, Vec(0.13, -0.06)),
         material: "metal_heavy",
@@ -15126,7 +15124,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "train_station_office",
         name: "Train Station Office",
-        defType: DefinitionType.Building,
+        defType: "building",
         spawnHitbox: RectangleHitbox.fromRect(105.92, 36.86, Vec(0.4, -0.63)),
         ceilingHitbox: RectangleHitbox.fromRect(100, 31, Vec(0.77, -1)),
         material: "stone",
@@ -15183,7 +15181,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "train_station",
         name: "Train Station",
-        defType: DefinitionType.Building,
+        defType: "building",
         spawnMode: MapObjectSpawnMode.Grass,
         spawnHitbox: new GroupHitbox(
             RectangleHitbox.fromRect(219.15, 54.29, Vec(0.13, 28.76)),
@@ -15351,7 +15349,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "graveyard",
         name: "Graveyard",
-        defType: DefinitionType.Building,
+        defType: "building",
         spawnHitbox: RectangleHitbox.fromRect(161.81, 158.59, Vec(2.61, -3.32)),
         bunkerSpawnHitbox: RectangleHitbox.fromRect(73.2, 78.77, Vec(-17.78, -45.92)),
         material: "stone",
@@ -15494,7 +15492,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "graveyard_basement_entrance_main",
         name: "Main Graveyard Basement Entrance",
-        defType: DefinitionType.Building,
+        defType: "building",
         floorZIndex: ZIndexes.BuildingsFloor + 0.5,
         spawnHitbox: RectangleHitbox.fromRect(42.47, 70.33, Vec(-0.47, 0.18)),
         ceilingHitbox: RectangleHitbox.fromRect(31.49, 59.28, Vec(0.01, -0.01)),
@@ -15539,7 +15537,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "graveyard_basement_entrance",
         name: "Graveyard Basement Entrance",
-        defType: DefinitionType.Building,
+        defType: "building",
         floorZIndex: ZIndexes.BuildingsFloor + 0.5,
         spawnHitbox: RectangleHitbox.fromRect(29.45, 17.4, Vec(0.08, 0.15)),
         ceilingHitbox: RectangleHitbox.fromRect(20, 10.7, Vec(-0.45, 0.05)),
@@ -15577,7 +15575,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "graveyard_basement",
         name: "Graveyard Basement",
-        defType: DefinitionType.Building,
+        defType: "building",
         spawnHitbox: RectangleHitbox.fromRect(73.2, 78.77, Vec(0.22, -0.67)),
         ceilingHitbox: new GroupHitbox(
             RectangleHitbox.fromRect(39.99, 61.83, Vec(0.11, 0.02)),
@@ -15656,7 +15654,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "graveyard_storage",
         name: "Graveyard Storage",
-        defType: DefinitionType.Building,
+        defType: "building",
         spawnHitbox: RectangleHitbox.fromRect(38.71, 34.71, Vec(0.76, 0.27)),
         floorZIndex: ZIndexes.BuildingsFloor + 0.5,
         ceilingHitbox: new GroupHitbox(
@@ -15699,7 +15697,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "medical_camp_kitchen",
         name: "Medical Camp Kitchen",
-        defType: DefinitionType.Building,
+        defType: "building",
         spawnHitbox: RectangleHitbox.fromRect(51.36, 68.56, Vec(-0.15, -0.05)),
         ceilingHitbox: RectangleHitbox.fromRect(43.46, 57.43, Vec(0.51, 0.34)),
         particle: "medical_camp_particle",
@@ -15752,7 +15750,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "medical_camp_passage",
         name: "Medical Camp Passage",
-        defType: DefinitionType.Building,
+        defType: "building",
         floorZIndex: ZIndexes.BuildingsFloor + 0.75,
         material: "metal_heavy",
         reflectBullets: true,
@@ -15805,7 +15803,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "medical_camp_office",
         name: "Medical Camp Office",
-        defType: DefinitionType.Building,
+        defType: "building",
         spawnHitbox: RectangleHitbox.fromRect(91.58, 51.63, Vec(0.84, -0.25)),
         ceilingHitbox: RectangleHitbox.fromRect(81.45, 37.44, Vec(-0.59, -0.47)),
         material: "stone",
@@ -15949,7 +15947,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "medical_camp_lab_sub_ceiling",
         name: "Medical Camp Lab Sub-Ceiling",
-        defType: DefinitionType.Building,
+        defType: "building",
         spawnHitbox: RectangleHitbox.fromRect(64.99, 38.68),
         ceilingZIndex: ZIndexes.BuildingsCeiling - 1,
         ceilingImages: [{
@@ -15961,7 +15959,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "medical_camp_lab",
         name: "Medical Camp Laboratory",
-        defType: DefinitionType.Building,
+        defType: "building",
         floorZIndex: ZIndexes.BuildingsFloor + 0.8,
         spawnHitbox: RectangleHitbox.fromRect(68.22, 42, Vec(0.13, 0.36)),
         ceilingHitbox: RectangleHitbox.fromRect(59.71, 33.53, Vec(0.28, -0.03)),
@@ -16015,7 +16013,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "medical_camp",
         name: "Medical Camp",
-        defType: DefinitionType.Building,
+        defType: "building",
         reflectBullets: true,
         particle: "metal_particle",
         material: "metal_heavy",
@@ -16201,7 +16199,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "graveyard_halloween",
         name: "Graveyard",
-        defType: DefinitionType.Building,
+        defType: "building",
         spawnHitbox: RectangleHitbox.fromRect(161.81, 158.59, Vec(2.61, -3.32)),
         bunkerSpawnHitbox: RectangleHitbox.fromRect(73.2, 78.77, Vec(-17.78, -45.92)),
         // sounds: {
@@ -16346,7 +16344,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "mansion",
         name: "Mansion",
-        defType: DefinitionType.Building,
+        defType: "building",
         spawnHitbox: RectangleHitbox.fromRect(160.02, 145.41, Vec(1.97, -0.56)),
         particleVariations: 2,
         material: "stone",
@@ -16597,7 +16595,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "mansion_bottom_floor",
         name: "Mansion (Bottom Floor)",
-        defType: DefinitionType.Building,
+        defType: "building",
         collideWithLayers: Layers.Equal,
         hasSecondFloor: true,
         ceilingZIndex: ZIndexes.BuildingsCeiling + 0.6,
@@ -16782,7 +16780,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "mansion_top_floor_shadow",
         name: "Mansion (Top Floor) Shadow",
-        defType: DefinitionType.Building,
+        defType: "building",
         spawnHitbox: RectangleHitbox.fromRect(51.25, 41.27),
         ceilingZIndex: ZIndexes.BuildingsCeiling + 1,
         ceilingImages: [{
@@ -16794,7 +16792,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "mansion_top_floor",
         name: "Mansion (Top Floor)",
-        defType: DefinitionType.Building,
+        defType: "building",
         spawnHitbox: RectangleHitbox.fromRect(58.65, 52),
         ceilingHitbox: RectangleHitbox.fromRect(49.2, 41.38, Vec(-0.13, 0.04)),
         material: "stone",
@@ -16863,7 +16861,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "park",
         name: "Park",
-        defType: DefinitionType.Building,
+        defType: "building",
         spawnHitbox: RectangleHitbox.fromRect(90, 90),
         obstacles: IS_CLIENT ? undefined : [
             { idString: "cabin_fence", position: Vec(29.63, -41.86), rotation: 0 },
@@ -16958,7 +16956,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
 
         idString: "igloo",
         name: "Igloo",
-        defType: DefinitionType.Building,
+        defType: "building",
         spawnHitbox: RectangleHitbox.fromRect(103.23, 58.99, Vec(-0.47, -0.32)),
         ceilingHitbox: new GroupHitbox(
             new CircleHitbox(21.61, Vec(24.98, -3.64)),

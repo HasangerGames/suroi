@@ -46,7 +46,7 @@ export interface GameModeDefinition {
         readonly gravity?: boolean
     }
     readonly specialLogo?: boolean
-    readonly playButton: {
+    readonly menu: {
         readonly image: string
     } & (
         | { readonly color: string }
@@ -88,7 +88,7 @@ export const GameModes: Record<GameMode, GameModeDefinition> = {
         colors: normalColors,
         ambience: "wind_ambience",
         spriteSheets: ["shared", "normal"],
-        playButton: {
+        menu: {
             image: "/img/logos/suroi_favicon.svg",
             color: "#5b8939"
         }
@@ -110,7 +110,7 @@ export const GameModes: Record<GameMode, GameModeDefinition> = {
         },
         spriteSheets: ["shared", "fall"],
         replaceMenuMusic: true,
-        playButton: {
+        menu: {
             image: "/img/game/obstacles/pumpkin/pumpkin.svg",
             colors: ["#72742f", "#535421"]
         }
@@ -139,7 +139,7 @@ export const GameModes: Record<GameMode, GameModeDefinition> = {
             ],
             delay: 1000
         },
-        playButton: {
+        menu: {
             image: "/img/game/obstacles/jack_o_lantern/jack_o_lantern.svg",
             colors: ["#5a0e0e", "#440b0b"]
         },
@@ -160,7 +160,7 @@ export const GameModes: Record<GameMode, GameModeDefinition> = {
         },
         ambience: "wind_ambience",
         spriteSheets: ["shared", "normal", "infection"],
-        playButton: {
+        menu: {
             image: "/img/game/perks/infection/infected.svg",
             colors: ["#ac539d", "#b946a6"]
         },
@@ -174,7 +174,7 @@ export const GameModes: Record<GameMode, GameModeDefinition> = {
         colors: normalColors,
         ambience: "wind_ambience",
         spriteSheets: ["shared", "normal", "birthday"],
-        playButton: {
+        menu: {
             image: "/img/logos/suroi_favicon.svg",
             color: "#5b8939"
         }
@@ -200,7 +200,7 @@ export const GameModes: Record<GameMode, GameModeDefinition> = {
         },
         obstacleVariants: true,
         specialLogo: true,
-        playButton: {
+        menu: {
             image: "/img/game/obstacles/red_gift/red_gift.svg",
             colors: ["#dcdcdc", "#aaa8a8"]
         },
@@ -222,7 +222,7 @@ export const GameModes: Record<GameMode, GameModeDefinition> = {
         forcedGoldAirdropStage: 5,
         overrideUpstairsFunctionality: true,
         replaceMenuMusic: true,
-        playButton: {
+        menu: {
             image: "/img/logos/lansirama_logo.svg",
             colors: ["#0b521d", "#083d15"]
         },
@@ -255,7 +255,7 @@ export const GameModes: Record<GameMode, GameModeDefinition> = {
         obstacleVariants: true,
         specialLogo: true,
         bulletFilters: true,
-        playButton: {
+        menu: {
             image: "/img/game/obstacles/christmas_tree/christmas_tree.svg",
         },
         canvasFilters: {

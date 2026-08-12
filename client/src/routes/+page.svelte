@@ -5,7 +5,7 @@
   import { browser } from "$app/env";
   import { invalidate } from "$app/navigation";
   import { asset } from "$app/paths";
-  import { GameConstants } from "$common/constants";
+  import { GAME_VERSION, GameConstants } from "$common/constants";
   import { getBadgeIdString, isEmoteBadge } from "$common/definitions/emotes";
   import { GameModes } from "$common/definitions/gameModes";
   import { GameMode, Region, TeamMode } from "$common/schemas/misc";
@@ -19,7 +19,6 @@
   import { randomMarqueeText } from "$lib/scripts/data/marqueeTexts";
   import { CustomTeamManager } from "$lib/scripts/managers/customTeamManager.svelte";
   import { Config } from "$lib/scripts/utils/config";
-  import { APP_VERSION } from "$lib/scripts/utils/constants";
   import { LegacyBridge } from "$lib/scripts/utils/legacyBridge";
   import { millisToTime } from "$lib/scripts/utils/misc";
 
@@ -68,11 +67,11 @@
   function gameModeStyle(gameMode: GameMode | "any"): string | undefined {
     if (gameMode === "any") return;
 
-    const { playButton } = GameModes[gameMode];
-    if ("colors" in playButton) {
-      return `background: radial-gradient(circle, ${playButton.colors[0]}, ${playButton.colors[1]})`;
+    const { menu } = GameModes[gameMode];
+    if ("colors" in menu) {
+      return `background: radial-gradient(circle, ${menu.colors[0]}, ${menu.colors[1]})`;
     } else {
-      return `background-color: ${playButton.color}`;
+      return `background-color: ${menu.color}`;
     }
   }
 
@@ -234,7 +233,7 @@
         <button class="bg-stone-600 justify-center" onclick={() => invalidate("app:games")}><Icon src="lucide:refresh-cw" /> {m.refresh()}</button>
 
         {#snippet gameIcons(gameMode: GameMode, teamMode: TeamMode, region: Region)}
-          <img src={asset(GameModes[gameMode].playButton.image)} alt="Mode icon" class="w-8 drop-shadow-lg" draggable="false" />
+          <img src={asset(GameModes[gameMode].menu.image)} alt="Mode icon" class="w-8 drop-shadow-lg" draggable="false" />
           <Icon
             src={{
               "solo": "suroi:player",
@@ -352,7 +351,7 @@
     <!-- Bottom left & right links -->
     <div class="*:fixed *:bottom-4 *:ui-container *:px-4 *:py-2 *:rounded-lg">
       <div class="left-4">
-        <a href="./changelog" target="_blank" rel="noopener noreferrer">v{APP_VERSION}</a> ·
+        <a href="./changelog" target="_blank" rel="noopener noreferrer">v{GAME_VERSION}</a> ·
         <button class="focusable clickable" onclick={() => gameUi.activeModal = "partners"}>{m.partners()}</button> ·
         <a href="./privacy" target="_blank" rel="noopener noreferrer">{m.privacy()}</a> ·
         <a id="contact-link" href="mailto:support@suroi.io" target="_blank" rel="noopener noreferrer">{m.contact()}</a>

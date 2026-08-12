@@ -26,7 +26,7 @@ export default class WeaponSwapPlugin extends GamePlugin {
             let item: GunDefinition | MeleeDefinition | ThrowableDefinition;
             const defType = source.activeItemDefinition.defType;
             switch (defType) {
-                case DefinitionType.Gun: {
+                case "gun": {
                     const gun = pickRandomInArray(selectableGuns);
                     item = gun;
                     const { ammoType } = gun;
@@ -40,11 +40,11 @@ export default class WeaponSwapPlugin extends GamePlugin {
                     }
                     break;
                 }
-                case DefinitionType.Melee: {
+                case "melee": {
                     item = pickRandomInArray(selectableMelees);
                     break;
                 }
-                case DefinitionType.Throwable: {
+                case "throwable": {
                     item = pickRandomInArray(selectableThrowables);
                     inventory.items.setItem(item.idString, source.inventory.backpack.maxCapacity[item.idString]);
                 }

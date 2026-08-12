@@ -5,7 +5,7 @@ import { Tier } from "./guns";
 import { InventoryItemDefinitions } from "./items";
 
 export interface MeleeDefinition extends InventoryItemDefinition {
-    readonly defType: DefinitionType.Melee
+    readonly defType: "melee"
 
     readonly tier: Tier
 
@@ -84,7 +84,7 @@ const hatchet = (name: string): MeleeDefinition => {
     return {
         idString: name.toLowerCase().replace(/'/g, "").replace(/ /g, "_"),
         name,
-        defType: DefinitionType.Melee,
+        defType: "melee",
         tier: Tier.B,
         damage: 40,
         speedMultiplier: 1,
@@ -150,7 +150,7 @@ const crowbar = (name: string): MeleeDefinition => {
     return {
         idString: name.toLowerCase().replace(/'/g, "").replace(/ /g, "_"),
         name,
-        defType: DefinitionType.Melee,
+        defType: "melee",
         tier: Tier.A,
         swingSound: "heavy_swing",
         switchSound: "crowbar",
@@ -204,7 +204,7 @@ const sickle = (name: string): MeleeDefinition => {
     return     {
         idString: name.toLowerCase().replace(/'/g, "").replace(/ /g, "_"),
         name,
-        defType: DefinitionType.Melee,
+        defType: "melee",
         tier: Tier.B,
         damage: 20,
         swingSound: "soft_swing",
@@ -259,7 +259,7 @@ const saw = (name: string): MeleeDefinition => {
     return {
         idString: name.toLowerCase().replace(/'/g, "").replace(/ /g, "_"),
         name,
-        defType: DefinitionType.Melee,
+        defType: "melee",
         tier: Tier.A,
         damage: 23,
         speedMultiplier: 1,
@@ -355,7 +355,7 @@ const chainSaw = (idString: string): MeleeDefinition => {
     return {
         idString,
         name: "Chain Saw",
-        defType: DefinitionType.Melee,
+        defType: "melee",
         tier: Tier.S,
         fireMode: FireMode.Auto,
         noSwap: true,
@@ -420,7 +420,7 @@ export const Melees = new InventoryItemDefinitions<MeleeDefinition>([
     {
         idString: "fists",
         name: "Fists",
-        defType: DefinitionType.Melee,
+        defType: "melee",
         tier: Tier.D,
         damage: 20,
         speedMultiplier: 1,
@@ -456,7 +456,7 @@ export const Melees = new InventoryItemDefinitions<MeleeDefinition>([
     {
         idString: "baseball_bat",
         name: "Baseball Bat",
-        defType: DefinitionType.Melee,
+        defType: "melee",
         tier: Tier.C,
         swingSound: "heavy_swing",
         damage: 34,
@@ -552,7 +552,7 @@ export const Melees = new InventoryItemDefinitions<MeleeDefinition>([
     {
         idString: "fire_hatchet",
         name: "Fire Hatchet",
-        defType: DefinitionType.Melee,
+        defType: "melee",
         tier: Tier.A,
         damage: 50,
         speedMultiplier: 1,
@@ -616,7 +616,7 @@ export const Melees = new InventoryItemDefinitions<MeleeDefinition>([
     {
         idString: "kbar",
         name: "K-bar",
-        defType: DefinitionType.Melee,
+        defType: "melee",
         tier: Tier.C,
         swingSound: "soft_swing",
         damage: 25,
@@ -666,7 +666,7 @@ export const Melees = new InventoryItemDefinitions<MeleeDefinition>([
     {
         idString: "maul",
         name: "Maul",
-        defType: DefinitionType.Melee,
+        defType: "melee",
         tier: Tier.S,
         maxHardness: 5,
         damage: 54,
@@ -729,7 +729,7 @@ export const Melees = new InventoryItemDefinitions<MeleeDefinition>([
     {
         idString: "steelfang", // Error's favourite
         name: "Steelfang",
-        defType: DefinitionType.Melee,
+        defType: "melee",
         tier: Tier.S,
         devItem: true,
         noSwap: true,
@@ -784,7 +784,7 @@ export const Melees = new InventoryItemDefinitions<MeleeDefinition>([
     {
         idString: "gas_can",
         name: "Gas Can",
-        defType: DefinitionType.Melee,
+        defType: "melee",
         tier: Tier.S,
         damage: 22,
         speedMultiplier: 1,
@@ -830,7 +830,7 @@ export const Melees = new InventoryItemDefinitions<MeleeDefinition>([
     {
         idString: "heap_sword",
         name: "HE-AP sword",
-        defType: DefinitionType.Melee,
+        defType: "melee",
         tier: Tier.S,
         devItem: true,
         noSwap: true,
@@ -882,7 +882,7 @@ export const Melees = new InventoryItemDefinitions<MeleeDefinition>([
     {
         idString: "ice_pick",
         name: "Ice Pick",
-        defType: DefinitionType.Melee,
+        defType: "melee",
         tier: Tier.S,
         swingSound: "heavy_swing",
         damage: 40,
@@ -943,7 +943,7 @@ export const Melees = new InventoryItemDefinitions<MeleeDefinition>([
     {
         idString: "seax",
         name: "Seax",
-        defType: DefinitionType.Melee,
+        defType: "melee",
         tier: Tier.A,
         damage: 45,
         swingSound: "heavy_swing",
@@ -991,7 +991,7 @@ export const Melees = new InventoryItemDefinitions<MeleeDefinition>([
     {
         idString: "falchion",
         name: "Falchion",
-        defType: DefinitionType.Melee,
+        defType: "melee",
         tier: Tier.B,
         damage: 41,
         swingSound: "falchion_swing",
@@ -1040,7 +1040,7 @@ export const Melees = new InventoryItemDefinitions<MeleeDefinition>([
     {
         idString: "pan",
         name: "Pan",
-        defType: DefinitionType.Melee,
+        defType: "melee",
         tier: Tier.S,
         damage: 42,
         swingSound: "heavy_swing",
@@ -1102,7 +1102,7 @@ export const Melees = new InventoryItemDefinitions<MeleeDefinition>([
     {
         idString: "kukri",
         name: "Kukri",
-        defType: DefinitionType.Melee,
+        defType: "melee",
         tier: Tier.A,
         swingSound: "soft_swing",
         hitSound: "kukri_stab",
@@ -1164,7 +1164,7 @@ export const Melees = new InventoryItemDefinitions<MeleeDefinition>([
     {
         idString: "pipe_wrench",
         name: "Pipe Wrench",
-        defType: DefinitionType.Melee,
+        defType: "melee",
         tier: Tier.A,
         damage: 36,
         obstacleMultiplier: 1.5,
@@ -1215,7 +1215,7 @@ export const Melees = new InventoryItemDefinitions<MeleeDefinition>([
     {
         idString: "scythe",
         name: "Scythe",
-        defType: DefinitionType.Melee,
+        defType: "melee",
         tier: Tier.A,
         damage: 45,
         speedMultiplier: 1,

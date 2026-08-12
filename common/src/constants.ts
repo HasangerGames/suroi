@@ -1,9 +1,8 @@
-import type { ItemType, WeaponTypes } from "./definitions/loots";
+import { version } from "../../package.json";
+import type { ItemType, WeaponType } from "./definitions/loots";
 import { GameMode } from "./schemas/misc";
-import { PlayerModifiers } from "./typings";
-import { DefinitionType } from "./utils/objectDefinitions";
 
-const inventorySlotTypings = Object.freeze([DefinitionType.Gun, DefinitionType.Gun, DefinitionType.Melee, DefinitionType.Throwable] as const);
+const inventorySlotTypings = Object.freeze(["gun", "gun", "melee", "throwable"] as const);
 export const GameConstants = {
     // !!!!! NOTE: Increase this every time a byte stream change is made between latest release and master
     // or a new item is added to a definition list
@@ -23,22 +22,24 @@ export const GameConstants = {
         maxInfection: 100,
         inventorySlotTypings,
         maxWeapons: inventorySlotTypings.length,
+        maxPerks: 4,
         nameMaxLength: 16,
         defaultName: "Player",
         defaultSkin: "hazel_jumpsuit",
         killLeaderMinKills: 3,
+        killCreditTimeoutMs: 12000,
         maxMouseDist: 256,
-        reviveTime: 8,
-        maxReviveDist: 5,
-        bleedOutDPMs: 0.002, // === 2 dps
-        maxPerkCount: 1,
-        maxPerks: 4,
+        reviveDurationMs: 8,
+        reviveMaxDistSquared: 49,
+        knockedOutDamageAmount: 1,
+        knockedOutDamageIntervalMs: 500,
         buildingVisionSize: 20,
-        rateLimitPunishmentTrigger: 10,
-        emotePunishmentTime: 5000, // ms
-        rateLimitInterval: 1000,
-        combatLogTimeoutMs: 12000,
-        defaultModifiers: (): PlayerModifiers => ({
+        emoteLimit: {
+            triggerAmount: 10,
+            triggerDurationMs: 5000,
+            punishmentDurationMs: 5000
+        },
+        defaultModifiers: {
             maxHealth: 1,
             maxAdrenaline: 1,
             maxShield: 1,
@@ -51,7 +52,7 @@ export const GameConstants = {
             minAdrenaline: 0,
             hpRegen: 0,
             shieldRegen: 0
-        }),
+        },
         ice: {
             acceleration: 2.5,
             friction: 0.2,
@@ -67,23 +68,23 @@ export const GameConstants = {
         drag: 0.003,
         iceDrag: 0.0008,
         radius: {
-            [DefinitionType.Gun]: 3.4,
-            [DefinitionType.Ammo]: 2,
-            [DefinitionType.Melee]: 3,
-            [DefinitionType.Throwable]: 3,
-            [DefinitionType.HealingItem]: 2.5,
-            [DefinitionType.Armor]: 3,
-            [DefinitionType.Backpack]: 3,
-            [DefinitionType.Scope]: 3,
-            [DefinitionType.Skin]: 3,
-            [DefinitionType.Perk]: 3
+            "gun": 3.4,
+            "ammo": 2,
+            "melee": 3,
+            "throwable": 3,
+            "healingItem": 2.5,
+            "armor": 3,
+            "backpack": 3,
+            "scope": 3,
+            "skin": 3,
+            "perk": 3
         } satisfies Record<ItemType, number>
     },
     defaultSpeedModifiers: {
-        [DefinitionType.Gun]: 0.88,
-        [DefinitionType.Melee]: 1,
-        [DefinitionType.Throwable]: 0.92
-    } satisfies Record<WeaponTypes, number>,
+        ["gun"]: 0.88,
+        ["melee"]: 1,
+        ["throwable"]: 0.92
+    } satisfies Record<WeaponType, number>,
     airdrop: {
         fallTime: 8000,
         flyTime: 30000,
@@ -104,6 +105,9 @@ export const GameConstants = {
     trailPadding: 384,
     explosionRayDistance: 2,
 };
+console.log(JSON.stringify(GameConstants, null, 4));
+
+export const GAME_VERSION = version;
 
 export enum ZIndexes {
     Ground,

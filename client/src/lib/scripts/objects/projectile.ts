@@ -1,3 +1,4 @@
+import { dev } from "$app/environment";
 import { GameConstants, ObjectCategory, ZIndexes } from "$common/constants";
 import { type ThrowableDefinition } from "$common/definitions/items/throwables";
 import { CircleHitbox } from "$common/utils/hitbox";
@@ -10,12 +11,12 @@ import { GameConsole } from "../console/gameConsole";
 import { Game } from "../game";
 import { MapManager } from "../managers/mapManager";
 import { ParticleManager } from "../managers/particleManager";
-import { SoundManager, type GameSound } from "../managers/soundManager";
+import { type GameSound, SoundManager } from "../managers/soundManager";
 import { DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS, TEAMMATE_COLORS } from "../utils/constants";
 import { DebugRenderer } from "../utils/debugRenderer";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
-import { GameObject } from "./gameObject";
 import type { Tween } from "../utils/tween";
+import { GameObject } from "./gameObject";
 
 export class Projectile extends GameObject.derive(ObjectCategory.Projectile) {
     definition!: ThrowableDefinition;
@@ -199,7 +200,7 @@ export class Projectile extends GameObject.derive(ObjectCategory.Projectile) {
     }
 
     updateDebugGraphics(): void {
-        if (!DEBUG_CLIENT) return;
+        if (!dev) return;
 
         DebugRenderer.addCircle(
             this.definition.hitboxRadius,

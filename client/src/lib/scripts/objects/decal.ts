@@ -1,3 +1,4 @@
+import { dev } from "$app/environment";
 import { ObjectCategory, ZIndexes } from "$common/constants";
 import { type DecalDefinition } from "$common/definitions/decals";
 import { type ObjectsNetData } from "$common/utils/objectsSerializations";
@@ -46,7 +47,7 @@ export class Decal extends GameObject.derive(ObjectCategory.Decal) {
     update(): void { /* bleh */ }
     updateInterpolation(): void { /* bleh */ }
     updateDebugGraphics(): void {
-        if (!DEBUG_CLIENT) return;
+        if (!dev) return;
 
         DebugRenderer.addCircle(0.1 * (this.definition.scale ?? 1),
             this.position,

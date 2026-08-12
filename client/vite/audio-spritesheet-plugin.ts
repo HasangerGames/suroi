@@ -2,8 +2,9 @@ import { FSWatcher, watch } from "chokidar";
 import { readFileSync } from "fs";
 import path from "path";
 import { type Plugin } from "vite";
-import { type GameMode, GameModes, type SpritesheetNames } from "../../../common/src/definitions/gameModes";
-import { readDirectory } from "../../../common/src/utils/readDirectory";
+import type { GameMode } from "$common/schemas/misc";
+import { GameModes, type SpritesheetNames } from "../../common/src/definitions/gameModes";
+import { readDirectory } from "../../common/src/utils/readDirectory";
 import { getPaths, shortHash } from "./utils";
 
 export interface AudioSpritesheetImporter {

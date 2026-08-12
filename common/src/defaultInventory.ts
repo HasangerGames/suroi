@@ -10,8 +10,8 @@ for (const item of [...HealingItems, ...Ammos, ...Scopes, ...Throwables]) {
     let amount = 0;
 
     switch (true) {
-        case item.defType === DefinitionType.Ammo && item.ephemeral: amount = Infinity; break;
-        case item.defType === DefinitionType.Scope && item.giveByDefault: amount = 1; break;
+        case item.defType === "ammo" && item.ephemeral: amount = Infinity; break;
+        case item.defType === "scope" && item.giveByDefault: amount = 1; break;
     }
 
     DEFAULT_INVENTORY[item.idString] = amount;

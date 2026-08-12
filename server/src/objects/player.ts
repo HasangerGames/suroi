@@ -104,7 +104,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
     // Rate Limiting: Team Pings & Emotes.
     emoteCount = 0;
-    lastRateLimitUpdate = 0;
+    lastEmoteLimit = 0;
     blockEmoting = false;
 
     private timeWhenLastOutsideOfGas = Date.now();
@@ -356,7 +356,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         this.setDirty();
     }
 
-    private _modifiers = GameConstants.player.defaultModifiers();
+    private _modifiers = structuredClone(GameConstants.player.defaultModifiers);
 
     killedBy?: Player;
     downedBy?: {
@@ -730,7 +730,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
                 if (
                     weaponDef === undefined // no such item
-                    || ![DefinitionType.Gun, DefinitionType.Melee].includes(defType = weaponDef.defType) // neither gun nor melee
+                    || !["gun", "melee"].includes(defType = weaponDef.defType) // neither gun nor melee
                     || GameConstants.player.inventorySlotTypings[slot] !== defType // invalid type
                 ) return;
 
@@ -816,21 +816,21 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     }
 
     private static readonly _weaponSwapWeights: Partial<Record<DefinitionType, Partial<Record<Tier, number>>>> = {
-        [DefinitionType.Gun]: {
+        ["gun"]: {
             [Tier.S]: 0.15,
             [Tier.A]: 0.2,
             [Tier.B]: 0.5,
             [Tier.C]: 0.818,
             [Tier.D]: 0.182
         },
-        [DefinitionType.Melee]: {
+        ["melee"]: {
             [Tier.S]: 0.125,
             [Tier.A]: 0.5,
             [Tier.B]: 0.4,
             [Tier.C]: 0.4,
             [Tier.D]: 0.2
         },
-        [DefinitionType.Throwable]: {
+        ["throwable"]: {
             [Tier.S]: 0.4,
             [Tier.C]: 1,
             [Tier.D]: 0.5
@@ -838,15 +838,15 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     };
 
     private static readonly _qualityWeaponSwapWeights: Partial<Record<DefinitionType, Partial<Record<Tier, number>>>> = {
-        [DefinitionType.Gun]: {
+        ["gun"]: {
             [Tier.S]: 0.25,
             [Tier.A]: 0.75
         },
-        [DefinitionType.Melee]: {
+        ["melee"]: {
             [Tier.S]: 0.25,
             [Tier.A]: 0.75
         },
-        [DefinitionType.Throwable]: {
+        ["throwable"]: {
             [Tier.S]: 0.8,
             [Tier.C]: 1.5,
             [Tier.D]: 0.25
@@ -856,10 +856,10 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     private static readonly _weaponTiersCache: Partial<Record<DefinitionType, Partial<Record<Tier, WeaponDefinition[]>>>> = {};
 
     tryRefund(item: InventoryItem = this.activeItem): void {
-        const bulletCount = item.category === DefinitionType.Gun && item.definition.bulletCount ? item.definition.bulletCount : 1;
+        const bulletCount = item.category === "gun" && item.definition.bulletCount ? item.definition.bulletCount : 1;
 
         if (
-            item.category !== DefinitionType.Gun
+            item.category !== "gun"
             || item.owner !== this
             || bulletCount !== 1
             || !this.inventory.weapons.includes(item)
@@ -925,7 +925,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             : spawnable.forType(type).filter(item => !item.noSwap);
 
         const chosenItem = pickRandomInArray<WeaponDefinition>(
-            type === DefinitionType.Throwable
+            type === "throwable"
                 ? potentials.filter(
                     ({ idString: thr }) => (items.hasItem(thr) ? items.getItem(thr) : 0) < maxCapacity[thr]
                 )
@@ -934,7 +934,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         if (chosenItem === undefined) return;
 
         switch (chosenItem.defType) { // chosenItem.defType === type, but the former helps ts narrow chosenItem's type
-            case DefinitionType.Gun: {
+            case "gun": {
                 this.action?.cancel();
 
                 const { capacity, ammoType, ammoSpawnAmount, summonAirdrop } = chosenItem;
@@ -953,12 +953,12 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 break;
             }
 
-            case DefinitionType.Melee: {
+            case "melee": {
                 inventory.replaceWeapon(slot, chosenItem, force);
                 break;
             }
 
-            case DefinitionType.Throwable: {
+            case "throwable": {
                 const { idString } = chosenItem;
 
                 const count = items.hasItem(idString) ? items.getItem(idString) : 0;
@@ -984,7 +984,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
                 item.count = newCount;
 
-                const slot = inventory.slotsByDefType[DefinitionType.Throwable]?.[0];
+                const slot = inventory.slotsByDefType["throwable"]?.[0];
 
                 if (slot !== undefined && !inventory.hasWeapon(slot)) {
                     inventory.replaceWeapon(slot, item, force);
@@ -1051,15 +1051,14 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
         this.emoteCount++;
 
-        // After constantly spamming more than 5 emotes, block for 5 seconds.
-        if (this.emoteCount > GameConstants.player.rateLimitPunishmentTrigger) {
+        if (this.emoteCount > GameConstants.player.emoteLimit.triggerAmount) {
             this.blockEmoting = true;
             this.setDirty();
             this.game.addTimeout(() => {
                 this.blockEmoting = false;
                 this.setDirty();
                 this.emoteCount = 0;
-            }, GameConstants.player.emotePunishmentTime);
+            }, GameConstants.player.emoteLimit.punishmentDurationMs);
             return true;
         }
 
@@ -1419,9 +1418,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
         // Gas damage
         const gas = this.game.gas;
-        const now = Date.now();
-        const applyScaleDamageFactor = (now - this.timeWhenLastOutsideOfGas) >= 10000;
         if (gas.doDamage && gas.isInGas(this.position)) {
+            const applyScaleDamageFactor = (this.game.now - this.timeWhenLastOutsideOfGas) >= 10000;
             this.piercingDamage({
                 amount: gas.scaledDamage(this.position) + (applyScaleDamageFactor ? (gas.getDef().scaleDamageFactor ?? 0) + this.additionalGasDamage : 0),
                 source: DamageSources.Gas
@@ -1430,16 +1428,17 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 this.additionalGasDamage = this.additionalGasDamage + (gas.getDef().scaleDamageFactor ?? 0);
             }
         } else if (!gas.isInGas(this.position)) {
-            this.timeWhenLastOutsideOfGas = now;
+            this.timeWhenLastOutsideOfGas = this.game.now;
             this.additionalGasDamage = 0;
         }
 
         // Knocked out damage
-        if (this.downed && !this.beingRevivedBy) {
+        if (this.downed && !this.beingRevivedBy && (this.game.now - this.lastKnockedOutDamageTime) > GameConstants.player.knockedOutDamageIntervalMs) {
             this.piercingDamage({
-                amount: GameConstants.player.bleedOutDPMs * dt,
+                amount: GameConstants.player.knockedOutDamageAmount,
                 source: DamageSources.BleedOut
             });
+            this.lastKnockedOutDamageTime = this.game.now;
         }
 
         // Cancel reviving when out of range
@@ -1450,7 +1449,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                         this.position,
                         this.action.target.position
                     )
-                ) >= 7 ** 2
+                ) >= GameConstants.player.reviveMaxDistSquared
             ) {
                 this.action.cancel();
             }
@@ -1490,9 +1489,9 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         this.effectiveScope = scopeTarget ?? this.inventory.scope;
 
         // Rate limit team pings & emotes
-        if (this.emoteCount > 0 && !this.blockEmoting && (this.game.now - this.lastRateLimitUpdate > GameConstants.player.rateLimitInterval)) {
-            this.emoteCount--;
-            this.lastRateLimitUpdate = this.game.now;
+        if (this.emoteCount > 0 && !this.blockEmoting && (this.game.now - this.lastEmoteLimit > GameConstants.player.emoteLimit.triggerDurationMs)) {
+            this.emoteCount = 0;
+            this.lastEmoteLimit = this.game.now;
         }
 
         // Update perks
@@ -2154,7 +2153,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 this.loadout.skin = pickRandomInArray(skins);
 
                 for (const item of [...HealingItems.definitions, ...Ammos.definitions]) {
-                    if ((item.defType === DefinitionType.Ammo && item.ephemeral) || (item.defType === DefinitionType.HealingItem && item.healType === HealType.Special)) continue;
+                    if ((item.defType === "ammo" && item.ephemeral) || (item.defType === "healingItem" && item.healType === HealType.Special)) continue;
                     this.inventory.items.setItem(item.idString, random(0, this.inventory.backpack.maxCapacity[item.idString]));
                 }
 
@@ -2807,7 +2806,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     }
 
     private _calculateModifiers(): PlayerModifiers {
-        const newModifiers = GameConstants.player.defaultModifiers();
+        const newModifiers = structuredClone(GameConstants.player.defaultModifiers);
         const eventMods: EventModifiers = {
             kill: [],
             damageDealt: []
@@ -2952,7 +2951,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         const old = this.backEquippedMelee?.idString;
         this.backEquippedMelee = this.inventory.weapons.find(w => {
             return w
-                && w.definition.defType === DefinitionType.Melee
+                && w.definition.defType === "melee"
                 && w.definition.onBack
                 && w !== this.activeItem;
         })?.definition as MeleeDefinition | undefined;
@@ -3167,7 +3166,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             if (count > 0) {
                 if (def.noDrop || ("ephemeral" in def && def.ephemeral)) continue;
 
-                if (def.defType === DefinitionType.Ammo && count !== Infinity) {
+                if (def.defType === "ammo" && count !== Infinity) {
                     let left = count;
                     let subtractAmount = 0;
 
@@ -3440,7 +3439,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                     break;
                 }
                 case InputActions.DropItem: {
-                    if (!this.game.isTeamMode && action.item.defType !== DefinitionType.Perk) break;
+                    if (!this.game.isTeamMode && action.item.defType !== "perk") break;
                     this.action?.cancel();
                     inventory.dropItem(action.item);
                     break;
@@ -3491,7 +3490,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                         if (
                             (isLoot || (type === InputActions.Interact && isInteractable))
                             && object.hitbox?.collidesWith(detectionHitbox)
-                            && !(isLoot && [DefinitionType.Throwable, DefinitionType.Gun, DefinitionType.Armor].includes(object.definition.defType) && this.hasPerk(PerkIds.Lycanthropy))
+                            && !(isLoot && ["throwable", "gun", "armor"].includes(object.definition.defType) && this.hasPerk(PerkIds.Lycanthropy))
                         ) {
                             const dist = Geometry.distanceSquared(object.position, this.position);
                             if (isInteractable) {
@@ -3599,12 +3598,12 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             const def = data.spawnLootType;
             let count = 1;
             switch (def.defType) {
-                case DefinitionType.HealingItem:
-                case DefinitionType.Ammo:
-                case DefinitionType.Throwable:
+                case "healingItem":
+                case "ammo":
+                case "throwable":
                     count = this.inventory.backpack.maxCapacity[def.idString] ?? 1;
                     break;
-                case DefinitionType.Gun: {
+                case "gun": {
                     const { ammoType, ammoSpawnAmount } = def;
 
                     if (ammoSpawnAmount > 1) {

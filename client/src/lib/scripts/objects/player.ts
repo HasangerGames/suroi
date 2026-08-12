@@ -1,5 +1,6 @@
 import $ from "jquery";
 import { type ColorSource, Container, Graphics, GraphicsContext, ObservablePoint, Text } from "pixi.js";
+import { dev } from "$app/environment";
 import { AnimationType, GameConstants, InputActions, Layer, ObjectCategory, PlayerActions, SpectateActions, ZIndexes } from "$common/constants";
 import { type EmoteDefinition, getBadgeIdString } from "$common/definitions/emotes";
 import { Ammos } from "$common/definitions/items/ammos";
@@ -36,7 +37,7 @@ import { Config } from "../utils/config";
 import { BULLET_WHIZ_SCALE as BULLET_WHIZ_RADIUS, DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS, PIXI_SCALE, TEAMMATE_COLORS } from "../utils/constants";
 import { DebugRenderer } from "../utils/debugRenderer";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
-import { translate, type TranslationKeys } from "../utils/translations";
+import { type TranslationKeys, translate } from "../utils/translations";
 import { type Tween } from "../utils/tween";
 import type { Building } from "./building";
 import { GameObject } from "./gameObject";
@@ -272,7 +273,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             active: false,
             spawnOptions: () => {
                 let frame = "";
-                if (this.action.item?.defType === DefinitionType.HealingItem) {
+                if (this.action.item?.defType === "healingItem") {
                     if (this.action.item.healType === HealType.Special) {
                         frame = this.action.item.idString.toLowerCase();
                     } else { frame = HealType[this.action.item.healType].toLowerCase(); }
@@ -599,7 +600,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
             const hadSkin = this.halloweenThrowableSkin;
             if (hadSkin !== (this.halloweenThrowableSkin = halloweenThrowableSkin)) {
-                if (this.activeItem.defType === DefinitionType.Throwable && !this.activeItem.noSkin) {
+                if (this.activeItem.defType === "throwable" && !this.activeItem.noSkin) {
                     this.images.weapon.setFrame(`${this.activeItem.idString}${this.halloweenThrowableSkin ? "_halloween" : ""}`);
                 }
                 UIManager.updateWeaponSlots(true);
@@ -654,7 +655,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     // somewhat an abuse of that system, but dedicating an
                     // entire "action" to this would be wasteful
                     if (this.beingRevived) {
-                        UIManager.animateAction(translate("action_being_revived"), GameConstants.player.reviveTime, true);
+                        UIManager.animateAction(translate("action_being_revived"), GameConstants.player.reviveDurationMs / 1000, true);
                     } else {
                         UIManager.cancelAction();
                     }
@@ -737,7 +738,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
             if (this.sizeMod !== sizeMod) {
                 // reset the size modifier before tweening
-                this.sizeMod = GameConstants.player.defaultModifiers().size;
+                this.sizeMod = GameConstants.player.defaultModifiers.size;
                 this._hitbox = new CircleHitbox(GameConstants.player.radius * this.sizeMod, this._hitbox.position);
 
                 this.anims.sizeMod?.kill();
@@ -1091,7 +1092,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     if (this.isActivePlayer) {
                         UIManager.animateAction(
                             translate("action_reviving"),
-                            GameConstants.player.reviveTime / PerkManager.mapOrDefault(PerkIds.FieldMedic, ({ usageMod }) => usageMod, 1)
+                            GameConstants.player.reviveDurationMs / PerkManager.mapOrDefault(PerkIds.FieldMedic, ({ usageMod }) => usageMod, 1)
                         );
                     }
                     break;
@@ -1119,7 +1120,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
     }
 
     override updateDebugGraphics(): void {
-        if (!DEBUG_CLIENT) return;
+        if (!dev) return;
         if (!GameConsole.getBuiltInCVar("db_show_hitboxes_players")) return;
 
         DebugRenderer.addHitbox(this.hitbox, HITBOX_COLORS.player);
@@ -1144,7 +1145,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         };
 
         switch (this.activeItem.defType) {
-            case DefinitionType.Gun: {
+            case "gun": {
                 const offset = this.activeItem.bulletOffset ?? 0;
 
                 const start = Vec.add(this.position,
@@ -1162,7 +1163,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 );
                 break;
             }
-            case DefinitionType.Melee: {
+            case "melee": {
                 const hitbox = getMeleeHitbox(this, this.activeItem);
                 DebugRenderer.addHitbox(
                     hitbox,
@@ -1204,7 +1205,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
     private _getItemReference(): SingleGunNarrowing | Exclude<WeaponDefinition, GunDefinition> {
         const weaponDef = this.activeItem;
 
-        return weaponDef.defType === DefinitionType.Gun && weaponDef.isDual
+        return weaponDef.defType === "gun" && weaponDef.isDual
             ? Loots.fromString<SingleGunNarrowing>(weaponDef.singleVariant)
             : weaponDef as SingleGunNarrowing | Exclude<WeaponDefinition, GunDefinition>;
     }
@@ -1212,7 +1213,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
     private _getOffset(): number {
         const weaponDef = this.activeItem;
 
-        return weaponDef.defType === DefinitionType.Gun && weaponDef.isDual
+        return weaponDef.defType === "gun" && weaponDef.isDual
             ? weaponDef.leftRightOffset * PIXI_SCALE
             : 0;
     }
@@ -1374,7 +1375,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         if (reference.image) {
             const { image: { position, angle } } = reference;
 
-            if (reference.defType === DefinitionType.Throwable && !reference.noSkin) {
+            if (reference.defType === "throwable" && !reference.noSkin) {
                 this.images.weapon.setFrame(`${reference.idString}${this.halloweenThrowableSkin ? "_halloween" : ""}`);
             }
 
@@ -1402,14 +1403,14 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         const { fists } = weaponDef;
 
         const imagePresent = image !== undefined;
-        const isDualGun = imagePresent && weaponDef.defType === DefinitionType.Gun && weaponDef.isDual;
+        const isDualGun = imagePresent && weaponDef.defType === "gun" && weaponDef.isDual;
         if (imagePresent) {
-            const usesWorldFrame = weaponDef.defType === DefinitionType.Gun
+            const usesWorldFrame = weaponDef.defType === "gun"
                 || (image as NonNullable<MeleeDefinition["image"]>).separateWorldImage;
 
             let frame = reference.idString;
 
-            if (usesWorldFrame && weaponDef.defType === DefinitionType.Gun) {
+            if (usesWorldFrame && weaponDef.defType === "gun") {
                 const gunReference = reference as SingleGunNarrowing;
                 const activeWeapon = this.isActivePlayer
                     ? UIManager.inventory.weapons[UIManager.inventory.activeWeaponIndex]
@@ -1425,7 +1426,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 frame += "_world";
             }
 
-            if (weaponDef.defType === DefinitionType.Throwable && this.halloweenThrowableSkin && !weaponDef.noSkin) {
+            if (weaponDef.defType === "throwable" && this.halloweenThrowableSkin && !weaponDef.noSkin) {
                 frame += "_halloween";
             }
 
@@ -1461,13 +1462,13 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             this.images.muzzleFlash.alpha = 0;
             if (this.isActivePlayer && !isNew) {
                 let soundID: string;
-                if (reference.defType === DefinitionType.Throwable) {
+                if (reference.defType === "throwable") {
                     soundID = "throwable";
-                } else if (reference.defType === DefinitionType.Gun && reference.isDual) {
+                } else if (reference.defType === "gun" && reference.isDual) {
                     soundID = reference.idString.slice("dual_".length);
                 } else if (SoundManager.has(`${reference.idString}_switch`)) {
                     soundID = reference.idString;
-                } else if (reference.defType === DefinitionType.Melee && reference.switchSound !== undefined) {
+                } else if (reference.defType === "melee" && reference.switchSound !== undefined) {
                     soundID = reference.switchSound;
                 } else {
                     soundID = "default";
@@ -1480,7 +1481,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         this.images.muzzleFlash.setVisible(imagePresent);
 
         switch (weaponDef.defType) {
-            case DefinitionType.Gun: {
+            case "gun": {
                 this.images.rightFist.setZIndex((fists as SingleGunNarrowing["fists"]).rightZIndex ?? 1);
                 this.images.leftFist.setZIndex((fists as SingleGunNarrowing["fists"]).leftZIndex ?? 1);
                 this.images.weapon.setZIndex(image?.zIndex ?? 2);
@@ -1488,14 +1489,14 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 this.images.body.setZIndex(3);
                 break;
             }
-            case DefinitionType.Melee: {
+            case "melee": {
                 this.images.leftFist.setZIndex(4);
                 this.images.rightFist.setZIndex(4);
                 this.images.body.setZIndex(2);
                 this.images.weapon.setZIndex(reference.image?.zIndex ?? 1);
                 break;
             }
-            case DefinitionType.Throwable: {
+            case "throwable": {
                 this.images.leftFist.setZIndex(4);
                 this.images.rightFist.setZIndex(4);
                 this.images.body.setZIndex(2);
@@ -1569,7 +1570,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             container.children(".item-name").attr("style", `color: ${def.level >= (Game.gameModeDef.maxEquipmentLevel ?? 3) ? "#ff9900" : "#ffffff"};`);
 
             let itemTooltip = translate(def.idString as TranslationKeys);
-            if (def.defType === DefinitionType.Armor) {
+            if (def.defType === "armor") {
                 itemTooltip = translate("tt_reduces", {
                     item: `<b>${translate(def.idString as TranslationKeys)}</b><br>`,
                     percent: (def.damageReduction * 100).toString()
@@ -1666,7 +1667,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 break;
             }
             case AnimationType.Melee: {
-                if (this.activeItem.defType !== DefinitionType.Melee) {
+                if (this.activeItem.defType !== "melee") {
                     console.warn(`Attempted to play melee animation with non-melee item '${this.activeItem.idString}'`);
                     return;
                 }
@@ -1768,7 +1769,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     let hitCount = 0;
                     for (let i = 0; i < (weaponDef.numberOfHits ?? 1); i++) {
                         this.addTimeout((): void => {
-                            if (this.activeItem.defType !== DefinitionType.Melee) return;
+                            if (this.activeItem.defType !== "melee") return;
 
                             if (hitCount > 0) {
                                 this.playSound(
@@ -1861,7 +1862,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             }
             case AnimationType.GunFire:
             case AnimationType.GunFireAlt: {
-                if (this.activeItem.defType !== DefinitionType.Gun) {
+                if (this.activeItem.defType !== "gun") {
                     const name = ({
                         [AnimationType.GunFire]: "GunFire",
                         [AnimationType.GunFireAlt]: "GunFireAlt"
@@ -2053,7 +2054,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 break;
             }
             case AnimationType.ThrowableCook: {
-                if (this.activeItem.defType !== DefinitionType.Throwable) {
+                if (this.activeItem.defType !== "throwable") {
                     console.warn(`Attempted to play throwable cooking animation with non-throwable item '${this.activeItem.idString}'`);
                     return;
                 }
@@ -2176,7 +2177,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 break;
             }
             case AnimationType.ThrowableThrow: {
-                if (this.activeItem.defType !== DefinitionType.Throwable) {
+                if (this.activeItem.defType !== "throwable") {
                     console.warn(`Attempted to play throwable throwing animation with non-throwable item '${this.activeItem.idString}'`);
                     return;
                 }

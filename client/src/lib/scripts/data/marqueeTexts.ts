@@ -1,5 +1,5 @@
+import { GAME_VERSION } from "$common/constants";
 import { pickRandomInArray } from "$common/utils/random";
-import pkg from "../../../../../package.json";
 
 export function randomMarqueeText(): string {
     return pickRandomInArray([
@@ -33,7 +33,7 @@ export function randomMarqueeText(): string {
         "Does anyone even read these?",
         "These are harder to come up with than you might think!",
         "Now in color!",
-        `Version ${pkg.version}!`,
+        `Version ${GAME_VERSION}!`,
         "Now in 2D!",
         "It's not over yet!",
         "Stay positive!",

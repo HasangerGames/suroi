@@ -2,7 +2,7 @@ import { colord } from "colord";
 import FontFaceObserver from "fontfaceobserver";
 import $ from "jquery";
 import { Color, Container } from "pixi.js";
-import { InputActions, InventoryMessages, Layer, ObjectCategory, ZIndexes } from "$common/constants";
+import { GAME_VERSION, InputActions, InventoryMessages, Layer, ObjectCategory, ZIndexes } from "$common/constants";
 import { type BadgeDefinition, Badges } from "$common/definitions/badges";
 import { Emotes } from "$common/definitions/emotes";
 import { Explosions } from "$common/definitions/explosions";
@@ -30,13 +30,17 @@ import { type ObjectsNetData } from "$common/utils/objectsSerializations";
 import { random, randomFloat, randomRotation, randomVector } from "$common/utils/random";
 import { Vec, type Vector } from "$common/utils/vector";
 import "pixi.js/prepare";
+import { dev } from "$app/environment";
 import { invalidate } from "$app/navigation";
+import { GameInfo } from "$common/schemas/api/games";
 import { gameUi } from "$lib/legacy/GameUi.svelte.ts";
 import { m } from "$lib/paraglide/messages";
+import { MenuUi } from "../../routes/+page.svelte";
 import { setUpCommands } from "./console/commands";
 import { GameConsole } from "./console/gameConsole";
 import { defaultClientCVars } from "./console/variables";
 import { CameraManager } from "./managers/cameraManager";
+import { CustomTeamManager } from "./managers/customTeamManager.svelte";
 import { EmoteWheelManager, MapPingWheelManager } from "./managers/emoteWheelManager";
 import { GasManager, GasRender } from "./managers/gasManager";
 import { InputManager } from "./managers/inputManager";
@@ -65,13 +69,10 @@ import { EMOTE_SLOTS, LAYER_TRANSITION_DELAY, PERK_MESSAGE_FADE_TIME, PIXI_SCALE
 import type { DebugMenu } from "./utils/debugMenu";
 import { DebugRenderer } from "./utils/debugRenderer";
 import { setUpNetGraph } from "./utils/graph/netGraph";
+import { LegacyBridge } from "./utils/legacyBridge";
 import { SuroiSprite } from "./utils/pixi";
 import { type TranslationKeys, translate } from "./utils/translations";
 import { Tween, type TweenOptions } from "./utils/tween";
-import { GameInfo } from "$common/schemas/api/games";
-import { CustomTeamManager } from "./managers/customTeamManager.svelte";
-import { LegacyBridge } from "./utils/legacyBridge";
-import { MenuUi } from "../../routes/+page.svelte";
 
 interface ObjectClassMapping {
     readonly [ObjectCategory.Player]: typeof Player
@@ -463,12 +464,12 @@ function getWeaponComparisonPayload(
     condensedEnabled: boolean
 ): WeaponComparisonPayload | undefined {
     if (!enabled || !lootDefinition) return undefined;
-    if (lootDefinition.defType !== DefinitionType.Gun && lootDefinition.defType !== DefinitionType.Melee) return undefined;
+    if (lootDefinition.defType !== "gun" && lootDefinition.defType !== "melee") return undefined;
 
     const current = currentWeapon?.defType === lootDefinition.defType ? currentWeapon : undefined;
 
     const payload =
-        lootDefinition.defType === DefinitionType.Gun
+        lootDefinition.defType === "gun"
             ? buildWeaponComparisonPayload(
                   lootDefinition as GunDefinition,
                   current as GunDefinition | undefined,
@@ -676,7 +677,7 @@ export const Game = new (class Game {
         this.netGraph = setUpNetGraph();
         setUpCommands();
         InputManager.init();
-        if (DEBUG_CLIENT) {
+        if (dev) {
             this.debugMenu = new (await import("./utils/debugMenu")).DebugMenu();
             this.debugMenu.init();
         }
@@ -832,6 +833,7 @@ export const Game = new (class Game {
 
             let skin: typeof defaultClientCVars["cv_loadout_skin"];
             this.sendPacket(JoinPacket.create({
+                gameVersion: GAME_VERSION,
                 isMobile: InputManager.isMobile,
                 name: GameConsole.getBuiltInCVar("cv_player_name"),
                 skin: Skins.fromStringSafe(
@@ -981,26 +983,26 @@ export const Game = new (class Game {
                 } else if (item !== undefined) {
                     let soundID: string;
                     switch (item.defType) {
-                        case DefinitionType.Ammo:
+                        case "ammo":
                             soundID = "ammo_pickup";
                             break;
-                        case DefinitionType.HealingItem:
+                        case "healingItem":
                             soundID = `${item.idString}_pickup`;
                             break;
-                        case DefinitionType.Scope:
+                        case "scope":
                             soundID = "scope_pickup";
                             break;
-                        case DefinitionType.Armor:
+                        case "armor":
                             if (item.armorType === ArmorType.Helmet) soundID = "helmet_pickup";
                             else soundID = "vest_pickup";
                             break;
-                        case DefinitionType.Backpack:
+                        case "backpack":
                             soundID = "backpack_pickup";
                             break;
-                        case DefinitionType.Throwable:
+                        case "throwable":
                             soundID = "throwable_switch";
                             break;
-                        case DefinitionType.Perk:
+                        case "perk":
                             soundID = "pickup";
                             break;
                         default:
@@ -1160,7 +1162,7 @@ export const Game = new (class Game {
             object.update();
             if (hasMovementSmoothing) object.updateInterpolation();
 
-            if (DEBUG_CLIENT) {
+            if (dev) {
                 if (showHitboxes) object.updateDebugGraphics();
             }
         }
@@ -1189,7 +1191,7 @@ export const Game = new (class Game {
         EmoteWheelManager.update();
         MapPingWheelManager.update();
 
-        if (DEBUG_CLIENT) {
+        if (dev) {
             DebugRenderer.graphics.position = CameraManager.container.position;
             DebugRenderer.graphics.scale = CameraManager.container.scale;
             DebugRenderer.render();
@@ -1663,7 +1665,7 @@ export const Game = new (class Game {
                             }
                             case object?.isLoot: {
                                 const definition = object.definition;
-                                const itemName = definition.defType === DefinitionType.Gun && definition.isDual
+                                const itemName = definition.defType === "gun" && definition.isDual
                                     ? m.dual_template({ gun: translate(definition.singleVariant as TranslationKeys) })
                                     : translate(("translationString" in definition && "lootAndKillfeedTranslationString" in definition ? definition.translationString : definition.idString) as TranslationKeys);
 
@@ -1734,27 +1736,27 @@ export const Game = new (class Game {
                                     // Auto-pickup dual gun
                                     // Only pick up melees if no melee is equipped
                                     (
-                                        type !== DefinitionType.Melee || weapons?.[2]?.definition.idString === "fists" // FIXME are y'all fr
+                                        type !== "melee" || weapons?.[2]?.definition.idString === "fists" // FIXME are y'all fr
                                     )
 
                                     // Only pick up guns if there's a free slot
                                     && (
-                                        type !== DefinitionType.Gun || (!weapons?.[0] || !weapons?.[1])
+                                        type !== "gun" || (!weapons?.[0] || !weapons?.[1])
                                     )
 
                                     // Don't pick up skins
-                                    && type !== DefinitionType.Skin
+                                    && type !== "skin"
 
                                     // Don't pick up perks
-                                    && type !== DefinitionType.Perk
+                                    && type !== "perk"
                                 )
                             ) || (
-                                type === DefinitionType.Gun
+                                type === "gun"
                                 && weapons?.some(
                                         weapon => {
                                             const definition = weapon?.definition;
 
-                                            return definition?.defType === DefinitionType.Gun
+                                            return definition?.defType === "gun"
                                                 && (
                                                     (
                                                         object?.definition === definition

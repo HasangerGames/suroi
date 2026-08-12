@@ -1,13 +1,12 @@
-import { GameConstants } from "../constants";
-import { Badges, type BadgeDefinition } from "../definitions/badges";
-import { Emotes, type EmoteDefinition } from "../definitions/emotes";
+import { type BadgeDefinition, Badges } from "../definitions/badges";
+import { type EmoteDefinition, Emotes } from "../definitions/emotes";
 import { type SkinDefinition } from "../definitions/items/skins";
 import { Loots } from "../definitions/loots";
 import { Packet, PacketType } from "./packet";
 
 export interface JoinData {
     readonly type: PacketType.Join
-    readonly protocolVersion: number
+    readonly gameVersion: string
     readonly name: string
     readonly isMobile: boolean
 
@@ -17,11 +16,7 @@ export interface JoinData {
     readonly emotes: ReadonlyArray<EmoteDefinition | undefined>
 }
 
-// protocol version is automatically set; use this type when
-// creating an object for use by a JoinPacket
-export type JoinPacketCreation = Omit<JoinData, "protocolVersion">;
-
-export const JoinPacket = new Packet<JoinPacketCreation, JoinData>(PacketType.Join, {
+export const JoinPacket = new Packet<JoinData>(PacketType.Join, {
     serialize(stream, data) {
         const emotes = data.emotes;
         const hasBadge = data.badge !== undefined;
@@ -38,7 +33,7 @@ export const JoinPacket = new Packet<JoinPacketCreation, JoinData>(PacketType.Jo
             emotes[7] !== undefined
         );
 
-        stream.writeUint16(GameConstants.protocolVersion);
+        stream.writeString(9, data.gameVersion);
         stream.writePlayerName(data.name);
 
         Loots.writeToStream(stream, data.skin);
@@ -62,7 +57,7 @@ export const JoinPacket = new Packet<JoinPacketCreation, JoinData>(PacketType.Jo
         ] = stream.readBooleanGroup2();
         data.isMobile = isMobile;
 
-        data.protocolVersion = stream.readUint16();
+        data.gameVersion = stream.readString(9);
         data.name = stream.readPlayerName().split(/<[^>]+>/g).join("").trim(); // Regex strips out HTML
 
         data.skin = Loots.readFromStream(stream);

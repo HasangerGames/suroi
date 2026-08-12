@@ -1,23 +1,24 @@
+import { Container, Graphics } from "pixi.js";
+import { dev } from "$app/environment";
 import { GameConstants, Layer, ObjectCategory, ZIndexes } from "$common/constants";
 import { type BuildingDefinition, type BuildingImageDefinition } from "$common/definitions/buildings";
 import { MaterialSounds } from "$common/definitions/obstacles";
 import { type Orientation } from "$common/typings";
-import { CircleHitbox, GroupHitbox, PolygonHitbox, RectangleHitbox, type Hitbox } from "$common/utils/hitbox";
+import { CircleHitbox, GroupHitbox, type Hitbox, PolygonHitbox, RectangleHitbox } from "$common/utils/hitbox";
 import { equivLayer } from "$common/utils/layer";
 import { Angle, EaseFunctions, Numeric } from "$common/utils/math";
 import { type ObjectsNetData } from "$common/utils/objectsSerializations";
 import { randomBoolean, randomFloat, randomRotation } from "$common/utils/random";
 import { Vec, type Vector } from "$common/utils/vector";
-import { Container, Graphics } from "pixi.js";
+import { GameConsole } from "../console/gameConsole";
 import { Game } from "../game";
 import { ParticleManager } from "../managers/particleManager";
-import { SoundManager, type GameSound } from "../managers/soundManager";
+import { type GameSound, SoundManager } from "../managers/soundManager";
 import { DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS, LAYER_TRANSITION_DELAY, PIXI_SCALE } from "../utils/constants";
 import { DebugRenderer } from "../utils/debugRenderer";
 import { drawGroundGraphics, SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { type Tween } from "../utils/tween";
 import { GameObject } from "./gameObject";
-import { GameConsole } from "../console/gameConsole";
 
 export class Building extends GameObject.derive(ObjectCategory.Building) {
     definition!: BuildingDefinition;
@@ -104,7 +105,7 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
                     const rayEnd = Vec.add(rayStart, Vec.fromPolar(i, visionSize));
                     const rayCeilingIntersection = this.ceilingHitbox.intersectsLine(rayStart, rayEnd)?.point;
 
-                    if (DEBUG_CLIENT) {
+                    if (dev) {
                         (this.ceilingRaycastLines ??= []).push([rayStart, rayCeilingIntersection ?? rayEnd]);
                     }
 
@@ -336,7 +337,7 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
     }
 
     override updateDebugGraphics(): void {
-        if (!DEBUG_CLIENT) return;
+        if (!dev) return;
 
         const definition = this.definition;
         const alpha = this.layer === Game.layer ? 1 : DIFF_LAYER_HITBOX_OPACITY;

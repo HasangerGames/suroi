@@ -1,8 +1,9 @@
 import { Application, Assets, ColorMatrixFilter, Container, loadTextures, RendererType, Spritesheet, Texture, WebGLRenderer } from "pixi.js";
+import { dev } from "$app/environment";
 import { GameModes } from "$common/definitions/gameModes";
 import { GameMode } from "$common/schemas/misc";
 import { m } from "$lib/paraglide/messages";
-import type { ImageSpritesheetImporter } from "../../../../vite/plugins/image-spritesheet-plugin";
+import type { ImageSpritesheetImporter } from "../../../../vite/image-spritesheet-plugin";
 import { MenuUi } from "../../../routes/+page.svelte";
 import { GameConsole } from "../console/gameConsole";
 import { Game } from "../game";
@@ -74,7 +75,7 @@ class PixiManagerClass {
 
         const gameContainer = new Container({ isRenderGroup: true });
         gameContainer.addChild(CameraManager.container);
-        if (DEBUG_CLIENT) gameContainer.addChild(DebugRenderer.graphics);
+        if (dev) gameContainer.addChild(DebugRenderer.graphics);
 
         const uiContainer = new Container({ isRenderGroup: true });
         uiContainer.addChild(

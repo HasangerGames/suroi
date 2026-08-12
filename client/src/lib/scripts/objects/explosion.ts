@@ -1,3 +1,5 @@
+import { isMobile } from "pixi.js";
+import { dev } from "$app/environment";
 import { GameConstants, Layer, ZIndexes } from "$common/constants";
 import { type ExplosionDefinition } from "$common/definitions/explosions";
 import { adjacentOrEqualLayer } from "$common/utils/layer";
@@ -5,7 +7,6 @@ import { EaseFunctions } from "$common/utils/math";
 import { randomFloat, randomPointInsideCircle } from "$common/utils/random";
 import { FloorTypes } from "$common/utils/terrain";
 import { Vec, type Vector } from "$common/utils/vector";
-import { isMobile } from "pixi.js";
 import { GameConsole } from "../console/gameConsole";
 import { Game } from "../game";
 import { CameraManager } from "../managers/cameraManager";
@@ -38,7 +39,7 @@ export function explosion(definition: ExplosionDefinition, position: Vector, lay
         duration: definition.animation.duration,
         ease: EaseFunctions.expoOut,
         onUpdate: () => {
-            if (!DEBUG_CLIENT) return;
+            if (!dev) return;
             if (!GameConsole.getBuiltInCVar("db_show_hitboxes")) return;
 
             const alpha = layer === Game.layer ? 1 : DIFF_LAYER_HITBOX_OPACITY;

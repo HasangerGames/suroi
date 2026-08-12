@@ -1192,7 +1192,7 @@ export async function setUpUI(): Promise<void> {
                     </div>`
                 );
 
-                const isGrenadeSlot = inventorySlotTypings[slot] === DefinitionType.Throwable;
+                const isGrenadeSlot = inventorySlotTypings[slot] === "throwable";
 
                 const element = ele[0];
 
@@ -1211,7 +1211,7 @@ export async function setUpUI(): Promise<void> {
                     // We cycle the throwables after the drop item call, otherwise the wrong grenade will be dropped.
                     if (
                         isGrenadeSlot
-                        && Game.activePlayer?.activeItem.defType === DefinitionType.Throwable
+                        && Game.activePlayer?.activeItem.defType === "throwable"
                         && e.button !== 2 // it can be anything but the right click, because right click drops stuff
                     ) {
                         InputManager.cycleThrowable(step);

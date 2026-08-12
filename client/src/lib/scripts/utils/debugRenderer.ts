@@ -1,4 +1,5 @@
 import { type ColorSource, Graphics } from "pixi.js";
+import { dev } from "$app/environment";
 import { CircleHitbox, type Hitbox, HitboxType, RectangleHitbox } from "$common/utils/hitbox";
 import { Vec, type Vector } from "$common/utils/vector";
 import { PIXI_SCALE } from "./constants";
@@ -41,7 +42,7 @@ export const DebugRenderer = new (class DebugRenderer {
     readonly graphics = new Graphics();
 
     addLine(a: Vector, b: Vector, color: ColorSource = "red", alpha = 1): this {
-        if (!DEBUG_CLIENT) return this;
+        if (!dev) return this;
 
         this._shapes.push({
             type: ShapeType.Line,
@@ -60,7 +61,7 @@ export const DebugRenderer = new (class DebugRenderer {
         color: ColorSource = "red",
         alpha = 1
     ): this {
-        if (!DEBUG_CLIENT) return this;
+        if (!dev) return this;
 
         this._shapes.push({
             type: ShapeType.Ray,
@@ -74,7 +75,7 @@ export const DebugRenderer = new (class DebugRenderer {
     }
 
     addHitbox(hitbox: Hitbox, color: ColorSource = "red", alpha = 1): this {
-        if (!DEBUG_CLIENT) return this;
+        if (!dev) return this;
 
         this._shapes.push({
             type: ShapeType.Hitbox,
@@ -91,7 +92,7 @@ export const DebugRenderer = new (class DebugRenderer {
         color: ColorSource = "red",
         alpha = 1
     ): this {
-        if (!DEBUG_CLIENT) return this;
+        if (!dev) return this;
 
         this._shapes.push({
             type: ShapeType.Hitbox,
@@ -109,7 +110,7 @@ export const DebugRenderer = new (class DebugRenderer {
         color: ColorSource = "red",
         alpha = 1
     ): this {
-        if (!DEBUG_CLIENT) return this;
+        if (!dev) return this;
 
         this._shapes.push({
             type: ShapeType.Hitbox,
@@ -121,7 +122,7 @@ export const DebugRenderer = new (class DebugRenderer {
     }
 
     render(): void {
-        if (!DEBUG_CLIENT) return;
+        if (!dev) return;
 
         const gfx = this.graphics.clear();
 

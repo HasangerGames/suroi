@@ -169,12 +169,12 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
                 definition.impenetrable
                 && (!(
                     (
-                        weaponDef?.defType === DefinitionType.Melee
+                        weaponDef?.defType === "melee"
                         && weaponDef.piercingMultiplier !== undefined
                     )
                     || source instanceof Obstacle
                 )
-                || (weaponDef?.defType === DefinitionType.Melee && definition.hardness !== undefined && (weaponDef.maxHardness === undefined || definition.hardness > weaponDef.maxHardness))
+                || (weaponDef?.defType === "melee" && definition.hardness !== undefined && (weaponDef.maxHardness === undefined || definition.hardness > weaponDef.maxHardness))
                 ))
                 || this.game.pluginManager.emit("obstacle_will_damage", {
                     obstacle: this,

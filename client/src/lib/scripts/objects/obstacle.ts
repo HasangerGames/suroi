@@ -1,18 +1,19 @@
+import { Graphics } from "pixi.js";
+import { dev } from "$app/environment";
 import { ObjectCategory, ZIndexes } from "$common/constants";
 import { MaterialSounds, type ObstacleDefinition } from "$common/definitions/obstacles";
 import { type Orientation, type Variation } from "$common/typings";
-import { HitboxType, RectangleHitbox, type Hitbox } from "$common/utils/hitbox";
+import { type Hitbox, HitboxType, RectangleHitbox } from "$common/utils/hitbox";
 import { equivLayer } from "$common/utils/layer";
 import { Angle, calculateDoorHitboxes, EaseFunctions, Numeric } from "$common/utils/math";
 import { type Timeout } from "$common/utils/misc";
 import { type ObjectsNetData } from "$common/utils/objectsSerializations";
 import { random, randomBoolean, randomFloat, randomRotation } from "$common/utils/random";
 import { Vec, type Vector } from "$common/utils/vector";
-import { Graphics } from "pixi.js";
 import { GameConsole } from "../console/gameConsole";
 import { Game } from "../game";
-import { ParticleManager, type Particle, type ParticleEmitter, type ParticleOptions } from "../managers/particleManager";
-import { SoundManager, type GameSound } from "../managers/soundManager";
+import { type Particle, type ParticleEmitter, ParticleManager, type ParticleOptions } from "../managers/particleManager";
+import { type GameSound, SoundManager } from "../managers/soundManager";
 import { DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS, PIXI_SCALE, WALL_STROKE_WIDTH } from "../utils/constants";
 import { DebugRenderer } from "../utils/debugRenderer";
 import { drawGroundGraphics, SuroiSprite, toPixiCoords } from "../utils/pixi";
@@ -526,7 +527,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
     }
 
     override updateDebugGraphics(): void {
-        if (!DEBUG_CLIENT) return;
+        if (!dev) return;
 
         const definition = this.definition;
         const alpha = Game.activePlayer !== undefined && equivLayer(this, Game.activePlayer) ? 1 : DIFF_LAYER_HITBOX_OPACITY;

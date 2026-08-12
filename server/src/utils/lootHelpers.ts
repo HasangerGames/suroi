@@ -1,4 +1,5 @@
 import { BuildingDefinition, Buildings } from "$common/definitions/buildings";
+import { GameMode } from "$common/definitions/gameModes";
 import { Ammos } from "$common/definitions/items/ammos";
 import { Armors } from "$common/definitions/items/armors";
 import { Backpacks } from "$common/definitions/items/backpacks";
@@ -10,14 +11,12 @@ import { Scopes } from "$common/definitions/items/scopes";
 import { Skins } from "$common/definitions/items/skins";
 import { Throwables } from "$common/definitions/items/throwables";
 import { ItemType, LootDefForType, LootDefinition, Loots } from "$common/definitions/loots";
-import { GameMode } from "$common/definitions/gameModes";
 import { ObstacleDefinition, Obstacles } from "$common/definitions/obstacles";
 import { isArray } from "$common/utils/misc";
-import { DefinitionType, NullString, ObjectDefinition, ObjectDefinitions, ReferenceOrRandom, ReferenceTo } from "$common/utils/objectDefinitions";
-import { pickRandomInArray, random, weightedRandom } from "$common/utils/random";
+import { NullString, ObjectDefinition, ObjectDefinitions, ReferenceOrRandom, ReferenceTo } from "$common/utils/objectDefinitions";
+import { random, weightedRandom } from "$common/utils/random";
 import { LootTables } from "../data/lootTables";
-import { MapDefinition, Maps } from "../data/maps";
-import { Config } from "./config";
+import { MapDefinition } from "../data/maps";
 
 export type WeightedItem =
     (
@@ -51,7 +50,7 @@ export class LootItem {
     ) { }
 }
 
-export function getLootFromTable(modeName: GameMode, tableID: string, quality?: number, overridingLootTable?: boolean): LootItem[] {
+export function getLootFromTable(modeName: GameMode, tableID: string, quality?: number): LootItem[] {
     const lootTable = resolveTable(modeName, tableID);
     if (lootTable === undefined) {
         throw new ReferenceError(`Unknown loot table: ${tableID}`);
@@ -73,22 +72,19 @@ export function getLootFromTable(modeName: GameMode, tableID: string, quality?: 
         isSimple && isArray(loot[0])
             ? (loot as readonly WeightedItem[][]).map(innerTable => getLoot(modeName, innerTable, noDuplicates ?? false))
             : min === 1 && max === 1
-                ? getLoot(modeName, loot as WeightedItem[], noDuplicates ?? false, quality ?? -1, overridingLootTable)
+                ? getLoot(modeName, loot as WeightedItem[], noDuplicates ?? false, quality ?? -1)
                 : Array.from(
                     { length: random(min, max) },
-                    () => getLoot(modeName, loot as WeightedItem[], noDuplicates ?? false, quality ?? -1, overridingLootTable)
+                    () => getLoot(modeName, loot as WeightedItem[], noDuplicates ?? false, quality ?? -1)
                 )
     ).flat();
 }
 
 export function resolveTable(modeName: GameMode, tableID: string): LootTable {
-    if (Config.randomizeLootTables) {
-        modeName = pickRandomInArray(Object.keys(LootTables)) as GameMode;
-    }
     return LootTables[modeName]?.[tableID] ?? LootTables.normal[tableID];
 }
 
-function getLoot(modeName: GameMode, items: WeightedItem[], noDuplicates: boolean, qualityValue?: number, overridingLootTable?: boolean): LootItem[] {
+function getLoot(modeName: GameMode, items: WeightedItem[], noDuplicates: boolean, qualityValue?: number): LootItem[] {
 
     let _items = items;
     if (qualityValue && qualityValue !== -1) _items = items.filter(item => {
@@ -117,11 +113,7 @@ function getLoot(modeName: GameMode, items: WeightedItem[], noDuplicates: boolea
         throw new ReferenceError(`Unknown loot item: ${item}`);
     }
 
-    if (definition.defType === DefinitionType.Gun) {
-        if (Config.overrideGunLootTable && !overridingLootTable) {
-            return getLootFromTable(modeName, Config.overrideGunLootTable, undefined, true);
-        }
-
+    if (definition.defType === "gun") {
         let { ammoType, ammoSpawnAmount } = definition;
 
         if (selection.spawnSeparately) {
@@ -139,7 +131,7 @@ function getLoot(modeName: GameMode, items: WeightedItem[], noDuplicates: boolea
         }
     }
 
-    if (definition.defType === DefinitionType.Gun && definition.spawnScope) {
+    if (definition.defType === "gun" && definition.spawnScope) {
         loot.push(new LootItem(definition.spawnScope, 1));
     }
 
@@ -166,16 +158,16 @@ export type ItemRegistry = ReadonlySet<ReferenceTo<LootDefinition>> & {
 const defTypeToCollection: {
     [K in ItemType]: ObjectDefinitions<LootDefForType<K>>
 } = {
-    [DefinitionType.Gun]: Guns,
-    [DefinitionType.Ammo]: Ammos,
-    [DefinitionType.Melee]: Melees,
-    [DefinitionType.Throwable]: Throwables,
-    [DefinitionType.HealingItem]: HealingItems,
-    [DefinitionType.Armor]: Armors,
-    [DefinitionType.Backpack]: Backpacks,
-    [DefinitionType.Scope]: Scopes,
-    [DefinitionType.Skin]: Skins,
-    [DefinitionType.Perk]: Perks
+    ["gun"]: Guns,
+    ["ammo"]: Ammos,
+    ["melee"]: Melees,
+    ["throwable"]: Throwables,
+    ["healingItem"]: HealingItems,
+    ["armor"]: Armors,
+    ["backpack"]: Backpacks,
+    ["scope"]: Scopes,
+    ["skin"]: Skins,
+    ["perk"]: Perks
 };
 
 export type Cache = {

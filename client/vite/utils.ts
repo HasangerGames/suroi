@@ -1,5 +1,5 @@
-import { readDirectory } from "../../../common/src/utils/readDirectory";
-import { GameModes, type GameMode } from "../../../common/src/definitions/gameModes";
+import { readDirectory } from "../../common/src/utils/readDirectory";
+import { GameModes, type GameMode } from "../../common/src/definitions/gameModes";
 import path from "node:path";
 import { createHash } from "node:crypto";
 

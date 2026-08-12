@@ -1,5 +1,6 @@
 import $ from "jquery";
 import { type ColorSource, Container, Graphics, isMobile, RenderTexture, Sprite, Text, type Texture } from "pixi.js";
+import { dev } from "$app/environment";
 import { GameConstants, GasState, Layer, ObjectCategory, Z_INDEX_COUNT, ZIndexes } from "$common/constants";
 import { GameModes } from "$common/definitions/gameModes";
 import { type MapPingDefinition } from "$common/definitions/mapPings";
@@ -151,7 +152,7 @@ class MapManagerClass {
             e.stopImmediatePropagation();
         });
 
-        if (DEBUG_CLIENT) {
+        if (dev) {
             GameConsole.variables.addChangeListener("db_show_hitboxes", val => {
                 if (!Game.gameStarted) return;
                 val = val && GameConsole.getBuiltInCVar("db_show_hitboxes_terrain");
@@ -282,7 +283,7 @@ class MapManagerClass {
             }
         }
 
-        if (DEBUG_CLIENT) {
+        if (dev) {
             if (GameConsole.getBuiltInCVar("db_show_hitboxes") && GameConsole.getBuiltInCVar("db_show_hitboxes_terrain")) {
                 this.renderMapDebug();
                 this.debugGraphics.visible = true;
@@ -486,7 +487,7 @@ class MapManagerClass {
     }
 
     renderMapDebug(): void {
-        if (!DEBUG_CLIENT) return;
+        if (!dev) return;
 
         const debugGraphics = this.debugGraphics;
         debugGraphics.clear();

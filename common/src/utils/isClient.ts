@@ -1,4 +1,6 @@
+// biome-ignore lint/suspicious/noVar: let and const won't work here; only var
+declare var IS_CLIENT: boolean;
+
 if (typeof window === "undefined") {
-    // @ts-expect-error global variable init
     global.IS_CLIENT = false;
 }

@@ -558,7 +558,7 @@ export function setUpCommands(): void {
         "equip_or_cycle_throwables",
         function(offset) {
             // If we're already on a throwable slot, start cycling. Otherwise, make that slot active
-            if (Game.activePlayer?.activeItem.defType === DefinitionType.Throwable) {
+            if (Game.activePlayer?.activeItem.defType === "throwable") {
                 const step = Casters.toInt(offset ?? "NaN");
 
                 if ("err" in step) {
@@ -569,7 +569,7 @@ export function setUpCommands(): void {
 
                 InputManager.cycleThrowable(step.res);
             } else {
-                const throwableSlot = GameConstants.player.inventorySlotTypings.findIndex(slot => slot === DefinitionType.Throwable);
+                const throwableSlot = GameConstants.player.inventorySlotTypings.findIndex(slot => slot === "throwable");
 
                 if (throwableSlot !== -1) {
                     InputManager.addAction({
