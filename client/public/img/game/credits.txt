@@ -50,6 +50,11 @@ Guns:
     World Image: Winter
     Killfeed Image: eiπ
 
+  AS Val:
+    Loot Image: cps
+    World Image: cps
+    Killfeed Image: Kastname
+
   AUG:
     Loot Image: hugh jass
     World Image: Winter
@@ -180,6 +185,10 @@ Guns:
     World Image: Winter
     Killfeed Image: eiπ
 
+  Mk 14 EBR:
+    Loot Image: cps
+    World Image: cps
+
   Mk-18 Mjölnir:
     Loot Image: Winter
     World Image: Winter
@@ -269,6 +278,11 @@ Guns:
     Loot Image: jchen, artuhr
     World Image: Winter
     Killfeed Image: eiπ
+
+  SSG 82:
+    Loot Image: AnnihilatingFox
+    World Image: AnnihilatingFox
+    Killfeed Image: AnnihilatingFox
 
   SVU-A:
     Loot Image: Skullboi249, Wampi
