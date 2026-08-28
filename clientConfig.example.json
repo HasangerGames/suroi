@@ -1,0 +1,12 @@
+{
+    "$comment": "Optional external client config, loaded at runtime by loadClientConfig(). Edit region/server addresses here without rebuilding the client. Copy this file to clientConfig.json and adjust the addresses before deploying (e.g. mount it as a Docker volume).",
+    "regions": {
+        "main": {
+            "name": "Main",
+            "mainAddress": "http://localhost",
+            "gameAddress": "ws://localhost/play/<gameID>",
+            "offset": 8001
+        }
+    },
+    "defaultRegion": "main"
+}

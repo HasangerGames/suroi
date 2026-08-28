@@ -1,0 +1,21 @@
+# Git
+.git
+.gitignore
+
+# Dependencies / build output
+node_modules
+client/dist
+server/reports
+
+# Server runtime config (secrets!) — generated from config.example.json at startup
+/server/config.json
+
+# Deployment configs (mounted as volumes at runtime)
+/config.json
+/clientConfig.json
+
+# Misc
+*.log
+.DS_Store
+.idea
+.vscode

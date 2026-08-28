@@ -1,5 +1,6 @@
 import { FSWatcher, watch } from "chokidar";
-import { readFileSync } from "fs";
+import { readFileSync, writeFileSync } from "fs";
+import os from "os";
 import path from "path";
 import { type SpritesheetData } from "pixi.js";
 import spritesheetc, { type BuilderOptions } from "spritesheetc";
@@ -56,16 +57,57 @@ const load = (id: string): string | undefined => {
     return data;
 };
 
+function rewriteManifest(name: string, visited: Set<string>): string {
+    // Rewrite a manifest (and any manifests it references, e.g. shared.txt) so
+    // every entry is relative to the manifests dir. Run with cwd = the manifests
+    // dir so spritesheetc resolves them correctly on every platform.
+    const content = readFileSync(`${name}.txt`, "utf8");
+    const out: string[] = [];
+    for (const rawLine of content.split("\n")) {
+        const line = rawLine.trim();
+        if (line.length === 0 || line.startsWith("#")) continue;
+        if (line.startsWith("public/img/game/manifests/")) {
+            const nested = line.slice("public/img/game/manifests/".length).replace(/\.txt$/, "");
+            if (!visited.has(nested)) {
+                visited.add(nested);
+                out.push(rewriteManifest(nested, visited));
+            }
+        } else if (line.startsWith("public/img/game/")) {
+            out.push(`../${line.slice("public/img/game/".length)}`);
+        } else {
+            out.push(line);
+        }
+    }
+    const rewritten = path.join(os.tmpdir(), `${name}.rewritten.txt`);
+    writeFileSync(rewritten, `${out.join("\n")}\n`);
+    return rewritten;
+}
+
 function buildSpritesheets(spritesheetName: SpritesheetNames, outputDir: string, speed: BuilderOptions["speed"]): void {
-    const filenames = spritesheetc.buildSpritesheets({
-        inputs: [path.join("public", "img", "game", "manifests", `${spritesheetName}.txt`)],
-        outputDir,
-        atlasName: spritesheetName,
-        resolutions: [0.5, 1],
-        speed
-    });
+    // spritesheetc resolves manifest entries against the current working directory
+    // on Windows, but against the manifest's directory on Linux. Running it with
+    // cwd = the manifests dir and rewriting every referenced manifest (including
+    // nested ones like shared.txt) to be relative to that dir makes both behave
+    // the same.
+    const prevCwd = process.cwd();
+    process.chdir(path.resolve("public", "img", "game", "manifests"));
+    let filenames: string[];
+    try {
+        const rewritten = rewriteManifest(spritesheetName, new Set());
+        filenames = spritesheetc.buildSpritesheets({
+            inputs: [rewritten],
+            outputDir: path.resolve(prevCwd, outputDir),
+            atlasName: spritesheetName,
+            resolutions: [0.5, 1],
+            speed
+        });
+    } finally {
+        process.chdir(prevCwd);
+    }
+
     const lowSheets: string[] = [];
     const highSheets: string[] = [];
+    const absOutDir = path.resolve(prevCwd, outputDir);
     for (const file of filenames) {
         const sheets = file.includes("@0.5x") ? lowSheets : highSheets;
         let json = readFileSync(`${file}.json`, "utf8");
@@ -73,7 +115,9 @@ function buildSpritesheets(spritesheetName: SpritesheetNames, outputDir: string,
             json = json.replace("client/dist/", "");
         }
         let alteredFile = file;
-        if (file.startsWith("client/dist/img/atlases/")) { // please fix me i am awful
+        if (file.startsWith(`${absOutDir}${path.sep}`)) {
+            alteredFile = file.slice(`${absOutDir}${path.sep}`.length);
+        } else if (file.startsWith("client/dist/img/atlases/")) { // please fix me i am awful
             alteredFile = file.replace("client/dist/img/atlases/", "");
         }
         sheets.push(json);

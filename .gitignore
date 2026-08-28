@@ -1,12 +1,14 @@
 # Build
 dist/
 .spritesheet-cache
+client/tmp_atlas_chdir
 
 # Node
 node_modules/
 
 # Various config files
 config.json
+clientConfig.json
 server/reports
 punishments.json
 teamMode.txt

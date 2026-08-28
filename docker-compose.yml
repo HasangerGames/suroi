@@ -1,0 +1,18 @@
+services:
+  suroi:
+    build: .
+    container_name: suroi
+    ports:
+      - "80:80"
+    volumes:
+      # NGINX routing config, mounted read-only so changes don't require a rebuild.
+      - ./docker/nginx.conf:/etc/nginx/nginx.conf:ro
+      # Server config. Create it from the example first:
+      #   cp config.example.json config.json
+      # (if missing, the container auto-creates it from config.example.json)
+      - ./config.json:/app/server/config.json
+      # Client config (region/server addresses). Create it from the example first:
+      #   cp clientConfig.example.json clientConfig.json
+      # Overrides the bundled default so regions can be changed without rebuilding.
+      - ./clientConfig.json:/usr/share/nginx/html/clientConfig.json
+    restart: unless-stopped

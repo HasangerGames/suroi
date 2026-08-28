@@ -55,6 +55,7 @@ import { Player } from "./objects/player";
 import { Projectile } from "./objects/projectile";
 import { SyncedParticle } from "./objects/syncedParticle";
 import { autoPickup, fetchServerData, finalizeUI, resetPlayButtons, setUpUI, teamSocket, unlockPlayButtons, updateDisconnectTime } from "./ui";
+import { loadClientConfig } from "./config";
 import { EMOTE_SLOTS, LAYER_TRANSITION_DELAY, PERK_MESSAGE_FADE_TIME, PIXI_SCALE, UI_DEBUG_MODE } from "./utils/constants";
 import { DebugRenderer } from "./utils/debugRenderer";
 import { setUpNetGraph } from "./utils/graph/netGraph";
@@ -678,6 +679,7 @@ export const Game = new (class Game {
             this.debugMenu = new (await import("./utils/debugMenu")).DebugMenu();
             this.debugMenu.init();
         }
+        await loadClientConfig();
         await setUpUI();
         await fetchServerData();
         this.gasRender = new GasRender(PIXI_SCALE);

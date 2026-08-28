@@ -90,3 +90,44 @@ export interface ServerInfo {
     readonly mode: ModeName
     readonly modeSwitchTime: number
 }
+
+export interface ClientConfig {
+    readonly regions: Record<string, Region>
+    readonly defaultRegion: string
+}
+
+/**
+ * Loads an optional external config (`clientConfig.json`, served alongside the static files)
+ * so region/server addresses can be changed without rebuilding the client.
+ * Falls back to the bundled defaults on any failure.
+ */
+export async function loadClientConfig(): Promise<void> {
+    try {
+        const response = await fetch("/clientConfig.json", { signal: AbortSignal.timeout(5000) });
+        if (!response.ok) {
+            console.warn(`loadClientConfig: clientConfig.json responded with status ${response.status}; using bundled default config.`);
+            return;
+        }
+
+        const clientConfig = await response.json() as Partial<ClientConfig>;
+        if (!clientConfig.regions || typeof clientConfig.regions !== "object") {
+            console.warn("loadClientConfig: clientConfig.json contains no valid 'regions'; using bundled default config.");
+            return;
+        }
+
+        // Update the shared Config object in place so existing references
+        // (e.g. `regionInfo` in ui.ts) stay valid.
+        const merged: Record<string, Region> = { ...Config.regions, ...clientConfig.regions };
+        const regions = Config.regions as { [k: string]: Region | undefined };
+        for (const key of Object.keys(regions)) {
+            if (Object.hasOwn(merged, key)) regions[key] = merged[key];
+            else delete regions[key];
+        }
+
+        if (clientConfig.defaultRegion) {
+            (Config as ConfigType & { defaultRegion: string }).defaultRegion = clientConfig.defaultRegion;
+        }
+    } catch (e) {
+        console.warn("loadClientConfig: failed to load clientConfig.json; using bundled default config.", e);
+    }
+}
