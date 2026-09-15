@@ -13,7 +13,7 @@ import { FloorNames, FloorTypes } from "@common/utils/terrain";
 import { Vec, type Vector } from "@common/utils/vector";
 import { type Game } from "../game";
 import { GunItem } from "../inventory/gunItem";
-import { BaseGameObject } from "./gameObject";
+import { BaseGameObject, type GameObject } from "./gameObject";
 import { MapIndicator } from "./mapIndicator";
 import { type Player } from "./player";
 
@@ -54,6 +54,9 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
     set position(pos: Vector) { this.hitbox.position = pos; }
 
     private _oldPosition = Vec(0, 0);
+
+    /** Lazily created and reused while the loot is moving, to avoid allocating a set on every move tick. */
+    private _nearObjects?: Set<GameObject>;
 
     mapIndicator?: MapIndicator;
 
@@ -137,7 +140,7 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
         this.position.x = Numeric.clamp(this.position.x, this.hitbox.radius, this.game.map.width - this.hitbox.radius);
         this.position.y = Numeric.clamp(this.position.y, this.hitbox.radius, this.game.map.height - this.hitbox.radius);
 
-        for (const object of this.game.grid.intersectsHitbox(this.hitbox)) {
+        for (const object of this.game.grid.intersectsHitbox(this.hitbox, undefined, this._nearObjects ??= new Set<GameObject>())) {
             if (
                 (object.isObstacle || object.isBuilding)
                 && object.collidable
