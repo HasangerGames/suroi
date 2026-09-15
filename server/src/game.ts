@@ -356,9 +356,11 @@ export class Game implements GameData {
         }
 
         // Update bullets
-        let records: DamageRecord[] = [];
+        const records: DamageRecord[] = [];
         for (const bullet of this.bullets) {
-            records = records.concat(bullet.update());
+            for (const record of bullet.update()) {
+                records.push(record);
+            }
 
             if (bullet.dead) {
                 if (!bullet.reflected) {
