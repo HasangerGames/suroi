@@ -120,15 +120,18 @@ export class Grid {
      *
      * @param hitbox The hitbox
      * @param layer An optional layer to filter by; if omitted, all objects intersecting the hitbox—regardless of their layer—are returned
+     * @param out An optional set to write the results into. If provided, it is cleared first and then returned. This lets hot-path callers (bullets, projectiles, moving loot, players) reuse a single set instead of allocating a new one on every call. Do not pass the same set to nested queries that need both results at the same time.
      * @return A set with the objects near this hitbox
      */
-    intersectsHitbox(hitbox: Hitbox, layer?: Layer): Set<GameObject> {
+    intersectsHitbox(hitbox: Hitbox, layer?: Layer, out?: Set<GameObject>): Set<GameObject> {
         const rect = hitbox.toRectangle();
 
         const min = this._roundToCells(rect.min);
         const max = this._roundToCells(rect.max);
 
-        const objects = new Set<GameObject>();
+        const objects = out ?? new Set<GameObject>();
+        if (out !== undefined) objects.clear();
+
         const includeAll = layer === undefined;
 
         for (
