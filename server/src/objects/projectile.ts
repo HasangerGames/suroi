@@ -61,6 +61,9 @@ export class Projectile extends BaseGameObject.derive(ObjectCategory.Projectile)
     private _fuseTime: number;
     private readonly _obstaclesBelow = new Set<Obstacle | Building>();
 
+    /** Reused across ticks by {@link intersectsHitbox} to avoid allocating a set for every projectile every tick. */
+    private readonly _nearObjects = new Set<GameObject>();
+
     constructor(game: Game, params: ProjectileParams) {
         super(game, params.position);
         this.layer = params.layer;
@@ -111,7 +114,8 @@ export class Projectile extends BaseGameObject.derive(ObjectCategory.Projectile)
 
         const objects = this.game.grid.intersectsHitbox(
             RectangleHitbox.fromLine(this._lastPosition, this.position),
-            this.layer
+            this.layer,
+            this._nearObjects
         );
 
         const collisions: Array<{

@@ -55,6 +55,9 @@ export class Bullet extends BaseBullet {
 
     readonly finalPosition: Vector;
 
+    /** Reused across ticks by {@link intersectsHitbox} to avoid allocating a set for every bullet every tick. */
+    private readonly _nearObjects = new Set<GameObject>();
+
     constructor(
         game: Game,
         source: Weapon,
@@ -111,7 +114,7 @@ export class Bullet extends BaseBullet {
         const records: DamageRecord[] = [];
         const definition = this.definition;
 
-        const objects = grid.intersectsHitbox(lineRect, this.layer);
+        const objects = grid.intersectsHitbox(lineRect, this.layer, this._nearObjects);
 
         const damageMod = (this.modifiers?.damage ?? 1) / (this.reflectionCount + 1);
         for (const collision of this.updateAndGetCollisions(dt, objects)) {
