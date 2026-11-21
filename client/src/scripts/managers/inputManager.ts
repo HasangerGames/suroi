@@ -8,7 +8,7 @@ import { Geometry, Numeric } from "@common/utils/math";
 import { DefinitionType, type ItemDefinition } from "@common/utils/objectDefinitions";
 import { Vec } from "@common/utils/vector";
 import $ from "jquery";
-import nipplejs, { type JoystickOutputData } from "nipplejs";
+import nipplejs from "nipplejs";
 import { isMobile } from "pixi.js";
 import { GameConsole, type GameSettings, type PossibleError } from "../console/gameConsole";
 import { defaultBinds } from "../console/variables";
@@ -355,6 +355,12 @@ class InputManagerClass {
             }
 
             this._focusController.clear();
+
+        
+            if (this.isMobile) {
+                this.movement.moving = false;
+                this.attacking = false;
+            }
         });
 
         // different event targets… why?
@@ -421,7 +427,7 @@ class InputManagerClass {
             let aimJoystickUsed = false;
             let shootOnRelease = false;
 
-            movementJoystick.on("move", (_, data: JoystickOutputData) => {
+            movementJoystick.on("move", ({ data }) => {
                 const angle = -data.angle.radian;
                 this.movementAngle = angle;
                 this.movement.moving = true;
@@ -439,7 +445,7 @@ class InputManagerClass {
                 this.movement.moving = false;
             });
 
-            aimJoystick.on("move", (_, data) => {
+            aimJoystick.on("move", ({ data }) => {
                 aimJoystickUsed = true;
                 this.rotation = -data.angle.radian;
                 this.turning = true;
