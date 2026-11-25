@@ -85,9 +85,13 @@ if (Cluster.isPrimary && require.main === module) {
                 return Response.json(response, corsHeaders);
             },
             "/api/game/new/:gameMode/:teamMode": async(req: BunRequest) => {
-                const gameMode = GameMode.parse(req.params.gameMode);
-                const teamMode = TeamMode.parse(req.params.teamMode);
-                const game = await gameManager.newGame(gameMode as MapName, teamMode);
+                const gameMode = GameMode.safeParse(req.params.gameMode);
+                const teamMode = TeamMode.safeParse(req.params.teamMode);
+                if (!gameMode.success || !teamMode.success) {
+                    return new Response("400 Bad Request");
+                }
+
+                const game = await gameManager.newGame(gameMode.data as MapName, teamMode.data as TeamMode);
                 if (game !== undefined) {
                     return Response.json(game.gameInfo, corsHeaders);
                 } else {
