@@ -1234,7 +1234,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 style: {
                     fill: name?.hasColor ? name?.nameColor : TEAMMATE_COLORS[UIManager.getTeammateColorIndex(this.id) ?? 0],
                     fontSize: 36,
-                    fontFamily: "Inter",
+                    fontFamily: "InterVariable",
                     fontWeight: "600",
                     dropShadow: {
                         alpha: 0.8,
