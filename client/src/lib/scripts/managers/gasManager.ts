@@ -5,7 +5,7 @@ import { type UpdateDataOut } from "$common/packets/updatePacket";
 import { Numeric } from "$common/utils/math";
 import { Vec, type Vector } from "$common/utils/vector";
 import { Game } from "../game";
-import { Config } from "../utils/config";
+import { c } from "../utils/config";
 import { GAS_COLOR } from "../utils/constants";
 import { formatDate } from "../utils/misc";
 import { translate } from "../utils/translations";
@@ -100,7 +100,7 @@ class GasManagerClass {
 
             if (
                 (isInactive || gas.currentDuration !== 0)
-                && !Config.uiDebugMode
+                && !c.uiDebugMode
                 && (!Game.gameOver || Game.spectating)
             ) {
                 this._ui.msgText.text(gasMessage);

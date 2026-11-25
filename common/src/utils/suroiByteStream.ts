@@ -1,4 +1,4 @@
-import { GameConstants, ObjectCategory, RotationMode, type Layer } from "../constants";
+import { ObjectCategory, RotationMode, type Layer } from "../constants";
 import { type Orientation } from "../typings";
 import { ByteStream } from "./byteStream";
 import { Angle, halfπ } from "./math";
@@ -83,10 +83,10 @@ export class SuroiByteStream extends ByteStream {
     }
 
     /**
-     * Writes a position to the stream, using {@link GameConstants.maxPosition} as an upper bound.
+     * Writes a position to the stream, using {@link g.maxPosition} as an upper bound.
      * @param vector The position
      *
-     * Impl. note: inlined and optimized version of the expression: `vector => writeVector(vector, 0, GameConstants.maxPosition, 0, GameConstants.maxPosition, 2)`
+     * Impl. note: inlined and optimized version of the expression: `vector => writeVector(vector, 0, g.maxPosition, 0, g.maxPosition, 2)`
      */
     writePosition(vector: Vector): this {
         this.writeUint16((vector.x / maxPosition) * 65535 + 0.5);
@@ -95,9 +95,9 @@ export class SuroiByteStream extends ByteStream {
     }
 
     /**
-     * Reads a position from the stream, using {@link GameConstants.maxPosition} as an upper bound.
+     * Reads a position from the stream, using {@link g.maxPosition} as an upper bound.
      *
-     * Impl. note: inlined and optimized version of the expression: `() => readVector(0, GameConstants.maxPosition, 0, GameConstants.maxPosition, 2)`
+     * Impl. note: inlined and optimized version of the expression: `() => readVector(0, g.maxPosition, 0, g.maxPosition, 2)`
      */
     readPosition(): Vector {
         return {

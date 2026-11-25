@@ -1,7 +1,7 @@
 import $ from "jquery";
 import { type ColorSource, Container, Graphics, isMobile, RenderTexture, Sprite, Text, type Texture } from "pixi.js";
 import { dev } from "$app/environment";
-import { GameConstants, GasState, Layer, ObjectCategory, Z_INDEX_COUNT, ZIndexes } from "$common/constants";
+import { GasState, Layer, ObjectCategory, Z_INDEX_COUNT, ZIndexes } from "$common/constants";
 import { GameModes } from "$common/definitions/gameModes";
 import { type MapPingDefinition } from "$common/definitions/mapPings";
 import { type MapData } from "$common/packets/mapPacket";
@@ -14,6 +14,7 @@ import { Vec, type Vector } from "$common/utils/vector";
 import { MenuUi } from "../../../routes/+page.svelte";
 import { GameConsole } from "../console/gameConsole";
 import { Game } from "../game";
+import { g } from "../utils/config";
 import { DIFF_LAYER_HITBOX_OPACITY, PIXI_SCALE, TEAMMATE_COLORS } from "../utils/constants";
 import { drawGroundGraphics, drawHitbox, SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { translate } from "../utils/translations";
@@ -256,7 +257,7 @@ class MapManagerClass {
             width: gridLineWidth
         });
 
-        const gridSize = GameConstants.gridSize * scale;
+        const gridSize = g.gridSize * scale;
         const gridWidth = this._width * scale;
         const gridHeight = this._height * scale;
         for (let x = 0; x <= gridWidth; x += gridSize) {
@@ -546,7 +547,7 @@ class MapManagerClass {
         const rivers: River[] = [];
         rivers.push(...mapPacket.rivers.map(({ width, points, isTrail }) => new River(width, points as Vector[], rivers, mapBounds, isTrail)));
 
-        const baseMode = GameModes[Game.gameModeDef.similarTo ?? Game.gameMode];
+        const baseMode = GameModes[Game.gameModeDef.similarTo ?? Game.gameMode ?? g.defaultMode];
         const waterType = baseMode.replaceWaterBy ?? FloorNames.Water;
 
         this._terrain = new Terrain(

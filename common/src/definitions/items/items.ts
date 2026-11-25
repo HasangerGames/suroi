@@ -1,4 +1,4 @@
-import { GameConstants } from "../../constants";
+import { g } from "../"
 import type { Mutable } from "../../utils/misc";
 import { ObjectDefinitions } from "../../utils/objectDefinitions";
 import type { WeaponDefinition } from "../loots";
@@ -12,7 +12,7 @@ export class InventoryItemDefinitions<Def extends WeaponDefinition> extends Obje
     constructor(definitions: readonly Def[]) {
         super(
             definitions.map(i => {
-                (i as Mutable<Def>).speedMultiplier *= GameConstants.defaultSpeedModifiers[i.defType];
+                (i as Mutable<Def>).speedMultiplier *= g.defaultSpeedModifiers[i.defType];
 
                 return i;
             })

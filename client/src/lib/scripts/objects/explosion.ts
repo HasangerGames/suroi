@@ -1,6 +1,6 @@
 import { isMobile } from "pixi.js";
 import { dev } from "$app/environment";
-import { GameConstants, Layer, ZIndexes } from "$common/constants";
+import { Layer, ZIndexes } from "$common/constants";
 import { type ExplosionDefinition } from "$common/definitions/explosions";
 import { adjacentOrEqualLayer } from "$common/utils/layer";
 import { EaseFunctions } from "$common/utils/math";
@@ -13,6 +13,7 @@ import { CameraManager } from "../managers/cameraManager";
 import { MapManager } from "../managers/mapManager";
 import { ParticleManager } from "../managers/particleManager";
 import { SoundManager } from "../managers/soundManager";
+import { g } from "../utils/config";
 import { DIFF_LAYER_HITBOX_OPACITY, SHOCKWAVE_EXPLOSION_MULTIPLIERS } from "../utils/constants";
 import { DebugRenderer } from "../utils/debugRenderer";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
@@ -44,7 +45,7 @@ export function explosion(definition: ExplosionDefinition, position: Vector, lay
 
             const alpha = layer === Game.layer ? 1 : DIFF_LAYER_HITBOX_OPACITY;
 
-            const step = Math.acos(1 - ((GameConstants.explosionRayDistance / definition.radius.max) ** 2) / 2);
+            const step = Math.acos(1 - ((g.explosionRayDistance / definition.radius.max) ** 2) / 2);
 
             for (let angle = -Math.PI; angle < Math.PI; angle += step) {
                 DebugRenderer

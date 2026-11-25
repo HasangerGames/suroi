@@ -1,6 +1,6 @@
 import { Container, Graphics } from "pixi.js";
 import { dev } from "$app/environment";
-import { GameConstants, Layer, ObjectCategory, ZIndexes } from "$common/constants";
+import { Layer, ObjectCategory, ZIndexes } from "$common/constants";
 import { type BuildingDefinition, type BuildingImageDefinition } from "$common/definitions/buildings";
 import { MaterialSounds } from "$common/definitions/obstacles";
 import { type Orientation } from "$common/typings";
@@ -14,6 +14,7 @@ import { GameConsole } from "../console/gameConsole";
 import { Game } from "../game";
 import { ParticleManager } from "../managers/particleManager";
 import { type GameSound, SoundManager } from "../managers/soundManager";
+import { g } from "../utils/config";
 import { DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS, LAYER_TRANSITION_DELAY, PIXI_SCALE } from "../utils/constants";
 import { DebugRenderer } from "../utils/debugRenderer";
 import { drawGroundGraphics, SuroiSprite, toPixiCoords } from "../utils/pixi";
@@ -81,7 +82,7 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
             visible = false;
         } else {
             // Otherwise, we do some raycasting to check
-            const visionSize = GameConstants.player.buildingVisionSize;
+            const visionSize = g.player.buildingVisionSize;
             const rayStart = player.position;
             const playerHitbox = new CircleHitbox(visionSize, rayStart);
             const halfPi = Math.PI / 2;

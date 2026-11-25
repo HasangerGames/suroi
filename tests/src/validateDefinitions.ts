@@ -2,7 +2,7 @@ import { Perks } from "$common/definitions/items/perks";
 import { Modes, type ModeName } from "$common/definitions/gameModes";
 import { HitboxType, RectangleHitbox } from "$common/utils/hitbox";
 import { Config as ClientConfig } from "../../client/src/scripts/config";
-import { FireMode, GameConstants, Layers, RotationMode } from "../../common/src/constants";
+import { FireMode, Layers, RotationMode } from "../../common/src/constants";
 import { Buildings } from "../../common/src/definitions/buildings";
 import { Bullets } from "../../common/src/definitions/bullets";
 import { Decals } from "../../common/src/definitions/decals";
@@ -3560,7 +3560,7 @@ logger.indent("Validating throwables", () => {
                     obj: physics,
                     field: "maxThrowDistance",
                     min: 0,
-                    max: GameConstants.player.maxMouseDist,
+                    max: g.player.maxMouseDist,
                     includeMin: true,
                     includeMax: true,
                     baseErrorPath: errorPath

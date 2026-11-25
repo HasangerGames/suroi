@@ -1,8 +1,5 @@
-import z from "zod";
-import { ClientConfig } from "$common/schemas/config/clientConfig";
+import type { ClientAndGeneralConfig } from "../../../../vite/config-plugin";
 
-const parsedConfig = ClientConfig.safeParse((await import("../../../../config.json")).default);
-if (parsedConfig.error) {
-    throw new Error(`Unable to parse client config. Details:\n${z.prettifyError(parsedConfig.error)}`);
-}
-export const Config = parsedConfig.data;
+const config = (await import("virtual:suroi-config")).default as ClientAndGeneralConfig;
+export const c = config.client;
+export const g = config.general;

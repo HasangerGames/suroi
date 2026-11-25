@@ -8,6 +8,7 @@ import { defineConfig } from "vite";
 import { audioSpritesheet } from "./vite/audio-spritesheet-plugin";
 import { imageSpritesheet } from "./vite/image-spritesheet-plugin";
 import { teamSocket } from "./vite/team-socket-plugin";
+import { suroiConfig } from "./vite/config-plugin";
 
 export default defineConfig({
     server: {
@@ -46,6 +47,7 @@ export default defineConfig({
 			    "$common/*": "../common/src/*"
 		    }
 		}),
+        suroiConfig(),
         imageSpritesheet(),
         audioSpritesheet(),
         teamSocket(),

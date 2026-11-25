@@ -1,12 +1,13 @@
-import { GameConstants, Layer } from "$common/constants";
+import { BlurFilter } from "pixi.js";
+import { Layer } from "$common/constants";
 import { Geometry } from "$common/utils/math";
 import { Vec, type Vector } from "$common/utils/vector";
 import { Game } from "../game";
 import { CameraManager } from "../managers/cameraManager";
-import { SoundManager, type GameSound } from "../managers/soundManager";
+import { type GameSound, SoundManager } from "../managers/soundManager";
+import { g } from "../utils/config";
 import { PIXI_SCALE } from "../utils/constants";
 import { SuroiSprite } from "../utils/pixi";
-import { BlurFilter } from "pixi.js";
 
 export class Plane {
     readonly startPosition: Vector;
@@ -16,14 +17,14 @@ export class Plane {
 
     readonly startTime = Date.now();
 
-    static readonly maxDistanceSquared = (GameConstants.maxPosition * 2) ** 2;
+    static readonly maxDistanceSquared = (g.maxPosition * 2) ** 2;
 
     constructor(startPosition: Vector, direction: number) {
         this.startPosition = startPosition;
 
         this.endPosition = Vec.add(
             this.startPosition,
-            Vec.fromPolar(direction, GameConstants.maxPosition * 2)
+            Vec.fromPolar(direction, g.maxPosition * 2)
         );
 
         this.image = new SuroiSprite("airdrop_plane")
@@ -55,7 +56,7 @@ export class Plane {
         const position = this.sound.position = Vec.lerp(
             this.startPosition,
             this.endPosition,
-            (Date.now() - this.startTime) / (GameConstants.airdrop.flyTime * 2)
+            (Date.now() - this.startTime) / (g.airdrop.flyTime * 2)
         );
 
         this.image.setVPos(Vec.scale(position, PIXI_SCALE));

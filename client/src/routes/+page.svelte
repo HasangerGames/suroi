@@ -5,7 +5,7 @@
   import { browser } from "$app/env";
   import { invalidate } from "$app/navigation";
   import { asset } from "$app/paths";
-  import { GAME_VERSION, GameConstants } from "$common/constants";
+  import { GAME_VERSION } from "$common/constants";
   import { getBadgeIdString, isEmoteBadge } from "$common/definitions/emotes";
   import { GameModes } from "$common/definitions/gameModes";
   import { GameMode, Region, TeamMode } from "$common/schemas/misc";
@@ -18,14 +18,14 @@
   import { m } from "$lib/paraglide/messages";
   import { randomMarqueeText } from "$lib/scripts/data/marqueeTexts";
   import { CustomTeamManager } from "$lib/scripts/managers/customTeamManager.svelte";
-  import { Config } from "$lib/scripts/utils/config";
+  import { c, g } from "$lib/scripts/utils/config";
   import { LegacyBridge } from "$lib/scripts/utils/legacyBridge";
   import { millisToTime } from "$lib/scripts/utils/misc";
 
   export const MenuUi = new (class MenuUi {
     state = $state<"menu" | "connecting" | "inGame">("menu");
 
-    skinIdString = $state(GameConstants.player.defaultSkin);
+    skinIdString = $state(g.player.defaultSkin);
 
     nickname = $state<string>();
     nicknameEditMode = $state(false);
@@ -38,7 +38,7 @@
     connectingText = $state<string>();
     serverError = $state<string>();
 
-    newRegion = $state<Region>(Config.defaultRegion);
+    newRegion = $state<Region>(s.defaultRegion);
     newGameMode = $state<GameMode>("normal");
     newTeamMode = $state<TeamMode>("solo");
 
@@ -98,10 +98,10 @@
         .replace("\n", "");
 
       if (MenuUi.nickname.trim().length === 0) {
-        MenuUi.nickname = GameConstants.player.defaultName;
+        MenuUi.nickname = g.player.defaultName;
       }
 
-      MenuUi.nickname = MenuUi.nickname.slice(0, GameConstants.player.nameMaxLength);
+      MenuUi.nickname = MenuUi.nickname.slice(0, g.player.nameMaxLength);
       LegacyBridge.setBuiltInCVar("cv_player_name", MenuUi.nickname);
     }
   });
@@ -243,7 +243,7 @@
             }[teamMode]}
             size={8}
           />
-          <span class="text-2xl">{Config.regions[region].flag}</span>
+          <span class="text-2xl">{c.regions[region].flag}</span>
         {/snippet}
 
         <label style={gameModeStyle(MenuUi.newGameMode)}>
@@ -269,7 +269,7 @@
               </select>
 
               <select bind:value={MenuUi.newRegion}>
-                {#each Object.keys(Config.regions) as region}
+                {#each Object.keys(c.regions) as region}
                   <option value={region}>
                     {m[`region_${region as Region}`]()}
                   </option>
@@ -325,7 +325,7 @@
       <!-- Play & Spectate buttons -->
       {#if MenuUi.selectedGameId !== undefined}
         <div transition:slide class="w-full flex gap-2 text-xl">
-          <button class="button bg-blue-600 grow justify-center" onclick={() => LegacyBridge.play(data.games)}>{MenuUi.playButtonText}</button>
+          <button class="button bg-blue-600 grow justify-center" onclick={() => LegacyBridge.play()}>{MenuUi.playButtonText}</button>
           <button class="button bg-gray-600" disabled>{m.spectate()}</button>
         </div>
       {/if}

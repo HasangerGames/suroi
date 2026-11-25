@@ -7132,7 +7132,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         idString: "dummy",
         name: "Dummy",
         defType: DefinitionType.Obstacle,
-        hitbox: new CircleHitbox(GameConstants.player.radius),
+        hitbox: new CircleHitbox(g.player.radius),
         rotationMode: RotationMode.Limited,
         material: "trash_bag",
         health: 100,

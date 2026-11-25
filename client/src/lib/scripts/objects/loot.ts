@@ -1,5 +1,5 @@
 import { dev } from "$app/environment";
-import { GameConstants, ObjectCategory, ZIndexes } from "$common/constants";
+import { ObjectCategory, ZIndexes } from "$common/constants";
 import { ArmorType } from "$common/definitions/items/armors";
 import { type LootDefinition } from "$common/definitions/loots";
 import { CircleHitbox } from "$common/utils/hitbox";
@@ -10,6 +10,7 @@ import { GameConsole } from "../console/gameConsole";
 import { Game } from "../game";
 import { PerkManager } from "../managers/perkManager";
 import { UIManager } from "../managers/uiManager";
+import { g } from "../utils/config";
 import { DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS } from "../utils/constants";
 import { DebugRenderer } from "../utils/debugRenderer";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
@@ -102,7 +103,7 @@ export class Loot extends GameObject.derive(ObjectCategory.Loot) {
             }
             if (scale) this.images.item.setScale(scale);
 
-            this.hitbox = new CircleHitbox(GameConstants.loot.radius[defType]);
+            this.hitbox = new CircleHitbox(g.loot.radius[defType]);
 
             /*
                 Infinity is serialized as 0 in the bit stream
@@ -233,7 +234,7 @@ export class Loot extends GameObject.derive(ObjectCategory.Loot) {
                 return (!weapons[0] && !(lockedSlots & 0b01))
                     || (!weapons[1] && !(lockedSlots & 0b10))
                     || (
-                        GameConstants.player.inventorySlotTypings[activeWeaponIndex] === "gun"
+                        g.player.inventorySlotTypings[activeWeaponIndex] === "gun"
                         && definition !== weapons[activeWeaponIndex]?.definition
                         && !(lockedSlots & (1 << activeWeaponIndex))
                     );

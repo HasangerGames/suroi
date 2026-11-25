@@ -264,7 +264,7 @@ export class GameMap {
         const halfHeight = this.height / 2;
         const center = Vec(halfWidth, halfHeight);
 
-        const padding = isTrail ? GameConstants.trailPadding : this.oceanSize / 2;
+        const padding = isTrail ? g.trailPadding : this.oceanSize / 2;
         const width = this.width - padding;
         const height = this.height - padding;
         const bounds = new RectangleHitbox(

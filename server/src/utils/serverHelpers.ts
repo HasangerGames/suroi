@@ -1,7 +1,7 @@
 import { PunishmentMessage } from "$common/typings";
 import { ColorStyles, Logger, styleText } from "$common/utils/logging";
 import { Numeric } from "$common/utils/math";
-import { Config } from "./config";
+import { s } from "./config";
 
 export function serverLog(...message: unknown[]): void {
     Logger.log(styleText("[Server]", ColorStyles.foreground.magenta.normal), ...message);
@@ -30,8 +30,8 @@ export const corsHeaders = {
 
 export function getIP(req: Bun.BunRequest, res: Bun.Server<unknown>): string {
     return (
-        Config.ipHeader
-            ? req.headers.get(Config.ipHeader)
+        s.ipHeader
+            ? req.headers.get(s.ipHeader)
             : res.requestIP(req)?.address
     ) ?? "";
 }
@@ -52,10 +52,10 @@ interface Punishment {
 }
 
 export async function getPunishment(ip: string): Promise<PunishmentMessage | undefined> {
-    if (!Config.apiServer) return;
+    if (!s.apiServer) return;
 
-    const url = Config.apiServer.url;
-    const opts: RequestInit = { headers: { "api-key": Config.apiServer.apiKey } };
+    const url = s.apiServer.url;
+    const opts: RequestInit = { headers: { "api-key": s.apiServer.apiKey } };
 
     try {
         // Check for VPN/proxy
@@ -92,12 +92,12 @@ export function parseRole(searchParams: URLSearchParams): { readonly role?: stri
     if (
         password !== null
         && givenRole !== null
-        && Config.roles
-        && givenRole in Config.roles
-        && Config.roles[givenRole].password === password
+        && s.roles
+        && givenRole in s.roles
+        && s.roles[givenRole].password === password
     ) {
         role = givenRole;
-        isDev = Config.roles[givenRole].isDev ?? false;
+        isDev = s.roles[givenRole].isDev ?? false;
 
         if (isDev) {
             try {

@@ -239,10 +239,10 @@ export class Projectile extends BaseGameObject.derive(ObjectCategory.Projectile)
             this._height = height;
         } else {
             if (this._height > 0) {
-                this._velocityZ -= GameConstants.projectiles.gravity * dt;
+                this._velocityZ -= g.projectiles.gravity * dt;
             }
             this._height += this._velocityZ * dt;
-            this._height = Numeric.clamp(this._height, 0, GameConstants.projectiles.maxHeight);
+            this._height = Numeric.clamp(this._height, 0, g.projectiles.maxHeight);
         }
 
         const onFloor = this._height <= 0;
@@ -250,7 +250,7 @@ export class Projectile extends BaseGameObject.derive(ObjectCategory.Projectile)
         const onWater = onFloor && !!FloorTypes[floorType].overlay;
         const onIce = onFloor && FloorTypes[floorType].slippery;
 
-        const drag = this.definition.physics.drag ?? GameConstants.projectiles.drag;
+        const drag = this.definition.physics.drag ?? g.projectiles.drag;
         // apply more friction based on being on top of something (ground or obstacle) or on water
         let speedDrag: number = drag.air;
         if (onWater) speedDrag = drag.water;

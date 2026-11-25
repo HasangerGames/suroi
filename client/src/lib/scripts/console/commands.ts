@@ -8,7 +8,7 @@
  */
 
 import { Rectangle, Sprite } from "pixi.js";
-import { GameConstants, InputActions, SpectateActions } from "$common/constants";
+import { InputActions, SpectateActions } from "$common/constants";
 import { type HealingItemDefinition, HealingItems } from "$common/definitions/items/healingItems";
 import { type ScopeDefinition, Scopes } from "$common/definitions/items/scopes";
 import { Throwables } from "$common/definitions/items/throwables";
@@ -29,6 +29,7 @@ import { UIManager } from "../managers/uiManager";
 import { requestFullscreen, sanitizeHTML, stringify } from "../utils/misc";
 import { GameConsole, type PossibleError, type Stringable } from "./gameConsole";
 import { Casters, ConVar } from "./variables";
+import { g } from "../utils/config";
 
 export type CommandExecutor<ErrorType> = (
     ...args: Array<string | undefined>
@@ -327,12 +328,12 @@ export function setUpCommands(): void {
 
             let index = Numeric.absMod(
                 UIManager.inventory.activeWeaponIndex + step.res,
-                GameConstants.player.maxWeapons
+                g.player.maxWeapons
             );
 
             let iterationCount = 0;
             while (!UIManager.inventory.weapons[index]) {
-                index = Numeric.absMod(index + step.res, GameConstants.player.maxWeapons);
+                index = Numeric.absMod(index + step.res, g.player.maxWeapons);
 
                 /*
                     If, through some weirdness/oversight, the while loop were
@@ -569,7 +570,7 @@ export function setUpCommands(): void {
 
                 InputManager.cycleThrowable(step.res);
             } else {
-                const throwableSlot = GameConstants.player.inventorySlotTypings.findIndex(slot => slot === "throwable");
+                const throwableSlot = g.player.inventorySlotTypings.findIndex(slot => slot === "throwable");
 
                 if (throwableSlot !== -1) {
                     InputManager.addAction({
@@ -1702,7 +1703,7 @@ export function setUpCommands(): void {
     //         const data = {
     //             version: APP_VERSION,
     //             api_url: API_URL,
-    //             client_protocol_version: GameConstants.protocolVersion,
+    //             client_protocol_version: g.protocolVersion,
     //             pixi: {
     //                 version: VERSION,
     //                 renderer_info: {

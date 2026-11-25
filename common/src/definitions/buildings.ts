@@ -1067,7 +1067,7 @@ const container = (
                 // gas can container has the same snow decals as the closed damaged variant
             // ..._snowDecalDefinitions[variant === "gas_can" ? "closed_damaged" : variant] // TEMP. Remove when winter ends. FIX ME IM A MESS
             // TODO Detect mode somehow
-            // ...(GameConstants.modeName === "winter" ? snowDecalDefinitions[open] : [])
+            // ...(g.modeName === "winter" ? snowDecalDefinitions[open] : [])
         ],
         floorImages: [
             ...(variant.includes("closed") ? [] : [{

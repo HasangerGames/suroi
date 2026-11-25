@@ -1,6 +1,6 @@
 import type { Plugin, ViteDevServer } from "vite";
 import WebSocket, { WebSocketServer } from "ws";
-import { GameConstants } from "../../common/src/constants";
+import { g } from "$lib/scripts/utils/config";
 import { Badges } from "../../common/src/definitions/badges";
 import { Skins } from "../../common/src/definitions/items/skins";
 import { type CustomTeamMessage, CustomTeamMessages, type CustomTeamPlayerInfo } from "../../common/src/typings";
@@ -224,9 +224,9 @@ export function teamSocket(): Plugin {
                 }
 
                 // Get name, skin, badge, & role
-                // const name = punishmentMessage === "noname" ? GameConstants.player.defaultName : cleanUsername(searchParams.get("name"));
-                const name = searchParams.get("name") ?? GameConstants.player.defaultName;
-                let skin = searchParams.get("skin") ?? GameConstants.player.defaultSkin;
+                // const name = punishmentMessage === "noname" ? g.player.defaultName : cleanUsername(searchParams.get("name"));
+                const name = searchParams.get("name") ?? g.player.defaultName;
+                let skin = searchParams.get("skin") ?? g.player.defaultSkin;
                 let badge = searchParams.get("badge") ?? undefined;
                 // const { role = "", nameColor } = parseRole(searchParams);
                 let nameColor: number | undefined;
@@ -239,7 +239,7 @@ export function teamSocket(): Plugin {
                 const skinDefinition = Skins.fromStringSafe(skin);
                 // const rolesRequired = skinDefinition?.rolesRequired;
                 if (!skinDefinition/* || (rolesRequired && !rolesRequired.includes(role))*/) {
-                    skin = GameConstants.player.defaultSkin;
+                    skin = g.player.defaultSkin;
                 }
 
                 // Validate badge

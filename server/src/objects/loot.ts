@@ -73,7 +73,7 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
         this.definition = Loots.reify(basis);
         this.itemData = data;
 
-        this.hitbox = new CircleHitbox(GameConstants.loot.radius[this.definition.defType], Vec.clone(position));
+        this.hitbox = new CircleHitbox(g.loot.radius[this.definition.defType], Vec.clone(position));
         this.layer = layer;
 
         if ((this._count = count ?? 1) <= 0) {
@@ -130,7 +130,7 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
         };
 
         this.position = Vec.add(this.position, calculateSafeDisplacement());
-        const drag = FloorTypes[floorType].slippery ? GameConstants.loot.iceDrag : GameConstants.loot.drag;
+        const drag = FloorTypes[floorType].slippery ? g.loot.iceDrag : g.loot.drag;
         this.velocity = Vec.scale(this.velocity, 1 / (1 + dt * drag));
 
         this.position = Vec.add(this.position, calculateSafeDisplacement());
@@ -214,7 +214,7 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
                 return (!inventory.hasWeapon(0) && !inventory.isLocked(0)) // slot 0 available and not locked
                     || (!inventory.hasWeapon(1) && !inventory.isLocked(1)) // slot 1 available and not locked
                     || ( // active slot is a gun slot with a gun different from this loot's
-                        GameConstants.player.inventorySlotTypings[activeWeaponIndex] === "gun"
+                        g.player.inventorySlotTypings[activeWeaponIndex] === "gun"
                         && definition !== inventory.activeWeapon.definition
                         && !inventory.isLocked(activeWeaponIndex)
                     );
@@ -390,7 +390,7 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
                 }
 
                 // Swap to gun slot if current slot is melee
-                if (GameConstants.player.inventorySlotTypings[inventory.activeWeaponIndex] === "melee") {
+                if (g.player.inventorySlotTypings[inventory.activeWeaponIndex] === "melee") {
                     inventory.setActiveWeaponIndex(slot);
                 }
                 break;

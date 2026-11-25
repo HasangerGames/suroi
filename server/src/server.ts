@@ -7,7 +7,7 @@ import { PunishmentMessage } from "$common/typings";
 import { version } from "../../package.json";
 import { MapName } from "./data/maps";
 import { GameContainer, GameManager } from "./gameManager";
-import { Config } from "./utils/config";
+import { s } from "./utils/config";
 import { memoryUsageMb } from "./utils/misc";
 import { corsHeaders, getIP, getPunishment, getSearchParams, serverError, serverLog } from "./utils/serverHelpers";
 
@@ -61,8 +61,8 @@ if (Cluster.isPrimary && require.main === module) {
     globalThis.initialSetupComplete = true;
 
     Bun.serve({
-        hostname: Config.hostname,
-        port: Config.mainPort,
+        hostname: s.hostname,
+        port: s.mainPort,
         routes: {
             "/api/serverInfo": async(req, res) => {
                 let punishment: PunishmentMessage | undefined;
@@ -71,7 +71,7 @@ if (Cluster.isPrimary && require.main === module) {
                 }
 
                 return Response.json({
-                    protocolVersion: GameConstants.protocolVersion,
+                    protocolVersion: g.protocolVersion,
                     playerCount: gameManager.playerCount,
                     punishment
                 }, corsHeaders);
@@ -99,6 +99,6 @@ if (Cluster.isPrimary && require.main === module) {
 
     process.stdout.write("\x1Bc"); // clears screen
     serverLog(`Suroi Server v${version}`);
-    serverLog(`Listening on ${Config.hostname}:${Config.mainPort}`);
+    serverLog(`Listening on ${s.hostname}:${s.mainPort}`);
     serverLog("Press Ctrl+C to exit.");
 }

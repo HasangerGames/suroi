@@ -36,7 +36,7 @@ export class Explosion {
         const objects = this.game.grid.intersectsHitbox(new CircleHitbox(definition.radius.max * 2, this.position), this.layer);
         const damagedObjects = new Set<number>();
 
-        const step = Math.acos(1 - ((GameConstants.explosionRayDistance / definition.radius.max) ** 2) / 2);
+        const step = Math.acos(1 - ((g.explosionRayDistance / definition.radius.max) ** 2) / 2);
 
         for (let angle = -Math.PI; angle < Math.PI; angle += step) {
             // All objects that collided with this line

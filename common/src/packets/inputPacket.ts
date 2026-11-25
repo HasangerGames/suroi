@@ -113,7 +113,7 @@ export const InputPacket = new Packet<InputData>(PacketType.Input, {
 
         if (turning) {
             stream.writeRotation2(data.rotation);
-            stream.writeFloat(data.distanceToMouse, 0, GameConstants.player.maxMouseDist, 2);
+            stream.writeFloat(data.distanceToMouse, 0, g.player.maxMouseDist, 2);
         }
 
         stream.writeArray(data.actions, action => {
@@ -184,7 +184,7 @@ export const InputPacket = new Packet<InputData>(PacketType.Input, {
             data.rotation = stream.readRotation2();
             (
                 data as DeepMutable<InputData & { turning: true }>
-            ).distanceToMouse = stream.readFloat(0, GameConstants.player.maxMouseDist, 2);
+            ).distanceToMouse = stream.readFloat(0, g.player.maxMouseDist, 2);
         }
 
         // Actions

@@ -7,7 +7,7 @@ import { GamePlugin } from "../pluginManager";
 export default class SpeedTogglePlugin extends GamePlugin {
     protected override initListeners(): void {
         this.on("player_did_emote", ({ player }) => {
-            const baseSpeed = GameConstants.player.baseSpeed;
+            const baseSpeed = g.player.baseSpeed;
 
             if (player.baseSpeed === baseSpeed) {
                 player.baseSpeed = 12 * baseSpeed;

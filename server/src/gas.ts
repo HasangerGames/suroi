@@ -1,12 +1,12 @@
 import { GameConstants, GasState, MapObjectSpawnMode } from "$common/constants";
+import { MapPing, MapPings } from "$common/definitions/mapPings";
 import { CircleHitbox } from "$common/utils/hitbox";
 import { Geometry, Numeric } from "$common/utils/math";
 import { randomPointInsideCircle } from "$common/utils/random";
 import { Vec, type Vector } from "$common/utils/vector";
-import { Config } from "./utils/config";
 import { GasStage, GasStages } from "./data/gasStages";
 import { Game } from "./game";
-import { MapPing, MapPings } from "$common/definitions/mapPings";
+import { s } from "./utils/config";
 import { runOrWait } from "./utils/misc";
 
 export class Gas {
@@ -73,11 +73,11 @@ export class Gas {
 
     scaledDamage(position: Vector): number {
         const distIntoGas = Geometry.distance(position, this.currentPosition) - this.currentRadius;
-        return this.dps + Numeric.clamp(distIntoGas - GameConstants.gas.unscaledDamageDist, 0, Infinity) * GameConstants.gas.damageScaleFactor;
+        return this.dps + Numeric.clamp(distIntoGas - g.gas.unscaledDamageDist, 0, Infinity) * g.gas.damageScaleFactor;
     }
 
     advanceGasStage(): void {
-        const gas = Config.gas;
+        const gas = s.gas;
         if (gas?.disabled) return;
 
         const currentStage = GasStages[this.stage + 1];

@@ -1,7 +1,7 @@
 import $ from "jquery";
 import nipplejs, { type JoystickOutputData } from "nipplejs";
 import { isMobile } from "pixi.js";
-import { GameConstants, InputActions } from "$common/constants";
+import { InputActions } from "$common/constants";
 import { PerkIds } from "$common/definitions/items/perks";
 import { Scopes } from "$common/definitions/items/scopes";
 import { type ThrowableDefinition, Throwables } from "$common/definitions/items/throwables";
@@ -9,12 +9,12 @@ import { type WeaponDefinition } from "$common/definitions/loots";
 import { areDifferent, type InputAction, type InputData, InputPacket, type SimpleInputActions } from "$common/packets/inputPacket";
 import { PacketType } from "$common/packets/packet";
 import { Geometry, Numeric } from "$common/utils/math";
-import { DefinitionType, type ItemDefinition } from "$common/utils/objectDefinitions";
+import { type ItemDefinition } from "$common/utils/objectDefinitions";
 import { Vec } from "$common/utils/vector";
 import { GameConsole, type GameSettings, type PossibleError } from "../console/gameConsole";
 import { defaultBinds } from "../console/variables";
 import { Game } from "../game";
-import { Config } from "../utils/config";
+import { c, g } from "../utils/config";
 import { PIXI_SCALE } from "../utils/constants";
 import { html } from "../utils/misc";
 import { type TranslationKeys, translate } from "../utils/translations";
@@ -333,7 +333,7 @@ class InputManagerClass {
         this._initialized = true;
 
         // @ts-expect-error init code
-        this.isMobile = (isMobile.any && GameConsole.getBuiltInCVar("mb_controls_enabled")) || Config.forceMobile;
+        this.isMobile = (isMobile.any && GameConsole.getBuiltInCVar("mb_controls_enabled")) || c.forceMobile;
 
         const gameContainer = $("#game")[0];
 
@@ -446,7 +446,7 @@ class InputManagerClass {
 
                 const joystickSize = GameConsole.getBuiltInCVar("mb_joystick_size");
 
-                this.distanceToMouse = Numeric.remap(data.distance, 0, joystickSize / 2, 0, GameConstants.player.maxMouseDist);
+                this.distanceToMouse = Numeric.remap(data.distance, 0, joystickSize / 2, 0, g.player.maxMouseDist);
 
                 const activePlayer = Game.activePlayer;
                 if (!activePlayer) return;
@@ -907,7 +907,7 @@ class InputManagerClass {
         })).appendTo(this._keybindsContainer);
 
         // Change the weapons slots keybind text
-        for (let i = 0, maxWeapons = GameConstants.player.maxWeapons; i < maxWeapons; i++) {
+        for (let i = 0, maxWeapons = g.player.maxWeapons; i < maxWeapons; i++) {
             const slotKeybinds = this.binds.getInputsBoundToAction(i === 3 ? "equip_or_cycle_throwables 1" : `slot ${i}`).filter(a => a !== "").slice(0, 2);
             $(`#weapon-slot-${i + 1}`).children(".slot-number").text(slotKeybinds.join(" / "));
         }

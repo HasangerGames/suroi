@@ -1,6 +1,6 @@
 import $ from "jquery";
 import { Color } from "pixi.js";
-import { GameConstants, ObjectCategory } from "$common/constants";
+import { ObjectCategory } from "$common/constants";
 import { DEFAULT_INVENTORY } from "$common/defaultInventory";
 import { type BadgeDefinition } from "$common/definitions/badges";
 import { type EmoteDefinition, getBadgeIdString, isEmoteBadge } from "$common/definitions/emotes";
@@ -18,14 +18,14 @@ import type { ReportData } from "$common/packets/reportPacket";
 import { type PlayerData, type UpdateDataCommon } from "$common/packets/updatePacket";
 import { Numeric } from "$common/utils/math";
 import { ExtendedMap } from "$common/utils/misc";
-import { DefinitionType, type ReferenceTo } from "$common/utils/objectDefinitions";
+import { type ReferenceTo } from "$common/utils/objectDefinitions";
 import { pickRandomInArray } from "$common/utils/random";
 import { Vec, type Vector } from "$common/utils/vector";
 import { GameConsole } from "../console/gameConsole";
 import { Game } from "../game";
 import { type GameObject } from "../objects/gameObject";
 import { Player } from "../objects/player";
-import { Config } from "../utils/config";
+import { c, g } from "../utils/config";
 import { PERK_MESSAGE_FADE_TIME, TEAMMATE_COLORS } from "../utils/constants";
 import { formatDate, html } from "../utils/misc";
 import { SuroiSprite } from "../utils/pixi";
@@ -47,10 +47,10 @@ function safeRound(value: number): number {
  * This class manages the game UI
  */
 class UIManagerClass {
-    private maxHealth = GameConstants.player.defaultHealth;
-    private health = GameConstants.player.defaultHealth;
+    private maxHealth = g.player.defaultHealth;
+    private health = g.player.defaultHealth;
 
-    private maxAdrenaline = GameConstants.player.maxAdrenaline;
+    private maxAdrenaline = g.player.maxAdrenaline;
     private minAdrenaline = 0;
     private adrenaline = 0;
 
@@ -68,7 +68,7 @@ class UIManagerClass {
         scope: ScopeDefinition
     } = {
         activeWeaponIndex: 0,
-        weapons: new Array(GameConstants.player.maxWeapons).fill(undefined),
+        weapons: new Array(g.player.maxWeapons).fill(undefined),
         lockedSlots: 0,
         items: JSON.parse(JSON.stringify(DEFAULT_INVENTORY)) as typeof DEFAULT_INVENTORY,
         scope: DEFAULT_SCOPE
@@ -89,7 +89,7 @@ class UIManagerClass {
         if (!player) {
             console.warn(`Unknown player name with id ${id}`);
         } else if (GameConsole.getBuiltInCVar("cv_anonymize_player_names")) {
-            name = `${GameConstants.player.defaultName}_${id}`;
+            name = `${g.player.defaultName}_${id}`;
         } else {
             name = player.name;
         }
@@ -353,7 +353,7 @@ class UIManagerClass {
     }
 
     cancelAction(): void {
-        if (!Config.uiDebugMode) {
+        if (!c.uiDebugMode) {
             this.ui.actionContainer
                 .hide()
                 .stop();
@@ -638,7 +638,7 @@ class UIManagerClass {
             this.minAdrenaline = minMax.minAdrenaline;
             this.maxAdrenaline = minMax.maxAdrenaline;
 
-            if (this.maxHealth === GameConstants.player.defaultHealth) {
+            if (this.maxHealth === g.player.defaultHealth) {
                 this.ui.maxHealth.text("").hide();
             } else {
                 this.ui.maxHealth.text(safeRound(this.maxHealth)).show();
@@ -646,7 +646,7 @@ class UIManagerClass {
 
             const noMinAdren = this.minAdrenaline === 0;
             if (
-                this.maxAdrenaline === GameConstants.player.maxAdrenaline
+                this.maxAdrenaline === g.player.maxAdrenaline
                 && noMinAdren
             ) {
                 this.ui.minMaxAdren.text("").hide();
@@ -811,7 +811,7 @@ class UIManagerClass {
             this.updateWeapons();
         }
 
-        if (activeC4s !== undefined && !Config.uiDebugMode) {
+        if (activeC4s !== undefined && !c.uiDebugMode) {
             this.ui.c4Button.toggle(activeC4s);
             this.hasC4s = activeC4s;
         }
@@ -819,7 +819,7 @@ class UIManagerClass {
         if (perks) {
             const oldPerks = Array.from(PerkManager.perks);
             PerkManager.perks = perks;
-            for (let i = 0; i < GameConstants.player.maxPerks; i++) {
+            for (let i = 0; i < g.player.maxPerks; i++) {
                 const newPerk = perks[i];
 
                 if (newPerk === undefined) {
@@ -942,13 +942,13 @@ class UIManagerClass {
     }
 
     updateSlotLocks(): void {
-        const max = GameConstants.player.maxWeapons;
+        const max = g.player.maxWeapons;
         for (
             let i = 0;
             i < max;
             this._getSlotUI(i + 1).container.toggleClass(
                 "locked",
-                Config.uiDebugMode ? true : !!(this.inventory.lockedSlots & (1 << i))
+                c.uiDebugMode ? true : !!(this.inventory.lockedSlots & (1 << i))
             ), i++
         );
     }
@@ -959,7 +959,7 @@ class UIManagerClass {
         idString?: string
         ammo?: number
         hasAmmo?: boolean
-    } | undefined> = new Array<typeof this.weaponCache[number]>(GameConstants.player.maxWeapons);
+    } | undefined> = new Array<typeof this.weaponCache[number]>(g.player.maxWeapons);
 
     clearWeaponCache(): void {
         this.weaponCache.length = 0;
@@ -968,7 +968,7 @@ class UIManagerClass {
     updateWeaponSlots(force = false): void {
         const inventory = this.inventory;
 
-        for (let i = 0, max = GameConstants.player.maxWeapons; i < max; i++) {
+        for (let i = 0, max = g.player.maxWeapons; i < max; i++) {
             const weapon = inventory.weapons[i];
             const isNew = this.weaponCache[i] === undefined;
             const cache = this.weaponCache[i] ??= {};
@@ -1043,7 +1043,7 @@ class UIManagerClass {
                         ) {
                             frame += "_halloween";
                         }
-                        weaponImage = `url(./img/game/${definition.reskins?.includes(Game.gameMode) ? Game.gameMode : ""}/weapons/${frame}.svg)`;
+                        weaponImage = `url(./img/game/${definition.reskins?.includes(Game.gameMode ?? g.defaultMode) ? Game.gameMode : ""}/weapons/${frame}.svg)`;
                     }
 
                     if (!force) this._playSlotAnimation(container);
@@ -1101,14 +1101,14 @@ class UIManagerClass {
 
         container.children(".item-tooltip").html("");
         container.children(".item-image").attr("src", "");
-        container.css("visibility", Config.uiDebugMode ? "" : "hidden");
+        container.css("visibility", c.uiDebugMode ? "" : "hidden");
         container.off("pointerdown");
     }
 
     readonly _perkSlots: Array<JQuery<HTMLDivElement> | undefined> = [];
     private readonly _animationTimeouts: Array<number | undefined> = [];
     updatePerkSlot(perkDef: PerkDefinition, index: number): void {
-        if (index > GameConstants.player.maxPerks) index = 0; // overwrite stuff ig?
+        if (index > g.player.maxPerks) index = 0; // overwrite stuff ig?
         // no, write a hud that can handle it
 
         if (perkDef.hideInHUD) {
@@ -1221,7 +1221,7 @@ class UIManagerClass {
                 itemSlot.toggleClass("full", count >= backpack.maxCapacity[item]);
             }
 
-            const isPresent = count > 0 || Config.uiDebugMode;
+            const isPresent = count > 0 || c.uiDebugMode;
 
             itemSlot.toggleClass("has-item", isPresent);
 
@@ -1231,7 +1231,7 @@ class UIManagerClass {
                 itemSlot.css("visibility", isPresent ? "visible" : "hidden");
             }
 
-            if (itemDef.defType === "scope" && !Config.uiDebugMode) {
+            if (itemDef.defType === "scope" && !c.uiDebugMode) {
                 itemSlot.toggle(isPresent).removeClass("active");
             }
         }
@@ -1278,7 +1278,7 @@ class UIManagerClass {
             easing: "ease-in"
         });
 
-        if (!Config.uiDebugMode) {
+        if (!c.uiDebugMode) {
             let iterationCount = 0;
             while (this.ui.killFeed.children().length > 5) {
                 if (++iterationCount === 1e3) {
@@ -1358,7 +1358,7 @@ class UIManagerClass {
         const gotKillCredit = creditedId !== undefined ? activeId === creditedId : activeId === attackerId;
         const grenadeImpactKill = (
             weaponPresent
-            && weaponUsed.defType !== DefinitionType.Explosion
+            && weaponUsed.defType !== "explosion"
             && weaponUsed.defType === "throwable"
         )
             ? translate("kf_impact_of")
@@ -1899,7 +1899,7 @@ class TeammateIndicatorUI {
     private readonly _colorIndex = new Wrapper<number>(0);
     get colorIndex(): number { return this._colorIndex.value; }
 
-    private readonly _name = new Wrapper<string>(GameConstants.player.defaultName);
+    private readonly _name = new Wrapper<string>(g.player.defaultName);
     get name(): string { return this._name.value; }
 
     private readonly _hasColor = new Wrapper<boolean>(false);

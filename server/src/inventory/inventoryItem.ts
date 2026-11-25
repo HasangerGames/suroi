@@ -45,7 +45,7 @@ export abstract class InventoryItemBase<Type extends WeaponType = WeaponType> ex
          */
         readonly owner: Player;
 
-        private readonly _modifiers = structuredClone(GameConstants.player.defaultModifiers);
+        private readonly _modifiers = structuredClone(g.player.defaultModifiers);
 
         /**
          * Returns a clone
@@ -187,7 +187,7 @@ export abstract class InventoryItemBase<Type extends WeaponType = WeaponType> ex
             if (!wearerAttributes) return;
 
             const { active, passive, on } = wearerAttributes;
-            const newModifiers = structuredClone(GameConstants.player.defaultModifiers);
+            const newModifiers = structuredClone(g.player.defaultModifiers);
 
             const applyModifiers = (modifiers: WearerAttributes): void => {
                 newModifiers.maxHealth *= modifiers.maxHealth ?? 1;

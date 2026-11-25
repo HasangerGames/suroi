@@ -1,15 +1,15 @@
-import { GameConstants } from "$common/constants";
-import { Armors, ArmorType, type ArmorDefinition } from "$common/definitions/items/armors";
-import { Loots, type LootDefinition } from "$common/definitions/loots";
+import $ from "jquery";
+import { type ArmorDefinition, Armors, ArmorType } from "$common/definitions/items/armors";
+import { type LootDefinition, Loots } from "$common/definitions/loots";
 import { DebugPacket } from "$common/packets/debugPacket";
 import { PacketType } from "$common/packets/packet";
 import { Numeric } from "$common/utils/math";
 import type { ObjectDefinition } from "$common/utils/objectDefinitions";
-import $ from "jquery";
 import { GameConsole } from "../console/gameConsole";
 import type { BooleanCVars, CVarTypeMapping, NumberCVars } from "../console/variables";
 import { Game } from "../game";
 import { UIManager } from "../managers/uiManager";
+import { g } from "./config";
 import { FloatingWindow } from "./floatingWindow";
 
 export class DebugMenu extends FloatingWindow<{ readonly content: JQuery<HTMLDivElement> }> {
@@ -85,7 +85,7 @@ export class DebugMenu extends FloatingWindow<{ readonly content: JQuery<HTMLDiv
         this._createSlider({
             label: "Speed:",
             sliderCVar: "db_speed_override",
-            defaultVal: GameConstants.player.baseSpeed,
+            defaultVal: g.player.baseSpeed,
             min: 0.001,
             max: 0.2,
             step: 0.001

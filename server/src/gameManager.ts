@@ -5,7 +5,7 @@ import { random, randomId } from "$common/utils/random";
 import { MapName } from "./data/maps";
 import { Game } from "./game";
 import { PlayerSocketData } from "./objects/player";
-import { Config } from "./utils/config";
+import { s } from "./utils/config";
 import { modeFromMap } from "./utils/misc";
 import { getIP, getPunishment, getSearchParams, parseRole, RateLimiter, serverLog } from "./utils/serverHelpers";
 
@@ -81,7 +81,7 @@ export class GameManager {
     readonly availablePorts: number[];
 
     constructor() {
-        const [minPort, maxPort] = Config.gamePortRange;
+        const [minPort, maxPort] = s.gamePortRange;
         const numPorts = maxPort - minPort;
         this.availablePorts = new Array(numPorts);
         for (let i = 0; i < numPorts; i++) {
@@ -98,7 +98,7 @@ export class GameManager {
 
     newGame(map: MapName, teamMode: TeamMode): Promise<GameContainer | undefined> {
         return new Promise<GameContainer | undefined>(resolve => {
-            if (this.games.size >= Config.maxGames || this.availablePorts.length === 0) {
+            if (this.games.size >= s.maxGames || this.availablePorts.length === 0) {
                 resolve(undefined);
                 return;
             }
@@ -137,7 +137,7 @@ if (!Cluster.isPrimary) {
         game.exit("Game crashed", "Crashed!", 1);
     });
 
-    const { maxSimultaneousConnections, maxJoinAttempts } = Config;
+    const { maxSimultaneousConnections, maxJoinAttempts } = s;
     const simultaneousConnections = maxSimultaneousConnections
         ? new RateLimiter(maxSimultaneousConnections)
         : undefined;
@@ -146,7 +146,7 @@ if (!Cluster.isPrimary) {
         : undefined;
 
     Bun.serve({
-        hostname: Config.hostname,
+        hostname: s.hostname,
         port,
         routes: {
             "/": async(req, res) => {
@@ -216,5 +216,5 @@ if (!Cluster.isPrimary) {
     });
 
     game.setGameData({ allowJoin: true });
-    game.log(`Listening on ${Config.hostname}:${port}`);
+    game.log(`Listening on ${s.hostname}:${port}`);
 }

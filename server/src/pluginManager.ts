@@ -1,22 +1,22 @@
 import { type InventoryMessages, type Layer } from "$common/constants";
 import { type BuildingDefinition } from "$common/definitions/buildings";
+import { EmoteDefinition } from "$common/definitions/emotes";
 import type { LootDefinition } from "$common/definitions/loots";
 import { type PlayerPing } from "$common/definitions/mapPings";
 import { type ObstacleDefinition } from "$common/definitions/obstacles";
 import { type InputData } from "$common/packets/inputPacket";
 import { type JoinData } from "$common/packets/joinPacket";
-import { PlayerModifiers, type Orientation } from "$common/typings";
+import { type Orientation, PlayerModifiers } from "$common/typings";
 import { ExtendedMap } from "$common/utils/misc";
 import { Vector } from "$common/utils/vector";
-import { Config } from "./utils/config";
 import { Airdrop, Game } from "./game";
 import type { InventoryItem } from "./inventory/inventory";
 import { Building } from "./objects/building";
 import { DamageParams } from "./objects/gameObject";
-import { Loot, type ItemData } from "./objects/loot";
+import { type ItemData, Loot } from "./objects/loot";
 import { Obstacle } from "./objects/obstacle";
 import { Player } from "./objects/player";
-import { EmoteDefinition } from "$common/definitions/emotes";
+import { s } from "./utils/config";
 
 interface PlayerDamageEvent extends DamageParams {
     readonly player: Player
@@ -783,9 +783,9 @@ export class PluginManager {
     }
 
     async loadPlugins(): Promise<void> {
-        if (!Config.plugins?.length) return;
+        if (!s.plugins?.length) return;
 
-        for (const plugin of Config.plugins) {
+        for (const plugin of s.plugins) {
             const pluginClass: new (game: Game) => GamePlugin = (await import(`./plugins/${plugin}`)).default;
             this.loadPlugin(pluginClass);
         }

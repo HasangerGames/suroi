@@ -1,9 +1,9 @@
-import { ExtendedMap, type Result, type ResultRes } from "$common/utils/misc";
-import { stringify } from "../utils/misc";
-import { GameConsole, type GameSettings, type PossibleError, type Stringable } from "./gameConsole";
-import { GameConstants } from "$common/constants";
 import { isMobile } from "pixi.js";
 import { DEFAULT_SCOPE } from "$common/definitions/items/scopes";
+import { ExtendedMap, type Result, type ResultRes } from "$common/utils/misc";
+import { g } from "../utils/config";
+import { stringify } from "../utils/misc";
+import { GameConsole, type GameSettings, type PossibleError, type Stringable } from "./gameConsole";
 
 // TODO figure out what flags we're gonna actually use and how we're gonna use them kekw
 //       expect breaking changes to this api (again)
@@ -283,7 +283,7 @@ export type BooleanCVars = {
 export const defaultClientCVars: SimpleCVarMapping = Object.freeze({
     cv_player_name: "",
 
-    cv_loadout_skin: GameConstants.player.defaultSkin,
+    cv_loadout_skin: g.player.defaultSkin,
     cv_loadout_badge: "",
     cv_loadout_crosshair: 0,
     cv_loadout_top_emote: "happy_face",
@@ -394,7 +394,7 @@ export const defaultClientCVars: SimpleCVarMapping = Object.freeze({
     db_show_hitboxes_synced_particles: false,
     db_show_hitboxes_terrain: false,
 
-    db_speed_override: GameConstants.player.baseSpeed,
+    db_speed_override: g.player.baseSpeed,
     db_override_zoom: false,
     db_zoom_override: DEFAULT_SCOPE.zoomLevel,
     db_no_clip: false,

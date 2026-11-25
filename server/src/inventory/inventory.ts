@@ -76,12 +76,12 @@ export class Inventory {
      * An internal array storing weapons
      */
     readonly weapons: Array<InventoryItem | undefined> = Array.from(
-        { length: GameConstants.player.maxWeapons },
+        { length: g.player.maxWeapons },
         () => undefined
     );
 
     readonly slotsByDefType = Object.freeze(
-        GameConstants.player.inventorySlotTypings.reduce(
+        g.player.inventorySlotTypings.reduce(
             (acc, cur, i) => {
                 (acc[cur] ??= []).push(i);
                 return acc;
@@ -93,7 +93,7 @@ export class Inventory {
     private _lockedSlots = 0;
     get lockedSlots(): number { return this._lockedSlots; }
 
-    private readonly _maskCache = Array.from({ length: GameConstants.player.maxWeapons }, (_, i) => 1 << i);
+    private readonly _maskCache = Array.from({ length: g.player.maxWeapons }, (_, i) => 1 << i);
 
     isLocked(slot: number): boolean {
         if (!Inventory.isValidWeaponSlot(slot)) throw new RangeError(`Attempted to query lock state of invalid slot '${slot}'`);
@@ -276,12 +276,12 @@ export class Inventory {
 
     /**
      * Determines whether a given index is valid. For an index to be valid, it must be an
-     * integer between 0 and `GameConstants.player.maxWeapons - 1` (inclusive)
+     * integer between 0 and `g.player.maxWeapons - 1` (inclusive)
      * @param slot The number to test
      * @returns Whether the number is a valid slot
      */
     static isValidWeaponSlot(slot: number): boolean {
-        return slot % 1 === 0 && slot >= 0 && slot <= GameConstants.player.maxWeapons - 1;
+        return slot % 1 === 0 && slot >= 0 && slot <= g.player.maxWeapons - 1;
     }
 
     /**
@@ -400,13 +400,13 @@ export class Inventory {
     appendWeapon<Type extends WeaponType>(item: ReifiableItemOfType<Type>, data?: ItemData<LootDefForType<Type>>): number {
         item = this._reifyItem(item, data);
 
-        const maxWeapons = GameConstants.player.maxWeapons;
+        const maxWeapons = g.player.maxWeapons;
         const defType = item.definition.defType;
 
         for (let slot = 0; slot < maxWeapons; slot++) {
             if (
                 this.weapons[slot] === undefined
-                && GameConstants.player.inventorySlotTypings[slot] === defType
+                && g.player.inventorySlotTypings[slot] === defType
             ) {
                 this._setWeapon(slot, item); // no "destroy" call because this slot is guaranteed to be empty
                 return slot;
@@ -485,7 +485,7 @@ export class Inventory {
         if (item === undefined || item.definition.noDrop) return;
         const definition = item.definition;
 
-        if (GameConstants.player.inventorySlotTypings[slot] === "throwable") {
+        if (g.player.inventorySlotTypings[slot] === "throwable") {
             this.removeThrowable(definition as ThrowableDefinition, true);
         } else {
             if (item.isGun && (definition as GunDefinition).isDual) {
@@ -769,7 +769,7 @@ export class Inventory {
         const old = this.weapons[slot];
 
         const defType = item?.definition.defType;
-        const permittedType = GameConstants.player.inventorySlotTypings[slot];
+        const permittedType = g.player.inventorySlotTypings[slot];
         if (defType !== undefined && permittedType !== defType) {
             throw new Error(
                 `Tried to put an item of type '${DefinitionType[defType]}' in slot ${slot} (configured to only accept items of type '${DefinitionType[permittedType]}')`

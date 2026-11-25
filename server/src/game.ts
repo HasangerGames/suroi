@@ -20,7 +20,7 @@ import { CircleHitbox, type Hitbox } from "$common/utils/hitbox";
 import { ColorStyles, Logger, styleText } from "$common/utils/logging";
 import { Angle, Geometry, Numeric, Statistics } from "$common/utils/math";
 import { removeFrom, Timeout } from "$common/utils/misc";
-import { DefinitionType, type ReferenceTo, type ReifiableDef } from "$common/utils/objectDefinitions";
+import { type ReferenceTo, type ReifiableDef } from "$common/utils/objectDefinitions";
 import { pickRandomInArray, randomPointInsideCircle, randomRotation } from "$common/utils/random";
 import { SuroiByteStream } from "$common/utils/suroiByteStream";
 import { Vec, type Vector } from "$common/utils/vector";
@@ -46,7 +46,7 @@ import { Projectile, ProjectileParams } from "./objects/projectile";
 import { SyncedParticle } from "./objects/syncedParticle";
 import { PluginManager } from "./pluginManager";
 import { Team } from "./team";
-import { Config } from "./utils/config";
+import { s } from "./utils/config";
 import { Grid } from "./utils/grid";
 import { IDAllocator } from "./utils/idAllocator";
 import { Cache, getAllLoots, getSpawnableLoots, ItemRegistry } from "./utils/lootHelpers";
@@ -225,7 +225,7 @@ export class Game implements GameData {
     private readonly _start = this._now;
     get start(): number { return this._start; }
 
-    private readonly idealDt = 1000 / GameConstants.tps;
+    private readonly idealDt = 1000 / g.tps;
 
     /**
      * Game Tick delta time
@@ -525,7 +525,7 @@ export class Game implements GameData {
         if (
             this._started
             && !this.over
-            && (Config.minTeamsToStart ?? 2) > 1
+            && (s.minTeamsToStart ?? 2) > 1
             && (
                 this.isTeamMode
                     ? this.aliveCount <= this.teamMaxPlayers && new Set([...this.livingPlayers].map(p => p.teamId)).size <= 1
@@ -610,7 +610,7 @@ export class Game implements GameData {
         const killLeader = this.killLeader;
 
         if (
-            player.kills > (killLeader?.kills ?? (GameConstants.player.killLeaderMinKills - 1))
+            player.kills > (killLeader?.kills ?? (g.player.killLeaderMinKills - 1))
             && !player.dead
             && player !== killLeader
         ) {
@@ -622,7 +622,7 @@ export class Game implements GameData {
     }
 
     findNewKillLeader(): void {
-        let mostKills = GameConstants.player.killLeaderMinKills - 1;
+        let mostKills = g.player.killLeaderMinKills - 1;
         let newKillLeader: Player | undefined;
         for (const player of this.livingPlayers) {
             if (player.kills > mostKills) {
@@ -676,9 +676,9 @@ export class Game implements GameData {
             }
         }
 
-        const spawnOptions = !Config.spawn || Config.spawn.mode === "default"
+        const spawnOptions = !s.spawn || s.spawn.mode === "default"
             ? this.map.mapDef.spawn ?? { mode: "random" }
-            : Config.spawn;
+            : s.spawn;
         switch (spawnOptions.mode) {
             case "random": {
                 const hitbox = new CircleHitbox(5);
@@ -824,7 +824,7 @@ export class Game implements GameData {
         this.addTimeout(() => { player.disableInvulnerability(); }, 5000);
 
         if (
-            (this.isTeamMode ? this.teams.size : this.aliveCount) >= (Config.minTeamsToStart ?? 2)
+            (this.isTeamMode ? this.teams.size : this.aliveCount) >= (s.minTeamsToStart ?? 2)
             && !this._started
             && this.startTimeout === undefined
         ) {
@@ -842,16 +842,16 @@ export class Game implements GameData {
 
         this.log(`"${player.name}" joined`);
         // Access log to store usernames for this connection
-        if (Config.apiServer) {
+        if (s.apiServer) {
             const username = player.name;
             if (username) {
                 fetch(
-                    `${Config.apiServer.url}/accesslog/${player.ip || "none"}`,
+                    `${s.apiServer.url}/accesslog/${player.ip || "none"}`,
                     {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json",
-                            "api-key": Config.apiServer.apiKey || "none"
+                            "api-key": s.apiServer.apiKey || "none"
                         },
                         body: JSON.stringify({ username })
                     }
@@ -887,7 +887,7 @@ export class Game implements GameData {
                 combatLogInfo
                 && combatLogInfo.player !== player
                 && !combatLogInfo.player.disconnected
-                && this.now - combatLogInfo.time <= GameConstants.player.killCreditTimeoutMs
+                && this.now - combatLogInfo.time <= g.player.killCreditTimeoutMs
             ) {
                 player.die({
                     source: combatLogInfo.player,
@@ -1043,7 +1043,7 @@ export class Game implements GameData {
             jitterSpawn
                 ? Vec.add(
                     position,
-                    randomPointInsideCircle(Vec(0, 0), GameConstants.loot.maxSpawnJitter)
+                    randomPointInsideCircle(Vec(0, 0), g.loot.maxSpawnJitter)
                 )
                 : position,
             layer,
@@ -1345,7 +1345,7 @@ export class Game implements GameData {
 
         const planePos = Vec.add(
             position,
-            Vec.fromPolar(direction, -GameConstants.maxPosition)
+            Vec.fromPolar(direction, -g.maxPosition)
         );
 
         const airdrop = { position, type: crateDef };
@@ -1361,7 +1361,7 @@ export class Game implements GameData {
                 definition: MapPings.fromString<MapPing>("airdrop_ping"),
                 position
             });
-        }, GameConstants.airdrop.flyTime);
+        }, g.airdrop.flyTime);
 
         this.pluginManager.emit("airdrop_did_summon", { airdrop, position });
     }

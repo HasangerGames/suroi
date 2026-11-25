@@ -1,5 +1,5 @@
 import { dev } from "$app/environment";
-import { GameConstants, ObjectCategory, ZIndexes } from "$common/constants";
+import { ObjectCategory, ZIndexes } from "$common/constants";
 import { type ThrowableDefinition } from "$common/definitions/items/throwables";
 import { CircleHitbox } from "$common/utils/hitbox";
 import { EaseFunctions, Numeric } from "$common/utils/math";
@@ -12,6 +12,7 @@ import { Game } from "../game";
 import { MapManager } from "../managers/mapManager";
 import { ParticleManager } from "../managers/particleManager";
 import { type GameSound, SoundManager } from "../managers/soundManager";
+import { g } from "../utils/config";
 import { DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS, TEAMMATE_COLORS } from "../utils/constants";
 import { DebugRenderer } from "../utils/debugRenderer";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
@@ -151,7 +152,7 @@ export class Projectile extends GameObject.derive(ObjectCategory.Projectile) {
         this.hitbox.position = this.position;
         if (this.activeSound) this.activeSound.position = this.position;
 
-        this.container.scale = Numeric.remap(this.height, 0, GameConstants.projectiles.maxHeight, 1, 5);
+        this.container.scale = Numeric.remap(this.height, 0, g.projectiles.maxHeight, 1, 5);
 
         if (!GameConsole.getBuiltInCVar("cv_movement_smoothing") || isNew) {
             this.container.position = toPixiCoords(data.position);

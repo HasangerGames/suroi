@@ -139,7 +139,7 @@ export class ThrowableItem extends CountableInventoryItem.derive("throwable") {
             : Numeric.min(
                 definition.physics.maxThrowDistance * owner.mapPerkOrDefault(PerkIds.DemoExpert, ({ rangeMod }) => rangeMod, 1),
                 owner.distanceToMouse
-            ) * GameConstants.projectiles.distanceToMouseMultiplier;
+            ) * g.projectiles.distanceToMouseMultiplier;
 
         const time = this.definition.cookable ? (game.now - (this._cookStart ?? 0)) : 0;
 

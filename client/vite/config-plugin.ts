@@ -3,11 +3,14 @@ import { type Plugin } from "vite";
 import z from "zod";
 import { ClientConfig } from "../../common/src/schemas/config/clientConfig";
 import { GeneralConfig } from "../../common/src/schemas/config/generalConfig";
+import { mergeDeep } from "../../common/src/utils/misc";
+import { existsSync, readFileSync } from "node:fs";
 
 export const ClientAndGeneralConfig = z.object({
     client: ClientConfig,
     general: GeneralConfig
 });
+export type ClientAndGeneralConfig = z.infer<typeof ClientAndGeneralConfig>;
 
 export function suroiConfig(): Plugin[] {
     let watcher: FSWatcher;
@@ -21,9 +24,18 @@ export function suroiConfig(): Plugin[] {
         }
     }
 
-    function load(id: string): string | undefined {
-        if (id === virtualModuleId) {
-            return `export default ${JSON.stringify(ClientConfig)}`;
+    async function load(id: string): Promise<string | undefined> {
+        if (id === resolvedVirtualModuleId) {
+            let config = await import("../../config.defaults.json");
+            if (existsSync("../../config.json")) {
+                const userConfig = JSON.parse(readFileSync("../../config.json", "utf8"));
+                config = mergeDeep(config, userConfig);
+            }
+            const parseResult = ClientAndGeneralConfig.safeParse(config);
+            if (parseResult.error) {
+                throw new Error(`Unable to parse config. Details:\n${z.prettifyError(parseResult.error)}`);
+            }
+            return `export default ${JSON.stringify(parseResult.data)}`;
         }
     }
 
@@ -39,7 +51,7 @@ export function suroiConfig(): Plugin[] {
             apply: "serve",
             enforce: "pre",
             configureServer(server) {
-                watcher = watch("../config.json", { ignoreInitial: true }).on("change", () => {
+                watcher = watch(["../config.json", "../config.defaults.json"], { ignoreInitial: true }).on("change", () => {
                     const module = server.moduleGraph.getModuleById(virtualModuleId);
                     if (module !== undefined) void server.reloadModule(module);
                 });

@@ -8,7 +8,7 @@ import { weightedRandom } from "$common/utils/random";
 import { Vec, type Vector } from "$common/utils/vector";
 import { MapName, Maps } from "../data/maps";
 import { Game } from "../game";
-import { Config } from "../utils/config";
+import { s } from "../utils/config";
 
 export function modeFromMap(map: string): GameMode {
     const args = map.split(":");
@@ -25,20 +25,20 @@ export function modeFromMap(map: string): GameMode {
     } else if (mapName in GameModes) {
         return mapName as GameMode;
     } else {
-        return GameConstants.defaultMode;
+        return g.defaultMode;
     }
 }
 
-const usernameFilters = Config.usernameFilters?.map(filter => new RegExp(filter, "i"));
+const usernameFilters = s.usernameFilters?.map(filter => new RegExp(filter, "i"));
 
 export function cleanUsername(name?: string | null): string {
     if (
         !name?.trim().length
-        || name.length > GameConstants.player.nameMaxLength
+        || name.length > g.player.nameMaxLength
         || usernameFilters?.some(regex => regex.test(name))
         || /[^\x20-\x7E]/g.test(name) // extended ASCII chars
     ) {
-        return GameConstants.player.defaultName;
+        return g.player.defaultName;
     } else {
         return name;
     }

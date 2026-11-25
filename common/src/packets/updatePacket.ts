@@ -642,8 +642,8 @@ export type UpdateDataIn = UpdateDataCommon & ServerOnly;
  */
 export type UpdateDataOut = UpdateDataCommon & ClientOnly;
 
-const planeMinPos = -GameConstants.maxPosition;
-const planeMaxPos = GameConstants.maxPosition * 2;
+const planeMinPos = -g.maxPosition;
+const planeMaxPos = g.maxPosition * 2;
 
 export const UpdatePacket = new Packet<UpdateDataIn, UpdateDataOut>(PacketType.Update, {
     serialize(strm, data) {

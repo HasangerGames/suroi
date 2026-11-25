@@ -830,7 +830,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             strm.writePosition(data.position)
                 .writeRotation2(data.rotation)
                 .writeLayer(data.layer)
-                .writeFloat(data.height, 0, GameConstants.projectiles.maxHeight, 1);
+                .writeFloat(data.height, 0, g.projectiles.maxHeight, 1);
         },
         serializeFull(stream, { full }) {
             Throwables.writeToStream(stream, full.definition);
@@ -846,7 +846,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 position: stream.readPosition(),
                 rotation: stream.readRotation2(),
                 layer: stream.readLayer(),
-                height: stream.readFloat(0, GameConstants.projectiles.maxHeight, 1)
+                height: stream.readFloat(0, g.projectiles.maxHeight, 1)
             };
         },
         deserializeFull(stream) {

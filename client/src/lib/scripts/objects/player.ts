@@ -1,7 +1,7 @@
 import $ from "jquery";
 import { type ColorSource, Container, Graphics, GraphicsContext, ObservablePoint, Text } from "pixi.js";
 import { dev } from "$app/environment";
-import { AnimationType, GameConstants, InputActions, Layer, ObjectCategory, PlayerActions, SpectateActions, ZIndexes } from "$common/constants";
+import { AnimationType, InputActions, Layer, ObjectCategory, PlayerActions, SpectateActions, ZIndexes } from "$common/constants";
 import { type EmoteDefinition, getBadgeIdString } from "$common/definitions/emotes";
 import { Ammos } from "$common/definitions/items/ammos";
 import { type ArmorDefinition, ArmorType } from "$common/definitions/items/armors";
@@ -185,10 +185,10 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
     vestLevel = NaN;
     backpackLevel = NaN;
 
-    private _hitbox = new CircleHitbox(GameConstants.player.radius);
+    private _hitbox = new CircleHitbox(g.player.radius);
     get hitbox(): CircleHitbox { return this._hitbox; }
 
-    private readonly _bulletWhizHitbox = new CircleHitbox(GameConstants.player.radius * BULLET_WHIZ_RADIUS);
+    private readonly _bulletWhizHitbox = new CircleHitbox(g.player.radius * BULLET_WHIZ_RADIUS);
     get bulletWhizHitbox(): CircleHitbox { return this._bulletWhizHitbox; }
 
     floorType: FloorNames = FloorNames.Grass;
@@ -655,7 +655,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     // somewhat an abuse of that system, but dedicating an
                     // entire "action" to this would be wasteful
                     if (this.beingRevived) {
-                        UIManager.animateAction(translate("action_being_revived"), GameConstants.player.reviveDurationMs / 1000, true);
+                        UIManager.animateAction(translate("action_being_revived"), g.player.reviveDurationMs / 1000, true);
                     } else {
                         UIManager.cancelAction();
                     }
@@ -738,8 +738,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
             if (this.sizeMod !== sizeMod) {
                 // reset the size modifier before tweening
-                this.sizeMod = GameConstants.player.defaultModifiers.size;
-                this._hitbox = new CircleHitbox(GameConstants.player.radius * this.sizeMod, this._hitbox.position);
+                this.sizeMod = g.player.defaultModifiers.size;
+                this._hitbox = new CircleHitbox(g.player.radius * this.sizeMod, this._hitbox.position);
 
                 this.anims.sizeMod?.kill();
                 this.anims.sizeMod = Game.addTween({
@@ -750,7 +750,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     onComplete: () => {
                         this.anims.sizeMod = undefined;
                         this.sizeMod = sizeMod;
-                        this._hitbox = new CircleHitbox(GameConstants.player.radius * sizeMod, this._hitbox.position);
+                        this._hitbox = new CircleHitbox(g.player.radius * sizeMod, this._hitbox.position);
                     }
                 });
             }
@@ -1092,7 +1092,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     if (this.isActivePlayer) {
                         UIManager.animateAction(
                             translate("action_reviving"),
-                            GameConstants.player.reviveDurationMs / PerkManager.mapOrDefault(PerkIds.FieldMedic, ({ usageMod }) => usageMod, 1)
+                            g.player.reviveDurationMs / PerkManager.mapOrDefault(PerkIds.FieldMedic, ({ usageMod }) => usageMod, 1)
                         );
                     }
                     break;

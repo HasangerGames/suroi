@@ -1,21 +1,23 @@
+import { randomBytes } from "crypto";
 import { AnimationType, GameConstants, InputActions, Layer, ObjectCategory, PlayerActions, SpectateActions } from "$common/constants";
 import { type BadgeDefinition } from "$common/definitions/badges";
-import { Emotes, type EmoteDefinition } from "$common/definitions/emotes";
+import { type EmoteDefinition, Emotes } from "$common/definitions/emotes";
 import { Ammos } from "$common/definitions/items/ammos";
-import { ArmorType, Armors } from "$common/definitions/items/armors";
+import { Armors, ArmorType } from "$common/definitions/items/armors";
 import { Backpacks } from "$common/definitions/items/backpacks";
-import { Guns, Tier, type GunDefinition } from "$common/definitions/items/guns";
+import { type GunDefinition, Guns, Tier } from "$common/definitions/items/guns";
 import { HealingItems, HealType } from "$common/definitions/items/healingItems";
-import { Melees, type MeleeDefinition } from "$common/definitions/items/melees";
-import { PerkCategories, PerkData, PerkIds, Perks, type PerkDefinition } from "$common/definitions/items/perks";
-import { DEFAULT_SCOPE, Scopes, type ScopeDefinition } from "$common/definitions/items/scopes";
-import { Skins, type SkinDefinition } from "$common/definitions/items/skins";
-import { Throwables, type ThrowableDefinition } from "$common/definitions/items/throwables";
+import { type MeleeDefinition, Melees } from "$common/definitions/items/melees";
+import { PerkCategories, PerkData, type PerkDefinition, PerkIds, Perks } from "$common/definitions/items/perks";
+import { DEFAULT_SCOPE, type ScopeDefinition, Scopes } from "$common/definitions/items/scopes";
+import { type SkinDefinition, Skins } from "$common/definitions/items/skins";
+import { type ThrowableDefinition, Throwables } from "$common/definitions/items/throwables";
 import { Loots, type WeaponDefinition } from "$common/definitions/loots";
 import { MapIndicators } from "$common/definitions/mapIndicators";
 import { type PlayerPing } from "$common/definitions/mapPings";
-import { Obstacles, type ObstacleDefinition } from "$common/definitions/obstacles";
+import { type ObstacleDefinition, Obstacles } from "$common/definitions/obstacles";
 import { type SyncedParticleDefinition } from "$common/definitions/syncedParticles";
+import type { DebugPacket } from "$common/packets/debugPacket";
 import { GameOverPacket, TeammateGameOverData } from "$common/packets/gameOverPacket";
 import { type InputData } from "$common/packets/inputPacket";
 import { DamageSources, KillPacket } from "$common/packets/killPacket";
@@ -23,9 +25,9 @@ import { MutablePacketDataIn } from "$common/packets/packet";
 import { PacketStream } from "$common/packets/packetStream";
 import { ReportPacket } from "$common/packets/reportPacket";
 import { type SpectateData } from "$common/packets/spectatePacket";
-import { UpdatePacket, type PlayerData, type UpdateDataCommon } from "$common/packets/updatePacket";
+import { type PlayerData, type UpdateDataCommon, UpdatePacket } from "$common/packets/updatePacket";
 import { PlayerModifiers } from "$common/typings";
-import { CircleHitbox, RectangleHitbox, type Hitbox } from "$common/utils/hitbox";
+import { CircleHitbox, type Hitbox, RectangleHitbox } from "$common/utils/hitbox";
 import { adjacentOrEqualLayer } from "$common/utils/layer";
 import { Angle, Collision, Geometry, Numeric } from "$common/utils/math";
 import { removeFrom, type SDeepMutable, type Timeout } from "$common/utils/misc";
@@ -35,16 +37,15 @@ import { pickRandomInArray, random, randomPointInsideCircle, weightedRandom } fr
 import { SuroiByteStream } from "$common/utils/suroiByteStream";
 import { FloorNames, FloorTypes } from "$common/utils/terrain";
 import { Vec, type Vector } from "$common/utils/vector";
-import { randomBytes } from "crypto";
 import { type Game } from "../game";
-import { HealingAction, ReloadAction, ReviveAction, type Action } from "../inventory/action";
+import { type Action, HealingAction, ReloadAction, ReviveAction } from "../inventory/action";
 import { GunItem } from "../inventory/gunItem";
 import { Inventory, type InventoryItem } from "../inventory/inventory";
 import { CountableInventoryItem, InventoryItemBase } from "../inventory/inventoryItem";
 import { MeleeItem } from "../inventory/meleeItem";
 import { ThrowableItem } from "../inventory/throwableItem";
 import { type Team } from "../team";
-import { Config } from "../utils/config";
+import { s } from "../utils/config";
 import { serverWarn } from "../utils/serverHelpers";
 import { DeathMarker } from "./deathMarker";
 import { Emote } from "./emote";
@@ -55,7 +56,6 @@ import { MapIndicator } from "./mapIndicator";
 import { Obstacle } from "./obstacle";
 import { Projectile } from "./projectile";
 import { type SyncedParticle } from "./syncedParticle";
-import type { DebugPacket } from "$common/packets/debugPacket";
 
 export interface PlayerSocketData {
     player?: Player
@@ -71,7 +71,7 @@ export interface PlayerSocketData {
 }
 
 export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
-    private static readonly baseHitbox = new CircleHitbox(GameConstants.player.radius);
+    private static readonly baseHitbox = new CircleHitbox(g.player.radius);
 
     override readonly fullAllocBytes = 16;
     override readonly partialAllocBytes = 12;
@@ -145,7 +145,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         this.game.updateKillLeader(this);
     }
 
-    private _maxHealth = GameConstants.player.defaultHealth;
+    private _maxHealth = g.player.defaultHealth;
     get maxHealth(): number { return this._maxHealth; }
     set maxHealth(maxHealth: number) {
         if (this._maxHealth === maxHealth) return;
@@ -184,7 +184,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         }
     }
 
-    private _maxAdrenaline = GameConstants.player.maxAdrenaline;
+    private _maxAdrenaline = g.player.maxAdrenaline;
 
     private _normalizedAdrenaline = 0;
     get normalizedAdrenaline(): number { return this._normalizedAdrenaline; }
@@ -226,7 +226,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         this._normalizedAdrenaline = Numeric.remap(this.adrenaline, this.minAdrenaline, this.maxAdrenaline, 0, 1);
     }
 
-    private _maxShield = GameConstants.player.maxShield;
+    private _maxShield = g.player.maxShield;
 
     private _normalizedShield = 0;
     get normalizedShield(): number { return this._normalizedShield; }
@@ -302,7 +302,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         this._fireRateMod = fireRate;
     }
 
-    private _maxInfection = GameConstants.player.maxInfection;
+    private _maxInfection = g.player.maxInfection;
 
     private _normalizedInfection = 0;
     get normalizedInfection(): number { return this._normalizedInfection; }
@@ -356,7 +356,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         this.setDirty();
     }
 
-    private _modifiers = structuredClone(GameConstants.player.defaultModifiers);
+    private _modifiers = structuredClone(g.player.defaultModifiers);
 
     killedBy?: Player;
     downedBy?: {
@@ -424,7 +424,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     /**
      * The distance from the player position to the player mouse in game units
      */
-    distanceToMouse = GameConstants.player.maxMouseDist;
+    distanceToMouse = g.player.maxMouseDist;
 
     /**
      * Keeps track of various fields which are "dirty"
@@ -606,7 +606,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         this._team?.setDirty();
     }
 
-    baseSpeed = GameConstants.player.baseSpeed;
+    baseSpeed = g.player.baseSpeed;
 
     private _movementVector = Vec(0, 0);
     get movementVector(): Vector { return Vec.clone(this._movementVector); }
@@ -669,7 +669,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
         this.socket = socket;
         const data = socket?.data ?? {} as Partial<PlayerSocketData>;
-        this.name = GameConstants.player.defaultName;
+        this.name = g.player.defaultName;
         this.noName = data.noName ?? false;
         this.ip = data.ip;
         this.role = data.role;
@@ -712,7 +712,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             this.isDev
             && data.lobbyClearing
             && data.weaponPreset
-            && Config.allowLobbyClearing
+            && s.allowLobbyClearing
         ) {
             const [
                 weaponA, weaponB, melee,
@@ -731,7 +731,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 if (
                     weaponDef === undefined // no such item
                     || !["gun", "melee"].includes(defType = weaponDef.defType) // neither gun nor melee
-                    || GameConstants.player.inventorySlotTypings[slot] !== defType // invalid type
+                    || g.player.inventorySlotTypings[slot] !== defType // invalid type
                 ) return;
 
                 this.inventory.addOrReplaceWeapon(slot, weaponDef);
@@ -773,11 +773,11 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         }
 
         // good chance that if these were changed, they're meant to be applied
-        if (this.maxHealth !== GameConstants.player.defaultHealth) {
+        if (this.maxHealth !== g.player.defaultHealth) {
             this.health = this.maxHealth;
         }
 
-        if (this.maxAdrenaline !== GameConstants.player.maxAdrenaline) {
+        if (this.maxAdrenaline !== g.player.maxAdrenaline) {
             this.adrenaline = this.maxAdrenaline;
         }
 
@@ -899,7 +899,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         // this happens if the item to be swapped isn't currently in the inventory
         // in that case, we just take the first slot matching that item's type
         if (slot === -1) {
-            slot = GameConstants.player.inventorySlotTypings.findIndex(slot => slot === item.definition.defType);
+            slot = g.player.inventorySlotTypings.findIndex(slot => slot === item.definition.defType);
         }
 
         if (slot === -1) {
@@ -913,7 +913,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
         const { inventory } = this;
         const { items, backpack: { maxCapacity }, throwableItemMap } = inventory;
-        const type = GameConstants.player.inventorySlotTypings[slot];
+        const type = g.player.inventorySlotTypings[slot];
 
         // only used if weapon swap is weighted
         const weights = this.hasPerk(PerkIds.PlumpkinBlessing) ? Player._qualityWeaponSwapWeights[type] ?? {} : Player._weaponSwapWeights[type] ?? {};
@@ -1051,14 +1051,14 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
         this.emoteCount++;
 
-        if (this.emoteCount > GameConstants.player.emoteLimit.triggerAmount) {
+        if (this.emoteCount > g.player.emoteLimit.triggerAmount) {
             this.blockEmoting = true;
             this.setDirty();
             this.game.addTimeout(() => {
                 this.blockEmoting = false;
                 this.setDirty();
                 this.emoteCount = 0;
-            }, GameConstants.player.emoteLimit.punishmentDurationMs);
+            }, g.player.emoteLimit.punishmentDurationMs);
             return true;
         }
 
@@ -1139,7 +1139,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 && object?.isBuilding
                 && (!object.dead || (object.dead && object.definition.hasDamagedCeiling))
                 && object.scopeHitbox?.collidesWith(this._hitbox)
-                && !Config.disableBuildingCheck
+                && !s.disableBuildingCheck
             ) {
                 isInsideBuilding = true;
                 scopeTarget ??= object.definition.ceilingScope;
@@ -1263,7 +1263,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         const hasMovementInput = movement.x !== 0 || movement.y !== 0;
 
         if (onIce) {
-            const accelFactor = Numeric.clamp(GameConstants.player.ice.acceleration * dtSeconds, 0, 1);
+            const accelFactor = Numeric.clamp(g.player.ice.acceleration * dtSeconds, 0, 1);
             if (hasMovementInput) {
                 this._movementVector = Vec.add(
                     this._movementVector,
@@ -1271,7 +1271,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 );
             }
 
-            const friction = hasMovementInput ? GameConstants.player.ice.movingFriction : GameConstants.player.ice.friction;
+            const friction = hasMovementInput ? g.player.ice.movingFriction : g.player.ice.friction;
             this._movementVector = Vec.scale(this._movementVector, 1 / (1 + dtSeconds * friction));
         } else {
             this._movementVector = desiredVelocity;
@@ -1433,9 +1433,9 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         }
 
         // Knocked out damage
-        if (this.downed && !this.beingRevivedBy && (this.game.now - this.lastKnockedOutDamageTime) > GameConstants.player.knockedOutDamageIntervalMs) {
+        if (this.downed && !this.beingRevivedBy && (this.game.now - this.lastKnockedOutDamageTime) > g.player.knockedOutDamageIntervalMs) {
             this.piercingDamage({
-                amount: GameConstants.player.knockedOutDamageAmount,
+                amount: g.player.knockedOutDamageAmount,
                 source: DamageSources.BleedOut
             });
             this.lastKnockedOutDamageTime = this.game.now;
@@ -1449,7 +1449,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                         this.position,
                         this.action.target.position
                     )
-                ) >= GameConstants.player.reviveMaxDistSquared
+                ) >= g.player.reviveMaxDistSquared
             ) {
                 this.action.cancel();
             }
@@ -1489,7 +1489,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         this.effectiveScope = scopeTarget ?? this.inventory.scope;
 
         // Rate limit team pings & emotes
-        if (this.emoteCount > 0 && !this.blockEmoting && (this.game.now - this.lastEmoteLimit > GameConstants.player.emoteLimit.triggerDurationMs)) {
+        if (this.emoteCount > 0 && !this.blockEmoting && (this.game.now - this.lastEmoteLimit > g.player.emoteLimit.triggerDurationMs)) {
             this.emoteCount = 0;
             this.lastEmoteLimit = this.game.now;
         }
@@ -1743,7 +1743,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                     continue;
                 }
                 const finalAngle = Angle.normalize(this.rotation + angle);
-                proj.position = Vec.add(this.position, Vec.fromPolar(finalAngle, this.sizeMod * GameConstants.player.radius * 1.2));
+                proj.position = Vec.add(this.position, Vec.fromPolar(finalAngle, this.sizeMod * g.player.radius * 1.2));
                 proj.rotation = finalAngle;
                 proj.setPartialDirty();
             }
@@ -1985,7 +1985,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         for (const explosion of game.explosions) {
             if (
                 !this.screenHitbox.isPointInside(explosion.position)
-                || Geometry.distanceSquared(explosion.position, this.position) > GameConstants.explosionMaxDistSquared
+                || Geometry.distanceSquared(explosion.position, this.position) > g.explosionMaxDistSquared
             ) continue;
             packet.explosions.push(explosion);
         }
@@ -2212,7 +2212,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             }
             case PerkIds.ExtendedMags: {
                 const weapons = this.inventory.weapons;
-                const maxWeapons = GameConstants.player.maxWeapons;
+                const maxWeapons = g.player.maxWeapons;
                 for (let i = 0; i < maxWeapons; i++) {
                     const weapon = weapons[i];
 
@@ -2310,7 +2310,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             }
             case PerkIds.ExtendedMags: {
                 const weapons = this.inventory.weapons;
-                const maxWeapons = GameConstants.player.maxWeapons;
+                const maxWeapons = g.player.maxWeapons;
                 for (let i = 0; i < maxWeapons; i++) {
                     const weapon = weapons[i];
 
@@ -2509,7 +2509,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 }));
 
                 // Send the report to the API server
-                if (Config.apiServer) {
+                if (s.apiServer) {
                     // SERVER HOSTERS assign your custom server an ID somewhere then pass it into the report body region: region
                     const reportJson = {
                         id: reportID,
@@ -2519,9 +2519,9 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                         reporterIP: this.ip
                     };
 
-                    fetch(`${Config.apiServer.url}/reports`, {
+                    fetch(`${s.apiServer.url}/reports`, {
                         method: "POST",
-                        headers: { "Content-Type": "application/json", "api-key": Config.apiServer.apiKey },
+                        headers: { "Content-Type": "application/json", "api-key": s.apiServer.apiKey },
                         body: JSON.stringify(reportJson)
                     }).then(response => response.json())
                         .then(console.log)
@@ -2529,7 +2529,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 }
 
                 // Send the report to Discord
-                if (Config.apiServer?.reportWebhookUrl) {
+                if (s.apiServer?.reportWebhookUrl) {
                     const reportData = {
                         embeds: [
                             {
@@ -2554,7 +2554,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                         ]
                     };
 
-                    fetch(Config.apiServer.reportWebhookUrl, {
+                    fetch(s.apiServer.reportWebhookUrl, {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify(reportData)
@@ -2806,13 +2806,13 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     }
 
     private _calculateModifiers(): PlayerModifiers {
-        const newModifiers = structuredClone(GameConstants.player.defaultModifiers);
+        const newModifiers = structuredClone(g.player.defaultModifiers);
         const eventMods: EventModifiers = {
             kill: [],
             damageDealt: []
         };
 
-        const maxWeapons = GameConstants.player.maxWeapons;
+        const maxWeapons = g.player.maxWeapons;
         for (let i = 0; i < maxWeapons; i++) {
             const weapon = this.inventory.getWeapon(i);
 
@@ -2846,12 +2846,12 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 }
                 case PerkIds.ExperimentalTreatment: {
                     newModifiers.adrenDrain *= perk.adrenDecay;
-                    newModifiers.minAdrenaline += perk.adrenSet * newModifiers.maxAdrenaline * GameConstants.player.maxAdrenaline;
+                    newModifiers.minAdrenaline += perk.adrenSet * newModifiers.maxAdrenaline * g.player.maxAdrenaline;
                     newModifiers.maxHealth *= perk.healthMod;
                     break;
                 }
                 case PerkIds.Engorged: {
-                    const base = newModifiers.maxHealth * GameConstants.player.defaultHealth;
+                    const base = newModifiers.maxHealth * g.player.defaultHealth;
                     (eventMods.kill as ExtendedWearerAttributes[]).push({
                         maxHealth: (base + perk.healthMod) / base,
                         sizeMod: perk.sizeMod
@@ -2938,9 +2938,9 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             fireRate
         } = this._modifiers = this._calculateModifiers();
 
-        this.maxHealth = GameConstants.player.defaultHealth * maxHealth;
-        this.maxAdrenaline = GameConstants.player.maxAdrenaline * maxAdrenaline;
-        this.maxShield = GameConstants.player.maxShield * maxShield;
+        this.maxHealth = g.player.defaultHealth * maxHealth;
+        this.maxAdrenaline = g.player.maxAdrenaline * maxAdrenaline;
+        this.maxShield = g.player.maxShield * maxShield;
         this.minAdrenaline = minAdrenaline;
         this.sizeMod = size;
         this.reloadMod = reload;

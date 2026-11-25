@@ -16,7 +16,7 @@ export class Parachute extends BaseGameObject.derive(ObjectCategory.Parachute) {
 
     hitbox = new CircleHitbox(10);
 
-    endTime = Date.now() + GameConstants.airdrop.fallTime;
+    endTime = Date.now() + g.airdrop.fallTime;
 
     private readonly _airdrop: Airdrop;
 
@@ -46,7 +46,7 @@ export class Parachute extends BaseGameObject.derive(ObjectCategory.Parachute) {
                     switch (true) {
                         case object.isPlayer: {
                             object.piercingDamage({
-                                amount: GameConstants.airdrop.damage,
+                                amount: g.airdrop.damage,
                                 source: DamageSources.Obstacle,
                                 weaponUsed: crate
                             });
@@ -86,7 +86,7 @@ export class Parachute extends BaseGameObject.derive(ObjectCategory.Parachute) {
 
         const elapsed = this.endTime - this.game.now;
 
-        this._height = Numeric.lerp(0, 1, elapsed / GameConstants.airdrop.fallTime);
+        this._height = Numeric.lerp(0, 1, elapsed / g.airdrop.fallTime);
 
         this.setPartialDirty();
     }

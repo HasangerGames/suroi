@@ -1,9 +1,9 @@
+import { type MessageEvent, WebSocket } from "ws";
 import { PacketDataIn, PacketDataOut, PacketType } from "$common/packets/packet";
-import { WebSocket, type MessageEvent } from "ws";
-import { GAME_VERSION, GameConstants, InputActions, ObjectCategory } from "../../common/src/constants";
-import { EmoteCategory, Emotes, type EmoteDefinition } from "../../common/src/definitions/emotes";
-import { Skins, type SkinDefinition } from "../../common/src/definitions/items/skins";
-import { InputPacket, areDifferent, type InputAction, type InputData } from "../../common/src/packets/inputPacket";
+import { GAME_VERSION, InputActions, ObjectCategory } from "../../common/src/constants";
+import { EmoteCategory, type EmoteDefinition, Emotes } from "../../common/src/definitions/emotes";
+import { type SkinDefinition, Skins } from "../../common/src/definitions/items/skins";
+import { areDifferent, type InputAction, type InputData, InputPacket } from "../../common/src/packets/inputPacket";
 import { JoinPacket } from "../../common/src/packets/joinPacket";
 import { PacketStream } from "../../common/src/packets/packetStream";
 import { Geometry, π, τ } from "../../common/src/utils/math";
@@ -11,6 +11,7 @@ import { DefinitionType, type ReferenceTo } from "../../common/src/utils/objectD
 import { type FullData } from "../../common/src/utils/objectsSerializations";
 import { pickRandomInArray, random, randomBoolean, randomFloat, randomSign } from "../../common/src/utils/random";
 import { Vec, type Vector } from "../../common/src/utils/vector";
+import { g } from "../../server/src/utils/config";
 
 console.log("start");
 
@@ -240,10 +241,10 @@ class Bot {
 
         if (this._swap) {
             this._swap = false;
-            const slot = aimhax ? random(0, 1) : random(0, GameConstants.player.maxWeapons - 1);
+            const slot = aimhax ? random(0, 1) : random(0, g.player.maxWeapons - 1);
             actions.push({ type: InputActions.EquipItem, slot });
 
-            if (GameConstants.player.inventorySlotTypings[slot] === "throwable" && this._shootStart) {
+            if (g.player.inventorySlotTypings[slot] === "throwable" && this._shootStart) {
                 this._dontCommitGrenadeSuicideTimer ??= setTimeout(() => {
                     this._grenadeSuicidePrevention = true;
                     this._dontCommitGrenadeSuicideTimer = undefined;

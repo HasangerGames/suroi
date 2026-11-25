@@ -1,7 +1,7 @@
 import { sound } from "@pixi/sound";
 import $ from "jquery";
 import { Color, isWebGLSupported, isWebGPUSupported } from "pixi.js";
-import { GameConstants, InputActions, ObjectCategory, SpectateActions } from "$common/constants";
+import { InputActions, ObjectCategory, SpectateActions } from "$common/constants";
 import { type BadgeDefinition, Badges } from "$common/definitions/badges";
 import { EmoteCategory, type EmoteDefinition, Emotes, getBadgeIdString, isEmoteBadge } from "$common/definitions/emotes";
 import { type AmmoDefinition, Ammos } from "$common/definitions/items/ammos";
@@ -26,7 +26,7 @@ import { MapManager } from "./managers/mapManager";
 import { SoundManager } from "./managers/soundManager";
 import { UIManager } from "./managers/uiManager";
 import { body } from "./uiHelpers";
-import { Config } from "./utils/config";
+import { Config, g } from "./utils/config";
 import { EMOTE_SLOTS } from "./utils/constants";
 import { Crosshairs, getCrosshair } from "./utils/crosshairs";
 import { html } from "./utils/misc";
@@ -1141,7 +1141,7 @@ export async function setUpUI(): Promise<void> {
 
     // Switch weapon slots by clicking
     const step = 1; // Define the step for cycling
-    const inventorySlotTypings = GameConstants.player.inventorySlotTypings;
+    const inventorySlotTypings = g.player.inventorySlotTypings;
 
     const slotListener = (element: JQuery<HTMLDivElement>, listener: (button: number) => void): void => {
         element[0].addEventListener("pointerdown", (e: PointerEvent): void => {
@@ -1178,7 +1178,7 @@ export async function setUpUI(): Promise<void> {
     // Generate the UI for scopes, healing items, weapons, and ammos
     $<HTMLDivElement>("#weapons-container").append(
         ...Array.from(
-            { length: GameConstants.player.maxWeapons },
+            { length: g.player.maxWeapons },
             (_, slot) => {
                 const ele = $<HTMLDivElement>(
                     `<div class="inventory-slot" id="weapon-slot-${slot + 1}">\

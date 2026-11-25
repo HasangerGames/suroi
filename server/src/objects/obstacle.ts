@@ -257,7 +257,7 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
                         clampedDistance = Math.min(distance, maxDistance),
                         scaleFactor = 1 - (clampedDistance - minDistance) / (maxDistance - minDistance);
 
-                    let infectionAmount = Math.round((GameConstants.player.maxInfection / 4) * scaleFactor);
+                    let infectionAmount = Math.round((g.player.maxInfection / 4) * scaleFactor);
 
                     if (source.hitbox.collidesWith(deathZone)) infectionAmount = 100; // force
 

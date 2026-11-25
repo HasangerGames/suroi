@@ -27,7 +27,7 @@ export const GeneralConfig = z.object({
         killCreditTimeoutMs: z.number(),
         maxMouseDist: z.number(),
         reviveDurationMs: z.number(),
-        reviveMaxDist: z.number(),
+        reviveMaxDistSquared: z.number(),
         knockedOutDamageAmount: z.number(),
         knockedOutDamageIntervalMs: z.number(),
         buildingVisionSize: z.number(),
