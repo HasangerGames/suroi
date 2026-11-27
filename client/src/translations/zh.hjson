@@ -935,7 +935,7 @@
 
 
 /*
-    PERKS + DESCRIPTIONS - 特权 + 简介
+    PERKS + DESCRIPTIONS - 技能 + 简介
 */
 
 "berserker": "狂人"
@@ -953,17 +953,17 @@
 "toploaded": "顶部装载"
 "toploaded_desc": "弹夹的前半子弹获得伤害提升"
 "infinite_ammo": "无限子弹"
-"infinite_ammo_desc": "换弹不再需要或消耗弹药"
+"infinite_ammo_desc": "装填不再需要或消耗弹药"
 "extended_mags": "增大弹夹"
 "extended_mags_desc": "提升绝大多数枪械的弹容量"
 "field_medic": "战斗医员"
 "field_medic_desc": "缩短使用消耗品和救助队友所需的时间"
 "close_quarters_combat": "近身战斗"
-"close_quarters_combat_desc": "近战时，缩短装弹时间并且提升枪械伤害"
+"close_quarters_combat_desc": "近战时，缩短装填时间并且提升枪械伤害"
 "low_profile": "低调"
 "low_profile_desc": "减少所受到的爆炸伤害，并且把你缩小"
 "tactical_reload": "战斗专家"
-"tactical_reload_desc": "缩短装弹所需的时间"
+"tactical_reload_desc": "缩短装填所需的时间"
 "precision_recycling": "子弹回收"
 "precision_recycling_desc": "连续命中敌人两次时返还两发子弹<br>不会返还霰弹"
 "plumpkin_gamble": "南瓜赌博"
